@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ExtraOptions, PreloadAllModules, RouterModule } from '@angular/router';
@@ -12,6 +12,11 @@ import { mockApiServices } from 'app/mock-api';
 import { LayoutModule } from 'app/layout/layout.module';
 import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './shared/interceptor/token.interceptor';
+import { HttpErrorInterceptor } from './shared/interceptor/error.interceptor';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { ErrorHandlerService } from './shared/services/error-handler.service';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
@@ -41,6 +46,21 @@ const routerConfig: ExtraOptions = {
         // 3rd party modules that require global configuration via forRoot
         // MarkdownModule.forRoot({})
     ],
+    providers: [
+        { provide: ErrorHandler, useClass: ErrorHandlerService },
+        // REQUIRED IF YOU USE JWT AUTHENTICATION
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: TokenInterceptor,
+          multi: true,
+        },
+        {
+          provide: HTTP_INTERCEPTORS,
+          useClass: HttpErrorInterceptor,
+          multi: true,
+        },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+      ],
     bootstrap   : [
         AppComponent
     ]

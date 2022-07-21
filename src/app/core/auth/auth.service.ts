@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
+import { UsuarioAutenticacionFilterDTO } from 'app/model/sw42.filter';
+import { environment } from 'environments/environment';
+import { UsuarioAutenticacionDTO } from 'app/model/sw42.domain';
+import { LocalStoreService } from 'app/shared/services/local-store.service';
+import { User } from '../user/user.types';
 
 @Injectable()
 export class AuthService
@@ -14,7 +19,8 @@ export class AuthService
      */
     constructor(
         private _httpClient: HttpClient,
-        private _userService: UserService
+        private _userService: UserService,
+        private _ls: LocalStoreService
     )
     {
     }
@@ -59,7 +65,6 @@ export class AuthService
     {
         return this._httpClient.post('api/auth/reset-password', password);
     }
-
     /**
      * Sign in
      *
@@ -73,22 +78,40 @@ export class AuthService
             return throwError('User is already logged in.');
         }
 
-        return this._httpClient.post('api/auth/sign-in', credentials).pipe(
-            switchMap((response: any) => {
+
+        const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
+        autenticacion.sesion = credentials.email;
+        autenticacion.clave = credentials.password;
+        autenticacion.claveAnterior = `${environment.dateCompile}`;
+        return this._httpClient
+          .post<UsuarioAutenticacionDTO>(
+            this._ls.getUrlAccess(`${environment.endPoint}`),
+            autenticacion
+          )
+          .pipe(
+            switchMap((response: UsuarioAutenticacionDTO) => {
 
                 // Store the access token in the local storage
-                this.accessToken = response.accessToken;
+                this.accessToken = response.token;
 
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
                 // Store the user on the user service
-                this._userService.user = response.user;
+                
+                this._userService.user = {
+                    id: response.usuarioDTO.llaveTabla,
+                    name: response.usuarioDTO.nombre,
+                    email: response.usuarioDTO.correo,
+                    avatar: response.usuarioDTO.imagen
+                };
 
                 // Return a new observable with the response
                 return of(response);
             })
-        );
+          );
+
+        
     }
 
     /**
@@ -96,16 +119,21 @@ export class AuthService
      */
     signInUsingToken(): Observable<any>
     {
-        // Sign in using the token
-        return this._httpClient.post('api/auth/sign-in-with-token', {
-            accessToken: this.accessToken
-        }).pipe(
-            catchError(() =>
-
+        const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
+        autenticacion.claveAnterior = `${environment.dateCompile}`;
+        autenticacion.securityToken = this.accessToken;
+        return this._httpClient
+        .post<UsuarioAutenticacionDTO>(
+            this._ls.getUrlAccess(`${environment.endPoint}`),
+            autenticacion
+        )
+        .pipe(
+            catchError(() => {
                 // Return false
-                of(false)
-            ),
-            switchMap((response: any) => {
+                this.signOut();
+                return of(false)
+            }),
+            switchMap((response: UsuarioAutenticacionDTO) => {
 
                 // Replace the access token with the new one if it's available on
                 // the response object.
@@ -114,21 +142,27 @@ export class AuthService
                 // in using the token, you should generate a new one on the server
                 // side and attach it to the response object. Then the following
                 // piece of code can replace the token with the refreshed one.
-                if ( response.accessToken )
+                if ( response.token )
                 {
-                    this.accessToken = response.accessToken;
+                    this.accessToken = response.token;
                 }
 
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
                 // Store the user on the user service
-                this._userService.user = response.user;
+                this._userService.user = {
+                    id: response.usuarioDTO.llaveTabla,
+                    name: response.usuarioDTO.nombre,
+                    email: response.usuarioDTO.correo,
+                    avatar: response.usuarioDTO.imagen
+                };
 
                 // Return true
                 return of(true);
             })
         );
+
     }
 
     /**

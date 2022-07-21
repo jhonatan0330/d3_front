@@ -1,0 +1,24 @@
+ <mat-form-field [style.display]="isInvisible ? 'none': 'block'">
+    <mat-label>{{structure.nombre | titlecase }} </mat-label>
+    <input
+      matInput
+      [formControl]="fControl"
+      [name]="structure.llaveTabla"
+      [required]="required"
+      [readonly]="!isEnabled"
+      autocomplete="off"
+      *ngIf="!textoLargo"
+    />
+    <textarea
+      matInput
+      class="textarea-form"
+      [formControl]="fControl"
+      [name]="structure.llaveTabla"
+      [required]="required"
+      [readonly]="!isEnabled"
+      *ngIf="textoLargo"
+    ></textarea>
+    <!-- <button mat-button *ngIf="help" matSuffix mat-icon-button aria-label="help" (click)="help=''">
+      <mat-icon>help</mat-icon>
+    </button> -->
+  </mat-form-field>

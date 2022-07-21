@@ -8,7 +8,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { FuseNavigationModule } from '@fuse/components/navigation';
 import { FuseLoadingBarModule } from '@fuse/components/loading-bar';
 import { FuseFullscreenModule } from '@fuse/components/fullscreen/fullscreen.module';
-import { LanguagesModule } from 'app/layout/common/languages/languages.module';
 import { MessagesModule } from 'app/layout/common/messages/messages.module';
 import { NotificationsModule } from 'app/layout/common/notifications/notifications.module';
 import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
@@ -32,7 +31,6 @@ import { ClassyLayoutComponent } from 'app/layout/layouts/vertical/classy/classy
         FuseFullscreenModule,
         FuseLoadingBarModule,
         FuseNavigationModule,
-        LanguagesModule,
         MessagesModule,
         NotificationsModule,
         QuickChatModule,

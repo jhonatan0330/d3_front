@@ -1,9 +1,11 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
+import { ApiService } from 'app/modules/admin/apps/bpm/api.service';
+import { JwtAuthService } from 'app/modules/admin/apps/bpm/jwt-auth.service';
 
 @Component({
     selector     : 'auth-sign-in',
@@ -11,7 +13,7 @@ import { AuthService } from 'app/core/auth/auth.service';
     encapsulation: ViewEncapsulation.None,
     animations   : fuseAnimations
 })
-export class AuthSignInComponent implements OnInit
+export class AuthSignInComponent implements OnInit, AfterViewInit
 {
     @ViewChild('signInNgForm') signInNgForm: NgForm;
 
@@ -22,6 +24,9 @@ export class AuthSignInComponent implements OnInit
     signInForm: UntypedFormGroup;
     showAlert: boolean = false;
 
+    image: string;
+    company = 'Software para ti.com';
+
     /**
      * Constructor
      */
@@ -29,6 +34,8 @@ export class AuthSignInComponent implements OnInit
         private _activatedRoute: ActivatedRoute,
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
+        private apiService: ApiService,
+        private jwtAuth: JwtAuthService,
         private _router: Router
     )
     {
@@ -45,10 +52,19 @@ export class AuthSignInComponent implements OnInit
     {
         // Create the form
         this.signInForm = this._formBuilder.group({
-            email     : ['hughes.brian@company.com', [Validators.required, Validators.email]],
-            password  : ['admin', Validators.required],
-            rememberMe: ['']
+            email     : ['', [Validators.required]],
+            password  : ['', Validators.required],
+            rememberMe: [false]
         });
+    }
+
+    /**
+     * After Init
+     */
+    ngAfterViewInit() : void
+    {
+        // this.autoSignIn();
+       this.getUrlServices();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -106,4 +122,61 @@ export class AuthSignInComponent implements OnInit
                 }
             );
     }
+
+    getUrlServices() {
+        // this.submitButton.disabled = true;
+        // this.progressBar.mode = 'indeterminate';
+        this.apiService.getURL().subscribe(
+          (data) => {
+            if (data !== '' && data !== 'SW42') {
+              if (!data.endsWith('/')) {
+                data = data + '/';
+              }
+              this.jwtAuth.setConfUrl(data.toString());
+              this.getOrganization();
+            } else {
+              this.jwtAuth.setConfUrl(location.origin);
+              this.getOrganization();
+            }
+          },
+          (err) => {
+            // Show the alert
+            this.alert = {
+                type   : 'error',
+                message:  err.message
+            };
+            this.showAlert = true;
+
+            this.jwtAuth.setConfUrl(location.origin);
+            this.getOrganization();
+          }
+        );
+      }
+
+      getOrganization() {
+        //this.submitButton.disabled = true;
+        //this.progressBar.mode = 'indeterminate';
+        this.apiService
+          .obtenerPrincipalOrganizacion()
+          .subscribe(
+            (organization) => {
+              //this.submitButton.disabled = false;
+              this.signInForm.enable();
+              this.company = organization.nombre;
+              organization.imagen
+                ? (this.image = organization.imagen)
+                : (this.image = 'assets/images/egret.png');
+              this.jwtAuth.setCompany(organization);
+            },
+            (err) => {
+                this.signInForm.enable();
+                // Show the alert
+                this.alert = {
+                    type   : 'error',
+                    message:  err.message
+                };
+                this.showAlert = true;
+            }
+          );
+      }
 }

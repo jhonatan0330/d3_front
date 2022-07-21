@@ -1,0 +1,101 @@
+<!-- Timer -->
+<div class="time-countdown" *ngIf="timerBackCount">
+  <ul>
+    <li>
+      <span>{{ day }}</span
+      >Dias
+    </li>
+    <li>
+      <span>{{ hours }}</span
+      >Hrs
+    </li>
+    <li>
+      <span >{{ minutes }}</span
+      >Min
+    </li>
+    <li>
+      <span>{{ seconds }}</span
+      >Seg
+    </li>
+  </ul>
+</div>
+<!-- Fecha normal -->
+<mat-form-field *ngIf="!isRango && !sinCalendar">
+  <mat-label>{{ structure.nombre | titlecase }}</mat-label>
+  <input
+    matInput
+    [ngxMatDatetimePicker]="pickerFrom"
+    [required]="required"
+    [formControl]="dateFrom"
+    [readonly]="!isEnabled"
+    autocomplete="off"
+  />
+  <mat-datepicker-toggle
+    matSuffix
+    [for]="pickerFrom"
+    *ngIf="isEnabled"
+  ></mat-datepicker-toggle>
+  <ngx-mat-datetime-picker
+    #pickerFrom
+    [hideTime]="!conHora"
+  ></ngx-mat-datetime-picker>
+</mat-form-field>
+
+<!-- Tiempo -->
+<div
+  fxLayout="row wrap"
+  fxLayoutAlign="none center"
+  *ngIf="!isRango && sinCalendar"
+>
+  <span fxFlex.gt-sm="50" fxFlex.sm="50" fxFlex="100">{{
+    structure.nombre | titlecase
+  }}</span>
+  <mat-form-field class="pl-8" fxFlex.gt-sm="25" fxFlex.sm="25" fxFlex="100">
+    <mat-label>Horas</mat-label>
+    <input
+      matInput
+      type="number"
+      min="0"
+      max="23"
+      autocomplete="off"
+      [required]="required"
+      [formControl]="fControlHoras"
+    />
+  </mat-form-field>
+  <mat-form-field class="pl-8" fxFlex.gt-sm="25" fxFlex.sm="25" fxFlex="100">
+    <mat-label>Minutos</mat-label>
+    <input
+      matInput
+      type="number"
+      min="0"
+      max="59"
+      autocomplete="off"
+      [required]="required"
+      [formControl]="fControlMinutes"
+    />
+  </mat-form-field>
+</div>
+<!-- Rango -->
+<mat-form-field *ngIf="isRango" class="dialog-control">
+  <mat-label>{{ structure.nombre | titlecase }}</mat-label>
+  <mat-date-range-input [rangePicker]="picker">
+    <input
+      matStartDate
+      placeholder="Fecha inicial"
+      [formControl]="fControlDateStart"
+      (dateInput)="datesUpdated()"
+      (dateChange)="datesUpdated()"
+      autocomplete="off"
+    />
+    <input
+      matEndDate
+      placeholder="Fecha final"
+      [formControl]="fControlDateEnd"
+      (dateInput)="datesUpdated()"
+      (dateChange)="datesUpdated()"
+      autocomplete="off"
+    />
+  </mat-date-range-input>
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>

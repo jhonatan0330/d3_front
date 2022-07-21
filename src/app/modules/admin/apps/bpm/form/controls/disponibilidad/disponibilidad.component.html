@@ -1,0 +1,27 @@
+<mat-form-field class="full-width">
+  <mat-label>{{ structure.nombre | titlecase }} </mat-label>
+  <input
+    matInput
+    [formControl]="fControl"
+    [name]="structure.llaveTabla"
+    [required]="required"
+    [readonly]="true"
+  />
+  <button
+    mat-icon-button
+    matSuffix
+    (click)="mostrarPlano()"
+    tabindex="-1"
+  >
+    <mat-icon>assignment</mat-icon>
+  </button>
+</mat-form-field>
+<span
+      *ngIf="estructura && estructura.titulo"
+      class="text-28 font-weight-bold mat-color-primary full-width text-center"
+      >{{ estructura.titulo }}</span
+    >
+<div class="full-width" style="overflow: auto;">
+  <canvas #canvas height="0" width="0"></canvas>
+</div>   
+

@@ -1,0 +1,53 @@
+<div fxFlex="100" fxLayout="column">
+  <div fxLayout="row wrap" fxLayoutAlign=" center">
+    <span fxFlex fxLayoutAlign="center center">{{ detallePedidoVenta.nombre }}</span>
+    <button mat-icon-button color="primary" (click)="consultarInventarios()" tabindex="-1">
+      <mat-icon>find_in_page</mat-icon>
+  </button>
+    <button mat-icon-button color="primary" (click)="dialogRef.close(false)" tabindex="-1">
+        <mat-icon>exit_to_app</mat-icon>
+    </button>
+  </div>
+  <mat-progress-bar
+  *ngIf="isLoading"
+  color="primary"
+  mode="indeterminate"
+></mat-progress-bar>
+  <div *ngIf="inventories">
+    <table mat-table [dataSource]="inventories" class="cart-table default-bg mat-elevation-z1">
+      <!-- Item Column -->
+      <ng-container matColumnDef="item">
+        <th mat-header-cell *matHeaderCellDef> Bodega </th>
+        <td mat-cell *matCellDef="let transaction"> {{transaction.nombreBodega}} </td>
+        <!-- <td mat-footer-cell *matFooterCellDef> Total </td> -->
+      </ng-container>
+    
+      <!-- Cost Column -->
+      <ng-container matColumnDef="cost">
+        <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+        <td mat-cell *matCellDef="let transaction"> {{transaction.cantidadActual | number}} </td>
+        <!-- <td mat-footer-cell *matFooterCellDef> {{getTotalCost() | number}} </td> -->
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="['item', 'cost']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['item', 'cost'];"></tr>
+      <!-- <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr> -->
+    </table>
+  </div>
+  <!-- Campos dinamicos -->
+  <mat-card>
+    <ng-template #dynamycFormElement></ng-template>
+  </mat-card>
+  <!-- Boton de guardar -->
+  <div>
+    <div fxFlex class="p-4">
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        (click)="closeWithValidation()">
+        <mat-icon>save</mat-icon> Aceptar
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,88 @@
+<div [style.display]="isInvisible ? 'none' : 'block'" class="mx-0">
+  <div>
+    <button
+      mat-flat-button
+      color="accent"
+      class="m-4"
+      [disabled]="isLoading"
+      *ngIf="isEnabled && !isEnd && !isLoading"
+      (click)="onClickExternal()"
+      fxFlex="100"
+    >
+      <mat-icon>cloud_upload</mat-icon> {{ structure.nombre | titlecase }}
+      <small *ngIf="required">*</small>
+      <input
+        [id]="structure.llaveTabla"
+        style="display: none"
+        type="file"
+        [multiple]="multipleFiles"
+        [accept]="filtroExtension"
+        (click)="$event.target.value = ''"
+        (change)="handleFileInput($event.target.files)"
+        capture="camera"
+      />
+    </button>
+    <mat-progress-bar
+      *ngIf="isLoading"
+      color="primary"
+      mode="indeterminate"
+    ></mat-progress-bar>
+  </div>
+  <!-- Firma -->
+  <div *ngIf="firma && isEnabled && !isEnd" fxLayoutAlign="center center">
+    <signature-pad></signature-pad>
+    <button
+      mat-raised-button
+      class="mx-8"
+      (click)="takeSignature()"
+      tabindex="-1"
+    >
+      <mat-icon>photo_camera</mat-icon>
+    </button>
+    <button mat-raised-button (click)="clearSignature()" tabindex="-1">
+      <mat-icon>format_clear</mat-icon>
+    </button>
+  </div>
+  <!-- Tabla -->
+  <div class="m-4" *ngFor="let item of files">
+    <div class="m-4 text-center">
+      <img
+        *ngIf="item.blob"
+        [src]="item.blob"
+        class="middle-width"
+        (load)="validateOrientationHandler($event.target, item)"
+        [name]="item.url"
+      />
+      <img
+        *ngIf="!item.blob && item.url"
+        [src]="item.url"
+        class="middle-width"
+        [name]="item.url"
+      />
+    </div>
+    <div>
+      <mat-progress-bar
+        fxFlex
+        *ngIf="item.isLoading"
+        color="primary"
+        mode="indeterminate"
+      ></mat-progress-bar>
+      <mat-icon
+        class="mx-4 cursor-pointer"
+        (click)="openImage(item)"
+        *ngIf="!item.isLoading"
+        >file_download</mat-icon
+      >
+      <mat-icon
+        *ngIf="isEnabled"
+        color="warn"
+        (click)="deleteFile(item)"
+        class="mx-4 cursor-pointer"
+        >cancel</mat-icon
+      >
+      <div fxFlex class="crop-text mx-4">
+        <a class="mx-4" (click)="this.openImage(item)">{{ item.url }}</a>
+      </div>
+    </div>
+  </div>
+</div>

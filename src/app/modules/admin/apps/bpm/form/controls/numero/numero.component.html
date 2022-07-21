@@ -1,0 +1,14 @@
+<mat-form-field [style.display]="isInvisible ? 'none': 'block'">
+  <mat-label>{{ structure.nombre | titlecase }} </mat-label>
+  <input
+    matInput
+    currencyMask
+    [name]="structure.llaveTabla"
+    [formControl]="fControl"
+    [required]="required"
+    [readonly]="!isEnabled"
+    [options]="optionsMask"
+    (focus)="getInitialFocus($event)"
+    autocomplete="off"
+  />
+</mat-form-field>

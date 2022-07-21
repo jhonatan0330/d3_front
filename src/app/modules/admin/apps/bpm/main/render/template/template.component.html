@@ -1,0 +1,10 @@
+<mat-card class="mat-bg-primary p-16 d-flex align-items-center render-board">
+  <mat-card-title>
+    <a (click)="showTemplate()">
+      <div class="card-title-text">
+        <img src="{{ imagen | imageFormat }}">
+        <h6 class="text-white m-0 p-4" fxFlex fxLayoutAlign="center center">{{ nombre }}</h6>
+      </div>
+    </a>
+  </mat-card-title>
+</mat-card>

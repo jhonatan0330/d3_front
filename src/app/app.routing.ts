@@ -9,15 +9,15 @@ import { InitialDataResolver } from 'app/app.resolvers';
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const appRoutes: Route[] = [
 
-    // Redirect empty path to '/example'
-    {path: '', pathMatch : 'full', redirectTo: 'example'},
+    // Redirect empty path to '/profile'
+    {path: '', pathMatch : 'full', redirectTo: 'profile'},
 
-    // Redirect signed in user to the '/example'
+    // Redirect signed in user to the '/profile'
     //
     // After the user signs in, the sign in page will redirect the user to the 'signed-in-redirect'
     // path. Below is another redirection for that path to redirect the user to the desired
     // location. This is a small convenience to keep all main routes together here on this file.
-    {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'example'},
+    {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'profile'},
 
     // Auth routes for guests
     {
@@ -52,18 +52,6 @@ export const appRoutes: Route[] = [
         ]
     },
 
-    // Landing routes
-    {
-        path: '',
-        component  : LayoutComponent,
-        data: {
-            layout: 'empty'
-        },
-        children   : [
-            {path: 'home', loadChildren: () => import('app/modules/landing/home/home.module').then(m => m.LandingHomeModule)},
-        ]
-    },
-
     // Admin routes
     {
         path       : '',
@@ -74,7 +62,18 @@ export const appRoutes: Route[] = [
             initialData: InitialDataResolver,
         },
         children   : [
-            {path: 'example', loadChildren: () => import('app/modules/admin/example/example.module').then(m => m.ExampleModule)},
+            {path: 'profile', loadChildren: () => import('app/modules/admin/dashboards/profile/profile.module').then(m => m.ProfileModule)},
+            // Apps
+            {path: 'apps', children: [
+                {path: 'academy', loadChildren: () => import('app/modules/admin/apps/academy/academy.module').then(m => m.AcademyModule)},
+                {path: 'chat', loadChildren: () => import('app/modules/admin/apps/chat/chat.module').then(m => m.ChatModule)},
+                {path: 'mailbox', loadChildren: () => import('app/modules/admin/apps/mailbox/mailbox.module').then(m => m.MailboxModule)},
+                {path: 'tasks', loadChildren: () => import('app/modules/admin/apps/tasks/tasks.module').then(m => m.TasksModule)},
+            ]},
+
+            // 404 & Catch all
+            {path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/modules/admin/pages/error/error-404/error-404.module').then(m => m.Error404Module)},
+            {path: '**', redirectTo: '404-not-found'}
         ]
     }
 ];

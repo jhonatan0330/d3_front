@@ -26,6 +26,8 @@ export class AuthUtils
      */
     static isTokenExpired(token: string, offsetSeconds?: number): boolean
     {
+        return false;
+        /*
         // Return if there is no token
         if ( !token || token === '' )
         {
@@ -43,7 +45,7 @@ export class AuthUtils
         }
 
         // Check if the token is expired
-        return !(date.valueOf() > new Date().valueOf() + offsetSeconds * 1000);
+        return !(date.valueOf() > new Date().valueOf() + offsetSeconds * 1000);*/
     }
 
     // -----------------------------------------------------------------------------------------------------

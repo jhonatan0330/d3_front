@@ -4,7 +4,6 @@ import HmacSHA256 from 'crypto-js/hmac-sha256';
 import Utf8 from 'crypto-js/enc-utf8';
 import { cloneDeep } from 'lodash-es';
 import { FuseMockApiService } from '@fuse/lib/mock-api';
-import { user as userData } from 'app/mock-api/common/user/data';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +11,7 @@ import { user as userData } from 'app/mock-api/common/user/data';
 export class AuthMockApi
 {
     private readonly _secret: any;
-    private _user: any = userData;
+    private _user: any;
 
     /**
      * Constructor
@@ -62,7 +61,7 @@ export class AuthMockApi
         // -----------------------------------------------------------------------------------------------------
         // @ Sign in - POST
         // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService
+        /*this._fuseMockApiService
             .onPost('api/auth/sign-in', 1500)
             .reply(({request}) => {
 
@@ -84,12 +83,12 @@ export class AuthMockApi
                     404,
                     false
                 ];
-            });
+            });*/
 
         // -----------------------------------------------------------------------------------------------------
         // @ Sign in using the access token - POST
         // -----------------------------------------------------------------------------------------------------
-        this._fuseMockApiService
+        /*this._fuseMockApiService
             .onPost('api/auth/sign-in-with-token')
             .reply(({request}) => {
 
@@ -116,7 +115,7 @@ export class AuthMockApi
                         error: 'Invalid token'
                     }
                 ];
-            });
+            });*/
 
         // -----------------------------------------------------------------------------------------------------
         // @ Sign up - POST
@@ -237,7 +236,7 @@ export class AuthMockApi
      * @param token
      * @private
      */
-    private _verifyJWTToken(token: string): boolean
+    /*private _verifyJWTToken(token: string): boolean
     {
         // Split the token into parts
         const parts = token.split('.');
@@ -250,5 +249,5 @@ export class AuthMockApi
 
         // Verify that the resulting signature is valid
         return (signature === signatureCheck);
-    }
+    }*/
 }

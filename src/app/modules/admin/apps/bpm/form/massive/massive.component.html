@@ -1,0 +1,99 @@
+<div fxLayout="row wrap">
+  <div class="full-width" fxLayout="row wrap">
+    <button
+      mat-flat-button
+      color="accent"
+      class="m-4"
+      [disabled]="isLoading || isProcessing"
+      onclick="simpleUploadXML.click();"
+    >
+      <mat-icon>cloud_upload</mat-icon> 2. Cargar
+      <input
+        id="simpleUploadXML"
+        style="display: none"
+        type="file"
+        accept=".xml, .xlsx, .csv"
+        (click)="$event.target.value = ''"
+        (change)="handleFileInput($event.target.files)"
+      />
+    </button>
+    <button
+      mat-flat-button
+      color="accent"
+      class="m-4"
+      onclick="multipleUploadXML.click();"
+      [disabled]="isLoading || isProcessing"
+      *ngIf="fieldIdInTemplateSecondary && documentosGenerados"
+    >
+      <mat-icon>cloud_upload</mat-icon> Cargar Multiple
+      <input
+        id="multipleUploadXML"
+        style="display: none"
+        type="file"
+        accept=".xml, .xlsx, .csv"
+        (click)="$event.target.value = ''"
+        (change)="handleFileInputMultiple($event.target.files)"
+      />
+    </button>
+    <span fxFlex></span>
+    <button
+      mat-flat-button
+      color="accent"
+      class="m-4"
+      [disabled]="isLoading"
+      (click)="downloadBase('xml')"
+    >
+      <mat-icon>cloud_download</mat-icon> base (xml)
+    </button>
+    <button
+      mat-flat-button
+      color="accent"
+      class="m-4"
+      [disabled]="isLoading"
+      (click)="downloadBase('excel')"
+    >
+      <mat-icon>cloud_download</mat-icon> base (csv)
+    </button>
+  </div>
+
+  <mat-progress-bar  [mode]="isLoading ? 'indeterminate' : ''">Validando Datos</mat-progress-bar>
+  {{ lblCarga }}
+  {{ lblTipoProceso }}
+  <mat-progress-bar  [mode]="isLoading ? 'indeterminate' : ''"></mat-progress-bar>
+  <div class="full-width" fxLayout="row wrap">
+    <button
+      mat-flat-button
+      color="accent"
+      class="m-4"
+      [disabled]="isLoading || !isValidate || isProcessing"
+      (click)="startLoad()"
+    >
+      <mat-icon>fast_forward</mat-icon> 3. Procesar
+    </button>
+    <span fxFlex></span>
+    <button
+      mat-flat-button
+      color="accent"
+      class="m-4"
+      [disabled]="isProcessing"
+      (click)="newMassiveLoad()"
+    >
+      <mat-icon>autorenew</mat-icon> Nueva carga
+    </button>
+  </div>
+  <mat-progress-bar
+    [mode]="isProcessing ? 'indeterminate' : ''"
+  ></mat-progress-bar>
+
+  <span>{{ lblProcesar }}</span>
+  <div fxLayout="row wrap">
+    <div
+      *ngFor="let iDocument of failedDocuments"
+      fxFlex="100"
+      fxFlex.gt-sm="25"
+      fxFlex.sm="50"
+    >
+      <app-document [document]="iDocument"></app-document>
+    </div>
+  </div>
+</div>

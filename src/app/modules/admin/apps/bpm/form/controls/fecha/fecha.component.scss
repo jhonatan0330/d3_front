@@ -1,0 +1,30 @@
+ul {
+    display: flex;
+    justify-content: center;
+}
+
+.coming-soon {
+    width: 100%;
+}
+
+.time-countdown ul {
+    margin: 4px auto;
+}
+
+.time-countdown ul li {
+    background: #1fb1f4;
+    width: 12%;
+    margin-right: 4%;
+    text-align: center;
+    display: inline-block;
+    padding: 2px 20px;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.time-countdown ul li span {
+    color: #FFF;
+    font-size: xx-large;
+    font-weight: 700;
+    display: block;
+}

@@ -1,0 +1,134 @@
+<mat-progress-bar
+  *ngIf="isLoading"
+  color="primary"
+  mode="indeterminate"
+></mat-progress-bar>
+<!-- Input de productos -->
+<mat-form-field class="full-width">
+  <mat-label>{{ structure.nombre | titlecase }} </mat-label>
+  <input
+    matInput
+    [formControl]="fControl"
+    [required]="required"
+    [readonly]="!isEnabled"
+    (keyup.enter)="searchAsincronous()"
+    autocomplete="off"
+  />
+  <!-- Buscar -->
+  <button
+    mat-icon-button
+    matSuffix
+    *ngIf="this.isEnabled"
+    (click)="searchAsincronous()"
+    tabindex="-1"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+</mat-form-field>
+<!-- Categorias -->
+<div fxLayout="row wrap" *ngIf="isShowCategories && structure.categorias">
+  <div
+    *ngFor="let category of structure.categorias"
+    fxFlex="100"
+    fxFlex.gt-sm="25"
+    fxFlex.sm="50"
+  >
+    <div (click)="selectCategory(category)">
+      <img [src]="category.imagen" (click)="selectCategory(category)" />
+      <small>{{ category.nombre }}</small>
+    </div>
+  </div>
+</div>
+<!-- Productos -->
+<div fxLayout="row wrap" *ngIf="isShowProducts && productosFiltrados">
+  <div
+    *ngFor="let product of productosFiltrados"
+    fxFlex="100"
+    fxFlex.gt-sm="25"
+    fxFlex.sm="50"
+  >
+    <mat-card class="user-card p-0 card-render" (click)="addProduct(product)">
+      <mat-card-content>
+        <div fxLayout="column" class="full-width" fxLayoutAlign="center center">
+          <small class="full-width">{{ product.codigo }}</small>
+          <img [src]="product.imagen" />
+          <span>{{ product.nombre }}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<!-- Tablas de escogidos -->
+<div class="full-width" style="overflow: auto">
+  <table
+    mat-table
+    class="cart-table default-bg mat-elevation-z1"
+    *ngIf="data.detalles?.length && !unicoProducto"
+    [dataSource]="data.detalles"
+  >
+    <!-- Columnas -->
+    <ng-container matColumnDef="retirar">
+      <th mat-header-cell *matHeaderCellDef>Retirar</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="warn" (click)="retirarProducto(element)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="imagen">
+      <th mat-header-cell *matHeaderCellDef>Imagen</th>
+      <td mat-cell *matCellDef="let element">
+        <img
+          class="cart-thumbnail"
+          [src]="element.productoImagen"
+          style="cursor: pointer"
+          (click)="modificarDetallePedido(element)"
+        />
+      </td>
+      <td mat-footer-cell *matFooterCellDef>Total</td>
+    </ng-container>
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let element">
+        <span
+          style="cursor: pointer"
+          (click)="modificarDetallePedido(element)"
+          >{{ element.nombre }}</span
+        >
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="unidad">
+      <th mat-header-cell *matHeaderCellDef>Unidad</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.valorUnitario | number }}
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="cantidad">
+      <th mat-header-cell *matHeaderCellDef>{{titleCantity}}</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element && element.cantidad">{{ element.cantidad }}</div>
+        <small
+          *ngIf="element.cantidadPromocion && element.cantidadPromocion !== 0"
+          ><br />Promo: {{ element.cantidadPromocion }} x
+          {{ element.cantidadPromocionBase }}<br />Total:
+          {{ element.cantidadTotal }}</small
+        >
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+    <ng-container matColumnDef="total">
+      <th mat-header-cell *matHeaderCellDef>Total</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.valorTotal | number }}
+      </td>
+      <td mat-footer-cell *matFooterCellDef class="text-right">{{ getTotalCost() | number }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+  </table>
+</div>

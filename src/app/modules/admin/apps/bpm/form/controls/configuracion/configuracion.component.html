@@ -1,0 +1,24 @@
+<mat-form-field [style.display]="isInvisible ? 'none': 'block'">
+  <mat-label>{{ structure.nombre | titlecase }}</mat-label>
+  <input type="text" matInput [formControl]="fControl" [matAutocomplete]="auto"
+  [name]="structure.llaveTabla"
+  [required]="required"
+  [readonly]="!isEnabled">
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+      <span>{{option.nombre}}</span><span *ngIf="option.descripcion"> - {{option.descripcion}}</span>
+    </mat-option>
+  </mat-autocomplete>
+  <!-- Limpiar -->
+  <button
+    mat-icon-button
+    matSuffix
+    *ngIf="isEnabled"
+    (click)="fControl.setValue('')"
+    tabindex="-1"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
+
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
