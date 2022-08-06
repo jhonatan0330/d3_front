@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, ReplaySubject, tap } from 'rxjs';
+import { cloneDeep, map } from 'lodash-es';
+import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/core/navigation/navigation.types';
+import { FuseNavigationItem } from '@fuse/components/navigation';
+import { compactNavigation, defaultNavigation, futuristicNavigation, horizontalNavigation } from 'app/core/navigation/data';
+import { DocumentoPlantillaDTO } from 'app/model/sw42.domain';
 
 @Injectable({
     providedIn: 'root'
@@ -10,10 +13,15 @@ export class NavigationService
 {
     private _navigation: ReplaySubject<Navigation> = new ReplaySubject<Navigation>(1);
 
+    private readonly _compactNavigation: FuseNavigationItem[] = compactNavigation;
+    private readonly _defaultNavigation: FuseNavigationItem[] = defaultNavigation;
+    private readonly _futuristicNavigation: FuseNavigationItem[] = futuristicNavigation;
+    private readonly _horizontalNavigation: FuseNavigationItem[] = horizontalNavigation;
+
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient)
+    constructor()
     {
     }
 
@@ -36,12 +44,55 @@ export class NavigationService
     /**
      * Get all navigation data
      */
-    get(): Observable<Navigation>
+    /*get(): Observable<void>
     {
-        return this._httpClient.get<Navigation>('api/common/navigation').pipe(
-            tap((navigation) => {
+        return this._httpClient.get<DocumentoPlantillaDTO[]>(this.ls.getUrlAccess('/template/getTemplates')).pipe(
+            map((response) => {
+                const navigation = this.generate(response);
                 this._navigation.next(navigation);
             })
         );
+    }*/
+
+    generate() {
+
+        // Fill compact navigation children using the default navigation
+        this._compactNavigation.forEach((compactNavItem) => {
+            this._defaultNavigation.forEach((defaultNavItem) => {
+                if ( defaultNavItem.id === compactNavItem.id )
+                {
+                    compactNavItem.children = cloneDeep(defaultNavItem.children);
+                }
+            });
+        });
+
+        // Fill futuristic navigation children using the default navigation
+        this._futuristicNavigation.forEach((futuristicNavItem) => {
+            this._defaultNavigation.forEach((defaultNavItem) => {
+                if ( defaultNavItem.id === futuristicNavItem.id )
+                {
+                    futuristicNavItem.children = cloneDeep(defaultNavItem.children);
+                }
+            });
+        });
+
+        // Fill horizontal navigation children using the default navigation
+        this._horizontalNavigation.forEach((horizontalNavItem) => {
+            this._defaultNavigation.forEach((defaultNavItem) => {
+                if ( defaultNavItem.id === horizontalNavItem.id )
+                {
+                    horizontalNavItem.children = cloneDeep(defaultNavItem.children);
+                }
+            });
+        });
+        const navigation = {
+            compact   : cloneDeep(this._compactNavigation),
+            default   : cloneDeep(this._defaultNavigation),
+            futuristic: cloneDeep(this._futuristicNavigation),
+            horizontal: cloneDeep(this._horizontalNavigation)
+        }
+        this._navigation.next(navigation);
     }
+
+    
 }

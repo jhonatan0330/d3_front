@@ -7,7 +7,10 @@ import { UsuarioAutenticacionFilterDTO } from 'app/model/sw42.filter';
 import { environment } from 'environments/environment';
 import { UsuarioAutenticacionDTO } from 'app/model/sw42.domain';
 import { LocalStoreService } from 'app/shared/services/local-store.service';
-import { User } from '../user/user.types';
+import { JwtAuthService } from 'app/modules/admin/apps/bpm/jwt-auth.service';
+import { ApiService } from 'app/modules/admin/apps/bpm/api.service';
+import { NavigationService } from '../navigation/navigation.service';
+import { ShortcutsService } from 'app/layout/common/shortcuts/shortcuts.service';
 
 @Injectable()
 export class AuthService
@@ -20,7 +23,10 @@ export class AuthService
     constructor(
         private _httpClient: HttpClient,
         private _userService: UserService,
-        private _ls: LocalStoreService
+        private _jwtAuth: JwtAuthService,
+        private _ls: LocalStoreService,
+        private _apiService: ApiService,
+        private _shortcutsService: ShortcutsService
     )
     {
     }
@@ -90,22 +96,7 @@ export class AuthService
           )
           .pipe(
             switchMap((response: UsuarioAutenticacionDTO) => {
-
-                // Store the access token in the local storage
-                this.accessToken = response.token;
-
-                // Set the authenticated flag to true
-                this._authenticated = true;
-
-                // Store the user on the user service
-                
-                this._userService.user = {
-                    id: response.usuarioDTO.llaveTabla,
-                    name: response.usuarioDTO.nombre,
-                    email: response.usuarioDTO.correo,
-                    avatar: response.usuarioDTO.imagen
-                };
-
+                this.getUserDataFull(response);
                 // Return a new observable with the response
                 return of(response);
             })
@@ -134,36 +125,39 @@ export class AuthService
                 return of(false)
             }),
             switchMap((response: UsuarioAutenticacionDTO) => {
-
-                // Replace the access token with the new one if it's available on
-                // the response object.
-                //
-                // This is an added optional step for better security. Once you sign
-                // in using the token, you should generate a new one on the server
-                // side and attach it to the response object. Then the following
-                // piece of code can replace the token with the refreshed one.
-                if ( response.token )
-                {
-                    this.accessToken = response.token;
+                if(!response){
+                    return of(false);
                 }
-
-                // Set the authenticated flag to true
-                this._authenticated = true;
-
-                // Store the user on the user service
-                this._userService.user = {
-                    id: response.usuarioDTO.llaveTabla,
-                    name: response.usuarioDTO.nombre,
-                    email: response.usuarioDTO.correo,
-                    avatar: response.usuarioDTO.imagen
-                };
-
+                this.getUserDataFull(response);
                 // Return true
                 return of(true);
             })
         );
 
     }
+
+    getUserDataFull(response: UsuarioAutenticacionDTO){
+
+        // Store the access token in the local storage
+        this.accessToken = response.token;
+
+        // Set the authenticated flag to true
+        this._authenticated = true;
+
+        // Store the user on the user service
+        
+        this._userService.user = {
+            id: response.usuarioDTO.llaveTabla,
+            name: response.usuarioDTO.nombre,
+            email: response.usuarioDTO.correo,
+            avatar: response.usuarioDTO.imagen
+        };
+
+        this._apiService.listarPlantillas().subscribe((result)=>{
+            this._shortcutsService.addTemplates(result);
+        });
+    }
+
 
     /**
      * Sign out
@@ -205,17 +199,27 @@ export class AuthService
      */
     check(): Observable<boolean>
     {
-        // Check if the user is logged in
-        if ( this._authenticated )
-        {
-            return of(true);
-        }
 
         // Check the access token availability
         if ( !this.accessToken )
         {
             return of(false);
         }
+
+        if (!this._jwtAuth.urlService) {
+            this._jwtAuth.urlService = this._jwtAuth.getConfUrl();
+        }
+        if (!this._jwtAuth.urlService) {
+            return of(false);
+        }
+
+        // Check if the user is logged in
+        if ( this._authenticated )
+        {
+            return of(true);
+        }
+
+
 
         // Check the access token expire date
         if ( AuthUtils.isTokenExpired(this.accessToken) )

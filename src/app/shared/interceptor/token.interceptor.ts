@@ -8,19 +8,19 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { JwtAuthService } from 'app/modules/admin/apps/bpm/jwt-auth.service';
 import { TemplateService } from 'app/modules/admin/apps/bpm/template.service';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(private jwtAuth: JwtAuthService, private templateService: TemplateService) {}
+  constructor(private _authService: AuthService, private templateService: TemplateService) {}
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     
-    let token = this.jwtAuth.token || this.jwtAuth.getJwtToken();
+    let token = this._authService.accessToken;// || this._authService.getJwtToken();
     if (this.templateService.conectionTemplates){
       for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
         const element = this.templateService.conectionTemplates[i];
