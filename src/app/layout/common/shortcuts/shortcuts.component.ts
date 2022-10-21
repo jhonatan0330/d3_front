@@ -5,7 +5,8 @@ import { MatButton } from '@angular/material/button';
 import { Subject, takeUntil } from 'rxjs';
 import { ShortcutsService } from 'app/layout/common/shortcuts/shortcuts.service';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/model/sw42.domain';
-import { UtilsService } from 'app/modules/admin/apps/bpm/utils.service';
+import { UtilsService } from 'app/service/utils.service';
+
 
 @Component({
     selector       : 'shortcuts',

@@ -7,10 +7,9 @@ import { UsuarioAutenticacionFilterDTO } from 'app/model/sw42.filter';
 import { environment } from 'environments/environment';
 import { UsuarioAutenticacionDTO } from 'app/model/sw42.domain';
 import { LocalStoreService } from 'app/shared/services/local-store.service';
-import { JwtAuthService } from 'app/modules/admin/apps/bpm/jwt-auth.service';
-import { ApiService } from 'app/modules/admin/apps/bpm/api.service';
-import { NavigationService } from '../navigation/navigation.service';
+import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
 import { ShortcutsService } from 'app/layout/common/shortcuts/shortcuts.service';
+import { ApiService } from 'app/service/api.service';
 
 @Injectable()
 export class AuthService

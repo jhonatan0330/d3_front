@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
-import { ApiService } from 'app/modules/admin/apps/bpm/api.service';
-import { JwtAuthService } from 'app/modules/admin/apps/bpm/jwt-auth.service';
+import { ApiService } from 'app/service/api.service';
+import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
 
 @Component({
     selector     : 'auth-sign-in',
