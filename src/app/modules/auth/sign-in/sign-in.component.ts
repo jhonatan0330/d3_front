@@ -6,6 +6,7 @@ import { FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
 import { ApiService } from 'app/service/api.service';
 import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
+import { environment } from 'environments/environment';
 
 @Component({
     selector     : 'auth-sign-in',
@@ -17,6 +18,8 @@ export class AuthSignInComponent implements OnInit, AfterViewInit
 {
     @ViewChild('signInNgForm') signInNgForm: NgForm;
 
+    currentApplicationVersion = environment.appVersion;
+
     alert: { type: FuseAlertType; message: string } = {
         type   : 'success',
         message: ''
@@ -25,6 +28,7 @@ export class AuthSignInComponent implements OnInit, AfterViewInit
     showAlert: boolean = false;
 
     image: string;
+    errorMsg = '';
     company = 'Software para ti.com';
 
     /**
@@ -52,9 +56,9 @@ export class AuthSignInComponent implements OnInit, AfterViewInit
     {
         // Create the form
         this.signInForm = this._formBuilder.group({
-            email     : ['', [Validators.required]],
-            password  : ['', Validators.required],
-            rememberMe: [false]
+          username  : ['', [Validators.required]],
+          password  : ['', Validators.required],
+          rememberMe: [false]
         });
     }
 

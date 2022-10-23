@@ -1,0 +1,34 @@
+
+// // Third pirty style files
+// // Sidebar Scroll
+// @import '~perfect-scrollbar/css/perfect-scrollbar.css';
+
+// // Page loader Topbar
+// @import '../../vendor/pace/pace-theme-min.css';
+
+
+// Main Variables File
+@import "scss/variables";
+
+@import "scss/mixins/mixins";
+@import "scss/colors";
+
+@import "scss/animations";
+
+// Open _themes.scss and remove unnecessary theme files
+@import "scss/themes/themes";
+
+@import "scss/utilities/utilities";
+@import "scss/components/components";
+@import "scss/palette";
+
+
+@import "scss/page-layouts";
+
+// Open _main.scss and keep files which are required for your current layout.
+@import "scss/main/main";
+
+// Open _views.scss and remove unnecessary view related files
+@import "scss/views/views";
+
+

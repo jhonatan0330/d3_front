@@ -4,7 +4,6 @@ import {
   ViewChild,
   OnDestroy,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatButton } from '@angular/material/button';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { Validators, FormGroup, FormControl } from '@angular/forms';
@@ -12,7 +11,6 @@ import { Subject } from 'rxjs';
 import { JwtAuthService } from '../../../shared/services/auth/jwt-auth.service';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import Swal from 'sweetalert2';
-import { info } from 'console';
 
 @Component({
   selector: 'app-recover-password',
@@ -43,7 +41,7 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    this._unsubscribeAll.next();
+    this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
   }
 

@@ -75,7 +75,7 @@ export class AuthService
      *
      * @param credentials
      */
-    signIn(credentials: { email: string; password: string }): Observable<any>
+    signIn(credentials: { username: string; password: string }): Observable<any>
     {
         // Throw error, if the user is already logged in
         if ( this._authenticated )
@@ -85,7 +85,7 @@ export class AuthService
 
 
         const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
-        autenticacion.sesion = credentials.email;
+        autenticacion.sesion = credentials.username;
         autenticacion.clave = credentials.password;
         autenticacion.claveAnterior = `${environment.dateCompile}`;
         return this._httpClient
