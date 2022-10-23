@@ -152,7 +152,7 @@ export class AuthService
             avatar: response.usuarioDTO.imagen
         };
 
-        this._apiService.listarPlantillas().subscribe((result)=>{
+        this._apiService.listarPlantillas(null).subscribe((result)=>{
             this._shortcutsService.addTemplates(result);
         });
     }

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DetallePedidoVentaDTO, PedidoVentaDTO } from 'app/model/sw42.domain';
+import { ChangePwdComponent } from 'app/views/sessions/change-pwd/change-pwd.component';
 import { CatalogComponent } from 'app/views/form/catalog/catalog.component';
 import { ProductComponent } from 'app/views/form/controls/detalle/product/product.component';
-
 import { FormComponent } from 'app/views/form/form.component';
-
+import { HelpFaqComponent } from 'app/views/help-faq/help-faq.component';
+import { ChangePictureComponent } from 'app/views/sessions/change-picture/change-picture.component';
 
 @Injectable({
   providedIn: 'root',
@@ -24,12 +25,12 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  modalProduct( pDataModal: DetallePedidoVentaDTO) {
+  modalProduct( pDataModal: DetallePedidoVentaDTO, allowEdit) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
       width: '720px',
       maxHeight: '90vh',
       disableClose: true,
-      data: { data: pDataModal},
+      data: { data: pDataModal, allowEdit: allowEdit},
     });
     return dialogRef.afterClosed();
   }
@@ -43,7 +44,7 @@ export class UtilsService {
     });
     return dialogRef.afterClosed();
   }
-/*
+
   modalChangePwd( ) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(ChangePwdComponent, {
       //width: '720px',
@@ -69,5 +70,5 @@ export class UtilsService {
       disableClose: false,
     });
     return dialogRef.afterClosed();
-  }*/
+  }
 }

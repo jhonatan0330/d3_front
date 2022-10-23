@@ -1,14 +1,14 @@
-import { ArchivoComponent } from 'app/views/form/controls/archivo/archivo.component';
-import { BinarioComponent } from 'app/views/form/controls/binario/binario.component';
-import { CroquisComponent } from 'app/views/form/controls/croquis/croquis.component';
-import { FechaComponent } from 'app/views/form/controls/fecha/fecha.component';
-import { NumeroComponent } from 'app/views/form/controls/numero/numero.component';
-import { DetalleComponent } from 'app/views/form/controls/detalle/detalle.component';
-import { ProcesoComponent } from 'app/views/form/controls/proceso/proceso.component';
-import { SeccionComponent } from 'app/views/form/controls/seccion/seccion.component';
-import { TextoComponent } from 'app/views/form/controls/texto/texto.component';
-import { ConfiguracionComponent } from 'app/views/form/controls/configuracion/configuracion.component';
-import { DisponibilidadComponent } from 'app/views/form/controls/disponibilidad/disponibilidad.component';
+import { ArchivoComponent } from '../../views/form/controls/archivo/archivo.component';
+import { BinarioComponent } from '../../views/form/controls/binario/binario.component';
+import { CroquisComponent } from '../../views/form/controls/croquis/croquis.component';
+import { FechaComponent } from '../../views/form/controls/fecha/fecha.component';
+import { NumeroComponent } from '../../views/form/controls/numero/numero.component';
+import { DetalleComponent } from '../../views/form/controls/detalle/detalle.component';
+import { ProcesoComponent } from '../../views/form/controls/proceso/proceso.component';
+import { SeccionComponent } from '../../views/form/controls/seccion/seccion.component';
+import { TextoComponent } from '../../views/form/controls/texto/texto.component';
+import { ConfiguracionComponent } from '../../views/form/controls/configuracion/configuracion.component';
+import { DisponibilidadComponent } from '../../views/form/controls/disponibilidad/disponibilidad.component';
 import { DocumentoPlantillaCaracteristicaEnum } from '../../model/sw42.enum';
 import {
   DocumentoPlantillaCaracteristicaDTO,
@@ -113,32 +113,34 @@ export function procesarXMLBase(
   const result: PedidoVentaCaracteristicaDTO = pCampo;
   switch (pCampo.campoDTO.formato) {
     case DocumentoPlantillaCaracteristicaEnum.FECHA:
-      const fechaHora = PlantillaHelper.buscarPropiedad(
-        pCampo.campoDTO.propiedades,
-        PlantillaHelper.FECHA_CON_HORA
-      );
-      let formatoDate = '';
-      if (Number(pCampo.valorText)){
-        pCampo.valorFecha = new Date((Number(pCampo.valorText) - 25568.79166)*86400*1000); // Este valor lo saque a prueba y error
-      } else {
-        if (fechaHora){
-          formatoDate = 'DD/MM/YYYY HH:mm';        
-        } else {
-          formatoDate = 'DD/MM/YYYY';
-        }
-        if (moment(pCampo.valorText, formatoDate, true).isValid()) {
-          pCampo.valorFecha = moment(pCampo.valorText, formatoDate).toDate();
-        }else {
-          pCampo.valorFecha = null
-        }
-      }
-      
-      if (!pCampo.valorFecha) {
-        Swal.fire('Formato incorrecto',
-          'El valor fecha no esta con el formato correcto. ' + formatoDate + '\nLa fecha actualmente tiene este formato ' + pCampo.valorText,
-          'error'
+      if(pCampo.valorText){
+        const fechaHora = PlantillaHelper.buscarPropiedad(
+          pCampo.campoDTO.propiedades,
+          PlantillaHelper.FECHA_CON_HORA
         );
-        return null;
+        let formatoDate = '';
+        if (Number(pCampo.valorText)){
+          pCampo.valorFecha = new Date((Number(pCampo.valorText) - 25568.791)*86400*1000); // Este valor lo saque a prueba y error
+        } else {
+          if (fechaHora){
+            formatoDate = 'DD/MM/YYYY HH:mm';        
+          } else {
+            formatoDate = 'DD/MM/YYYY';
+          }
+          if (moment(pCampo.valorText, formatoDate, true).isValid()) {
+            pCampo.valorFecha = moment(pCampo.valorText, formatoDate).toDate();
+          }else {
+            pCampo.valorFecha = null
+          }
+        }
+        
+        if (!pCampo.valorFecha) {
+          Swal.fire('Formato incorrecto',
+            'El valor fecha no esta con el formato correcto. ' + formatoDate + '\nLa fecha actualmente tiene este formato ' + pCampo.valorText,
+            'error'
+          );
+          return null;
+        }
       }
       break;
     case DocumentoPlantillaCaracteristicaEnum.NUMERO:
@@ -165,10 +167,10 @@ export function procesarXMLBase(
         );
         if (autoload) {
           const disponibles = pCampo.campoDTO.documentos;
-          if (disponibles) {
+        if (disponibles) {
             for (let index = 0; index < disponibles.length; index++) {
               const opcion = disponibles[index];
-              if (opcion.nombre === pCampo.valorText) {
+              if (opcion.nombre === pCampo.valorText || opcion.nombre === pCampo.valorText) {
                 pCampo.valorOpcion = opcion.llaveTabla;
                 return pCampo;
               }
@@ -198,10 +200,7 @@ export function procesarXMLBase(
           }
         }
       }
-
-      Swal.fire('Formato incorrecto','No se realizo ninguna accion', 'info');
       
-      return null;
   }
   return result;
 }

@@ -147,6 +147,12 @@ export class TarifaFilterDTO extends BasicFilterDTO {
   rangoPreciosFilter: boolean;
   cantidadMinima: number;
   cantidadMaxima: number;
+  dimension2: string;
+  dimension2Nombre: string;
+  dimension3: string;
+  dimension3Nombre: string;
+  dimension4: string;
+  dimension4Nombre: string;
 }
 			
 export class PedidoVentaDineroFilterDTO extends BasicFilterDTO {
@@ -408,8 +414,11 @@ export class UsuarioAutenticacionFilterDTO extends BasicFilterDTO {
   tableroControl: number;
   mensaje: string;
   token: string;
-  fechaCreacionMin: Date;
-  fechaCreacionMax: Date;
+  fechaMaximaMin: Date;
+  fechaMaximaMax: Date;
+  ip: string;
+  autorizacionCrea: string;
+  autorizacionElimina: string;
 }
 			
 export class OrganizacionFilterDTO extends BasicFilterDTO {

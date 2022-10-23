@@ -6,6 +6,7 @@ import {
   RelacionInternaDTO,
 } from 'app/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -22,7 +23,7 @@ export class TemplateService {
   private tableros: PropiedadDTO[];
   private propiedadesConRelaciones: RelacionInternaDTO[];
 
-  constructor() {}
+  constructor(private jwtAuth: JwtAuthService) {}
 
   getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO {
     if (!this.template) {
@@ -143,5 +144,17 @@ export class TemplateService {
   getPropertyRelation(propiedad : string): RelacionInternaDTO []{
     if (!this.propiedadesConRelaciones) return;
     return this.propiedadesConRelaciones.filter(x => (x.propiedad && x.propiedad === propiedad));
+  }
+
+  getTokenConnection(urlServer: string){
+    if (this.conectionTemplates && urlServer){
+      for (let i = 0; i < this.conectionTemplates.length; i++) {
+        const element = this.conectionTemplates[i];
+        if (urlServer.indexOf (element.servidorUrl) !==-1){
+          return  element.token;
+        }
+      }
+    }
+    return this.jwtAuth.token || this.jwtAuth.getJwtToken();
   }
 }

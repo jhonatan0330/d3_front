@@ -1,0 +1,98 @@
+<div class="text-center mat-bg-primary pt-1 pb-1">
+  <button
+    mat-icon-button
+    matTooltip="Notifications"
+    [style.overflow]="'visible'"
+    class="topbar-button-right"
+  >
+    <mat-icon>notifications</mat-icon>
+    <span class="notification-number mat-bg-warn">{{
+      notificationService.notifications?.length
+    }}</span>
+  </button>
+  <h3 class="notification-title" fxFlex>Notificaciones</h3>
+  <button mat-icon-button (click)="goToCalendar()">
+    <mat-icon>today</mat-icon>
+  </button>
+  <button mat-icon-button (click)="notificationService.getNotifications()">
+    <mat-icon>refresh</mat-icon>
+  </button>
+  <button mat-icon-button (click)="notificPanel.close()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div class="notification-list" *ngFor="let iDocument of notificationService.notifications">
+  <mat-card class="user-card p-0">
+    <mat-card-title
+      [style.backgroundColor]="
+        getColor(iDocument.documentoDTO.estadoExpediente)
+      "
+    >
+      <a (click)="openDocument(iDocument)">
+        <div>
+          <div class="pt-4 pl-4">
+            <img [src]="iDocument.documentoDTO.imagen" class="avatar-sm" />
+          </div>
+          <div fxLayout="column" class="full-width pl-4" fxFlex>
+            <div fxLayout="row">
+              <span fxFlex>{{ iDocument.documentoDTO.nombre }}</span>
+              <span class="text-small">{{ iDocument.documentoDTO.estadoNombre }}</span>
+            </div>
+            <div *ngIf="iDocument.fechaRegistro" fxLayout="center center" class="px-4">
+              <mat-icon inline="true" color="primary">done</mat-icon>
+              <small fxFlex> Asignado :</small>
+              <small>{{ iDocument.fechaRegistro | date :'medium' }}</small>
+            </div>
+            <div *ngIf="iDocument.fechaLeido" fxLayout="center center" class="px-4">
+              <mat-icon inline="true" color="accent">done_all</mat-icon>
+              <small fxFlex> Leido :</small>
+              <small>{{ iDocument.fechaLeido | date :'medium' }}</small>
+            </div>
+            <div *ngIf="iDocument.fechaArrancar" fxLayout="center center" class="px-4">
+              <mat-icon inline="true" color="accent">done_all</mat-icon>
+              <small fxFlex> Inicia el :</small>
+              <small>{{ iDocument.fechaArrancar | date :'medium' }}</small>
+            </div>
+            <div *ngIf="iDocument.fechaLimite" fxLayout="center center" class="px-4">
+              <mat-icon inline="true" color="accent">done_all</mat-icon>
+              <small fxFlex> Maximo hasta :</small>
+              <small>{{ iDocument.fechaLimite | date :'medium' }}</small>
+            </div>
+            <div fxLayout="row"
+              *ngIf="iDocument.documentoDTO.dinero" >
+              <span fxFlex>{{ iDocument.documentoDTO.dinero.valorCampo | number }}</span>
+              <span>{{ iDocument.documentoDTO.dinero.valorTotal | number }}</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      <mat-divider></mat-divider>
+    </mat-card-title>
+    <mat-card-content>
+      <p class="render-description">
+        {{ iDocument.documentoDTO.descripcion | slice: 0:200 }}
+      </p>
+      <div
+        class="full-width"
+        *ngIf="
+          iDocument.documentoDTO.caracteristicas &&
+          iDocument.documentoDTO.caracteristicas.length !== 0
+        "
+      >
+        <div
+          fxLayout="row"
+          class="crop-text"
+          *ngFor="let f of iDocument.documentoDTO.caracteristicas"
+        >
+          <small fxFlex class="text-muted">{{ f.campoDTO.nombre }}</small>
+          <span class="mat-caption" *ngIf="!f.valorText.startsWith('http')">{{ f.valorText }}</span>
+            <img *ngIf="f.valorText.startsWith('http')"
+              [src]="f.valorText"
+              [name]="f.valorText"
+            />
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,60 @@
+<div class="page-wrap height-100 black">
+  <div class="session-form-hold">
+    <mat-progress-bar mode="determinate" class="session-progress"></mat-progress-bar>
+    <mat-card>
+      <mat-card-content>
+        <div class="text-center pt-8 pb-16">
+          <img src="{{ image | imageFormat }}" alt="">
+          <p class="text-muted m-0">{{company}}</p>
+        </div>
+        <p *ngIf="errorMsg" class="text-center"><small class="text-red">{{errorMsg}}</small></p>
+        <form [formGroup]="signinForm" (ngSubmit)="signin()">
+          <div class="">
+            <mat-form-field class="full-width">
+              <input
+                matInput
+                name="username"
+                [formControl]="signinForm.controls['username']"
+                placeholder="Username"
+                value="">
+            </mat-form-field>
+            <small 
+              *ngIf="signinForm.controls['username'].hasError('required') && signinForm.controls['username'].touched" 
+              class="form-error-msg"> Username is required </small>
+          </div>
+
+          <div class="">
+            <mat-form-field class="full-width">
+              <input 
+                type="password"
+                name="password"
+                matInput
+                [formControl]="signinForm.controls['password']"
+                placeholder="Password" 
+                autocomplete="new-password"
+                value="">
+            </mat-form-field>
+            <small 
+              *ngIf="signinForm.controls['password'].hasError('required') && signinForm.controls['password'].touched" 
+              class="form-error-msg"> Password is required </small>
+          </div>
+          
+          <div class="pb-1">
+            <mat-checkbox
+              name="rememberMe"
+              [formControl]="signinForm.controls['rememberMe']"
+              class="pb-1">Remember this computer</mat-checkbox>
+          </div>
+          
+          <button mat-raised-button class="mat-primary full-width mb-1" [disabled]="signinForm.invalid">Sign in</button>
+          <small class="text-muted m-0">{{currentApplicationVersion}}</small>
+          <div class="text-center">
+            <span fxFlex></span>
+            <a [routerLink]="'/sessions/recover'" class="mat-primary text-center full-width">Recordar clave acceso</a>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

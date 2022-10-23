@@ -67,7 +67,7 @@ export class ApiService {
     );
   }
 
-  listarPlantillas(_server: string=null): Observable<DocumentoPlantillaDTO[]> {
+  listarPlantillas(_server: string): Observable<DocumentoPlantillaDTO[]> {
     return this.http.get<DocumentoPlantillaDTO[]>(
       this.ls.getUrlAccess('/template/getTemplates', _server)
     );

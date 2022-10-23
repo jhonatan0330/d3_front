@@ -1,0 +1,83 @@
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="pwChangeForm" (ngSubmit)="changePwd()">
+      <div class="">
+        <mat-form-field class="full-width">
+          <input
+            matInput
+            type="password"
+            name="oldPwd"
+            [formControl]="pwChangeForm.controls['oldPwd']"
+            placeholder="Anterior clave"
+            autocomplete="off"
+            value=""
+          />
+        </mat-form-field>
+        <small
+          *ngIf="
+            pwChangeForm.controls['oldPwd'].hasError('required') &&
+            pwChangeForm.controls['oldPwd'].touched
+          "
+          class="form-error-msg"
+        >
+          Coloca la clave anterior
+        </small>
+      </div>
+      <div class="">
+        <mat-form-field class="full-width">
+          <input
+            type="password"
+            name="newPwd"
+            matInput
+            [formControl]="pwChangeForm.controls['newPwd']"
+            placeholder="Nueva clave"
+            autocomplete="off"
+            value=""
+          />
+        </mat-form-field>
+        <small
+          *ngIf="
+            pwChangeForm.controls['newPwd'].hasError('required') &&
+            pwChangeForm.controls['newPwd'].touched
+          "
+          class="form-error-msg"
+        >
+        Coloca la NUEVA clave
+        </small>
+      </div>
+      <div class="">
+        <mat-form-field class="full-width">
+          <input
+            type="password"
+            name="repeatPwd"
+            matInput
+            [formControl]="pwChangeForm.controls['repeatPwd']"
+            placeholder="Repite nueva clave"
+            autocomplete="off"
+          />
+        </mat-form-field>
+        <small
+          *ngIf="
+            pwChangeForm.controls['repeatPwd'].hasError('required') &&
+            pwChangeForm.controls['repeatPwd'].touched
+          "
+          class="form-error-msg"
+        >
+        Repite la nueva clave
+        </small>
+      </div>
+      <button
+        mat-raised-button
+        class="mat-primary full-width mb-1"
+        [disabled]="pwChangeForm.invalid"
+        *ngIf="!isLoading"
+      >
+        Cambiar Clave
+      </button>
+      <mat-progress-bar
+        mode="indeterminate"
+        *ngIf="isLoading"
+      ></mat-progress-bar>
+    </form>
+  </mat-card-content>
+</mat-card>

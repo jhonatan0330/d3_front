@@ -7,12 +7,14 @@ import {
   UsuarioDTO,
   UsuarioAutenticacionDTO,
   OrganizacionDTO,
+  UsuarioOrganizacionDTO,
 } from '../../../model/sw42.domain';
 import {
   UsuarioAutenticacionFilterDTO,
 } from '../../../model/sw42.filter';
 import { of, BehaviorSubject, throwError } from 'rxjs';
 import { environment } from 'environments/environment';
+import { core } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',
@@ -100,15 +102,35 @@ export class JwtAuthService {
     this.router.navigateByUrl('sessions/signin');
   }
 
-  changePwd(oldPwd: string, newPwd: string) {
-
+  changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
     const autenticacion: UsuarioAutenticacionDTO = new UsuarioAutenticacionDTO();
+    autenticacion.llaveTabla = autorizacion;
     autenticacion.usuario = this.user.llaveTabla;
     autenticacion.claveAnterior = oldPwd;
     autenticacion.clave = newPwd;
     return this.http
       .post<UsuarioAutenticacionDTO>(
         this.ls.getUrlAccess('/main/cambiarClave'),
+        autenticacion
+      );
+  }
+
+  changePwdOtherSystem(autenticacion: UsuarioOrganizacionDTO) {
+    return this.http
+      .post<UsuarioOrganizacionDTO>(
+        this.ls.getUrlAccess('/main/cambiarClaveOtherSystem'),
+        autenticacion
+      );
+  }
+
+  recoverPassword(identificacion: string, correo : string) {
+    const autenticacion = new UsuarioAutenticacionDTO();
+    autenticacion.usuarioDTO = new UsuarioDTO();
+    autenticacion.usuarioDTO.identificacion = identificacion;
+    autenticacion.usuarioDTO.correo = correo;
+    return this.http
+      .post<UsuarioOrganizacionDTO>(
+        this.ls.getUrlAccess('/main/solicitarNuevaClave'),
         autenticacion
       );
   }

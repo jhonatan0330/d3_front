@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { LocalConstants, LocalStoreService } from 'app/shared/services/local-store.service';
-
+import { LocalConstants, LocalStoreService } from '../services/local-store.service';
 
 @Pipe({ name: 'imageFormat' })
 export class ImageFormatPipe implements PipeTransform {

@@ -64,10 +64,12 @@ export class PlantillaHelper {
   static VISIBLE_VALOR_DEPENDIENTE = 'VISIBLE_VALOR_DEPENDIENTE';
   static AUTOLOAD = 'AUTOLOAD';
   static READ_QR = 'READ_QR';
+  static LINK_EXTERNO = 'LINK_EXTERNO';
 
   static ARCHIVO_TIPO = 'ARCHIVO_TIPO';
   static ARCHIVO_TAMANO_MAXIMO = 'ARCHIVO_TAMANO_MAXIMO';
   static MULTIPLE_FILE = 'MULTIPLE_FILE';
+  static ARCHIVO_URL_USUARIO = 'ARCHIVO_URL_USUARIO';
   static VALIDATE_ORIENTATION = 'VALIDATE_ORIENTATION';
   static ARCHIVO_FIRMA = 'ARCHIVO_FIRMA';
 
@@ -98,6 +100,8 @@ export class PlantillaHelper {
   static BODEGA_MOVIMIENTO = 'BODEGA_MOVIMIENTO';
 
   static MULTIPLE_SELECCION = 'MULTIPLE_SELECCION';
+  static REP_VISIBLE_STATE = 'REP_VISIBLE_STATE';
+  
 
   static buscarPropiedad(
     propiedades: PropiedadDTO[],

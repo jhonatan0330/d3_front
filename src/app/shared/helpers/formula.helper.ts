@@ -1,4 +1,4 @@
-import { MVCTranslate } from './plantilla-helper';
+import { MVCTranslate } from '../helpers/plantilla-helper';
 
 export class FormulaHelper {
   static calcular(formula: string): number {

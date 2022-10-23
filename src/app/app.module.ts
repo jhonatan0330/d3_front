@@ -13,7 +13,7 @@ import { mockApiServices } from 'app/mock-api';
 import { LayoutModule } from 'app/layout/layout.module';
 import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './shared/interceptors/error.interceptor';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { ErrorHandlerService } from './shared/services/error-handler.service';
@@ -46,6 +46,19 @@ import { NgxCurrencyModule } from 'ngx-currency';
 import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { TokenInterceptor } from './shared/interceptors/token.interceptor';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+/*import { ConfigComponent } from './views/survey/config/config.component';
+import { VotarComponent } from './views/survey/votar/votar.component';
+import { CalendarComponent } from './views/calendar/calendar.component';
+import { IndicatorsComponent } from './views/main/indicators/indicators.component';
+import { OlMapComponent } from './views/form/controls/gps/ol-map/ol-map.component';
+import { HelpFaqComponent } from './views/help-faq/help-faq.component';*/
+import { ChartsModule } from 'ng2-charts';
+import { ChangePictureComponent } from './views/sessions/change-picture/change-picture.component';
+import { ChangePwdComponent } from './views/sessions/change-pwd/change-pwd.component';
+import { HelpFaqComponent } from './views/help-faq/help-faq.component';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
@@ -69,17 +82,22 @@ const routerConfig: ExtraOptions = {
     SeccionComponent,
     BaseComponent,
     MassiveComponent,
-    //ConfigComponent,
-    //VotarComponent,
     ProductComponent,
-    //CalendarComponent,
     CatalogComponent,
     GpsComponent,
     AppComponent,
     MainComponent,
     CrudsComponent,
     FormComponent,
-    TemplateComponent
+    TemplateComponent,
+    ChangePictureComponent,
+    ChangePwdComponent,
+    HelpFaqComponent/*,
+    ConfigComponent,
+    VotarComponent,
+    CalendarComponent,
+    IndicatorsComponent,
+    OlMapComponent*/
     ],
     imports     : [
         CommonModule,
@@ -94,7 +112,7 @@ const routerConfig: ExtraOptions = {
 
         // Core module of your application
         CoreModule,
-
+        FlexLayoutModule,
         // Layout module of your application
         LayoutModule,
 
@@ -111,6 +129,13 @@ const routerConfig: ExtraOptions = {
         NgxCurrencyModule,
         SignaturePadModule,
         ZXingScannerModule,
+
+        BrowserModule,
+    BrowserAnimationsModule,
+    SharedModule,
+    SharedMaterialModule,
+    HttpClientModule,
+    ChartsModule,
     ],
     providers: [
         { provide: ErrorHandler, useClass: ErrorHandlerService },
@@ -120,7 +145,19 @@ const routerConfig: ExtraOptions = {
           useClass: HttpErrorInterceptor,
           multi: true,
         },
-        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor,
+            multi: true,
+          },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+        {
+      
+            provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+            useValue: {
+              appearance: 'outline'
+            }
+        }
       ],
     bootstrap   : [
         AppComponent
