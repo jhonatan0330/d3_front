@@ -7,6 +7,9 @@ import {
   ReporteBaseDTO,
 } from 'app/model/sw42.domain';
 import { PedidoVentaFilterDTO } from 'app/model/sw42.filter';
+import { ApiService } from 'app/service/api.service';
+import { TemplateService } from 'app/service/template.service';
+import { UtilsService } from 'app/service/utils.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { StatesEnum } from 'app/model/sw42.enum';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -16,9 +19,6 @@ import {
 } from 'app/shared/services/local-store.service';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
-import { TemplateService } from '../../service/template.service';
-import { UtilsService } from 'app/service/utils.service';
-import { ApiService } from 'app/service/api.service';
 
 @Component({
   selector: 'app-cruds',

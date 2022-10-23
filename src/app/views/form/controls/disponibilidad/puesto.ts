@@ -1,6 +1,8 @@
 import { PedidoVentaDTO } from 'app/model/sw42.domain';
 import { TemplateService } from 'app/service/template.service';
 import { UtilsService } from 'app/service/utils.service';
+import { ImageFormatPipe } from 'app/shared/pipes/local-image';
+import { LocalStoreService } from 'app/shared/services/local-store.service';
 
 export class Puesto {
   x: number;
@@ -18,6 +20,7 @@ export class Puesto {
     private ctx: CanvasRenderingContext2D,
     private template: TemplateService,
     private utils: UtilsService,
+    private ls: LocalStoreService,
     componente: PedidoVentaDTO
   ) {
     this.imagen = componente.imagen;
@@ -32,7 +35,7 @@ export class Puesto {
   draw() {
     this.ctx.clearRect(this.x, this.y, this.ancho, this.alto);
     const render = new Image();
-      render.src = this.imagen;
+      render.src = new ImageFormatPipe(this.ls).transform(this.imagen);
       render.onload = () => {
         this.ctx.drawImage(render, this.x, this.y);
         this.ancho = render.width;

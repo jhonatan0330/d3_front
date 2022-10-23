@@ -7,7 +7,7 @@
   *ngIf="plantilla"
   fxLayoutAlign=" center"
 >
-  <img [src]="plantilla.imagen" alt="" />
+  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" />
   <!-- Texto del titulo -->
   <div fxLayout="column" fxFlex fxLayoutAlign="center center">
     <div *ngIf="pedido && pedido.llaveTabla" class="full-width">
@@ -116,7 +116,7 @@
           (click)="crearPlantilla(t.plantilla)"
         >
           <div class="border mx-4 mb-4 rounded p-4" fxLayoutAlign="none center">
-            <img class="avatar-30 mr-4" [src]="t.imagen" />
+            <img class="avatar-30 mr-4" src="{{ t.imagen | imageFormat }}" />
             <b class="text-small">{{ t.nombre }}</b >
           </div>
         </a>
@@ -130,7 +130,8 @@
 <div *ngIf="!visibleMassive">
   <mat-dialog-content>
     <!-- Transferir documento -->
-    <mat-card *ngIf="isTransfering">
+    <mat-card class="mt-0 mx-0"
+    *ngIf="isTransfering">
       <mat-progress-bar
         class="full-width"
         mode="indeterminate"
@@ -155,7 +156,7 @@
                 <img
                   class="example-option-img"
                   aria-hidden
-                  [src]="user.imagen"
+                  src="{{ user.imagen | imageFormat }}"
                   height="25"
                 />
                 <span>{{ user.identificacion }}</span> |
@@ -188,7 +189,8 @@
       </form>
     </mat-card>
     <!-- Cambiar estado del documento -->
-    <mat-card *ngIf="isChangeState">
+    <mat-card class="mt-0 mx-0"
+    *ngIf="isChangeState">
       <mat-progress-bar
         class="full-width"
         mode="indeterminate"
@@ -242,7 +244,7 @@
       </form>
     </mat-card>
     <!-- Acciones y trazabilidad -->
-    <mat-card
+    <mat-card class="mt-0 mx-0"
       [style.backgroundColor]="getColor()"
       *ngIf="pedido && pedido.llaveTabla"
     >
@@ -258,7 +260,7 @@
           (click)="crearPlantilla(t.plantilla)"
         >
           <div class="border mx-4 mb-4 rounded p-4" fxLayoutAlign="none center">
-            <img class="avatar-30 mr-4" [src]="t.imagen" [matTooltip]="t.nombre"/>
+            <img class="avatar-30 mr-4"   src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre"/>
             <b class="text-small">{{ t.nombre }}</b>
           </div>
         </a>
@@ -433,18 +435,18 @@
       </mat-card-content>
     </mat-card>
     <!-- Campos dinamicos -->
-    <mat-card>
+    <div>
       <ng-template #dynamycFormElement></ng-template>
-    </mat-card>
+    </div>
   </mat-dialog-content>
-  <mat-dialog-actions *ngIf="modificable">
+  <mat-dialog-actions *ngIf="modificable" class="pt-0">
     <!-- Boton de guardar -->
     <mat-progress-bar
       class="full-width"
       mode="indeterminate"
       *ngIf="submitted"
     ></mat-progress-bar>
-    <div fxFlex class="p-4" *ngIf="!submitted">
+    <div fxFlex *ngIf="!submitted">
       <button
         mat-raised-button
         color="primary"

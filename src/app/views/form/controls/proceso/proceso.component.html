@@ -12,6 +12,7 @@
     (keyup.enter)="gestionarKeyUpTexto()"
     translate="no"
   />
+  <a *ngIf="proceso && linkExternal" class="a-hyperlink" (click)="goToLink()">{{linkExternal.valor}}</a>
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay">
   </mat-autocomplete>
   <!-- Open window -->
@@ -323,6 +324,15 @@
       *ngIf="isEnabled && readQR"
     >
       <mat-icon>camera_enhance</mat-icon>
+    </button>
+    <!-- Boton Agregar todos-->
+    <button
+      mat-raised-button
+      (click)="agregarTodos()"
+      class="ml-4"
+      *ngIf="isEnabled && dataProvider && dataProvider.length"
+    >
+      <mat-icon>file_upload</mat-icon>
     </button>
   </div>
   <div *ngIf="scannerEnabled" class="full-width">

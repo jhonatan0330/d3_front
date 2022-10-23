@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, UntypedFormControl, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import {
   DocumentoPlantillaDTO,
@@ -33,7 +33,7 @@ import { BarcodeFormat } from '@zxing/library';
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {
   @ViewChild('clickHoverMenuTrigger') trigger: MatMenuTrigger;
-  fControl = new FormControl<PedidoVentaDTO>(null);
+  fControl = new UntypedFormControl();
   filteredDocuments: PedidoVentaDTO[];
 
   plantilla: DocumentoPlantillaDTO; // Contiene el id de la fuente de datos de este proceso
@@ -47,6 +47,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   readQR = false; // Muestra el boton de leer codigo de barras
   procesoValor: string; // Define si se va a tener en cuenta el valor del documento
   acciones: PropiedadDTO[]; // Contiene propiedades que indican que documentos se pueden crear a partir de el
+  linkExternal: PropiedadDTO; // Permite abrir en otra venta paginas relacionadas
 
   tipoCombo = false; // TEMPORAL me ayuda a saber si cargo el componente como un combo de seleccion
   tipoTexto = false; // TEMPORAL me ayuda a saber si es un input
@@ -108,6 +109,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.multiple = !this.isEmpty(this.obtenerValor(PlantillaHelper.MULTIPLE));
     this.autoload = !this.isEmpty(this.obtenerValor(PlantillaHelper.AUTOLOAD));
     this.readQR = !this.isEmpty(this.obtenerValor(PlantillaHelper.READ_QR));
+    this.linkExternal = this.obtenerPropiedad(PlantillaHelper.LINK_EXTERNO);
     this.mostrarPop = !this.isEmpty(
       this.obtenerValor(PlantillaHelper.PROCESO_POP)
     );
@@ -150,8 +152,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.showAlertSelectedProcess();
         } else {
           this.proceso = null;
-          // TODO: 
-          let filterValue: string = value.nombre.toLowerCase();
+          let filterValue: string = value.toLowerCase();
           if(filterValue === '*') { filterValue = ''; }
           if (this.disponibles) {
             this.filteredDocuments = this.disponibles.filter(
@@ -946,8 +947,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         return;
       }*/
       if (!this.proceso) {
-        // TODO : fix
-        const filtroParametro = this.fControl.value.nombre;
+        const filtroParametro = this.fControl.value;
         if (filtroParametro) {
           const campoFiltro: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
           campoFiltro.filtroParametro = filtroParametro;
@@ -1286,7 +1286,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         }
       },
-      error: (err: any) => {
+      error: () => {
         this.isLoadingList = false;
       },
     });
@@ -1306,8 +1306,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   onCodeResult(resultString: string) {
     this.qrResultString = resultString;
     if (!this.multiple){
-      // TODO: this.fControl.setValue(resultString);
-      
+      this.fControl.setValue(resultString);
       this.gestionarKeyUpTexto()
     } else {
       this.fControlSearch.setValue(resultString);
@@ -1323,4 +1322,38 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (this.fControl) { this.fControl.setValue(null);}
     }
   }
+
+  agregarTodos(){
+    if (this.dataProvider && this.dataProvider.length) {
+      for (let index = this.dataProvider.length -1; index >= 0 ; index--) {
+        const element = this.dataProvider[index];
+        this.agregarProceso(element);
+      }
+      this.listar(this.pagina);
+    }
+  }
+
+  goToLink(){
+    if(this.proceso  && this.linkExternal && this.linkExternal.texto){
+      const filter = new PedidoVentaFilterDTO();
+      filter.llaveTabla = this.proceso.llaveTabla;
+      filter.plantilla = this.proceso.plantilla;
+      this.api.consultarDocumento(filter, this.urlServer).subscribe({
+        next: (fullDocument: PedidoVentaDTO) => {
+          if (fullDocument && fullDocument.caracteristicas){
+            for (let index = 0; index < fullDocument.caracteristicas.length; index++) {
+              const element = fullDocument.caracteristicas[index];
+              // Aqui hay algo que los campos llegan con el nombre y el valor por eso se relaciona el atribut campo
+              if(element.campoDTO && element.campoDTO.codigo === this.linkExternal.texto){
+                window.open(element.valorText, "_blank");
+                break;
+              }
+            }
+          }
+        },
+        error: () =>{}
+      });
+      
+    }
+}
 }

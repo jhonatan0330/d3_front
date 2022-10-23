@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SignaturePad } from 'angular2-signaturepad';
 import { ApiService } from 'app/service/api.service';
-
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
@@ -28,6 +27,11 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
   selectedFiles: FileList;
   currentIndex: number;
 
+  //load url
+  allowUrlTextFromUser = false;
+  isLoadingUrl = false;
+  urlText = '';
+
   constructor(private api: ApiService) {
     super();
   }
@@ -39,6 +43,8 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
     }
     this.multipleFiles =
       this.obtenerPropiedad(PlantillaHelper.MULTIPLE_FILE) != null;
+    this.allowUrlTextFromUser =
+      this.obtenerPropiedad(PlantillaHelper.ARCHIVO_URL_USUARIO) != null;
     this.firma = this.obtenerPropiedad(PlantillaHelper.ARCHIVO_FIRMA) != null;
     this.validateOrientation = this.obtenerValor(
       PlantillaHelper.VALIDATE_ORIENTATION
@@ -343,5 +349,15 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
 
   onClickExternal() {
     document.getElementById(this.structure.llaveTabla).click();
+  }
+
+  onClickLoadUrl(){
+    if (this.isLoadingUrl) {
+     this.source = this.urlText;
+     this.actualizarVista();
+     this.actualizar();
+    }
+    this.isLoading =  !this.isLoadingUrl;
+    this.isLoadingUrl = !this.isLoadingUrl;
   }
 }

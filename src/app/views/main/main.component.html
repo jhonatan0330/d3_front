@@ -67,6 +67,8 @@
     </div>
   </div>
 </mat-card>
+<!-- Indicadores -->
+<app-indicators></app-indicators>
 <!-- Reportes -->
 <mat-card>
   <mat-card-title>Reportes</mat-card-title>
@@ -94,7 +96,7 @@
     class="example-margin"
     color="primary"
     mode="indeterminate"
-    *ngIf="!company.plantillas"
+    *ngIf="!company.plantillas && company.usuarioSystem"
   ></mat-progress-spinner>
   <div fxLayout="row wrap" *ngIf="company.menuPlantillas">
     <div
@@ -117,7 +119,28 @@
       fxFlex="100"
       *ngFor="let companyTemplate of company.reportePlantillas"
     >
-    <app-template [id]="companyTemplate.llaveTabla" [nombre]="companyTemplate.nombre" [imagen]="companyTemplate.imagen" type="R"></app-template>
+    <app-template [id]="companyTemplate.llaveTabla" [nombre]="companyTemplate.nombre" 
+      [serverId]="company.llaveTabla" [imagen]="companyTemplate.imagen" type="R"></app-template>
     </div>
   </div>
+
+  <form [formGroup]="signinForm" (ngSubmit)="signin(company)" *ngIf="!company.usuarioSystem">
+
+    <p class="text-small">No hemos logrado validar tu clave de acceso al sistema de {{ company. nombre}}, te agradecemos porfavor ingresar tu nueva clave.</p>
+
+    <mat-form-field class="full-width">
+      <input 
+        type="password"
+        name="password"
+        matInput
+        [formControl]="signinForm.controls['password']"
+        placeholder="Password" 
+        autocomplete="new-password"
+        value="">
+    </mat-form-field>
+    <small 
+      *ngIf="signinForm.controls['password'].hasError('required') && signinForm.controls['password'].touched" 
+      class="form-error-msg"> Password is required </small>
+    <button mat-raised-button class="mat-primary full-width mb-1" [disabled]="signinForm.invalid">Sign in</button>
+  </form>
 </mat-card>

@@ -7,29 +7,20 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { JwtAuthService } from '../services/auth/jwt-auth.service';
 import { map } from 'rxjs/operators';
 import { TemplateService } from 'app/service/template.service';
-import { AuthService } from 'app/core/auth/auth.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(private _authService: AuthService, private templateService: TemplateService) {}
+  constructor(private templateService: TemplateService) {}
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     
-    let token = this._authService.accessToken;// || this._authService.getJwtToken();
-    if (this.templateService.conectionTemplates){
-      for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
-        const element = this.templateService.conectionTemplates[i];
-        if (req.url.indexOf (element.servidorUrl) !==-1){
-          token =  element.token;
-          break;
-        }
-      }
-    }
+    let token  = this.templateService.getTokenConnection(req.url)
     let changedReq: HttpRequest<any>;
     if (token) {
       changedReq = req.clone({

@@ -1,33 +1,51 @@
 <div [style.display]="isInvisible ? 'none' : 'block'" class="mx-0">
   <div>
+    <input
+        [id]="structure.llaveTabla"
+        class="m-4"
+        *ngIf="isLoadingUrl && allowUrlTextFromUser"
+        [(ngModel)]="urlText"
+        fxFlex
+      />
     <button
       mat-flat-button
       color="accent"
       class="m-4"
       [disabled]="isLoading"
       *ngIf="isEnabled && !isEnd && !isLoading"
-      (click)="onClickExternal()"
       fxFlex="100"
     >
-      <mat-icon>cloud_upload</mat-icon> {{ structure.nombre | titlecase }}
+      <mat-icon>attach_file</mat-icon> {{ structure.nombre | titlecase }}
       <small *ngIf="required">*</small>
+      <!--style="display: none"-->
       <input
         [id]="structure.llaveTabla"
-        style="display: none"
         type="file"
+        style="opacity : 0; position : absolute; z-index: 2; width: 100%; height: 100%; top: 0;left: 0;"
         [multiple]="multipleFiles"
         [accept]="filtroExtension"
-        (click)="$event.target.value = ''"
+        (click)="$event.target.value = '';$event.stopPropagation();"
         (change)="handleFileInput($event.target.files)"
         capture="camera"
       />
     </button>
-    <mat-progress-bar
+    <button
+      mat-flat-button
+      color="accent"
+      class="m-4"
+      *ngIf="isEnabled && !isEnd && allowUrlTextFromUser"
+      (click)="onClickLoadUrl()"
+    >
+      <mat-icon *ngIf="!isLoadingUrl">keyboard</mat-icon>
+      <mat-icon *ngIf="isLoadingUrl">check</mat-icon>
+    </button>
+  </div>
+  <mat-progress-bar
       *ngIf="isLoading"
       color="primary"
+      class="full-width"
       mode="indeterminate"
     ></mat-progress-bar>
-  </div>
   <!-- Firma -->
   <div *ngIf="firma && isEnabled && !isEnd" fxLayoutAlign="center center">
     <signature-pad></signature-pad>

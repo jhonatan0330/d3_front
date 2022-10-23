@@ -287,10 +287,10 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   modificarDetallePedido(item: DetallePedidoVentaDTO) {
-    if (!this.isEnabled) {
-      return;
-    }
-    this.utils.modalProduct(item, true).subscribe((resp) => {
+    //if (!this.isEnabled) {
+    //  return;
+    //}
+    this.utils.modalProduct(item, this.isEnabled).subscribe((resp) => {
       if (!resp) {
         this.data.detalles.splice(1, 1);
       }

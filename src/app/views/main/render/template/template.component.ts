@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PedidoVentaDTO } from 'app/model/sw42.domain';
+import { TemplateService } from 'app/service/template.service';
 import { UtilsService } from 'app/service/utils.service';
 
 export enum TemplateEnum {
@@ -22,7 +23,7 @@ export class TemplateComponent implements OnInit {
   @Input() type: TemplateEnum;
   @Input() serverId: string;
 
-  constructor(private router: Router, private utilsService: UtilsService) {}
+  constructor(private router: Router, private utilsService: UtilsService, private templateService: TemplateService) {}
 
   ngOnInit(): void {}
 
@@ -48,6 +49,9 @@ export class TemplateComponent implements OnInit {
   openDialog() {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = this.id;
+    if(this.serverId) { 
+      pedidoVenta.serverUrl = this.templateService.getUrl4Id(this.serverId) 
+    }
     let _close2Save = false;
     if (this.type === TemplateEnum.TIPO_REPORTE) {
       _close2Save = true;

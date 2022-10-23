@@ -1,0 +1,52 @@
+<div class="product-content-wrap" >
+  <div class="main-info mb-16">
+    <p class="mb-8">{{encuesta?.nombre}}</p>
+    <span fxFlex></span>
+    <button mat-raised-button *ngIf="index !== 0"
+    (click)="back()">
+      Anterior
+    </button>
+  </div>
+  <h1 class="title" *ngIf="pregunta">{{pregunta.nombre}}</h1>
+</div>
+<mat-card #selection class="profile-sidebar mb-16 pb-0" *ngIf="opcion">
+  <div class="propic text-center">
+    <img [src]="opcion.imagen" >
+  </div>
+  <div class="profile-title text-center mb-16">
+    <div class="main-title">{{opcion.codigo}} - {{opcion.nombre}}</div>
+  </div>
+  <div class="profile-actions mb-16" fxLayoutAlign="center center" *ngIf="!isLoading">
+    <button mat-raised-button color="warn" (click)="opcion = null">
+      <mat-icon>clear</mat-icon>
+      Cambiar</button>
+    <span fxFlex="8px"></span>
+    <button mat-raised-button color="primary" (click)="next()" >
+      <mat-icon>check</mat-icon>
+      Escoger
+    </button>
+  </div>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+</mat-card>
+<div class="full-width" *ngIf="pregunta">
+  <!-- <ng-template matStepLabel>{{ question.nombre }}</ng-template> -->
+  <div class="product-container">
+    <!-- Product Box -->
+    <div
+      class="product-wrap"
+      *ngFor="let opcion of pregunta.opciones"
+    (click)="choose(opcion)">
+      <div class="product-inner default-bg">
+        <div class="info-wrap p-16">
+          <div class="main-info">
+            <h3 class="title">{{ opcion.nombre }}</h3>
+            <h1 class="code full-width">{{ opcion.codigo }}</h1>
+          </div>
+        </div>
+        <div class="featured-img">
+          <img [src]="opcion.imagen" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,11 +3,13 @@ import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ProductoDTO, ProductoInventarioDTO, TarifaDTO } from 'app/model/sw42.domain';
 import { ApiService } from 'app/service/api.service';
+import { UtilsService } from 'app/service/utils.service';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-catalog',
-  templateUrl: './catalog.component.html'
+  templateUrl: './catalog.component.html',
+  styleUrls: ['./catalog.component.scss']
 })
 export class CatalogComponent implements OnInit {
 
@@ -32,7 +34,8 @@ export class CatalogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<CatalogComponent>,
-    private api: ApiService
+    private api: ApiService,
+    private utils: UtilsService
     ) { }
 
   ngOnInit(): void {

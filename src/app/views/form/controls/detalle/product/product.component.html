@@ -39,7 +39,7 @@
     <ng-template #dynamycFormElement></ng-template>
   </mat-card>
   <!-- Boton de guardar -->
-  <div>
+  <div *ngIf="this.allowEdit">
     <div fxFlex class="p-4">
       <button
         mat-raised-button

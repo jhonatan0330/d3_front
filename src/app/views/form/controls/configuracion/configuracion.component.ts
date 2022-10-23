@@ -13,7 +13,8 @@ import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-configuracion',
-  templateUrl: './configuracion.component.html'
+  templateUrl: './configuracion.component.html',
+  styleUrls: ['./configuracion.component.scss'],
 })
 export class ConfiguracionComponent extends BaseComponent implements OnInit {
   fControl: FormControl = new FormControl();

@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, UntypedFormControl, Validators } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO } from 'app/model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/model/sw42.enum';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/model/sw42.filter';
-
+import { ApiService } from 'app/service/api.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { FormulaHelper } from 'app/shared/helpers/formula.helper';
 import { BaseComponent } from '../base/base.component';
 import { CurrencyMaskInputMode } from 'ngx-currency';
-import { ApiService } from 'app/service/api.service';
 
 @Component({
   selector: 'app-numero',
   templateUrl: './numero.component.html'
 })
 export class NumeroComponent extends BaseComponent implements OnInit {
-  fControl = new FormControl<number>(0);
+  fControl = new UntypedFormControl(0);
 
   step = 1;
   formula: string;
@@ -80,7 +79,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     if (this.data.valorText) {
       if (this.data.valorNumero === 0) {
         // Esto aplica para los formularios de clientes para llenar el id
-        this.fControl.setValue(Number(this.data.valorText));
+        this.fControl.setValue(this.data.valorText);
         this.data.valorNumero = Number(this.data.valorText);
       } else {
         this.fControl.setValue(this.data.valorNumero);
@@ -105,7 +104,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   actualizar() {
     let controlValue = this.fControl.value;
     if (!controlValue) {
-      controlValue = 0;
+      controlValue = '0';
     }
     if(this.formulaMaximum) {
       const textoMaximum = this.formulaReplaceDependents(this.formulaMaximum);
@@ -125,7 +124,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     }
     if (this.data.valorNumero !== controlValue) {
       this.data.valorNumero = Number(controlValue);
-      this.data.valorText = controlValue.toString();
+      this.data.valorText = controlValue;
       this.avisarModificacion();
     }
   }

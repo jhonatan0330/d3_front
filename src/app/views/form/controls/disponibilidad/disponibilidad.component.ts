@@ -6,12 +6,14 @@ import { ApiService } from 'app/service/api.service';
 import { TemplateService } from 'app/service/template.service';
 import { UtilsService } from 'app/service/utils.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { LocalStoreService } from 'app/shared/services/local-store.service';
 import { BaseComponent } from '../base/base.component';
 import { Estructura } from './estructura';
 
 @Component({
   selector: 'app-disponibilidad',
-  templateUrl: './disponibilidad.component.html'
+  templateUrl: './disponibilidad.component.html',
+  styleUrls: ['./disponibilidad.component.scss'],
 })
 export class DisponibilidadComponent extends BaseComponent implements OnInit {
   @ViewChild('canvas', { static: true }) myCanvas: ElementRef<HTMLCanvasElement>;
@@ -23,6 +25,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
 
   constructor(
     private api: ApiService,
+    private ls: LocalStoreService,
     private template: TemplateService,
     private utils: UtilsService
   ) {
@@ -81,7 +84,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
   }
 
   consultaExitosaDatosBase(pCampo: PedidoVentaCaracteristicaFilterDTO) {
-    this.estructura = new Estructura(this.ctx, pCampo.campoDTO, this.multiple, this.template, this.utils);
+    this.estructura = new Estructura(this.ctx, pCampo.campoDTO, this.multiple, this.template, this.utils, this.ls);
     this.estructura.isEnabled = this.isEnabled;
     this.mostrarPlano();
     // Solo al crear la estructura selecciono campos de resto lo hace el componente

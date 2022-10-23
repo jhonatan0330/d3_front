@@ -3,12 +3,11 @@ import {
   HttpHandler,
   HttpRequest,
   HttpInterceptor,
-  HttpEvent,
 } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
+import { JwtAuthService } from '../services/auth/jwt-auth.service';
 import { TemplateService } from 'app/service/template.service';
-import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
 
 @Injectable({
   providedIn: 'root',

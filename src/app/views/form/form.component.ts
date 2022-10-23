@@ -36,18 +36,19 @@ import {
   DocumentoRelacionGestorFilterDTO,
   PedidoVentaFilterDTO,
 } from 'app/model/sw42.filter';
+import { ApiService } from 'app/service/api.service';
+import { TemplateService } from 'app/service/template.service';
+import { IDynamicControl } from './controls/base/base.component';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { UtilsService } from 'app/service/utils.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   LocalConstants,
   LocalStoreService,
 } from 'app/shared/services/local-store.service';
 import { getComponent } from 'app/shared/helpers/form-helper';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { IDynamicControl } from 'app/views/form/controls/base/base.component';
-import { TemplateService } from '../../service/template.service';
-import { ApiService } from 'app/service/api.service';
-import { UtilsService } from 'app/service/utils.service';
 
 @Component({
   selector: 'app-form',
@@ -387,7 +388,6 @@ export class FormComponent implements OnInit, AfterViewInit {
                   newDetalle.valorSubtotal = dpv.valorSubtotal;
                   newDetalle.valorTotal = dpv.valorTotal;
                   newDetalle.valorUnitario = dpv.valorUnitario;
-                  newDetalle.propiedades = dpv.propiedades;
 
                   newDetalle.cantidadPromocion = dpv.cantidadPromocion;
                   newDetalle.cantidadPromocionBase = dpv.cantidadPromocionBase;
@@ -397,7 +397,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                       const campoInterno = dpv.caracteristicas[n];
                       const cpInterno: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
                       cpInterno.campo = campoInterno.campo;
-                      cpInterno.campoDTO = campoInterno.campoDTO;
+                      if (!toSave) { cpInterno.campoDTO = campoInterno.campoDTO; }
                       cpInterno.valorOpcion = campoInterno.valorOpcion;
                       cpInterno.valorAuxiliar = campoInterno.valorAuxiliar;
                       cpInterno.valorFecha = campoInterno.valorFecha;
@@ -410,10 +410,10 @@ export class FormComponent implements OnInit, AfterViewInit {
                     
                   if (!toSave) {
                     newDetalle.llaveTabla = null;
+                    newDetalle.propiedades = dpv.propiedades;
                     newDetalle.tarifas = dpv.tarifas;
                   } else {
                     newDetalle.llaveTabla = dpv.llaveTabla;
-                    
                   }
                   uc.detalles.push(newDetalle);
                 }
@@ -853,7 +853,13 @@ export class FormComponent implements OnInit, AfterViewInit {
       if (this.plantilla.reportes && this.plantilla.reportes.length !== 0) {
         for (let i = 0; i < this.plantilla.reportes.length; i++) {
           const reporte = this.plantilla.reportes[i];
-          this.reportes.push(reporte);
+          const propVisibleState = PlantillaHelper.buscarValorMultiple(reporte.propiedades, PlantillaHelper.REP_VISIBLE_STATE);
+          if(!propVisibleState 
+            || !this.pedido 
+            || !this.pedido.estadoExpediente 
+            || (propVisibleState && propVisibleState.find(x=>x.valor ===this.pedido.estadoExpediente))){
+            this.reportes.push(reporte);
+          }
         }
       }
     }
@@ -874,7 +880,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       '&P_KEY=' +
       this.pedido.llaveTabla +
       '&P_TOKEN=' +
-      this.ls.getItem(LocalConstants.JWT_TOKEN).toString();
+      this.templateService.getTokenConnection(stringURL);
 
     if (reporte.variables) {
       stringURL = stringURL + '&' + reporte.variables;
@@ -1019,7 +1025,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   showHelp() {
-    // this.utilsService.modalFAQ(this.plantilla.llaveTabla);
+    this.utilsService.modalFAQ(this.plantilla.llaveTabla);
   }
 
   getURLDocument(): string {

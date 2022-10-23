@@ -4,7 +4,8 @@ import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-binario',
-  templateUrl: './binario.component.html'
+  templateUrl: './binario.component.html',
+  styleUrls: ['./binario.component.scss'],
 })
 export class BinarioComponent extends BaseComponent implements OnInit {
   fControl = new FormControl(false);

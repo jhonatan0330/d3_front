@@ -38,6 +38,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   inventories: ProductoInventarioDTO[];
   isLoading = false; // ayuda a mostrar la barra de progreso en las busqueas
+  allowEdit = false;
 
   dynamicControls: IDynamicControl[] = [];
   @ViewChild('dynamycFormElement', { read: ViewContainerRef })
@@ -52,6 +53,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.detallePedidoVenta = this.data.data;
+    this.allowEdit = this.data.allowEdit;
     this.campoMinima = PlantillaHelper.buscarValor(
       this.detallePedidoVenta.propiedades,
       PlantillaHelper.PRODUCTO_CAMPO_VALOR_MINIMO
@@ -118,6 +120,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
       );
       componentRef.instance.structure = _campo.campoDTO;
       componentRef.instance.productForm = this;
+      componentRef.instance.formIsEnabled = this.allowEdit;
       for (
         let index = 0;
         index < this.detallePedidoVenta.caracteristicas.length;
@@ -129,7 +132,9 @@ export class ProductComponent implements OnInit, AfterViewInit {
           break;
         }
       }
+      
       this.dynamicControls.push(componentRef.instance);
+      
     }
 
     // Colocar listener de Dependientes

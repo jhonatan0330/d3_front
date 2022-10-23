@@ -9,13 +9,12 @@ import { PedidoVentaCaracteristicaFilterDTO } from 'app/model/sw42.filter';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { ProductComponent } from '../detalle/product/product.component';
 
-
 export interface IDynamicControl {
   structure: DocumentoPlantillaCaracteristicaDTO;
   data: PedidoVentaCaracteristicaDTO;
   productForm: ProductComponent;
   parent: PedidoVentaDTO;
-  formIsEnabled: boolean;
+  formIsEnabled: boolean; //Muestra si el formulario tiene permisos para modificar
   urlServer: string;
   isInvisible: boolean;
 
@@ -30,7 +29,8 @@ export interface IDynamicControl {
 
 @Component({
   selector: 'app-base',
-  templateUrl: './base.component.html'
+  templateUrl: './base.component.html',
+  styleUrls: ['./base.component.scss'],
 })
 export class BaseComponent implements OnInit, IDynamicControl {
   data: PedidoVentaCaracteristicaDTO;

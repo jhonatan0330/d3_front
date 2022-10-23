@@ -5,7 +5,8 @@ import {
   PedidoVentaCaracteristicaDTO,
   PedidoVentaDTO,
 } from 'app/model/sw42.domain';
-import { TemplateService } from '../../../service/template.service';
+import { ApiService } from 'app/service/api.service';
+import { TemplateService } from 'app/service/template.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { saveAs } from 'file-saver';
 import {
@@ -16,7 +17,6 @@ import {
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/model/sw42.enum';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
-import { ApiService } from 'app/service/api.service';
 
 @Component({
   selector: 'app-massive',
@@ -47,7 +47,6 @@ export class MassiveComponent implements OnInit {
 
   documentosGenerados: PedidoVentaDTO[];
   documentosGeneradosMultiple: PedidoVentaDTO[];
-  // currentCampo: DocumentoPlantillaCaracteristicaDTO;
   inicialCamposConsultar = 0;
 
   currentPedido: PedidoVentaDTO;
@@ -406,11 +405,11 @@ export class MassiveComponent implements OnInit {
         }
 
         if (!campo) {
-          Swal.fire(
+          /*Swal.fire(
             'Dev Error',
             'El campo a generado un null.' + iCampo.nombre,
             'warning'
-          );
+          );*/
           this.mensajeValidacion(pedido, i);
           this.isLoading = false;
           return;

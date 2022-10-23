@@ -49,16 +49,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-/*import { ConfigComponent } from './views/survey/config/config.component';
-import { VotarComponent } from './views/survey/votar/votar.component';
-import { CalendarComponent } from './views/calendar/calendar.component';
-import { IndicatorsComponent } from './views/main/indicators/indicators.component';
-import { OlMapComponent } from './views/form/controls/gps/ol-map/ol-map.component';
-import { HelpFaqComponent } from './views/help-faq/help-faq.component';*/
 import { ChartsModule } from 'ng2-charts';
 import { ChangePictureComponent } from './views/sessions/change-picture/change-picture.component';
 import { ChangePwdComponent } from './views/sessions/change-pwd/change-pwd.component';
 import { HelpFaqComponent } from './views/help-faq/help-faq.component';
+import { ConfigComponent } from './views/survey/config/config.component';
+import { VotarComponent } from './views/survey/votar/votar.component';
+import { IndicatorsComponent } from './views/main/indicators/indicators.component';
 
 const routerConfig: ExtraOptions = {
     preloadingStrategy       : PreloadAllModules,
@@ -92,12 +89,10 @@ const routerConfig: ExtraOptions = {
     TemplateComponent,
     ChangePictureComponent,
     ChangePwdComponent,
-    HelpFaqComponent/*,
+    HelpFaqComponent,
     ConfigComponent,
     VotarComponent,
-    CalendarComponent,
-    IndicatorsComponent,
-    OlMapComponent*/
+    IndicatorsComponent
     ],
     imports     : [
         CommonModule,

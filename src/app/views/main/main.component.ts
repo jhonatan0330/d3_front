@@ -1,24 +1,29 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { egretAnimations } from 'app/shared/animations/egret-animations';
 import {
   DocumentoPlantillaDTO,
+  OrganizacionDTO,
   PedidoVentaDTO,
   PropiedadDTO,
   UsuarioAutenticacionDTO,
+  UsuarioOrganizacionDTO,
 } from 'app/model/sw42.domain';
-
-import { Subscription } from 'rxjs';
-import { ActivatedRoute, Params } from '@angular/router';
-import Swal from 'sweetalert2';
-import { TemplateService } from 'app/service/template.service';
-import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
-import { NotificacionService } from 'app/service/notificacion.service';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { ApiService } from 'app/service/api.service';
+import { TemplateService } from 'app/service/template.service';
+import { PlantillaHelper } from '../../shared/helpers/plantilla-helper';
+import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
+import { Subscription } from 'rxjs';
+import { NotificacionService } from 'app/service/notificacion.service';
+import { ActivatedRoute, Params } from '@angular/router';
 import { UtilsService } from 'app/service/utils.service';
+import Swal from 'sweetalert2';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-main',
-  templateUrl: './main.component.html'
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.scss'],
+  animations: egretAnimations,
 })
 export class MainComponent implements OnInit, OnDestroy {
   modules: DocumentoPlantillaDTO[] = [];
@@ -27,6 +32,8 @@ export class MainComponent implements OnInit, OnDestroy {
   filteredModules: DocumentoPlantillaDTO[] = [];
   private templateSub: Subscription;
   isLoading = false;
+
+  signinForm: FormGroup;
 
   constructor(
     private apiService: ApiService,
@@ -42,6 +49,10 @@ export class MainComponent implements OnInit, OnDestroy {
       next: (value) => this.loadMenu(value),
     });
     this.getMenu();
+
+    this.signinForm = new FormGroup({
+      password: new FormControl('', Validators.required),
+    });
   }
 
   ngOnDestroy(): void {
@@ -125,20 +136,7 @@ export class MainComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
         const element = this.templateService.conectionTemplates[i];
         if (!element.token) {
-          this.apiService
-            .autenticar(
-              this.jwtAuth.user.identificacion,
-              element.usuarioSystem,
-              element.servidorUrl
-            )
-            .subscribe({
-              next: (auth: UsuarioAutenticacionDTO) => {
-                this.handlerLoginOther(auth.token, element.servidorUrl);
-              },
-              error: () => {
-                this.handlerErrorLoginOther();
-              },
-            });
+          this.logInOtherSystem(element);
         } else {
           this.handlerLoginOther(element.token, element.servidorUrl);
         }
@@ -146,6 +144,30 @@ export class MainComponent implements OnInit, OnDestroy {
     } else {
       this.notificationService.getNotifications();
     }
+  }
+
+  logInOtherSystem(element: OrganizacionDTO, reloadPassword: Boolean = false){
+    this.apiService
+    .autenticar(
+      this.jwtAuth.user.identificacion,
+      element.usuarioSystem,
+      element.servidorUrl
+    )
+    .subscribe({
+      next: (auth: UsuarioAutenticacionDTO) => {
+        if(reloadPassword){
+          const newKEy = new UsuarioOrganizacionDTO();
+          newKEy.organizacion = element.llaveTabla;
+          newKEy.usuario= this.jwtAuth.user.llaveTabla;
+          newKEy.tokenServer = element.usuarioSystem;
+          this.jwtAuth.changePwdOtherSystem(newKEy).subscribe();
+        }
+        this.handlerLoginOther(auth.token, element.servidorUrl);
+      },
+      error: () => {
+        this.handlerErrorLoginOther(element);
+      },
+    });
   }
 
   handlerLoginOther(authToken: string, servidorUrl: string) {
@@ -167,8 +189,14 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   }
 
-  handlerErrorLoginOther() {
-    alert('Error de logueo');
+  handlerErrorLoginOther(element: OrganizacionDTO) {
+    element.usuarioSystem = undefined;
+  }
+
+  signin(element: OrganizacionDTO) {
+    const signinData = this.signinForm.value;
+    element.usuarioSystem = signinData.password;
+    this.logInOtherSystem(element, true);
   }
 
   handlerTemplateOther(
@@ -181,6 +209,12 @@ export class MainComponent implements OnInit, OnDestroy {
         for (let j = 0; j < plantillas.length; j++) {
           const iPlantilla = plantillas[j];
           iPlantilla.server = servidorUrl;
+          if( iPlantilla.reportes ){
+            for (let r = 0; r < iPlantilla.reportes.length; r++) {
+              const element = iPlantilla.reportes[r];
+              if (!element.servidorUrl){ element.servidorUrl = iPlantilla.server; }
+            }
+          }
         }
         element.plantillas = plantillas;
         element.menuPlantillas = plantillas.filter((item) =>

@@ -2,9 +2,11 @@ import {
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaDTO,
 } from 'app/model/sw42.domain';
-import { BehaviorSubject } from 'rxjs';
 import { TemplateService } from 'app/service/template.service';
 import { UtilsService } from 'app/service/utils.service';
+import { ImageFormatPipe } from 'app/shared/pipes/local-image';
+import { LocalStoreService } from 'app/shared/services/local-store.service';
+import { BehaviorSubject } from 'rxjs';
 import { Puesto } from './puesto';
 
 export class Estructura {
@@ -28,12 +30,13 @@ export class Estructura {
     private multiple: boolean,
     private template: TemplateService,
     private utils: UtilsService,
+    private ls: LocalStoreService
   ) {
     this.imagenFondo = campo.imagen;
     if (campo.documentos) {
       this.ubicaciones = [];
       for (let it = 0; it < campo.documentos.length; it++) {
-        this.ubicaciones.push(new Puesto(this.ctx, template, utils, campo.documentos[it]));
+        this.ubicaciones.push(new Puesto(this.ctx, template, utils, this.ls, campo.documentos[it]));
       }
     }
     this.ctx.canvas.onclick = (event) => {
@@ -44,7 +47,7 @@ export class Estructura {
   draw() {
     this.ctx.clearRect(0, 0, this.ancho, this.alto);
     const loadedImage = new Image();
-    loadedImage.src = this.imagenFondo;
+    loadedImage.src = new ImageFormatPipe(this.ls).transform(this.imagenFondo);
     loadedImage.onload = () => {
       this.ctx.canvas.width = loadedImage.width;
       this.ctx.canvas.height = loadedImage.height;

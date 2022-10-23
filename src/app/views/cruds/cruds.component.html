@@ -3,11 +3,11 @@
   fxLayoutAlign="center center"
   class="light-blue-100 light-blue-100-fg p-8 rounded"
 >
-  <img [src]="plantilla?.imagen" />
+  <img src="{{ plantilla?.imagen | imageFormat }}" />
   <h2 fxFlex class="mx-8">{{ plantilla?.nombre }}</h2>
   <!-- Buscador de fecha -->
   <div class="mr-8" *ngIf="!fControlCheck.value">
-    <mat-form-field>
+    <mat-form-field >
       <mat-label>Escoge una fecha</mat-label>
       <mat-date-range-input [rangePicker]="picker">
         <input
@@ -40,13 +40,14 @@
   >
   <!-- Buscador de texto -->
   <div class="mr-8">
-    <mat-form-field>
+    <mat-form-field >
       <input
         matInput
         type="text"
         placeholder="Coloca un texto y presiona enter"
         [formControl]="fControlSearch"
         autocomplete="off"
+        
         (keyup.enter)="listar(1)"
       />
       <button
@@ -160,7 +161,7 @@
         <div class="card-title-text">
           <div>
             <a (click)="openDocument(iDocument)"
-              ><img [src]="iDocument.imagen" class="avatar-sm"
+              ><img src="{{ iDocument.imagen | imageFormat }}" class="avatar-sm"
             /></a>
           </div>
           <div fxLayout="column" class="full-width" fxFlex>
@@ -342,7 +343,7 @@
       [ngStyle]="{ height: '110px', width: '110px', borderRadius: '50%' }"
     >
       <img
-        [src]="plantilla?.imagen"
+      src="{{ plantilla?.imagen | imageFormat }}"
         [ngStyle]="{ height: '60px', width: '60px' }"
       />
     </mat-card>

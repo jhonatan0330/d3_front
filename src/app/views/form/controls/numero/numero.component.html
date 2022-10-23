@@ -6,7 +6,7 @@
     [name]="structure.llaveTabla"
     [formControl]="fControl"
     [required]="required"
-    [readonly]="!isEnabled"
+    [readonly]="!isEnabled || !formIsEnabled"
     [options]="optionsMask"
     (focus)="getInitialFocus($event)"
     autocomplete="off"
