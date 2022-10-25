@@ -3,6 +3,11 @@ import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { NoAuthGuard } from 'app/core/auth/guards/noAuth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
+import { HelpFaqComponent } from './views/help-faq/help-faq.component';
+import { VotarComponent } from './views/survey/votar/votar.component';
+import { ConfigComponent } from './views/survey/config/config.component';
+import { CrudsComponent } from './views/cruds/cruds.component';
+import { MainComponent } from './views/main/main.component';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -10,14 +15,14 @@ import { InitialDataResolver } from 'app/app.resolvers';
 export const appRoutes: Route[] = [
 
     // Redirect empty path to '/profile'
-    {path: '', pathMatch : 'full', redirectTo: 'profile'},
+    {path: '', pathMatch : 'full', redirectTo: 'main'},
 
     // Redirect signed in user to the '/profile'
     //
     // After the user signs in, the sign in page will redirect the user to the 'signed-in-redirect'
     // path. Below is another redirection for that path to redirect the user to the desired
     // location. This is a small convenience to keep all main routes together here on this file.
-    {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'profile'},
+    {path: 'signed-in-redirect', pathMatch : 'full', redirectTo: 'main'},
 
     // Auth routes for guests
     {
@@ -51,6 +56,7 @@ export const appRoutes: Route[] = [
             {path: 'unlock-session', loadChildren: () => import('app/modules/auth/unlock-session/unlock-session.module').then(m => m.AuthUnlockSessionModule)}
         ]
     },
+    
 
     // Admin routes
     {
@@ -62,6 +68,37 @@ export const appRoutes: Route[] = [
             initialData: InitialDataResolver,
         },
         children   : [
+          // Golyat components
+          {
+            path: 'main',
+            component: MainComponent,
+            data: { title: '', breadcrumb: 'MENU PRINCIPAL'}
+          },
+          {
+            path: 'main/:type/:id',
+            component: MainComponent,
+            data: { title: '', breadcrumb: 'MENU PRINCIPAL'}
+          },
+          {
+            path: 'list/:type/:id',
+            component: CrudsComponent,
+            data: { title: '', breadcrumb: 'MENU 2'}
+          },
+          {
+            path: 'list/:type/:id/:server_id',
+            component: CrudsComponent,
+            data: { title: '', breadcrumb: 'MENU 2'}
+          },
+          {
+            path: 'UIVotante',
+            component: ConfigComponent,
+            data: { title: '', breadcrumb: 'MENU 2'}
+          },
+          {
+            path: 'UIVotacion',
+            component: VotarComponent,
+            data: { title: '', breadcrumb: 'MENU 2'}
+          },
             {path: 'profile', loadChildren: () => import('app/modules/admin/dashboards/profile/profile.module').then(m => m.ProfileModule)},
             // Apps
             {path: 'apps', children: [
@@ -75,5 +112,9 @@ export const appRoutes: Route[] = [
             {path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/modules/admin/pages/error/error-404/error-404.module').then(m => m.Error404Module)},
             {path: '**', redirectTo: '404-not-found'}
         ]
+    },
+    {
+      path: '**',
+      redirectTo: 'sessions/404'
     }
 ];

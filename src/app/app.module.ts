@@ -137,14 +137,13 @@ const routerConfig: ExtraOptions = {
         // REQUIRED IF YOU USE JWT AUTHENTICATION
         {
           provide: HTTP_INTERCEPTORS,
+          useClass: TokenInterceptor,
+          multi: true,
+        },{
+          provide: HTTP_INTERCEPTORS,
           useClass: HttpErrorInterceptor,
           multi: true,
         },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: TokenInterceptor,
-            multi: true,
-          },
         { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
         {
       

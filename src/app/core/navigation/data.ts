@@ -20,7 +20,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 title: 'Busquedas Avanzadas',
                 type : 'basic',
                 icon : 'heroicons_outline:search-circle',
-                link : '/ui/advanced-search'
+                link : '/main'
             },
             {
                 id   : 'apps.academy',

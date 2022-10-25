@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { UsuarioAutenticacionFilterDTO } from 'app/model/sw42.filter';
 import { environment } from 'environments/environment';
-import { UsuarioAutenticacionDTO } from 'app/model/sw42.domain';
-import { LocalStoreService } from 'app/shared/services/local-store.service';
+import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioDTO } from 'app/model/sw42.domain';
+import { LocalConstants, LocalStoreService } from 'app/shared/services/local-store.service';
 import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
 import { ShortcutsService } from 'app/layout/common/shortcuts/shortcuts.service';
 import { ApiService } from 'app/service/api.service';
@@ -16,6 +16,16 @@ export class AuthService
 {
     private _authenticated: boolean = false;
 
+    token: string;
+    urlService: string;
+    isAuthenticated = false;
+    user: UsuarioDTO = new UsuarioDTO();
+    user$ = new BehaviorSubject<UsuarioDTO>(this.user);
+    signingIn: Boolean;
+    return: string;
+    // company: OrganizacionDTO = new OrganizacionDTO();
+    isAdmin = false;
+    otherCompany: OrganizacionDTO[] ;
     /**
      * Constructor
      */
@@ -95,6 +105,7 @@ export class AuthService
           )
           .pipe(
             switchMap((response: UsuarioAutenticacionDTO) => {
+                this.setUserAndToken(response);
                 this.getUserDataFull(response);
                 // Return a new observable with the response
                 return of(response);
@@ -229,4 +240,21 @@ export class AuthService
         // If the access token exists and it didn't expire, sign in using it
         return this.signInUsingToken();
     }
+
+    setUserAndToken(authDTO: UsuarioAutenticacionDTO) {
+        if (authDTO) {
+          this.isAuthenticated = !!authDTO;
+          this.token = authDTO.token;
+          this.user = authDTO.usuarioDTO;
+          this.otherCompany = authDTO.organizaciones;
+        } else {
+          this.isAuthenticated = false;
+          this.token = null;
+          this.user = null;
+          this.otherCompany = undefined;
+        }
+        this.user$.next(this.user);
+        this._ls.setItem(LocalConstants.JWT_TOKEN, this.token);
+        this._ls.setItem(LocalConstants.APP_USER, this.user);
+      }
 }
