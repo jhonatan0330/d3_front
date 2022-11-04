@@ -1022,9 +1022,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  showHelp() {
-    this.utilsService.modalFAQ(this.plantilla.llaveTabla);
-  }
 
   getURLDocument(): string {
     return window.location.origin + '/main/' + this.plantilla.llaveTabla + '/' + this.pedidoBase.llaveTabla;

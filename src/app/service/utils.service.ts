@@ -5,7 +5,6 @@ import { ChangePwdComponent } from 'app/views/sessions/change-pwd/change-pwd.com
 import { CatalogComponent } from 'app/views/form/catalog/catalog.component';
 import { ProductComponent } from 'app/views/form/controls/detalle/product/product.component';
 import { FormComponent } from 'app/views/form/form.component';
-import { HelpFaqComponent } from 'app/views/help-faq/help-faq.component';
 import { ChangePictureComponent } from 'app/views/sessions/change-picture/change-picture.component';
 
 @Injectable({
@@ -56,15 +55,6 @@ export class UtilsService {
 
   modalChangePicture( ) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(ChangePictureComponent, {
-      //width: '720px',
-      maxHeight: '90vh',
-      disableClose: false,
-    });
-    return dialogRef.afterClosed();
-  }
-
-  modalFAQ( id: String){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(HelpFaqComponent, {
       //width: '720px',
       maxHeight: '90vh',
       disableClose: false,
