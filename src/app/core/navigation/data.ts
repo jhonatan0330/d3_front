@@ -8,20 +8,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type    : 'group',
         icon    : 'heroicons_outline:home',
         children: [
-            {
+            /*{
                 id   : 'dashboards.project',
                 title: 'Profile',
                 type : 'basic',
                 icon : 'heroicons_outline:user-circle',
                 link : '/profile'
-            },
+            },*/
             {
                 id   : 'user-interface.advanced-search',
                 title: 'Busquedas Avanzadas',
                 type : 'basic',
                 icon : 'heroicons_outline:search-circle',
                 link : '/main'
-            },
+            }/*,
             {
                 id   : 'apps.academy',
                 title: 'Cursos',
@@ -53,7 +53,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type : 'basic',
                 icon : 'heroicons_outline:check-circle',
                 link : '/apps/tasks'
-            }
+            }*/
         ]
     }
    

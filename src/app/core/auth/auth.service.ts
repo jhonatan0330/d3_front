@@ -155,11 +155,14 @@ export class AuthService
         this._authenticated = true;
 
         // Store the user on the user service
-        
         this._userService.user = {
             id: response.usuarioDTO.llaveTabla,
             name: response.usuarioDTO.nombre,
+            number: response.usuarioDTO.identificacion,
             email: response.usuarioDTO.correo,
+            company: response.organizacion.imagen,
+            companyName: response.organizacion.nombre,
+            companySlogan: response.organizacion.slogan,
             avatar: response.usuarioDTO.imagen
         };
 

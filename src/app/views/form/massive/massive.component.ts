@@ -4,6 +4,7 @@ import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
   PedidoVentaDTO,
+  PropiedadDTO,
 } from 'app/model/sw42.domain';
 import { ApiService } from 'app/service/api.service';
 import { TemplateService } from 'app/service/template.service';
@@ -56,7 +57,7 @@ export class MassiveComponent implements OnInit {
   constructor(
     private templateService: TemplateService,
     private api: ApiService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     if (this.plantillaId) {
@@ -133,22 +134,27 @@ export class MassiveComponent implements OnInit {
   loadFiledInMultipleTemplate(template: DocumentoPlantillaDTO) {
     for (let index = 0; index < template.caracteristicas.length; index++) {
       const element = template.caracteristicas[index];
-      const dbProperty: string = PlantillaHelper.buscarValor(
+      const dbProperty: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(
         element.propiedades,
         PlantillaHelper.PLANTILLA_AUXILIAR
       );
-      if (dbProperty && dbProperty === this.plantilla.llaveTabla) {
-        this.fieldIdInTemplateSecondary = element;
-        return;
+      if (dbProperty) {
+        for (let j = 0; j < dbProperty.length; j++) {
+          const elementProperty = dbProperty[j];
+          if (elementProperty.valor === this.plantilla.llaveTabla) {
+            this.fieldIdInTemplateSecondary = element;
+            return;
+          }
+        }
       }
     }
     if (!this.fieldIdInTemplateSecondary) {
       Swal.fire(
         'Unsupported',
         'En la plantilla ' +
-          template.nombre +
-          ' no encontramos ningun campo con fuente de datos ' +
-          this.plantilla.nombre
+        template.nombre +
+        ' no encontramos ningun campo con fuente de datos ' +
+        this.plantilla.nombre
       );
     }
   }
@@ -179,7 +185,7 @@ export class MassiveComponent implements OnInit {
       Swal.fire(
         '',
         'Revisa porque no tienes caracteristicas de la plantilla ' +
-          template.nombre,
+        template.nombre,
         'warning'
       );
     }
@@ -293,11 +299,13 @@ export class MassiveComponent implements OnInit {
 
   onDataLoaded(_file: string, template: DocumentoPlantillaDTO, format: number) {
     let documentos;
+    let encabezado = 0;
     if (format === 2) {
       const wb: XLSX.WorkBook = XLSX.read(_file, { type: 'binary' });
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
       documentos = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true });
+      encabezado = 1;
     } else {
       if (!window.DOMParser) {
         Swal.fire('Unsupported', 'Intente en explorador chrome');
@@ -328,7 +336,7 @@ export class MassiveComponent implements OnInit {
       this.camposConsultar = [];
       this.lblCarga =
         'CARGANDO ' +
-        documentos.length +
+        (documentos.length - encabezado).toString() +
         ' DOCUMENTOS ' +
         ' <-- ' +
         this.lblCarga;
@@ -397,7 +405,7 @@ export class MassiveComponent implements OnInit {
           for (let j = 0; j < source[i].length; j++) {
             const nombreCampoXML = this.formatStringXML(source[0][j]);
             if (this.formatStringXML(iCampo.nombre) === nombreCampoXML) {
-              if(source[i][j]) {campo.valorText = source[i][j].toString();}
+              if (source[i][j]) { campo.valorText = source[i][j].toString(); }
               campo = procesarXMLBase(campo);
               break;
             }
@@ -417,8 +425,9 @@ export class MassiveComponent implements OnInit {
 
         if (
           campo.campoDTO.formato ===
-            DocumentoPlantillaCaracteristicaEnum.PROCESO &&
+          DocumentoPlantillaCaracteristicaEnum.PROCESO &&
           !campo.valorOpcion &&
+          !PlantillaHelper.obtenerValorCampo(campo.campoDTO, PlantillaHelper.DEPENDE) &&
           campo.valorText
         ) {
           this.acumularProcesosConsulta(campo.campoDTO, campo.valorText);
@@ -569,10 +578,10 @@ export class MassiveComponent implements OnInit {
   }
 
   procesarDocumentos() {
-    if (this.cantidadProcesada - 1 < this.documentosGenerados.length) {
+    if (this.cantidadProcesada < this.documentosGenerados.length + 1) {
       let detalle =
         'PROCESANDO DOCUMENTO # ' +
-        this.cantidadProcesada +
+        (this.cantidadProcesada + this.failedDocuments.length).toString()
         ' INICIO : ' +
         this.inicio.toISOString() +
         ' HORA ACTUAL : ' +
@@ -611,9 +620,9 @@ export class MassiveComponent implements OnInit {
                 this.failedDocuments.push(this.currentPedido);
                 // if(tarifario!=null) failedList.dataProvider.addItem(currentTarifa);
                 this.documentosGenerados.splice(0, 1);
-
+                this.cantidadProcesada = this.cantidadProcesada - 1;
                 Swal.fire({
-                  title: 'Se ha presentado un error, continuamos?',
+                  title: 'Se ha presentado un error, ' + err +' continuamos?',
                   text: err,
                   icon: 'warning',
                   showCancelButton: true,

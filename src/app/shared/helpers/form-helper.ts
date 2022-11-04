@@ -185,7 +185,7 @@ export function procesarXMLBase(
             return null;
           }
         } else {
-          const plantilla = PlantillaHelper.buscarPropiedad(
+          const plantilla = PlantillaHelper.buscarValorMultiple(
             pCampo.campoDTO.propiedades,
             PlantillaHelper.PLANTILLA_AUXILIAR
           );

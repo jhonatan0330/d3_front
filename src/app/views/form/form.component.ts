@@ -47,7 +47,6 @@ import {
   LocalStoreService,
 } from 'app/shared/services/local-store.service';
 import { getComponent } from 'app/shared/helpers/form-helper';
-import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -113,6 +112,8 @@ export class FormComponent implements OnInit, AfterViewInit {
    isChangeState = false;
    changeStateIsLoading = false;
    changeStateForm: FormGroup;
+
+   private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -691,7 +692,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     const _doc: PedidoVentaDTO = new PedidoVentaDTO();
     _doc.plantilla = plantillaProxima;
     const camposPosibles: DocumentoPlantillaCaracteristicaDTO[] = [];
-    let textoCampoPosible;
+    let textoCampoPosible: string;
     // Valido que existan caracteristicas con el mismo codigo y lo modifico
     for (let i = 0; i < _transition.caracteristicas.length; i++) {
       const campo = _transition.caracteristicas[i];
@@ -708,12 +709,12 @@ export class FormComponent implements OnInit, AfterViewInit {
         }
       }
 
-      textoCampoPosible = this.obtenerValorPlantilla(
+      textoCampoPosible = this.validateIsPossibleField(
         campo,
         this.pedido.plantilla
       );
       if (textoCampoPosible) {
-        if (textoCampoPosible === '__*__') {
+        if (textoCampoPosible === this.CAMPO_POSIBLE_MENOR_PRIORIDAD) {
           camposPosibles.push(campo);
         } else {
           camposPosibles.unshift(campo);
@@ -773,7 +774,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   // Solo lo uso en crear plantilla siguiente asi que puedo ver como optimizar despues
-  obtenerValorPlantilla(
+  validateIsPossibleField(
     campo: DocumentoPlantillaCaracteristicaDTO,
     plantilla: string
   ): string {
@@ -783,20 +784,17 @@ export class FormComponent implements OnInit, AfterViewInit {
     ) {
       return null;
     }
-    if (!campo.propiedades || campo.propiedades.length === 0) {
-      return '__*__'; // necesito identificarle cual es el codigo y avece era un vacio
+    const propAuxiliarTemplates: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(campo.propiedades, PlantillaHelper.PLANTILLA_AUXILIAR);
+    if (!propAuxiliarTemplates || propAuxiliarTemplates.length === 0) {
+      return this.CAMPO_POSIBLE_MENOR_PRIORIDAD; // necesito identificarle cual es el codigo y avece era un vacio
     }
-    for (let index = 0; index < campo.propiedades.length; index++) {
-      const param = campo.propiedades[index];
-      if (param.key === PlantillaHelper.PLANTILLA_AUXILIAR) {
-        if (param.valor === plantilla) {
-          return param.valor;
-        } else {
-          return null;
-        }
+    for (let index = 0; index < propAuxiliarTemplates.length; index++) {
+      const param = propAuxiliarTemplates[index];
+      if (param.valor === plantilla) {
+        return param.valor;
       }
     }
-    return '__*__';
+    return null;
   }
   /*******************************  TRACE *********************/
   getDateFormat(oldDate: any) {

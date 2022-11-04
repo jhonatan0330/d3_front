@@ -10,7 +10,6 @@ import { FuseLoadingBarModule } from '@fuse/components/loading-bar';
 import { FuseNavigationModule } from '@fuse/components/navigation';
 import { MessagesModule } from 'app/layout/common/messages/messages.module';
 import { NotificationsModule } from 'app/layout/common/notifications/notifications.module';
-import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
 import { SearchModule } from 'app/layout/common/search/search.module';
 import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';
@@ -33,7 +32,6 @@ import { ThinLayoutComponent } from 'app/layout/layouts/vertical/thin/thin.compo
         FuseNavigationModule,
         MessagesModule,
         NotificationsModule,
-        QuickChatModule,
         SearchModule,
         ShortcutsModule,
         UserModule,
