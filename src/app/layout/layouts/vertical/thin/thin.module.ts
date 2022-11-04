@@ -6,7 +6,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { FuseFullscreenModule } from '@fuse/components/fullscreen';
-import { FuseLoadingBarModule } from '@fuse/components/loading-bar';
 import { FuseNavigationModule } from '@fuse/components/navigation';
 import { MessagesModule } from 'app/layout/common/messages/messages.module';
 import { NotificationsModule } from 'app/layout/common/notifications/notifications.module';
@@ -28,7 +27,6 @@ import { ThinLayoutComponent } from 'app/layout/layouts/vertical/thin/thin.compo
         MatIconModule,
         MatMenuModule,
         FuseFullscreenModule,
-        FuseLoadingBarModule,
         FuseNavigationModule,
         MessagesModule,
         NotificationsModule,
