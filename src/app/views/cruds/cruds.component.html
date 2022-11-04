@@ -1,12 +1,13 @@
-<div
+<div class="flex flex-col flex-auto min-w-0">
+  <div
   fxLayout="row wrap"
   fxLayoutAlign="center center"
-  class="light-blue-100 light-blue-100-fg p-8 rounded"
+  class="light-blue-100 light-blue-100-fg p-0.5 rounded"
 >
   <img src="{{ plantilla?.imagen | imageFormat }}" />
-  <h2 fxFlex class="mx-8">{{ plantilla?.nombre }}</h2>
+  <h2 fxFlex class="mx-1">{{ plantilla?.nombre }}</h2>
   <!-- Buscador de fecha -->
-  <div class="mr-8" *ngIf="!fControlCheck.value">
+  <div class="mr-1" *ngIf="!fControlCheck.value">
     <mat-form-field >
       <mat-label>Escoge una fecha</mat-label>
       <mat-date-range-input [rangePicker]="picker">
@@ -35,11 +36,11 @@
       </button>
     </mat-form-field>
   </div>
-  <mat-checkbox class="mr-8" [formControl]="fControlCheck"
+  <mat-checkbox class="mr-0.5" [formControl]="fControlCheck"
     >Codigo Exacto</mat-checkbox
   >
   <!-- Buscador de texto -->
-  <div class="mr-8">
+  <div class="mr-0.5">
     <mat-form-field >
       <input
         matInput
@@ -64,10 +65,10 @@
   <div fxLayout="row" *ngIf="!isLoading">
     <button
       mat-flat-button
-      color="accent"
+      color="primary"
       matTooltip="Listar"
       (click)="listar(1)"
-      class="m-4"
+      class="m-1"
     >
       <mat-icon>refresh</mat-icon>Listar
     </button>
@@ -77,7 +78,7 @@
       matTooltip="Crear"
       (click)="openDialog()"
       *ngIf="hasCreatePermission"
-      class="m-4"
+      class="m-1"
     >
       <mat-icon>add</mat-icon>Nuevo
     </button>
@@ -86,7 +87,7 @@
       mat-flat-button
       color="accent"
       matTooltip="Filter"
-      class="m-4"
+      class="m-1"
       *ngIf="plantilla && plantilla.estados"
       (click)="isFiltering = !isFiltering"
     >
@@ -112,7 +113,7 @@
       <button
         mat-flat-button
         color="accent"
-        class="m-4"
+        class="m-1"
         [matMenuTriggerFor]="userMenuList"
       >
         <mat-icon>print</mat-icon>Imprimir
@@ -132,8 +133,8 @@
   <!-- Filtro por Estados  -->
   <form [formGroup]="form">
     <div fxLayout="row wrap" *ngIf="plantilla?.estados && isFiltering">
-      <div *ngFor="let _estado of plantilla.estados" class="mr-4">
-        <mat-checkbox class="mr-8" [formControlName]="_estado.llaveTabla">
+      <div *ngFor="let _estado of plantilla.estados" class="mr-1">
+        <mat-checkbox class="mr-1" [formControlName]="_estado.llaveTabla">
           <span class="text-small">{{ _estado.nombre }}</span>
         </mat-checkbox>
         <div
@@ -260,7 +261,7 @@
     <th mat-header-cell *matHeaderCellDef>CODIGO</th>
     <td mat-cell *matCellDef="let element">
       <a (click)="$event.stopPropagation();openDocument(element)">
-        <mat-icon class="ml-4" inline="true">open_in_new</mat-icon>
+        <mat-icon class="ml-1" inline="true">open_in_new</mat-icon>
         <span class="mat-caption">{{ element.nombre }}</span>
       </a>
     </td>
@@ -277,7 +278,7 @@
     <td mat-cell *matCellDef="let element">
       <div class="card-title-text" fxLayout="row" *ngIf="element.dinero">
         <!-- <span fxFlex>{{element.dinero.valorCampo | currency}}</span> -->
-        <span class="pr-4">{{ element.dinero.valorTotal | currency }}</span>
+        <span class="pr-1">{{ element.dinero.valorTotal | currency }}</span>
       </div>
     </td>
   </ng-container>
@@ -335,7 +336,7 @@
 <!-- Paginador -->
 <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 <a *ngIf="!isLoading && !isEnd" (click)="listar(pagina)">
-  <div class="py-4" fxLayout="column" fxLayoutAlign="center center">
+  <div class="py-1" fxLayout="column" fxLayoutAlign="center center">
     <mat-card
       class="text-center"
       fxLayout="row"
@@ -359,4 +360,6 @@
   >
   <span fxFlex>Total : {{ dataProvider?.length }}</span>
   <span>Puedes usar los filtros para mejorar tu busqueda</span>
+</div>
+
 </div>

@@ -58,15 +58,15 @@ import { VotarComponent } from './views/survey/votar/votar.component';
 import { IndicatorsComponent } from './views/main/indicators/indicators.component';
 
 const routerConfig: ExtraOptions = {
-    preloadingStrategy       : PreloadAllModules,
-    scrollPositionRestoration: 'enabled'
+  preloadingStrategy: PreloadAllModules,
+  scrollPositionRestoration: 'enabled'
 };
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        TextoComponent,
-        ArchivoComponent,
+  declarations: [
+    AppComponent,
+    TextoComponent,
+    ArchivoComponent,
     BinarioComponent,
     ConfiguracionComponent,
     CroquisComponent,
@@ -93,70 +93,69 @@ const routerConfig: ExtraOptions = {
     ConfigComponent,
     VotarComponent,
     IndicatorsComponent
-    ],
-    imports     : [
-        CommonModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot(appRoutes, routerConfig),
+  ],
+  imports: [
+    CommonModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot(appRoutes, routerConfig),
 
-        // Fuse, FuseConfig & FuseMockAPI
-        FuseModule,
-        FuseConfigModule.forRoot(appConfig),
-        FuseMockApiModule.forRoot(mockApiServices),
+    // Fuse, FuseConfig & FuseMockAPI
+    FuseModule,
+    FuseConfigModule.forRoot(appConfig),
+    FuseMockApiModule.forRoot(mockApiServices),
 
-        // Core module of your application
-        CoreModule,
-        FlexLayoutModule,
-        // Layout module of your application
-        LayoutModule,
+    // Core module of your application
+    CoreModule,
+    FlexLayoutModule,
+    // Layout module of your application
+    LayoutModule,
 
-        // 3rd party modules that require global configuration via forRoot
-        SharedModule,
-        SharedMaterialModule,
+    // 3rd party modules that require global configuration via forRoot
+    SharedModule,
+    SharedMaterialModule,
 
-        ReactiveFormsModule,
-        FormsModule,
-        DragDropModule,
-        
-        NgxMatTimepickerModule,
-        NgxMatDatetimePickerModule,
-        NgxCurrencyModule,
-        SignaturePadModule,
-        ZXingScannerModule,
+    ReactiveFormsModule,
+    FormsModule,
+    DragDropModule,
 
-        BrowserModule,
+    NgxMatTimepickerModule,
+    NgxMatDatetimePickerModule,
+    NgxCurrencyModule,
+    SignaturePadModule,
+    ZXingScannerModule,
+
+    BrowserModule,
     BrowserAnimationsModule,
     SharedModule,
     SharedMaterialModule,
     HttpClientModule,
     ChartsModule,
-    ],
-    providers: [
-        { provide: ErrorHandler, useClass: ErrorHandlerService },
-        // REQUIRED IF YOU USE JWT AUTHENTICATION
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: TokenInterceptor,
-          multi: true,
-        },{
-          provide: HTTP_INTERCEPTORS,
-          useClass: HttpErrorInterceptor,
-          multi: true,
-        },
-        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
-        {
-      
-            provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-            useValue: {
-              appearance: 'outline'
-            }
-        }
-      ],
-    bootstrap   : [
-        AppComponent
-    ]
+  ],
+  providers: [
+    { provide: ErrorHandler, useClass: ErrorHandlerService },
+    // REQUIRED IF YOU USE JWT AUTHENTICATION
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    }, {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true,
+    },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    {
+
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        appearance: 'outline'
+      }
+    }
+  ],
+  bootstrap: [
+    AppComponent
+  ]
 })
-export class AppModule
-{
+export class AppModule {
 }
