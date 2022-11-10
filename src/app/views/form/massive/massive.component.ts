@@ -373,6 +373,7 @@ export class MassiveComponent implements OnInit {
     let documentosNewsFromXML: PedidoVentaDTO[] = [];
     let pedido: PedidoVentaDTO;
     let indexInicialProcesar = 0;
+    let map = new Map();
     if (!(source instanceof HTMLCollection)) {
       indexInicialProcesar = 1;
     }
@@ -435,6 +436,31 @@ export class MassiveComponent implements OnInit {
         pedido.caracteristicas.push(campo);
       }
       documentosNewsFromXML.push(pedido);
+    }
+    if (source instanceof HTMLCollection) {
+      const camposTexto = source[0].children;
+      for (let j = 0; j < camposTexto.length; j++) {
+        const nombreCampoXML = this.formatStringXML(
+          camposTexto[j].localName
+        );
+        map.set(nombreCampoXML, true);
+      }
+    } else {
+      for (let j = 0; j < source[0].length; j++) {
+        const nombreCampoXML = this.formatStringXML(source[0][j]);
+        map.set(nombreCampoXML, true);
+      }
+    }
+    for (let k = 0; k < template.caracteristicas.length; k++) {
+      const iCampo = template.caracteristicas[k];
+      map.delete(this.formatStringXML(iCampo.nombre));
+    }
+    if(map.size > 0) {
+      let camposSinValidar = '';
+      for (let key of map.keys()) {
+        camposSinValidar = key + ", "+ camposSinValidar;
+      }
+      Swal.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar , "warning");
     }
     return documentosNewsFromXML;
   }
