@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { PedidoVentaDTO } from 'app/model/sw42.domain';
-import { PedidoVentaFilterDTO } from 'app/model/sw42.filter';
-import { ApiService } from 'app/service/api.service';
-import { TemplateService } from 'app/service/template.service';
-import { UtilsService } from 'app/service/utils.service';
+import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
+import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-search-input-over',

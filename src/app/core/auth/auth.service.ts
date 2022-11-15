@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
-import { UsuarioAutenticacionFilterDTO } from 'app/model/sw42.filter';
+import { UsuarioAutenticacionFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { environment } from 'environments/environment';
-import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioDTO } from 'app/model/sw42.domain';
+import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/services/local-store.service';
 import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
 import { ShortcutsService } from 'app/layout/common/shortcuts/shortcuts.service';
-import { ApiService } from 'app/service/api.service';
+import { ApiService } from 'app/modules/full/neuron/service/api.service';
 
 @Injectable()
 export class AuthService

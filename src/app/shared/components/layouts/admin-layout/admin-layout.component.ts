@@ -13,7 +13,7 @@ import { LayoutService } from '../../../services/layout.service';
 import { filter } from 'rxjs/operators';
 import { JwtAuthService } from '../../../services/auth/jwt-auth.service';
 import { NavigationService } from 'app/shared/services/navigation.service';
-import { TemplateService } from 'app/service/template.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import Swal from 'sweetalert2';
 
 @Component({

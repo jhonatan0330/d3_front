@@ -4,8 +4,8 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton } from '@angular/material/button';
 import { Subject, takeUntil } from 'rxjs';
 import { ShortcutsService } from 'app/layout/common/shortcuts/shortcuts.service';
-import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/model/sw42.domain';
-import { UtilsService } from 'app/service/utils.service';
+import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 
 
 @Component({

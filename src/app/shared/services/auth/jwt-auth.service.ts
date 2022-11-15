@@ -8,13 +8,12 @@ import {
   UsuarioAutenticacionDTO,
   OrganizacionDTO,
   UsuarioOrganizacionDTO,
-} from '../../../model/sw42.domain';
+} from 'app/modules/full/neuron/model/sw42.domain';
 import {
   UsuarioAutenticacionFilterDTO,
-} from '../../../model/sw42.filter';
+} from 'app/modules/full/neuron/model/sw42.filter';
 import { of, BehaviorSubject, throwError } from 'rxjs';
 import { environment } from 'environments/environment';
-import { core } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',

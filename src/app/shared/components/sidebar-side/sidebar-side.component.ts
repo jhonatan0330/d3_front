@@ -4,7 +4,7 @@ import { ThemeService } from '../../services/theme.service';
 import { Subscription } from 'rxjs';
 import { ILayoutConf, LayoutService } from 'app/shared/services/layout.service';
 import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
-import { TemplateService } from 'app/service/template.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { environment } from 'environments/environment';
 
 @Component({

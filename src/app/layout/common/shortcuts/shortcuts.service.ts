@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, ReplaySubject, switchMap, take, tap } from 'rxjs';
-import { DocumentoPlantillaDTO } from 'app/model/sw42.domain';
-import { TemplateService } from 'app/service/template.service';
+import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 @Injectable({
     providedIn: 'root'

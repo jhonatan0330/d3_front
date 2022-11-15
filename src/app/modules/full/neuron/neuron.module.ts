@@ -1,0 +1,93 @@
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { FuseCardModule } from '@fuse/components/card';
+import { SharedModule } from 'app/shared/shared.module';
+
+import { VotarComponent } from './views/survey/votar/votar.component';
+import { ConfigComponent } from './views/survey/config/config.component';
+import { TemplateComponent } from './main/render/template/template.component';
+import { FormComponent } from './form/form.component';
+import { CrudsComponent } from './views/cruds/cruds.component';
+import { MainComponent } from './main/main.component';
+import { MassiveComponent } from './form/massive/massive.component';
+import { ArchivoComponent } from './form/controls/archivo/archivo.component';
+import { DetalleComponent } from './form/controls/detalle/detalle.component';
+import { ProcesoComponent } from './form/controls/proceso/proceso.component';
+import { ProductoListaComponent } from './form/controls/producto-lista/producto-lista.component';
+import { CatalogComponent } from './form/catalog/catalog.component';
+import { TextoComponent } from './form/controls/texto/texto.component';
+import { BinarioComponent } from './form/controls/binario/binario.component';
+import { ConfiguracionComponent } from './form/controls/configuracion/configuracion.component';
+import { CroquisComponent } from './form/controls/croquis/croquis.component';
+import { DisponibilidadComponent } from './form/controls/disponibilidad/disponibilidad.component';
+import { FechaComponent } from './form/controls/fecha/fecha.component';
+import { NumeroComponent } from './form/controls/numero/numero.component';
+import { SeccionComponent } from './form/controls/seccion/seccion.component';
+import { BaseComponent } from './form/controls/base/base.component';
+import { ProductComponent } from './form/controls/detalle/product/product.component';
+import { GpsComponent } from './form/controls/gps/gps.component';
+import { neuronRoutes } from './neuron.routing';
+import { SharedMaterialModule } from 'app/shared/shared-material.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { NgxCurrencyModule } from 'ngx-currency';
+import { SignaturePadModule } from 'angular2-signaturepad';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+
+
+@NgModule({
+    declarations: [
+        TextoComponent,
+        ArchivoComponent,
+        BinarioComponent,
+        ConfiguracionComponent,
+        CroquisComponent,
+        DetalleComponent,
+        DisponibilidadComponent,
+        FechaComponent,
+        NumeroComponent,
+        ProcesoComponent,
+        ProductoListaComponent,
+        SeccionComponent,
+        BaseComponent,
+        MassiveComponent,
+        ProductComponent,
+        CatalogComponent,
+        GpsComponent,
+        MainComponent,
+        CrudsComponent,
+        FormComponent,
+        TemplateComponent,
+        ConfigComponent,
+        VotarComponent
+    ],
+    imports: [
+        RouterModule.forChild(neuronRoutes),
+        MatButtonModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatMenuModule,
+        MatTooltipModule,
+        FuseCardModule,
+        SharedModule,
+        SharedMaterialModule,
+        FlexLayoutModule,
+        NgxMatTimepickerModule,
+        NgxMatDatetimePickerModule,
+        NgxCurrencyModule,
+        SignaturePadModule,
+        ZXingScannerModule,
+
+    ]
+})
+export class NeuronModule {
+}

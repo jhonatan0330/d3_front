@@ -1,7 +1,7 @@
 import {
   DocumentoPlantillaCaracteristicaDTO,
   PropiedadDTO,
-} from '../../model/sw42.domain';
+} from 'app/modules/full/neuron/model/sw42.domain';
 
 export class PlantillaHelper {
   /*******************GENERALES***************/

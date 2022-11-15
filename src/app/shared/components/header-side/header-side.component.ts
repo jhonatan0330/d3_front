@@ -2,10 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { LayoutService } from '../../services/layout.service';
 import { JwtAuthService } from '../../services/auth/jwt-auth.service';
-import { TemplateService } from 'app/service/template.service';
-import { ApiService } from 'app/service/api.service';
-import { UtilsService } from 'app/service/utils.service';
-import { NotificacionService } from 'app/service/notificacion.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { NotificacionService } from 'app/modules/full/neuron/service/notificacion.service';
 
 @Component({
   selector: 'app-header-side',

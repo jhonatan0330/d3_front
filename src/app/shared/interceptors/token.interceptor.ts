@@ -9,7 +9,7 @@ import {
 import { Observable } from 'rxjs';
 import { JwtAuthService } from '../services/auth/jwt-auth.service';
 import { map } from 'rxjs/operators';
-import { TemplateService } from 'app/service/template.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {

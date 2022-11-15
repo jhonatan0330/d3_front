@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { ActividadDTO } from 'app/model/sw42.domain';
-import { NotificacionService } from 'app/service/notificacion.service';
-import { TemplateService } from 'app/service/template.service';
+import { ActividadDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { NotificacionService } from 'app/modules/full/neuron/service/notificacion.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 @Component({
   selector: 'app-notifications',

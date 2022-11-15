@@ -15,9 +15,9 @@ import { SharedDirectivesModule } from './directives/shared-directives.module';
 
 @NgModule({
   imports: [
-  CommonModule,
-  FormsModule,
-  ReactiveFormsModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     SharedComponentsModule,
     SharedPipesModule,
     SharedDirectivesModule
@@ -31,14 +31,13 @@ import { SharedDirectivesModule } from './directives/shared-directives.module';
   ],
   exports: [
     CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ImageFormatPipe,
+    FormsModule,
+    ReactiveFormsModule,
+    ImageFormatPipe,
     SharedComponentsModule,
     SharedPipesModule,
     SharedDirectivesModule
   ]
 })
-export class SharedModule 
-{ 
+export class SharedModule {
 }

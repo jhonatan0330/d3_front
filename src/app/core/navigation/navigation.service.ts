@@ -4,7 +4,7 @@ import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/core/navigation/navigation.types';
 import { FuseNavigationItem } from '@fuse/components/navigation';
 import { compactNavigation, defaultNavigation, futuristicNavigation, horizontalNavigation } from 'app/core/navigation/data';
-import { DocumentoPlantillaDTO } from 'app/model/sw42.domain';
+import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 
 @Injectable({
     providedIn: 'root'

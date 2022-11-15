@@ -1,28 +1,28 @@
-import { ArchivoComponent } from '../../views/form/controls/archivo/archivo.component';
-import { BinarioComponent } from '../../views/form/controls/binario/binario.component';
-import { CroquisComponent } from '../../views/form/controls/croquis/croquis.component';
-import { FechaComponent } from '../../views/form/controls/fecha/fecha.component';
-import { NumeroComponent } from '../../views/form/controls/numero/numero.component';
-import { DetalleComponent } from '../../views/form/controls/detalle/detalle.component';
-import { ProcesoComponent } from '../../views/form/controls/proceso/proceso.component';
-import { SeccionComponent } from '../../views/form/controls/seccion/seccion.component';
-import { TextoComponent } from '../../views/form/controls/texto/texto.component';
-import { ConfiguracionComponent } from '../../views/form/controls/configuracion/configuracion.component';
-import { DisponibilidadComponent } from '../../views/form/controls/disponibilidad/disponibilidad.component';
-import { DocumentoPlantillaCaracteristicaEnum } from '../../model/sw42.enum';
+import { BinarioComponent } from 'app/modules/full/neuron/form/controls/binario/binario.component';
+import { CroquisComponent } from 'app/modules/full/neuron/form/controls/croquis/croquis.component';
+import { FechaComponent } from 'app/modules/full/neuron/form/controls/fecha/fecha.component';
+import { NumeroComponent } from 'app/modules/full/neuron/form/controls/numero/numero.component';
+import { DetalleComponent } from 'app/modules/full/neuron/form//controls/detalle/detalle.component';
+import { ProcesoComponent } from 'app/modules/full/neuron/form//controls/proceso/proceso.component';
+import { SeccionComponent } from 'app/modules/full/neuron/form/controls/seccion/seccion.component';
+import { TextoComponent } from 'app/modules/full/neuron/form/controls/texto/texto.component';
+import { ConfiguracionComponent } from 'app/modules/full/neuron/form/controls/configuracion/configuracion.component';
+import { DisponibilidadComponent } from 'app/modules/full/neuron/form/controls/disponibilidad/disponibilidad.component';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import {
   DocumentoPlantillaCaracteristicaDTO,
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
-} from '../../model/sw42.domain';
+} from 'app/modules/full/neuron/model/sw42.domain';
 import { Type } from '@angular/core';
 
 import { formatDate } from '@angular/common';
 import { PlantillaHelper } from './plantilla-helper';
 import * as moment from 'moment';
-import { ProductoListaComponent } from 'app/views/form/controls/producto-lista/producto-lista.component';
-import { GpsComponent } from 'app/views/form/controls/gps/gps.component';
+import { ProductoListaComponent } from 'app/modules/full/neuron/form/controls/producto-lista/producto-lista.component';
+import { GpsComponent } from 'app/modules/full/neuron/form/controls/gps/gps.component';
 import Swal from 'sweetalert2';
+import { ArchivoComponent } from 'app/modules/full/neuron/form/controls/archivo/archivo.component';
 
 
 export function getFieldFromTemplate(template:DocumentoPlantillaDTO, fieldId:String): DocumentoPlantillaCaracteristicaDTO{
