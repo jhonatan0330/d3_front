@@ -17,7 +17,6 @@ import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.compon
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
-import { EgretSidebarComponent, EgretSidebarTogglerDirective } from './egret-sidebar/egret-sidebar.component';
 
 const components = [
   SidenavComponent,
@@ -25,10 +24,7 @@ const components = [
   SidebarSideComponent,
   HeaderSideComponent,
   AdminLayoutComponent,
-  AuthLayoutComponent,
-  EgretSidebarComponent,
-  EgretSidebarTogglerDirective,
-  EgretSidebarTogglerDirective
+  AuthLayoutComponent
 ]
 
 @NgModule({

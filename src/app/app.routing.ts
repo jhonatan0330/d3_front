@@ -9,9 +9,9 @@ import { InitialDataResolver } from 'app/app.resolvers';
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const appRoutes: Route[] = [
 
-  // Redirect empty path to '/profile'
-  { path: '', pathMatch: 'full', redirectTo: '/profile' },
-  { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/profile' },
+  // Redirect empty path to '/main'
+  { path: '', pathMatch: 'full', redirectTo: '/main' },
+  { path: 'signed-in-redirect', pathMatch: 'full', redirectTo: '/main' },
 
   // Auth routes for guests
   {
@@ -55,7 +55,7 @@ export const appRoutes: Route[] = [
       initialData: InitialDataResolver,
     },
     children: [
-      { path: 'view', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
+      { path: 'main', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
       { path: 'profile', loadChildren: () => import('app/modules/admin/dashboards/profile/profile.module').then(m => m.ProfileModule) },
       // 404 & Catch all
       { path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/modules/admin/pages/error/error-404/error-404.module').then(m => m.Error404Module) },

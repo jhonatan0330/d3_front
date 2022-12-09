@@ -23,7 +23,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { SessionsModule } from './modules/full/sessions/sessions.module';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -61,8 +60,7 @@ const routerConfig: ExtraOptions = {
 
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule,
-    SessionsModule
+    HttpClientModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: ErrorHandlerService },

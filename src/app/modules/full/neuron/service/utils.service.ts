@@ -4,8 +4,6 @@ import { DetallePedidoVentaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/m
 import { CatalogComponent } from 'app/modules/full/neuron/form/catalog/catalog.component';
 import { ProductComponent } from 'app/modules/full/neuron/form/controls/detalle/product/product.component';
 import { FormComponent } from 'app/modules/full/neuron/form/form.component';
-import { ChangePictureComponent } from 'app/modules/full/sessions/change-picture/change-picture.component';
-import { ChangePwdComponent } from '../../sessions/change-pwd/change-pwd.component';
 
 @Injectable({
   providedIn: 'root',
@@ -40,24 +38,6 @@ export class UtilsService {
       maxHeight: '90vh',
       disableClose: true,
       data: { data: pDataModal},
-    });
-    return dialogRef.afterClosed();
-  }
-
-  modalChangePwd( ) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(ChangePwdComponent, {
-      //width: '720px',
-      maxHeight: '90vh',
-      disableClose: false,
-    });
-    return dialogRef.afterClosed();
-  }
-
-  modalChangePicture( ) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(ChangePictureComponent, {
-      //width: '720px',
-      maxHeight: '90vh',
-      disableClose: false,
     });
     return dialogRef.afterClosed();
   }

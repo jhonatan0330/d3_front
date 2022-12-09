@@ -11,24 +11,20 @@ export const neuronRoutes: Route[] = [
         component: MainComponent
       },
       {
-        path: '/:type/:id',
-        component: MainComponent,
-        data: { title: '', breadcrumb: 'MENU PRINCIPAL' }
+        path: ':type/:id',
+        component: MainComponent
       },
       {
         path: 'list/:type/:id',
-        component: CrudsComponent,
-        data: { title: '', breadcrumb: 'MENU 2' }
+        component: CrudsComponent
       },
       {
         path: 'list/:type/:id/:server_id',
-        component: CrudsComponent,
-        data: { title: '', breadcrumb: 'MENU 2' }
+        component: CrudsComponent
       },
       {
         path: 'UIVotante',
-        component: ConfigComponent,
-        data: { title: '', breadcrumb: 'MENU 2' }
+        component: ConfigComponent
       },
       {
         path: 'UIVotacion',

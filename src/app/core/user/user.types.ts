@@ -7,6 +7,7 @@ export interface User
     company?: string;
     companyName?: string;
     companySlogan?: string;
+    companyImage?: string;
     avatar?: string;
     status?: string;
 }

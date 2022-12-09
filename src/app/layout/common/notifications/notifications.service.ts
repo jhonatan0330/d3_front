@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { Notification } from 'app/layout/common/notifications/notifications.types';
+import { ApiService } from 'app/modules/full/neuron/service/api.service';
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,7 @@ export class NotificationsService
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient)
+    constructor(private apiService: ApiService)
     {
     }
 
@@ -38,11 +39,13 @@ export class NotificationsService
      */
     getAll(): Observable<Notification[]>
     {
-        return this._httpClient.get<Notification[]>('api/common/notifications').pipe(
+        /*
+        return this.apiService.listUserActivities(null).pipe(
             tap((notifications) => {
                 this._notifications.next(notifications);
             })
-        );
+        );*/
+        return null;
     }
 
     /**
@@ -52,6 +55,7 @@ export class NotificationsService
      */
     create(notification: Notification): Observable<Notification>
     {
+        /*
         return this.notifications$.pipe(
             take(1),
             switchMap(notifications => this._httpClient.post<Notification>('api/common/notifications', {notification}).pipe(
@@ -64,7 +68,8 @@ export class NotificationsService
                     return newNotification;
                 })
             ))
-        );
+        );*/
+        return null;
     }
 
     /**
@@ -75,6 +80,7 @@ export class NotificationsService
      */
     update(id: string, notification: Notification): Observable<Notification>
     {
+        /*
         return this.notifications$.pipe(
             take(1),
             switchMap(notifications => this._httpClient.patch<Notification>('api/common/notifications', {
@@ -97,42 +103,17 @@ export class NotificationsService
                 })
             ))
         );
+        */
+       return null;
     }
 
-    /**
-     * Delete the notification
-     *
-     * @param id
-     */
-    delete(id: string): Observable<boolean>
-    {
-        return this.notifications$.pipe(
-            take(1),
-            switchMap(notifications => this._httpClient.delete<boolean>('api/common/notifications', {params: {id}}).pipe(
-                map((isDeleted: boolean) => {
-
-                    // Find the index of the deleted notification
-                    const index = notifications.findIndex(item => item.id === id);
-
-                    // Delete the notification
-                    notifications.splice(index, 1);
-
-                    // Update the notifications
-                    this._notifications.next(notifications);
-
-                    // Return the deleted status
-                    return isDeleted;
-                })
-            ))
-        );
-    }
 
     /**
      * Mark all notifications as read
      */
     markAllAsRead(): Observable<boolean>
     {
-        return this.notifications$.pipe(
+        /*return this.notifications$.pipe(
             take(1),
             switchMap(notifications => this._httpClient.get<boolean>('api/common/notifications/mark-all-as-read').pipe(
                 map((isUpdated: boolean) => {
@@ -149,6 +130,7 @@ export class NotificationsService
                     return isUpdated;
                 })
             ))
-        );
+        );*/
+        return null;
     }
 }

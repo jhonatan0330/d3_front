@@ -1,26 +1,4 @@
 <div class="flex flex-col flex-auto min-w-0">
-<!-- Introduccion -->
-<mat-card class="p-6">
-  <div fxLayout="row wrap">
-    <div fxFlex="100" fxFlex.gt-sm="70" fxFlex.sm="50">
-      <mat-card-title>Bienvenid@ {{ jwtAuth?.user?.nombre }}</mat-card-title>
-      <div class="p-1 w-full d-flex flex-row blue-100 rounded">
-        <p class="text-small">Para nosotros es un gusto tenerte de nuevo.</p>
-        <p class="text-small">
-          Esta es nuestra nueva interfaz mas dinamica y disponible para que uses
-          en tu dispositivo movil
-        </p>
-        <p class="text-small">
-          Cualquier duda comunicate con nuestra area de soporte y con gusto te
-          ayudaremos
-        </p>
-      </div>
-    </div>
-    <div fxFlex="100" fxFlex.gt-sm="30" fxFlex.sm="50" class="p-6">
-      <img src="{{ jwtAuth?.company?.imagen }}" alt="" class="app-logo" />
-    </div>
-  </div>
-</mat-card>
 <!-- Tableros de control -->
 <mat-card *ngIf="tableros && tableros.length !== 0">
   <mat-card-title>Tableros de control</mat-card-title>

@@ -6,7 +6,7 @@
         <!-- Cover image -->
         <div>
             <img
-                class="h-40 lg:h-80 object-cover"
+                class="h-40 lg:h-80 object-cover w-full"
                 src="assets/images/pages/profile/cover.jpg"
                 alt="Cover image">
         </div>
@@ -17,15 +17,15 @@
             <!-- Avatar -->
             <div class="-mt-26 lg:-mt-22 rounded-full">
                 <img
-                    class="w-32 h-32 rounded-full ring-4 ring-bg-card"
-                    src="assets/images/avatars/male-04.jpg"
+                    class="w-32 max-h-32 rounded-full ring-4 ring-bg-card"
+                    [src]="user?.companyImage"
                     alt="User avatar">
             </div>
 
             <!-- Details -->
             <div class="flex flex-col items-center lg:items-start mt-4 lg:mt-0 lg:ml-8">
-                <div class="text-lg font-bold leading-none">Brian Hughes</div>
-                <div class="text-secondary">London, UK</div>
+                <div class="text-lg font-bold leading-none">{{ user?.companyName }}</div>
+                <div class="text-secondary">{{ user?.companySlogan }}</div>
             </div>
 
             <!-- Separator -->

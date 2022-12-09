@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { FuseNavigationModule } from '@fuse/components/navigation';
 import { FuseFullscreenModule } from '@fuse/components/fullscreen/fullscreen.module';
-import { MessagesModule } from 'app/layout/common/messages/messages.module';
 import { NotificationsModule } from 'app/layout/common/notifications/notifications.module';
 import { SearchModule } from 'app/layout/common/search/search.module';
 import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
@@ -28,7 +27,6 @@ import { ClassyLayoutComponent } from 'app/layout/layouts/vertical/classy/classy
         MatMenuModule,
         FuseFullscreenModule,
         FuseNavigationModule,
-        MessagesModule,
         NotificationsModule,
         SearchModule,
         ShortcutsModule,

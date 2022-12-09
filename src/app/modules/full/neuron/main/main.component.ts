@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { egretAnimations } from 'app/shared/animations/egret-animations';
 import {
   DocumentoPlantillaDTO,
   OrganizacionDTO,
@@ -21,9 +20,7 @@ import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 
 @Component({
   selector: 'app-main',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.scss'],
-  animations: egretAnimations,
+  templateUrl: './main.component.html'
 })
 export class MainComponent implements OnInit, OnDestroy {
   modules: DocumentoPlantillaDTO[] = [];
@@ -40,8 +37,7 @@ export class MainComponent implements OnInit, OnDestroy {
     private templateService: TemplateService,
     public jwtAuth: JwtAuthService,
     private route: ActivatedRoute,
-    private utilsService: UtilsService,
-    private notificationService: NotificacionService
+    private utilsService: UtilsService
   ) {}
 
   ngOnInit(): void {
@@ -141,9 +137,7 @@ export class MainComponent implements OnInit, OnDestroy {
           this.handlerLoginOther(element.token, element.servidorUrl);
         }
       }
-    } else {
-      this.notificationService.getNotifications();
-    }
+    } 
   }
 
   logInOtherSystem(element: OrganizacionDTO, reloadPassword: Boolean = false){
@@ -232,7 +226,6 @@ export class MainComponent implements OnInit, OnDestroy {
         break;
       }
     }
-    this.notificationService.getNotifications();
   }
 
   openFormLink() {

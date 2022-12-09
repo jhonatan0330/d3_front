@@ -163,6 +163,7 @@ export class AuthService
             company: response.organizacion.imagen,
             companyName: response.organizacion.nombre,
             companySlogan: response.organizacion.slogan,
+            companyImage: response.organizacion.imagen,
             avatar: response.usuarioDTO.imagen
         };
 

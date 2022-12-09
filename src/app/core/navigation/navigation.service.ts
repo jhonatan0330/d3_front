@@ -4,7 +4,6 @@ import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/core/navigation/navigation.types';
 import { FuseNavigationItem } from '@fuse/components/navigation';
 import { compactNavigation, defaultNavigation, futuristicNavigation, horizontalNavigation } from 'app/core/navigation/data';
-import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 
 @Injectable({
     providedIn: 'root'
@@ -41,21 +40,7 @@ export class NavigationService
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Get all navigation data
-     */
-    /*get(): Observable<void>
-    {
-        return this._httpClient.get<DocumentoPlantillaDTO[]>(this.ls.getUrlAccess('/template/getTemplates')).pipe(
-            map((response) => {
-                const navigation = this.generate(response);
-                this._navigation.next(navigation);
-            })
-        );
-    }*/
-
     generate() {
-
         // Fill compact navigation children using the default navigation
         this._compactNavigation.forEach((compactNavItem) => {
             this._defaultNavigation.forEach((defaultNavItem) => {

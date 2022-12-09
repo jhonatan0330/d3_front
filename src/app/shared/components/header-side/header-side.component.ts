@@ -82,11 +82,11 @@ export class HeaderSideComponent implements OnInit {
   }
 
   changePwd() {
-    this.utilService.modalChangePwd();
+    // this.utilService.modalChangePwd();
   }
 
   changePicture() {
-    this.utilService.modalChangePicture();
+    // this.utilService.modalChangePicture();
   }
 
   getFullTemplates() {
