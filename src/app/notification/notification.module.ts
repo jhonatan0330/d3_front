@@ -5,12 +5,12 @@ import { PortalModule } from '@angular/cdk/portal';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { NotificationsComponent } from 'app/layout/common/notifications/notifications.component';
 import { SharedModule } from 'app/shared/shared.module';
+import { NotificationButtonComponent } from './notification-button/notification-button.component';
 
 @NgModule({
     declarations: [
-        NotificationsComponent
+        NotificationButtonComponent
     ],
     imports     : [
         RouterModule,
@@ -22,7 +22,7 @@ import { SharedModule } from 'app/shared/shared.module';
         SharedModule
     ],
     exports     : [
-        NotificationsComponent
+        NotificationButtonComponent
     ]
 })
 export class NotificationsModule

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, ReplaySubject, switchMap, take, tap } from 'rxjs';
-import { Notification } from 'app/layout/common/notifications/notifications.types';
+import { Notification } from 'app/notification/notification.types';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 
 @Injectable({

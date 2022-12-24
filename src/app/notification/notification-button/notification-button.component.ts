@@ -3,17 +3,17 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton } from '@angular/material/button';
 import { Subject, takeUntil } from 'rxjs';
-import { Notification } from 'app/layout/common/notifications/notifications.types';
-import { NotificationsService } from 'app/layout/common/notifications/notifications.service';
+import { Notification } from 'app/notification/notification.types';
+import { NotificationsService } from 'app/notification/notification.service';
 
 @Component({
     selector       : 'notifications',
-    templateUrl    : './notifications.component.html',
+    templateUrl    : './notification-button.component.html',
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs       : 'notifications'
 })
-export class NotificationsComponent implements OnInit, OnDestroy
+export class NotificationButtonComponent implements OnInit, OnDestroy
 {
     @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;
     @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;

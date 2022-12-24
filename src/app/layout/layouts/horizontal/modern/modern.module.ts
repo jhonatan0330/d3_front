@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { FuseFullscreenModule } from '@fuse/components/fullscreen';
 import { FuseNavigationModule } from '@fuse/components/navigation';
-import { NotificationsModule } from 'app/layout/common/notifications/notifications.module';
+import { NotificationsModule } from 'app/notification/notification.module';
 import { SearchModule } from 'app/layout/common/search/search.module';
 import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';

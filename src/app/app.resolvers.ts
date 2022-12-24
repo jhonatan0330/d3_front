@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import {  forkJoin, Observable, } from 'rxjs';
 import { NavigationService } from 'app/core/navigation/navigation.service';
-import { NotificationsService } from 'app/layout/common/notifications/notifications.service';
 
 @Injectable({
     providedIn: 'root'
@@ -13,8 +12,7 @@ export class InitialDataResolver implements Resolve<any>
      * Constructor
      */
     constructor(
-        private _navigationService: NavigationService,
-        private _notificationsService: NotificationsService
+        private _navigationService: NavigationService
     )
     {
     }
@@ -32,9 +30,6 @@ export class InitialDataResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>
     {
         this._navigationService.generate();
-        // Fork join multiple API endpoint calls to wait all of them to finish
-        return forkJoin([
-            this._notificationsService.getAll()
-        ]);
+        return ;
     }
 }
