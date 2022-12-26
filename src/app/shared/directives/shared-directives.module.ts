@@ -6,8 +6,6 @@ import { ScrollToDirective } from './scroll-to.directive';
 import { AppDropdownDirective } from './dropdown.directive';
 import { DropdownAnchorDirective } from './dropdown-anchor.directive';
 import { DropdownLinkDirective } from './dropdown-link.directive';
-import { EgretSideNavToggleDirective } from './egret-side-nav-toggle.directive';
-import { EgretSidenavHelperDirective, EgretSidenavTogglerDirective } from './egret-sidenav-helper/egret-sidenav-helper.directive';
 
 
 const directives = [
@@ -16,9 +14,6 @@ const directives = [
   AppDropdownDirective,
   DropdownAnchorDirective,
   DropdownLinkDirective,
-  EgretSideNavToggleDirective,
-  EgretSidenavHelperDirective,
-  EgretSidenavTogglerDirective
 ]
 
 @NgModule({

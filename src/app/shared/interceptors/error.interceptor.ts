@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
-import { JwtAuthService } from '../services/auth/jwt-auth.service';
+import { JwtAuthService } from '../../authentication/jwt-auth.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 @Injectable({

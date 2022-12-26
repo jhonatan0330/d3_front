@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActividadDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
-import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
+import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import Swal from 'sweetalert2';
 import { ApiService } from './api.service';
 import { TemplateService } from './template.service';

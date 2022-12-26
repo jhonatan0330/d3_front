@@ -5,7 +5,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ExtraOptions, PreloadAllModules, RouterModule } from '@angular/router';
 import { FuseModule } from '@fuse';
 import { FuseConfigModule } from '@fuse/services/config';
-import { FuseMockApiModule } from '@fuse/lib/mock-api';
 import { CoreModule } from 'app/core/core.module';
 import { appConfig } from 'app/core/config/app.config';
 import { LayoutModule } from 'app/layout/layout.module';
@@ -22,6 +21,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -43,6 +43,7 @@ const routerConfig: ExtraOptions = {
     FuseConfigModule.forRoot(appConfig),
 
     // Core module of your application
+    AuthenticationModule,
     CoreModule,
     FlexLayoutModule,
     // Layout module of your application

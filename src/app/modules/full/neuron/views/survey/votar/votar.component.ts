@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
+import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { NavigationService } from 'app/shared/services/navigation.service';
 import Swal from 'sweetalert2';
 import { EncuestaDTO, EncuestaGrupoDTO, EncuestaPreguntaDTO, EncuestaOpcionRespuestaDTO, EncuestaRespuestaDTO } from 'app/modules/full/neuron/model/survey.domain';

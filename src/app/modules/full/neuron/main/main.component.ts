@@ -9,7 +9,7 @@ import {
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { JwtAuthService } from 'app/shared/services/auth/jwt-auth.service';
+import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { Subscription } from 'rxjs';
 import { NotificacionService } from 'app/modules/full/neuron/service/notificacion.service';
 import { ActivatedRoute, Params } from '@angular/router';
