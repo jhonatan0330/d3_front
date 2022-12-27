@@ -40,6 +40,7 @@ import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-mat
 import { NgxCurrencyModule } from 'ngx-currency';
 import { SignaturePadModule } from 'angular2-signaturepad';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
         FormComponent,
         TemplateComponent,
         ConfigComponent,
-        VotarComponent
+        VotarComponent,
+        ProfileComponent
     ],
     imports: [
         RouterModule.forChild(neuronRoutes),

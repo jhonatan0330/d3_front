@@ -1,0 +1,145 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Header -->
+    <div class="flex flex-col shadow bg-card">
+
+        <!-- Cover image -->
+        <div>
+            <img class="h-40 lg:h-80 object-cover w-full" src="assets/images/pages/profile/cover.jpg" alt="Cover image">
+        </div>
+
+        <!-- User info -->
+        <div class="flex flex-col flex-0 lg:flex-row items-center max-w-5xl w-full mx-auto px-8 lg:h-18 bg-card">
+
+            <!-- Avatar -->
+            <div class="-mt-12 lg:-mt-22 ">
+                <img class="w-full h-16 ring-1 ring-bg-card ring-blue-500/30" [src]="user?.companyImage"
+                    alt="User avatar">
+            </div>
+
+            <!-- Details -->
+            <div class="flex flex-col items-center lg:items-start mt-4 mb-4 lg:mt-0 lg:ml-8 lg:mb-0">
+                <div class="text-lg font-bold leading-none">{{ user?.companyName }}</div>
+                <div class="text-secondary">{{ user?.companySlogan }}</div>
+            </div>
+
+            <!-- Separator -->
+            <div class="hidden lg:flex h-8 mx-8 border-l-2"></div>
+
+
+            <!-- Menu 
+            <div class="flex items-center mt-8 mb-4 lg:m-0 lg:ml-auto space-x-6">
+                <a
+                    class="font-medium"
+                    [routerLink]="['./']">
+                    Home
+                </a>
+                <a
+                    class="text-secondary"
+                    [routerLink]="['./']">
+                    About
+                </a>
+                <a
+                    class="text-secondary"
+                    [routerLink]="['./']">
+                    Followers
+                </a>
+                <a
+                    class="text-secondary"
+                    [routerLink]="['./']">
+                    Gallery
+                </a>
+            </div>
+            -->
+
+        </div>
+
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto justify-center w-full max-w-5xl mx-auto p-6 sm:p-8">
+
+        <!-- Column -->
+        <div class="hidden lg:flex flex-col items-start mr-8">
+
+            <!-- Roles -->
+            <fuse-card class="flex flex-col max-w-80 w-full px-8 pt-6 pb-4">
+                <div class="flex items-center justify-between">
+                    <div class="text-2xl font-semibold leading-tight">Roles</div>
+                </div>
+                <div class="flex flex-col mt-5">
+                    <div class="flex">
+                        <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                        <div>Rol 1 </div>
+                    </div>
+                    <div class="flex mt-5">
+                        <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                        <div>Rol 2                    </div>
+                    </div>
+                    <div class="flex mt-5">
+                        <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
+                        <div>Rol 3                       </div>
+                    </div>
+                </div>
+            </fuse-card>
+
+
+            <!-- About me -->
+            <fuse-card class="flex flex-col max-w-80 w-full p-8 mt-8">
+                <div class="text-2xl font-semibold leading-tight">About Me</div>
+                <div class="mt-4">
+                    ....
+                </div>
+                <hr class="w-full border-t my-6">
+                <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
+                        <span class="leading-none">Colombia</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
+                        <span class="leading-none">ACME Corp. Lead UX Designer</span>
+                    </div>
+                    <div class="flex items-center mt-4">
+                        <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+                        <span class="leading-none">April, 24</span>
+                    </div>
+                </div>
+                <a class="px-6 mt-8" mat-flat-button [color]="'primary'" [routerLink]="['./']">
+                    Perfil completo
+                </a>
+            </fuse-card>
+        </div>
+
+        <!-- Column -->
+        <div class="flex flex-col items-start w-full">
+
+            <!-- Create Post -->
+            <fuse-card class="flex flex-col w-full p-6 sm:p-8 pb-6">
+                <div class="text-xl font-semibold">Consultar acciones</div>
+                <div class="flex flex-col sm:flex-row items-start mt-2">
+                    <div class="hidden sm:flex items-center" >
+                        <img class="w-12 min-w-12 h-12 rounded-full mr-4" src="{{ user?.avatar }}">
+                    </div>
+                    <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript w-full">
+                        <textarea #myInput matInput [placeholder]="'Que deseas consultar?'" [rows]="3"
+                            matTextareaAutosize (input)="filterItem(myInput.value)"></textarea>
+                    </mat-form-field>
+                </div>
+                <div class="w-full content-center">
+                    <div class="flex flex-wrap mt-5">
+                        <mat-progress-spinner class="example-margin" color="primary" mode="indeterminate"
+                            *ngIf="isLoading"></mat-progress-spinner>
+                        <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/6 mb-4" *ngFor="let template of filteredModules">
+                            <app-template [id]="template.llaveTabla" [nombre]="template.nombre" [imagen]="template.imagen"
+                                [process_id]="template.proceso" type="P"></app-template>
+                        </div>
+                    </div>
+                </div>
+            </fuse-card>
+
+        </div>
+
+    </div>
+
+</div>

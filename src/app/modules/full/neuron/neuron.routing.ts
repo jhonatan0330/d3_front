@@ -1,14 +1,15 @@
 import { Route } from '@angular/router';
 import { ConfigComponent } from 'app/modules/full/neuron/views/survey/config/config.component';
 import { MainComponent } from './main/main.component';
+import { ProfileComponent } from './profile/profile.component';
 import { CrudsComponent } from './views/cruds/cruds.component';
 import { VotarComponent } from './views/survey/votar/votar.component';
 
 export const neuronRoutes: Route[] = [
     // Golyat components
     {
-        path: '',
-        component: MainComponent
+        path: 'main',
+        component: ProfileComponent
       },
       {
         path: ':type/:id',

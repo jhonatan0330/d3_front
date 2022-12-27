@@ -55,10 +55,9 @@ export const appRoutes: Route[] = [
       initialData: InitialDataResolver,
     },
     children: [
-      { path: 'main', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
-      { path: 'profile', loadChildren: () => import('app/modules/admin/dashboards/profile/profile.module').then(m => m.ProfileModule) },
+      { path: '', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
       // 404 & Catch all
-      { path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/modules/admin/pages/error/error-404/error-404.module').then(m => m.Error404Module) },
+      { path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/layout/common/error-404/error-404.module').then(m => m.Error404Module) },
       { path: '**', redirectTo: '404-not-found' }
     ]
   },

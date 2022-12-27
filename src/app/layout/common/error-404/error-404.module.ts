@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Error404Component } from 'app/modules/admin/pages/error/error-404/error-404.component';
-import { error404Routes } from 'app/modules/admin/pages/error/error-404/error-404.routing';
+import { Error404Component } from 'app/layout/common/error-404/error-404.component';
+import { error404Routes } from 'app/layout/common/error-404/error-404.routing';
 
 @NgModule({
     declarations: [

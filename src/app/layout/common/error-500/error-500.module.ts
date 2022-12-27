@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { Error500Component } from 'app/modules/admin/pages/error/error-500/error-500.component';
-import { error500Routes } from 'app/modules/admin/pages/error/error-500/error-500.routing';
+import { Error500Component } from 'app/layout/common/error-500/error-500.component';
+import { error500Routes } from 'app/layout/common/error-500/error-500.routing';
 
 @NgModule({
     declarations: [

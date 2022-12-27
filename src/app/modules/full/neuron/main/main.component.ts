@@ -11,7 +11,6 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { Subscription } from 'rxjs';
-import { NotificacionService } from 'app/modules/full/neuron/service/notificacion.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import Swal from 'sweetalert2';
