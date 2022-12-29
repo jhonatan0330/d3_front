@@ -1,4 +1,4 @@
-import { BasicDTO } from './sw42.domain';
+import { BasicDTO } from "app/shared/domain/sw42.domain";
 
 export class EncuestaDTO extends BasicDTO {
   nombre: string;

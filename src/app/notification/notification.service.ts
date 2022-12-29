@@ -1,20 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, ReplaySubject, switchMap, take, tap } from 'rxjs';
-import { Notification } from 'app/notification/notification.types';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { Observable, ReplaySubject, tap } from 'rxjs';
+import { ActividadDTO } from 'app/notification/notification.types';
+import { LocalStoreService } from 'app/shared/services/local-store.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class NotificationsService
 {
-    private _notifications: ReplaySubject<Notification[]> = new ReplaySubject<Notification[]>(1);
+    private _notifications: ReplaySubject<ActividadDTO[]> = new ReplaySubject<ActividadDTO[]>(1);
 
-    /**
-     * Constructor
-     */
-    constructor(private apiService: ApiService)
+    constructor(private http: HttpClient,
+        private ls: LocalStoreService)
     {
     }
 
@@ -25,7 +23,7 @@ export class NotificationsService
     /**
      * Getter for notifications
      */
-    get notifications$(): Observable<Notification[]>
+    get notifications$(): Observable<ActividadDTO[]>
     {
         return this._notifications.asObservable();
     }
@@ -37,23 +35,43 @@ export class NotificationsService
     /**
      * Get all notifications
      */
-    getAll(): Observable<Notification[]>
+    getAll(_server: string): Observable<ActividadDTO[]>
     {
-        /*
-        return this.apiService.listUserActivities(null).pipe(
+        return this.http.get<ActividadDTO[]>(
+            this.ls.getUrlAccess('/document/getUserActivities', _server)
+          ).pipe(
             tap((notifications) => {
                 this._notifications.next(notifications);
             })
-        );*/
-        return null;
+        );
     }
+    /*
+      listUserActivities(_server: string): Observable<ActividadDTO[]> {
+    return this.http.get<ActividadDTO[]>(
+      this.ls.getUrlAccess('/document/getUserActivities', _server)
+    );
+  }
+
+  readActivity(actividad: ActividadDTO, _server: string): Observable<ActividadDTO> {
+    return this.http.post<ActividadDTO>(
+      this.ls.getUrlAccess('/document/readActivity', _server),
+      actividad
+    );
+  }*/
+
+  reasignar(plantilla: ActividadDTO, _server: string): Observable<ActividadDTO> {
+    return this.http.post<ActividadDTO>(
+      this.ls.getUrlAccess('/rest/reasignar', _server),
+      plantilla
+    );
+  }
 
     /**
      * Create a notification
      *
      * @param notification
      */
-    create(notification: Notification): Observable<Notification>
+    create(notification: ActividadDTO): Observable<ActividadDTO>
     {
         /*
         return this.notifications$.pipe(
@@ -78,7 +96,7 @@ export class NotificationsService
      * @param id
      * @param notification
      */
-    update(id: string, notification: Notification): Observable<Notification>
+    update(id: string, notification: ActividadDTO): Observable<ActividadDTO>
     {
         /*
         return this.notifications$.pipe(
@@ -133,4 +151,76 @@ export class NotificationsService
         );*/
         return null;
     }
+
+/*
+    getNotifications() {
+        this.apiService.listUserActivities(null).subscribe({
+          next: (n: ActividadDTO[]) => {
+            this.notifications = [];
+            this.handlerNotificationExternal(n);
+            if(this.templateService.conectionTemplates){
+              for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
+                const element = this.templateService.conectionTemplates[i];
+                this.apiService.listUserActivities(element.servidorUrl).subscribe({
+                  next: (list2: ActividadDTO[]) => {
+                    this.handlerNotificationExternal(list2, element.servidorUrl);
+                  }
+                });
+              }
+            }
+            this.showMessage();
+          }
+        });
+      }
+    
+      handlerNotificationExternal(activities: ActividadDTO[], url: string = null){
+        if(activities){
+          for (let index = 0; index < activities.length; index++) {
+            const element = activities[index];
+            if (element.documentoDTO) {
+              element.documentoDTO.serverUrl = url;
+            }
+          }
+          this.notifications = this.notifications.concat(activities);
+        }
+      }
+    
+      showMessage(){
+        if (this.notifications && this.notifications.length!==0){
+          const sinleer = this.notifications.filter(x=> !x.fechaLeido);
+          let aviso = 'Tienes (' + this.notifications.length.toString() + ') mensajes\n';
+          if(sinleer && sinleer.length!==0) { aviso = aviso + ' (' + sinleer.length.toString() + ') mensajes sin leer'; }
+          Swal.fire({
+            position: 'top-end',
+            title: aviso ,
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            backdrop: false
+          });
+          if(sinleer && sinleer.length!==0) {
+            if (PlantillaHelper.buscarPropiedad(this.jwtService.company.propiedades, PlantillaHelper.FORCE_NOTIFICATION)){
+              this.readActivity(sinleer[0]);
+             }
+          }
+        }
+      }
+    
+      openDialog(plantilla: string, id: string, server: string) {
+        const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
+        pedidoVenta.plantilla = plantilla;
+        pedidoVenta.llaveTabla = id;
+        pedidoVenta.serverUrl = server;
+        this.utilsService.modalWithParams(pedidoVenta).subscribe(() => {
+          this.getNotifications();
+        });
+      }
+    
+      readActivity(actividad: ActividadDTO) {
+        this.apiService.readActivity(actividad, actividad.documentoDTO.serverUrl).subscribe({
+          next: (n: ActividadDTO) => {
+            this.openDialog(n.documentoDTO.plantilla, n.documento, actividad.documentoDTO.serverUrl);
+          }
+        });
+      }*/
 }

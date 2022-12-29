@@ -8,7 +8,6 @@ import {
 } from '../../../../shared/services/local-store.service';
 
 import {
-  ActividadDTO,
   DocumentoPlantillaDTO,
   OrganizacionDTO,
   UsuarioAutenticacionDTO,
@@ -146,19 +145,6 @@ export class ApiService {
     );
   }
 
-  listUserActivities(_server: string): Observable<ActividadDTO[]> {
-    return this.http.get<ActividadDTO[]>(
-      this.ls.getUrlAccess('/document/getUserActivities', _server)
-    );
-  }
-
-  readActivity(actividad: ActividadDTO, _server: string): Observable<ActividadDTO> {
-    return this.http.post<ActividadDTO>(
-      this.ls.getUrlAccess('/document/readActivity', _server),
-      actividad
-    );
-  }
-
   listarDocumentosFull(): Observable<DocumentoPlantillaDTO[]> {
     return this.http.get<DocumentoPlantillaDTO[]>(
       this.ls.getUrlAccess('/main/getAdministratorTemplates')
@@ -210,13 +196,6 @@ export class ApiService {
     return this.http.post<PedidoVentaCaracteristicaFilterDTO>(
       this.ls.getUrlAccess('/rest/consultarDatosBase', _server),
       campo
-    );
-  }
-
-  reasignar(plantilla: ActividadDTO, _server: string): Observable<ActividadDTO> {
-    return this.http.post<ActividadDTO>(
-      this.ls.getUrlAccess('/rest/reasignar', _server),
-      plantilla
     );
   }
 

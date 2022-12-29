@@ -1,7 +1,4 @@
-export class BasicDTO {
-  llaveTabla: string;
-  estado: string;
-}
+import { BasicDTO } from "app/shared/domain/sw42.domain";
 
 export class BasicParamDTO extends BasicDTO {
   propiedades: PropiedadDTO[];
@@ -155,26 +152,7 @@ export class PedidoVentaDineroDTO extends BasicDTO {
   saldo: number;
   valorCampo: number;
 }
-export class ActividadDTO extends BasicDTO {
-  responsable: string;
-  responsableIdentificacion: string;
-  responsableNombre: string;
-  documento: string;
-  documentoDTO: PedidoVentaDTO;
-  responsableFoto: string;
-  comentario: string;
-  fechaArrancar: Date;
-  fechaRegistro: Date;
-  usuarioRegistro: string;
-  fechaInactivo: Date;
-  fechaTerminar: Date;
-  fechaLimite: Date;
-  usuarioInactivo: string;
-  duracion: number;
-  actividadPrevia: string;
-  actividadSiguiente: string;
-  fechaLeido: Date;
-}
+
 export class PropiedadDTO extends BasicDTO {
   propiedadValor: string;
   tipo: string;

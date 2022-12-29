@@ -3,8 +3,9 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton } from '@angular/material/button';
 import { Subject, takeUntil } from 'rxjs';
-import { Notification } from 'app/notification/notification.types';
+import { ActividadDTO } from 'app/notification/notification.types';
 import { NotificationsService } from 'app/notification/notification.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 @Component({
     selector       : 'notifications',
@@ -18,7 +19,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
     @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;
     @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;
 
-    notifications: Notification[];
+    notifications: ActividadDTO[];
     unreadCount: number = 0;
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -30,7 +31,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _notificationsService: NotificationsService,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private templateService:TemplateService
     )
     {
     }
@@ -47,7 +49,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
         // Subscribe to notification changes
         this._notificationsService.notifications$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((notifications: Notification[]) => {
+            .subscribe((notifications: ActividadDTO[]) => {
 
                 // Load the notifications
                 this.notifications = notifications;
@@ -124,10 +126,10 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
     toggleRead(notification: Notification): void
     {
         // Toggle the read status
-        notification.read = !notification.read;
+        // notification.read = !notification.read;
 
         // Update the notification
-        this._notificationsService.update(notification.id, notification).subscribe();
+        // this._notificationsService.update(notification.llave, notification).subscribe();
     }
 
     /**
@@ -209,13 +211,17 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
      */
     private _calculateUnreadCount(): void
     {
-        let count = 0;
+        let count = this.notifications.length;
 
-        if ( this.notifications && this.notifications.length )
+        /*if ( this.notifications && this.notifications.length )
         {
             count = this.notifications.filter(notification => !notification.read).length;
-        }
+        }*/
 
         this.unreadCount = count;
     }
+
+    getColor(pEstado: string) {
+        return this.templateService.getColor(pEstado);
+      }
 }

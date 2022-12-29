@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import {  forkJoin, Observable, } from 'rxjs';
 import { NavigationService } from 'app/core/navigation/navigation.service';
+import { NotificationsService } from './notification/notification.service';
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +13,8 @@ export class InitialDataResolver implements Resolve<any>
      * Constructor
      */
     constructor(
-        private _navigationService: NavigationService
+        private _navigationService: NavigationService,
+        private _notificationsService: NotificationsService
     )
     {
     }
@@ -30,6 +32,8 @@ export class InitialDataResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>
     {
         this._navigationService.generate();
-        return ;
+        return forkJoin([
+            this._notificationsService.getAll(null)
+        ]);
     }
 }

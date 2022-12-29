@@ -13,7 +13,6 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import {
-  ActividadDTO,
   DetallePedidoVentaDTO,
   DocumentoPlantillaCaracteristicaDTO,
   DocumentoPlantillaDTO,
@@ -48,6 +47,8 @@ import {
 } from 'app/shared/services/local-store.service';
 import { getComponent } from 'app/shared/helpers/form-helper';
 import Swal from 'sweetalert2';
+import { NotificationsService } from 'app/notification/notification.service';
+import { ActividadDTO } from 'app/notification/notification.types';
 
 @Component({
   selector: 'app-form',
@@ -120,6 +121,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<FormComponent>,
     private templateService: TemplateService,
     private api: ApiService,
+    private notificationService: NotificationsService,
     private ls: LocalStoreService,
     private compiler: ComponentFactoryResolver,
     private utilsService: UtilsService
@@ -968,7 +970,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         reasignacion.responsable = transferData.responsable.llaveTabla;
         reasignacion.comentario = transferData.comentario;
         this.transferIsLoading = true;
-        this.api.reasignar(reasignacion, this.plantilla.server).subscribe({
+        this.notificationService.reasignar(reasignacion, this.plantilla.server).subscribe({
           next: () => {
             this.dialogRef.close(this.pedido);
             this.transferIsLoading = false;
