@@ -57,8 +57,7 @@
                             "src/styles/vendors.scss",
                             "src/@fuse/styles/main.scss",
                             "src/styles/styles.scss",
-                            "src/styles/tailwind.scss",
-                            "src/assets/styles/app.scss"
+                            "src/styles/tailwind.scss"
                         ],
                         "scripts": []
                     },
@@ -127,8 +126,7 @@
                             "src/assets"
                         ],
                         "styles": [
-                            "src/styles/styles.scss",
-                            "src/assets/styles/app.scss"
+                            "src/styles/styles.scss"
                         ],
                         "scripts": []
                     }

@@ -32,8 +32,10 @@ export class InitialDataResolver implements Resolve<any>
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>
     {
         this._navigationService.generate();
-        return forkJoin([
+        this._notificationsService.getAll();
+        /*return forkJoin([
             this._notificationsService.getAll(null)
-        ]);
+        ]);*/
+        return;
     }
 }

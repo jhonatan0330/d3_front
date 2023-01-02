@@ -8,14 +8,13 @@ import { NotificationsService } from 'app/notification/notification.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 @Component({
-    selector       : 'notifications',
-    templateUrl    : './notification-button.component.html',
-    encapsulation  : ViewEncapsulation.None,
+    selector: 'notifications',
+    templateUrl: './notification-button.component.html',
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs       : 'notifications'
+    exportAs: 'notifications'
 })
-export class NotificationButtonComponent implements OnInit, OnDestroy
-{
+export class NotificationButtonComponent implements OnInit, OnDestroy {
     @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;
     @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;
 
@@ -32,9 +31,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
         private _notificationsService: NotificationsService,
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
-        private templateService:TemplateService
-    )
-    {
+        private templateService: TemplateService
+    ) {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -44,8 +42,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Subscribe to notification changes
         this._notificationsService.notifications$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -65,15 +62,13 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
 
         // Dispose the overlay
-        if ( this._overlayRef )
-        {
+        if (this._overlayRef) {
             this._overlayRef.dispose();
         }
     }
@@ -85,17 +80,14 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
     /**
      * Open the notifications panel
      */
-    openPanel(): void
-    {
+    openPanel(): void {
         // Return if the notifications panel or its origin is not defined
-        if ( !this._notificationsPanel || !this._notificationsOrigin )
-        {
+        if (!this._notificationsPanel || !this._notificationsOrigin) {
             return;
         }
 
         // Create the overlay if it doesn't exist
-        if ( !this._overlayRef )
-        {
+        if (!this._overlayRef) {
             this._createOverlay();
         }
 
@@ -106,16 +98,14 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
     /**
      * Close the notifications panel
      */
-    closePanel(): void
-    {
+    closePanel(): void {
         this._overlayRef.detach();
     }
 
     /**
      * Mark all notifications as read
      */
-    markAllAsRead(): void
-    {
+    markAllAsRead(): void {
         // Mark all as read
         this._notificationsService.markAllAsRead().subscribe();
     }
@@ -123,8 +113,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
     /**
      * Toggle read status of the given notification
      */
-    toggleRead(notification: Notification): void
-    {
+    toggleRead(notification: Notification): void {
         // Toggle the read status
         // notification.read = !notification.read;
 
@@ -135,8 +124,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
     /**
      * Delete the given notification
      */
-    delete(notification: Notification): void
-    {
+    delete(notification: Notification): void {
         // Delete the notification
         // this._notificationsService.delete(notification.id).subscribe();
     }
@@ -147,8 +135,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
      * @param index
      * @param item
      */
-    trackByFn(index: number, item: any): any
-    {
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 
@@ -159,43 +146,42 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
     /**
      * Create the overlay
      */
-    private _createOverlay(): void
-    {
+    private _createOverlay(): void {
         // Create the overlay
         this._overlayRef = this._overlay.create({
-            hasBackdrop     : true,
-            backdropClass   : 'fuse-backdrop-on-mobile',
-            scrollStrategy  : this._overlay.scrollStrategies.block(),
+            hasBackdrop: true,
+            backdropClass: 'fuse-backdrop-on-mobile',
+            scrollStrategy: this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
-                                  .flexibleConnectedTo(this._notificationsOrigin._elementRef.nativeElement)
-                                  .withLockedPosition(true)
-                                  .withPush(true)
-                                  .withPositions([
-                                      {
-                                          originX : 'start',
-                                          originY : 'bottom',
-                                          overlayX: 'start',
-                                          overlayY: 'top'
-                                      },
-                                      {
-                                          originX : 'start',
-                                          originY : 'top',
-                                          overlayX: 'start',
-                                          overlayY: 'bottom'
-                                      },
-                                      {
-                                          originX : 'end',
-                                          originY : 'bottom',
-                                          overlayX: 'end',
-                                          overlayY: 'top'
-                                      },
-                                      {
-                                          originX : 'end',
-                                          originY : 'top',
-                                          overlayX: 'end',
-                                          overlayY: 'bottom'
-                                      }
-                                  ])
+                .flexibleConnectedTo(this._notificationsOrigin._elementRef.nativeElement)
+                .withLockedPosition(true)
+                .withPush(true)
+                .withPositions([
+                    {
+                        originX: 'start',
+                        originY: 'bottom',
+                        overlayX: 'start',
+                        overlayY: 'top'
+                    },
+                    {
+                        originX: 'start',
+                        originY: 'top',
+                        overlayX: 'start',
+                        overlayY: 'bottom'
+                    },
+                    {
+                        originX: 'end',
+                        originY: 'bottom',
+                        overlayX: 'end',
+                        overlayY: 'top'
+                    },
+                    {
+                        originX: 'end',
+                        originY: 'top',
+                        overlayX: 'end',
+                        overlayY: 'bottom'
+                    }
+                ])
         });
 
         // Detach the overlay from the portal on backdrop click
@@ -209,8 +195,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
      *
      * @private
      */
-    private _calculateUnreadCount(): void
-    {
+    private _calculateUnreadCount(): void {
         let count = this.notifications.length;
 
         /*if ( this.notifications && this.notifications.length )
@@ -223,5 +208,19 @@ export class NotificationButtonComponent implements OnInit, OnDestroy
 
     getColor(pEstado: string) {
         return this.templateService.getColor(pEstado);
-      }
+    }
+
+    openDocument(document: ActividadDTO) {
+        if (!document.fechaLeido) {
+            this._notificationsService.readActivity(document);
+        } else {
+            this._notificationsService.openDialog(document.documentoDTO.plantilla, document.documentoDTO.llaveTabla
+                , document.documentoDTO.serverUrl);
+        }
+    }
+
+    refresh(){
+        this._notificationsService.getAll().subscribe();
+    }
+
 }
