@@ -13,12 +13,6 @@ import { AuthSignInComponent } from './sign-in.component';
     ],
     imports     : [
         RouterModule.forChild(authSignInRoutes),
-        /*MatButtonModule,
-        MatCheckboxModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,*/
         SharedMaterialModule,
         FuseCardModule,
         FuseAlertModule,

@@ -78,3 +78,15 @@ body.fuse-splash-screen-hidden fuse-splash-screen {
     visibility: hidden;
     opacity: 0;
 }
+
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-form-field-wrapper {
+    padding-bottom: 0.25em !important;
+}
+  
+.mat-form-field-appearance-outline .mat-form-field-infix {
+    padding: 0.75em 0 0.5em 0 !important;
+}

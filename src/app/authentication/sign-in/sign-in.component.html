@@ -1,16 +1,16 @@
-<div class="page-wrap height-100 black">
-    <div class="session-form-hold">
+<div class="px-4 min-h-full flex items-center w-full bg-slate-900">
+    <div class="w-full max-w-100 m-auto">
       <mat-progress-bar mode="determinate" class="session-progress"></mat-progress-bar>
       <mat-card>
         <mat-card-content>
           <div class="text-center p-4">
-            <img src="{{ image | imageFormat }}" alt="">
-            <p class="text-muted m-0">{{company}}</p>
+            <img class="m-auto" src="{{ image | imageFormat }}" alt="">
+            <p class="m-0">{{company}}</p>
           </div>
           <p *ngIf="errorMsg" class="text-center"><small class="text-red">{{errorMsg}}</small></p>
           <form [formGroup]="signInForm" (ngSubmit)="signIn()">
-            <div class="">
-              <mat-form-field class="full-width">
+            <div >
+              <mat-form-field>
                 <input
                   matInput
                   name="username"
@@ -22,9 +22,8 @@
                 *ngIf="signInForm.controls['username'].hasError('required') && signInForm.controls['username'].touched" 
                 class="form-error-msg"> Username is required </small>
             </div>
-  
-            <div class="">
-              <mat-form-field class="full-width">
+            <div >
+              <mat-form-field>
                 <input 
                   type="password"
                   name="password"
@@ -45,12 +44,11 @@
                 [formControl]="signInForm.controls['rememberMe']"
                 class="pb-1">Remember this computer</mat-checkbox>
             </div>
-            
             <button mat-raised-button class="mat-primary w-full mb-1" [disabled]="signInForm.invalid">Sign in</button>
             <small class="text-muted m-0">{{currentApplicationVersion}}</small>
             <div class="text-center">
               <span fxFlex></span>
-              <a [routerLink]="'/sessions/recover'" class="mat-primary text-center w-full">Recordar clave acceso</a>
+              <a [routerLink]="'/recover'" class="mat-primary text-center w-full">Recordar clave acceso</a>
             </div>
           </form>
         </mat-card-content>
