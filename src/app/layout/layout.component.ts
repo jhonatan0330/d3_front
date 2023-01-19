@@ -8,6 +8,9 @@ import { FusePlatformService } from '@fuse/services/platform';
 import { FUSE_VERSION } from '@fuse/version';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
+import { JwtAuthService } from 'app/authentication/jwt-auth.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector     : 'layout',
@@ -33,9 +36,47 @@ export class LayoutComponent implements OnInit, OnDestroy
         private _router: Router,
         private _fuseConfigService: FuseConfigService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fusePlatformService: FusePlatformService
+        private _fusePlatformService: FusePlatformService,
+        private jwtAuth: JwtAuthService,
+        private templateService: TemplateService
     )
     {
+
+        // Check Auth Token is valid
+    this.jwtAuth.checkTokenIsValid().subscribe({ next: (response) => {
+        if (response && response.mensaje ){
+          Swal.fire({
+            position: 'top-end',
+            title: response.mensaje,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+          })
+        }
+        if (!this.templateService.template || this.templateService.template.length === 0 ) {
+          // COPIADO DE SIGNIN
+          if (response && response.modulos && response.modulos.length !== 0) {
+            if (response.modulos.find((modulo) => modulo.moduloLlave === 'AdministracionLogisticpymes')) {
+              this.jwtAuth.isAdmin = true;
+            } else {
+              this.jwtAuth.isAdmin = false;
+            }
+            // Esto lo oculto para ver como lo organizo bien
+            /*if (
+              response.modulos.find(
+                (modulo) => modulo.moduloLlave === 'UIVotacion'
+              )
+            ) {
+              this.router.navigateByUrl('/UIVotacion');
+              if (response.modulos.length === 1) {
+                this.navService.iconMenu = [];
+                this.navService.publishNavigationChange(null);
+              }
+              return;
+            }*/
+          }
+        }
+      }});
     }
 
     // -----------------------------------------------------------------------------------------------------

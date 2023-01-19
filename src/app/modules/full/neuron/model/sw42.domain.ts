@@ -228,13 +228,7 @@ export class PostRespuestaDTO extends BasicDTO {
   pregunta: string;
   respuesta: string;
 }
-export class GPSLocalizacionDTO extends BasicDTO {
-  dispositivo: string;
-  fecha: Date;
-  longitud: number;
-  latitud: number;
-  documento: string;
-}
+
 export class PostCalificacionDTO extends BasicDTO {
   usuario: string;
   fecha: Date;
@@ -251,15 +245,6 @@ export class PostPreguntaDTO extends BasicDTO {
   autorNombre: string;
   pregunta: string;
   respuestas: PostRespuestaDTO[];
-}
-export class GPSDispositivoDTO extends BasicDTO {
-  usuario: string;
-  nombre: string;
-  ultimaConexion: Date;
-  intervalo: number;
-  distancia: number;
-  acercamiento: number;
-  usuarioNombre: string;
 }
 export class DetallePedidoVentaDTO extends BasicParamDTO {
   documento: string;

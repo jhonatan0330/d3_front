@@ -4,6 +4,9 @@ import { BooleanInput } from '@angular/cdk/coercion';
 import { Subject, takeUntil } from 'rxjs';
 import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
+import { JwtAuthService } from 'app/authentication/jwt-auth.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import { ApiService } from 'app/modules/full/neuron/service/api.service';
 
 @Component({
     selector       : 'user',
@@ -29,7 +32,10 @@ export class UserComponent implements OnInit, OnDestroy
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
-        private _userService: UserService
+        private _userService: UserService,
+        public jwtAuth:JwtAuthService,
+        private templateService: TemplateService,
+        private apiService: ApiService
     )
     {
     }
@@ -93,6 +99,15 @@ export class UserComponent implements OnInit, OnDestroy
      */
     signOut(): void
     {
-        this._router.navigate(['/sign-out']);
+        this.jwtAuth.signout();
     }
+
+    getFullTemplates() {
+        this.templateService.setTemplates([]);
+        this.apiService.listarDocumentosFull().subscribe({
+          next: (value) => {
+            this.templateService.setTemplates(value);
+          }
+        });
+      }
 }

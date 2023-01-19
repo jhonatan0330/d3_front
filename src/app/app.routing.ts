@@ -1,6 +1,5 @@
 import { Route } from '@angular/router';
-import { AuthGuard } from 'app/authentication/guards/auth.guard';
-import { NoAuthGuard } from 'app/authentication/guards/noAuth.guard';
+import { AuthGuard } from 'app/authentication/auth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { InitialDataResolver } from 'app/app.resolvers';
 
@@ -16,8 +15,6 @@ export const appRoutes: Route[] = [
   // Auth routes for guests
   {
     path: '',
-    canActivate: [NoAuthGuard],
-    canActivateChild: [NoAuthGuard],
     component: LayoutComponent,
     data: {
       layout: 'empty'
@@ -38,8 +35,6 @@ export const appRoutes: Route[] = [
   // Auth routes for authenticated users
   {
     path: '',
-    canActivate: [AuthGuard],
-    canActivateChild: [AuthGuard],
     component: LayoutComponent,
     data: {
       layout: 'empty'
@@ -53,16 +48,21 @@ export const appRoutes: Route[] = [
   {
     path: '',
     canActivate: [AuthGuard],
-    canActivateChild: [AuthGuard],
     component: LayoutComponent,
     resolve: {
       initialData: InitialDataResolver,
     },
     children: [
-      { path: '', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
+      { path: '', loadChildren: () => import('app/authorization/profile/profile.module').then(m => m.ProfileModule) },
+      { path: 'list', loadChildren: () => import('app/cruds/cruds.module').then(m => m.CrudsModule) },
+      { path: 'maps', loadChildren: () => import('app/gps/gps.module').then(m => m.GPSModule)},
+      { path: 'UIVotacion', loadChildren: () => import('app/survey/survey.module').then(m => m.SurveyModule) },
+      { path: 'noseperolodejopormodule', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
       // 404 & Catch all
       { path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/layout/common/error-404/error-404.module').then(m => m.Error404Module) },
       { path: '**', redirectTo: '404-not-found' }
     ]
+
+    
   }
 ];

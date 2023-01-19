@@ -22,9 +22,9 @@ import * as moment from 'moment';
 
 @Component({
   selector: 'app-cruds',
-  templateUrl: './cruds.component.html'
+  templateUrl: './cruds2.component.html'
 })
-export class CrudsComponent implements OnInit {
+export class Cruds2Component implements OnInit {
   plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
   tableroId: string;
   procesoId: string;

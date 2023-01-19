@@ -69,15 +69,12 @@ export class JwtAuthService {
     shared/components/layouts/admin-layout/admin-layout.component.ts
   */
   public checkTokenIsValid() {
-    /*
-      The following code get user data and jwt token is assigned to
-      Request header using token.interceptor
-      This checks if the existing token is valid when app is reloaded
-    */
 
+    const tokenLocal = this.getJwtToken();
+    if(!tokenLocal) {return of()};
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
     autenticacion.claveAnterior = `${environment.dateCompile}`;
-    autenticacion.securityToken = this.getJwtToken();
+    autenticacion.securityToken = tokenLocal;
     return this.http
       .post<UsuarioAutenticacionDTO>(
         this.ls.getUrlAccess(`${environment.endPoint}`),
@@ -98,7 +95,7 @@ export class JwtAuthService {
 
   signout() {
     this.setUserAndToken(null);
-    this.router.navigateByUrl('sessions/signin');
+    this.router.navigateByUrl('sign-in');
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {

@@ -16,11 +16,18 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link : '/profile'
             },*/
             {
-                id   : 'user-interface.advanced-search',
+                id   : 'apps.main',
                 title: 'Busquedas Avanzadas',
                 type : 'basic',
                 icon : 'heroicons_outline:search-circle',
                 link : '/main'
+            }
+            ,{
+                id   : 'apps.contacts',
+                title: 'Mapas',
+                type : 'basic',
+                icon : 'mat_outline:10k',
+                link : '/maps'
             }/*,
             {
                 id   : 'apps.academy',

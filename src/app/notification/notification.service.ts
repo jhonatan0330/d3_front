@@ -14,8 +14,9 @@ export class NotificationsService {
 
   constructor(private http: HttpClient,
     private utilsService: UtilsService,
-    private ls: LocalStoreService) {
-  }
+    private ls: LocalStoreService) 
+    {
+    }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors

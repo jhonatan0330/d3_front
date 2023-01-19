@@ -57,6 +57,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+            this.refresh();
     }
 
     /**

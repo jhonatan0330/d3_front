@@ -4,13 +4,12 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { NavigationService } from 'app/shared/services/navigation.service';
 import Swal from 'sweetalert2';
-import { EncuestaDTO, EncuestaGrupoDTO, EncuestaPreguntaDTO, EncuestaOpcionRespuestaDTO, EncuestaRespuestaDTO } from 'app/modules/full/neuron/model/survey.domain';
-import { SurveyService } from '../../../service/survey.service';
+import { EncuestaDTO, EncuestaGrupoDTO, EncuestaPreguntaDTO, EncuestaOpcionRespuestaDTO, EncuestaRespuestaDTO } from 'app/survey/survey.domain';
+import { SurveyService } from '../../modules/full/neuron/service/survey.service';
 
 @Component({
   selector: 'app-votar',
-  templateUrl: './votar.component.html',
-  styleUrls: ['./votar.component.scss'],
+  templateUrl: './votar.component.html'
 })
 export class VotarComponent implements OnInit {
   encuestas: EncuestaDTO[] = [];

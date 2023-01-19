@@ -33,24 +33,28 @@
     <mat-divider class="my-2"></mat-divider>
     <button mat-menu-item>
         <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-        <span>Profile</span>
+        <span>Perfil</span>
     </button>
     <button mat-menu-item>
         <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
-        <span>Settings</span>
+        <span>Opciones</span>
+    </button>
+    <button mat-menu-item *ngIf="jwtAuth.isAdmin" (click)="getFullTemplates()">
+        <mat-icon [svgIcon]="'mat_outline:developer_mode'"></mat-icon>
+        <span>Administrador</span>
     </button>
     <button
         mat-menu-item
         [matMenuTriggerFor]="userStatus">
         <mat-icon [svgIcon]="'heroicons_outline:dots-circle-horizontal'"></mat-icon>
-        <span>Status</span>
+        <span>Estado</span>
     </button>
     <mat-divider class="my-2"></mat-divider>
     <button
         mat-menu-item
         (click)="signOut()">
         <mat-icon [svgIcon]="'heroicons_outline:logout'"></mat-icon>
-        <span>Sign out</span>
+        <span>Salir</span>
     </button>
 </mat-menu>
 
@@ -61,19 +65,19 @@
         mat-menu-item
         (click)="updateUserStatus('online')">
         <span class="w-4 h-4 mr-3 rounded-full bg-green-500"></span>
-        <span>Online</span>
+        <span>En línea</span>
     </button>
     <button
         mat-menu-item
         (click)="updateUserStatus('away')">
         <span class="w-4 h-4 mr-3 rounded-full bg-amber-500"></span>
-        <span>Away</span>
+        <span>En espera</span>
     </button>
     <button
         mat-menu-item
         (click)="updateUserStatus('busy')">
         <span class="w-4 h-4 mr-3 rounded-full bg-red-500"></span>
-        <span>Busy</span>
+        <span>Ocupado</span>
     </button>
     <button
         mat-menu-item

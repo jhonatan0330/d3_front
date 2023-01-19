@@ -1,25 +1,22 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
-    selector       : 'footer',
-    templateUrl    : './footer.component.html',
-    encapsulation  : ViewEncapsulation.None,
+    selector: 'footer',
+    templateUrl: './footer.component.html',
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FooterComponent
-{
+export class FooterComponent {
     /**
      * Constructor
      */
-    constructor()
-    {
+    constructor() {
     }
 
-        /**
+    /**
      * Getter for current year
      */
-        get currentYear(): number
-        {
-            return new Date().getFullYear();
-        }
+    get currentYear(): number {
+        return new Date().getFullYear();
+    }
 }

@@ -1,186 +1,157 @@
 import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { fuseAnimations } from '@fuse/animations';
-import { FuseAlertType } from '@fuse/components/alert';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { environment } from 'environments/environment';
 import { AuthenticationService } from '../authentication.service';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-    selector     : 'auth-sign-in',
-    templateUrl  : './sign-in.component.html',
-    encapsulation: ViewEncapsulation.None,
-    animations   : fuseAnimations
+  selector: 'auth-sign-in',
+  templateUrl: './sign-in.component.html',
+  encapsulation: ViewEncapsulation.None
 })
-export class AuthSignInComponent implements OnInit, AfterViewInit
-{
-    @ViewChild('signInNgForm') signInNgForm: NgForm;
+export class AuthSignInComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatProgressBar) progressBar: MatProgressBar;
+  @ViewChild(MatButton) submitButton: MatButton;
 
-    currentApplicationVersion = environment.appVersion;
+  currentApplicationVersion = environment.appVersion;
 
-    alert: { type: FuseAlertType; message: string } = {
-        type   : 'success',
-        message: ''
-    };
-    signInForm: UntypedFormGroup;
-    showAlert: boolean = false;
+  signInForm: UntypedFormGroup;
 
-    image: string;
-    errorMsg = '';
-    company = 'Software para ti.com';
 
-    /**
-     * Constructor
-     */
-    constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _authService: AuthenticationService,
-        private _formBuilder: UntypedFormBuilder,
-        private apiService: ApiService,
-        private jwtAuth: JwtAuthService,
-        private _router: Router
-    )
-    {
+  image: string;
+  errorMsg = '';
+  company = 'Software para ti.com';
+
+  /**
+   * Constructor
+   */
+  constructor(
+    private _activatedRoute: ActivatedRoute,
+    private _authService: AuthenticationService,
+    private _formBuilder: UntypedFormBuilder,
+    private apiService: ApiService,
+    private jwtAuth: JwtAuthService,
+    private _router: Router
+  ) {
+  }
+
+  // -----------------------------------------------------------------------------------------------------
+  // @ Lifecycle hooks
+  // -----------------------------------------------------------------------------------------------------
+
+  /**
+   * On init
+   */
+  ngOnInit(): void {
+    // Create the form
+    this.signInForm = this._formBuilder.group({
+      username: ['', [Validators.required]],
+      password: ['', Validators.required],
+      rememberMe: [false]
+    });
+  }
+
+  /**
+   * After Init
+   */
+  ngAfterViewInit(): void {
+    // this.autoSignIn();
+    this.getUrlServices();
+  }
+
+  // -----------------------------------------------------------------------------------------------------
+  // @ Public methods
+  // -----------------------------------------------------------------------------------------------------
+
+  /**
+   * Sign in
+   */
+  signIn(): void {
+    // Return if the form is invalid
+    if (this.signInForm.invalid) {
+      return;
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
+    // Disable the form
+    this.signInForm.disable();
 
-    /**
-     * On init
-     */
-    ngOnInit(): void
-    {
-        // Create the form
-        this.signInForm = this._formBuilder.group({
-          username  : ['', [Validators.required]],
-          password  : ['', Validators.required],
-          rememberMe: [false]
-        });
-    }
+    this.submitButton.disabled = true;
+    this.progressBar.mode = 'indeterminate';
 
-    /**
-     * After Init
-     */
-    ngAfterViewInit() : void
-    {
-        // this.autoSignIn();
-       this.getUrlServices();
-    }
+    // Sign in
+    this._authService.signIn(this.signInForm.value)
+      .subscribe(
+        () => {
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+          const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/main';
 
-    /**
-     * Sign in
-     */
-    signIn(): void
-    {
-        // Return if the form is invalid
-        if ( this.signInForm.invalid )
-        {
-            return;
-        }
+          // Navigate to the redirect url
+          this._router.navigateByUrl(redirectURL);
 
-        // Disable the form
-        this.signInForm.disable();
+        },
+        (response) => {
 
-        // Hide the alert
-        this.showAlert = false;
+          // Re-enable the form
+          this.signInForm.enable();
 
-        // Sign in
-        this._authService.signIn(this.signInForm.value)
-            .subscribe(
-                () => {
-
-                    // Set the redirect url.
-                    // The '/signed-in-redirect' is a dummy url to catch the request and redirect the user
-                    // to the correct page after a successful sign in. This way, that url can be set via
-                    // routing file and we don't have to touch here.
-                    const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect';
-
-                    // Navigate to the redirect url
-                    this._router.navigateByUrl(redirectURL);
-
-                },
-                (response) => {
-
-                    // Re-enable the form
-                    this.signInForm.enable();
-
-                    // Reset the form
-                    this.signInNgForm.resetForm();
-
-                    // Set the alert
-                    this.alert = {
-                        type   : 'error',
-                        message: 'Wrong email or password'
-                    };
-
-                    // Show the alert
-                    this.showAlert = true;
-                }
-            );
-    }
-
-    getUrlServices() {
-        // this.submitButton.disabled = true;
-        // this.progressBar.mode = 'indeterminate';
-        this.apiService.getURL().subscribe(
-          (data) => {
-            if (data !== '' && data !== 'SW42') {
-              if (!data.endsWith('/')) {
-                data = data + '/';
-              }
-              this.jwtAuth.setConfUrl(data.toString());
-              this.getOrganization();
-            } else {
-              this.jwtAuth.setConfUrl(location.origin);
-              this.getOrganization();
-            }
-          },
-          (err) => {
-            // Show the alert
-            this.alert = {
-                type   : 'error',
-                message:  err.message
-            };
-            this.showAlert = true;
-
-            this.jwtAuth.setConfUrl(location.origin);
-            this.getOrganization();
+          this.submitButton.disabled = false;
+          this.progressBar.mode = 'determinate';
+          this.errorMsg = response;
+          if (this.errorMsg.startsWith('Por seguridad')) {
+            this._router.navigateByUrl('recover');
           }
-        );
-      }
+        }
+      );
+  }
 
-      getOrganization() {
-        //this.submitButton.disabled = true;
-        //this.progressBar.mode = 'indeterminate';
-        this.apiService
-          .obtenerPrincipalOrganizacion()
-          .subscribe(
-            (organization) => {
-              //this.submitButton.disabled = false;
-              this.signInForm.enable();
-              this.company = organization.nombre;
-              organization.imagen
-                ? (this.image = organization.imagen)
-                : (this.image = 'assets/images/egret.png');
-              this.jwtAuth.setCompany(organization);
-            },
-            (err) => {
-                this.signInForm.enable();
-                // Show the alert
-                this.alert = {
-                    type   : 'error',
-                    message:  err.message
-                };
-                this.showAlert = true;
-            }
-          );
+  getUrlServices() {
+    // this.submitButton.disabled = true;
+    // this.progressBar.mode = 'indeterminate';
+    this.apiService.getURL().subscribe(
+      (data) => {
+        if (data !== '' && data !== 'SW42') {
+          if (!data.endsWith('/')) {
+            data = data + '/';
+          }
+          this.jwtAuth.setConfUrl(data.toString());
+          this.getOrganization();
+        } else {
+          this.jwtAuth.setConfUrl(location.origin);
+          this.getOrganization();
+        }
+      },
+      (err) => {
+        this.errorMsg = err.message;
+
+        this.jwtAuth.setConfUrl(location.origin);
+        this.getOrganization();
       }
+    );
+  }
+
+  getOrganization() {
+    //this.submitButton.disabled = true;
+    //this.progressBar.mode = 'indeterminate';
+    this.apiService
+      .obtenerPrincipalOrganizacion()
+      .subscribe(
+        (organization) => {
+          //this.submitButton.disabled = false;
+          this.signInForm.enable();
+          this.company = organization.nombre;
+          organization.imagen
+            ? (this.image = organization.imagen)
+            : (this.image = 'assets/images/egret.png');
+          this.jwtAuth.setCompany(organization);
+        },
+        (err) => {
+          this.signInForm.enable();
+          this.errorMsg = err.message;
+        }
+      );
+  }
 }

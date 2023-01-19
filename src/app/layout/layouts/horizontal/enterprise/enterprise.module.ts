@@ -13,6 +13,7 @@ import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { EnterpriseLayoutComponent } from 'app/layout/layouts/horizontal/enterprise/enterprise.component';
+import { FooterModule } from 'app/layout/common/footer/footer.module';
 
 @NgModule({
     declarations: [
@@ -31,6 +32,7 @@ import { EnterpriseLayoutComponent } from 'app/layout/layouts/horizontal/enterpr
         SearchModule,
         ShortcutsModule,
         UserModule,
+        FooterModule,
         SharedModule
     ],
     exports     : [

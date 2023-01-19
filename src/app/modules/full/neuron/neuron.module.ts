@@ -10,12 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FuseCardModule } from '@fuse/components/card';
 import { SharedModule } from 'app/shared/shared.module';
 
-import { VotarComponent } from './views/survey/votar/votar.component';
-import { ConfigComponent } from './views/survey/config/config.component';
-import { TemplateComponent } from './main/render/template/template.component';
 import { FormComponent } from './form/form.component';
-import { CrudsComponent } from './views/cruds/cruds.component';
-import { MainComponent } from './main/main.component';
 import { MassiveComponent } from './form/massive/massive.component';
 import { ArchivoComponent } from './form/controls/archivo/archivo.component';
 import { DetalleComponent } from './form/controls/detalle/detalle.component';
@@ -40,7 +35,6 @@ import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-mat
 import { NgxCurrencyModule } from 'ngx-currency';
 import { SignaturePadModule } from 'angular2-signaturepad';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
-import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -62,13 +56,7 @@ import { ProfileComponent } from './profile/profile.component';
         ProductComponent,
         CatalogComponent,
         GpsComponent,
-        MainComponent,
-        CrudsComponent,
-        FormComponent,
-        TemplateComponent,
-        ConfigComponent,
-        VotarComponent,
-        ProfileComponent
+        FormComponent
     ],
     imports: [
         RouterModule.forChild(neuronRoutes),

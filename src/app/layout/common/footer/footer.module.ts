@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
-import { Error500Component } from 'app/layout/common/error-500/error-500.component';
+import { FooterComponent } from './footer.component';
 
 @NgModule({
     declarations: [
-        Error500Component
+        FooterComponent
     ],
     imports     : [
     ]
 })
-export class Error500Module
+export class FooterModule
 {
 }

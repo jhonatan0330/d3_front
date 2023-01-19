@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
-import { Navigation } from 'app/core/navigation/navigation.types';
-import { NavigationService } from 'app/core/navigation/navigation.service';
+import { Navigation } from 'app/authorization/navigation/navigation.types';
+import { NavigationService } from 'app/authorization/navigation/navigation.service';
 
 @Component({
     selector     : 'enterprise-layout',

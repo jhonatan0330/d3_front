@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { cloneDeep, map } from 'lodash-es';
 import { Observable, ReplaySubject, } from 'rxjs';
-import { Navigation } from 'app/core/navigation/navigation.types';
+import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { FuseNavigationItem } from '@fuse/components/navigation';
-import { compactNavigation, defaultNavigation, futuristicNavigation, horizontalNavigation } from 'app/core/navigation/data';
+import { compactNavigation, defaultNavigation, futuristicNavigation, horizontalNavigation } from 'app/authorization/navigation/data';
 
 @Injectable({
     providedIn: 'root'

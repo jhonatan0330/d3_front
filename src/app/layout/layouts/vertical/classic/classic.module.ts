@@ -12,6 +12,7 @@ import { SearchModule } from 'app/layout/common/search/search.module';
 import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
+import { FooterModule } from 'app/layout/common/footer/footer.module';
 import { ClassicLayoutComponent } from 'app/layout/layouts/vertical/classic/classic.component';
 
 @NgModule({
@@ -31,6 +32,7 @@ import { ClassicLayoutComponent } from 'app/layout/layouts/vertical/classic/clas
         SearchModule,
         ShortcutsModule,
         UserModule,
+        FooterModule,
         SharedModule
     ],
     exports     : [

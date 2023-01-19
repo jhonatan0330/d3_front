@@ -29,7 +29,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             title: errorMessage,
             text: error.error.detail
           });
-          if (errorMessage.indexOf('CODE:caud_usuario') !== -1) {
+          if (errorMessage.indexOf('CODE:caud_usuario') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
             this.jwtAuth.signout();
             this.templateService.clear();
           }
