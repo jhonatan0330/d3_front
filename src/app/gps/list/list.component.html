@@ -35,6 +35,7 @@
                     </ng-container>
                     <!-- device -->
                     <a class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
+                        (click)="selectDevice(device)"
                         [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selecteddevice || selecteddevice.id !== device.id,
                                                 'bg-primary-50 dark:bg-hover': selecteddevice && selecteddevice.id === device.id}">
                         <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">

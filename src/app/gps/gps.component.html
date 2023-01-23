@@ -23,12 +23,11 @@
                 </div>
             </div>
             <!-- Panel links -->
-            <gps-devices-list></gps-devices-list>
+            <gps-devices-list (select)="onSelectDevice($event)"></gps-devices-list>
         </mat-drawer>
 
         <!-- Drawer content -->
         <mat-drawer-content class="flex flex-col">
-
             <!-- Main -->
             <div class="flex-auto px-6 pt-9 pb-12 md:p-8 md:pb-12 lg:p-12">
 
@@ -47,11 +46,16 @@
                     <div class="ml-2 lg:ml-0 text-3xl font-bold tracking-tight leading-none">
                         TITLE
                     </div>
+                    
+                    <!-- Search device button -->
+                    <button class="ml-1" mat-flat-button [color]="'primary'" (click)="map.addPoint(0,0)">
+                        <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+                    </button>
                 </div>
 
                 <!-- Load settings panel -->
-                <div class="mt-8">
-                    <gps-map></gps-map>
+                <div class="mt-4">
+                    <gps-map #map width="100%"></gps-map>
                 </div>
 
             </div>

@@ -1,10 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, OnDestroy, OnInit, Output,  ViewEncapsulation } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
 import { UntypedFormControl } from '@angular/forms';
-import { MatDrawer } from '@angular/material/sidenav';
-import { filter, fromEvent, Observable, Subject, switchMap, takeUntil } from 'rxjs';
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { GPSDispositivoDTO } from '../gps.domain';
 import { GPSService } from '../gps.service';
 
@@ -17,6 +14,7 @@ import { GPSService } from '../gps.service';
 export class DevicesListComponent implements OnInit, OnDestroy
 {
     
+    @Output() select = new EventEmitter<GPSDispositivoDTO>();
     devices$: Observable<GPSDispositivoDTO[]>;
 
     devicesCount: number = 0;
@@ -30,12 +28,9 @@ export class DevicesListComponent implements OnInit, OnDestroy
      * Constructor
      */
     constructor(
-        private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
         private _devicesService: GPSService,
-        @Inject(DOCUMENT) private _document: any,
-        private _router: Router,
-        private _fuseMediaWatcherService: FuseMediaWatcherService
+        @Inject(DOCUMENT) private _document: any
     )
     {
     }
@@ -62,18 +57,6 @@ export class DevicesListComponent implements OnInit, OnDestroy
                 this._changeDetectorRef.markForCheck();
             });
 
-        // Get the device
-        this._devicesService.device$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((device: GPSDispositivoDTO) => {
-
-                // Update the selected device
-                this.selecteddevice = device;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
 
         // Subscribe to MatDrawer opened change
        /* this.matDrawer.openedChange.subscribe((opened) => {
@@ -87,37 +70,6 @@ export class DevicesListComponent implements OnInit, OnDestroy
             }
         });*/
 
-        // Subscribe to media changes
-        this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) => {
-
-                // Set the drawerMode if the given breakpoint is active
-               /* if ( matchingAliases.includes('lg') )
-                {
-                    this.drawerMode = 'side';
-                }
-                else
-                {
-                    this.drawerMode = 'over';
-                }*/
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
-        // Listen for shortcuts
-        fromEvent(this._document, 'keydown')
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                filter<KeyboardEvent>(event =>
-                    (event.ctrlKey === true || event.metaKey) // Ctrl or Cmd
-                    && (event.key === '/') // '/'
-                )
-            )
-            .subscribe(() => {
-                this.createDevice();
-            });
     }
 
     /**
@@ -134,33 +86,6 @@ export class DevicesListComponent implements OnInit, OnDestroy
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * On backdrop clicked
-     */
-    onBackdropClicked(): void
-    {
-        // Go back to the list
-        this._router.navigate(['./'], {relativeTo: this._activatedRoute});
-
-        // Mark for check
-        this._changeDetectorRef.markForCheck();
-    }
-
-    /**
-     * Create device
-     */
-    createDevice(): void
-    {
-        // Create the device
-        this._devicesService.createDevice().subscribe((newdevice) => {
-
-            // Go to the new device
-            this._router.navigate(['./', newdevice.llaveTabla], {relativeTo: this._activatedRoute});
-
-            // Mark for check
-            this._changeDetectorRef.markForCheck();
-        });
-    }
 
     searchDevices(){
         this._devicesService.searchDevices(this.searchInputControl.value).subscribe();
@@ -175,5 +100,9 @@ export class DevicesListComponent implements OnInit, OnDestroy
     trackByFn(index: number, item: any): any
     {
         return item.llaveTabla || index;
+    }
+
+    selectDevice(device: GPSDispositivoDTO) {
+        this.select.emit(device);
     }
 }
