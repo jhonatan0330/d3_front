@@ -419,4 +419,19 @@
     mode="indeterminate"
     *ngIf="isLoadingList"
   ></mat-progress-bar>
+
+</div>
+<div *ngIf="!tipoMultiple && herencia" class="py-4">
+  <!-- Titulo y boton buscar -->
+  <div fxLayout="center center">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="procesarCampo(transformPVCtoFilter(data))"
+      *ngIf="!isLoading"
+      class="full-width"
+    >
+      {{ structure.nombre | titlecase }}
+    </button>
+  </div>
 </div>

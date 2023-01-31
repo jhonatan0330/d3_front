@@ -485,7 +485,41 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.showFields();
     this.resolvePropiertiesForm();
     this.getReports();
+
+    this.getReports();
+
+    // Colocar los valores iniciales de la consulta historica
+    const checksHistorial: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_HISTORIAL_ACTIVO);
+    if(checksHistorial && checksHistorial.length != 0){
+      for (let i = 0; i < checksHistorial.length; i++) {
+        switch (checksHistorial[i].valor) {
+          case "1":
+            this.fCheckDocuments.setValue(true);
+            break;
+          case "2":
+            this.fCheckAssignations.setValue(true);
+            break;
+          case "3":
+            this.fCheckMessage.setValue(true);
+            break;
+          case "4":
+            this.fCheckInventary.setValue(true);
+            break;
+          case "5":
+            this.fCheckAutomaticas.setValue(true);
+            break;
+          case "6":
+            this.fCheckReportes.setValue(true);
+            break;
+          case "7":
+            this.fCheckApi.setValue(true);
+            break;
+        }
+      }
+    }
   }
+
+  
 
   // Agrega los campos al formulario
   showFields() {

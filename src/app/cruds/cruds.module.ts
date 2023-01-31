@@ -18,14 +18,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { Cruds2Component } from './cruds2.component';
 import { CrudsComponent } from './cruds.component';
 import { CrudsListComponent } from './list/list.component';
 import { CrudsSidebarComponent } from './sidebar/sidebar.component';
 
-
-
 @NgModule({
     declarations: [
+        Cruds2Component,
         CrudsComponent,
         CrudsListComponent,
         CrudsSidebarComponent

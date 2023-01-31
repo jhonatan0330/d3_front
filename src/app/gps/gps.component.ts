@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { GPSLocalizacionFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
@@ -20,6 +21,9 @@ export class GPSComponent {
     drawerOpened: boolean = true;
 
     locations$: Observable<GPSLocalizacionDTO[]>;
+    dateFilter = new FormControl(this._gpsService.dayToList);
+    sliderControl = new FormControl();
+    hourOfDay: string;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     /**
@@ -35,12 +39,8 @@ export class GPSComponent {
         this._gpsService.locations$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((locations: GPSLocalizacionDTO[]) => {
-                if(locations){
-                    for (let i = 0; i < locations.length; i++) {
-                       const element = locations[i];
-                       this.map.addPoint(element.latitud,element.longitud); 
-                       this.map.center(element.latitud,element.longitud);
-                    }
+                if (locations) {
+                    this.map.addPoint(locations);
                 }
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -62,6 +62,13 @@ export class GPSComponent {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+        this.sliderControl.valueChanges.subscribe(value => {
+            this.calculeHourOfDay(value);
+        });
+        this.dateFilter.valueChanges.subscribe(x => {
+            this.refresh();
+        });
+        this.calculeHourOfDay(0);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -69,9 +76,21 @@ export class GPSComponent {
     // -----------------------------------------------------------------------------------------------------
 
     onSelectDevice(device: GPSDispositivoDTO) {
-        const filter: GPSLocalizacionFilterDTO = new GPSLocalizacionFilterDTO();
-        filter.dispositivo = device.llaveTabla;
-        this._gpsService.getLocationsFromDevice(filter).subscribe();
+        this._gpsService.selectDevice(device)
     }
+
+    calculeHourOfDay(value: number) {
+        const dateCalculate = new Date();
+        dateCalculate.setMinutes(value % 60);
+        dateCalculate.setHours(value / 60);
+        dateCalculate.setSeconds(0);
+        this.hourOfDay = dateCalculate.toLocaleTimeString();
+    }
+
+    refresh() {
+        this._gpsService.dayToList = this.dateFilter.value;
+        this._gpsService.getLocationsFromDevice().subscribe();
+    }
+
 
 }

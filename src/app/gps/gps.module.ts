@@ -24,6 +24,7 @@ import { GPSComponent } from './gps.component';
 import { DevicesListComponent } from './list/list.component';
 import { SharedModule } from 'app/shared/shared.module';
 import { MapComponent } from './map/map.component';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
     declarations: [
@@ -49,24 +50,11 @@ import { MapComponent } from './map/map.component';
         MatSidenavModule,
         MatTableModule,
         MatTooltipModule,
+        MatSliderModule,
         FuseFindByKeyPipeModule,
         SharedModule
     ],
     providers   : [
-        {
-            provide : MAT_DATE_FORMATS,
-            useValue: {
-                parse  : {
-                    dateInput: moment.ISO_8601
-                },
-                display: {
-                    dateInput         : 'LL',
-                    monthYearLabel    : 'MMM YYYY',
-                    dateA11yLabel     : 'LL',
-                    monthYearA11yLabel: 'MMMM YYYY'
-                }
-            }
-        }
     ]
 })
 export class GPSModule

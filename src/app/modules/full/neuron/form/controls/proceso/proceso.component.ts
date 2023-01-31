@@ -962,9 +962,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (this.acciones && this.acciones.length !== 0) {
       if (this.acciones.length === 1) {
         this.createNewDocument(this.acciones[0].valor);
-        this.trigger.closeMenu();
+        if(this.trigger) { this.trigger.closeMenu(); }
       } else {
-        this.trigger.openMenu();
+        if(this.trigger) { this.trigger.openMenu(); }
       }
     }
   }
@@ -1140,50 +1140,54 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
-  //// COPIADO  De LIST
-  listar(_pagina: number) {
+   //// COPIADO  De LIST
+   listar(_pagina: number) {
     if (this.isLoadingList) {
       return;
     }
     const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
-    // Valido Fechas
-    if (this.fControlCheck.value) {
-      if (!this.fControlSearch.value) {
-        alert('Coloca el codigo del documento');
-        return;
-      }
-      entity.nombre = this.fControlSearch.value;
-      entity.filtroParametro = null;
-    } else {
-      entity.nombre = null;
-      entity.filtroParametro = this.fControlSearch.value;
-      if (this.fControlDateStart.value) {
-        const startDate = moment(new Date(this.fControlDateStart.value));
-        startDate.hour(0);
-        startDate.minute(0);
-        startDate.second(0);
-        startDate.millisecond(0);
-        let endDate = moment(new Date(this.fControlDateStart.value)).add(
-          1,
-          'days'
-        );
-        if (this.fControlDateEnd.value) {
-          endDate = moment(new Date(this.fControlDateEnd.value));
-          endDate.hour(0);
-          endDate.minute(0);
-          endDate.second(0);
-          endDate.millisecond(0);
-        }
-        endDate = endDate.add(1, 'days');
-        entity.fechaMin = startDate.toDate();
-        entity.fechaMax = endDate.toDate();
-      } else {
-        if (this.solicitarFechas) {
-          alert('Selecciona fechas');
+    //Para los campos herencia simple no se agregan las opciones de filtro
+    if (this.fControlCheck ) {
+      // Valido Fechas
+      if (this.fControlCheck.value) {
+        if (!this.fControlSearch.value) {
+          alert('Coloca el codigo del documento');
           return;
+        }
+        entity.nombre = this.fControlSearch.value;
+        entity.filtroParametro = null;
+      } else {
+        entity.nombre = null;
+        entity.filtroParametro = this.fControlSearch.value;
+        if (this.fControlDateStart.value) {
+          const startDate = moment(new Date(this.fControlDateStart.value));
+          startDate.hour(0);
+          startDate.minute(0);
+          startDate.second(0);
+          startDate.millisecond(0);
+          let endDate = moment(new Date(this.fControlDateStart.value)).add(
+            1,
+            'days'
+          );
+          if (this.fControlDateEnd.value) {
+            endDate = moment(new Date(this.fControlDateEnd.value));
+            endDate.hour(0);
+            endDate.minute(0);
+            endDate.second(0);
+            endDate.millisecond(0);
+          }
+          endDate = endDate.add(1, 'days');
+          entity.fechaMin = startDate.toDate();
+          entity.fechaMax = endDate.toDate();
+        } else {
+          if (this.solicitarFechas) {
+            alert('Selecciona fechas');
+            return;
+          }
         }
       }
     }
+    
 
     // Lo complejo
     // 1 si tiene relacionado es para enviarlos al
@@ -1274,24 +1278,33 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
         this.isLoadingList = false;
         this.limpiarRepetidos();
-        if (this.fControlCheck.value) {
-          if(this.dataProvider.length ===0){
-            Swal.fire('Sin resultados', 'No encontramos resultados que concuerden con tu busqueda ' + this.fControlSearch.value, 'info');
-            this.fControlSearch.setValue(null);
-          } else{
-            if(this.dataProvider.length === 1){
-              this.agregarProceso(this.dataProvider[0]);
+        if(this.fControlCheck){
+          if (this.fControlCheck.value) {
+            if(this.dataProvider.length ===0){
+              Swal.fire('Sin resultados', 'No encontramos resultados que concuerden con tu busqueda ' + this.fControlSearch.value, 'info');
               this.fControlSearch.setValue(null);
+            } else{
+              if(this.dataProvider.length === 1){
+                this.agregarProceso(this.dataProvider[0]);
+                this.fControlSearch.setValue(null);
+              }
             }
           }
+        } else{
+          //aqui ingresan solmanete los de herencia sencillos (no multiples)
+          if(this.dataProvider.length === 0 ){
+            this.sendCreate();
+          }else{
+            this.openDialog(this.dataProvider[0]);
+          } 
         }
+        
       },
       error: () => {
         this.isLoadingList = false;
       },
     });
   }
-
   // Para la interfaz
   getColor(_documento: PedidoVentaDTO): string {
     const _color = this.templateService.getColor(_documento.estadoExpediente);

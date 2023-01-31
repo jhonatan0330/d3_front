@@ -11,10 +11,150 @@
         <span class="ml-2">Compose</span>
     </button>
 
-    <!-- Navigation -->
-    <fuse-vertical-navigation
-        [navigation]="menuData"
-        [inner]="true"
-        [mode]="'side'"
-        [opened]="true"></fuse-vertical-navigation>
+    <div
+    fxLayout="row wrap"
+    fxLayoutAlign="center center"
+    class="p-0.5 rounded"
+  >
+    <!-- Buscador de fecha -->
+    <div class="mr-1" *ngIf="!fControlCheck.value">
+      <mat-form-field >
+        <mat-label>Escoge una fecha</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input
+            matStartDate
+            placeholder="Fecha inicial"
+            [formControl]="fControlDateStart"
+          />
+          <input
+            matEndDate
+            placeholder="Fecha final"
+            [formControl]="fControlDateEnd"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+        <button
+          mat-button
+          matSuffix
+          mat-icon-button
+          (click)="
+            fControlDateStart.setValue(null); fControlDateEnd.setValue(null)
+          "
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <mat-checkbox class="mr-0.5" [formControl]="fControlCheck"
+      >Codigo Exacto</mat-checkbox
+    >
+    <!-- Buscador de texto -->
+    <div class="mr-0.5">
+      <mat-form-field >
+        <input
+          matInput
+          type="text"
+          placeholder="Coloca un texto y presiona enter"
+          [formControl]="fControlSearch"
+          autocomplete="off"
+          
+          (keyup.enter)="listar(1)"
+        />
+        <button
+          mat-button
+          matSuffix
+          mat-icon-button
+          (click)="fControlSearch.setValue('')"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <!-- Botones de accion en la lista -->
+    <div fxLayout="row" *ngIf="!isLoading">
+      <button
+        mat-icon-button
+        color="primary"
+        matTooltip="Listar"
+        (click)="listar(1)"
+        class="m-1"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="accent"
+        matTooltip="Crear"
+        (click)="openDialog()"
+        *ngIf="hasCreatePermission"
+        class="m-1"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+  
+      <button
+        mat-icon-button
+        color="accent"
+        matTooltip="Filter"
+        class="m-1"
+        *ngIf="plantilla && plantilla.estados"
+        (click)="isFiltering = !isFiltering"
+      >
+        <mat-icon>filter_alt</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        [color]="viewMode === 'list-view' ? 'accent' : ''"
+        (click)="viewMode = 'list-view'"
+        *ngIf="plantilla && plantilla.llaveTabla"
+      >
+        <mat-icon>format_list_bulleted</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        [color]="viewMode === 'grid-view' ? 'accent' : ''"
+        (click)="viewMode = 'grid-view'"
+        *ngIf="plantilla && plantilla.llaveTabla"
+      >
+        <mat-icon>apps</mat-icon>
+      </button>
+      <div *ngIf="viewMode !== 'grid-view' && plantilla.reportes">
+        <button
+          mat-flat-button
+          color="accent"
+          class="m-1"
+          [matMenuTriggerFor]="userMenuList"
+        >
+          <mat-icon>print</mat-icon>Imprimir
+        </button>
+        <mat-menu #userMenuList="matMenu">
+          <button
+            mat-menu-item
+            *ngFor="let r of plantilla.reportes"
+            (click)="showReport(r, null)"
+          >
+            <mat-icon>print</mat-icon>
+            <span>{{ r.nombre }}</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+    <!-- Filtro por Estados  -->
+    <form [formGroup]="form">
+      <div fxLayout="row wrap" *ngIf="plantilla?.estados && isFiltering">
+        <div *ngFor="let _estado of plantilla.estados" class="mr-1">
+          <mat-checkbox class="mr-1" [formControlName]="_estado.llaveTabla">
+            <span class="text-small">{{ _estado.nombre }}</span>
+          </mat-checkbox>
+          <div
+            [style.backgroundColor]="getColor(_estado.llaveTabla)"
+            class="color-filter"
+          >
+            -
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>

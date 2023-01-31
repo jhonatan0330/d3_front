@@ -11,6 +11,7 @@ import { GPSDispositivoDTO, GPSLocalizacionDTO } from './gps.domain';
 })
 export class GPSService {
     // Private
+    private _device: GPSDispositivoDTO;
     private _devices: BehaviorSubject<GPSDispositivoDTO[] | null> = new BehaviorSubject(null);
     private _locations: BehaviorSubject<GPSLocalizacionDTO[] | null> = new BehaviorSubject(null);
 
@@ -50,7 +51,22 @@ export class GPSService {
         );
     }
 
-    getLocationsFromDevice(filter: GPSLocalizacionFilterDTO): Observable<GPSLocalizacionDTO[]> {
+    selectDevice(_device: GPSDispositivoDTO) {
+        this._device = _device;
+        this.getLocationsFromDevice().subscribe();
+    }
+
+    dayToList = new Date();
+
+    getLocationsFromDevice(): Observable<GPSLocalizacionDTO[]> {
+        if (!this._device) { return; }
+        const filter: GPSLocalizacionFilterDTO = new GPSLocalizacionFilterDTO();
+        filter.dispositivo = this._device.llaveTabla;
+        filter.fechaMin = new Date(this.dayToList);
+        filter.fechaMin.setHours(0);
+        filter.fechaMin.setMinutes(0);
+        filter.fechaMin.setSeconds(0);
+        filter.fechaMax = new Date(filter.fechaMin.getTime() + 1000 * 60 * 60 * 24);
         return this._httpClient.post<GPSLocalizacionDTO[]>(
             this.ls.getUrlAccess('/gps/getGPSLocation/'), filter
         ).pipe(

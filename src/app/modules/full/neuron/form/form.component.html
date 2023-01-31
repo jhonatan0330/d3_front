@@ -10,11 +10,11 @@
   <img src="{{ plantilla?.imagen | imageFormat }}" alt="" />
   <!-- Texto del titulo -->
   <div fxLayout="column" fxFlex fxLayoutAlign="center center">
-    <div *ngIf="pedido && pedido.llaveTabla" class="full-width">
+    <div *ngIf="pedido && pedido.llaveTabla" class="w-full">
       <small fxFlex class="text-muted"> {{ pedido.funcionarioNombre }}</small>
       <small>{{ pedido.fecha | date: 'medium' }}</small>
     </div>
-    <div class="full-width">
+    <div class="w-full">
       <span fxFlex class="formTitle font-weight-bold"
         >{{ plantilla.nombre }}
         <span *ngIf="pedido && pedido.llaveTabla"> - {{ pedido.nombre }}</span>
@@ -33,7 +33,7 @@
       }}</small>
     </div>
 
-    <div class="full-width" fxLayoutAlign="end" *ngIf="pedido && pedido.dinero">
+    <div class="w-full" fxLayoutAlign="end" *ngIf="pedido && pedido.dinero">
       <small class="text-muted" *ngIf="pedido.dinero.saldo">{{
         pedido.dinero.saldo | currency
       }}</small>
@@ -128,13 +128,13 @@
     <mat-card class="mt-0 mx-0"
     *ngIf="isTransfering">
       <mat-progress-bar
-        class="full-width"
+        class="w-full"
         mode="indeterminate"
         *ngIf="transferIsLoading"
       ></mat-progress-bar>
       <form [formGroup]="transferForm" (ngSubmit)="transfer()">
         <div>
-          <mat-form-field class="full-width">
+          <mat-form-field class="w-full">
             <input
               matInput
               name="responsable"
@@ -162,7 +162,7 @@
         </div>
 
         <div>
-          <mat-form-field class="full-width">
+          <mat-form-field class="w-full">
             <textarea
               name="comentario"
               class="textarea-form"
@@ -175,7 +175,7 @@
         </div>
         <button
           mat-raised-button
-          class="mat-primary full-width mb-1"
+          class="mat-primary w-full mb-1"
           [disabled]="transferForm.invalid"
           *ngIf="!transferIsLoading"
         >
@@ -187,13 +187,13 @@
     <mat-card class="mt-0 mx-0"
     *ngIf="isChangeState">
       <mat-progress-bar
-        class="full-width"
+        class="w-full"
         mode="indeterminate"
         *ngIf="changeStateIsLoading"
       ></mat-progress-bar>
       <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
         <div>
-          <mat-form-field class="full-width">
+          <mat-form-field class="w-full">
             <input
               matInput
               name="estadoFinal"
@@ -217,7 +217,7 @@
         </div>
 
         <div>
-          <mat-form-field class="full-width">
+          <mat-form-field class="w-full">
             <textarea
               name="motivo"
               class="textarea-form"
@@ -230,7 +230,7 @@
         </div>
         <button
           mat-raised-button
-          class="mat-primary full-width mb-1"
+          class="mat-primary w-full mb-1"
           [disabled]="changeStateForm.invalid"
           *ngIf="!changeStateIsLoading"
         >
@@ -408,7 +408,7 @@
           </div>
         </div>
         <!-- Boton cerrar -->
-        <div class="full-width mb-4 mx-8" *ngIf="dataProvider">
+        <div class="w-full mb-4 mx-8" *ngIf="dataProvider">
           <button
             mat-flat-button
             (click)="listar(pagina)"
@@ -437,7 +437,7 @@
   <mat-dialog-actions *ngIf="modificable" class="pt-0">
     <!-- Boton de guardar -->
     <mat-progress-bar
-      class="full-width"
+      class="w-full"
       mode="indeterminate"
       *ngIf="submitted"
     ></mat-progress-bar>
@@ -445,7 +445,7 @@
       <button
         mat-raised-button
         color="primary"
-        class="full-width"
+        class="w-full"
         (click)="submit()"
       >
         <mat-icon>save</mat-icon> Guardar {{ plantilla.nombre | titlecase }}
