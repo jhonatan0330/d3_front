@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, AfterViewInit, Input, ElementRef } from '@angular/core';
 import { Map } from 'ol';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -12,6 +12,8 @@ import Point from 'ol/geom/Point';
 import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
 import { GPSLocalizacionDTO } from '../gps.domain';
+import { GPSService } from '../gps.service';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
 
 export const DEFAULT_HEIGHT = '500px';
@@ -37,6 +39,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   map: Map;
   vectorLayer;
+  pointsVectorLayer;
 
   private mapEl: HTMLElement;
 
@@ -49,14 +52,29 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() icon: string = DEFAULT_ICON;
   @Input() text: string = DEFAULT_TEXT;
 
+  locations: GPSLocalizacionDTO[];
+  private _unsubscribeAll: Subject<any> = new Subject<any>();
+
   constructor(
-    private elementRef: ElementRef) { }
+    private _changeDetectorRef: ChangeDetectorRef,
+    private elementRef: ElementRef,
+    private _gpsService: GPSService) { }
 
   ngOnInit(): void {
+    // Get the locations
+    this._gpsService.locations$
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((locations: GPSLocalizacionDTO[]) => {
+        this.locations = locations;
+        if (this.vectorLayer) { this.map.removeLayer(this.vectorLayer); }
+        this.addPoint(locations);
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
+      });
   }
 
   ngAfterViewInit(): void {
-    this.mapEl = this.elementRef.nativeElement.querySelector('#' + this.target);
     this.setSize();
 
     this.map = new Map({
@@ -71,6 +89,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   private setSize() {
+    this.mapEl = this.elementRef.nativeElement.querySelector('#' + this.target);
     if (this.mapEl) {
       const styles = this.mapEl.style;
       styles.height = coerceCssPixelValue(this.height) || DEFAULT_HEIGHT;
@@ -79,12 +98,15 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   addPoint(locations: GPSLocalizacionDTO[]) {
-
+    if (this.pointsVectorLayer) { this.map.removeLayer(this.pointsVectorLayer); }
+    if (!this.map) return;
     const markers: Feature<Point>[] = [];
 
     let latitud = 0;
     let longitud = 0;
+    let lastPoint: GPSLocalizacionDTO;
 
+    if (!locations || !locations.length) { return; }
     for (let i = 0; i < locations.length; i++) {
       const element = locations[i];
       latitud = element.latitud;
@@ -93,27 +115,25 @@ export class MapComponent implements OnInit, AfterViewInit {
         markers.push(new Feature({
           geometry: new Point(Proj.fromLonLat([longitud, latitud]))
         }));
+        lastPoint = element;
       }
-
     }
 
     const vectorSource = new VectorSource({
       features: markers
     });
 
-    const vectorLayer = new VectorLayer({
+    this.pointsVectorLayer = new VectorLayer({
       source: vectorSource
     });
 
-    vectorLayer.setZIndex(10);
+    this.pointsVectorLayer.setZIndex(9);
 
-    this.map.addLayer(vectorLayer);
 
-    if (latitud !== 0 && longitud !== 0) {
-      this.center(latitud, longitud);
-      this.addMarker(latitud, longitud);
+    this.map.addLayer(this.pointsVectorLayer);
+    if (lastPoint) {
+      this.addMarker(lastPoint.latitud, lastPoint.longitud);
     }
-
 
   }
 
@@ -161,6 +181,8 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     this.vectorLayer.setZIndex(10);
     this.map.addLayer(this.vectorLayer);
+
+    this.center(lat, lng);
   }
 
 }

@@ -34,7 +34,11 @@
                     </button>
 
                     <!-- Panel title -->
-                    <div class="text-4xl font-extrabold tracking-tight leading-none w-full">Dispositivos GPS</div>
+                    <div *ngIf="device" class="text-4xl font-extrabold tracking-tight leading-none w-full">{{device.usuarioNombre}}</div>
+
+                    <div *ngIf="!device" class="text-4xl font-extrabold tracking-tight leading-none w-full">
+                        Select a device!
+                    </div>
 
                     <!-- Search device button -->
                     <button class="ml-1" (click)="refresh()">
@@ -47,7 +51,6 @@
 
                     <!-- Date to Filter -->
                     <mat-form-field appearance="fill" class="w-4/12">
-                        <mat-label>Choose a date</mat-label>
                         <input matInput [matDatepicker]="picker" [formControl]="dateFilter">
                         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
@@ -57,8 +60,8 @@
                         <div>No point</div>
                     </div>
                     <!-- Panel title -->
-                    <mat-slider class="w-full" [formControl]="sliderControl" max="1440"
-                        min="0" step="1" tickInterval="60">
+                    <mat-slider class="w-full" [formControl]="sliderControl" max="1440" min="0" step="1"
+                        tickInterval="60">
                     </mat-slider>
                 </div>
                 <!-- Load settings panel -->

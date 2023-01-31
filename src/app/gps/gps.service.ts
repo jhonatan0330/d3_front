@@ -24,6 +24,10 @@ export class GPSService {
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
 
+    get device(): GPSDispositivoDTO {
+        return this._device;
+    }
+
     get devices$(): Observable<GPSDispositivoDTO[]> {
         return this._devices.asObservable();
     }

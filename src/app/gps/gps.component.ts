@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, ViewE
 import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { GPSLocalizacionFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { GPSDispositivoDTO, GPSLocalizacionDTO } from './gps.domain';
+import {  Subject, takeUntil } from 'rxjs';
+import { GPSDispositivoDTO } from './gps.domain';
 import { GPSService } from './gps.service';
 import { MapComponent } from './map/map.component';
 
@@ -20,10 +19,10 @@ export class GPSComponent {
     drawerMode: 'over' | 'side' = 'side';
     drawerOpened: boolean = true;
 
-    locations$: Observable<GPSLocalizacionDTO[]>;
     dateFilter = new FormControl(this._gpsService.dayToList);
     sliderControl = new FormControl();
     hourOfDay: string;
+    public device: GPSDispositivoDTO;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     /**
@@ -34,18 +33,8 @@ export class GPSComponent {
         private _changeDetectorRef: ChangeDetectorRef,
         private _gpsService: GPSService
     ) {
-        // Get the devices
-        this.locations$ = this._gpsService.locations$;
-        this._gpsService.locations$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((locations: GPSLocalizacionDTO[]) => {
-                if (locations) {
-                    this.map.addPoint(locations);
-                }
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-
+        
+        this.device = this._gpsService.device;
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -76,6 +65,7 @@ export class GPSComponent {
     // -----------------------------------------------------------------------------------------------------
 
     onSelectDevice(device: GPSDispositivoDTO) {
+        this.device = device
         this._gpsService.selectDevice(device)
     }
 
