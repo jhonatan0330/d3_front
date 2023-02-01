@@ -113,8 +113,8 @@
               element.caracteristicas && element.caracteristicas.length !== 0
             "
           >
-            <div fxLayout="row" *ngFor="let f of element.caracteristicas">
-              <small fxFlex class="text-muted">{{ f.campoDTO.nombre }}</small>
+            <div class="flex flex-row" *ngFor="let f of element.caracteristicas">
+              <small class="w-full">{{ f.campoDTO.nombre }}</small>
               <span class="mat-caption">{{ f.valorText }}</span>
             </div>
           </div>
@@ -210,7 +210,7 @@
           </div>
           <div class="card-title-text" fxLayout="row" *ngIf="d.dinero">
             <span fxFlex>{{ d.dinero.valorCampo | number }}</span>
-            <span class="text-muted">{{ d.dinero.valorTotal | number }}</span>
+            <span >{{ d.dinero.valorTotal | number }}</span>
           </div>
           <mat-divider></mat-divider>
         </mat-card-title>
@@ -222,7 +222,7 @@
             class="crop-text"
             *ngFor="let f of d.caracteristicas"
           >
-            <small fxFlex class="text-muted">{{ f.campoDTO.nombre }}</small>
+            <small fxFlex >{{ f.campoDTO.nombre }}</small>
             <span class="mat-caption">{{ f.valorText }}</span>
           </div>
         </mat-card-content>
@@ -379,7 +379,6 @@
           </div>
           <div class="card-title-text" fxLayout="row" *ngIf="iDocument.dinero">
             <span
-              class="text-muted"
               *ngIf="iDocument.dinero.valorTotal !== iDocument.dinero.saldo"
               >{{ iDocument.dinero.saldo | number }}</span
             >
@@ -398,7 +397,7 @@
             class="crop-text"
             *ngFor="let f of iDocument.caracteristicas"
           >
-            <small fxFlex class="text-muted">{{ f.campoDTO.nombre }}</small>
+            <small fxFlex >{{ f.campoDTO.nombre }}</small>
             <span class="mat-caption">{{ f.valorText }}</span>
           </div>
         </mat-card-content>

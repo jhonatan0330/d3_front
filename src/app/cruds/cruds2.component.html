@@ -216,7 +216,7 @@
           class="crop-text"
           *ngFor="let f of iDocument.caracteristicas"
         >
-          <small fxFlex class="text-muted">{{ f.campoDTO.nombre }}</small>
+          <small fxFlex >{{ f.campoDTO.nombre }}</small>
           <div *ngIf="f.valorText">
             <span class="mat-caption" *ngIf="!f.valorText.startsWith('http')">{{ f.valorText }}</span>
             <img *ngIf="f.valorText.startsWith('http')"
@@ -322,7 +322,7 @@
         *ngIf="element.caracteristicas && element.caracteristicas.length !== 0"
       >
         <div fxLayout="row" *ngFor="let f of element.caracteristicas">
-          <small fxFlex class="text-muted">{{ f.campoDTO.nombre }}</small>
+          <small fxFlex >{{ f.campoDTO.nombre }}</small>
           <span class="mat-caption">{{ f.valorText }}</span>
         </div>
       </div>

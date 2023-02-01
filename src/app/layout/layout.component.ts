@@ -53,14 +53,15 @@ export class LayoutComponent implements OnInit, OnDestroy
             timerProgressBar: true
           })
         }
+        if (response.modulos.find((modulo) => modulo.moduloLlave === 'AdministracionLogisticpymes')) {
+            this.jwtAuth.isAdmin = true;
+          } else {
+            this.jwtAuth.isAdmin = false;
+          }
         if (!this.templateService.template || this.templateService.template.length === 0 ) {
           // COPIADO DE SIGNIN
           if (response && response.modulos && response.modulos.length !== 0) {
-            if (response.modulos.find((modulo) => modulo.moduloLlave === 'AdministracionLogisticpymes')) {
-              this.jwtAuth.isAdmin = true;
-            } else {
-              this.jwtAuth.isAdmin = false;
-            }
+            
             // Esto lo oculto para ver como lo organizo bien
             /*if (
               response.modulos.find(

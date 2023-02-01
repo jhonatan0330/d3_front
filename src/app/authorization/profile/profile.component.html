@@ -130,7 +130,7 @@
                     <div class="flex flex-wrap mt-5">
                         <mat-progress-spinner class="example-margin" color="primary" mode="indeterminate"
                             *ngIf="isLoading"></mat-progress-spinner>
-                        <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/6 mb-4" *ngFor="let template of filteredModules">
+                        <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 mb-4" *ngFor="let template of filteredModules">
                             <app-template [id]="template.llaveTabla" [nombre]="template.nombre" [imagen]="template.imagen"
                                 [process_id]="template.proceso" type="P"></app-template>
                         </div>
