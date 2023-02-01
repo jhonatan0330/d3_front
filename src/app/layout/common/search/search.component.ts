@@ -6,7 +6,6 @@ import { debounceTime, filter, map, Subject, takeUntil } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations/public-api';
 import { PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import Swal from 'sweetalert2';
-import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 
 @Component({
     selector     : 'search',

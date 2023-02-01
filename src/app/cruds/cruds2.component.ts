@@ -183,6 +183,11 @@ export class Cruds2Component implements OnInit {
     return this.templateService.getColor(pEstado);
   }
 
+  
+  getColorFont(pEstado: string) {
+    return this.templateService.getColorFont(pEstado);
+  }
+
   listar(_pagina: number) {
     if (this.isLoading) {
       return;

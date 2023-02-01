@@ -73,7 +73,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   identificadorInicial: string; // La use para llenar el campo inicial
   close2Save = false;
 
-       // TRACE
+  // TRACE
   pagina = 1; // Indica que pagina estamos buscando
   cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
   isLoading = false;
@@ -108,13 +108,13 @@ export class FormComponent implements OnInit, AfterViewInit {
   transferForm: FormGroup;
   users: UsuarioDTO[] = [];
 
-   // Cambiar estado
-   canChangeState = false;
-   isChangeState = false;
-   changeStateIsLoading = false;
-   changeStateForm: FormGroup;
+  // Cambiar estado
+  canChangeState = false;
+  isChangeState = false;
+  changeStateIsLoading = false;
+  changeStateForm: FormGroup;
 
-   private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
+  private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -125,7 +125,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private ls: LocalStoreService,
     private compiler: ComponentFactoryResolver,
     private utilsService: UtilsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Validaciones para evitar null
@@ -170,7 +170,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     // La variable modificado me indica si el usuario hizo cambios a los datos
     for (let i = 0; i < this.dynamicControls.length; i++) {
       const element = this.dynamicControls[i];
-      if(!element.send2Server()){
+      if (!element.send2Server()) {
         this.submitted = false;
         return;
       }
@@ -252,11 +252,11 @@ export class FormComponent implements OnInit, AfterViewInit {
     );
     if (dp) {
       if (!this.pedidoBase.llaveTabla && PlantillaHelper.isEmpty(dp.propiedades,
-          PlantillaHelper.PERMISO_PLANTILLA_CREAR
-        )) {
-          Swal.fire('Autorizacion','No tienes permisos para crear registros este tipo de documento. ' + dp.nombre, 'info');
-          this.dialogRef.close();
-          return;
+        PlantillaHelper.PERMISO_PLANTILLA_CREAR
+      )) {
+        Swal.fire('Autorizacion', 'No tienes permisos para crear registros este tipo de documento. ' + dp.nombre, 'info');
+        this.dialogRef.close();
+        return;
       }
       // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
       if (!dp.caracteristicas) {
@@ -276,7 +276,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         return dp;
       }
     } else {
-      Swal.fire('Autorizacion','No tienes permisos para ver este documento.', 'info');
+      Swal.fire('Autorizacion', 'No tienes permisos para ver este documento.', 'info');
       this.dialogRef.close();
       return;
     }
@@ -396,21 +396,21 @@ export class FormComponent implements OnInit, AfterViewInit {
                   newDetalle.cantidadPromocionBase = dpv.cantidadPromocionBase;
 
                   newDetalle.caracteristicas = [];
-                    for (let n = 0; n < dpv.caracteristicas.length; n++) {
-                      const campoInterno = dpv.caracteristicas[n];
-                      const cpInterno: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
-                      cpInterno.campo = campoInterno.campo;
-                      if (!toSave) { cpInterno.campoDTO = campoInterno.campoDTO; }
-                      cpInterno.valorOpcion = campoInterno.valorOpcion;
-                      cpInterno.valorAuxiliar = campoInterno.valorAuxiliar;
-                      cpInterno.valorFecha = campoInterno.valorFecha;
-                      cpInterno.valorNumero = campoInterno.valorNumero;
-                      cpInterno.valorText = campoInterno.valorText;
-                      cpInterno.modificado = campoInterno.modificado;
-                      cpInterno.principal = campoInterno.principal;
-                      newDetalle.caracteristicas.push(cpInterno);
-                    }
-                    
+                  for (let n = 0; n < dpv.caracteristicas.length; n++) {
+                    const campoInterno = dpv.caracteristicas[n];
+                    const cpInterno: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
+                    cpInterno.campo = campoInterno.campo;
+                    if (!toSave) { cpInterno.campoDTO = campoInterno.campoDTO; }
+                    cpInterno.valorOpcion = campoInterno.valorOpcion;
+                    cpInterno.valorAuxiliar = campoInterno.valorAuxiliar;
+                    cpInterno.valorFecha = campoInterno.valorFecha;
+                    cpInterno.valorNumero = campoInterno.valorNumero;
+                    cpInterno.valorText = campoInterno.valorText;
+                    cpInterno.modificado = campoInterno.modificado;
+                    cpInterno.principal = campoInterno.principal;
+                    newDetalle.caracteristicas.push(cpInterno);
+                  }
+
                   if (!toSave) {
                     newDetalle.llaveTabla = null;
                     newDetalle.propiedades = dpv.propiedades;
@@ -486,11 +486,9 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.resolvePropiertiesForm();
     this.getReports();
 
-    this.getReports();
-
     // Colocar los valores iniciales de la consulta historica
     const checksHistorial: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_HISTORIAL_ACTIVO);
-    if(checksHistorial && checksHistorial.length != 0){
+    if (checksHistorial && checksHistorial.length != 0) {
       for (let i = 0; i < checksHistorial.length; i++) {
         switch (checksHistorial[i].valor) {
           case "1":
@@ -519,7 +517,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  
+
 
   // Agrega los campos al formulario
   showFields() {
@@ -659,6 +657,10 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   getColor() {
     return this.templateService.getColor(this.pedido.estadoExpediente);
+  }
+
+  getColorFont() {
+    return this.templateService.getColorFont(this.pedido.estadoExpediente);
   }
 
   showActions() {
@@ -888,10 +890,10 @@ export class FormComponent implements OnInit, AfterViewInit {
         for (let i = 0; i < this.plantilla.reportes.length; i++) {
           const reporte = this.plantilla.reportes[i];
           const propVisibleState = PlantillaHelper.buscarValorMultiple(reporte.propiedades, PlantillaHelper.REP_VISIBLE_STATE);
-          if(!propVisibleState 
-            || !this.pedido 
-            || !this.pedido.estadoExpediente 
-            || (propVisibleState && propVisibleState.find(x=>x.valor ===this.pedido.estadoExpediente))){
+          if (!propVisibleState
+            || !this.pedido
+            || !this.pedido.estadoExpediente
+            || (propVisibleState && propVisibleState.find(x => x.valor === this.pedido.estadoExpediente))) {
             this.reportes.push(reporte);
           }
         }
@@ -938,7 +940,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     if (this.canTransfer) {
 
       if (!this.plantilla.estados || this.plantilla.estados.length === 0) {
-        Swal.fire('No estados','Esta plantilla no tiene estados y no permite gestionar la transferencia','warning');
+        Swal.fire('No estados', 'Esta plantilla no tiene estados y no permite gestionar la transferencia', 'warning');
         return;
       }
 
@@ -950,7 +952,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             PlantillaHelper.ROL
           );
           if (!rolPropiedad) {
-            Swal.fire('No roles','El estado ' + estadoModificable.nombre + ' no tiene configurada la propiedad ROL' ,'warning');
+            Swal.fire('No roles', 'El estado ' + estadoModificable.nombre + ' no tiene configurada la propiedad ROL', 'warning');
             return;
           }
         }
@@ -1009,7 +1011,8 @@ export class FormComponent implements OnInit, AfterViewInit {
             this.dialogRef.close(this.pedido);
             this.transferIsLoading = false;
           },
-          error: () => {   this.transferIsLoading = false;    }});
+          error: () => { this.transferIsLoading = false; }
+        });
       }
     }
   }
@@ -1053,7 +1056,8 @@ export class FormComponent implements OnInit, AfterViewInit {
             this.dialogRef.close(this.pedido);
             this.changeStateIsLoading = false;
           },
-          error: () => {   this.changeStateIsLoading = false;    }});
+          error: () => { this.changeStateIsLoading = false; }
+        });
       }
     }
   }
@@ -1063,12 +1067,12 @@ export class FormComponent implements OnInit, AfterViewInit {
     return window.location.origin + '/main/' + this.plantilla.llaveTabla + '/' + this.pedidoBase.llaveTabla;
   }
 
-  sendWhatsApp(){
-    const url = 'whatsapp://send?text=' +  this.getURLDocument();
+  sendWhatsApp() {
+    const url = 'whatsapp://send?text=' + this.getURLDocument();
     window.open(url, "_self");
   }
 
-  copyUrl(){
+  copyUrl() {
     const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';
@@ -1090,8 +1094,8 @@ export class FormComponent implements OnInit, AfterViewInit {
     });
   }
 
-  copyName(){
-    if(this.pedido){
+  copyName() {
+    if (this.pedido) {
       const selBox = document.createElement('textarea');
       selBox.style.position = 'fixed';
       selBox.style.left = '0';

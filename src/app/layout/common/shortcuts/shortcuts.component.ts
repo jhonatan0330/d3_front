@@ -7,7 +7,7 @@ import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/m
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
-
+import { UntypedFormControl } from '@angular/forms';
 
 @Component({
     selector: 'shortcuts',
@@ -21,6 +21,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     @ViewChild('shortcutsPanel') private _shortcutsPanel: TemplateRef<any>;
 
     shortcuts: DocumentoPlantillaDTO[];
+    shortcutsFiltered: DocumentoPlantillaDTO[];
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -54,12 +55,15 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
                         const iTemplate = templates[i];
                         if (PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
                             && PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-                                this.shortcuts.push(iTemplate);
+                            this.shortcuts.push(iTemplate);
                         }
                     }
                 }
+                this.shortcutsFiltered = Object.assign([], this.shortcuts);
                 this._changeDetectorRef.markForCheck();
             });
+
+
     }
 
     /**
@@ -122,6 +126,24 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
      */
     trackByFn(index: number, item: any): any {
         return item.id || index;
+    }
+
+    filterItem(value) {
+        if (!value) {
+            this.shortcutsFiltered = Object.assign([], this.shortcuts);
+        } // when nothing has typed
+        this.shortcutsFiltered = Object.assign([], this.shortcuts).filter(
+            (item) => item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
+        );
+    }
+
+    onKeydown(event: KeyboardEvent): void {
+        // Escape
+        if (event.code === 'Enter') {
+            if(this.shortcutsFiltered && this.shortcutsFiltered.length!=0) {
+                this.showTemplate(this.shortcutsFiltered[0]);
+            }
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------

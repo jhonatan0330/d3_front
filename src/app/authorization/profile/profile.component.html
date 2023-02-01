@@ -122,8 +122,8 @@
                         <img class="w-12 min-w-12 h-12 rounded-full mr-4" src="{{ user?.avatar }}">
                     </div>
                     <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript w-full">
-                        <textarea #myInput matInput [placeholder]="'Que deseas consultar?'" [rows]="3"
-                            matTextareaAutosize (input)="filterItem(myInput.value)"></textarea>
+                        <input #myInput matInput [placeholder]="'Que deseas consultar?'" 
+                             (input)="filterItem(myInput.value)"/>
                     </mat-form-field>
                 </div>
                 <div class="w-full content-center">

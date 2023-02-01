@@ -16,7 +16,7 @@
       <span fxFlex class="px-1 font-semibold">
         <span>{{ plantilla.nombre }}</span>
         <span *ngIf="pedido && pedido.llaveTabla"> - {{ pedido.nombre }}</span>
-        <a *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
+        <a class="cursor-pointer" *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
           <mat-icon class="ml-4" inline="true">content_copy</mat-icon></a>
         <span *ngIf="pedido && pedido.historico && pedido.historico !== 0">*</span></span>
       <span *ngIf="instruccionCrear" class="px-1">{{
@@ -151,20 +151,20 @@
       <div fxLayout="row wrap" fxLayoutAlign="center center" *ngIf="!isLoading">
         <!-- Botones de transiciones -->
         <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)">
-          <div class="border rounded p-2 m-2" fxLayoutAlign="none center">
+          <div class="border rounded p-1 m-1" fxLayoutAlign="none center">
             <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
-            <b class="text-small">{{ t.nombre }}</b>
+            <b [style.color]="getColorFont()" class="text-small">{{ t.nombre }}</b>
           </div>
         </a>
         <!-- Botones de reportes -->
         <a *ngFor="let r of reportes" (click)="showReport(r)" fxFlex.xs="100">
-          <div class="border rounded p-2 m-2" fxLayoutAlign="none center">
-            <mat-icon svgIcon="print">printer</mat-icon>
+          <div class="border rounded p-2 m-2 " fxLayoutAlign="none center">
+            <mat-icon class="h-8" svgIcon="print">printer</mat-icon>
             <b class="text-small">{{ r.nombre | slice: 0:30 }}</b>
           </div>
         </a>
         <!-- Boton de historial -->
-        <button mat-flat-button fxFlex.xs="100" class="mx-4 mb-4" (click)="listar(1)" *ngIf="!dataProvider">
+        <button mat-flat-button fxFlex.xs="100" (click)="listar(1)" *ngIf="!dataProvider">
           <mat-icon>history</mat-icon> Historial
         </button>
         <!-- Boton cerrar -->
@@ -278,7 +278,7 @@
       </mat-card-content>
     </mat-card>
     <!-- Campos dinamicos -->
-    <div>
+    <div class="mt-1">
       <ng-template #dynamycFormElement></ng-template>
     </div>
   </mat-dialog-content>
