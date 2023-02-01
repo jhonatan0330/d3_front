@@ -7,7 +7,6 @@ import { environment } from 'environments/environment';
 import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/services/local-store.service';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
-import { ShortcutsService } from 'app/layout/common/shortcuts/shortcuts.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { AuthenticationUtils } from './authentication.utils';
 
@@ -34,8 +33,7 @@ export class AuthenticationService
         private _userService: UserService,
         private _jwtAuth: JwtAuthService,
         private _ls: LocalStoreService,
-        private _apiService: ApiService,
-        private _shortcutsService: ShortcutsService
+        private _apiService: ApiService
     )
     {
     }
@@ -167,9 +165,6 @@ export class AuthenticationService
             avatar: response.usuarioDTO.imagen
         };
 
-        this._apiService.listarPlantillas(null).subscribe((result)=>{
-            this._shortcutsService.addTemplates(result);
-        });
     }
 
 

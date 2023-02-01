@@ -4,6 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { debounceTime, filter, map, Subject, takeUntil } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations/public-api';
+import { PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
+import Swal from 'sweetalert2';
+import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 
 @Component({
     selector     : 'search',
@@ -29,9 +32,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy
      * Constructor
      */
     constructor(
-        private _elementRef: ElementRef,
-        private _httpClient: HttpClient,
-        private _renderer2: Renderer2
+        private _httpClient: HttpClient
     )
     {
     }
@@ -132,7 +133,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy
                 filter(value => value && value.length >= this.minLength)
             )
             .subscribe((value) => {
-                this._httpClient.post('api/common/search', {query: value})
+                /*this._httpClient.post('api/common/search', {query: value})
                     .subscribe((resultSets: any) => {
 
                         // Store the result sets
@@ -140,7 +141,8 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy
 
                         // Execute the event
                         this.search.next(resultSets);
-                    });
+                    });*/
+                this.searchDocument(value);
             });
     }
 
@@ -221,4 +223,44 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy
     {
         return item.id || index;
     }
+
+    searchDocument(texto: string) {
+        /*if (texto && texto.llaveTabla) {
+          this.searchCtrl.setValue('');
+          return;
+        }*/
+        if (!texto || texto.length === 0) {
+          // pasar esto a util para usar menos codigo
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Coloque el codigo exacto del documento',
+          });
+          // alert('Coloque el codigo exacto del documento');
+          return;
+        }
+        const entitySearch: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
+        entitySearch.nombre = texto;
+        //this.isLoading = true;
+        /*this.api.listarDocumentos(entitySearch, null).subscribe({
+          next: (_value: PedidoVentaDTO[]) => {
+            //this.isLoading = false;
+            this.disponibles = [];
+            if (!_value || _value.length === 0) {
+              alert('No se encontraron resultados para ' + this.searchCtrl.value);
+              //this.searchCtrl.setValue('');
+              return;
+            }
+            if (_value.length === 1) {
+              this.openDocument(_value[0]);
+              this.searchCtrl.setValue('');
+            } else {
+              this.disponibles = _value;
+            }
+          },
+          error: (err: any) => {
+            this.isLoading = false;
+          },
+        });*/
+      }
 }

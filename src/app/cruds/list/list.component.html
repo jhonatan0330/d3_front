@@ -64,7 +64,7 @@
           <mat-card-content *ngIf="
                     iDocument.caracteristicas && iDocument.caracteristicas.length !== 0
                   ">
-            <div fxLayout="row" class="crop-text" *ngFor="let f of iDocument.caracteristicas">
+            <div fxLayout="row" class="line-clamp-1" *ngFor="let f of iDocument.caracteristicas">
               <small fxFlex >{{ f.campoDTO.nombre }}</small>
               <div *ngIf="f.valorText">
                 <span class="mat-caption" *ngIf="!f.valorText.startsWith('http')">{{ f.valorText }}</span>
