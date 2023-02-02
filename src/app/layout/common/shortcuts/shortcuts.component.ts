@@ -7,7 +7,6 @@ import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/m
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
-import { UntypedFormControl } from '@angular/forms';
 
 @Component({
     selector: 'shortcuts',

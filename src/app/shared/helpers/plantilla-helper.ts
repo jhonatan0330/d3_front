@@ -102,7 +102,9 @@ export class PlantillaHelper {
 
   static MULTIPLE_SELECCION = 'MULTIPLE_SELECCION';
   static REP_VISIBLE_STATE = 'REP_VISIBLE_STATE';
-  
+
+  static COVERAGE_IMAGE = 'COVERAGE_IMAGE';
+
 
   static buscarPropiedad(
     propiedades: PropiedadDTO[],

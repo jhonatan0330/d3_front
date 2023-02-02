@@ -5,7 +5,7 @@
 
         <!-- Cover image -->
         <div>
-            <img class="h-40 lg:h-80 object-cover w-full" src="assets/images/pages/profile/cover.jpg" alt="Cover image">
+            <img class="h-40 lg:h-80 object-cover w-full" [src]="coverageImage" alt="Cover image">
         </div>
 
         <!-- User info -->
@@ -22,35 +22,6 @@
                 <div class="text-lg font-bold leading-none">{{ user?.companyName }}</div>
                 <div class="text-secondary">{{ user?.companySlogan }}</div>
             </div>
-
-            <!-- Separator -->
-            <!--div class="hidden lg:flex h-8 mx-8 border-l-2"></div-->
-
-
-            <!-- Menu 
-            <div class="flex items-center mt-8 mb-4 lg:m-0 lg:ml-auto space-x-6">
-                <a
-                    class="font-medium"
-                    [routerLink]="['./']">
-                    Home
-                </a>
-                <a
-                    class="text-secondary"
-                    [routerLink]="['./']">
-                    About
-                </a>
-                <a
-                    class="text-secondary"
-                    [routerLink]="['./']">
-                    Followers
-                </a>
-                <a
-                    class="text-secondary"
-                    [routerLink]="['./']">
-                    Gallery
-                </a>
-            </div>
-            -->
 
         </div>
 
@@ -116,14 +87,14 @@
 
             <!-- Create Post -->
             <fuse-card class="flex flex-col w-full p-6 sm:p-8 pb-6">
-                <div class="text-xl font-semibold">Consultar acciones</div>
+                <div class="text-xl font-semibold">Bienvenid@ {{ user?.name }}</div>
                 <div class="flex flex-col sm:flex-row items-start mt-2">
                     <div class="hidden sm:flex items-center" >
                         <img class="w-12 min-w-12 h-12 rounded-full mr-4" src="{{ user?.avatar }}">
                     </div>
                     <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript w-full">
-                        <input #myInput matInput [placeholder]="'Que deseas consultar?'" 
-                             (input)="filterItem(myInput.value)"/>
+                        <input #myInput matInput [placeholder]="'Que deseas consultar?'" [formControl]="filterControl"
+                             (input)="filterItem()" (keyUp.enter)="selectFirst()"/>
                     </mat-form-field>
                 </div>
                 <div class="w-full content-center">

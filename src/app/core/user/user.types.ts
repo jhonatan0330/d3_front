@@ -8,6 +8,7 @@ export interface User
     companyName?: string;
     companySlogan?: string;
     companyImage?: string;
+    companyCoverageImage?: string;
     avatar?: string;
     status?: string;
 }

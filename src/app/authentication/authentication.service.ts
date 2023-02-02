@@ -9,6 +9,7 @@ import { LocalConstants, LocalStoreService } from 'app/shared/services/local-sto
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { AuthenticationUtils } from './authentication.utils';
+import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 
 @Injectable()
 export class AuthenticationService
@@ -152,6 +153,11 @@ export class AuthenticationService
         // Set the authenticated flag to true
         this._authenticated = true;
 
+        let imageCoverage ;
+        if(response && response.organizacion && response.organizacion.propiedades){
+            imageCoverage = PlantillaHelper.buscarValor(response.organizacion.propiedades, PlantillaHelper.COVERAGE_IMAGE);
+        }
+
         // Store the user on the user service
         this._userService.user = {
             id: response.usuarioDTO.llaveTabla,
@@ -162,8 +168,11 @@ export class AuthenticationService
             companyName: response.organizacion.nombre,
             companySlogan: response.organizacion.slogan,
             companyImage: response.organizacion.imagen,
-            avatar: response.usuarioDTO.imagen
+            avatar: response.usuarioDTO.imagen,
+            companyCoverageImage: (imageCoverage?imageCoverage:null)
         };
+
+        
 
     }
 
