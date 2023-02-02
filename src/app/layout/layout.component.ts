@@ -53,7 +53,7 @@ export class LayoutComponent implements OnInit, OnDestroy
             timerProgressBar: true
           })
         }
-        if (response.modulos.find((modulo) => modulo.moduloLlave === 'AdministracionLogisticpymes')) {
+        if (response.modulos && response.modulos.find((modulo) => modulo.moduloLlave === 'AdministracionLogisticpymes')) {
             this.jwtAuth.isAdmin = true;
           } else {
             this.jwtAuth.isAdmin = false;

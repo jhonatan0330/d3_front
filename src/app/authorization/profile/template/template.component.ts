@@ -22,9 +22,11 @@ export class TemplateComponent implements OnInit {
   @Input() type: TemplateEnum;
   @Input() serverId: string;
 
-  constructor(private router: Router, private utilsService: UtilsService, private templateService: TemplateService) {}
+  constructor(
+    private router: Router, 
+    private utilsService: UtilsService, private templateService: TemplateService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   showTemplate() {
     if (this.type === TemplateEnum.TIPO_REPORTE) {
@@ -40,16 +42,16 @@ export class TemplateComponent implements OnInit {
           newRoute = '/list/' + this.id;
         }
       }
-      if(this.serverId) { newRoute = newRoute + '/' + this.serverId }
-      this.router.navigate(['/list' +newRoute]);
+      if (this.serverId) { newRoute = newRoute + '/' + this.serverId }
+      this.router.navigate(['/list' + newRoute]);
     }
   }
 
   openDialog() {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = this.id;
-    if(this.serverId) { 
-      pedidoVenta.serverUrl = this.templateService.getUrl4Id(this.serverId) 
+    if (this.serverId) {
+      pedidoVenta.serverUrl = this.templateService.getUrl4Id(this.serverId)
     }
     let _close2Save = false;
     if (this.type === TemplateEnum.TIPO_REPORTE) {

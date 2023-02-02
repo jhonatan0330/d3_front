@@ -26,8 +26,7 @@
             </div>
             <div class="text-lg font-medium leading-10">Notifications</div>
             <div class="ml-auto">
-                <button mat-icon-button [matTooltip]="'refresh'"
-                    (click)="refresh()">
+                <button mat-icon-button [matTooltip]="'refresh'" (click)="refresh()">
                     <mat-icon class="icon-size-5 text-current" svgIcon="heroicons_outline:refresh"></mat-icon>
                 </button>
             </div>
@@ -41,7 +40,8 @@
                     [ngClass]="{'unread': !notification.fechaLeido}">
 
                     <!-- Header -->
-                    <div class="flex rounded" [style.backgroundColor]="getColor(notification.documentoDTO.estadoExpediente)">
+                    <div class="flex rounded"
+                        [style.backgroundColor]="getColor(notification.documentoDTO.estadoExpediente)">
                         <a class="w-full cursor-pointer" (click)="openDocument(notification)">
                             <div class="flex">
                                 <div class="pt-2 pl-2">
@@ -50,46 +50,53 @@
                                 <div class="w-full px-2">
                                     <div class="flex font-semibold">
                                         <span class="w-full">{{ notification.documentoDTO.nombre }}</span>
-                                        <span >{{ notification.documentoDTO.estadoNombre }}</span>
+                                        <span>{{ notification.documentoDTO.estadoNombre }}</span>
                                     </div>
                                     <div *ngIf="notification.fechaRegistro" class="flex w-full px-1 text-xs">
                                         <mat-icon class="icon-size-3" svgIcon="mat_solid:check"></mat-icon>
                                         <div>Asignado</div>
-                                        <div class="w-full text-right">{{ notification.fechaRegistro | date :'medium' }}</div>
+                                        <div class="w-full text-right">{{ notification.fechaRegistro | date :'medium' }}
+                                        </div>
                                     </div>
                                     <div *ngIf="notification.fechaLeido" class="flex w-full px-1 text-xs">
                                         <mat-icon class="icon-size-3" svgIcon="mat_solid:spellcheck"></mat-icon>
                                         <div>Leido</div>
-                                        <div class="w-full text-right" >{{ notification.fechaLeido | date :'medium' }}</div>
+                                        <div class="w-full text-right">{{ notification.fechaLeido | date :'medium' }}
+                                        </div>
                                     </div>
                                     <div *ngIf="notification.fechaArrancar" class="flex w-full px-1 text-xs">
                                         <mat-icon class="icon-size-3" svgIcon="mat_solid:spellcheck"></mat-icon>
-                                        <small > Inicia el :</small>
-                                        <small class="w-full text-right">{{ notification.fechaArrancar | date :'medium' }}</small>
+                                        <small> Inicia el :</small>
+                                        <small class="w-full text-right">{{ notification.fechaArrancar | date :'medium'
+                                            }}</small>
                                     </div>
                                     <div *ngIf="notification.fechaLimite" class="flex w-full px-1 text-xs">
                                         <mat-icon class="icon-size-3" svgIcon="mat_solid:spellcheck"></mat-icon>
-                                        <small > Maximo hasta :</small>
-                                        <small class="w-full text-right">{{ notification.fechaLimite | date :'medium' }}</small>
+                                        <small> Maximo hasta :</small>
+                                        <small class="w-full text-right">{{ notification.fechaLimite | date :'medium'
+                                            }}</small>
                                     </div>
                                     <div *ngIf="notification.documentoDTO.dinero">
-                                        <span >{{ notification.documentoDTO.dinero.valorCampo | number }}</span>
-                                        <span class="w-full text-right">{{ notification.documentoDTO.dinero.valorTotal | number }}</span>
+                                        <span>{{ notification.documentoDTO.dinero.valorCampo | number }}</span>
+                                        <span class="w-full text-right">{{ notification.documentoDTO.dinero.valorTotal |
+                                            number }}</span>
                                     </div>
                                 </div>
                             </div>
                         </a>
                     </div>
-                    <div class="p-1">
+                    <!-- Content -->
+                    <div class="m-1">
                         <div class="text-xs text-justify line-clamp-4">{{ notification.documentoDTO.descripcion }}</div>
-                        <div class="w-full ml-4" *ngIf="
+                        <div class="w-full pl-4" *ngIf="
                             notification.documentoDTO.caracteristicas &&
                             notification.documentoDTO.caracteristicas.length !== 0
                           ">
                             <div class="flex text-secondary text-xs"
                                 *ngFor="let f of notification.documentoDTO.caracteristicas">
                                 <div class="font-semibold">{{ f.campoDTO.nombre }}</div>
-                                <div class="w-full pl-1 line-clamp-1" *ngIf="!f.valorText.startsWith('http')">{{ f.valorText }}</div>
+                                <div class="w-full pl-1 line-clamp-1" *ngIf="!f.valorText.startsWith('http')">{{
+                                    f.valorText }}</div>
                                 <img *ngIf="f.valorText.startsWith('http')" [src]="f.valorText" [name]="f.valorText" />
                             </div>
                         </div>

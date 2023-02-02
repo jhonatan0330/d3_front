@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
@@ -40,6 +40,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private templateService: TemplateService,
     public jwtAuth: JwtAuthService,
     private route: ActivatedRoute,
+    private router: Router,
     private _utilsService: UtilsService,
     private _userService: UserService) {
 
@@ -51,7 +52,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .pipe((takeUntil(this._unsubscribeAll)))
       .subscribe((user: User) => {
         this.user = user;
-        if(user && user.companyCoverageImage){
+        if (user && user.companyCoverageImage) {
           this.coverageImage = user.companyCoverageImage;
         }
       });
@@ -135,9 +136,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const value = this.filterControl.value;
     if (!value) {
       this.filteredModules = Object.assign([], this.modules);
+      return;
     } // when nothing has typed
     this.filteredModules = Object.assign([], this.modules).filter(
-      (item) => item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
+      (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1)
     );
   }
 
@@ -273,14 +275,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectFirst(){
-    if(this.filteredModules && this.filteredModules.length!=0) {
-        const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
-        pedidoVenta.plantilla = this.filteredModules[0].llaveTabla;
-        this._utilsService.modalWithParams(pedidoVenta, true);
-        this.filterControl.setValue(null);
-        this.filterItem();
-   }
+  selectFirst() {
+    if (this.filteredModules && this.filteredModules.length != 0) {
+      let newRoute = '/list/' + this.filteredModules[0].llaveTabla;
+      this.router.navigate(['/list' + newRoute]);
+      this.filterControl.setValue(null);
+      this.filterItem();
+    }
   }
-  
+
 }

@@ -57,7 +57,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-            this.refresh();
+        this.refresh();
     }
 
     /**
@@ -213,14 +213,17 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
     openDocument(document: ActividadDTO) {
         if (!document.fechaLeido) {
-            this._notificationsService.readActivity(document);
-        } else {
-            this._notificationsService.openDialog(document.documentoDTO.plantilla, document.documentoDTO.llaveTabla
-                , document.documentoDTO.serverUrl);
+            this._notificationsService.readActivity(document).subscribe({
+                next: () => {
+                    this.refresh();
+                }
+            });
         }
+        this._notificationsService.openDialog(document.documentoDTO.plantilla, document.documentoDTO.llaveTabla
+            , document.documentoDTO.serverUrl);
     }
 
-    refresh(){
+    refresh() {
         this._notificationsService.getAll().subscribe();
     }
 
