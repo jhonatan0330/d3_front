@@ -1,7 +1,7 @@
 <!-- Titulo -->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle fxLayout="row wrap" *ngIf="plantilla"
   fxLayoutAlign=" center">
-  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" />
+  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1" />
   <!-- Texto del titulo -->
   <div fxFlex class="items-center">
 
@@ -13,7 +13,7 @@
       <small>{{ pedido.fecha | date: 'medium' }}</small>
     </div>
     <div class="w-full">
-      <span fxFlex class="px-1 font-semibold">
+      <span fxFlex class="font-semibold">
         <span>{{ plantilla.nombre }}</span>
         <span *ngIf="pedido && pedido.llaveTabla"> - {{ pedido.nombre }}</span>
         <a class="cursor-pointer" *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
@@ -34,13 +34,11 @@
     </div>
   </div>
   <!-- Botones de accion -->
-  <div>
+  <div fxLayout="column" class="items-center">
     <!-- Boton Cerrar -->
-    <button mat-icon-button (click)="dialogRef.close(false)" tabindex="-1">
-      <mat-icon>exit_to_app</mat-icon>
-    </button>
-    <button mat-icon-button tabindex="-1" [matMenuTriggerFor]="formMenuList">
-      <mat-icon>menu</mat-icon>
+    <mat-icon class="h-6" (click)="dialogRef.close(false)">exit_to_app</mat-icon>
+    <button mat-icon-button class="h-6" tabindex="-1" [matMenuTriggerFor]="formMenuList">
+      <mat-icon class="h-6" >menu</mat-icon>
     </button>
     <mat-menu #formMenuList="matMenu">
       <!-- Boton Cambiar estado -->
@@ -144,23 +142,26 @@
         </button>
       </form>
     </mat-card>
-    <!-- Acciones y trazabilidad -->
-    <div class="p-1 rounded border" *ngIf="pedido && pedido.llaveTabla" [style.backgroundColor]="getColor()">
+    <!-- Acciones  -->
+    <div class="p-1 rounded mt-1" *ngIf="pedido && pedido.llaveTabla" [style.backgroundColor]="getColor()">
       <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
       <!-- Acciones -->
       <div fxLayout="row wrap" fxLayoutAlign="center center" *ngIf="!isLoading">
         <!-- Botones de transiciones -->
-        <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)">
-          <div class="border rounded p-1 m-1" fxLayoutAlign="none center">
+        <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer">
+          <div class="p-1 m-1" fxLayoutAlign="none center">
             <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
-            <b [style.color]="getColorFont()" class="text-small">{{ t.nombre }}</b>
+            <b [style.color]="getColorFont()" class="ml-1">{{ t.nombre }}</b>
           </div>
         </a>
         <!-- Botones de reportes -->
-        <a *ngFor="let r of reportes" (click)="showReport(r)" fxFlex.xs="100">
-          <div class="border rounded p-2 m-2 " fxLayoutAlign="none center">
-            <mat-icon class="h-8" svgIcon="print">printer</mat-icon>
-            <b class="text-small">{{ r.nombre | slice: 0:30 }}</b>
+        <a *ngFor="let r of reportes" (click)="showReport(r)" fxFlex.xs="100" class="cursor-pointer">
+          <div class="p-1 m-1 " fxLayoutAlign="none center" [style.color]="getColorFont()">
+            <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
+              <mat-icon class="icon-size-5 text-white" svgIcon="print">
+              </mat-icon>
+            </div>
+            <b class="ml-1">{{ r.nombre | slice: 0:30 }}</b>
           </div>
         </a>
         <!-- Boton de historial -->
@@ -242,11 +243,11 @@
                       <a *ngIf="g.transaccion && !g.campos" (click)="showTraceField2Document(g)">
                         <mat-icon inline="true">view_headline</mat-icon></a>
                       <span fxFlex></span>
-                      <span *ngIf="g.modificadorNombre">{{ g.plantillaNombre }} - {{ g.modificadorNombre }}</span>
-                      <a *ngIf="g.documentoModificador" (click)="
-                                          showTraceDocument(g.documentoModificador, g.plantilla)
-                                        ">
-                        <mat-icon inline="true">open_in_new</mat-icon></a>
+                      
+                      <a class="cursor-pointer text-primary font-bold tracking-tight text-sm" *ngIf="g.documentoModificador"
+                        (click)="showTraceDocument(g.documentoModificador, g.plantilla)">
+                        <span >{{ g.plantillaNombre }} - {{ g.modificadorNombre }}</span>
+                      </a>
                     </div>
                     <!-- Tercera linea: Estados y ubicacion -->
                     <div class="w-full" fxLayout="row wrap" *ngIf="g.ubicacionNombre || g.estadoFinal">
@@ -269,16 +270,16 @@
                     <!-- Sexta linea Adjuntos -->
                     <div class="w-full" *ngIf="g.adjunto">
                       <div class="line-clamp-1" *ngFor="let iUrl of g.adjunto.split(';;')">
-                        <a  [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-xs">
+                        <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-xs">
                           {{
-                            iUrl
-                            }}</a>
+                          iUrl
+                          }}</a>
                       </div>
                     </div>
                     <!-- Septima linea Campos nuevos -->
                     <div class="w-full" *ngIf="g.campos">
                       <div *ngFor="let iCampoOriginal of g.campos">
-                        <b class="text-small">{{ iCampoOriginal.campo }} :</b><small> {{ iCampoOriginal.valorText
+                        <b class="text-xs">{{ iCampoOriginal.campo }} :</b><small> {{ iCampoOriginal.valorText
                           }}</small>
                       </div>
                     </div>
