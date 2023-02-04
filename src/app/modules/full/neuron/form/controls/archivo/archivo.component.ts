@@ -348,7 +348,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
   }
 
   onClickExternal() {
-    document.getElementById(this.structure.llaveTabla).click();
+    document.getElementById(this.structure.llaveTabla + '_file').click();
   }
 
   onClickLoadUrl(){

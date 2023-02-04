@@ -17,20 +17,22 @@ export class TemplateService {
   templates$ = new BehaviorSubject<DocumentoPlantillaDTO[]>(this.template);
   private colores: PropiedadDTO[];
   private coloresOthers: PropiedadDTO[];
-  
+
   conectionTemplates: OrganizacionDTO[];
 
   private tableros: PropiedadDTO[];
   private propiedadesConRelaciones: RelacionInternaDTO[];
 
-  constructor(private jwtAuth: JwtAuthService) {}
+  constructor(
+    private jwtAuth: JwtAuthService
+  ) { }
 
   getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO {
     if (!this.template) {
       return null;
     }
     let result = null;
-    if(!urlServer){
+    if (!urlServer) {
       result = this.template.find((item) => id === item.llaveTabla);
     } else {
       if (this.conectionTemplates) {
@@ -65,8 +67,8 @@ export class TemplateService {
     if (prop) {
       return prop.valor;
     }
-    if (!this.coloresOthers ) {
-      if(this.conectionTemplates){
+    if (!this.coloresOthers) {
+      if (this.conectionTemplates) {
         this.coloresOthers = [];
         for (let i = 0; i < this.conectionTemplates.length; i++) {
           const element = this.conectionTemplates[i];
@@ -76,9 +78,9 @@ export class TemplateService {
             }
           }
         }
-      } 
+      }
     }
-    if ( this.coloresOthers) {
+    if (this.coloresOthers) {
       const prop2 = this.coloresOthers.find(item => item.campo === stateId);
       if (prop2) {
         return prop2.valor;
@@ -140,8 +142,8 @@ export class TemplateService {
 
   }
 
-  getUrl4Id (id: string): string {
-    if(!id || !this.conectionTemplates) { return null; }
+  getUrl4Id(id: string): string {
+    if (!id || !this.conectionTemplates) { return null; }
     const org = this.conectionTemplates.find(item => id === item.llaveTabla);
     if (org) {
       return org.servidorUrl;
@@ -154,11 +156,11 @@ export class TemplateService {
       for (let y = 0; y < element.estados.length; y++) {
         const iEstado = element.estados[y];
         if (iEstado.propiedades) {
-          const pColor =  PlantillaHelper.buscarPropiedad(
+          const pColor = PlantillaHelper.buscarPropiedad(
             iEstado.propiedades,
             PlantillaHelper.COLOR
           );
-          if (pColor){
+          if (pColor) {
             array.push(pColor);
           }
         }
@@ -176,34 +178,34 @@ export class TemplateService {
     this.tableros = value;
   }
 
-  getTablero(id: string): PropiedadDTO{
-    if (this.tableros && this.tableros.length !==0 ) {
+  getTablero(id: string): PropiedadDTO {
+    if (this.tableros && this.tableros.length !== 0) {
       return this.tableros.find(x => x.llaveTabla === id);
     }
   }
 
-  getProceso(id: string): DocumentoPlantillaDTO{
-    if (this.template && this.template.length !==0 ) {
+  getProceso(id: string): DocumentoPlantillaDTO {
+    if (this.template && this.template.length !== 0) {
       return this.template.find(x => (!x.llaveTabla && x.proceso === id));
     }
   }
 
-  addRelations(relations : RelacionInternaDTO []){
+  addRelations(relations: RelacionInternaDTO[]) {
     if (!this.propiedadesConRelaciones) this.propiedadesConRelaciones = [];
     this.propiedadesConRelaciones = this.propiedadesConRelaciones.concat(relations);
   }
 
-  getPropertyRelation(propiedad : string): RelacionInternaDTO []{
+  getPropertyRelation(propiedad: string): RelacionInternaDTO[] {
     if (!this.propiedadesConRelaciones) return;
     return this.propiedadesConRelaciones.filter(x => (x.propiedad && x.propiedad === propiedad));
   }
 
-  getTokenConnection(urlServer: string){
-    if (this.conectionTemplates && urlServer){
+  getTokenConnection(urlServer: string) {
+    if (this.conectionTemplates && urlServer) {
       for (let i = 0; i < this.conectionTemplates.length; i++) {
         const element = this.conectionTemplates[i];
-        if (urlServer.indexOf (element.servidorUrl) !==-1){
-          return  element.token;
+        if (urlServer.indexOf(element.servidorUrl) !== -1) {
+          return element.token;
         }
       }
     }

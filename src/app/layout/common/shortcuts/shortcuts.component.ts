@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton } from '@angular/material/button';
@@ -19,10 +19,30 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     @ViewChild('shortcutsOrigin') private _shortcutsOrigin: MatButton;
     @ViewChild('shortcutsPanel') private _shortcutsPanel: TemplateRef<any>;
 
+    /**
+ * Setter for bar search input
+ *
+ * @param value
+ */
+    @ViewChild('barSearchInput')
+    set barSearchInput(value: ElementRef) {
+        // If the value exists, it means that the search input
+        // is now in the DOM, and we can focus on the input..
+        if (value) {
+            // Give Angular time to complete the change detection cycle
+            setTimeout(() => {
+
+                // Focus to the input element
+                value.nativeElement.focus();
+            });
+        }
+    }
+
     shortcuts: DocumentoPlantillaDTO[];
     shortcutsFiltered: DocumentoPlantillaDTO[];
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+
 
     /**
      * Constructor
@@ -108,6 +128,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
 
         // Attach the portal to the overlay
         this._overlayRef.attach(new TemplatePortal(this._shortcutsPanel, this._viewContainerRef));
+
     }
 
     /**
@@ -139,7 +160,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     onKeydown(event: KeyboardEvent): void {
         // Escape
         if (event.code === 'Enter') {
-            if(this.shortcutsFiltered && this.shortcutsFiltered.length!=0) {
+            if (this.shortcutsFiltered && this.shortcutsFiltered.length != 0) {
                 this.showTemplate(this.shortcutsFiltered[0]);
             }
         }

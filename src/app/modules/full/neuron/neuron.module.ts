@@ -35,6 +35,7 @@ import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-mat
 import { NgxCurrencyModule } from 'ngx-currency';
 import { SignaturePadModule } from 'angular2-signaturepad';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 @NgModule({
@@ -60,6 +61,7 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     ],
     imports: [
         RouterModule.forChild(neuronRoutes),
+        DragDropModule,
         MatButtonModule,
         MatDividerModule,
         MatFormFieldModule,

@@ -1,6 +1,6 @@
 <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 <!-- Campos unicos -->
-<mat-form-field *ngIf="!herencia && !multiple" [style.display]="isInvisible ? 'none': 'block'">
+<mat-form-field class="w-full" *ngIf="!herencia && !multiple" [style.display]="isInvisible ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
   <input
     matInput
@@ -77,29 +77,29 @@
   >
     <mat-icon>camera_enhance</mat-icon>
   </button>
-  <div *ngIf="scannerEnabled && !proceso" class="full-width">
+  <div *ngIf="scannerEnabled && !proceso" class="w-full">
     <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
   </div>
   <!-- Opciones de seleccion -->
-  <div class="full-width" *ngIf="isEnabled && !proceso" style="overflow: auto">
+  <div class="w-full" *ngIf="isEnabled && !proceso" style="overflow: auto">
     <!-- Vista modo tabla -->
-    <table mat-table [dataSource]="filteredDocuments" class="full-width">
+    <table mat-table [dataSource]="filteredDocuments" class="w-full">
       <ng-container matColumnDef="nombre">
         <!-- <th mat-header-cell *matHeaderCellDef>CODIGO</th> -->
         <td mat-cell *matCellDef="let element">
-          <span class="mat-caption pr-4">{{ element.nombre }}</span>
+          <span class="pr-1">{{ element.nombre }}</span>
         </td>
       </ng-container>
       <ng-container matColumnDef="descripcion">
         <!-- <th mat-header-cell *matHeaderCellDef>NOMBRE</th> -->
         <td mat-cell *matCellDef="let element">
-          <small class="pr-4">{{ element.descripcion }}</small>
+          <small class="pr-1">{{ element.descripcion }}</small>
         </td>
       </ng-container>
       <ng-container matColumnDef="valor">
         <!-- <th mat-header-cell *matHeaderCellDef>NOMBRE</th> -->
         <td mat-cell *matCellDef="let element">
-          <small *ngIf="element.dinero" class="pr-4">{{
+          <small *ngIf="element.dinero" class="pr-1">{{
             element.dinero.valorTotal | number
           }}</small>
         </td>
@@ -108,14 +108,14 @@
         <!-- <th mat-header-cell *matHeaderCellDef>DETALLES</th> -->
         <td mat-cell *matCellDef="let element">
           <div
-            class="pr-4"
+            class="pr-1"
             *ngIf="
               element.caracteristicas && element.caracteristicas.length !== 0
             "
           >
             <div class="flex flex-row" *ngFor="let f of element.caracteristicas">
               <small class="w-full">{{ f.campoDTO.nombre }}</small>
-              <span class="mat-caption">{{ f.valorText }}</span>
+              <span >{{ f.valorText }}</span>
             </div>
           </div>
         </td>
@@ -159,13 +159,13 @@
       *ngIf="!isLoading"
       [matBadge]="data.valorText"
       matBadgeColor="primary"
-      class="full-width"
+      class="w-full"
     >
       {{ structure.nombre | titlecase }}
     </button>
     <span
       *ngIf="data.valorNumero && data.valorNumero !== 0"
-      class="text-28 font-weight-bold mat-color-primary full-width text-center"
+      class="text-28 font-weight-bold mat-color-primary w-full text-center"
       >{{ titulo }}</span
     >
   </div>
@@ -185,9 +185,9 @@
                 ><img [src]="d.imagen" class="avatar-sm"
               /></a>
             </div>
-            <div fxLayout="column" class="full-width" fxFlex>
+            <div fxLayout="column" class="w-full" fxFlex>
               <a (click)="openDialog(d)"
-                ><span class="mat-caption">{{ d.nombre }}</span></a
+                ><span >{{ d.nombre }}</span></a
               >
               <a (click)="openDialog(d)" *ngIf="d.descripcion"
                 ><h4 class="mat-heading-label">
@@ -206,7 +206,7 @@
           <!-- <mat-divider></mat-divider> -->
           <div class="card-title-text" fxLayout="row">
             <small fxFlex>{{ d.estadoNombre }}</small>
-            <span class="mat-caption">{{ d.fecha | date }}</span>
+            <span >{{ d.fecha | date }}</span>
           </div>
           <div class="card-title-text" fxLayout="row" *ngIf="d.dinero">
             <span fxFlex>{{ d.dinero.valorCampo | number }}</span>
@@ -223,7 +223,7 @@
             *ngFor="let f of d.caracteristicas"
           >
             <small fxFlex >{{ f.campoDTO.nombre }}</small>
-            <span class="mat-caption">{{ f.valorText }}</span>
+            <span >{{ f.valorText }}</span>
           </div>
         </mat-card-content>
       </mat-card>
@@ -335,7 +335,7 @@
       <mat-icon>file_upload</mat-icon>
     </button>
   </div>
-  <div *ngIf="scannerEnabled" class="full-width">
+  <div *ngIf="scannerEnabled" class="w-full">
     <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
   </div>
   <!-- Resultado de la busqueda -->
@@ -354,9 +354,9 @@
                 ><img [src]="iDocument.imagen" class="avatar-sm"
               /></a>
             </div>
-            <div fxLayout="column" class="full-width" fxFlex>
+            <div fxLayout="column" class="w-full" fxFlex>
               <a (click)="openDialog(iDocument)"
-                ><span class="mat-caption">{{ iDocument.nombre }}</span></a
+                ><span >{{ iDocument.nombre }}</span></a
               >
               <a (click)="openDialog(iDocument)" *ngIf="iDocument.descripcion"
                 ><h4 class="mat-heading-label">
@@ -375,7 +375,7 @@
           <!-- <mat-divider></mat-divider> -->
           <div class="card-title-text" fxLayout="row">
             <small fxFlex>{{ iDocument.estadoNombre }}</small>
-            <span class="mat-caption">{{ iDocument.fecha | date }}</span>
+            <span >{{ iDocument.fecha | date }}</span>
           </div>
           <div class="card-title-text" fxLayout="row" *ngIf="iDocument.dinero">
             <span
@@ -398,7 +398,7 @@
             *ngFor="let f of iDocument.caracteristicas"
           >
             <small fxFlex >{{ f.campoDTO.nombre }}</small>
-            <span class="mat-caption">{{ f.valorText }}</span>
+            <span >{{ f.valorText }}</span>
           </div>
         </mat-card-content>
       </mat-card>
@@ -408,7 +408,7 @@
       color="accent"
       (click)="listar(pagina)"
       tabindex="-1"
-      class="full-width"
+      class="w-full"
       *ngIf="!isLoadingList && !isEndList"
     >
       <mat-icon>refresh</mat-icon> Mas resultados
@@ -428,7 +428,7 @@
       color="accent"
       (click)="procesarCampo(transformPVCtoFilter(data))"
       *ngIf="!isLoading"
-      class="full-width"
+      class="w-full"
     >
       {{ structure.nombre | titlecase }}
     </button>

@@ -73,12 +73,6 @@
         <mat-icon>share</mat-icon>
         <span>Whatsapp</span>
       </button>
-      <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)">
-        <div class="border rounded items-center">
-          <img class="avatar-30 mr-1" src="{{ t.imagen | imageFormat }}" />
-          <b class="text-small">{{ t.nombre }}</b>
-        </div>
-      </a>
     </mat-menu>
   </div>
 </div>

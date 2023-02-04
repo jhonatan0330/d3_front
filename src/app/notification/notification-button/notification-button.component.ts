@@ -6,6 +6,11 @@ import { Subject, takeUntil } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
 import { NotificationsService } from 'app/notification/notification.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import Swal from 'sweetalert2';
+import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { JwtAuthService } from 'app/authentication/jwt-auth.service';
+import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 
 @Component({
     selector: 'notifications',
@@ -31,7 +36,9 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         private _notificationsService: NotificationsService,
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
-        private templateService: TemplateService
+        private templateService: TemplateService,
+        private _jwtAuth: JwtAuthService,
+        private utilsService: UtilsService
     ) {
     }
 
@@ -56,6 +63,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
+
+                this.showMessage();
             });
         this.refresh();
     }
@@ -94,6 +103,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
         // Attach the portal to the overlay
         this._overlayRef.attach(new TemplatePortal(this._notificationsPanel, this._viewContainerRef));
+
+        this.refresh();
     }
 
     /**
@@ -103,32 +114,6 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         this._overlayRef.detach();
     }
 
-    /**
-     * Mark all notifications as read
-     */
-    markAllAsRead(): void {
-        // Mark all as read
-        this._notificationsService.markAllAsRead().subscribe();
-    }
-
-    /**
-     * Toggle read status of the given notification
-     */
-    toggleRead(notification: Notification): void {
-        // Toggle the read status
-        // notification.read = !notification.read;
-
-        // Update the notification
-        // this._notificationsService.update(notification.llave, notification).subscribe();
-    }
-
-    /**
-     * Delete the given notification
-     */
-    delete(notification: Notification): void {
-        // Delete the notification
-        // this._notificationsService.delete(notification.id).subscribe();
-    }
 
     /**
      * Track by function for ngFor loops
@@ -198,7 +183,6 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
      */
     private _calculateUnreadCount(): void {
         let count = this.notifications.length;
-
         /*if ( this.notifications && this.notifications.length )
         {
             count = this.notifications.filter(notification => !notification.read).length;
@@ -211,20 +195,52 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         return this.templateService.getColor(pEstado);
     }
 
+    openDialog(plantilla: string, id: string, server: string) {
+        const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
+        pedidoVenta.plantilla = plantilla;
+        pedidoVenta.llaveTabla = id;
+        pedidoVenta.serverUrl = server;
+        this.utilsService.modalWithParams(pedidoVenta).subscribe(() => {
+          this.refresh();
+        });
+      }
+
     openDocument(document: ActividadDTO) {
-        if (!document.fechaLeido) {
-            this._notificationsService.readActivity(document).subscribe({
-                next: () => {
-                    this.refresh();
-                }
-            });
-        }
-        this._notificationsService.openDialog(document.documentoDTO.plantilla, document.documentoDTO.llaveTabla
+        this.openDialog(document.documentoDTO.plantilla, document.documentoDTO.llaveTabla
             , document.documentoDTO.serverUrl);
+    }
+
+    readActivity(actividad: ActividadDTO) {
+        this._notificationsService.readActivity(actividad).subscribe({
+            next: () => {
+            this.openDocument(actividad);
+            }
+        });
     }
 
     refresh() {
         this._notificationsService.getAll().subscribe();
+    }
+
+    showMessage() {
+        if (this.notifications && this.notifications.length !== 0) {
+            const sinleer = this.notifications.filter(x => !x.fechaLeido);
+            let aviso = 'Tienes (' + this.notifications.length.toString() + ') mensajes\n';
+            if (sinleer && sinleer.length !== 0) { aviso = aviso + ' (' + sinleer.length.toString() + ') mensajes sin leer'; }
+            Swal.fire({
+                position: 'top-end',
+                title: aviso,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                backdrop: false
+            });
+            if (sinleer && sinleer.length !== 0) {
+                if (PlantillaHelper.buscarPropiedad(this._jwtAuth.company.propiedades, PlantillaHelper.FORCE_NOTIFICATION)) {
+                    this.readActivity(sinleer[0]);
+                }
+            }
+        }
     }
 
 }

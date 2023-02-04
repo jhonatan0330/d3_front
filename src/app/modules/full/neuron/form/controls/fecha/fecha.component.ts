@@ -132,15 +132,18 @@ export class FechaComponent extends BaseComponent implements OnInit {
     if (!fecha) {
       if (this.data.valorFecha) {
         this.data.valorFecha = null;
+        this.data.valorText = null;
         this.avisarModificacion();
       }
     } else {
       if (!this.data.valorFecha) {
         this.data.valorFecha = fecha;
+        this.data.valorText = fecha.toLocaleString('en-ZA');
         this.avisarModificacion();
       } else {
         if (fecha !== this.data.valorFecha) {
           this.data.valorFecha = fecha;
+          this.data.valorText = fecha.toLocaleString('en-ZA');
           this.avisarModificacion();
         }
       }
