@@ -1,15 +1,7 @@
-<div class="p-0.5 cursor-pointer">
-  <a (click)="showTemplate()">
-    <div class="flex">
-      <img class="w-10 h-10 mr-4 rounded object-cover" alt="..." src="{{ imagen | imageFormat }}">
-      <div class="min-w-0">
-        <div class="font-medium leading-none">{{ nombre }}</div>
-    </div>
-    </div>
-  </a>
-</div>
-    
-
-
-
-                        
+<fuse-card class="flex items-center p-4 cursor-pointer h-18" (click)="showTemplate()">
+  <img class="w-10 h-10 mr-4" alt="..." src="{{ imagen | imageFormat }}">
+  <div class="flex flex-col">
+    <div class="text-base font-medium leading-tight line-clamp-2">{{ nombre }}</div>
+    <div *ngIf="type==='R'" class="text-xs text-secondary">Report</div>
+  </div>
+</fuse-card>

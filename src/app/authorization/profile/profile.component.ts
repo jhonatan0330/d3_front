@@ -24,7 +24,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   modules: DocumentoPlantillaDTO[] = [];
-  reports: DocumentoPlantillaDTO[] = [];
   tableros: PropiedadDTO[] = [];
   filteredModules: DocumentoPlantillaDTO[] = [];
   filterControl: UntypedFormControl = new UntypedFormControl();
@@ -32,6 +31,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isLoading = false;
 
   signinForm: FormGroup;
+
+  filters: string[] = ['Todo', 'Reportes', 'Modulos'];
+  selectedFilter: string = 'Todo';
   /**
    * Constructor
    */
@@ -88,7 +90,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     ) {
       this.isLoading = true;
       this.modules = [];
-      this.reports = [];
       this.apiService.listarPlantillas(null).subscribe({
         next: (templates: DocumentoPlantillaDTO[]) => {
           this.templateService.setTemplates(templates);
@@ -105,7 +106,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   loadMenu(templates: DocumentoPlantillaDTO[]) {
     this.modules = [];
-    this.reports = [];
     // Transform document to MenuItems
     templates.forEach((element) => {
       if (!element.llaveTabla) {
@@ -117,6 +117,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU
         )
       ) {
+        element.estado = 'P';
         this.modules.push(element);
       }
       if (
@@ -125,21 +126,23 @@ export class ProfileComponent implements OnInit, OnDestroy {
           PlantillaHelper.PLANTILLA_TIPO_REPORTE
         )
       ) {
-        this.reports.push(element);
+        element.estado = 'R';
+        this.modules.push(element);
       }
     });
-    this.filteredModules = Object.assign([], this.modules);
+    this.filterItem();
     this.getTablero();
   }
 
   filterItem() {
-    const value = this.filterControl.value;
-    if (!value) {
-      this.filteredModules = Object.assign([], this.modules);
-      return;
-    } // when nothing has typed
+    let value = this.filterControl.value;
+    if(!value) { value = ''; }
+    let filterType = '';
+    if(this.selectedFilter === 'Reportes') { filterType = 'R';   }
+    if(this.selectedFilter === 'Modulos') { filterType = 'P';   }
     this.filteredModules = Object.assign([], this.modules).filter(
-      (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1)
+      (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
+      && (item.estado && item.estado.indexOf(filterType) > -1))
     );
   }
 

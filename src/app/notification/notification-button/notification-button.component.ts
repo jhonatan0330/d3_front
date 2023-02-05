@@ -195,15 +195,19 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         return this.templateService.getColor(pEstado);
     }
 
+    getColorFont(pEstado: string) {
+        return this.templateService.getColorFont(pEstado);
+    }
+
     openDialog(plantilla: string, id: string, server: string) {
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = plantilla;
         pedidoVenta.llaveTabla = id;
         pedidoVenta.serverUrl = server;
         this.utilsService.modalWithParams(pedidoVenta).subscribe(() => {
-          this.refresh();
+            this.refresh();
         });
-      }
+    }
 
     openDocument(document: ActividadDTO) {
         this.openDialog(document.documentoDTO.plantilla, document.documentoDTO.llaveTabla
@@ -213,7 +217,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     readActivity(actividad: ActividadDTO) {
         this._notificationsService.readActivity(actividad).subscribe({
             next: () => {
-            this.openDocument(actividad);
+                this.openDocument(actividad);
             }
         });
     }

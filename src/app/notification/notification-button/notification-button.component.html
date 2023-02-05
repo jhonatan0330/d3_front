@@ -41,7 +41,8 @@
 
                     <!-- Header -->
                     <div class="flex rounded"
-                        [style.backgroundColor]="getColor(notification.documentoDTO.estadoExpediente)">
+                        [style.backgroundColor]="getColor(notification.documentoDTO.estadoExpediente)"
+                        [style.color]="getColorFont(notification.documentoDTO.estadoExpediente)">
                         <a class="w-full cursor-pointer" (click)="openDocument(notification)">
                             <div class="flex">
                                 <div class="pt-2 pl-2">
@@ -59,19 +60,19 @@
                                         </div>
                                     </div>
                                     <div *ngIf="notification.fechaLeido" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:spellcheck"></mat-icon>
+                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:check"></mat-icon>
                                         <div>Leido</div>
                                         <div class="w-full text-right">{{ notification.fechaLeido | date :'medium' }}
                                         </div>
                                     </div>
                                     <div *ngIf="notification.fechaArrancar" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:spellcheck"></mat-icon>
+                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:check"></mat-icon>
                                         <small> Inicia el :</small>
                                         <small class="w-full text-right">{{ notification.fechaArrancar | date :'medium'
                                             }}</small>
                                     </div>
                                     <div *ngIf="notification.fechaLimite" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:spellcheck"></mat-icon>
+                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:check"></mat-icon>
                                         <small> Maximo hasta :</small>
                                         <small class="w-full text-right">{{ notification.fechaLimite | date :'medium'
                                             }}</small>
