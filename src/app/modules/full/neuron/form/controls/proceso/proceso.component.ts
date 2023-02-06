@@ -1307,11 +1307,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
   // Para la interfaz
   getColor(_documento: PedidoVentaDTO): string {
-    const _color = this.templateService.getColor(_documento.estadoExpediente);
-    if (!_color) {
-      return '#d3d3d3';
-    }
-    return _color;
+    return this.templateService.getColor(_documento.estadoExpediente);
+  }
+
+  getColorFont(pEstado: string) {
+    return this.templateService.getColorFont(pEstado);
   }
 
   // Para scanner

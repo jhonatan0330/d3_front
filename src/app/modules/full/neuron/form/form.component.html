@@ -88,9 +88,11 @@
               [formControl]="transferForm.controls['responsable']" placeholder="Asignar a" required />
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayTransfer">
               <mat-option *ngFor="let user of users" [value]="user">
-                <img class="example-option-img" aria-hidden src="{{ user.imagen | imageFormat }}" height="25" />
-                <span>{{ user.identificacion }}</span> |
-                <small>{{ user.nombre }}</small>
+                <div>
+                  <img class="icon-size-10 rounded my-1" aria-hidden src="{{ user.imagen | imageFormat }}" />
+                  <span fxFlex class="px-1">{{ user.identificacion }}</span>
+                  <small>{{ user.nombre }}</small>
+                </div>
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>

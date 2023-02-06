@@ -1,360 +1,242 @@
 <div class="flex flex-col flex-auto min-w-0">
-  <div
-  fxLayout="row wrap"
-  fxLayoutAlign="center center"
-  class="p-0.5 rounded"
->
-  <img src="{{ plantilla?.imagen | imageFormat }}" />
-  <h2 fxFlex class="mx-1">{{ plantilla?.nombre }}</h2>
-  <!-- Buscador de fecha -->
-  <div class="mr-1" *ngIf="!fControlCheck.value">
-    <mat-form-field >
-      <mat-label>Escoge una fecha</mat-label>
-      <mat-date-range-input [rangePicker]="picker">
-        <input
-          matStartDate
-          placeholder="Fecha inicial"
-          [formControl]="fControlDateStart"
-        />
-        <input
-          matEndDate
-          placeholder="Fecha final"
-          [formControl]="fControlDateEnd"
-        />
-      </mat-date-range-input>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
-      <button
-        mat-button
-        matSuffix
-        mat-icon-button
-        (click)="
+  <div fxLayout="row wrap" fxLayoutAlign="center center" class="p-0.5 rounded">
+    <img src="{{ plantilla?.imagen | imageFormat }}" />
+    <h2 fxFlex class="mx-1">{{ plantilla?.nombre }}</h2>
+    <!-- Buscador de fecha -->
+    <div class="mr-1" *ngIf="!fControlCheck.value">
+      <mat-form-field>
+        <mat-label>Escoge una fecha</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="Fecha inicial" [formControl]="fControlDateStart" />
+          <input matEndDate placeholder="Fecha final" [formControl]="fControlDateEnd" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+        <button mat-button matSuffix mat-icon-button (click)="
           fControlDateStart.setValue(null); fControlDateEnd.setValue(null)
-        "
-      >
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-  <mat-checkbox class="mr-0.5" [formControl]="fControlCheck"
-    >Codigo Exacto</mat-checkbox
-  >
-  <!-- Buscador de texto -->
-  <div class="mr-0.5">
-    <mat-form-field >
-      <input
-        matInput
-        type="text"
-        placeholder="Coloca un texto y presiona enter"
-        [formControl]="fControlSearch"
-        autocomplete="off"
-        
-        (keyup.enter)="listar(1)"
-      />
-      <button
-        mat-button
-        matSuffix
-        mat-icon-button
-        (click)="fControlSearch.setValue('')"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-  <!-- Botones de accion en la lista -->
-  <div fxLayout="row" *ngIf="!isLoading">
-    <button
-      mat-icon-button
-      color="primary"
-      matTooltip="Listar"
-      (click)="listar(1)"
-      class="m-1"
-    >
-      <mat-icon>refresh</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      color="accent"
-      matTooltip="Crear"
-      (click)="openDialog()"
-      *ngIf="hasCreatePermission"
-      class="m-1"
-    >
-      <mat-icon>add</mat-icon>
-    </button>
-
-    <button
-      mat-icon-button
-      color="accent"
-      matTooltip="Filter"
-      class="m-1"
-      *ngIf="plantilla && plantilla.estados"
-      (click)="isFiltering = !isFiltering"
-    >
-      <mat-icon>filter_alt</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      [color]="viewMode === 'list-view' ? 'accent' : ''"
-      (click)="viewMode = 'list-view'"
-      *ngIf="plantilla && plantilla.llaveTabla"
-    >
-      <mat-icon>format_list_bulleted</mat-icon>
-    </button>
-    <button
-      mat-icon-button
-      [color]="viewMode === 'grid-view' ? 'accent' : ''"
-      (click)="viewMode = 'grid-view'"
-      *ngIf="plantilla && plantilla.llaveTabla"
-    >
-      <mat-icon>apps</mat-icon>
-    </button>
-    <div *ngIf="viewMode !== 'grid-view' && plantilla.reportes">
-      <button
-        mat-flat-button
-        color="accent"
-        class="m-1"
-        [matMenuTriggerFor]="userMenuList"
-      >
-        <mat-icon>print</mat-icon>Imprimir
-      </button>
-      <mat-menu #userMenuList="matMenu">
-        <button
-          mat-menu-item
-          *ngFor="let r of plantilla.reportes"
-          (click)="showReport(r, null)"
-        >
-          <mat-icon>print</mat-icon>
-          <span>{{ r.nombre }}</span>
+        ">
+          <mat-icon>close</mat-icon>
         </button>
-      </mat-menu>
+      </mat-form-field>
     </div>
-  </div>
-  <!-- Filtro por Estados  -->
-  <form [formGroup]="form">
-    <div fxLayout="row wrap" *ngIf="plantilla?.estados && isFiltering">
-      <div *ngFor="let _estado of plantilla.estados" class="mr-1">
-        <mat-checkbox class="mr-1" [formControlName]="_estado.llaveTabla">
-          <span class="text-small">{{ _estado.nombre }}</span>
-        </mat-checkbox>
-        <div
-          [style.backgroundColor]="getColor(_estado.llaveTabla)"
-          class="color-filter"
-        >
-          -
-        </div>
-      </div>
-    </div>
-  </form>
-</div>
-<!-- Vista modo grilla -->
-<div class="flex flex-wrap m-1 w-full" *ngIf="viewMode === 'grid-view'">
-  <div
-    *ngFor="let iDocument of dataProvider"
-    class="w-full sm:w-1/3 lg:w-1/4 xl:w-1/6 p-1"
-  >
-    <mat-card class="p-0 rounded h-full">
-      <mat-card-title class="p-1 rounded">
-        <div class="flex items-center ">
-          <div class="w-16 m-1">
-            <a (click)="openDocument(iDocument)"
-              ><img src="{{ iDocument.imagen | imageFormat }}"
-            /></a>
-          </div>
-          <div fxLayout="column" class="w-full p-1 rounded" fxFlex 
-          [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
-          [style.color]="getColorFont(iDocument.estadoExpediente)">
-            <a (click)="openDocument(iDocument)"
-              ><div class="text-md">{{ iDocument.nombre }}</div></a
-            >
-            <a (click)="openDocument(iDocument)" *ngIf="iDocument.descripcion"
-              ><div class="text-sm line-clamp-4">{{iDocument.descripcion }}
-              </div></a
-            >
-          </div>
-          <div *ngIf="plantilla.reportes && plantilla.reportes.length!==0">
-            <button
-              mat-icon-button
-              [matMenuTriggerFor]="userMenu"
-              *ngIf="iDocument.llaveTabla"
-            >
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #userMenu="matMenu">
-              <button
-                mat-menu-item
-                *ngFor="let r of plantilla.reportes"
-                (click)="showReport(r, iDocument)"
-              >
-                <mat-icon>print</mat-icon>
-                <span>{{ r.nombre }}</span>
-              </button>
-            </mat-menu>
-          </div>
-        </div>
-        <!-- <mat-divider></mat-divider> -->
-        <div class="flex flex-row">
-          <div class="mat-caption ">{{ iDocument.fecha | date }}</div>
-          <div class="text-sm mx-1">{{ iDocument.estadoNombre }}</div>
-        </div>
-        <div class="flex flex-col" *ngIf="iDocument.dinero">
-          <div class="text-sm line-clamp-1">{{ iDocument.dinero.valorCampo | currency }}</div>
-          <div>{{ iDocument.dinero.valorTotal | currency }}</div>
-        </div>
-      </mat-card-title>
-      <mat-card-content class="p-1">
-      <div *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
-        <mat-divider></mat-divider>
-        <div
-          fxLayout="row"
-          class="flex"
-          *ngFor="let f of iDocument.caracteristicas"
-        >
-          <small class="font-extralight line-clamp-1" >{{ f.campoDTO.nombre }}</small>
-          <div class="flex w-full" *ngIf="f.valorText">
-            <small class="w-full text-right" *ngIf="!f.valorText.startsWith('http')">{{ f.valorText }}</small>
-            <img *ngIf="f.valorText.startsWith('http')"
-              [src]="f.valorText"
-              [name]="f.valorText"
-            />
-          </div>
-        </div>
-      </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</div>
-<!-- Vista modo tabla -->
-<table
-  mat-table
-  [dataSource]="dataProvider"
-  class="mat-elevation-z8 full-width"
-  *ngIf="viewMode !== 'grid-view'"
->
-  <ng-container matColumnDef="select">
-    <th mat-header-cell *matHeaderCellDef>
-      <mat-checkbox
-        (change)="$event ? masterToggle() : null"
-        [checked]="selection.hasValue() && isAllSelected()"
-        [indeterminate]="selection.hasValue() && !isAllSelected()"
-        [aria-label]="checkboxLabel()"
-      >
-      </mat-checkbox>
-    </th>
-    <td mat-cell *matCellDef="let row">
-      <mat-checkbox
-        (click)="$event.stopPropagation();multipleSelect($event,row)"
-        (change)="$event ? selection.toggle(row) : null"
-        [checked]="selection.isSelected(row)"
-        [aria-label]="checkboxLabel(row)"
-      >
-      </mat-checkbox>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="nombre">
-    <th mat-header-cell *matHeaderCellDef>CODIGO</th>
-    <td mat-cell *matCellDef="let element">
-      <a (click)="$event.stopPropagation();openDocument(element)">
-        <mat-icon class="ml-1" inline="true">open_in_new</mat-icon>
-        <span class="mat-caption">{{ element.nombre }}</span>
-      </a>
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="descripcion">
-    <th mat-header-cell *matHeaderCellDef>NOMBRE</th>
-    <td mat-cell *matCellDef="let element">
-      <small>{{ element.descripcion }}</small>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="valor">
-    <th mat-header-cell *matHeaderCellDef>VALOR</th>
-    <td mat-cell *matCellDef="let element">
-      <div class="card-title-text" fxLayout="row" *ngIf="element.dinero">
-        <!-- <span fxFlex>{{element.dinero.valorCampo | currency}}</span> -->
-        <span class="pr-1">{{ element.dinero.valorTotal | currency }}</span>
-      </div>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="fecha">
-    <th mat-header-cell *matHeaderCellDef>FECHA</th>
-    <td mat-cell *matCellDef="let element">
-      <small>{{ element.fecha | date }}</small>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="estadoExpediente">
-    <th mat-header-cell *matHeaderCellDef>ESTADO</th>
-    <td mat-cell *matCellDef="let element">
-      <small>{{ element.estadoNombre }}</small>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="acciones">
-    <th mat-header-cell *matHeaderCellDef>:</th>
-    <td mat-cell *matCellDef="let element">
-      <div *ngIf="plantilla && plantilla.reportes">
-        <button mat-icon-button [matMenuTriggerFor]="userMenu"
-          (click)="$event.stopPropagation()">
-          <mat-icon>more_vert</mat-icon>
+    <mat-checkbox class="mr-0.5" [formControl]="fControlCheck">Codigo Exacto</mat-checkbox>
+    <!-- Buscador de texto -->
+    <div class="mr-0.5">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Coloca un texto y presiona enter" [formControl]="fControlSearch"
+          autocomplete="off" (keyup.enter)="listar(1)" />
+        <button mat-button matSuffix mat-icon-button (click)="fControlSearch.setValue('')">
+          <mat-icon>close</mat-icon>
         </button>
-        <mat-menu #userMenu="matMenu">
-          <button
-            mat-menu-item
-            *ngFor="let r of plantilla.reportes"
-            (click)="showReport(r, element)"
-          >
+      </mat-form-field>
+    </div>
+    <!-- Botones de accion en la lista -->
+    <div fxLayout="row" *ngIf="!isLoading">
+      <button mat-icon-button color="primary" matTooltip="Listar" (click)="listar(1)" class="m-1">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-icon-button color="accent" matTooltip="Crear" (click)="openDialog()" *ngIf="hasCreatePermission"
+        class="m-1">
+        <mat-icon>add</mat-icon>
+      </button>
+
+      <button mat-icon-button color="accent" matTooltip="Filter" class="m-1" *ngIf="plantilla && plantilla.estados"
+        (click)="isFiltering = !isFiltering">
+        <mat-icon>filter_alt</mat-icon>
+      </button>
+      <button mat-icon-button [color]="viewMode === 'list-view' ? 'accent' : ''" (click)="viewMode = 'list-view'"
+        *ngIf="plantilla && plantilla.llaveTabla">
+        <mat-icon>format_list_bulleted</mat-icon>
+      </button>
+      <button mat-icon-button [color]="viewMode === 'grid-view' ? 'accent' : ''" (click)="viewMode = 'grid-view'"
+        *ngIf="plantilla && plantilla.llaveTabla">
+        <mat-icon>apps</mat-icon>
+      </button>
+      <div *ngIf="viewMode !== 'grid-view' && plantilla.reportes">
+        <button mat-flat-button color="accent" class="m-1" [matMenuTriggerFor]="userMenuList">
+          <mat-icon>print</mat-icon>Imprimir
+        </button>
+        <mat-menu #userMenuList="matMenu">
+          <button mat-menu-item *ngFor="let r of plantilla.reportes" (click)="showReport(r, null)">
             <mat-icon>print</mat-icon>
             <span>{{ r.nombre }}</span>
           </button>
         </mat-menu>
       </div>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="detalles">
-    <th mat-header-cell *matHeaderCellDef>DETALLES</th>
-    <td mat-cell *matCellDef="let element">
-      <div
-        *ngIf="element.caracteristicas && element.caracteristicas.length !== 0"
-      >
-        <div fxLayout="row" *ngFor="let f of element.caracteristicas">
-          <small fxFlex >{{ f.campoDTO.nombre }}</small>
-          <span class="mat-caption">{{ f.valorText }}</span>
+    </div>
+    <!-- Filtro por Estados  -->
+    <form [formGroup]="form">
+      <div fxLayout="row wrap" *ngIf="plantilla?.estados && isFiltering">
+        <div *ngFor="let _estado of plantilla.estados" class="mr-1">
+          <mat-checkbox class="mr-1" [formControlName]="_estado.llaveTabla">
+            <span class="text-small">{{ _estado.nombre }}</span>
+          </mat-checkbox>
+          <div [style.backgroundColor]="getColor(_estado.llaveTabla)" class="color-filter">
+            -
+          </div>
         </div>
       </div>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns"
-    (click)="multipleSelect($event, row)"></tr>
-</table>
-<!-- Paginador -->
-<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-<a *ngIf="!isLoading && !isEnd" (click)="listar(pagina)">
-  <div class="py-1" fxLayout="column" fxLayoutAlign="center center">
-    <mat-card
-      class="text-center"
-      fxLayout="row"
-      fxLayoutAlign="center center"
-      [ngStyle]="{ height: '110px', width: '110px', borderRadius: '50%' }"
-    >
-      <img
-      src="{{ plantilla?.imagen | imageFormat }}"
-        [ngStyle]="{ height: '60px', width: '60px' }"
-      />
-    </mat-card>
-    <button mat-flat-button color="accent" tabindex="-1">
-      <mat-icon>refresh</mat-icon> Presiona la imagen para buscar mas resultados
-    </button>
+    </form>
   </div>
-</a>
-<!-- Pie de pagina, paginador -->
-<div class="mat-box-shadow p-16 font-weight-bold">
-  <span *ngIf="viewMode !== 'grid-view'" fxFlex
-    >Seleccionados : {{ this.selection?.selected.length }}</span
-  >
-  <span fxFlex>Total : {{ dataProvider?.length }}</span>
-  <span>Puedes usar los filtros para mejorar tu busqueda</span>
-</div>
+  <!-- Vista modo grilla -->
+  <div class="flex flex-wrap p-1 w-full" *ngIf="viewMode === 'grid-view'">
+    <div *ngFor="let iDocument of dataProvider" class="w-full sm:w-1/3 lg:w-1/4 xl:w-1/6 p-1">
+      <mat-card class="p-0 rounded h-full">
+        <mat-card-title class="p-1 rounded">
+          <div class="flex items-center ">
+            <div class="w-16 p-1">
+              <a (click)="openDocument(iDocument)"><img src="{{ iDocument.imagen | imageFormat }}" /></a>
+            </div>
+            <div fxLayout="column" class="w-full p-1 rounded" fxFlex
+              [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
+              [style.color]="getColorFont(iDocument.estadoExpediente)">
+              <a (click)="openDocument(iDocument)">
+                <div class="text-md">{{ iDocument.nombre }}</div>
+              </a>
+              <a (click)="openDocument(iDocument)" *ngIf="iDocument.descripcion">
+                <div class="text-sm line-clamp-4">{{iDocument.descripcion }}
+                </div>
+              </a>
+            </div>
+            <div *ngIf="plantilla.reportes && plantilla.reportes.length!==0">
+              <button mat-icon-button [matMenuTriggerFor]="userMenu" *ngIf="iDocument.llaveTabla">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #userMenu="matMenu">
+                <button mat-menu-item *ngFor="let r of plantilla.reportes" (click)="showReport(r, iDocument)">
+                  <mat-icon>print</mat-icon>
+                  <span>{{ r.nombre }}</span>
+                </button>
+              </mat-menu>
+            </div>
+          </div>
+          <!-- <mat-divider></mat-divider> -->
+          <div class="flex flex-row">
+            <div class="mat-caption ">{{ iDocument.fecha | date }}</div>
+            <div class="text-sm mx-1">{{ iDocument.estadoNombre }}</div>
+          </div>
+          <div class="flex flex-col" *ngIf="iDocument.dinero">
+            <div class="text-sm line-clamp-1">{{ iDocument.dinero.valorCampo | currency }}</div>
+            <div>{{ iDocument.dinero.valorTotal | currency }}</div>
+          </div>
+        </mat-card-title>
+        <mat-card-content class="p-1">
+          <div *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
+            <mat-divider></mat-divider>
+            <div fxLayout="row" class="flex" *ngFor="let f of iDocument.caracteristicas">
+              <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
+              <div class="flex w-full" *ngIf="f.valorText">
+                <small class="w-full text-right" *ngIf="!f.valorText.startsWith('http')">{{ f.valorText }}</small>
+                <img *ngIf="f.valorText.startsWith('http')" [src]="f.valorText" [name]="f.valorText" />
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <!-- Vista modo tabla -->
+  <table mat-table [dataSource]="dataProvider" class="mat-elevation-z8 full-width" *ngIf="viewMode !== 'grid-view'">
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation();multipleSelect($event,row)"
+          (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
+          [aria-label]="checkboxLabel(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nombre">
+      <th mat-header-cell *matHeaderCellDef>CODIGO</th>
+      <td mat-cell *matCellDef="let element">
+        <a (click)="$event.stopPropagation();openDocument(element)">
+          <mat-icon class="ml-1" inline="true">open_in_new</mat-icon>
+          <span class="mat-caption">{{ element.nombre }}</span>
+        </a>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="descripcion">
+      <th mat-header-cell *matHeaderCellDef>NOMBRE</th>
+      <td mat-cell *matCellDef="let element">
+        <small>{{ element.descripcion }}</small>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="valor">
+      <th mat-header-cell *matHeaderCellDef>VALOR</th>
+      <td mat-cell *matCellDef="let element">
+        <div class="card-title-text" fxLayout="row" *ngIf="element.dinero">
+          <!-- <span fxFlex>{{element.dinero.valorCampo | currency}}</span> -->
+          <span class="pr-1">{{ element.dinero.valorTotal | currency }}</span>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="fecha">
+      <th mat-header-cell *matHeaderCellDef>FECHA</th>
+      <td mat-cell *matCellDef="let element">
+        <small>{{ element.fecha | date }}</small>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="estadoExpediente">
+      <th mat-header-cell *matHeaderCellDef>ESTADO</th>
+      <td mat-cell *matCellDef="let element">
+        <small>{{ element.estadoNombre }}</small>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef>:</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="plantilla && plantilla.reportes">
+          <button mat-icon-button [matMenuTriggerFor]="userMenu" (click)="$event.stopPropagation()">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #userMenu="matMenu">
+            <button mat-menu-item *ngFor="let r of plantilla.reportes" (click)="showReport(r, element)">
+              <mat-icon>print</mat-icon>
+              <span>{{ r.nombre }}</span>
+            </button>
+          </mat-menu>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="detalles">
+      <th mat-header-cell *matHeaderCellDef>DETALLES</th>
+      <td mat-cell *matCellDef="let element">
+        <div *ngIf="element.caracteristicas && element.caracteristicas.length !== 0">
+          <div fxLayout="row" *ngFor="let f of element.caracteristicas">
+            <small fxFlex>{{ f.campoDTO.nombre }}</small>
+            <span class="mat-caption">{{ f.valorText }}</span>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="multipleSelect($event, row)"></tr>
+  </table>
+  <!-- Paginador -->
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  <a *ngIf="!isLoading && !isEnd" (click)="listar(pagina)">
+    <div class="py-1" fxLayout="column" fxLayoutAlign="center center">
+      <mat-card class="text-center" fxLayout="row" fxLayoutAlign="center center"
+        [ngStyle]="{ height: '110px', width: '110px', borderRadius: '50%' }">
+        <img src="{{ plantilla?.imagen | imageFormat }}" [ngStyle]="{ height: '60px', width: '60px' }" />
+      </mat-card>
+      <button mat-flat-button color="accent" tabindex="-1">
+        <mat-icon>refresh</mat-icon> Presiona la imagen para buscar mas resultados
+      </button>
+    </div>
+  </a>
+  <!-- Pie de pagina, paginador -->
+  <div class="mat-box-shadow p-16 font-weight-bold">
+    <span *ngIf="viewMode !== 'grid-view'" fxFlex>Seleccionados : {{ this.selection?.selected.length }}</span>
+    <span fxFlex>Total : {{ dataProvider?.length }}</span>
+    <span>Puedes usar los filtros para mejorar tu busqueda</span>
+  </div>
 
 </div>
