@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
@@ -19,12 +19,15 @@ import {
 } from 'app/shared/services/local-store.service';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
+import { MatDrawer } from '@angular/material/sidenav';
+import { Subject, takeUntil } from 'rxjs';
+import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 
 @Component({
   selector: 'app-cruds',
   templateUrl: './cruds2.component.html'
 })
-export class Cruds2Component implements OnInit {
+export class Cruds2Component implements OnInit, OnDestroy {
   plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
   tableroId: string;
   procesoId: string;
@@ -39,7 +42,6 @@ export class Cruds2Component implements OnInit {
   cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
   isLoading = false;
   isEnd = false;
-  isFiltering = false;
   viewMode = 'grid-view';
   form: FormGroup = new FormGroup({});
   hasCreatePermission = false;
@@ -62,6 +64,13 @@ export class Cruds2Component implements OnInit {
   selection = new SelectionModel<PedidoVentaDTO>(true, []);
   lastSelectedSegmentRow: PedidoVentaDTO; // this is the variable which holds the last selected row index
 
+
+  @ViewChild('drawer') drawer: MatDrawer;
+
+  drawerMode: 'over' | 'side' = 'side';
+  drawerOpened: boolean = true;
+  private _unsubscribeAll: Subject<any> = new Subject<any>();
+
   constructor(
     private route: ActivatedRoute,
     private templateService: TemplateService,
@@ -69,8 +78,9 @@ export class Cruds2Component implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private ls: LocalStoreService,
-    private utilsService: UtilsService
-  ) {}
+    private utilsService: UtilsService,
+    private _fuseMediaWatcherService: FuseMediaWatcherService
+  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {
@@ -96,18 +106,18 @@ export class Cruds2Component implements OnInit {
         }
       } else if (propType === 'tablet') {
         this.tableroId = params.id;
-        if (this.tableroId){
+        if (this.tableroId) {
           const propTablero = this.templateService.getTablero(this.tableroId);
           if (propTablero) {
             this.plantilla = new DocumentoPlantillaDTO();
             this.plantilla.nombre = propTablero.texto;
             this.plantilla.imagen = propTablero.motivo;
-          } else{
+          } else {
             this.router.navigate(['/main']);
             return;
           }
-        } 
-      } else{
+        }
+      } else {
         this.router.navigate(['/main']);
         return;
       }
@@ -160,7 +170,37 @@ export class Cruds2Component implements OnInit {
         this.removeColumn('select');
       }
     });
+
+    // Subscribe to media changes
+    this._fuseMediaWatcherService.onMediaChange$
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe(({ matchingAliases }) => {
+
+        // Set the drawerMode and drawerOpened if the given breakpoint is active
+        if (matchingAliases.includes('md')) {
+          this.drawerMode = 'side';
+          this.drawerOpened = true;
+        }
+        else {
+          this.drawerMode = 'over';
+          this.drawerOpened = false;
+        }
+      });
   }
+
+  ngOnDestroy(): void {
+    // Unsubscribe from all subscriptions
+    this._unsubscribeAll.next(null);
+    this._unsubscribeAll.complete();
+  }
+
+  /**
+     * Toggle the drawer
+     */
+  toggleDrawer(): void {
+    // Toggle the drawer
+    this.drawer.toggle();
+}
 
   removeColumn(pColumn: string) {
     const index = this.displayedColumns.indexOf(pColumn, 0);
@@ -183,7 +223,7 @@ export class Cruds2Component implements OnInit {
     return this.templateService.getColor(pEstado);
   }
 
-  
+
   getColorFont(pEstado: string) {
     return this.templateService.getColorFont(pEstado);
   }
@@ -234,7 +274,7 @@ export class Cruds2Component implements OnInit {
       }
     }
 
-    if (this.plantilla.estados){
+    if (this.plantilla.estados) {
       entity.estadoExpediente = '';
 
       for (let i = 0; i < Object.keys(this.form.controls).length; i++) {
@@ -265,7 +305,7 @@ export class Cruds2Component implements OnInit {
         }
       }
     }
-    
+
     this.isLoading = true;
     if (_pagina === 1) {
       this.dataProvider = [];
@@ -313,21 +353,21 @@ export class Cruds2Component implements OnInit {
       : this.dataProvider.forEach((row) => this.selection.select(row));
   }
 
-  multipleSelect(event, row){
+  multipleSelect(event, row) {
     if (event.shiftKey) {
       let start = 0;
-      if ( this.lastSelectedSegmentRow){
+      if (this.lastSelectedSegmentRow) {
         start = this.dataProvider.findIndex((element) => element.llaveTabla === this.lastSelectedSegmentRow.llaveTabla);
-      } 
+      }
       let end = this.dataProvider.findIndex((element) => element.llaveTabla === row.llaveTabla);
-      
-      if(start > end ){
+
+      if (start > end) {
         end = start;
         start = this.dataProvider.findIndex((element) => element.llaveTabla === row.llaveTabla);
       }
-      
+
       let obj: PedidoVentaDTO[] = Object.assign([], this.dataProvider.slice(start, end));
-      
+
       obj.forEach(e => this.selection.select(e))
     }
     this.lastSelectedSegmentRow = row;
@@ -338,9 +378,8 @@ export class Cruds2Component implements OnInit {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
-    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${
-      row.nombre
-    }`;
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.nombre
+      }`;
   }
 
   openDocument(pDocument: PedidoVentaDTO) {
