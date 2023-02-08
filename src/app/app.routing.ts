@@ -54,6 +54,7 @@ export const appRoutes: Route[] = [
     },
     children: [
       { path: '', loadChildren: () => import('app/authorization/profile/profile.module').then(m => m.ProfileModule) },
+      { path: 'settings', loadChildren: () => import('app/authentication/settings/settings.module').then(m => m.SettingsModule)},
       { path: 'list', loadChildren: () => import('app/cruds/cruds.module').then(m => m.CrudsModule) },
       { path: 'maps', loadChildren: () => import('app/gps/gps.module').then(m => m.GPSModule)},
       { path: 'UIVotacion', loadChildren: () => import('app/survey/survey.module').then(m => m.SurveyModule) },

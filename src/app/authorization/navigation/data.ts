@@ -8,59 +8,27 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type    : 'group',
         icon    : 'heroicons_outline:home',
         children: [
-            /*{
-                id   : 'dashboards.project',
-                title: 'Profile',
-                type : 'basic',
-                icon : 'heroicons_outline:user-circle',
-                link : '/profile'
-            },*/
             {
                 id   : 'apps.main',
-                title: 'Busquedas Avanzadas',
+                title: 'Inicio',
                 type : 'basic',
-                icon : 'heroicons_outline:search-circle',
+                icon : 'heroicons_outline:home',
                 link : '/main'
             }
             ,{
                 id   : 'apps.contacts',
                 title: 'Mapas',
                 type : 'basic',
-                icon : 'mat_outline:10k',
+                icon : 'heroicons_outline:map',
                 link : '/maps'
-            }/*,
-            {
-                id   : 'apps.academy',
-                title: 'Cursos',
-                type : 'basic',
-                icon : 'heroicons_outline:academic-cap',
-                link : '/apps/academy'
             },
             {
-                id   : 'apps.chat',
-                title: 'Chat',
+                id   : 'pages.settings',
+                title: 'Mi cuenta',
                 type : 'basic',
-                icon : 'heroicons_outline:chat-alt',
-                link : '/apps/chat'
-            },
-            {
-                id   : 'apps.mailbox',
-                title: 'Correo',
-                type : 'basic',
-                icon : 'heroicons_outline:mail',
-                link : '/apps/mailbox',
-                badge: {
-                    title  : '0',
-                    classes: 'px-2 bg-pink-600 text-white rounded-full'
-                }
-            },
-            {
-                id   : 'apps.tasks',
-                title: 'Tareas',
-                type : 'basic',
-                icon : 'heroicons_outline:check-circle',
-                link : '/apps/tasks'
-            }*/
+                icon : 'heroicons_outline:cog',
+                link : '/settings'
+            }
         ]
     }
    
