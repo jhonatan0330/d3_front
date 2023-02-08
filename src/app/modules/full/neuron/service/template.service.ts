@@ -28,9 +28,7 @@ export class TemplateService {
   ) { }
 
   getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO {
-    if (!this.template) {
-      return null;
-    }
+    if (!this.template) { return null; }
     let result = null;
     if (!urlServer) {
       result = this.template.find((item) => id === item.llaveTabla);
@@ -43,6 +41,13 @@ export class TemplateService {
       }
     }
     return result;
+  }
+
+  getTemplateOfProcess(processId: string): DocumentoPlantillaDTO[] {
+    if (!this.template) { return null; }
+    return Object.assign([], this.template).filter(
+      (item) => (item.proceso && item.proceso.toLowerCase().indexOf(processId.toLowerCase()) > -1)
+    );
   }
 
   setTemplates(value: DocumentoPlantillaDTO[]) {

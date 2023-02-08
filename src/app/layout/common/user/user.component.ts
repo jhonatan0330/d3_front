@@ -92,6 +92,7 @@ export class UserComponent implements OnInit, OnDestroy {
      * Sign out
      */
     signOut(): void {
+        this.templateService.clear();
         this.jwtAuth.signout();
     }
 

@@ -29,6 +29,7 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 })
 export class Cruds2Component implements OnInit, OnDestroy {
   plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
+  templatesFromProcess: DocumentoPlantillaDTO[];
   tableroId: string;
   procesoId: string;
 
@@ -100,6 +101,11 @@ export class Cruds2Component implements OnInit, OnDestroy {
         this.procesoId = params.id;
         if (this.procesoId) {
           this.plantilla = this.templateService.getProceso(this.procesoId);
+          this.templatesFromProcess = this.templateService.getTemplateOfProcess(this.procesoId)
+              .filter((item) => item.propiedades &&
+              PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)
+              && PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PLANTILLA_INICIA_PROCESO)
+            );
         } else {
           this.router.navigate(['/main']);
           return;
@@ -118,6 +124,10 @@ export class Cruds2Component implements OnInit, OnDestroy {
           }
         }
       } else {
+        this.router.navigate(['/main']);
+        return;
+      }
+      if(!this.plantilla) {
         this.router.navigate(['/main']);
         return;
       }
@@ -209,13 +219,16 @@ export class Cruds2Component implements OnInit, OnDestroy {
     }
   }
 
-  openDialog() {
-    if (!this.plantilla) {
-      return;
-    }
+  openDialogFromTemplateModule() {
+    if (!this.plantilla) { return; }
+    this.openDialog(this.plantilla.llaveTabla, this.plantilla.server);
+  }
+
+  openDialog(template: string, server : string) {
+    if (!template) {   return; }
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
-    pedidoVenta.plantilla = this.plantilla.llaveTabla;
-    pedidoVenta.serverUrl = this.plantilla.server;
+    pedidoVenta.plantilla = template;
+    pedidoVenta.serverUrl = server;
     this.utilsService.modalWithParams(pedidoVenta);
   }
 
@@ -239,6 +252,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
     if (this.tableroId) {
       entity.campoPropiedad = this.tableroId;
     }
+    entity.proceso = this.procesoId;
     if (this.fControlCheck.value) {
       if (!this.fControlSearch.value) {
         alert('Coloca el codigo del documento');

@@ -24,7 +24,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   modules: DocumentoPlantillaDTO[] = [];
-  tableros: PropiedadDTO[] = [];
   filteredModules: DocumentoPlantillaDTO[] = [];
   filterControl: UntypedFormControl = new UntypedFormControl();
   private templateSub: Subscription;
@@ -32,7 +31,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   signinForm: FormGroup;
 
-  filters: string[] = ['Todo', 'Reportes', 'Modulos'];
+  filters: string[] = ['Todo', 'Reportes', 'Procesos', 'Modulos'];
   selectedFilter: string = 'Todo';
   /**
    * Constructor
@@ -110,50 +109,45 @@ export class ProfileComponent implements OnInit, OnDestroy {
     templates.forEach((element) => {
       if (!element.llaveTabla) {
         this.modules.push(element);
+        element.estado = 'T';
       }
-      if (
-        PlantillaHelper.buscarPropiedad(
-          element.propiedades,
-          PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU
-        )
-      ) {
+      if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)) {
         element.estado = 'P';
         this.modules.push(element);
       }
-      if (
-        PlantillaHelper.buscarPropiedad(
-          element.propiedades,
-          PlantillaHelper.PLANTILLA_TIPO_REPORTE
-        )
-      ) {
+      if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE)) {
         element.estado = 'R';
         this.modules.push(element);
       }
     });
     this.filterItem();
-    this.getTablero();
   }
 
   filterItem() {
     let value = this.filterControl.value;
-    if(!value) { value = ''; }
+    if (!value) { value = ''; }
     let filterType = '';
-    if(this.selectedFilter === 'Reportes') { filterType = 'R';   }
-    if(this.selectedFilter === 'Modulos') { filterType = 'P';   }
+    if (this.selectedFilter === 'Reportes') { filterType = 'R'; }
+    if (this.selectedFilter === 'Modulos') { filterType = 'P'; }
+    if (this.selectedFilter === 'Procesos') { filterType = 'T'; }
     this.filteredModules = Object.assign([], this.modules).filter(
       (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
-      && (item.estado && item.estado.indexOf(filterType) > -1))
+        && (item.estado && item.estado.indexOf(filterType) > -1))
     );
   }
 
-  getTablero() {
+  /*getTablero() {
+    let tableros =[];
     if (this.jwtAuth.company.propiedades) {
-      this.tableros = this.jwtAuth.company.propiedades.filter(x => x.propiedadValor === 'PROP_182');
-    } else {
-      this.tableros = [];
-    }
-    this.templateService.setTableros(this.tableros);
-  }
+      tableros = this.jwtAuth.company.propiedades.filter(x => x.propiedadValor === 'PROP_182');
+      for (let i = 0; i < tableros.length; i++) {
+        const element = tableros[i];
+        element.estado = 'T';
+        this.modules.push(element);
+      }
+    } 
+    this.templateService.setTableros(tableros);
+  }*/
 
   conect2Other() {
     if (this.jwtAuth.otherCompany && this.jwtAuth.otherCompany.length !== 0) {
@@ -241,10 +235,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         }
         element.plantillas = plantillas;
         element.menuPlantillas = plantillas.filter((item) =>
-          PlantillaHelper.buscarPropiedad(
-            item.propiedades,
-            PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU
-          )
+          PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
         );
         element.reportePlantillas = plantillas.filter((item) =>
           PlantillaHelper.buscarPropiedad(

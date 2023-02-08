@@ -67,6 +67,7 @@ export class PedidoVentaFilterDTO extends BasicFilterDTO {
   fechaMax: Date;
   funcionario: string;
   funcionarioNombre: string;
+  proceso: string;
   plantilla: string;
   nombre: string;
   imagen: string;

@@ -17,11 +17,11 @@
               <mat-icon>refresh</mat-icon>
             </button>
             <button mat-icon-button [color]="viewMode === 'list-view' ? 'accent' : ''" (click)="viewMode = 'list-view'"
-              *ngIf="plantilla && plantilla.llaveTabla">
+              *ngIf="plantilla">
               <mat-icon>format_list_bulleted</mat-icon>
             </button>
             <button mat-icon-button [color]="viewMode === 'grid-view' ? 'accent' : ''" (click)="viewMode = 'grid-view'"
-              *ngIf="plantilla && plantilla.llaveTabla">
+              *ngIf="plantilla">
               <mat-icon>apps</mat-icon>
             </button>
             <div *ngIf="viewMode !== 'grid-view' && plantilla.reportes">
@@ -40,6 +40,13 @@
             <mat-icon>add</mat-icon>
             <span class="ml-2">Nuevo</span>
           </button>
+          <div *ngIf="templatesFromProcess">
+            <button *ngFor="let templateToCreate of templatesFromProcess" class="w-full my-1" mat-flat-button
+              [color]="'primary'" (click)="openDialog(templateToCreate.llaveTabla, templateToCreate.server)">
+              <mat-icon>add</mat-icon>
+              <span class="ml-2">{{templateToCreate.nombre}}</span>
+            </button>
+          </div>
           <!-- Buscador de texto -->
           <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar</div>
           <div class="pl-4">
@@ -112,11 +119,10 @@
                 </h2>
               </div>
             </div>
-            <button mat-icon-button matTooltip="Listar" *ngIf="!drawerOpened && hasCreatePermission" (click)="listar(1)"
-              class="m-1">
+            <button mat-icon-button matTooltip="Listar" *ngIf="!drawerOpened" (click)="listar(1)" class="m-1">
               <mat-icon>refresh</mat-icon>
             </button>
-            <button mat-icon-button matTooltip="Crear" (click)="openDialog()"
+            <button mat-icon-button matTooltip="Crear" (click)="openDialogFromTemplateModule()"
               *ngIf="!drawerOpened && hasCreatePermission" class="m-1">
               <mat-icon>add</mat-icon>
             </button>
@@ -271,11 +277,11 @@
           </table>
           <!-- Paginador -->
           <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-            <div class="w-full items-center" *ngIf="!isLoading && !isEnd">
-              <button mat-flat-button color="accent" tabindex="-1" (click)="listar(pagina)">
-                <mat-icon>refresh</mat-icon> Presiona la imagen para buscar mas resultados
-              </button>
-            </div>
+          <div class="w-full items-center" *ngIf="!isLoading && !isEnd">
+            <button mat-flat-button color="accent" tabindex="-1" (click)="listar(pagina)">
+              <mat-icon>refresh</mat-icon> Presiona la imagen para buscar mas resultados
+            </button>
+          </div>
           <!-- Pie de pagina, paginador -->
           <div class="border w-full p-4 font-weight-bold items-center">
             <div *ngIf="viewMode !== 'grid-view'">Seleccionados : {{ this.selection?.selected.length }}</div>

@@ -34,13 +34,14 @@ export class TemplateComponent implements OnInit {
     } else {
       let newRoute = '';
       if (this.type === TemplateEnum.TIPO_TABLERO) {
-        newRoute = '/tablet/' + this.id;
+        newRoute = '/process_crud/' + this.process_id;
       } else {
-        if (!this.id && this.process_id) {
+        newRoute = '/list/' + this.id;
+        /*if (!this.id && this.process_id) {
           newRoute = '/process_crud/' + this.process_id;
         } else {
           newRoute = '/list/' + this.id;
-        }
+        }*/
       }
       if (this.serverId) { newRoute = newRoute + '/' + this.serverId }
       this.router.navigate(['/list' + newRoute]);
