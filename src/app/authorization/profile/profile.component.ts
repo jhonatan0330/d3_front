@@ -111,13 +111,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.modules.push(element);
         element.estado = 'T';
       }
-      if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)) {
-        element.estado = 'P';
-        this.modules.push(element);
-      }
       if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE)) {
         element.estado = 'R';
         this.modules.push(element);
+      } else {
+        if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)) {
+          element.estado = 'P';
+          this.modules.push(element);
+        }
       }
     });
     this.filterItem();
