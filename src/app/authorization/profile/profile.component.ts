@@ -11,6 +11,7 @@ import { Subject, takeUntil, Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators, UntypedFormControl } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import Swal from 'sweetalert2';
+import { NavigationService } from '../navigation/navigation.service';
 
 @Component({
   selector: 'profile',
@@ -31,8 +32,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   signinForm: FormGroup;
 
-  filters: string[] = ['Todo', 'Reportes', 'Procesos', 'Modulos'];
-  selectedFilter: string = 'Todo';
+  filters: string[] = ['Procesos', 'Reportes', 'Modulos', 'Todo'];
+  selectedFilter: string = 'Procesos';
   /**
    * Constructor
    */
@@ -43,7 +44,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private _utilsService: UtilsService,
-    private _userService: UserService) {
+    private _userService: UserService,
+    private _navigationService: NavigationService
+  ) {
 
   }
 
@@ -82,6 +85,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  //Esto tengo que moverlo para que sea mas genearl
+  //creo que al componente de user
   getMenu() {
     if (
       !this.templateService.template ||
@@ -105,11 +110,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   loadMenu(templates: DocumentoPlantillaDTO[]) {
     this.modules = [];
+    const processToMenu =[];
     // Transform document to MenuItems
     templates.forEach((element) => {
       if (!element.llaveTabla) {
         this.modules.push(element);
         element.estado = 'T';
+        processToMenu.push(element);
       }
       if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE)) {
         element.estado = 'R';
@@ -122,6 +129,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     });
     this.filterItem();
+    this._navigationService.generate(processToMenu);
   }
 
   filterItem() {

@@ -6,7 +6,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
         id      : 'apps',
         title   : 'Aplicaciones',
         type    : 'group',
-        icon    : 'heroicons_outline:home',
         children: [
             {
                 id   : 'apps.main',
@@ -28,8 +27,18 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type : 'basic',
                 icon : 'heroicons_outline:cog',
                 link : '/settings'
+            },
+            {
+                id  : 'divider-1',
+                type: 'divider'
             }
         ]
+    },
+    {
+        id      : 'process',
+        title   : 'Procesos de Negocio',
+        type    : 'group',
+        children: [ ]
     }
    
 ];

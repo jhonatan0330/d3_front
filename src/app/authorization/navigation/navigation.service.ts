@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { cloneDeep, map } from 'lodash-es';
+import { clone, cloneDeep, map } from 'lodash-es';
 import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { FuseNavigationItem } from '@fuse/components/navigation';
 import { compactNavigation, defaultNavigation, futuristicNavigation, horizontalNavigation } from 'app/authorization/navigation/data';
+import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 
 @Injectable({
     providedIn: 'root'
@@ -22,6 +23,7 @@ export class NavigationService
      */
     constructor()
     {
+        this.generate(null);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -40,7 +42,21 @@ export class NavigationService
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    generate() {
+    generate(process: DocumentoPlantillaDTO[]) {
+        if(process){
+            const processNavItem: FuseNavigationItem[] = [];
+            process.forEach((process:DocumentoPlantillaDTO)=>{
+                const newItem: FuseNavigationItem = {
+                    id   : process.proceso,
+                    title: process.nombre[0].toUpperCase() + process.nombre.substr(1).toLowerCase(),
+                    type : 'basic',
+                    link : '/list/process_crud/' + process.proceso
+                };
+                processNavItem.push(newItem);
+            });
+            this._defaultNavigation[1].children = cloneDeep(processNavItem);
+        }
+
         // Fill compact navigation children using the default navigation
         this._compactNavigation.forEach((compactNavItem) => {
             this._defaultNavigation.forEach((defaultNavItem) => {
@@ -78,6 +94,5 @@ export class NavigationService
         }
         this._navigation.next(navigation);
     }
-
     
 }

@@ -339,7 +339,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
         } else {
           this.dataProvider = this.dataProvider.concat(dataResult);
         }
-        if (dataResult.length === this.cantidadPagina) {
+        if (dataResult.length >= this.cantidadPagina) {
           this.pagina++;
         } else {
           this.isEnd = true;

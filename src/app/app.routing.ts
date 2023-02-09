@@ -49,9 +49,6 @@ export const appRoutes: Route[] = [
     path: '',
     canActivate: [AuthGuard],
     component: LayoutComponent,
-    resolve: {
-      initialData: InitialDataResolver,
-    },
     children: [
       { path: '', loadChildren: () => import('app/authorization/profile/profile.module').then(m => m.ProfileModule) },
       { path: 'settings', loadChildren: () => import('app/authentication/settings/settings.module').then(m => m.SettingsModule)},

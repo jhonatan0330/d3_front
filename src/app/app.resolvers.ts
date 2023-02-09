@@ -13,8 +13,7 @@ export class InitialDataResolver implements Resolve<any>
      * Constructor
      */
     constructor(
-        private _navigationService: NavigationService,
-        private _notificationsService: NotificationsService
+        private _navigationService: NavigationService
     )
     {
     }
@@ -31,8 +30,8 @@ export class InitialDataResolver implements Resolve<any>
      */
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>
     {
-        this._navigationService.generate();
-        this._notificationsService.getAll();
+        this._navigationService.generate(null);
+
         /*return forkJoin([
             this._notificationsService.getAll(null)
         ]);*/
