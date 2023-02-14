@@ -1,5 +1,5 @@
 <div [style.display]="isInvisible ? 'none' : 'block'" class="mx-0">
-  <div>
+  <div class="py-1">
     <input [id]="structure.llaveTabla" *ngIf="isLoadingUrl && allowUrlTextFromUser" [(ngModel)]="urlText" fxFlex />
     <button mat-flat-button color="accent" [disabled]="isLoading" *ngIf="isEnabled && !isEnd && !isLoading" fxFlex="100"
       (click)=" onClickExternal()">
