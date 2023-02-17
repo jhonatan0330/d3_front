@@ -12,6 +12,7 @@ import { FormControl, FormGroup, Validators, UntypedFormControl } from '@angular
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import Swal from 'sweetalert2';
 import { NavigationService } from '../navigation/navigation.service';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'profile',
@@ -110,7 +111,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   loadMenu(templates: DocumentoPlantillaDTO[]) {
     this.modules = [];
-    const processToMenu =[];
+    const processToMenu = [];
     // Transform document to MenuItems
     templates.forEach((element) => {
       if (!element.llaveTabla) {
@@ -119,13 +120,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
         processToMenu.push(element);
       }
       if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE)) {
-        element.estado = 'R';
+        const reportElement = cloneDeep(element);
+        reportElement.estado = 'R';
+        this.modules.push(reportElement);
+      }
+      if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)) {
+        element.estado = 'P';
         this.modules.push(element);
-      } else {
-        if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)) {
-          element.estado = 'P';
-          this.modules.push(element);
-        }
       }
     });
     this.filterItem();
