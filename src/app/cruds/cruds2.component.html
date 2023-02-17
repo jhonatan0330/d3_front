@@ -36,7 +36,8 @@
               </mat-menu>
             </div>
           </div>
-          <button class="w-full" *ngIf="hasCreatePermission" mat-flat-button [color]="'primary'" (click)="openDialogFromTemplateModule()">
+          <button class="w-full" *ngIf="hasCreatePermission" mat-flat-button [color]="'primary'"
+            (click)="openDialogFromTemplateModule()">
             <mat-icon>add</mat-icon>
             <span class="ml-2">Nuevo</span>
           </button>
@@ -176,10 +177,11 @@
                 <mat-card-content class="p-1">
                   <div *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
                     <mat-divider></mat-divider>
-                    <div fxLayout="row" class="flex" *ngFor="let f of iDocument.caracteristicas">
-                      <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-                      <div class="flex w-full" *ngIf="f.valorText">
-                        <small class="w-full text-right" *ngIf="!f.valorText.startsWith('http')">{{ f.valorText
+                    <div fxLayout="column" class="flex items-center" *ngFor="let f of iDocument.caracteristicas">
+                      <small class="font-extralight">{{ f.campoDTO.nombre }}</small>
+                      <div class="w-full text-right" *ngIf="f.valorText" [matTooltip]="f.valorText">
+                        <small class="w-full text-right line-clamp-3" *ngIf="!f.valorText.startsWith('http')">{{
+                          f.valorText
                           }}</small>
                         <img *ngIf="f.valorText.startsWith('http')" [src]="f.valorText" [name]="f.valorText" />
                       </div>
