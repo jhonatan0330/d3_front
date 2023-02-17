@@ -4,7 +4,7 @@
   mode="indeterminate"
 ></mat-progress-bar>
 <!-- Input de productos -->
-<mat-form-field class="full-width">
+<mat-form-field class="w-full">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
   <input
     matInput
@@ -49,8 +49,8 @@
   >
     <mat-card class="user-card p-0 card-render" (click)="addProduct(product)">
       <mat-card-content>
-        <div fxLayout="column" class="full-width" fxLayoutAlign="center center">
-          <small class="full-width">{{ product.codigo }}</small>
+        <div fxLayout="column" class="w-full" fxLayoutAlign="center center">
+          <small class="w-full">{{ product.codigo }}</small>
           <img src="{{ product.imagen | imageFormat }}" />
           <span>{{ product.nombre }}</span>
         </div>
@@ -59,16 +59,16 @@
   </div>
 </div>
 <!-- Tablas de escogidos -->
-<div class="full-width" style="overflow: auto">
+<div class="w-full" style="overflow: auto">
   <table
     mat-table
-    class="cart-table default-bg mat-elevation-z1"
+    class="w-full bg-default"
     *ngIf="data.detalles?.length && !unicoProducto"
     [dataSource]="data.detalles"
   >
     <!-- Columnas -->
     <ng-container matColumnDef="retirar">
-      <th mat-header-cell *matHeaderCellDef>Retirar</th>
+      <th mat-header-cell *matHeaderCellDef class="px-1">Retirar</th>
       <td mat-cell *matCellDef="let element">
         <button mat-icon-button color="warn" (click)="retirarProducto(element)">
           <mat-icon>close</mat-icon>
@@ -77,7 +77,7 @@
       <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
     <ng-container matColumnDef="imagen">
-      <th mat-header-cell *matHeaderCellDef>Imagen</th>
+      <th mat-header-cell *matHeaderCellDef class="px-1">Imagen</th>
       <td mat-cell *matCellDef="let element">
         <img
           class="cart-thumbnail"
@@ -89,7 +89,7 @@
       <td mat-footer-cell *matFooterCellDef>Total</td>
     </ng-container>
     <ng-container matColumnDef="nombre">
-      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <th mat-header-cell *matHeaderCellDef class="px-1">Nombre</th>
       <td mat-cell *matCellDef="let element">
         <span
           style="cursor: pointer"
@@ -100,15 +100,15 @@
       <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
     <ng-container matColumnDef="unidad">
-      <th mat-header-cell *matHeaderCellDef>Unidad</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef class="px-1">Unidad</th>
+      <td mat-cell *matCellDef="let element" class="px-1">
         {{ element.valorUnitario | number }}
       </td>
       <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
     <ng-container matColumnDef="cantidad">
-      <th mat-header-cell *matHeaderCellDef>{{titleCantity}}</th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell *matHeaderCellDef class="px-1">{{titleCantity}}</th>
+      <td mat-cell *matCellDef="let element" class="px-1">
         <div *ngIf="element && element.cantidad">{{ element.cantidad }}</div>
         <small
           *ngIf="element.cantidadPromocion && element.cantidadPromocion !== 0"
@@ -120,9 +120,9 @@
       <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
     <ng-container matColumnDef="total">
-      <th mat-header-cell *matHeaderCellDef>Total</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.valorTotal | number }}
+      <th mat-header-cell *matHeaderCellDef class="px-1">Total</th>
+      <td mat-cell *matCellDef="let element" >
+        <div class="w-full text-right">{{ element.valorTotal | number }}</div>
       </td>
       <td mat-footer-cell *matFooterCellDef class="text-right">{{ getTotalCost() | number }}</td>
     </ng-container>

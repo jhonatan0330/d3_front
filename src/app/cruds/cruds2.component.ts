@@ -90,6 +90,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
         this.router.navigate(['/main']);
         return;
       }
+      this.dataProvider=[];
       const serverUrl = this.templateService.getUrl4Id(params.server_id);
       if (propType === 'list') {
         this.plantilla = this.templateService.getTemplate(params.id, serverUrl);
@@ -136,6 +137,18 @@ export class Cruds2Component implements OnInit, OnDestroy {
         this.plantilla.propiedades,
         PlantillaHelper.FORM_SOLICITAR_FECHAS
       );
+      if(!this.solicitarFechas && this.templatesFromProcess) {
+        for (let i = 0; i < this.templatesFromProcess.length; i++) {
+          const iTemplateFromService = this.templatesFromProcess[i];
+          if(!PlantillaHelper.isEmpty(
+            iTemplateFromService.propiedades,
+            PlantillaHelper.FORM_SOLICITAR_FECHAS
+          )){
+            this.solicitarFechas=true;
+            break;
+          }
+        }
+      }
       if (this.solicitarFechas) {
         this.fControlDateStart.setValue(new Date());
         this.fControlDateEnd.setValue(new Date());

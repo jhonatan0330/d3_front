@@ -142,7 +142,7 @@
     <div class="p-1 rounded mt-1" *ngIf="pedido && pedido.llaveTabla" [style.backgroundColor]="getColor()">
       <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
       <!-- Acciones -->
-      <div fxLayout="row wrap" fxLayoutAlign="center center" *ngIf="!isLoading">
+      <div fxLayout="row wrap" fxLayoutAlign="none center" *ngIf="!isLoading">
         <!-- Botones de transiciones -->
         <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer">
           <div class="p-1 m-1" fxLayoutAlign="none center">

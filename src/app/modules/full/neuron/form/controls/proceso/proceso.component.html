@@ -109,7 +109,7 @@
   <div fxLayout="row wrap">
     <div class="p-1" *ngFor="let d of data?.expedientes" fxFlex="100" fxFlex.gt-sm="33" fxFlex.sm="50">
       <mat-card class="p-0 rounded h-full">
-        <mat-card-title class="p-1 rounded">
+        <mat-card-title class="p-1 rounded mb-0">
           <div class="flex items-center">
             <div class="w-16 p-1">
               <a (click)="openDialog(d)"><img src="{{ d.imagen | imageFormat }}" /></a>
@@ -130,23 +130,21 @@
             </button>
           </div>
           <!-- <mat-divider></mat-divider> -->
-          <div class="flex flex-row">
-            <div class="mat-caption ">{{ d.fecha | date }}</div>
-            <div class="text-sm mx-1">{{ d.estadoNombre }}</div>
+          <div fxLayout="row" class="flex">
+            <div class="text-sm">{{ d.fecha | date }}</div>
+            <div fxFlex class="text-sm mx-1 text-right">{{ d.estadoNombre }}</div>
           </div>
-          <div class="flex flex-col" *ngIf="d.dinero">
-            <span *ngIf="d.dinero.valorTotal !== d.dinero.saldo">{{ d.dinero.saldo | number
-              }}</span>
-            <span fxFlex></span>
-            <span>{{ d.dinero.valorTotal | number }}</span>
+          <div fxLayout="row" class="flex" *ngIf="d.dinero">
+            <div *ngIf="d.dinero.valorTotal !== d.dinero.saldo &&  0 !== d.dinero.saldo">{{ d.dinero.saldo | number }}</div>
+            <div fxFlex class="text-right">{{ d.dinero.valorTotal | number }}</div>
           </div>
         </mat-card-title>
         <mat-card-content class="p-1">
           <div *ngIf="d.caracteristicas && d.caracteristicas.length !== 0">
             <div fxLayout="row" class="flex" *ngFor="let f of d.caracteristicas">
               <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-              <div class="flex w-full" *ngIf="f.valorText">
-                <small class="w-full text-right">{{ f.valorText }}</small>
+              <div fxFlex class="text-right text-sm" *ngIf="f.valorText">
+                {{ f.valorText }}
               </div>
             </div>
           </div>
@@ -244,10 +242,10 @@
             <div class="text-sm mx-1">{{ iDocument.estadoNombre }}</div>
           </div>
           <div class="flex flex-col" *ngIf="iDocument.dinero">
-            <span *ngIf="iDocument.dinero.valorTotal !== iDocument.dinero.saldo">{{ iDocument.dinero.saldo | number
-              }}</span>
-            <span fxFlex></span>
-            <span>{{ iDocument.dinero.valorTotal | number }}</span>
+            <div *ngIf="iDocument.dinero.valorTotal !== iDocument.dinero.saldo ">{{
+              iDocument.dinero.saldo | number
+              }}</div>
+            <div class="w-full text-right ">{{ iDocument.dinero.valorTotal | number }}</div>
           </div>
         </mat-card-title>
         <mat-card-content class="p-1">
