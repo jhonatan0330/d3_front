@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { clone, cloneDeep, map } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { FuseNavigationItem } from '@fuse/components/navigation';

@@ -4,3 +4,7 @@ export class ApiErrorResponse {
   message: string;
   detail: string;
 }
+
+export class IdResponse {
+  id: string;
+}

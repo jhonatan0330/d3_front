@@ -29,6 +29,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link : '/settings'
             },
             {
+                id   : 'apps.tasks',
+                title: 'TO-DO',
+                type : 'basic',
+                icon : 'heroicons_outline:check-circle',
+                link : '/tasks'
+            },
+            {
                 id  : 'divider-1',
                 type: 'divider'
             }

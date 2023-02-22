@@ -9,9 +9,12 @@ export const profileRoutes: Route[] = [
   {
     path: 'main/:type/:id',
     component: ProfileComponent
-  },
+  }
+  
+  // Lo retiro porque hacia conflicto con task
+  /*,
   {
     path: ':type/:id',
     component: ProfileComponent
-  },
+  },*/
 ];
