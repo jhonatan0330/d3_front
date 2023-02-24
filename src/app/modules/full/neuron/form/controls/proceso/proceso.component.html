@@ -114,8 +114,8 @@
             <div class="w-16 p-1">
               <a (click)="openDialog(d)"><img src="{{ d.imagen | imageFormat }}" /></a>
             </div>
-            <div fxLayout="column" class="w-full p-1 rounded" fxFlex
-              [style.backgroundColor]="getColor(d.estadoExpediente)" [style.color]="getColorFont(d.estadoExpediente)">
+            <!--[style.backgroundColor]="getColor(d.estadoExpediente)" [style.color]="getColorFont(d.estadoExpediente)"-->
+            <div fxLayout="column" class="w-full p-1 rounded" fxFlex>
               <a (click)="openDialog(d)">
                 <div class="text-md">{{ d.nombre }}</div>
               </a>
@@ -143,7 +143,7 @@
           <div *ngIf="d.caracteristicas && d.caracteristicas.length !== 0">
             <div fxLayout="row" class="flex" *ngFor="let f of d.caracteristicas">
               <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-              <div fxFlex class="text-right text-sm" *ngIf="f.valorText">
+              <div fxFlex class="text-right text-sm" *ngIf="f.valorText" [matTooltip]="f.valorText">
                 {{ f.valorText }}
               </div>
             </div>
@@ -237,23 +237,23 @@
             </button>
           </div>
           <!-- <mat-divider></mat-divider> -->
-          <div class="flex flex-row">
-            <div class="mat-caption ">{{ iDocument.fecha | date }}</div>
-            <div class="text-sm mx-1">{{ iDocument.estadoNombre }}</div>
+          <div fxLayout="row" class="flex">
+            <div class="text-sm">{{ iDocument.fecha | date }}</div>
+            <div class="text-sm mx-1 text-right">{{ iDocument.estadoNombre }}</div>
           </div>
-          <div class="flex flex-col" *ngIf="iDocument.dinero">
-            <div *ngIf="iDocument.dinero.valorTotal !== iDocument.dinero.saldo ">{{
-              iDocument.dinero.saldo | number
-              }}</div>
-            <div class="w-full text-right ">{{ iDocument.dinero.valorTotal | number }}</div>
+          <div fxLayout="row" class="flex" *ngIf="iDocument.dinero">
+            <div *ngIf="iDocument.dinero.valorTotal !== iDocument.dinero.saldo && 0 !== iDocument.dinero.saldo">
+              {{iDocument.dinero.saldo | number}}
+            </div>
+            <div fxFlex class="text-right">{{ iDocument.dinero.valorTotal | number }}</div>
           </div>
         </mat-card-title>
         <mat-card-content class="p-1">
           <div *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
-            <div fxLayout="column" class="flex items-center" *ngFor="let f of iDocument.caracteristicas">
-              <small class="font-extralight">{{ f.campoDTO.nombre }}</small>
-              <div class="w-full text-right" *ngIf="f.valorText" [matTooltip]="f.valorText">
-                <small class="w-full text-right line-clamp-3">{{ f.valorText }}</small>
+            <div fxLayout="row" class="flex" *ngFor="let f of iDocument.caracteristicas">
+              <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
+              <div fxFlex class="text-right text-sm" *ngIf="f.valorText" [matTooltip]="f.valorText">
+                {{ f.valorText }}
               </div>
             </div>
           </div>
