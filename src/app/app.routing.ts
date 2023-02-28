@@ -55,6 +55,7 @@ export const appRoutes: Route[] = [
       { path: 'list', loadChildren: () => import('app/cruds/cruds.module').then(m => m.CrudsModule) },
       { path: 'maps', loadChildren: () => import('app/gps/gps.module').then(m => m.GPSModule)},
       { path: 'tasks', loadChildren: () => import('app/tasks/tasks.module').then(m => m.TasksModule)},
+      { path: 'pd', loadChildren: () => import('app/process-designer/process-designer.module').then(m => m.ProcessDesignerModule)},
       { path: 'UIVotacion', loadChildren: () => import('app/survey/survey.module').then(m => m.SurveyModule) },
       { path: 'noseperolodejopormodule', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
       // 404 & Catch all
