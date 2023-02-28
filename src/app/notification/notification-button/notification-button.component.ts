@@ -66,7 +66,11 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
                 this.showMessage();
             });
-        this.refresh();
+        this.templateService.templates$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe((templates) => {
+                if (templates && templates.length !==0) { this.refresh(); }
+            });
     }
 
     /**

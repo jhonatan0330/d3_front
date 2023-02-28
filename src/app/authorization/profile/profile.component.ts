@@ -11,7 +11,6 @@ import { Subject, takeUntil, Subscription } from 'rxjs';
 import { FormControl, FormGroup, Validators, UntypedFormControl } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import Swal from 'sweetalert2';
-import { NavigationService } from '../navigation/navigation.service';
 import { cloneDeep } from 'lodash';
 
 @Component({
@@ -45,8 +44,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private _utilsService: UtilsService,
-    private _userService: UserService,
-    private _navigationService: NavigationService
+    private _userService: UserService
+    
   ) {
 
   }
@@ -66,8 +65,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       next: (value) => this.loadMenu(value),
     });
 
-    this.getMenu();
-
     this.signinForm = new FormGroup({
       password: new FormControl('', Validators.required),
     });
@@ -86,38 +83,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  //Esto tengo que moverlo para que sea mas genearl
-  //creo que al componente de user
-  getMenu() {
-    if (
-      !this.templateService.template ||
-      this.templateService.template.length === 0
-    ) {
-      this.isLoading = true;
-      this.modules = [];
-      this.apiService.listarPlantillas(null).subscribe({
-        next: (templates: DocumentoPlantillaDTO[]) => {
-          this.templateService.setTemplates(templates);
-          this.conect2Other();
-          this.openFormLink();
-          this.isLoading = false;
-        },
-        error: () => {
-          this.isLoading = false;
-        },
-      });
-    }
-  }
+  
 
   loadMenu(templates: DocumentoPlantillaDTO[]) {
     this.modules = [];
-    const processToMenu = [];
     // Transform document to MenuItems
     templates.forEach((element) => {
       if (!element.llaveTabla) {
         this.modules.push(element);
         element.estado = 'T';
-        processToMenu.push(element);
       }
       if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE)) {
         const reportElement = cloneDeep(element);
@@ -130,7 +104,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     });
     this.filterItem();
-    this._navigationService.generate(processToMenu);
+    this.conect2Other();
+    this.openFormLink();
   }
 
   filterItem() {

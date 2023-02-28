@@ -7,6 +7,8 @@ import { UserService } from 'app/core/user/user.service';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { NotificationsService } from 'app/notification/notification.service';
+import { NavigationService } from 'app/authorization/navigation/navigation.service';
 
 @Component({
     selector: 'user',
@@ -34,7 +36,9 @@ export class UserComponent implements OnInit, OnDestroy {
         private _userService: UserService,
         public jwtAuth: JwtAuthService,
         private templateService: TemplateService,
-        private apiService: ApiService
+        private notificationService: NotificationsService,
+        private apiService: ApiService,
+        private _navigationService: NavigationService
     ) {
     }
 
@@ -51,10 +55,10 @@ export class UserComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((user: User) => {
                 this.user = user;
-
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+        this.getMenu();
     }
 
     /**
@@ -76,6 +80,7 @@ export class UserComponent implements OnInit, OnDestroy {
     signOut(): void {
         this.templateService.clear();
         this.jwtAuth.signout();
+        this.notificationService.clear();
     }
 
     getFullTemplates() {
@@ -87,7 +92,31 @@ export class UserComponent implements OnInit, OnDestroy {
         });
     }
 
-    goToMyAccount(){
+
+    getMenu() {
+        if (
+            !this.templateService.template ||
+            this.templateService.template.length === 0
+        ) {
+            this.apiService.listarPlantillas(null)
+                .subscribe(templates => {
+                    this.templateService.setTemplates(templates);
+                    const processToMenu = [];
+                    // Transform document to MenuItems
+                    templates.forEach((element) => {
+                        if (!element.llaveTabla) {
+                            element.estado = 'T';
+                            processToMenu.push(element);
+                        }
+                    });
+
+                    this._navigationService.generate(processToMenu);
+
+                });
+        }
+    }
+
+    goToMyAccount() {
         this._router.navigate(['/settings']);
     }
 }

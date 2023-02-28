@@ -36,11 +36,18 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link : '/tasks'
             },
             {
-                id   : 'apps.pd',
+                id   : 'apps.designer',
                 title: 'Diseñador',
                 type : 'basic',
                 icon : 'heroicons_outline:cube-transparent',
-                link : '/pd'
+                link : '/designer'
+            },
+            {
+                id   : 'apps.academy',
+                title: 'Academy',
+                type : 'basic',
+                icon : 'heroicons_outline:academic-cap',
+                link : '/academy'
             },
             {
                 id  : 'divider-1',

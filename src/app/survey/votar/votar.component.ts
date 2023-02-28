@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
-import { NavigationService } from 'app/shared/services/navigation.service';
+
 import Swal from 'sweetalert2';
 import { EncuestaDTO, EncuestaGrupoDTO, EncuestaPreguntaDTO, EncuestaOpcionRespuestaDTO, EncuestaRespuestaDTO } from 'app/survey/survey.domain';
 import { SurveyService } from '../../modules/full/neuron/service/survey.service';
@@ -23,7 +23,6 @@ export class VotarComponent implements OnInit {
   isLoading = false;
 
   constructor(
-    private navService: NavigationService,
     private survey: SurveyService,
     private jwtAuth: JwtAuthService,
     private templateService: TemplateService,
@@ -131,12 +130,12 @@ export class VotarComponent implements OnInit {
   salir() {
     Swal.fire('Proceso completo', 'Muchas Gracias por tu participacion', 'success').
       then(() => {
-        if (this.navService.iconMenu.length === 0) {
+        /*if (this.navService.iconMenu.length === 0) {
           this.jwtAuth.signout();
           this.templateService.clear();
         } else {
           this.router.navigateByUrl('/main');
-        }
+        }*/
       });
   }
 }

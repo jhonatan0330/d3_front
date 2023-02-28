@@ -44,6 +44,10 @@ export class NotificationsService {
     );
   }
 
+  clear(){
+    this._notifications.next([]);
+  }
+
   listUserActivities(_server: string): Observable<ActividadDTO[]> {
     return this.http.get<ActividadDTO[]>(
       this.ls.getUrlAccess('/document/getUserActivities', _server)

@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImageFormatPipe } from './pipes/local-image';
 // SERVICES
 import { ThemeService } from './services/theme.service';
-import { NavigationService } from './services/navigation.service';
 
 
 import { SharedPipesModule } from './pipes/shared-pipes.module';
@@ -21,8 +20,7 @@ import { SharedDirectivesModule } from './directives/shared-directives.module';
   ],
   providers: [
     ImageFormatPipe,
-    ThemeService,
-    NavigationService
+    ThemeService
   ],
   exports: [
     CommonModule,
