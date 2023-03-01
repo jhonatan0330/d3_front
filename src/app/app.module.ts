@@ -22,6 +22,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { DocumentTransitionModule } from './document-transition/document-transition.module';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -44,6 +45,7 @@ const routerConfig: ExtraOptions = {
 
     // Core module of your application
     AuthenticationModule,
+    DocumentTransitionModule,
     CoreModule,
     FlexLayoutModule,
     // Layout module of your application

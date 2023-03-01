@@ -24,30 +24,6 @@ export class ProcesoEstadoFilterDTO extends BasicFilterDTO {
   procesoNombre: string;
 }
 			
-export class DocumentoRelacionGestorFilterDTO extends BasicFilterDTO {
-  documentoPrincipal: string;
-  documentoModificador: string;
-  fechaMin: Date;
-  fechaMax: Date;
-  estadoInicial: string;
-  estadoFinal: string;
-  usuario: string;
-  responsable: string;
-  responsableImagen: string;
-  modificadorNombre: string;
-  comentario: string;
-  plantilla: string;
-  plantillaNombre: string;
-  ubicacion: string;
-  ubicacionNombre: string;
-  ubicacionPlantilla: string;
-  valores: string;
-  transaccion: string;
-  cierreMin: Date;
-  cierreMax: Date;
-  nombre: string;
-  adjunto: string;
-}
 			
 export class DocumentoPlantillaCaracteristicaFilterDTO extends BasicFilterDTO {
   plantilla: string;
@@ -162,30 +138,6 @@ export class PedidoVentaDineroFilterDTO extends BasicFilterDTO {
   fechaMax: Date;
 }
 			
-export class ActividadFilterDTO extends BasicFilterDTO {
-  responsable: string;
-  responsableIdentificacion: string;
-  responsableNombre: string;
-  documento: string;
-  responsableFoto: string;
-  fechaArrancarMin: Date;
-  fechaArrancarMax: Date;
-  fechaRegistroMin: Date;
-  fechaRegistroMax: Date;
-  usuarioRegistro: string;
-  fechaInactivoMin: Date;
-  fechaInactivoMax: Date;
-  fechaTerminarMin: Date;
-  fechaTerminarMax: Date;
-  fechaLimiteMin: Date;
-  fechaLimiteMax: Date;
-  usuarioInactivo: string;
-  duracion: number;
-  actividadPrevia: string;
-  actividadSiguiente: string;
-  fechaLeidoMin: Date;
-  fechaLeidoMax: Date;
-}
 			
 export class PropiedadFilterDTO extends BasicFilterDTO {
   propiedadValor: string;

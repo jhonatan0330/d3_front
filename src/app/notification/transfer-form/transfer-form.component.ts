@@ -39,6 +39,7 @@ export class TransferFormComponent implements OnInit {
     );
     if (!this.plantilla || !this.plantilla.estados || this.plantilla.estados.length === 0) {
       Swal.fire('No estados', 'Esta plantilla no tiene estados y no permite gestionar la transferencia', 'warning');
+      this.dialogRef.close(false);
       return;
     }
 

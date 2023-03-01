@@ -5,6 +5,7 @@ import { CatalogComponent } from 'app/modules/full/neuron/form/catalog/catalog.c
 import { ProductComponent } from 'app/modules/full/neuron/form/controls/detalle/product/product.component';
 import { FormComponent } from 'app/modules/full/neuron/form/form.component';
 import { TransferFormComponent } from 'app/notification/transfer-form/transfer-form.component';
+import { TrazabilityComponent } from 'app/document-transition/trazability/trazability.component';
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +50,16 @@ export class UtilsService {
       maxWidth: '90vh',
       disableClose: false,
       data: { document: document, state: state, template: template, server: server},
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalTrace(document: string, template: string, server: string){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(TrazabilityComponent, {
+      maxHeight: '90vh',
+      maxWidth: '99vh',
+      disableClose: false,
+      data: { document: document, template: template, server: server},
     });
     return dialogRef.afterClosed();
   }

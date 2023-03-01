@@ -13,31 +13,7 @@ export class ProcesoEstadoDTO extends BasicParamDTO {
   procesoNombre: string;
   transiciones: ProcesoTransicionDTO[];
 }
-export class DocumentoRelacionGestorDTO extends BasicDTO {
-  documentoPrincipal: string;
-  documentoModificador: string;
-  fecha: Date;
-  estadoInicial: string;
-  estadoFinal: string;
-  usuario: string;
-  responsable: string;
-  responsableImagen: string;
-  modificadorNombre: string;
-  comentario: string;
-  plantilla: string;
-  plantillaNombre: string;
-  ubicacion: string;
-  ubicacionNombre: string;
-  ubicacionPlantilla: string;
-  valores: string;
-  saldo: number;
-  total: number;
-  transaccion: string;
-  cierre: Date;
-  nombre: string;
-  adjunto: string;
-  campos: PedidoVentaCaracteristicaDTO[];
-}
+
 export class DocumentoPlantillaCaracteristicaDTO extends BasicParamDTO {
   objetivo: string;
   plantilla: string;

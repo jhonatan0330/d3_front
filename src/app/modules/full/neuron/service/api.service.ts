@@ -13,7 +13,6 @@ import {
   UsuarioAutenticacionDTO,
   UsuarioDTO,
   PedidoVentaDTO,
-  DocumentoRelacionGestorDTO,
   RelacionInternaDTO,
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaAjusteDTO,
@@ -27,7 +26,6 @@ import {
   UsuarioAutenticacionFilterDTO,
   PedidoVentaFilterDTO,
   PedidoVentaCaracteristicaFilterDTO,
-  DocumentoRelacionGestorFilterDTO,
   RelacionInternaFilterDTO,
 } from '../model/sw42.filter';
 import { environment } from 'environments/environment';
@@ -87,23 +85,6 @@ export class ApiService {
     return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
       this.ls.getUrlAccess('/template/validateLoad', _server),
       filter
-    );
-  }
-
-  getTrace(
-    _d: DocumentoRelacionGestorFilterDTO, _server: string
-  ): Observable<DocumentoRelacionGestorDTO[]> {
-    return this.http.post<DocumentoRelacionGestorDTO[]>(
-      this.ls.getUrlAccess('/template/getTrace', _server),
-      _d
-    );
-  }
-
-  getTraceFields(
-    _document: string, _transaction: string, _server: string
-  ): Observable<PedidoVentaCaracteristicaDTO[]> {
-    return this.http.get<PedidoVentaCaracteristicaDTO[]>(
-      this.ls.getUrlAccess('/template/getTraceFields/' + _document + '/' + _transaction, _server)
     );
   }
 

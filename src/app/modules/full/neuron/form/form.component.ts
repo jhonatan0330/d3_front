@@ -16,7 +16,6 @@ import {
   DetallePedidoVentaDTO,
   DocumentoPlantillaCaracteristicaDTO,
   DocumentoPlantillaDTO,
-  DocumentoRelacionGestorDTO,
   PedidoVentaAjusteDTO,
   PedidoVentaCaracteristicaDTO,
   PedidoVentaDineroDTO,
@@ -31,7 +30,6 @@ import {
   StatesEnum,
 } from 'app/modules/full/neuron/model/sw42.enum';
 import {
-  DocumentoRelacionGestorFilterDTO,
   PedidoVentaFilterDTO,
 } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -70,21 +68,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   identificadorInicial: string; // La use para llenar el campo inicial
   close2Save = false;
 
-  // TRACE
-  pagina = 1; // Indica que pagina estamos buscando
-  cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
-  isLoading = false;
-  isEnd = false;
-  dataProvider: DocumentoRelacionGestorDTO[]; // Conjunto de documentos a visualizar
-
-  fCheckDocuments: FormControl = new FormControl(true);
-  fCheckAssignations: FormControl = new FormControl(false);
-  fCheckMessage: FormControl = new FormControl(false);
-  fCheckInventary: FormControl = new FormControl(false);
-  fCheckAutomaticas: FormControl = new FormControl(false);
-  fCheckApi: FormControl = new FormControl(false);
-  fCheckReportes: FormControl = new FormControl(false);
-
+  
   // ACTIONS
 
   auxPlantillaProxima: string; // LAs transiciones aveces no tienen cargados los campos y se encesitan
@@ -479,36 +463,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.showFields();
     this.resolvePropiertiesForm();
     this.getReports();
-
-    // Colocar los valores iniciales de la consulta historica
-    const checksHistorial: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_HISTORIAL_ACTIVO);
-    if (checksHistorial && checksHistorial.length != 0) {
-      for (let i = 0; i < checksHistorial.length; i++) {
-        switch (checksHistorial[i].valor) {
-          case "1":
-            this.fCheckDocuments.setValue(true);
-            break;
-          case "2":
-            this.fCheckAssignations.setValue(true);
-            break;
-          case "3":
-            this.fCheckMessage.setValue(true);
-            break;
-          case "4":
-            this.fCheckInventary.setValue(true);
-            break;
-          case "5":
-            this.fCheckAutomaticas.setValue(true);
-            break;
-          case "6":
-            this.fCheckReportes.setValue(true);
-            break;
-          case "7":
-            this.fCheckApi.setValue(true);
-            break;
-        }
-      }
-    }
   }
 
 
@@ -789,22 +743,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     });
   }
 
-  showTraceDocument(_id: string, _template: string) {
-    const _doc: PedidoVentaDTO = new PedidoVentaDTO();
-    _doc.plantilla = _template;
-    _doc.llaveTabla = _id;
-    _doc.serverUrl = this.plantilla.server;
-    this.utilsService.modalWithParams(_doc);
-  }
-
-  showTraceField2Document(_gestor: DocumentoRelacionGestorDTO) {
-    this.api.getTraceFields(_gestor.documentoPrincipal, _gestor.transaccion, this.plantilla.server).subscribe({
-      next: (_dataResult: PedidoVentaCaracteristicaDTO[]) => {
-        _gestor.campos = _dataResult;
-      }
-    });
-  }
-
   // Solo lo uso en crear plantilla siguiente asi que puedo ver como optimizar despues
   validateIsPossibleField(
     campo: DocumentoPlantillaCaracteristicaDTO,
@@ -828,54 +766,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
     return null;
   }
-  /*******************************  TRACE *********************/
-  getDateFormat(oldDate: any) {
-    return oldDate.toDateString() + ' ' + oldDate.toLocaleTimeString();
-  }
-
-  listar(_pagina: number) {
-    if (this.isLoading) {
-      return;
-    }
-    const entity: DocumentoRelacionGestorFilterDTO = new DocumentoRelacionGestorFilterDTO();
-    entity.documentoPrincipal = this.pedido.llaveTabla;
-    const docs: string = this.fCheckDocuments.value ? '1' : '0';
-    const asg: string = this.fCheckAssignations.value ? '1' : '0';
-    const msj: string = this.fCheckMessage.value ? '1' : '0';
-    const inv: string = this.fCheckInventary.value ? '1' : '0';
-    const rep: string = this.fCheckReportes.value ? '1' : '0';
-    const aut: string = this.fCheckAutomaticas.value ? '1' : '0';
-    const api: string = this.fCheckApi.value ? '1' : '0';
-    entity.estado = docs + asg + msj + inv + rep + aut + api;
-
-    if (_pagina === 1) {
-      this.dataProvider = [];
-      this.isEnd = false;
-    }
-    entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
-    entity.paginacionRegistroFinal = this.cantidadPagina;
-    this.pagina = _pagina;
-    this.isLoading = true;
-    this.api.getTrace(entity, this.plantilla.server).subscribe({
-      next: (dataResult: DocumentoRelacionGestorDTO[]) => {
-        if (this.pagina === 1) {
-          this.dataProvider = dataResult;
-        } else {
-          this.dataProvider = this.dataProvider.concat(dataResult);
-        }
-        if (dataResult.length === this.cantidadPagina) {
-          this.pagina++;
-        } else {
-          this.isEnd = true;
-          this.pagina = 1;
-        }
-        this.isLoading = false;
-      },
-      error: (err: any) => {
-        this.isLoading = false;
-      }
-    });
-  }
+  
   /*******************************REPORT *************/
   // Envio a imprimir los reportes
   getReports() {
@@ -939,6 +830,10 @@ export class FormComponent implements OnInit, AfterViewInit {
         }
       });
     }
+  }
+
+  showTrace() {
+    this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server);
   }
 
   showChangeState() {
