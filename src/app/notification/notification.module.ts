@@ -7,10 +7,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
 import { NotificationButtonComponent } from './notification-button/notification-button.component';
+import { TransferFormComponent } from './transfer-form/transfer-form.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FuseCardModule } from '@fuse/components/card';
+import { MatCardModule } from '@angular/material/card';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SharedMaterialModule } from 'app/shared/shared-material.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
     declarations: [
-        NotificationButtonComponent
+        NotificationButtonComponent,
+        TransferFormComponent
     ],
     imports     : [
         RouterModule,
@@ -19,10 +29,18 @@ import { NotificationButtonComponent } from './notification-button/notification-
         MatButtonModule,
         MatIconModule,
         MatTooltipModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatCardModule,
+        MatAutocompleteModule,
+        MatProgressBarModule,
+        FuseCardModule,
+        FlexLayoutModule,
         SharedModule
     ],
     exports     : [
-        NotificationButtonComponent
+        NotificationButtonComponent,
+        TransferFormComponent
     ]
 })
 export class NotificationsModule

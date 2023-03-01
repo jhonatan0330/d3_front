@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject, tap } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
-import { LocalStoreService } from 'app/shared/services/local-store.service';
+import { LocalConstants, LocalStoreService } from 'app/shared/services/local-store.service';
+import { UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,7 @@ export class NotificationsService {
    */
   getAll(_server: string = null): Observable<ActividadDTO[]> {
     return this.http.get<ActividadDTO[]>(
-      this.ls.getUrlAccess('/document/getUserActivities', _server)
+      this.ls.getUrlAccess('/notification/getNotifications', _server)
     ).pipe(
       tap((notifications) => {
         this._notifications.next(notifications);
@@ -48,27 +49,26 @@ export class NotificationsService {
     this._notifications.next([]);
   }
 
-  listUserActivities(_server: string): Observable<ActividadDTO[]> {
-    return this.http.get<ActividadDTO[]>(
-      this.ls.getUrlAccess('/document/getUserActivities', _server)
-    );
-  }
-
   readActivity(actividad: ActividadDTO, _server: string = null): Observable<ActividadDTO> {
     return this.http.post<ActividadDTO>(
-      this.ls.getUrlAccess('/document/readActivity', _server),
+      this.ls.getUrlAccess('/notification/readActivity', _server),
       actividad
     );
   }
 
-  reasignar(plantilla: ActividadDTO, _server: string): Observable<ActividadDTO> {
+  transfer(plantilla: ActividadDTO, _server: string): Observable<ActividadDTO> {
     return this.http.post<ActividadDTO>(
-      this.ls.getUrlAccess('/rest/reasignar', _server),
+      this.ls.getUrlAccess('/notification/transfer', _server),
       plantilla
     );
   }
 
-
+  usersToTransfer(plantilla: ActividadDTO, _server: string): Observable<UsuarioDTO[]> {
+    return this.http.post<UsuarioDTO[]>(
+      this.ls.getUrlAccess('/notification/userToTransfer', _server),
+      plantilla
+    );
+  }
 
 
 }

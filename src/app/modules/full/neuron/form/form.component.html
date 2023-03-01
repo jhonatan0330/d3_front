@@ -78,38 +78,6 @@
 </div>
 <div *ngIf="!visibleMassive">
   <mat-dialog-content>
-    <!-- Transferir documento -->
-    <mat-card class="mt-0 mx-0" *ngIf="isTransfering">
-      <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="transferIsLoading"></mat-progress-bar>
-      <form [formGroup]="transferForm" (ngSubmit)="transfer()">
-        <div>
-          <mat-form-field class="w-full">
-            <input matInput name="responsable" [matAutocomplete]="auto"
-              [formControl]="transferForm.controls['responsable']" placeholder="Asignar a" required />
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayTransfer">
-              <mat-option *ngFor="let user of users" [value]="user">
-                <div>
-                  <img class="icon-size-10 rounded my-1" aria-hidden src="{{ user.imagen | imageFormat }}" />
-                  <span fxFlex class="px-1">{{ user.identificacion }}</span>
-                  <small>{{ user.nombre }}</small>
-                </div>
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-        </div>
-
-        <div>
-          <mat-form-field class="w-full">
-            <textarea name="comentario" class="textarea-form" matInput
-              [formControl]="transferForm.controls['comentario']" placeholder="Comentario" required></textarea>
-          </mat-form-field>
-        </div>
-        <button mat-raised-button class="mat-primary w-full mb-1" [disabled]="transferForm.invalid"
-          *ngIf="!transferIsLoading">
-          Reasignar
-        </button>
-      </form>
-    </mat-card>
     <!-- Cambiar estado del documento -->
     <mat-card class="mt-0 mx-0" *ngIf="isChangeState">
       <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>

@@ -176,13 +176,6 @@ export class ApiService {
     );
   }
 
-  /*eliminarDocumento(documento: PedidoVentaDTO): Observable<PedidoVentaDTO> {
-    return this.http.post<PedidoVentaDTO>(
-      this.ls.getUrlAccess('/rest/eliminarDocumento'),
-      documento
-    );
-  }*/
-
   consultarUsuario(usuario: UsuarioDTO): Observable<UsuarioDTO> {
     return this.http.post<UsuarioDTO>(
       this.ls.getUrlAccess('/rest/consultarUsuario'),
@@ -196,13 +189,6 @@ export class ApiService {
     return this.http.post<PedidoVentaCaracteristicaFilterDTO>(
       this.ls.getUrlAccess('/rest/consultarDatosBase', _server),
       campo
-    );
-  }
-
-  usuariosXRol(plantilla: PedidoVentaFilterDTO, _server: string): Observable<UsuarioDTO[]> {
-    return this.http.post<UsuarioDTO[]>(
-      this.ls.getUrlAccess('/rest/usuariosXRol', _server),
-      plantilla
     );
   }
 

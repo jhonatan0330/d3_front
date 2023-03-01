@@ -33,8 +33,7 @@ export class AuthenticationService
         private _httpClient: HttpClient,
         private _userService: UserService,
         private _jwtAuth: JwtAuthService,
-        private _ls: LocalStoreService,
-        private _apiService: ApiService
+        private _ls: LocalStoreService
     )
     {
     }

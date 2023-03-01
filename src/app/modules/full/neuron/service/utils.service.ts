@@ -4,6 +4,7 @@ import { DetallePedidoVentaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/m
 import { CatalogComponent } from 'app/modules/full/neuron/form/catalog/catalog.component';
 import { ProductComponent } from 'app/modules/full/neuron/form/controls/detalle/product/product.component';
 import { FormComponent } from 'app/modules/full/neuron/form/form.component';
+import { TransferFormComponent } from 'app/notification/transfer-form/transfer-form.component';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +39,16 @@ export class UtilsService {
       maxHeight: '90vh',
       disableClose: true,
       data: { data: pDataModal},
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalTransfer(document: string, state: string, template: string, server: string){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(TransferFormComponent, {
+      maxHeight: '90vh',
+      maxWidth: '90vh',
+      disableClose: false,
+      data: { document: document, state: state, template: template, server: server},
     });
     return dialogRef.afterClosed();
   }

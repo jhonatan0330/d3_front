@@ -7,7 +7,6 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { JwtAuthService } from '../../authentication/jwt-auth.service';
 import { map } from 'rxjs/operators';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 

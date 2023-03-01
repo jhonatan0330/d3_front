@@ -174,6 +174,7 @@ export class TemplateService {
   }
 
   clear() {
+    this.templates$.next([]);
     this.template = null;
     this.colores = null;
     this.tableros = null;

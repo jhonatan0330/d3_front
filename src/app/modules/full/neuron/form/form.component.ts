@@ -25,7 +25,6 @@ import {
   ProcesoTransicionDTO,
   PropiedadDTO,
   ReporteBaseDTO,
-  UsuarioDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import {
   DocumentoPlantillaCaracteristicaEnum,
@@ -47,8 +46,6 @@ import {
 } from 'app/shared/services/local-store.service';
 import { getComponent } from 'app/shared/helpers/form-helper';
 import Swal from 'sweetalert2';
-import { NotificationsService } from 'app/notification/notification.service';
-import { ActividadDTO } from 'app/notification/notification.types';
 
 @Component({
   selector: 'app-form',
@@ -103,10 +100,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   // Transferencias
   canTransfer = false;
-  isTransfering = false;
-  transferIsLoading = false;
-  transferForm: FormGroup;
-  users: UsuarioDTO[] = [];
+
 
   // Cambiar estado
   canChangeState = false;
@@ -121,7 +115,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<FormComponent>,
     private templateService: TemplateService,
     private api: ApiService,
-    private notificationService: NotificationsService,
+
     private ls: LocalStoreService,
     private compiler: ComponentFactoryResolver,
     private utilsService: UtilsService
@@ -938,82 +932,12 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   showTransfer() {
     if (this.canTransfer) {
-
-      if (!this.plantilla.estados || this.plantilla.estados.length === 0) {
-        Swal.fire('No estados', 'Esta plantilla no tiene estados y no permite gestionar la transferencia', 'warning');
-        return;
-      }
-
-      for (let i = 0; i < this.plantilla.estados.length; i++) {
-        const estadoModificable = this.plantilla.estados[i];
-        if (estadoModificable.llaveTabla === this.pedido.estadoExpediente) {
-          const rolPropiedad = PlantillaHelper.buscarValor(
-            estadoModificable.propiedades,
-            PlantillaHelper.ROL
-          );
-          if (!rolPropiedad) {
-            Swal.fire('No roles', 'El estado ' + estadoModificable.nombre + ' no tiene configurada la propiedad ROL', 'warning');
-            return;
-          }
+      this.utilsService.modalTransfer(this.pedido.llaveTabla, this.pedido.estadoExpediente, this.pedido.plantilla, this.plantilla.server)
+      .subscribe((res) => {
+        if (res && this.dialogRef) {
+          this.dialogRef.close();
         }
-      }
-
-      if (this.isTransfering) {
-        this.isTransfering = false;
-      } else {
-        if (!this.transferForm) {
-          this.transferForm = new FormGroup({
-            responsable: new FormControl('', Validators.required),
-            comentario: new FormControl('', Validators.required),
-          });
-          const filter: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
-          filter.llaveTabla = this.pedido.llaveTabla;
-          this.transferIsLoading = true;
-          this.api.usuariosXRol(filter, this.plantilla.server).subscribe({
-            next: (value) => {
-              this.users = value;
-              this.transferIsLoading = false;
-            },
-            error: () => {
-              this.transferIsLoading = false;
-            }
-          });
-        }
-        this.isTransfering = true;
-      }
-    }
-  }
-
-  autoCompleteDisplayTransfer(item: UsuarioDTO): string {
-    if (!item) {
-      return;
-    }
-    if (item.nombre) {
-      return item.nombre;
-    } else {
-      return item.identificacion;
-    }
-  }
-
-  transfer() {
-    if (this.canTransfer) {
-      const transferData = this.transferForm.value;
-      if (!transferData.responsable || !transferData.responsable.llaveTabla) {
-        Swal.fire('Responsable', 'Selecciona el nuevo responsable', 'info');
-      } else {
-        const reasignacion: ActividadDTO = new ActividadDTO();
-        reasignacion.documento = this.pedido.llaveTabla;
-        reasignacion.responsable = transferData.responsable.llaveTabla;
-        reasignacion.comentario = transferData.comentario;
-        this.transferIsLoading = true;
-        this.notificationService.reasignar(reasignacion, this.plantilla.server).subscribe({
-          next: () => {
-            this.dialogRef.close(this.pedido);
-            this.transferIsLoading = false;
-          },
-          error: () => { this.transferIsLoading = false; }
-        });
-      }
+      });
     }
   }
 
