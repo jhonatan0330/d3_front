@@ -81,6 +81,8 @@ export class UserComponent implements OnInit, OnDestroy {
         this.templateService.clear();
         this.jwtAuth.signout();
         this.notificationService.clear();
+        this._userService.clear();
+        this.user = null;
     }
 
     getFullTemplates() {
@@ -94,6 +96,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
 
     getMenu() {
+        if(!this.user) { return;}
         if (
             !this.templateService.template ||
             this.templateService.template.length === 0

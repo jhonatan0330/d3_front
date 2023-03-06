@@ -66,4 +66,8 @@ export class UserService
             })
         );
     }*/
+
+    clear(){
+        this.user = null;
+    }
 }

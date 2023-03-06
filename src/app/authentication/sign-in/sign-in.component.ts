@@ -102,7 +102,7 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
           this.progressBar.mode = 'determinate';
           this.errorMsg = response;
           if (this.errorMsg.startsWith('Por seguridad')) {
-            this._router.navigateByUrl('recover');
+            this._router.navigateByUrl('sessions/recover');
           }
         }
       );

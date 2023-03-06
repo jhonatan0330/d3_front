@@ -115,10 +115,10 @@
       [style.backgroundColor]="getColor()">
       <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
       <!-- Acciones -->
-      <div *ngIf="!isLoading" class="flex flex-wrap p-1 w-full">
+      <div *ngIf="!isLoading" class="p-1 w-full" fxLayout="row wrap"  fxLayoutAlign="space-around center" >
         <!-- Botones de transiciones -->
         <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" 
-          class="cursor-pointer w-full sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6">
+          class="cursor-pointer">
           <div class="m-1 w-full items-center" [style.color]="getColorFont()">
             <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
             <div class="ml-2 text-sm font-bold" fxFlex>{{ t.nombre }}</div>
@@ -126,7 +126,7 @@
         </a>
         <!-- Botones de reportes -->
         <a *ngFor="let r of reportes" (click)="showReport(r)" 
-          class="cursor-pointer w-full sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6">
+          class="cursor-pointer">
           <div class="m-1 w-full items-center"  [style.color]="getColorFont()">
             <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
               <mat-icon class="icon-size-5 text-white" svgIcon="print">
@@ -136,7 +136,7 @@
           </div>
         </a>
         <!-- Boton de historial -->
-        <button mat-flat-button class="w-full sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6" (click)="showTrace()">
+        <button mat-flat-button (click)="showTrace()">
           <mat-icon>history</mat-icon> Historial
         </button>
       </div>
