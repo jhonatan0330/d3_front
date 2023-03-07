@@ -152,9 +152,15 @@ export class AuthenticationService
         // Set the authenticated flag to true
         this._authenticated = true;
 
-        let imageCoverage ;
+        let imageCoverage;
         if(response && response.organizacion && response.organizacion.propiedades){
-            imageCoverage = PlantillaHelper.buscarValor(response.organizacion.propiedades, PlantillaHelper.COVERAGE_IMAGE);
+            const backImages  = PlantillaHelper.buscarValorMultiple(response.organizacion.propiedades, PlantillaHelper.COVERAGE_IMAGE);
+            if(backImages) {
+                imageCoverage = [];
+                backImages.forEach(element => {
+                    imageCoverage.push(element.valor);
+                });
+            } 
         }
 
         // Store the user on the user service

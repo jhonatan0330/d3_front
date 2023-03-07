@@ -20,7 +20,6 @@ import { cloneDeep } from 'lodash';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
-  public coverageImage = 'assets/images/pages/profile/cover.jpg';
   user: User;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -34,9 +33,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   filters: string[] = ['Procesos', 'Reportes', 'Modulos', 'Todo'];
   selectedFilter: string = 'Procesos';
-  /**
-   * Constructor
-   */
+
+  slides = [
+    {'image': 'assets/images/pages/profile/cover.jpg'}
+  ];
+
   constructor(
     private apiService: ApiService,
     private templateService: TemplateService,
@@ -57,7 +58,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       .subscribe((user: User) => {
         this.user = user;
         if (user && user.companyCoverageImage) {
-          this.coverageImage = user.companyCoverageImage;
+          this.slides = [];
+          user.companyCoverageImage.forEach(element => {
+            this.slides.push({image: element})
+          });
+          
         }
       });
 
