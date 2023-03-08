@@ -4,11 +4,10 @@
     <div class="flex flex-col shadow bg-card">
 
         <!-- Cover image -->
-        <div >
+        <div>
             <mat-carousel timings="250ms ease-in" [autoplay]="true" interval="5000" color="accent" maxWidth="auto"
                 proportion="25" slides="5" [loop]="true" [hideArrows]="false" [hideIndicators]="false"
-                [useKeyboard]="true" [useMouseWheel]="false" orientation="ltr"
-                class="h-40 lg:h-50 object-cover w-full">
+                [useKeyboard]="true" [useMouseWheel]="false" orientation="ltr" class="h-40 lg:h-50 object-cover w-full">
                 <mat-carousel-slide #matCarouselSlide *ngFor="let slide of slides; let i = index" [image]="slide.image"
                     overlayColor="#00000040" [hideOverlay]="true"></mat-carousel-slide>
             </mat-carousel>
@@ -34,62 +33,11 @@
     </div>
 
     <!-- Main -->
-    <div class="flex flex-auto justify-center w-full max-w-5xl mx-auto p-3">
+    <!--div class="flex flex-auto justify-center w-full max-w-5xl mx-auto p-3"-->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 lg:gap-y-0 md:gap-x-6 px-8 py-4">
 
         <!-- Column -->
-        <div class="hidden lg:flex flex-col items-start mr-8">
-
-            <!-- Roles -->
-            <fuse-card class="flex flex-col max-w-80 w-full px-8 pt-3 pb-3">
-                <div class="flex items-center justify-between">
-                    <div class="text-2xl font-semibold leading-tight">Roles</div>
-                </div>
-                <div class="flex flex-col mt-5">
-                    <div class="flex">
-                        <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
-                        <div>Rol 1 </div>
-                    </div>
-                    <div class="flex mt-5">
-                        <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
-                        <div>Rol 2 </div>
-                    </div>
-                    <div class="flex mt-5">
-                        <mat-icon class="icon-size-5 mt-0.5 mr-2" [svgIcon]="'heroicons_solid:bell'"></mat-icon>
-                        <div>Rol 3 </div>
-                    </div>
-                </div>
-            </fuse-card>
-
-
-            <!-- About me -->
-            <fuse-card class="flex flex-col max-w-80 w-full p-3 mt-8">
-                <div class="text-2xl font-semibold leading-tight">About Me</div>
-                <div class="mt-4">
-                    ....
-                </div>
-                <hr class="w-full border-t my-6">
-                <div class="flex flex-col">
-                    <div class="flex items-center">
-                        <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:location-marker'"></mat-icon>
-                        <span class="leading-none">Colombia</span>
-                    </div>
-                    <div class="flex items-center mt-4">
-                        <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:briefcase'"></mat-icon>
-                        <span class="leading-none">ACME Corp. Lead UX Designer</span>
-                    </div>
-                    <div class="flex items-center mt-4">
-                        <mat-icon class="icon-size-5 mr-3" [svgIcon]="'heroicons_solid:cake'"></mat-icon>
-                        <span class="leading-none">April, 24</span>
-                    </div>
-                </div>
-                <a class="px-6 mt-8" mat-flat-button [color]="'primary'" [routerLink]="['./']">
-                    Perfil completo
-                </a>
-            </fuse-card>
-        </div>
-
-        <!-- Column -->
-        <div class="flex flex-col items-start w-full">
+        <div class=" col-span-1 lg:col-span-2 flex flex-col items-start w-full">
 
             <!-- Create Post -->
             <fuse-card class="flex flex-col w-full p-3">
@@ -102,16 +50,6 @@
                         <input #myInput matInput [placeholder]="'Que deseas consultar?'" [formControl]="filterControl"
                             (input)="filterItem()" (keyUp.enter)="selectFirst()" />
                     </mat-form-field>
-                </div>
-                <div>
-                    <mat-button-toggle-group class="flex flex-wrap" [(ngModel)]="selectedFilter"
-                        (change)="filterItem()">
-                        <ng-container *ngFor="let filter of filters">
-                            <mat-button-toggle [value]="filter">
-                                <span class="text-secondary">{{filter | titlecase}}</span>
-                            </mat-button-toggle>
-                        </ng-container>
-                    </mat-button-toggle-group>
                 </div>
             </fuse-card>
             <div class="w-full">
@@ -127,6 +65,24 @@
 
         </div>
 
+        <!-- Roles -->
+        <fuse-card class=" col-span-1 flex flex-col w-full p-3">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-semibold leading-tight">Reportes</div>
+            </div>
+            <div class="w-full  p-1" *ngFor="let template of filteredReports">
+                <app-template class="h-full" [id]="template.llaveTabla" [nombre]="template.nombre"
+                    [imagen]="template.imagen" [process_id]="template.proceso"
+                    [type]="template.estado"></app-template>
+            </div>
+        </fuse-card>
+
     </div>
 
+    <!-- Column -->
+    <div class="lg:flex flex-col items-start">
+
+        
+
+    </div>
 </div>

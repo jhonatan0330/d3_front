@@ -11,7 +11,6 @@ import { FuseCardModule } from '@fuse/components/card';
 import { SharedModule } from 'app/shared/shared.module';
 
 import { FormComponent } from './form/form.component';
-import { MassiveComponent } from './form/massive/massive.component';
 import { ArchivoComponent } from './form/controls/archivo/archivo.component';
 import { DetalleComponent } from './form/controls/detalle/detalle.component';
 import { ProcesoComponent } from './form/controls/proceso/proceso.component';
@@ -53,7 +52,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         ProductoListaComponent,
         SeccionComponent,
         BaseComponent,
-        MassiveComponent,
         ProductComponent,
         CatalogComponent,
         GpsComponent,

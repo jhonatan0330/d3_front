@@ -24,15 +24,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   modules: DocumentoPlantillaDTO[] = [];
+  filteredReports: DocumentoPlantillaDTO[] = [];
   filteredModules: DocumentoPlantillaDTO[] = [];
   filterControl: UntypedFormControl = new UntypedFormControl();
   private templateSub: Subscription;
   isLoading = false;
 
   signinForm: FormGroup;
-
-  filters: string[] = ['Procesos', 'Reportes', 'Modulos', 'Todo'];
-  selectedFilter: string = 'Procesos';
 
   slides = [
     {'image': 'assets/images/pages/profile/cover.jpg'}
@@ -116,13 +114,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   filterItem() {
     let value = this.filterControl.value;
     if (!value) { value = ''; }
-    let filterType = '';
-    if (this.selectedFilter === 'Reportes') { filterType = 'R'; }
-    if (this.selectedFilter === 'Modulos') { filterType = 'P'; }
-    if (this.selectedFilter === 'Procesos') { filterType = 'T'; }
     this.filteredModules = Object.assign([], this.modules).filter(
       (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
-        && (item.estado && item.estado.indexOf(filterType) > -1))
+        && (item.estado && item.estado.indexOf('P') > -1))
+    );
+    this.filteredReports = Object.assign([], this.modules).filter(
+      (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
+        && (item.estado && item.estado.indexOf('R') > -1))
     );
   }
 

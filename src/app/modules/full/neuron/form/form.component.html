@@ -42,7 +42,7 @@
     <!-- Boton Cerrar -->
     <mat-icon class="h-6" (click)="dialogRef.close(false)">exit_to_app</mat-icon>
     <button mat-icon-button class="h-6" tabindex="-1" [matMenuTriggerFor]="formMenuList">
-      <mat-icon class="h-6" >menu</mat-icon>
+      <mat-icon class="h-6">menu</mat-icon>
     </button>
     <mat-menu #formMenuList="matMenu">
       <!-- Boton Cambiar estado -->
@@ -80,81 +80,74 @@
     </mat-menu>
   </div>
 </div>
-<div *ngIf="!visibleMassive">
-  <mat-dialog-content>
-    <!-- Cambiar estado del documento -->
-    <mat-card class="mt-0 mx-0" *ngIf="isChangeState">
-      <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>
-      <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
-        <div>
-          <mat-form-field class="w-full">
-            <input matInput name="estadoFinal" [matAutocomplete]="auto"
-              [formControl]="changeStateForm.controls['estadoFinal']" placeholder="Nuevo estado" required />
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayChangeState">
-              <mat-option *ngFor="let newState of plantilla.estados" [value]="newState">
-                <span>{{ newState.nombre }}</span>
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-        </div>
-
-        <div>
-          <mat-form-field class="w-full">
-            <textarea name="motivo" class="textarea-form" matInput [formControl]="changeStateForm.controls['motivo']"
-              placeholder="Motivo" required></textarea>
-          </mat-form-field>
-        </div>
-        <button mat-raised-button class="mat-primary w-full mb-1" [disabled]="changeStateForm.invalid"
-          *ngIf="!changeStateIsLoading">
-          Cambiar estado
-        </button>
-      </form>
-    </mat-card>
-    <!-- Acciones  -->
-    <div class="p-1 w-full rounded mt-1" *ngIf="pedido && pedido.llaveTabla" 
-      [style.backgroundColor]="getColor()">
-      <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-      <!-- Acciones -->
-      <div *ngIf="!isLoading" class="p-1 w-full" fxLayout="row wrap"  fxLayoutAlign="space-around center" >
-        <!-- Botones de transiciones -->
-        <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" 
-          class="cursor-pointer">
-          <div class="m-1 w-full items-center" [style.color]="getColorFont()">
-            <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
-            <div class="ml-2 text-sm font-bold" fxFlex>{{ t.nombre }}</div>
-          </div>
-        </a>
-        <!-- Botones de reportes -->
-        <a *ngFor="let r of reportes" (click)="showReport(r)" 
-          class="cursor-pointer">
-          <div class="m-1 w-full items-center"  [style.color]="getColorFont()">
-            <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
-              <mat-icon class="icon-size-5 text-white" svgIcon="print">
-              </mat-icon>
-            </div>
-            <div class="ml-2 text-sm font-bold" fxFlex>{{ r.nombre | slice: 0:30 }}</div>
-          </div>
-        </a>
-        <!-- Boton de historial -->
-        <button mat-flat-button (click)="showTrace()">
-          <mat-icon>history</mat-icon> Historial
-        </button>
+<mat-dialog-content>
+  <!-- Cambiar estado del documento -->
+  <mat-card class="mt-0 mx-0" *ngIf="isChangeState">
+    <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>
+    <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
+      <div>
+        <mat-form-field class="w-full">
+          <input matInput name="estadoFinal" [matAutocomplete]="auto"
+            [formControl]="changeStateForm.controls['estadoFinal']" placeholder="Nuevo estado" required />
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayChangeState">
+            <mat-option *ngFor="let newState of plantilla.estados" [value]="newState">
+              <span>{{ newState.nombre }}</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
       </div>
-    </div>
-    <!-- Campos dinamicos -->
-    <div class="mt-1">
-      <ng-template #dynamycFormElement></ng-template>
-    </div>
-  </mat-dialog-content>
-  <mat-dialog-actions *ngIf="modificable" class="pt-0">
-    <!-- Boton de guardar -->
-    <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
-    <div fxFlex *ngIf="!submitted">
-      <button mat-raised-button color="primary" class="w-full" (click)="submit()">
-        <mat-icon>save</mat-icon> Guardar {{ plantilla.nombre | titlecase }}
+
+      <div>
+        <mat-form-field class="w-full">
+          <textarea name="motivo" class="textarea-form" matInput [formControl]="changeStateForm.controls['motivo']"
+            placeholder="Motivo" required></textarea>
+        </mat-form-field>
+      </div>
+      <button mat-raised-button class="mat-primary w-full mb-1" [disabled]="changeStateForm.invalid"
+        *ngIf="!changeStateIsLoading">
+        Cambiar estado
+      </button>
+    </form>
+  </mat-card>
+  <!-- Acciones  -->
+  <div class="p-1 w-full rounded mt-1" *ngIf="pedido && pedido.llaveTabla" [style.backgroundColor]="getColor()">
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+    <!-- Acciones -->
+    <div *ngIf="!isLoading" class="p-1 w-full" fxLayout="row wrap" fxLayoutAlign="space-around center">
+      <!-- Botones de transiciones -->
+      <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer">
+        <div class="m-1 w-full items-center" [style.color]="getColorFont()">
+          <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
+          <div class="ml-2 text-sm font-bold" fxFlex>{{ t.nombre }}</div>
+        </div>
+      </a>
+      <!-- Botones de reportes -->
+      <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer">
+        <div class="m-1 w-full items-center" [style.color]="getColorFont()">
+          <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
+            <mat-icon class="icon-size-5 text-white" svgIcon="print">
+            </mat-icon>
+          </div>
+          <div class="ml-2 text-sm font-bold" fxFlex>{{ r.nombre | slice: 0:30 }}</div>
+        </div>
+      </a>
+      <!-- Boton de historial -->
+      <button mat-flat-button (click)="showTrace()">
+        <mat-icon>history</mat-icon> Historial
       </button>
     </div>
-  </mat-dialog-actions>
-</div>
-<app-massive *ngIf="plantilla && visibleMassive" [plantillaId]="plantilla.llaveTabla" [urlServer]="plantilla.serverUrl"
-  (closeForm)="showMassive()"></app-massive>
+  </div>
+  <!-- Campos dinamicos -->
+  <div class="mt-1">
+    <ng-template #dynamycFormElement></ng-template>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions *ngIf="modificable" class="pt-0">
+  <!-- Boton de guardar -->
+  <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
+  <div fxFlex *ngIf="!submitted">
+    <button mat-raised-button color="primary" class="w-full" (click)="submit()">
+      <mat-icon>save</mat-icon> Guardar {{ plantilla.nombre | titlecase }}
+    </button>
+  </div>
+</mat-dialog-actions>

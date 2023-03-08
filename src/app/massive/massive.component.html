@@ -7,7 +7,7 @@
       [disabled]="isLoading || isProcessing"
       onclick="simpleUploadXML.click();"
     >
-      <mat-icon>cloud_upload</mat-icon> 2. Cargar
+      <mat-icon class="mr-2">cloud_upload</mat-icon> 2. Cargar
       <input
         id="simpleUploadXML"
         style="display: none"
@@ -25,7 +25,7 @@
       [disabled]="isLoading || isProcessing"
       *ngIf="fieldIdInTemplateSecondary && documentosGenerados"
     >
-      <mat-icon>cloud_upload</mat-icon> Cargar Multiple
+      <mat-icon class="mr-2">cloud_upload</mat-icon> Cargar Multiple
       <input
         id="multipleUploadXML"
         style="display: none"
@@ -43,7 +43,7 @@
       [disabled]="isLoading"
       (click)="downloadBase('xml')"
     >
-      <mat-icon>cloud_download</mat-icon> base (xml)
+      <mat-icon class="mr-2">cloud_download</mat-icon> base (xml)
     </button>
     <button
       mat-flat-button
@@ -52,7 +52,7 @@
       [disabled]="isLoading"
       (click)="downloadBase('excel')"
     >
-      <mat-icon>cloud_download</mat-icon> base (csv)
+      <mat-icon class="mr-2">cloud_download</mat-icon> base (csv)
     </button>
   </div>
 
@@ -68,7 +68,7 @@
       [disabled]="isLoading || !isValidate || isProcessing"
       (click)="startLoad()"
     >
-      <mat-icon>fast_forward</mat-icon> 3. Procesar
+      <mat-icon class="mr-2">fast_forward</mat-icon> 3. Procesar
     </button>
     <span fxFlex></span>
     <button
@@ -78,7 +78,7 @@
       [disabled]="isProcessing"
       (click)="newMassiveLoad()"
     >
-      <mat-icon>autorenew</mat-icon> Nueva carga
+      <mat-icon class="mr-2">autorenew</mat-icon> Nueva carga
     </button>
   </div>
   <mat-progress-bar

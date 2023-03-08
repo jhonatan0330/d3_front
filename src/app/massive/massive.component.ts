@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import {
   DocumentoPlantillaCaracteristicaDTO,
   DocumentoPlantillaDTO,
@@ -18,6 +18,8 @@ import {
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { endWith } from 'rxjs';
 
 @Component({
   selector: 'app-massive',
@@ -55,11 +57,17 @@ export class MassiveComponent implements OnInit {
   fieldIdInTemplateSecondary: DocumentoPlantillaCaracteristicaDTO;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<MassiveComponent>,
     private templateService: TemplateService,
     private api: ApiService
   ) { }
 
   ngOnInit(): void {
+    if(this.data){
+      this.plantillaId = this.data.template;
+      this.urlServer = this.data.server;
+    }
     if (this.plantillaId) {
       this.plantilla = this.templateService.getTemplate(
         this.plantillaId,
@@ -458,9 +466,9 @@ export class MassiveComponent implements OnInit {
     if(map.size > 0) {
       let camposSinValidar = '';
       for (let key of map.keys()) {
-        camposSinValidar = key + ", "+ camposSinValidar;
+        if(!key.endsWith("_NUMID")){ camposSinValidar = key + ", "+ camposSinValidar; }
       }
-      Swal.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar , "warning");
+      if(camposSinValidar)Swal.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar , "warning");
     }
     return documentosNewsFromXML;
   }

@@ -80,7 +80,6 @@ export class FormComponent implements OnInit, AfterViewInit {
   // Carga Masiva
   canMassive = false;
   canProduct = false;
-  visibleMassive = false;
 
   // Transferencias
   canTransfer = false;
@@ -811,7 +810,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   showMassive() {
     if (this.canMassive) {
-      this.visibleMassive = !this.visibleMassive;
+      this.utilsService.modalMassive(this.plantilla.llaveTabla, this.plantilla.server);
     }
   }
 
