@@ -6,7 +6,7 @@
         <!-- Cover image -->
         <div>
             <mat-carousel timings="250ms ease-in" [autoplay]="true" interval="5000" color="accent" maxWidth="auto"
-                proportion="25" slides="5" [loop]="true" [hideArrows]="false" [hideIndicators]="false"
+                proportion="25" slides="5" [loop]="true" [hideArrows]="false" [hideIndicators]="true"
                 [useKeyboard]="true" [useMouseWheel]="false" orientation="ltr" class="h-40 lg:h-50 object-cover w-full">
                 <mat-carousel-slide #matCarouselSlide *ngFor="let slide of slides; let i = index" [image]="slide.image"
                     overlayColor="#00000040" [hideOverlay]="true"></mat-carousel-slide>
@@ -47,7 +47,7 @@
                         <img class="w-12 min-w-12 h-12 rounded-full mr-4" src="{{ user?.avatar }}">
                     </div>
                     <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript w-full">
-                        <input #myInput matInput [placeholder]="'Que deseas consultar?'" [formControl]="filterControl"
+                        <input #searchModule matInput [placeholder]="'Que deseas consultar?'" [formControl]="filterControl"
                             (input)="filterItem()" (keyUp.enter)="selectFirst()" />
                     </mat-form-field>
                 </div>
