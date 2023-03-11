@@ -21,9 +21,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { AuthenticationModule } from './authentication/authentication.module';
-import { DocumentTransitionModule } from './document-transition/document-transition.module';
-import { MassiveModule } from './massive/massive.module';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -45,9 +42,6 @@ const routerConfig: ExtraOptions = {
     FuseConfigModule.forRoot(appConfig),
 
     // Core module of your application
-    AuthenticationModule,
-    DocumentTransitionModule,
-    MassiveModule,
     CoreModule,
     FlexLayoutModule,
     // Layout module of your application

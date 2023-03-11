@@ -1,5 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { InventoryService } from 'app/inventory/inventory.service';
 import {
   CategoriaProductoDTO,
   DetallePedidoVentaDTO,
@@ -9,7 +10,6 @@ import {
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
@@ -41,8 +41,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   constructor(
     private templateService: TemplateService,
+    private inventoryService: InventoryService,
     private api: ApiService,
-    private utils: UtilsService,
     private cd:ChangeDetectorRef
   ) {
     super();
@@ -290,7 +290,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     //if (!this.isEnabled) {
     //  return;
     //}
-    this.utils.modalProduct(item, this.isEnabled).subscribe((resp) => {
+    this.inventoryService.modalProduct(item, this.isEnabled).subscribe((resp) => {
       if (!resp) {
         this.data.detalles.splice(1, 1);
       }

@@ -244,6 +244,7 @@ export class DetallePedidoVentaDTO extends BasicParamDTO {
   tarifas: TarifaDTO[];
   transaccionRegistro: string;
   transaccionInactivo: string;
+  campo: string;
 }
 export class CategoriaProductoDTO extends BasicParamDTO {
   nombre: string;

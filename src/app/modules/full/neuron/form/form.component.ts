@@ -37,6 +37,7 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { IDynamicControl } from './controls/base/base.component';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { InventoryService } from 'app/inventory/inventory.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   LocalConstants,
@@ -101,6 +102,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     private ls: LocalStoreService,
     private compiler: ComponentFactoryResolver,
+    private inventoryService: InventoryService,
     private utilsService: UtilsService
   ) { }
 
@@ -816,7 +818,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   showProduct() {
     if (this.canProduct) {
-      this.utilsService.modalCatalog(this.pedido);
+      this.inventoryService.modalCatalog(this.pedido);
     }
   }
 

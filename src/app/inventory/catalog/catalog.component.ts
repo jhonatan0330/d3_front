@@ -7,9 +7,8 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-catalog',
-  templateUrl: './catalog.component.html',
-  styleUrls: ['./catalog.component.scss']
+  selector: 'inventory-catalog',
+  templateUrl: './catalog.component.html'
 })
 export class CatalogComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { DetallePedidoVentaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { ImageFormatPipe } from 'app/shared/pipes/local-image';
@@ -15,6 +15,7 @@ export class Puesto {
   shape: number[][];
   selected = false;
   dto: PedidoVentaDTO;
+  detalle: DetallePedidoVentaDTO;
 
   constructor(
     private ctx: CanvasRenderingContext2D,
@@ -68,8 +69,11 @@ export class Puesto {
     if (this.dto.llaveTabla) {
       this.utils.modalWithParams(this.dto);
     } else{
-      this.selected = !this.selected;
-      this.draw();
+      if(!this.detalle){
+        this.selected = !this.selected;
+        this.draw();
+      }
+      
     }
   }
 }

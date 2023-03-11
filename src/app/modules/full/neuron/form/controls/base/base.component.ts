@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ProductComponent } from 'app/inventory/product/product.component';
 import {
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaCaracteristicaDTO,
@@ -7,7 +8,6 @@ import {
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
-import { ProductComponent } from '../detalle/product/product.component';
 
 export interface IDynamicControl {
   structure: DocumentoPlantillaCaracteristicaDTO;

@@ -13,7 +13,12 @@ import { MassiveComponent } from './massive.component';
         MassiveComponent
     ],
     imports     : [
-        RouterModule,
+        RouterModule.forChild([
+            {
+                path     : '',
+                component: MassiveComponent
+            }
+        ]),
         MatCheckboxModule,
         MatFormFieldModule,
         MatInputModule,

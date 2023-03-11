@@ -2,12 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImageFormatPipe } from './pipes/local-image';
-// SERVICES
-import { ThemeService } from './services/theme.service';
-
 
 import { SharedPipesModule } from './pipes/shared-pipes.module';
 import { SharedDirectivesModule } from './directives/shared-directives.module';
+import { AuthenticationService } from 'app/authentication/authentication.service';
+import { InventoryService } from 'app/inventory/inventory.service';
 
 
 @NgModule({
@@ -20,7 +19,8 @@ import { SharedDirectivesModule } from './directives/shared-directives.module';
   ],
   providers: [
     ImageFormatPipe,
-    ThemeService
+    AuthenticationService,
+    InventoryService
   ],
   exports: [
     CommonModule,

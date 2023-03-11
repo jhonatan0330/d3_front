@@ -19,10 +19,10 @@ import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/mo
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { getComponent } from 'app/shared/helpers/form-helper';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
-import { IDynamicControl } from '../../base/base.component';
+import { IDynamicControl } from '../../modules/full/neuron/form/controls/base/base.component';
 
 @Component({
-  selector: 'app-product',
+  selector: 'inventory-product',
   templateUrl: './product.component.html'
 })
 export class ProductComponent implements OnInit, AfterViewInit {
@@ -364,6 +364,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.dialogRef.close(this.detallePedidoVenta);
   }
 
+  /*
   consultarInventarios() {
     this.isLoading = true;
     this.api.consultarInventario(this.detallePedidoVenta.producto, this.server).subscribe({
@@ -375,7 +376,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
         this.isLoading = false;
       },
     });
-  }
+  }*/
 
   cantidadTarifario(): number {
     let pCantidad: number = this.detallePedidoVenta.cantidad;
@@ -393,18 +394,4 @@ export class ProductComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /*
-			public function get inventarios():ArrayCollection{return new ArrayCollection()};
-			public function set inventarios(value:ArrayCollection):void{
-				if(value==null || value.length==0){
-					this.error('Este producto no maneja inventarios','Inventarios');
-				}else{
-					var vc:MVCPopupListManager = new MVCPopupListManager();
-					vc.itemRenderer = new ClassFactory(ProductoInventarioRender);
-					vc.titleList = 'INVENTARIOS';
-					vc.autoseleccionar = false;
-					vc.dataProvider = value;
-				}
-			}
-      */
 }

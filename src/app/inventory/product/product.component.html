@@ -1,12 +1,6 @@
 <div fxFlex="100" fxLayout="column">
-  <div fxLayout="row wrap" fxLayoutAlign=" center">
+  <div>
     <span fxFlex fxLayoutAlign="center center">{{ detallePedidoVenta.nombre }}</span>
-    <button mat-icon-button color="primary" (click)="consultarInventarios()" tabindex="-1">
-      <mat-icon>find_in_page</mat-icon>
-  </button>
-    <button mat-icon-button color="primary" (click)="dialogRef.close(false)" tabindex="-1">
-        <mat-icon>exit_to_app</mat-icon>
-    </button>
   </div>
   <mat-progress-bar
   *ngIf="isLoading"
@@ -41,6 +35,14 @@
   <!-- Boton de guardar -->
   <div *ngIf="this.allowEdit">
     <div fxFlex class="p-4">
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        (click)="dialogRef.close(false)">
+        <mat-icon>clear</mat-icon> Borrar registro
+      </button>
+      <span fxFlex></span>
       <button
         mat-raised-button
         color="primary"

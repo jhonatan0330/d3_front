@@ -7,7 +7,6 @@ import { environment } from 'environments/environment';
 import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/services/local-store.service';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { AuthenticationUtils } from './authentication.utils';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 

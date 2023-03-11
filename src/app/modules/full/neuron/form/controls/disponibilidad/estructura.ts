@@ -1,4 +1,5 @@
 import {
+  DetallePedidoVentaDTO,
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
@@ -19,9 +20,7 @@ export class Estructura {
   isEnabled = true;
   titulo: string;
 
-  // Observable navItem source
-  private _navItemSource = new BehaviorSubject<number>(0);
-  // Observable navItem stream
+  private _navItemSource = new BehaviorSubject<Puesto>(null);
   navItem$ = this._navItemSource.asObservable();
 
   constructor(
@@ -73,7 +72,7 @@ export class Estructura {
     }
   }
 
-  selectFromText(selectedText) {
+  selectFromText(selectedText, products: DetallePedidoVentaDTO[]) {
     if (selectedText) {
       const puestosData = selectedText.split('-');
       for (let j = 0; j < puestosData.length; j++) {
@@ -86,6 +85,15 @@ export class Estructura {
                 componenteTexto.dto.llaveTabla = null;
               }
               componenteTexto.onClick();
+              if(products){
+                for (let p = 0; p < products.length; p++) {
+                  const iProduct = products[p];
+                  if(iProduct.nombre === componenteTexto.nombre){
+                    componenteTexto.detalle = iProduct;
+                    break;
+                  }
+                }
+              }
               break;
             }
           }
@@ -110,7 +118,7 @@ export class Estructura {
             this.clearUbicaciones();
           }
           element.onClick();
-          this._navItemSource.next(this.cantidad);
+          this._navItemSource.next(element);
           break;
         }
       }
