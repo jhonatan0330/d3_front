@@ -7,8 +7,8 @@
           placeholder="Asignar a" required />
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayTransfer">
           <mat-option *ngFor="let user of users" [value]="user">
-              <img class="icon-size-10 rounded my-1" aria-hidden src="{{ user.imagen | imageFormat }}" />
-              <small fxFlex class="mx-2">{{ user.nombre }}</small>
+            <img class="icon-size-10 rounded my-1" aria-hidden src="{{ user.imagen | imageFormat }}" />
+            <small fxFlex class="mx-2">{{ user.nombre }}</small>
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
@@ -17,12 +17,21 @@
           placeholder="Comentario" required></textarea>
       </mat-form-field>
       <div>
-        <button mat-raised-button class="mat-primary w-full mb-1" [disabled]="transferForm.invalid" *ngIf="!isTransfering">
+
+        <button mat-raised-button color="accent" (click)="dialogRef.close(false)">
+          <mat-icon>exit_to_app</mat-icon> Cerrar
+        </button>
+        <span fxFlex></span>
+        <button mat-raised-button class="mat-primary mb-1" [disabled]="transferForm.invalid" *ngIf="!isTransfering">
           Reasignar
         </button>
         <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="isTransfering"></mat-progress-bar>
       </div>
-    
-  </form>
+
+    </form>
   </mat-card-content>
+  <!-- Boton cerrar -->
+  <div>
+
+  </div>
 </mat-card>

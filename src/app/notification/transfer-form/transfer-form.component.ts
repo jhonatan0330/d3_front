@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { DocumentoPlantillaDTO, UsuarioDTO } from "app/modules/full/neuron/model/sw42.domain";
+import { DocumentoPlantillaDTO, PropiedadDTO, UsuarioDTO } from "app/modules/full/neuron/model/sw42.domain";
 import { TemplateService } from "app/modules/full/neuron/service/template.service";
 import { NotificationsService } from 'app/notification/notification.service';
 import { PlantillaHelper } from "app/shared/helpers/plantilla-helper";
@@ -43,10 +43,11 @@ export class TransferFormComponent implements OnInit {
       return;
     }
 
+    let rolPropiedad: PropiedadDTO;
     for (let i = 0; i < this.plantilla.estados.length; i++) {
       const estadoModificable = this.plantilla.estados[i];
       if (estadoModificable.llaveTabla === this.data.state) {
-        const rolPropiedad = PlantillaHelper.buscarValor(
+        rolPropiedad = PlantillaHelper.buscarPropiedad(
           estadoModificable.propiedades,
           PlantillaHelper.ROL
         );
@@ -55,6 +56,7 @@ export class TransferFormComponent implements OnInit {
           this.dialogRef.close(false);
           return;
         }
+        break;
       }
     }
 
@@ -63,8 +65,13 @@ export class TransferFormComponent implements OnInit {
     this.isTransfering = true;
     this.notificationService.usersToTransfer(filter, this.plantilla.server).subscribe({
       next: (value) => {
-        this.users = value;
         this.isTransfering = false;
+        this.users = value;
+        if (!value || value.length ===0) {
+          Swal.fire('No users', 'No tenemos usuarios en el rol ' + rolPropiedad.texto + ' al cual puedas realizar la transferencia del documento', 'warning');
+          this.dialogRef.close(false);
+          return;
+        }       
       },
       error: () => {
         this.isTransfering = false;
