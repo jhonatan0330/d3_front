@@ -153,11 +153,17 @@
         </li>
       </ng-container>
     </ol>
-  </div>
-  <!-- Boton cerrar -->
-  <div class="mb-4 mx-8">
-    <button mat-flat-button (click)="listar(pagina)" *ngIf="!isEnd">
-      <mat-icon>history</mat-icon> Seguir consultando
-    </button>
-  </div>
+  </div>  
+</div>
+
+<!-- Boton cerrar -->
+<div >
+  <button mat-flat-button (click)="listar(pagina)" *ngIf="!isEnd">
+    <mat-icon>history</mat-icon> Seguir consultando
+  </button>
+  <span fxFlex></span>
+  <button mat-raised-button color="accent" class="full-width" (click)="dialogRef.close(false)">
+    <mat-icon>exit_to_app</mat-icon> Cerrar historico
+  </button>
+  
 </div>
