@@ -1,13 +1,14 @@
 <div [style.display]="isInvisible ? 'none' : 'block'" class="mx-0">
   <div class="py-1">
     <input [id]="structure.llaveTabla" *ngIf="isLoadingUrl && allowUrlTextFromUser" [(ngModel)]="urlText" fxFlex />
-    <button mat-flat-button color="accent" [disabled]="isLoading" *ngIf="isEnabled && !isEnd && !isLoading" fxFlex="100"
-      (click)=" onClickExternal()">
+    <button mat-flat-button color="accent" [disabled]="isLoading" *ngIf="isEnabled && !isEnd && !isLoading"
+    class="w-full"
+      (click)="onClickExternal()">
       <mat-icon svgIcon="attach_file"></mat-icon>
       {{ structure.nombre | titlecase }}
       <small *ngIf="required"> *</small>
       <!--style="display: none"-->
-      <input [id]="structure.llaveTabla + '_file'" type="file" style="display: none" [multiple]="multipleFiles"
+      <input [id]="structure.llaveTabla + '_file'" type="file" style="opacity : 0; position : absolute; z-index: 2; width: 100%; height: 100%; top: 0;left: 0;" [multiple]="multipleFiles"
         [accept]="filtroExtension" (click)="$event.target.value = '';$event.stopPropagation();"
         (change)="handleFileInput($event.target.files)" capture="camera" />
     </button>
