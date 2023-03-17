@@ -6,7 +6,6 @@ import { Subject, takeUntil } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
 import { NotificationsService } from 'app/notification/notification.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import Swal from 'sweetalert2';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
@@ -233,16 +232,6 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     showMessage() {
         if (this.notifications && this.notifications.length !== 0) {
             const sinleer = this.notifications.filter(x => !x.fechaLeido);
-            let aviso = 'Tienes (' + this.notifications.length.toString() + ') mensajes\n';
-            if (sinleer && sinleer.length !== 0) { aviso = aviso + ' (' + sinleer.length.toString() + ') mensajes sin leer'; }
-            Swal.fire({
-                position: 'top-end',
-                title: aviso,
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-                backdrop: false
-            });
             if (sinleer && sinleer.length !== 0) {
                 if (PlantillaHelper.buscarPropiedad(this._jwtAuth.company.propiedades, PlantillaHelper.FORCE_NOTIFICATION)) {
                     this.readActivity(sinleer[0]);

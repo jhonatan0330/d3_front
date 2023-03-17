@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Component, ElementRef, OnDestroy, OnInit, AfterViewInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
@@ -7,7 +7,7 @@ import { DocumentoPlantillaDTO, OrganizacionDTO, PedidoVentaDTO, PropiedadDTO, U
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { Subject, takeUntil, Subscription } from 'rxjs';
+import { Subject, takeUntil, Subscription, filter } from 'rxjs';
 import { FormControl, FormGroup, Validators, UntypedFormControl } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import Swal from 'sweetalert2';
@@ -18,7 +18,9 @@ import { cloneDeep } from 'lodash';
   templateUrl: './profile.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('searchModule') private _searchText: ElementRef;
 
   user: User;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -72,6 +74,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
       password: new FormControl('', Validators.required),
     });
 
+    // Listen for NavigationEnd event to focus on the title field
+    this.router.events
+    .pipe(
+        takeUntil(this._unsubscribeAll),
+        filter(event => event instanceof NavigationEnd)
+    )
+    .subscribe(() => {
+        // Focus on the title field
+        this._searchText.nativeElement.focus();
+    });
+
   }
   /**
    * On destroy
@@ -86,7 +99,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  
+  ngAfterViewInit(): void {
+    this._searchText.nativeElement.focus();
+  }
 
   loadMenu(templates: DocumentoPlantillaDTO[]) {
     this.modules = [];
