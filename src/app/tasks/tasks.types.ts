@@ -3,7 +3,7 @@ export interface Task
     llaveTabla: string;
     title: string;
     notes: string;
-    completed: boolean;
+    completed: Date;
     dueDate: Date;
     priority: 0 | 1 | 2;
     order: number;

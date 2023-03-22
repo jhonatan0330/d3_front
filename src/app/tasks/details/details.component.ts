@@ -52,7 +52,6 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             llaveTabla: [''],
             title: [''],
             notes: [''],
-            completed: [false],
             dueDate: [null],
             priority: [0],
             order: [0]
@@ -146,11 +145,15 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
      * Toggle the completed status
      */
     toggleCompleted(): void {
-        // Get the form control for 'completed'
-        const completedFormControl = this.taskForm.get('completed');
-
-        // Toggle the completed status
-        completedFormControl.setValue(!completedFormControl.value);
+         // Toggle the completed status
+         if (this.task.completed) { this.task.completed = null }
+         else { this.task.completed = new Date() }
+ 
+         // Update the task on the server
+         this._tasksService.updateTask(this.task).subscribe();
+ 
+         // Mark for check
+         this._changeDetectorRef.markForCheck();
     }
 
     /**

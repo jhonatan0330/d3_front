@@ -171,17 +171,18 @@ export class TasksListComponent implements OnInit, OnDestroy {
      * of the given task
      *
      * @param task
-     */
+    
     toggleCompleted(task: Task): void {
         // Toggle the completed status
-        task.completed = !task.completed;
+        if (task.completed) { task.completed = null }
+        else { task.completed = new Date() }
 
         // Update the task on the server
         this._tasksService.updateTask(task).subscribe();
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
-    }
+    } */
 
     /**
      * Task dropped
@@ -209,7 +210,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
         return item.id || index;
     }
 
-    selectTask(_task:Task) {
+    selectTask(_task: Task) {
         this._tasksService.selectTask(_task);
         this._router.navigate(['./' + _task.llaveTabla], { relativeTo: this._activatedRoute });
     }

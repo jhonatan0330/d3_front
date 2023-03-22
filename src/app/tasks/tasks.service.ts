@@ -90,7 +90,7 @@ export class TasksService {
             title: title,
             llaveTabla: null,
             notes: null,
-            completed: false,
+            completed: null,
             dueDate: null,
             priority: 1,
             order: 0

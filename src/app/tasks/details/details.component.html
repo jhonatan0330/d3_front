@@ -14,20 +14,20 @@
                 (click)="toggleCompleted()">
 
                 <!-- Mark as complete -->
-                <ng-container *ngIf="!taskForm.get('completed').value">
+                <ng-container *ngIf=" task && !task.completed">
                     <div class="flex items-center justify-center">
                         <mat-icon [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
-                        <span class="ml-2 font-semibold">MARK AS COMPLETE</span>
+                        <span class="ml-2 font-semibold">MARCAR COMO COMPLETO</span>
                     </div>
                 </ng-container>
 
                 <!-- Mark as incomplete -->
-                <ng-container *ngIf="taskForm.get('completed').value">
+                <ng-container *ngIf="task && task.completed">
                     <div class="flex items-center justify-center">
                         <mat-icon
                             class="text-primary"
                             [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
-                        <span class="ml-2 font-semibold">MARK AS INCOMPLETE</span>
+                        <span class="ml-2 font-semibold">MARCAR COMO INCOMPLETO</span>
                     </div>
                 </ng-container>
             </button>
