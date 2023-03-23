@@ -88,7 +88,7 @@ export class TasksService {
     createTask(title: string, _server: string = null): Observable<string> {
         const task: Task = {
             title: title,
-            llaveTabla: null,
+            id: null,
             notes: null,
             completed: null,
             dueDate: null,
@@ -102,7 +102,7 @@ export class TasksService {
                     this.ls.getUrlAccess('/task/create', _server), task
                 ).pipe(
                     map((idTask) => {
-                        task.llaveTabla = idTask.id;
+                        task.id = idTask.id;
                         this._tasks.next([task, ...tasks]);
                         return idTask.id;
                     })

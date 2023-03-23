@@ -200,9 +200,12 @@
                 <mat-label>Notes</mat-label>
                 <textarea
                     matInput
+                    oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
+                    onclick='this.style.height = "";this.style.height = this.scrollHeight + "px"'
                     [formControlName]="'notes'"
                     [spellcheck]="false"
                     matTextareaAutosize></textarea>
+                <mat-error *ngIf="taskForm.invalid">Solo puedes colocar 4000 caracteres</mat-error>
             </mat-form-field>
         </div>
 

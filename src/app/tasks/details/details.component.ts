@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { debounceTime, filter, Subject, takeUntil, tap } from 'rxjs';
@@ -49,9 +49,9 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Create the task form
         this.taskForm = this._formBuilder.group({
-            llaveTabla: [''],
+            id: [''],
             title: [''],
-            notes: [''],
+            notes: ['', Validators.maxLength(4000)],
             dueDate: [null],
             priority: [0],
             order: [0]
@@ -71,7 +71,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
                 // Patch values to the form from the task
                 this.taskForm.patchValue(task, { emitEvent: false });
 
-                if(!task) this.closeDrawer();
+                if (!task) this.closeDrawer();
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -87,6 +87,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
                 takeUntil(this._unsubscribeAll)
             )
             .subscribe((value) => {
+                if (this.taskForm.invalid) { return; }
                 // Update the task on the server
                 this._tasksService.updateTask(value).subscribe();
                 // Mark for check
@@ -145,15 +146,15 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
      * Toggle the completed status
      */
     toggleCompleted(): void {
-         // Toggle the completed status
-         if (this.task.completed) { this.task.completed = null }
-         else { this.task.completed = new Date() }
- 
-         // Update the task on the server
-         this._tasksService.updateTask(this.task).subscribe();
- 
-         // Mark for check
-         this._changeDetectorRef.markForCheck();
+        // Toggle the completed status
+        if (this.task.completed) { this.task.completed = null }
+        else { this.task.completed = new Date() }
+
+        // Update the task on the server
+        this._tasksService.updateTask(this.task).subscribe();
+
+        // Mark for check
+        this._changeDetectorRef.markForCheck();
     }
 
     /**
@@ -170,8 +171,8 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
      * Check if the task is overdue or not
      */
     isOverdue(): boolean {
-        if(!this.task.dueDate) return false;
-        return  new Date(this.task.dueDate).getTime()> new Date().getTime();
+        if (!this.task.dueDate) return false;
+        return new Date(this.task.dueDate).getTime() > new Date().getTime();
     }
 
     /**
@@ -195,7 +196,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             // If the confirm button pressed...
             if (result === 'confirmed') {
                 // Get the current task's id
-                const id = this.task.llaveTabla;
+                const id = this.task.id;
                 // Delete the task
                 this._tasksService.deleteTask(id)
                     .subscribe(() => {

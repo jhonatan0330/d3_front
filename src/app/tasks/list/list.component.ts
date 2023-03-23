@@ -212,6 +212,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
     selectTask(_task: Task) {
         this._tasksService.selectTask(_task);
-        this._router.navigate(['./' + _task.llaveTabla], { relativeTo: this._activatedRoute });
+        this._router.navigate(['./' + _task.id], { relativeTo: this._activatedRoute });
     }
 }

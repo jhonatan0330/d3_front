@@ -1,6 +1,6 @@
 export interface Task
 {
-    llaveTabla: string;
+    id: string;
     title: string;
     notes: string;
     completed: Date;
