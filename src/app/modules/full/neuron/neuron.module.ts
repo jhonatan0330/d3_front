@@ -30,7 +30,7 @@ import { SharedMaterialModule } from 'app/shared/shared-material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { NgxCurrencyModule } from 'ngx-currency';
-import { SignaturePadModule } from 'angular2-signaturepad';
+import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -70,7 +70,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         NgxMatTimepickerModule,
         NgxMatDatetimePickerModule,
         NgxCurrencyModule,
-        SignaturePadModule,
+        AngularSignaturePadModule ,
         ZXingScannerModule,
 
     ]
