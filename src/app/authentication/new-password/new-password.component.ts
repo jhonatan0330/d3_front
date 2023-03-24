@@ -49,11 +49,18 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   }
 
   signin() {
+    if(this.recoverForm.invalid) {return;}
+
     this.route.params.subscribe((params: Params) => {
       this.autorizationId = params.id;
     });
+
     const signinData = this.recoverForm.value;
 
+    if(signinData.first !== signinData.second){
+      Swal.fire('Confirma el password', 'Tu nueva clave no concuerda con la segunda clave.','error');
+      return;
+    }
     this.submitButton.disabled = true;
     this.progressBar.mode = 'indeterminate';
 

@@ -35,6 +35,12 @@
                                 "glob": "_redirects",
                                 "input": "src",
                                 "output": "/"
+                            },
+                            "src/assets",
+                            {
+                                "glob": "**/*",
+                                "input": "./node_modules/mxgraph/javascript/src",
+                                "output": "./assets/mxgraph"
                             }
                         ],
                         "stylePreprocessorOptions": {
@@ -51,7 +57,9 @@
                             "src/styles/tailwind.scss",
                             "node_modules/ol/ol.css"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "node_modules/mxgraph/javascript/mxClient.js"
+                        ]
                     },
                     "configurations": {
                         "production": {
