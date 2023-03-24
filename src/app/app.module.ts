@@ -71,7 +71,7 @@ const routerConfig: ExtraOptions = {
       useClass: HttpErrorInterceptor,
       multi: true,
     },
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },
     {
 
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,

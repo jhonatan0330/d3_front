@@ -10,13 +10,15 @@
       *ngIf="!textoLargo"
     />
     <textarea
+      *ngIf="textoLargo"
       matInput
       class="textarea-form"
       [formControl]="fControl"
       [name]="structure.llaveTabla"
       [required]="required"
       [readonly]="!isEnabled"
-      *ngIf="textoLargo"
+      oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
+      onclick='this.style.height = "";this.style.height = this.scrollHeight + "px"'
     ></textarea>
     <!-- <button mat-button *ngIf="help" matSuffix mat-icon-button aria-label="help" (click)="help=''">
       <mat-icon>help</mat-icon>
