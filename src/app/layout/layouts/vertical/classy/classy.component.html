@@ -6,7 +6,7 @@
         <!-- App Logo -->
         <div class="flex flex-col w-full items-center h-16 p-1">
             <img *ngIf="user.company" src="{{ user.company | imageFormat }}" class="h-full" />
-        </div>
+            </div>
         <div class="flex flex-col items-center w-full p-1 ">
             <h2 class="text-center">{{ user.companyName }}</h2>
             <span>{{ user.companySlogan }}</span>
@@ -14,12 +14,12 @@
                 <div
                     class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium">
                     {{user.name}}
-                </div>
-                <div class="relative w-24 h-24">
+            </div>
+            <div class="relative w-24 h-24">
                     <img class="w-full h-full rounded-full" *ngIf="user.avatar" [src]="user.avatar" alt="User avatar">
                     <mat-icon class="icon-size-24" *ngIf="!user.avatar" [svgIcon]="'heroicons_solid:user-circle'">
                     </mat-icon>
-                </div>
+            </div>
                 <div
                     class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-secondary">
                     <mat-icon svgIcon="heroicons_outline:identification" class="icon-size-4"></mat-icon>
@@ -76,9 +76,12 @@
         <router-outlet *ngIf="true"></router-outlet>
     </div>
 
-    <!-- Footer 
-    <div class="relative flex flex-0 items-center justify-start w-full h-14 px-4 md:px-6 z-49 border-t bg-card dark:bg-transparent print:hidden">
-        <footer></footer>
+    <!-- Footer -->
+    <!--<div class="relative flex flex-0 items-center justify-start w-full h-14 px-4 md:px-6 z-49 border-t bg-card dark:bg-transparent print:hidden">
+        <span class="font-medium text-secondary">Fuse &copy; {{currentYear}}</span>
     </div>-->
 
 </div>
+
+<!-- Quick chat 
+<quick-chat #quickChat="quickChat"></quick-chat>-->

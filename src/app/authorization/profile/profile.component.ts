@@ -82,7 +82,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     )
     .subscribe(() => {
         // Focus on the title field
-        this._searchText.nativeElement.focus();
+        //this._searchText.nativeElement.focus();
     });
 
   }
@@ -100,7 +100,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this._searchText.nativeElement.focus();
+    //this._searchText.nativeElement.focus();
   }
 
   loadMenu(templates: DocumentoPlantillaDTO[]) {

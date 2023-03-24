@@ -1,8 +1,8 @@
 <div [style.display]="isInvisible ? 'none' : 'block'" class="mx-0">
-  <div class="py-1">
+  <div class="py-1 flex" >
     <input [id]="structure.llaveTabla" *ngIf="isLoadingUrl && allowUrlTextFromUser" [(ngModel)]="urlText" fxFlex />
     <button mat-flat-button color="accent" [disabled]="isLoading" *ngIf="isEnabled && !isEnd && !isLoading"
-    class="w-full"
+     [fxFlex]="100"
       (click)="onClickExternal()">
       <mat-icon svgIcon="attach_file"></mat-icon>
       {{ structure.nombre | titlecase }}
@@ -13,10 +13,10 @@
         (change)="handleFileInput($event.target.files)" capture="camera" />
     </button>
     <button mat-flat-button color="accent" class="ml-1" *ngIf="isEnabled && !isEnd && allowUrlTextFromUser"
-      (click)="onClickLoadUrl()">
-      <mat-icon *ngIf="!isLoadingUrl">keyboard</mat-icon>
-      <mat-icon *ngIf="isLoadingUrl">check</mat-icon>
-    </button>
+    (click)="onClickLoadUrl()">
+    <mat-icon *ngIf="!isLoadingUrl">keyboard</mat-icon>
+    <mat-icon *ngIf="isLoadingUrl">check</mat-icon>
+  </button>
   </div>
   <mat-progress-bar *ngIf="isLoading" color="primary" class="full-width" mode="indeterminate"></mat-progress-bar>
   <!-- Firma -->

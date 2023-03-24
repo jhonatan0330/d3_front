@@ -87,19 +87,38 @@ body.fuse-splash-screen-hidden fuse-splash-screen {
     opacity: 0;
 }
 
-.mat-form-field {
+.mat-mdc-form-field{
     width: 100%;
 }
 
-.mat-form-field-wrapper {
+.mat-mdc-text-field-wrapper {
     padding-bottom: 0.25em !important;
 }
 
-.mat-form-field-appearance-outline .mat-form-field-infix {
+.mat-form-field-appearance-outline .mat-mdc-form-field-infix {
     padding: 0.75em 0 0.5em 0 !important;
 }
 
-span.mat-button-wrapper {
+span.mdc-button__label {
     width: 100% !important;
     background-color: transparent;
+}
+
+.mat-mdc-form-field-infix {
+    min-height: 24px !important;
+}
+
+
+.mdc-dialog .mdc-dialog__content {
+    padding: 0px 24px !important;
+    margin: 0px -24px !important;
+}
+
+.mat-mdc-dialog-surface{
+    padding: 16px;
+    overflow: hidden;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+    height: 6px;
 }

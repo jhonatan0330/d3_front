@@ -27,12 +27,26 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
      * Constructor
      */
     constructor(
+        private _activatedRoute: ActivatedRoute,
+        private _router: Router,
         private _navigationService: NavigationService,
         private _userService: UserService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fuseNavigationService: FuseNavigationService
     )
     {
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // @ Accessors
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Getter for current year
+     */
+    get currentYear(): number
+    {
+        return new Date().getFullYear();
     }
 
     // -----------------------------------------------------------------------------------------------------
