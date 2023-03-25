@@ -36,20 +36,23 @@
               </mat-menu>
             </div>
           </div>
-          <button class="w-full" *ngIf="hasCreatePermission" mat-flat-button [color]="'primary'"
+          <div class="pl-4">
+            <button class="w-full ml-2" *ngIf="hasCreatePermission" mat-flat-button [color]="'primary'"
             (click)="openDialogFromTemplateModule()">
             <mat-icon>add</mat-icon>
-            <span class="ml-2">Nuevo</span>
+            <span >Nuevo</span>
           </button>
           <div *ngIf="templatesFromProcess">
             <button *ngFor="let templateToCreate of templatesFromProcess" class="w-full my-1" mat-flat-button
               [color]="'primary'" (click)="openDialog(templateToCreate.llaveTabla, templateToCreate.server)">
               <mat-icon>add</mat-icon>
-              <span class="ml-2">{{templateToCreate.nombre}}</span>
+              <span >{{templateToCreate.nombre}}</span>
             </button>
           </div>
+          </div>
+          
           <!-- Buscador de texto -->
-          <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar</div>
+          <div class="text-primary text-xs uppercase font-bold py-2">Filtrar</div>
           <div class="pl-4">
             <mat-form-field>
               <input matInput type="text" placeholder="Coloca un texto y presiona enter" [formControl]="fControlSearch"
