@@ -23,7 +23,7 @@
     </button>
   </mat-menu>
   <!-- Buscar -->
-  <button mat-icon-button matSuffix *ngIf="tipoTexto && isEnabled && !proceso" (click)="gestionarKeyUpTexto()"
+  <button mat-icon-button matSuffix *ngIf="isEnabled && !proceso" (click)="gestionarKeyUpTexto()"
     tabindex="-1">
     <mat-icon>search</mat-icon>
   </button>
