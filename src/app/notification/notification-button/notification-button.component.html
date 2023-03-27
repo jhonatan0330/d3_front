@@ -43,7 +43,7 @@
                     <div class="flex rounded"
                         [style.backgroundColor]="getColor(notification.documentoDTO.estadoExpediente)"
                         [style.color]="getColorFont(notification.documentoDTO.estadoExpediente)">
-                        <a class="w-full cursor-pointer" (click)="openDocument(notification)">
+                        <a class="w-full cursor-pointer" (click)="readActivity(notification)">
                             <div class="flex">
                                 <div class="pt-2 pl-2">
                                     <img [src]="notification.documentoDTO.imagen" class="w-10 h-10 max-w-none" />

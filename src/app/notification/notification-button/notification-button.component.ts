@@ -68,7 +68,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         this.templateService.templates$
             .pipe((takeUntil(this._unsubscribeAll)))
             .subscribe((templates) => {
-                if (templates && templates.length !==0) { this.refresh(); }
+                if (templates && templates.length !== 0) { this.refresh(); }
             });
     }
 
@@ -218,11 +218,16 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     }
 
     readActivity(actividad: ActividadDTO) {
-        this._notificationsService.readActivity(actividad).subscribe({
-            next: () => {
-                this.openDocument(actividad);
-            }
-        });
+        if (!actividad.fechaLeido) {
+            this._notificationsService.readActivity(actividad).subscribe({
+                next: () => {
+                    this.openDocument(actividad);
+                }
+            });
+        } else {
+            this.openDocument(actividad);
+        }
+
     }
 
     refresh() {
@@ -233,7 +238,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         if (this.notifications && this.notifications.length !== 0) {
             const sinleer = this.notifications.filter(x => !x.fechaLeido);
             if (sinleer && sinleer.length !== 0) {
-                if (PlantillaHelper.buscarPropiedad(this._jwtAuth.company.propiedades, PlantillaHelper.FORCE_NOTIFICATION)) {
+                if (!PlantillaHelper.buscarPropiedad(this._jwtAuth.company.propiedades, PlantillaHelper.FORCE_NOTIFICATION)) {
                     this.readActivity(sinleer[0]);
                 }
             }
