@@ -118,10 +118,9 @@
                 <b *ngIf="g.total">{{ g.total | currency }}</b>
               </div>
               <!-- Sexta linea Adjuntos -->
-              <div *ngIf="g.adjunto" class="line-clamp-1">
-                <div *ngFor="let iUrl of g.adjunto.split(';;')" class="line-clamp-1" fxFlex>
-                  <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-xs">
-                    {{iUrl}}</a>
+              <div *ngIf="g.adjunto">
+                <div *ngFor="let iUrl of g.adjunto.split(';;'); let i = index">
+                  <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1 }}</a>
                 </div>
               </div>
               <!-- Septima linea Campos nuevos -->
