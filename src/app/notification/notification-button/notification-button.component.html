@@ -48,10 +48,10 @@
                                 <div class="pt-2 pl-2">
                                     <img [src]="notification.documentoDTO.imagen" class="w-10 h-10 max-w-none" />
                                 </div>
-                                <div class="w-full px-2">
+                                <div class="w-full pl-2">
                                     <div class="flex font-semibold">
-                                        <span class="w-full">{{ notification.documentoDTO.nombre }}</span>
-                                        <span>{{ notification.documentoDTO.estadoNombre }}</span>
+                                        <div class="whitespace-nowrap">{{ notification.documentoDTO.nombre }}</div>
+                                        <div class="w-full text-right truncate text-md" >{{ notification.documentoDTO.estadoNombre }}</div>
                                     </div>
                                     <div *ngIf="notification.fechaRegistro" class="flex w-full px-1 text-xs">
                                         <mat-icon class="icon-size-3" svgIcon="mat_solid:check"></mat-icon>

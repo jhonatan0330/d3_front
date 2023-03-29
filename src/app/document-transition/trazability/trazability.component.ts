@@ -32,6 +32,10 @@ export class TrazabilityComponent implements OnInit {
   fCheckReportes: FormControl = new FormControl(false);
 
   plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
+
+  isFilterVisible = false;
+  documentName;
+  documentState;
   
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -47,6 +51,8 @@ export class TrazabilityComponent implements OnInit {
     this.plantilla = this.templateService.getTemplate(
       this.data.template, this.data.server
     );
+    this.documentName = this.data.documentName;
+    this.documentState = this.data.documentState;
     if (
       !this.plantilla ||
       !this.data.document
@@ -151,6 +157,10 @@ export class TrazabilityComponent implements OnInit {
     _doc.llaveTabla = _id;
     _doc.serverUrl = this.plantilla.server;
     this.utilsService.modalWithParams(_doc);
+  }
+
+  changeVisibilityOfFilters(){
+    this.isFilterVisible = ! this.isFilterVisible;
   }
 
 }

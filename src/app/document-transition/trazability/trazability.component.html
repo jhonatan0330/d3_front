@@ -1,115 +1,138 @@
-<!-- trazabiidad -->
-<div class="p-2 rounded mb-0">
-  <!-- Filtros de la trazabilidad -->
-  <div fxLayout="row wrap">
-    <mat-checkbox class="mr-8" [formControl]="fCheckDocuments">
-      <span class="text-small">Documentos</span>
-    </mat-checkbox>
-    <mat-checkbox class="mr-8" [formControl]="fCheckAssignations">
-      <span class="text-small">Asignaciones</span>
-    </mat-checkbox>
-    <mat-checkbox class="mr-8" [formControl]="fCheckMessage">
-      <span class="text-small">Mensajes</span>
-    </mat-checkbox>
-    <mat-checkbox class="mr-8" [formControl]="fCheckInventary">
-      <span class="text-small">Inventario</span>
-    </mat-checkbox>
-    <mat-checkbox class="mr-8" [formControl]="fCheckAutomaticas">
-      <span class="text-small">Automaticas</span>
-    </mat-checkbox>
-    <mat-checkbox class="mr-8" [formControl]="fCheckReportes">
-      <span class="text-small">Reportes</span>
-    </mat-checkbox>
-    <mat-checkbox class="mr-8" [formControl]="fCheckApi">
-      <span class="text-small">API</span>
-    </mat-checkbox>
-    <span fxFlex></span>
-    <mat-icon (click)="listar(1)" class="cursor-pointer">refresh</mat-icon>
-    <mat-icon class="ml-3" (click)="dialogRef.close(false)">exit_to_app</mat-icon>
+<!-- Titulo -->
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle fxLayout="row wrap" *ngIf="plantilla"
+  fxLayoutAlign="center" class="p-4 md:p-6 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent ">
+  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1" />
+  <!-- Texto del titulo -->
+  <div fxFlex>
+    <small class="w-full font-semibold">{{documentState}}</small>
+    <div class="w-full">
+      <span fxFlex class="font-semibold">
+        <span>{{ plantilla.nombre }}</span>
+        <span > - {{ documentName }}</span>
+      </span>
+    </div>
   </div>
-  <!-- Lista de la trazabilidad -->
-  <div>
-    <ol>
-      <!-- Activities -->
-      <ng-container *ngFor="let g of dataProvider">
-        <!-- Activity -->
-        <li class="relative flex py-1">
-          <div class="absolute top-7 left-5 w-0.5 h-full -ml-px bg-gray-300 dark:bg-gray-600"></div>
+  <!-- Botones de accion -->
+  <div fxLayout="row" class="items-center">
 
-          <div class="relative flex flex-auto">
-            <!-- Image -->
+    <a class="cursor-pointer" (click)="listar(1)">
+      <mat-icon class="ml-3 h-6">refresh</mat-icon>
+    </a>
+    <a class="cursor-pointer" (click)="changeVisibilityOfFilters()">
+      <mat-icon class="ml-3 h-6">checklist</mat-icon>
+    </a>
+    <!-- Boton Cerrar -->
+    <a class="cursor-pointer" (click)="dialogRef.close(false)">
+      <mat-icon class="ml-3 h-6">exit_to_app</mat-icon>
+    </a>
+  </div>
+</div>
+<!-- Filtros de la trazabilidad -->
+<div *ngIf="isFilterVisible" fxLayout="row wrap" class="px-4 md:px-6">
+  <mat-checkbox class="mr-8" [formControl]="fCheckDocuments">
+    <span class="text-small">Documentos</span>
+  </mat-checkbox>
+  <mat-checkbox class="mr-8" [formControl]="fCheckAssignations">
+    <span class="text-small">Asignaciones</span>
+  </mat-checkbox>
+  <mat-checkbox class="mr-8" [formControl]="fCheckMessage">
+    <span class="text-small">Mensajes</span>
+  </mat-checkbox>
+  <mat-checkbox class="mr-8" [formControl]="fCheckInventary">
+    <span class="text-small">Inventario</span>
+  </mat-checkbox>
+  <mat-checkbox class="mr-8" [formControl]="fCheckAutomaticas">
+    <span class="text-small">Automaticas</span>
+  </mat-checkbox>
+  <mat-checkbox class="mr-8" [formControl]="fCheckReportes">
+    <span class="text-small">Reportes</span>
+  </mat-checkbox>
+  <mat-checkbox class="mr-8" [formControl]="fCheckApi">
+    <span class="text-small">API</span>
+  </mat-checkbox>
+</div>
+
+<!-- Lista de la trazabilidad -->
+<div class="p-4 md:p-6">
+  <ol>
+    <!-- Activities -->
+    <ng-container *ngFor="let g of dataProvider">
+      <!-- Activity -->
+      <li class="relative flex py-1">
+        <div class="absolute left-5 w-0.5 h-full -ml-px bg-gray-300 dark:bg-gray-600"></div>
+
+        <div class="relative flex flex-auto">
+          <!-- Image -->
+          <ng-container>
+
+            <div class="flex shrink-0 items-center justify-center w-10 h-10 mr-4 rounded-full bg-gray-400"
+              *ngIf="!g.responsableImagen">
+              <mat-icon class="icon-size-5 text-white" svgIcon="mat_outline:person_pin">
+              </mat-icon>
+            </div>
+            <img class="shrink-0 w-10 h-10 mr-4 rounded-full overflow-hidden object-cover object-center"
+              [src]="g.responsableImagen" [alt]="'Activity image'" *ngIf="g.responsableImagen">
+
+
+          </ng-container>
+
+          <!-- Content -->
+          <div class="flex flex-col flex-auto items-start">
+
+            <!-- Description -->
             <ng-container>
-
-              <div class="flex shrink-0 items-center justify-center w-10 h-10 mr-4 rounded-full bg-gray-400"
-                *ngIf="!g.responsableImagen">
-                <mat-icon class="icon-size-5 text-white" svgIcon="mat_outline:person_pin">
-                </mat-icon>
+              <!-- Primera linea:quien y cuando -->
+              <div class="w-full" fxLayout="row wrap" fxLayoutAlign="none end">
+                <small>{{ getDateFormat(g.fecha) }}</small>
+                <span fxFlex></span>
+                <small class="text-small">{{ g.responsable }}</small>
               </div>
-              <img class="shrink-0 w-10 h-10 mr-4 rounded-full overflow-hidden object-cover object-center"
-                [src]="g.responsableImagen" [alt]="'Activity image'" *ngIf="g.responsableImagen">
+              <!-- Segunda linea: Accion y datos del documento que lo modifico -->
+              <div class="w-full" fxLayout="row wrap">
+                <b class="text-small">{{ g.nombre }}</b>
+                <a *ngIf="g.transaccion && !g.campos" (click)="showTraceField2Document(g)">
+                  <mat-icon inline="true">view_headline</mat-icon></a>
+                <span fxFlex></span>
 
-
+                <a class="cursor-pointer text-primary font-bold tracking-tight text-sm" *ngIf="g.documentoModificador"
+                  (click)="showTraceDocument(g.documentoModificador, g.plantilla)">
+                  <span>{{ g.plantillaNombre }} - {{ g.modificadorNombre }}</span>
+                </a>
+              </div>
+              <!-- Tercera linea: Estados y ubicacion -->
+              <div class="w-full" fxLayout="row wrap" *ngIf="g.ubicacionNombre || g.estadoFinal">
+                <small>{{ g.estadoInicial }} - {{ g.estadoFinal }}</small>
+                <span fxFlex></span>
+                <b *ngIf="g.ubicacionNombre">[ {{ g.ubicacionPlantilla }} ] {{ g.ubicacionNombre }}</b>
+              </div>
+              <!-- Cuarta linea : comentario -->
+              <div *ngIf="g.comentario" class="mt-1 py-2 px-2 rounded-lg bg-gray-200 dark:bg-gray-800">
+                <div class="text-sm line-clamp-3">{{g.comentario }}
+                </div>
+              </div>
+              <!-- Quinta linea dinero -->
+              <div class="w-full" fxLayout="row wrap">
+                <small *ngIf="g.saldo && g.saldo !== 0">
+                  {{ g.saldo | currency }}</small>
+                <span fxFlex></span>
+                <b *ngIf="g.total">{{ g.total | currency }}</b>
+              </div>
+              <!-- Sexta linea Adjuntos -->
+              <div *ngIf="g.adjunto" class="line-clamp-1">
+                <div *ngFor="let iUrl of g.adjunto.split(';;')" class="line-clamp-1" fxFlex>
+                  <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-xs">
+                    {{iUrl}}</a>
+                </div>
+              </div>
+              <!-- Septima linea Campos nuevos -->
+              <div class="w-full" *ngIf="g.campos">
+                <div *ngFor="let iCampoOriginal of g.campos">
+                  <b class="text-xs">{{ iCampoOriginal.campo }} :</b><small> {{ iCampoOriginal.valorText
+                    }}</small>
+                </div>
+              </div>
             </ng-container>
-
-            <!-- Content -->
-            <div class="flex flex-col flex-auto items-start">
-
-              <!-- Description -->
-              <ng-container>
-                <!-- Primera linea:quien y cuando -->
-                <div class="w-full" fxLayout="row wrap" fxLayoutAlign="none end">
-                  <small>{{ getDateFormat(g.fecha) }}</small>
-                  <span fxFlex></span>
-                  <small class="text-small">{{ g.responsable }}</small>
-                </div>
-                <!-- Segunda linea: Accion y datos del documento que lo modifico -->
-                <div class="w-full" fxLayout="row wrap">
-                  <b class="text-small">{{ g.nombre }}</b>
-                  <a *ngIf="g.transaccion && !g.campos" (click)="showTraceField2Document(g)">
-                    <mat-icon inline="true">view_headline</mat-icon></a>
-                  <span fxFlex></span>
-
-                  <a class="cursor-pointer text-primary font-bold tracking-tight text-sm" *ngIf="g.documentoModificador"
-                    (click)="showTraceDocument(g.documentoModificador, g.plantilla)">
-                    <span>{{ g.plantillaNombre }} - {{ g.modificadorNombre }}</span>
-                  </a>
-                </div>
-                <!-- Tercera linea: Estados y ubicacion -->
-                <div class="w-full" fxLayout="row wrap" *ngIf="g.ubicacionNombre || g.estadoFinal">
-                  <small>{{ g.estadoInicial }} - {{ g.estadoFinal }}</small>
-                  <span fxFlex></span>
-                  <b *ngIf="g.ubicacionNombre">[ {{ g.ubicacionPlantilla }} ] {{ g.ubicacionNombre }}</b>
-                </div>
-                <!-- Cuarta linea : comentario -->
-                <div *ngIf="g.comentario" class="mt-1 py-2 px-2 rounded-lg bg-gray-200 dark:bg-gray-800">
-                  <div class="text-sm line-clamp-3">{{g.comentario }}
-                  </div>
-                </div>
-                <!-- Quinta linea dinero -->
-                <div class="w-full" fxLayout="row wrap">
-                  <small *ngIf="g.saldo && g.saldo !== 0">
-                    {{ g.saldo | currency }}</small>
-                  <span fxFlex></span>
-                  <b *ngIf="g.total">{{ g.total | currency }}</b>
-                </div>
-                <!-- Sexta linea Adjuntos -->
-                <div class="w-full" *ngIf="g.adjunto">
-                  <div class="line-clamp-1" *ngFor="let iUrl of g.adjunto.split(';;')">
-                    <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-xs">
-                      {{
-                      iUrl
-                      }}</a>
-                  </div>
-                </div>
-                <!-- Septima linea Campos nuevos -->
-                <div class="w-full" *ngIf="g.campos">
-                  <div *ngFor="let iCampoOriginal of g.campos">
-                    <b class="text-xs">{{ iCampoOriginal.campo }} :</b><small> {{ iCampoOriginal.valorText
-                      }}</small>
-                  </div>
-                </div>
-              </ng-container>
-              <!-- Date 
+            <!-- Date 
                             <div class="flex flex-col sm:flex-row sm:items-center mt-2 sm:mt-1 sm:space-x-2 text-md leading-5">
                                 <!-- Date 
                                 <div class="text-secondary">
@@ -149,20 +172,11 @@
                              
                               <div class="border-bottom mt-4"></div>
                             </div>-->
-            </div>
           </div>
-        </li>
-      </ng-container>
-    </ol>
-  </div>
-</div>
-
-<!-- Boton cerrar -->
-<div>
-  <button mat-raised-button color="accent" (click)="dialogRef.close(false)">
-    <mat-icon>exit_to_app</mat-icon> Cerrar historico
-  </button>
-  <span fxFlex></span>
+        </div>
+      </li>
+    </ng-container>
+  </ol>
   <button mat-flat-button (click)="listar(pagina)" *ngIf="!isEnd">
     <mat-icon>history</mat-icon> Seguir consultando
   </button>

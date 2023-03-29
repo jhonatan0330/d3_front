@@ -60,8 +60,9 @@
                         <div>No point</div>
                     </div>
                     <!-- Panel title -->
-                    <mat-slider class="w-full" [formControl]="sliderControl" max="1440" min="0" step="1"
-                        tickInterval="60">
+                    <mat-slider class="w-full"  min="0" step="1"  
+                        tickInterval="60" max="1440">
+                        <input matSliderThumb [formControl]="sliderControl">
                     </mat-slider>
                 </div>
                 <!-- Load settings panel -->

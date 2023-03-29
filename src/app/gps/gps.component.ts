@@ -20,7 +20,7 @@ export class GPSComponent {
     drawerOpened: boolean = true;
 
     dateFilter = new FormControl(this._gpsService.dayToList);
-    sliderControl = new FormControl();
+    sliderControl = new FormControl(0);
     hourOfDay: string;
     public device: GPSDispositivoDTO;
 
