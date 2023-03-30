@@ -7,6 +7,7 @@ import {
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';
@@ -52,14 +53,21 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
   }
 
   asignarValorInicial() {
-    if (this.data && this.data.valorOpcion) {
-      const l: PedidoVentaDTO[] = this.disponibles.filter(
-        (option) => option.llaveTabla === this.data.valorOpcion
-      );
-      if (l && l.length !== 0) {
-        this.fControl.setValue(l[0]);
+    if (this.data) {
+      if (this.data.valorOpcion) {
+        const l: PedidoVentaDTO[] = this.disponibles.filter(
+          (option) => option.llaveTabla === this.data.valorOpcion
+        );
+        if (l && l.length !== 0) {
+          this.fControl.setValue(l[0]);
+        }
+      } else {
+        if (this.disponibles.length === 1) {
+          this.fControl.setValue(this.disponibles[0]);
+        }
       }
-    } 
+
+    }
   }
 
   actualizar() {
@@ -104,7 +112,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     // Consulto la plantilla para actualizarla y no tener que volver a consultarla
     const plantillaBase: DocumentoPlantillaDTO =
       this.templateService.getTemplate(this.structure.plantilla, this.urlServer);
-    
+
     for (let i = 0; i < plantillaBase.caracteristicas.length; i++) {
       const iCampo = plantillaBase.caracteristicas[i];
       if (iCampo.llaveTabla === this.structure.llaveTabla) {
