@@ -8,6 +8,7 @@ import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { FormulaHelper } from 'app/shared/helpers/formula.helper';
 import { BaseComponent } from '../base/base.component';
 import { CurrencyMaskInputMode } from 'ngx-currency';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-numero',
@@ -50,9 +51,13 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       this.fControl.disable();
     }*/
     // Al finalzar se subscriben los cambios
-    this.fControl.valueChanges.subscribe((value) => {
-      this.actualizar();
-    });
+    this.fControl.valueChanges
+      .pipe(
+        debounceTime(500)
+      )
+      .subscribe((value) => {
+        this.actualizar();
+      });
     // Tenia un error en Factura de SW apenas abria no tomaba el valor
     if (this.data.valorNumero !== this.fControl.value) {
       this.actualizar();
@@ -106,7 +111,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     if (!controlValue) {
       controlValue = '0';
     }
-    if(this.formulaMaximum) {
+    if (this.formulaMaximum) {
       const textoMaximum = this.formulaReplaceDependents(this.formulaMaximum);
       const resultadoMaximum = FormulaHelper.calcular(textoMaximum);
       if (controlValue > resultadoMaximum) {
@@ -114,7 +119,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         return;
       }
     }
-    if(this.formulaMinimum) {
+    if (this.formulaMinimum) {
       const textoMinimum = this.formulaReplaceDependents(this.formulaMinimum);
       const resultadoMinimum = FormulaHelper.calcular(textoMinimum);
       if (controlValue < resultadoMinimum) {
@@ -129,7 +134,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     }
   }
 
-  private formulaReplaceDependents(textoCalculado: string): string{
+  private formulaReplaceDependents(textoCalculado: string): string {
     if (
       this.data &&
       this.data.dependientes &&
@@ -146,7 +151,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
           if (
             iterable.campoDTO &&
             iterable.campoDTO.formato ===
-              DocumentoPlantillaCaracteristicaEnum.PRODUCTO
+            DocumentoPlantillaCaracteristicaEnum.PRODUCTO
           ) {
             const diccionario = new Map();
             if (iterable.detalles) {
@@ -197,9 +202,9 @@ export class NumeroComponent extends BaseComponent implements OnInit {
             .join(valorNumero.toString());
           console.log(
             'Codigo: ' +
-              iterable.campoDTO.codigo +
-              ' \t Valor:' +
-              valorNumero.toFixed(8)
+            iterable.campoDTO.codigo +
+            ' \t Valor:' +
+            valorNumero.toFixed(8)
           );
         }
       }
@@ -239,7 +244,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
               if (
                 !pvc.campoDTO ||
                 pvc.campoDTO.formato ===
-                  DocumentoPlantillaCaracteristicaEnum.PROCESO
+                DocumentoPlantillaCaracteristicaEnum.PROCESO
               ) {
                 return;
               }
