@@ -206,7 +206,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = plantilla;
         pedidoVenta.llaveTabla = id;
-        pedidoVenta.serverUrl = server;
+        pedidoVenta.server = server;
         this.utilsService.modalWithParams(pedidoVenta).subscribe(() => {
             this.refresh();
         });
@@ -214,7 +214,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
     openDocument(document: ActividadDTO) {
         this.openDialog(document.documentoDTO.plantilla, document.documentoDTO.llaveTabla
-            , document.documentoDTO.serverUrl);
+            , document.documentoDTO.server);
     }
 
     readActivity(actividad: ActividadDTO) {

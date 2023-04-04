@@ -52,7 +52,7 @@ export class TemplateComponent implements OnInit {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = this.id;
     if (this.serverId) {
-      pedidoVenta.serverUrl = this.templateService.getUrl4Id(this.serverId)
+      pedidoVenta.server = this.serverId
     }
     let _close2Save = false;
     if (this.type === TemplateEnum.TIPO_REPORTE) {

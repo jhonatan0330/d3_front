@@ -46,7 +46,7 @@ export class PedidoVentaDTO extends BasicDTO {
   caracteristicas: PedidoVentaCaracteristicaDTO[];
   campoOrigen: string;
   campoPropiedad: string;
-  serverUrl: string;
+  server: string;
 }
 export class PedidoVentaCaracteristicaDTO extends BasicDTO {
   documento: string;

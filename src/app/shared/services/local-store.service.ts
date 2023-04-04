@@ -4,7 +4,8 @@ export const LocalConstants = {
   JWT_TOKEN: 'JWT_TOKEN',
   APP_USER: 'EGRET_USER',
   TEMPLATES: 'SW42_TEMPLATES',
-  URL_CONF: 'URL_CONF'
+  URL_CONF: 'URL_CONF',
+  SERVERS: 'SERVERS'
 };
 
 @Injectable({
@@ -14,7 +15,9 @@ export class LocalStoreService {
 
   private ls = window.localStorage;
 
-  constructor() { }
+  constructor(
+
+  ) { }
 
   public setItem(key: string , value: any) {
     value = JSON.stringify(value);
@@ -35,16 +38,26 @@ export class LocalStoreService {
     this.ls.clear();
   }
 
-  getUrlAccess(endpoint: string, serverUrl: string  = null): string {
+  getUrlAccess(endpoint: string, server: string  = null): string {
     if (!endpoint.startsWith('/')) {
       endpoint = '/' + endpoint;
     }
-    let url: String = serverUrl;
+    let url: String = this.getUrl4Id( server);
     if(!url){
        url = this.getItem(LocalConstants.URL_CONF);
     }
     const result = url.concat(endpoint.toString());
     return result;
     // return 'http://localhost:8080/sw42/' +  endpoint;
+  }
+
+  private getUrl4Id(id: string): string {
+    const otherSystems = this.getItem(LocalConstants.SERVERS);
+    if (!id || !otherSystems) { return null; }
+    const org = otherSystems.find(item => id === item.llaveTabla);
+    if (org) {
+      return org.servidorUrl;
+    }
+    return null;
   }
 }

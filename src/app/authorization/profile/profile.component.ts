@@ -1,10 +1,9 @@
-import { Component, ElementRef, OnDestroy, OnInit, AfterViewInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit,  ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
-import { DocumentoPlantillaDTO, OrganizacionDTO, PedidoVentaDTO, PropiedadDTO, UsuarioAutenticacionDTO, UsuarioOrganizacionDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { Subject, takeUntil, Subscription, filter } from 'rxjs';
@@ -20,8 +19,6 @@ import { cloneDeep } from 'lodash';
 })
 export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  @ViewChild('searchModule') private _searchText: ElementRef;
-
   user: User;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -32,21 +29,18 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   private templateSub: Subscription;
   isLoading = false;
 
-  signinForm: FormGroup;
-
   slides = [
-    {'image': 'assets/images/pages/profile/cover.jpg'}
+    { 'image': 'assets/images/pages/profile/cover.jpg' }
   ];
 
   constructor(
-    private apiService: ApiService,
     private templateService: TemplateService,
     public jwtAuth: JwtAuthService,
     private route: ActivatedRoute,
     private router: Router,
     private _utilsService: UtilsService,
     private _userService: UserService
-    
+
   ) {
 
   }
@@ -60,9 +54,9 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         if (user && user.companyCoverageImage) {
           this.slides = [];
           user.companyCoverageImage.forEach(element => {
-            this.slides.push({image: element})
+            this.slides.push({ image: element })
           });
-          
+
         }
       });
 
@@ -70,20 +64,6 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
       next: (value) => this.loadMenu(value),
     });
 
-    this.signinForm = new FormGroup({
-      password: new FormControl('', Validators.required),
-    });
-
-    // Listen for NavigationEnd event to focus on the title field
-    this.router.events
-    .pipe(
-        takeUntil(this._unsubscribeAll),
-        filter(event => event instanceof NavigationEnd)
-    )
-    .subscribe(() => {
-        // Focus on the title field
-        //this._searchText.nativeElement.focus();
-    });
 
   }
   /**
@@ -122,7 +102,6 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
     this.filterItem();
-    this.conect2Other();
     this.openFormLink();
   }
 
@@ -139,118 +118,6 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  /*getTablero() {
-    let tableros =[];
-    if (this.jwtAuth.company.propiedades) {
-      tableros = this.jwtAuth.company.propiedades.filter(x => x.propiedadValor === 'PROP_182');
-      for (let i = 0; i < tableros.length; i++) {
-        const element = tableros[i];
-        element.estado = 'T';
-        this.modules.push(element);
-      }
-    } 
-    this.templateService.setTableros(tableros);
-  }*/
-
-  conect2Other() {
-    if (this.jwtAuth.otherCompany && this.jwtAuth.otherCompany.length !== 0) {
-      this.templateService.conectionTemplates = this.jwtAuth.otherCompany;
-      for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
-        const element = this.templateService.conectionTemplates[i];
-        if (!element.token) {
-          this.logInOtherSystem(element);
-        } else {
-          this.handlerLoginOther(element.token, element.servidorUrl);
-        }
-      }
-    }
-  }
-
-  logInOtherSystem(element: OrganizacionDTO, reloadPassword: Boolean = false) {
-    this.apiService
-      .autenticar(
-        this.jwtAuth.user.identificacion,
-        element.usuarioSystem,
-        element.servidorUrl
-      )
-      .subscribe({
-        next: (auth: UsuarioAutenticacionDTO) => {
-          if (reloadPassword) {
-            const newKEy = new UsuarioOrganizacionDTO();
-            newKEy.organizacion = element.llaveTabla;
-            newKEy.usuario = this.jwtAuth.user.llaveTabla;
-            newKEy.tokenServer = element.usuarioSystem;
-            this.jwtAuth.changePwdOtherSystem(newKEy).subscribe();
-          }
-          this.handlerLoginOther(auth.token, element.servidorUrl);
-        },
-        error: () => {
-          this.handlerErrorLoginOther(element);
-        },
-      });
-  }
-
-  handlerLoginOther(authToken: string, servidorUrl: string) {
-    for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
-      const element = this.templateService.conectionTemplates[i];
-      if (element.servidorUrl === servidorUrl) {
-        element.token = authToken;
-        element.mensajeIngreso = 'Cargando plantillas';
-        if (!element.plantillas) {
-          this.apiService.listarPlantillas(servidorUrl).subscribe({
-            next: (_t: DocumentoPlantillaDTO[]) => {
-              this.handlerTemplateOther(_t, servidorUrl);
-            },
-            error: () => { },
-          });
-        } else {
-        }
-      }
-    }
-  }
-
-  handlerErrorLoginOther(element: OrganizacionDTO) {
-    element.usuarioSystem = undefined;
-  }
-
-  signin(element: OrganizacionDTO) {
-    const signinData = this.signinForm.value;
-    element.usuarioSystem = signinData.password;
-    this.logInOtherSystem(element, true);
-  }
-
-  handlerTemplateOther(
-    plantillas: DocumentoPlantillaDTO[],
-    servidorUrl: string
-  ) {
-    for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
-      const element = this.templateService.conectionTemplates[i];
-      if (element.servidorUrl === servidorUrl) {
-        for (let j = 0; j < plantillas.length; j++) {
-          const iPlantilla = plantillas[j];
-          iPlantilla.server = servidorUrl;
-          if (iPlantilla.reportes) {
-            for (let r = 0; r < iPlantilla.reportes.length; r++) {
-              const element = iPlantilla.reportes[r];
-              if (!element.servidorUrl) { element.servidorUrl = iPlantilla.server; }
-            }
-          }
-        }
-        element.plantillas = plantillas;
-        element.menuPlantillas = plantillas.filter((item) =>
-          PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
-        );
-        element.reportePlantillas = plantillas.filter((item) =>
-          PlantillaHelper.buscarPropiedad(
-            item.propiedades,
-            PlantillaHelper.PLANTILLA_TIPO_REPORTE
-          )
-        );
-        break;
-      }
-    }
-  }
-
   openFormLink() {
     this.route.params.subscribe((params: Params) => {
       const type = params.type;
@@ -259,7 +126,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         if (plantilla) {
           const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
           pedidoVenta.plantilla = plantilla.llaveTabla;
-          pedidoVenta.serverUrl = plantilla.server;
+          pedidoVenta.server = plantilla.server;
           const idDocument = params.id;
           if (idDocument) {
             pedidoVenta.llaveTabla = idDocument;

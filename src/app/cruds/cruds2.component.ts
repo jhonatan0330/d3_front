@@ -91,9 +91,9 @@ export class Cruds2Component implements OnInit, OnDestroy {
         return;
       }
       this.dataProvider=[];
-      const serverUrl = this.templateService.getUrl4Id(params.server_id);
+      //const serverUrl = this.templateService.getUrl4Id(params.server_id);
       if (propType === 'list') {
-        this.plantilla = this.templateService.getTemplate(params.id, serverUrl);
+        this.plantilla = this.templateService.getTemplate(params.id, params.server_id);
         if (!this.plantilla) {
           this.router.navigate(['/main']);
           return;
@@ -241,7 +241,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
     if (!template) {   return; }
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = template;
-    pedidoVenta.serverUrl = server;
+    pedidoVenta.server = server;
     this.utilsService.modalWithParams(pedidoVenta);
   }
 
@@ -413,7 +413,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = pDocument.plantilla;
     pedidoVenta.llaveTabla = pDocument.llaveTabla;
-    pedidoVenta.serverUrl = this.plantilla.server;
+    pedidoVenta.server = this.plantilla.server;
     this.utilsService.modalWithParams(pedidoVenta, false);
   }
 

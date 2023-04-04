@@ -155,7 +155,7 @@ export class TrazabilityComponent implements OnInit {
     const _doc: PedidoVentaDTO = new PedidoVentaDTO();
     _doc.plantilla = _template;
     _doc.llaveTabla = _id;
-    _doc.serverUrl = this.plantilla.server;
+    _doc.server = this.plantilla.server;
     this.utilsService.modalWithParams(_doc);
   }
 

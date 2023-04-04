@@ -233,7 +233,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = p.plantilla;
     pedidoVenta.llaveTabla = p.llaveTabla;
-    pedidoVenta.serverUrl = this.urlServer;
+    pedidoVenta.server = this.urlServer;
     this.utilsService.modalWithParams(pedidoVenta, false).subscribe((res) => {
       if (res) {
         if (this.tipoMultiple) {
@@ -1019,7 +1019,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
     }
     _doc.plantilla = _plantilla;
-    _doc.serverUrl = this.urlServer;
+    _doc.server = this.urlServer;
     this.utilsService
       .modalWithParams(_doc, true, this.fControl.value)
       .subscribe((res) => {

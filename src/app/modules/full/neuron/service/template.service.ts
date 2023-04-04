@@ -8,6 +8,8 @@ import {
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { BehaviorSubject } from 'rxjs';
+import { clone } from 'lodash';
+import { LocalConstants, LocalStoreService } from 'app/shared/services/local-store.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +26,7 @@ export class TemplateService {
   private propiedadesConRelaciones: RelacionInternaDTO[];
 
   constructor(
+    private ls: LocalStoreService,
     private jwtAuth: JwtAuthService
   ) { }
 
@@ -34,7 +37,7 @@ export class TemplateService {
       result = this.template.find((item) => id === item.llaveTabla);
     } else {
       if (this.conectionTemplates) {
-        const org = this.conectionTemplates.find((itemOrg) => urlServer === itemOrg.servidorUrl);
+        const org = this.conectionTemplates.find((itemOrg) => urlServer === itemOrg.llaveTabla);
         if (org) {
           result = org.plantillas.find((itemExternal) => id === itemExternal.llaveTabla);
         }
@@ -42,6 +45,12 @@ export class TemplateService {
     }
     return result;
   }
+
+  setOtherSystems(value: OrganizacionDTO[])  {
+    this.conectionTemplates = value;
+    this.ls.setItem(LocalConstants.SERVERS, value);
+  }
+
 
   getTemplateOfProcess(processId: string): DocumentoPlantillaDTO[] {
     if (!this.template) { return null; }
@@ -55,6 +64,16 @@ export class TemplateService {
     this.template = value;
     this.colores = null;
     this.getColor('');
+  }
+
+  addTemplatesFromOtherSystems() {
+    if(!this.conectionTemplates) {return;}
+    let allTemplates = clone(this.template);
+    for (let i = 0; i < this.conectionTemplates.length; i++) {
+      allTemplates = allTemplates.concat(clone(this.conectionTemplates[i].plantillas));
+    }
+    this.templates$.next(allTemplates);
+
   }
 
   getColor(stateId: string): string {
@@ -145,15 +164,6 @@ export class TemplateService {
     }
     return color3;
 
-  }
-
-  getUrl4Id(id: string): string {
-    if (!id || !this.conectionTemplates) { return null; }
-    const org = this.conectionTemplates.find(item => id === item.llaveTabla);
-    if (org) {
-      return org.servidorUrl;
-    }
-    return null;
   }
 
   private exploreTemplateColor(element: DocumentoPlantillaDTO, array: PropiedadDTO[]) {

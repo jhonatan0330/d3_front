@@ -117,7 +117,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       this.close2Save = this.data.close2Save;
     }
     // Cargo la plantilla al formulario para comenzar
-    this.plantilla = this.cargarPlantilla(this.pedidoBase.plantilla, this.pedidoBase.serverUrl);
+    this.plantilla = this.cargarPlantilla(this.pedidoBase.plantilla, this.pedidoBase.server);
     // Si la plantilla se consulta por primera vez se va asincrona asi que finaliza este metodo
     if (!this.plantilla) {
       return;
@@ -192,7 +192,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
       pedidoVenta.plantilla = value.plantilla;
       pedidoVenta.llaveTabla = value.llaveTabla;
-      pedidoVenta.serverUrl = this.plantilla.server;
+      pedidoVenta.server = this.plantilla.server;
       this.utilsService.modalWithParams(pedidoVenta);
     } else {
       this.pedido.llaveTabla = value.llaveTabla;
@@ -240,7 +240,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
       if (!dp.caracteristicas) {
         this.api
-          .obtenerCampos(plantillaId, dp.server)
+          .obtenerCampos(plantillaId,  dp.server)
           .subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
               plantilla.server = dp.server;
@@ -736,7 +736,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       campoBase.valorOpcion = this.pedido.llaveTabla; // Coloco el valor opcion para que el tipo proceso identifique la opcion
       _doc.caracteristicas.push(campoBase);
     }
-    _doc.serverUrl = this.plantilla.server;
+    _doc.server = this.plantilla.server;
     this.utilsService.modalWithParams(_doc).subscribe((res) => {
       if (res && this.dialogRef) {
         this.dialogRef.close();

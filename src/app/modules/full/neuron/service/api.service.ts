@@ -19,7 +19,6 @@ import {
   ProductoInventarioDTO,
   ProductoDTO,
   TarifaDTO,
-  PedidoVentaCaracteristicaDTO,
 } from '../model/sw42.domain';
 import { ApiErrorResponse } from '../model/sw42.utils';
 import {
