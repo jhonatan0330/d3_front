@@ -165,7 +165,7 @@
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
-        <button mat-button matSuffix mat-icon-button (click)="
+        <button matSuffix mat-icon-button (click)="
             fControlDateStart.setValue(null); fControlDateEnd.setValue(null)
           ">
           <mat-icon>close</mat-icon>
@@ -179,7 +179,7 @@
       <mat-form-field>
         <input matInput type="text" placeholder="Coloca un texto y presiona enter" name="fControlSearch"
           [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
-        <button mat-button matSuffix mat-icon-button (click)="fControlSearch.setValue('')">
+        <button matSuffix mat-icon-button (click)="fControlSearch.setValue('')">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
