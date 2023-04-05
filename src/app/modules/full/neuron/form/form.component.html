@@ -80,7 +80,7 @@
     </mat-menu>
   </div>
 </div>
-<mat-dialog-content>
+<div class="max-h-[65vh] overflow-x-hidden">
   <!-- Cambiar estado del documento -->
   <mat-card class="mt-0 mx-0" *ngIf="isChangeState">
     <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>
@@ -141,13 +141,13 @@
   <div class="mt-1">
     <ng-template #dynamycFormElement></ng-template>
   </div>
-  <!-- Boton de guardar -->
-  <div *ngIf="modificable" class="pt-0">
-    <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
-    <div fxFlex *ngIf="!submitted">
-      <button mat-raised-button color="primary" class="w-full" (click)="submit()">
-        <mat-icon>save</mat-icon> Guardar {{ plantilla.nombre | titlecase }}
-      </button>
-    </div>
+</div>
+<!-- Boton de guardar -->
+<div *ngIf="modificable" class="pt-1">
+  <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
+  <div *ngIf="!submitted">
+    <button mat-raised-button color="primary" class="w-full" (click)="submit()">
+      <mat-icon>save</mat-icon> Guardar {{ plantilla.nombre | titlecase }}
+    </button>
   </div>
-</mat-dialog-content>
+</div>
