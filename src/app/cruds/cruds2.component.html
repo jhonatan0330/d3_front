@@ -3,7 +3,7 @@
   <mat-drawer-container class="flex-auto h-full">
 
     <!-- Drawer -->
-    <mat-drawer position="end" class="w-72 dark:bg-gray-900" [mode]="drawerMode" [(opened)]="drawerOpened" #drawer>
+    <mat-drawer position="end" class="w-80 dark:bg-gray-900" [mode]="drawerMode" [(opened)]="drawerOpened" #drawer>
 
       <!-- sidebar -->
       <div class="flex flex-col flex-auto w-full">
@@ -36,24 +36,24 @@
               </mat-menu>
             </div>
           </div>
-          <div class="pl-4">
+          <div>
             <button class="w-full" *ngIf="hasCreatePermission" mat-flat-button [color]="'primary'"
-            (click)="openDialogFromTemplateModule()">
-            <mat-icon>add</mat-icon>
-            <span >Nuevo</span>
-          </button>
-          <div *ngIf="templatesFromProcess">
-            <button *ngFor="let templateToCreate of templatesFromProcess" class="w-full my-1" mat-flat-button
-              [color]="'primary'" (click)="openDialog(templateToCreate.llaveTabla, templateToCreate.server)">
+              (click)="openDialogFromTemplateModule()">
               <mat-icon>add</mat-icon>
-              <span >{{templateToCreate.nombre}}</span>
+              <span>Nuevo</span>
             </button>
+            <div *ngIf="templatesFromProcess">
+              <button *ngFor="let templateToCreate of templatesFromProcess" class="w-full my-1" mat-flat-button
+                [color]="'primary'" (click)="openDialog(templateToCreate.llaveTabla, templateToCreate.server)">
+                <mat-icon>add</mat-icon>
+                <span>{{templateToCreate.nombre}}</span>
+              </button>
+            </div>
           </div>
-          </div>
-          
+
           <!-- Buscador de texto -->
           <div class="text-primary text-xs uppercase font-bold py-2">Filtrar</div>
-          <div class="pl-4">
+          <div>
             <mat-form-field>
               <input matInput type="text" placeholder="Coloca un texto y presiona enter" [formControl]="fControlSearch"
                 autocomplete="off" (keyup.enter)="listar(1)" />
@@ -64,12 +64,12 @@
             <mat-checkbox class="py-2" [formControl]="fControlCheck">Filtrar por codigo Exacto</mat-checkbox>
             <button class="w-full " mat-flat-button [color]="'accent'" (click)="listar(1)">
               <mat-icon>refresh</mat-icon>
-              <span class="ml-2">Listar</span>
+              <span>Listar</span>
             </button>
           </div>
           <!-- Buscador de fecha -->
           <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fechas </div>
-          <div class="pl-4">
+          <div>
             <mat-form-field>
               <mat-label>Escoge una fecha</mat-label>
               <mat-date-range-input [rangePicker]="picker">
@@ -87,7 +87,7 @@
           </div>
           <!-- Filtro por Estados  -->
           <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por estados </div>
-          <form [formGroup]="form" class="pl-4">
+          <form [formGroup]="form">
             <div *ngIf="plantilla?.estados ">
               <div *ngFor="let _estado of plantilla.estados" class="p-0.5 w-full rounded flex">
                 <mat-checkbox [formControlName]="_estado.llaveTabla" class="w-full">
@@ -130,8 +130,7 @@
               *ngIf="!drawerOpened && hasCreatePermission" class="m-1">
               <mat-icon>add</mat-icon>
             </button>
-            <button mat-icon-button  class="m-1"
-              (click)="toggleDrawer()">
+            <button mat-icon-button class="m-1" (click)="toggleDrawer()">
               <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
             </button>
           </div>

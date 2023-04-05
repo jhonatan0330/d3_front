@@ -25,6 +25,7 @@ import { BaseComponent } from '../base/base.component';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import { BarcodeFormat } from '@zxing/library';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-proceso',
@@ -70,6 +71,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   isLoadingList = false;
   isEndList = true;
   dataProvider: PedidoVentaDTO[]; // Conjunto de documentos a visualizar
+  fCheckActivo: FormControl; // Check que indica si se filtra por los activos
+  fCheckInactivo: FormControl; // Check que indica si se debe filtrar por los inactivos
+  fCheckFinalizado: FormControl; // Check que indica si se debe filtrar por los finalizados
 
   // textoInicial: string; // Usado para colocar el texto incial de los fomrularios nuevos, ejemplo un cliente buscado no encontrado
 
@@ -77,7 +81,10 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   qrResultString: string;
   scannerEnabled = false;
-  allowedFormats = [ BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX ];
+  allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX];
+
+  @ViewChild('drawer') drawer: MatDrawer;
+  drawerOpened: boolean = false;
 
   constructor(
     private templateService: TemplateService,
@@ -153,16 +160,16 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         } else {
           this.proceso = null;
           let filterValue: string = value.toLowerCase();
-          if(filterValue === '*') { filterValue = ''; }
+          if (filterValue === '*') { filterValue = ''; }
           if (this.disponibles) {
             this.filteredDocuments = this.disponibles.filter(
               (doc) => {
                 if (doc.nombre.toLowerCase().indexOf(filterValue) !== -1) return true;
                 if (doc.descripcion && doc.descripcion.toLowerCase().indexOf(filterValue) !== -1) return true;
-                if (doc.caracteristicas){
+                if (doc.caracteristicas) {
                   for (let filterItemField = 0; filterItemField < doc.caracteristicas.length; filterItemField++) {
                     const element = doc.caracteristicas[filterItemField];
-                    if (element.valorText!=null && element.valorText.toLowerCase().indexOf(filterValue) !== -1) return true;
+                    if (element.valorText != null && element.valorText.toLowerCase().indexOf(filterValue) !== -1) return true;
                   }
                 }
                 return false;
@@ -180,28 +187,29 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       this.actualizar();
     });
     this.iniciar();
+    if(!this.isEnabled) { this.drawerOpened = false;}
   }
 
-  filterDisponiblesWithFields(item: PedidoVentaDTO){
+  filterDisponiblesWithFields(item: PedidoVentaDTO) {
 
   }
 
-  showAlertSelectedProcess(){
-    if (!this.alertar || !this.proceso || !this.proceso.caracteristicas || this.proceso.caracteristicas.length ===0 ) return;
+  showAlertSelectedProcess() {
+    if (!this.alertar || !this.proceso || !this.proceso.caracteristicas || this.proceso.caracteristicas.length === 0) return;
     if (this.isLoadingList) return;
-    if (!this.relacionesAlerta){
+    if (!this.relacionesAlerta) {
       const rel: RelacionInternaDTO[] = this.templateService.getPropertyRelation(this.alertar.llaveTabla);
-      if (rel && rel.length !==0){
+      if (rel && rel.length !== 0) {
         this.relacionesAlerta = rel;
         this.showAlertSelectedProcess();
-      } else{
+      } else {
         this.isLoadingList = true;
         const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
         filtro.estado = StatesEnum.ACTIVE;
         filtro.propiedad = this.alertar.llaveTabla;
         this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
           next: (value: RelacionInternaDTO[]) => {
-            if (!value || value.length ===0) {
+            if (!value || value.length === 0) {
               Swal.fire(this.structure.nombre, 'La propiedad ALERTAR no tiene relaciones para determinar que alertar', 'error');
             } else {
               this.relacionesAlerta = value;
@@ -221,7 +229,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       const element = this.relacionesAlerta[index];
       for (let j = 0; j < this.proceso.caracteristicas.length; j++) {
         const campo = this.proceso.caracteristicas[j];
-        if(campo.campoDTO && campo.campoDTO.llaveTabla === element.campo) {
+        if (campo.campoDTO && campo.campoDTO.llaveTabla === element.campo) {
           Swal.fire(this.structure.nombre, campo.valorText, 'info');
           break;
         }
@@ -293,7 +301,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               if (
                 !this.data.dependientes[i].valorOpcion &&
                 this.data.dependientes[i].campoDTO.formato ===
-                  DocumentoPlantillaCaracteristicaEnum.PROCESO
+                DocumentoPlantillaCaracteristicaEnum.PROCESO
               ) {
                 return;
               }
@@ -454,7 +462,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       return;
     }
     //if (this.isVisible) {
-      this.procesarCampo(this.transformPVCtoFilter(campoFiltro));
+    this.procesarCampo(this.transformPVCtoFilter(campoFiltro));
     //}
   }
 
@@ -498,7 +506,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         if (
           !this.data.dependientes[i].valorOpcion &&
           this.data.dependientes[i].campoDTO.formato ===
-            DocumentoPlantillaCaracteristicaEnum.PROCESO
+          DocumentoPlantillaCaracteristicaEnum.PROCESO
         ) {
           /*alert(
             'Seleccione el campo ' + this.data.dependientes[i].campoDTO.nombre
@@ -560,6 +568,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.fControlDateStart = new FormControl();
     this.fControlDateEnd = new FormControl();
     this.fControlCheck = new FormControl();
+    this.fCheckActivo = new FormControl(true);
+    this.fCheckInactivo = new FormControl();
+    this.fCheckFinalizado = new FormControl(true);
     if (this.isEnabled) {
       if (this.solicitarFechas) {
         this.fControlDateStart.setValue(new Date());
@@ -618,7 +629,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         for (let i = 0; i < this.dataProvider.length; i++) {
           const iData = this.dataProvider[i];
           // Los inactivos no deben sumar pero si mostrarse
-          if(iData.dinero && iData.dinero.valorTotal &&
+          if (iData.dinero && iData.dinero.valorTotal &&
             (!iData.estado || iData.estado !== StatesEnum.INACTIVE)) {
             this.setValorNumero(this.getValorNumero() + iData.dinero.valorTotal);
           }
@@ -635,13 +646,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
         this.data.valorText = this.dataProvider.length.toString();
       }
-    }else{
+    } else {
       if (this.data.expedientes && this.data.expedientes.length !== 0) {
         this.titulo =
           this.titulo + ' (' + this.data.expedientes.length.toString() + ')';
         let valorCampo = 0;
         let valorTotal = 0;
-  
+
         for (let i = 0; i < this.data.expedientes.length; i++) {
           const expediente = this.data.expedientes[i];
           if (
@@ -651,8 +662,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             valorCampo = valorCampo + expediente.dinero.valorCampo;
             valorTotal = valorTotal + expediente.dinero.valorTotal;
           }
-  
-          if(expediente.caracteristicas){
+
+          if (expediente.caracteristicas) {
             for (let j = 0; j < expediente.caracteristicas.length; j++) {
               const iCampoExpediente = expediente.caracteristicas[j];
               if (!iCampoExpediente.valorFecha) {
@@ -683,7 +694,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             }
           }
         }
-  
+
         if (valorTotal !== 0) {
           this.titulo =
             this.titulo +
@@ -704,7 +715,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             }).format(valorCampo) +
             ')';
         }
-  
+
         if (camposPersonalizados.length !== 0) {
           for (let index = 0; index < camposPersonalizados.length; index++) {
             const iTituloEnd = camposPersonalizados[index];
@@ -724,7 +735,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
       }
     }
-   
+
   }
 
   limpiarRepetidos() {
@@ -962,9 +973,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (this.acciones && this.acciones.length !== 0) {
       if (this.acciones.length === 1) {
         this.createNewDocument(this.acciones[0].valor);
-        if(this.trigger) { this.trigger.closeMenu(); }
+        if (this.trigger) { this.trigger.closeMenu(); }
       } else {
-        if(this.trigger) { this.trigger.openMenu(); }
+        if (this.trigger) { this.trigger.openMenu(); }
       }
     }
   }
@@ -978,10 +989,10 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         let borrarRelaciones = true;
         for (let i = 0; i < this.relacionesHerencia.length; i++) {
           const iRelacion = this.relacionesHerencia[i];
-          if( iRelacion.plantilla == _plantilla) {
+          if (iRelacion.plantilla == _plantilla) {
             borrarRelaciones = false;
             break;
-          } 
+          }
         }
         if (borrarRelaciones) {
           this.relacionesHerencia = undefined;
@@ -1035,23 +1046,23 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           } else {
             if (this.tipoMultiple) {
               /*
-	provider.addEventListener('submitComplete',function (event:ChainEvent):void{
-						//dispatchEvent(new ChainEvent('submitComplete',ChainEvent(event).entityObject));
-						if(provider!=null){
-							if(event.entityObject !=null && event.entityObject is PedidoVentaVO){
-								if(listDisponibles!=null){
-									if(listDisponibles.dataProvider==null) listDisponibles.dataProvider = new ArrayCollection();
-									listDisponibles.dataProvider.addItem(event.entityObject);
-									actualizar();
-								}
-							}
-							provider.ocultarAddItems();
-							provider.listar();
-						}
-					});
+  provider.addEventListener('submitComplete',function (event:ChainEvent):void{
+            //dispatchEvent(new ChainEvent('submitComplete',ChainEvent(event).entityObject));
+            if(provider!=null){
+              if(event.entityObject !=null && event.entityObject is PedidoVentaVO){
+                if(listDisponibles!=null){
+                  if(listDisponibles.dataProvider==null) listDisponibles.dataProvider = new ArrayCollection();
+                  listDisponibles.dataProvider.addItem(event.entityObject);
+                  actualizar();
+                }
+              }
+              provider.ocultarAddItems();
+              provider.listar();
+            }
+          });
             */
             } else {
-              if(!this.disponibles) { this.disponibles = [];}
+              if (!this.disponibles) { this.disponibles = []; }
               this.structure.documentos.push(res.data);
               this.disponibles = this.structure.documentos;
               this.fControl.setValue(res.data);
@@ -1140,14 +1151,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
-   //// COPIADO  De LIST
-   listar(_pagina: number) {
+  //// COPIADO  De LIST
+  listar(_pagina: number) {
     if (this.isLoadingList) {
       return;
     }
     const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
     //Para los campos herencia simple no se agregan las opciones de filtro
-    if (this.fControlCheck ) {
+    if (this.fControlCheck) {
       // Valido Fechas
       if (this.fControlCheck.value) {
         if (!this.fControlSearch.value) {
@@ -1187,11 +1198,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
       }
     }
-    
+
 
     // Lo complejo
     // 1 si tiene relacionado es para enviarlos al
-    const valorFuncion = this.isEmpty( this.obtenerValor( PlantillaHelper.PROCESO_FUNCION_SQL) );
+    const valorFuncion = this.isEmpty(this.obtenerValor(PlantillaHelper.PROCESO_FUNCION_SQL));
 
     entity.campoOrigen = this.structure.llaveTabla;
     if (!this.herencia) {
@@ -1203,7 +1214,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           ) {
             alert(
               'Por favor revisa que este seleccionado el campo ' +
-                this.relatedFields[0].texto
+              this.relatedFields[0].texto
             );
             return;
           } else {
@@ -1227,7 +1238,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               if (!iCampoPedido.valorOpcion) {
                 alert(
                   'Por favor revisa que este seleccionado el campo ' +
-                    this.relatedFields[0].texto
+                  this.relatedFields[0].texto
                 );
                 return;
               } else {
@@ -1256,10 +1267,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;
     if (!this.herencia) {
-      // En lso campos herencia no tenemos filtros asi que toca mostrar todos
       entity.estado = StatesEnum.ACTIVE;
     } else {
-      entity.estado = null;
+      entity.estado = '';
+      if(this.fCheckActivo.value) {entity.estado = entity.estado + ";" + StatesEnum.ACTIVE;}
+      if(this.fCheckInactivo.value) {entity.estado = entity.estado + ";" + StatesEnum.INACTIVE;}
+      if(this.fCheckFinalizado.value) {entity.estado = entity.estado + ";" + StatesEnum.FINALIZADO;}
+      if(entity.estado===''){entity.estado = entity.estado + ";" + StatesEnum.ACTIVE;}
     }
     entity.estadoExpediente = null;
     this.isLoadingList = true;
@@ -1278,27 +1292,27 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
         this.isLoadingList = false;
         this.limpiarRepetidos();
-        if(this.fControlCheck){
+        if (this.fControlCheck) {
           if (this.fControlCheck.value) {
-            if(this.dataProvider.length ===0){
+            if (this.dataProvider.length === 0) {
               Swal.fire('Sin resultados', 'No encontramos resultados que concuerden con tu busqueda ' + this.fControlSearch.value, 'info');
               this.fControlSearch.setValue(null);
-            } else{
-              if(this.dataProvider.length === 1){
+            } else {
+              if (this.dataProvider.length === 1) {
                 this.agregarProceso(this.dataProvider[0]);
                 this.fControlSearch.setValue(null);
               }
             }
           }
-        } else{
+        } else {
           //aqui ingresan solmanete los de herencia sencillos (no multiples)
-          if(this.dataProvider.length === 0 ){
+          if (this.dataProvider.length === 0) {
             this.sendCreate();
-          }else{
+          } else {
             this.openDialog(this.dataProvider[0]);
-          } 
+          }
         }
-        
+        this.drawerOpened = false;
       },
       error: () => {
         this.isLoadingList = false;
@@ -1318,7 +1332,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   onCodeResult(resultString: string) {
     this.qrResultString = resultString;
-    if (!this.multiple){
+    if (!this.multiple) {
       this.fControl.setValue(resultString);
       this.gestionarKeyUpTexto()
     } else {
@@ -1327,18 +1341,18 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
-  toogleScanner(){
+  toogleScanner() {
     this.scannerEnabled = !this.scannerEnabled;
     if (this.scannerEnabled) {
-      if (this.fControlCheck) { this.fControlCheck.setValue(true);}
-      if (this.fControlSearch) { this.fControlSearch.setValue(null);}
-      if (this.fControl) { this.fControl.setValue(null);}
+      if (this.fControlCheck) { this.fControlCheck.setValue(true); }
+      if (this.fControlSearch) { this.fControlSearch.setValue(null); }
+      if (this.fControl) { this.fControl.setValue(null); }
     }
   }
 
-  agregarTodos(){
+  agregarTodos() {
     if (this.dataProvider && this.dataProvider.length) {
-      for (let index = this.dataProvider.length -1; index >= 0 ; index--) {
+      for (let index = this.dataProvider.length - 1; index >= 0; index--) {
         const element = this.dataProvider[index];
         this.agregarProceso(element);
       }
@@ -1346,27 +1360,31 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
-  goToLink(){
-    if(this.proceso  && this.linkExternal && this.linkExternal.texto){
+  goToLink() {
+    if (this.proceso && this.linkExternal && this.linkExternal.texto) {
       const filter = new PedidoVentaFilterDTO();
       filter.llaveTabla = this.proceso.llaveTabla;
       filter.plantilla = this.proceso.plantilla;
       this.api.consultarDocumento(filter, this.urlServer).subscribe({
         next: (fullDocument: PedidoVentaDTO) => {
-          if (fullDocument && fullDocument.caracteristicas){
+          if (fullDocument && fullDocument.caracteristicas) {
             for (let index = 0; index < fullDocument.caracteristicas.length; index++) {
               const element = fullDocument.caracteristicas[index];
               // Aqui hay algo que los campos llegan con el nombre y el valor por eso se relaciona el atribut campo
-              if(element.campoDTO && element.campoDTO.codigo === this.linkExternal.texto){
+              if (element.campoDTO && element.campoDTO.codigo === this.linkExternal.texto) {
                 window.open(element.valorText, "_blank");
                 break;
               }
             }
           }
         },
-        error: () =>{}
+        error: () => { }
       });
-      
     }
-}
+  }
+
+  toggleDrawer(): void {
+    // Toggle the drawer
+    this.drawer.toggle();
+  }
 }

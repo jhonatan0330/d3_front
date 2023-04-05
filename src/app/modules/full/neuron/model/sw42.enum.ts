@@ -17,6 +17,7 @@ export enum DocumentoPlantillaCaracteristicaEnum {
 export enum StatesEnum {
   ACTIVE = 'A',
   INACTIVE = 'I',
+  FINALIZADO = 'C'
 }
 
 export enum EncuestaPreguntaEnum {

@@ -90,7 +90,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
         this.router.navigate(['/main']);
         return;
       }
-      this.dataProvider=[];
+      this.dataProvider = [];
       //const serverUrl = this.templateService.getUrl4Id(params.server_id);
       if (propType === 'list') {
         this.plantilla = this.templateService.getTemplate(params.id, params.server_id);
@@ -103,7 +103,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
         if (this.procesoId) {
           this.plantilla = this.templateService.getProceso(this.procesoId);
           this.templatesFromProcess = this.templateService.getTemplateOfProcess(this.procesoId)
-              .filter((item) => item.propiedades &&
+            .filter((item) => item.propiedades &&
               PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)
               && PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PLANTILLA_INICIA_PROCESO)
             );
@@ -128,7 +128,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
         this.router.navigate(['/main']);
         return;
       }
-      if(!this.plantilla) {
+      if (!this.plantilla) {
         this.router.navigate(['/main']);
         return;
       }
@@ -137,14 +137,14 @@ export class Cruds2Component implements OnInit, OnDestroy {
         this.plantilla.propiedades,
         PlantillaHelper.FORM_SOLICITAR_FECHAS
       );
-      if(!this.solicitarFechas && this.templatesFromProcess) {
+      if (!this.solicitarFechas && this.templatesFromProcess) {
         for (let i = 0; i < this.templatesFromProcess.length; i++) {
           const iTemplateFromService = this.templatesFromProcess[i];
-          if(!PlantillaHelper.isEmpty(
+          if (!PlantillaHelper.isEmpty(
             iTemplateFromService.propiedades,
             PlantillaHelper.FORM_SOLICITAR_FECHAS
-          )){
-            this.solicitarFechas=true;
+          )) {
+            this.solicitarFechas = true;
             break;
           }
         }
@@ -223,7 +223,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
   toggleDrawer(): void {
     // Toggle the drawer
     this.drawer.toggle();
-}
+  }
 
   removeColumn(pColumn: string) {
     const index = this.displayedColumns.indexOf(pColumn, 0);
@@ -237,8 +237,8 @@ export class Cruds2Component implements OnInit, OnDestroy {
     this.openDialog(this.plantilla.llaveTabla, this.plantilla.server);
   }
 
-  openDialog(template: string, server : string) {
-    if (!template) {   return; }
+  openDialog(template: string, server: string) {
+    if (!template) { return; }
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = template;
     pedidoVenta.server = server;
