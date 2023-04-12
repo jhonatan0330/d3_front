@@ -25,7 +25,6 @@ import { BaseComponent } from '../base/base.component';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import { BarcodeFormat } from '@zxing/library';
-import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-proceso',
@@ -71,6 +70,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   isLoadingList = false;
   isEndList = true;
   dataProvider: PedidoVentaDTO[]; // Conjunto de documentos a visualizar
+
+  showFilterState = false;
   fCheckActivo: FormControl; // Check que indica si se filtra por los activos
   fCheckInactivo: FormControl; // Check que indica si se debe filtrar por los inactivos
   fCheckFinalizado: FormControl; // Check que indica si se debe filtrar por los finalizados
@@ -82,9 +83,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   qrResultString: string;
   scannerEnabled = false;
   allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX];
-
-  @ViewChild('drawer') drawer: MatDrawer;
-  drawerOpened: boolean = false;
 
   constructor(
     private templateService: TemplateService,
@@ -187,7 +185,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       this.actualizar();
     });
     this.iniciar();
-    if(!this.isEnabled) { this.drawerOpened = false;}
   }
 
   filterDisponiblesWithFields(item: PedidoVentaDTO) {
@@ -1312,7 +1309,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             this.openDialog(this.dataProvider[0]);
           }
         }
-        this.drawerOpened = false;
       },
       error: () => {
         this.isLoadingList = false;
@@ -1381,10 +1377,5 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         error: () => { }
       });
     }
-  }
-
-  toggleDrawer(): void {
-    // Toggle the drawer
-    this.drawer.toggle();
   }
 }
