@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject, tap } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
-import { LocalConstants, LocalStoreService } from 'app/shared/services/local-store.service';
 import { UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
   providedIn: 'root'

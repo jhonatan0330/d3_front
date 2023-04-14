@@ -13,7 +13,6 @@ import { appRoutes } from 'app/app.routing';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './shared/interceptors/error.interceptor';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
-import { ErrorHandlerService } from './shared/services/error-handler.service';
 import { SharedModule } from './shared/shared.module';
 import { SharedMaterialModule } from './shared/shared-material.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -21,6 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { ErrorHandlerService } from './error-handler.service';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,

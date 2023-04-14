@@ -1,4 +1,4 @@
-import { BasicDTO } from "app/shared/domain/sw42.domain";
+import { BasicDTO } from "app/shared/shared.domain";
 
 export class GPSLocalizacionDTO extends BasicDTO {
   dispositivo: string;

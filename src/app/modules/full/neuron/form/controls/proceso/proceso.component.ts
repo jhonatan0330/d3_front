@@ -5,7 +5,6 @@ import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
   PedidoVentaDTO,
-  PropiedadDTO,
   RelacionInternaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import {
@@ -25,6 +24,7 @@ import { BaseComponent } from '../base/base.component';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import { BarcodeFormat } from '@zxing/library';
+import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Component({
   selector: 'app-proceso',

@@ -11,15 +11,14 @@ import {
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   DetallePedidoVentaDTO,
-  ProductoInventarioDTO,
-  PropiedadDTO,
-  TarifaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { getComponent } from 'app/shared/helpers/form-helper';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { IDynamicControl } from '../../modules/full/neuron/form/controls/base/base.component';
+import { PropiedadDTO } from 'app/shared/shared.domain';
+import { ProductoInventarioDTO, TarifaDTO } from '../inventory.types';
 
 @Component({
   selector: 'inventory-product',

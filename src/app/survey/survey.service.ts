@@ -2,9 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PostPreguntaDTO, PostRespuestaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { Observable } from 'rxjs';
-import { EncuestaDTO, EncuestaGrupoDTO } from '../../../../survey/survey.domain';
-
-import { LocalStoreService } from '../../../../shared/services/local-store.service';
+import { EncuestaDTO, EncuestaGrupoDTO } from './survey.domain';
+import { LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
   providedIn: 'root',

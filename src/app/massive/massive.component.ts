@@ -4,7 +4,6 @@ import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
   PedidoVentaDTO,
-  PropiedadDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -19,7 +18,7 @@ import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/mo
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { endWith } from 'rxjs';
+import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Component({
   selector: 'app-massive',

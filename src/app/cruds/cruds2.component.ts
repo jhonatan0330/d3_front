@@ -13,15 +13,12 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { StatesEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { SelectionModel } from '@angular/cdk/collections';
-import {
-  LocalConstants,
-  LocalStoreService,
-} from 'app/shared/services/local-store.service';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 @Component({
   selector: 'app-cruds',

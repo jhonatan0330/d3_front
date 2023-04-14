@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import {
   DocumentoPlantillaDTO,
   OrganizacionDTO,
-  PropiedadDTO,
   RelacionInternaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { clone } from 'lodash';
-import { LocalConstants, LocalStoreService } from 'app/shared/services/local-store.service';
+import { PropiedadDTO } from 'app/shared/shared.domain';
+import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
   providedIn: 'root',

@@ -113,60 +113,7 @@ export class DocumentoPlantillaFilterDTO extends BasicFilterDTO {
   server: string;
   proceso: string;
 }
-			
-export class TarifaFilterDTO extends BasicFilterDTO {
-  tarifario: string;
-  tarifarioNombre: string;
-  producto: string;
-  productoNombre: string;
-  recurso: string;
-  recursoNombre: string;
-  rangoPreciosFilter: boolean;
-  cantidadMinima: number;
-  cantidadMaxima: number;
-  dimension2: string;
-  dimension2Nombre: string;
-  dimension3: string;
-  dimension3Nombre: string;
-  dimension4: string;
-  dimension4Nombre: string;
-}
-			
-export class PedidoVentaDineroFilterDTO extends BasicFilterDTO {
-  documento: string;
-  fechaMin: Date;
-  fechaMax: Date;
-}
-			
-			
-export class PropiedadFilterDTO extends BasicFilterDTO {
-  propiedadValor: string;
-  tipo: string;
-  nombre: string;
-  key: string;
-  campo: string;
-  texto: string;
-  fechaDefinicionMin: Date;
-  fechaDefinicionMax: Date;
-  fechaImplementacionMin: Date;
-  fechaImplementacionMax: Date;
-  cambioCreacion: string;
-  cambioEliminacion: string;
-  rol: string;
-  rolNombre: string;
-  rolExcluyente: string;
-  rolExcluyenteNombre: string;
-  fechaInicialMin: Date;
-  fechaInicialMax: Date;
-  fechaFinalMin: Date;
-  fechaFinalMax: Date;
-  usuario: string;
-  usuarioNombre: string;
-  usuarioExcluyente: string;
-  usuarioExcluyenteNombre: string;
-  bloqueo: string;
-}
-			
+				
 export class RelacionInternaFilterDTO extends BasicFilterDTO {
   propiedad: string;
   propiedadNombre: string;
@@ -272,36 +219,6 @@ export class DetallePedidoVentaFilterDTO extends BasicFilterDTO {
   plantilla: string;
   transaccionRegistro: string;
   transaccionInactivo: string;
-}
-			
-export class CategoriaProductoFilterDTO extends BasicFilterDTO {
-  nombre: string;
-  imagen: string;
-  nodoSuperior: string;
-  inventariosFilter: boolean;
-  camposAdicionalesFilter: boolean;
-  composicionFilter: boolean;
-  promocionBase: number;
-}
-			
-export class ProductoInventarioFilterDTO extends BasicFilterDTO {
-  producto: string;
-  nombre: string;
-  codigo: string;
-  bodega: string;
-  nombreBodega: string;
-  fechaInicialMin: Date;
-  fechaInicialMax: Date;
-}
-			
-export class ProductoCaracteristicaFilterDTO extends BasicFilterDTO {
-  base: string;
-  baseNombre: string;
-  formato: string;
-  nombre: string;
-  codigo: string;
-  orden: number;
-  imagen: string;
 }
 			
 export class UsuarioRolProductoFilterDTO extends BasicFilterDTO {

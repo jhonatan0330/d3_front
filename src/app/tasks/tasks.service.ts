@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, map, Observable,  switchMap, take, tap } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
-import { LocalStoreService } from 'app/shared/services/local-store.service';
 import { IdResponse } from 'app/modules/full/neuron/model/sw42.utils';
+import { LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
     providedIn: 'root'

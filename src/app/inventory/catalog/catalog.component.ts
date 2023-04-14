@@ -1,10 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ProductoDTO, ProductoInventarioDTO, TarifaDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import Swal from 'sweetalert2';
+import { ProductoDTO, ProductoInventarioDTO, TarifaDTO } from '../inventory.types';
+import { InventoryService } from '../inventory.service';
 
 @Component({
   selector: 'inventory-catalog',
@@ -33,8 +32,7 @@ export class CatalogComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<CatalogComponent>,
-    private api: ApiService,
-    private utils: UtilsService
+    private api: InventoryService
     ) { }
 
   ngOnInit(): void {

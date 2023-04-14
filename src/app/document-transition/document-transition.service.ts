@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { LocalStoreService } from 'app/shared/services/local-store.service';
 import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from './document-transition.types';
 import { Observable } from 'rxjs';
 import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
   providedIn: 'root'

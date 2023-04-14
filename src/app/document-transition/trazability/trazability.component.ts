@@ -1,13 +1,14 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO, PropiedadDTO } from "app/modules/full/neuron/model/sw42.domain";
+import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from "app/modules/full/neuron/model/sw42.domain";
 import { TemplateService } from "app/modules/full/neuron/service/template.service";
 import { UtilsService } from "app/modules/full/neuron/service/utils.service";
 import { PlantillaHelper } from "app/shared/helpers/plantilla-helper";
 import Swal from "sweetalert2";
 import { DocumentTransitionService } from "../document-transition.service";
 import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from "../document-transition.types";
+import { PropiedadDTO } from "app/shared/shared.domain";
 
 @Component({
   selector: 'trazability',

@@ -1,11 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { InventoryService } from 'app/inventory/inventory.service';
 import {
-  CategoriaProductoDTO,
   DetallePedidoVentaDTO,
   PedidoVentaCaracteristicaDTO,
-  ProductoDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -13,6 +10,7 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
+import { CategoriaProductoDTO, ProductoDTO } from 'app/inventory/inventory.types';
 
 @Component({
   selector: 'app-detalle',
@@ -41,7 +39,6 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   constructor(
     private templateService: TemplateService,
-    private inventoryService: InventoryService,
     private api: ApiService,
     private cd:ChangeDetectorRef
   ) {
@@ -290,12 +287,13 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     //if (!this.isEnabled) {
     //  return;
     //}
-    this.inventoryService.modalProduct(item, this.isEnabled).subscribe((resp) => {
+    //TODO: Aqui modal producto
+    /*this.inventoryService.modalProduct(item, this.isEnabled).subscribe((resp) => {
       if (!resp) {
         this.data.detalles.splice(1, 1);
       }
       this.actualizarDetalles(null);
-    });
+    });*/
   }
 
   actualizarDetalles(producto: ProductoDTO) {

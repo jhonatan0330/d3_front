@@ -3,11 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import {
-  LocalConstants,
-  LocalStoreService,
-} from '../../../../shared/services/local-store.service';
-
-import {
   DocumentoPlantillaDTO,
   OrganizacionDTO,
   UsuarioAutenticacionDTO,
@@ -16,9 +11,6 @@ import {
   RelacionInternaDTO,
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaAjusteDTO,
-  ProductoInventarioDTO,
-  ProductoDTO,
-  TarifaDTO,
 } from '../model/sw42.domain';
 import { ApiErrorResponse } from '../model/sw42.utils';
 import {
@@ -28,6 +20,7 @@ import {
   RelacionInternaFilterDTO,
 } from '../model/sw42.filter';
 import { environment } from 'environments/environment';
+import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
   providedIn: 'root',
@@ -84,37 +77,6 @@ export class ApiService {
     return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
       this.ls.getUrlAccess('/template/validateLoad', _server),
       filter
-    );
-  }
-
-  consultarProducto(productoId: String, _server: string): Observable<ProductoDTO> {
-    return this.http.get<ProductoDTO>(
-      this.ls.getUrlAccess('/document/getProduct/' + productoId, _server)
-    );
-  }
-
-  actualizarProducto(producto: ProductoDTO, _server: string): Observable<ProductoDTO> {
-    return this.http.post<ProductoDTO>(
-      this.ls.getUrlAccess('/document/updateProduct', _server),
-      producto
-    );
-  }
-
-  consultarProductos2Filter(filter: String, _server: string): Observable<ProductoDTO[]> {
-    return this.http.get<ProductoDTO[]>(
-      this.ls.getUrlAccess('/document/getProducts/' + filter, _server)
-    );
-  }
-
-  consultarTarifasProducto(productId: String, _server: string): Observable<TarifaDTO[]> {
-    return this.http.get<TarifaDTO[]>(
-      this.ls.getUrlAccess('/document/getTarifas/' + productId, _server)
-    );
-  }
-
-  consultarInventario(productoId: String, _server: string): Observable<ProductoInventarioDTO[]> {
-    return this.http.get<ProductoInventarioDTO[]>(
-      this.ls.getUrlAccess('/document/getInventory/' + productoId, _server)
     );
   }
 

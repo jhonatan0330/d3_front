@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImageFormatPipe } from './pipes/local-image';
 
 import { SharedPipesModule } from './pipes/shared-pipes.module';
-import { SharedDirectivesModule } from './directives/shared-directives.module';
 import { AuthenticationService } from 'app/authentication/authentication.service';
 import { InventoryService } from 'app/inventory/inventory.service';
 
@@ -14,8 +13,7 @@ import { InventoryService } from 'app/inventory/inventory.service';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedPipesModule,
-    SharedDirectivesModule
+    SharedPipesModule
   ],
   providers: [
     ImageFormatPipe,
@@ -27,8 +25,7 @@ import { InventoryService } from 'app/inventory/inventory.service';
     FormsModule,
     ReactiveFormsModule,
     ImageFormatPipe,
-    SharedPipesModule,
-    SharedDirectivesModule
+    SharedPipesModule
   ]
 })
 export class SharedModule {

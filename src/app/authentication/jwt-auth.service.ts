@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { LocalStoreService, LocalConstants } from '../shared/services/local-store.service';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map, catchError } from 'rxjs/operators';
@@ -14,6 +13,7 @@ import {
 } from 'app/modules/full/neuron/model/sw42.filter';
 import { of, BehaviorSubject, throwError } from 'rxjs';
 import { environment } from 'environments/environment';
+import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
   providedIn: 'root',

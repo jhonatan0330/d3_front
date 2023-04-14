@@ -8,9 +8,7 @@ export const LocalConstants = {
   SERVERS: 'SERVERS'
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class LocalStoreService {
 
   private ls = window.localStorage;

@@ -4,9 +4,9 @@ import {
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaCaracteristicaDTO,
   PedidoVentaDTO,
-  PropiedadDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
+import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 
 export interface IDynamicControl {

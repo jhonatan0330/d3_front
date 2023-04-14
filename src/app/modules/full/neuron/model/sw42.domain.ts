@@ -1,8 +1,5 @@
-import { BasicDTO } from "app/shared/domain/sw42.domain";
-
-export class BasicParamDTO extends BasicDTO {
-  propiedades: PropiedadDTO[];
-}
+import { CategoriaProductoDTO, ProductoDTO, TarifaDTO, UsuarioRolProductoDTO } from "app/inventory/inventory.types";
+import { BasicDTO, BasicParamDTO } from "app/shared/shared.domain";
 
 export class ProcesoEstadoDTO extends BasicParamDTO {
   tipo: string;
@@ -106,21 +103,7 @@ export class DocumentoPlantillaDTO extends BasicParamDTO {
   server: string;
   proceso: string;
 }
-export class TarifaDTO extends BasicDTO {
-  tarifario: string;
-  tarifarioNombre: string;
-  producto: string;
-  productoNombre: string;
-  recurso: string;
-  recursoNombre: string;
-  rangoPrecios: boolean;
-  valorMinimo: number;
-  valor: number;
-  valorMaximo: number;
-  cantidadMinima: number;
-  cantidadMaxima: number;
-  totalMinimo: number;
-}
+
 export class PedidoVentaDineroDTO extends BasicDTO {
   documento: string;
   fecha: Date;
@@ -129,31 +112,7 @@ export class PedidoVentaDineroDTO extends BasicDTO {
   valorCampo: number;
 }
 
-export class PropiedadDTO extends BasicDTO {
-  propiedadValor: string;
-  tipo: string;
-  nombre: string;
-  key: string;
-  campo: string;
-  valor: string;
-  texto: string;
-  fechaDefinicion: Date;
-  fechaImplementacion: Date;
-  cambioCreacion: string;
-  cambioEliminacion: string;
-  rol: string;
-  rolNombre: string;
-  rolExcluyente: string;
-  rolExcluyenteNombre: string;
-  fechaInicial: Date;
-  fechaFinal: Date;
-  usuario: string;
-  usuarioNombre: string;
-  usuarioExcluyente: string;
-  usuarioExcluyenteNombre: string;
-  motivo: string;
-  bloqueo: string;
-}
+
 export class RelacionInternaDTO extends BasicDTO {
   propiedad: string;
   propiedadNombre: string;
@@ -246,68 +205,7 @@ export class DetallePedidoVentaDTO extends BasicParamDTO {
   transaccionInactivo: string;
   campo: string;
 }
-export class CategoriaProductoDTO extends BasicParamDTO {
-  nombre: string;
-  imagen: string;
-  cantidadMaxima: number;
-  nodoSuperior: string;
-  hijos: CategoriaProductoDTO[];
-  inventarios: boolean;
-  camposAdicionales: boolean;
-  composicion: boolean;
-  promocionBase: number;
-}
-export class ProductoInventarioDTO extends BasicDTO {
-  producto: string;
-  nombre: string;
-  codigo: string;
-  bodega: string;
-  nombreBodega: string;
-  cantidadActual: number;
-  cantidadMinima: number;
-  cantidadMaxima: number;
-  cantidadModificar: number;
-  fechaInicial: Date;
-}
-export class ProductoCaracteristicaDTO extends BasicParamDTO {
-  objetivo: string;
-  base: string;
-  baseNombre: string;
-  formato: string;
-  nombre: string;
-  codigo: string;
-  orden: number;
-  imagen: string;
-  caracteristicas: PedidoVentaDTO[];
-}
-export class UsuarioRolProductoDTO extends BasicDTO {
-  documento: string;
-  documentoNombre: string;
-  producto: string;
-  productoNombre: string;
-  nombre: string;
-  modificador: string;
-  cantidadPromocion: number;
-  cantidadPromocionBase: number;
-}
-export class ProductoDTO extends BasicParamDTO {
-  nombre: string;
-  codigo: string;
-  filtros: string;
-  imagen: string;
-  descripcion: string;
-  categoria: string;
-  categoriaNombre: string;
-  usuarioRol: string;
-  valorMinimoPromocion: number;
-  cantidadPromocion: number;
-  cantidadPromocionBase: number;
-  detallePlantilla: DetallePedidoVentaDTO;
-  documento: string;
-  productoBase: string;
-  baseNombre: string;
-  campos: ProductoCaracteristicaDTO[];
-}
+
 export class ModuloContratadoDTO extends BasicDTO {
   modulo: string;
   nombre: string;

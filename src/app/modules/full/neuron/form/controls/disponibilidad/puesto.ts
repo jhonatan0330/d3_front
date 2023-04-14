@@ -1,8 +1,8 @@
 import { DetallePedidoVentaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { LocalStoreService } from 'app/shared/local-store.service';
 import { ImageFormatPipe } from 'app/shared/pipes/local-image';
-import { LocalStoreService } from 'app/shared/services/local-store.service';
 
 export class Puesto {
   x: number;

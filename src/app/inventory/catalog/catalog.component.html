@@ -1,97 +1,47 @@
 <div fxFlex="100" fxLayout="column">
   <div fxLayout="row wrap" fxLayoutAlign=" center">
     <span fxFlex fxLayoutAlign="center center">{{ product?.nombre }}</span>
-    <button
-      mat-raised-button
-      (click)="toogleEdit()"
-      color="accent"
-      tabindex="-1"
-      *ngIf="!isEditable"
-    >
+    <button mat-raised-button (click)="toogleEdit()" color="accent" tabindex="-1" *ngIf="!isEditable">
       <mat-icon>edit</mat-icon>
     </button>
-    <button
-      mat-icon-button
-      color="primary"
-      (click)="dialogRef.close(false)"
-      tabindex="-1"
-    >
+    <button mat-icon-button color="primary" (click)="dialogRef.close(false)" tabindex="-1">
       <mat-icon>exit_to_app</mat-icon>
     </button>
   </div>
-  <mat-progress-bar
-    *ngIf="isLoading"
-    color="primary"
-    mode="indeterminate"
-  ></mat-progress-bar>
+  <mat-progress-bar *ngIf="isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
   <mat-card>
     <mat-card-content>
       <mat-form-field>
         <div class="imagePreview" *ngIf="product && product.imagen !== ''">
           <img [src]="product.imagen" />
         </div>
-        <input
-          name="image"
-          matInput
-          [formControl]="imageControl"
-          placeholder="Imagen"
-        />
+        <input name="image" matInput [formControl]="imageControl" placeholder="Imagen" />
       </mat-form-field>
       <mat-form-field>
-        <textarea
-          matInput
-          name="descripcion"
-          [formControl]="descripcionControl"
-          placeholder="Descripcion"
-          [readonly]="!isEditable"
-        ></textarea>
+        <textarea matInput name="descripcion" [formControl]="descripcionControl" placeholder="Descripcion"
+          [readonly]="!isEditable"></textarea>
       </mat-form-field>
 
       <mat-form-field>
-        <input
-          type="text"
-          placeholder="Producto Base"
-          matInput
-          [formControl]="baseControl"
-          [matAutocomplete]="auto"
-          [readonly]="!isEditable"
-        />
-        <button
-          mat-icon-button
-          matSuffix
-          *ngIf="isEditable"
-          (click)="gestionarKeyUpTexto()"
-          tabindex="-1"
-        >
+        <input type="text" placeholder="Producto Base" matInput [formControl]="baseControl" [matAutocomplete]="auto"
+          [readonly]="!isEditable" />
+        <button mat-icon-button matSuffix *ngIf="isEditable" (click)="gestionarKeyUpTexto()" tabindex="-1">
           <mat-icon>search</mat-icon>
         </button>
-        <mat-autocomplete
-          #auto="matAutocomplete"
-          [displayWith]="autoCompleteDisplay"
-        >
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay">
           <mat-option *ngFor="let option of options" [value]="option">
             {{ option.nombre }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
 
-      <button
-        *ngIf="isEditable"
-        mat-raised-button
-        class="mat-primary full-width mb-1"
-      >
+      <button *ngIf="isEditable" mat-raised-button class="mat-primary full-width mb-1">
         Modificar
       </button>
     </mat-card-content>
   </mat-card>
   <mat-card>
-    <button
-      mat-raised-button
-      color="accent"
-      class="full-width"
-      tabindex="-1"
-      *ngIf="isEditable"
-    >
+    <button mat-raised-button color="accent" class="full-width" tabindex="-1" *ngIf="isEditable">
       <mat-icon>add</mat-icon> Agregar tarifa
     </button>
     <table mat-table [dataSource]="tarifas" class="mat-elevation-z8 full-width">
@@ -146,35 +96,19 @@
         </td>
       </ng-container>
 
-      <tr
-        mat-header-row
-        *matHeaderRowDef="tarifaColumns"
-      ></tr>
-      <tr
-        mat-row
-        *matRowDef="
+      <tr mat-header-row *matHeaderRowDef="tarifaColumns"></tr>
+      <tr mat-row *matRowDef="
           let row;
           columns: tarifaColumns
-        "
-      ></tr>
+        "></tr>
     </table>
   </mat-card>
 
   <mat-card>
-    <button
-      mat-raised-button
-      color="accent"
-      class="full-width"
-      tabindex="-1"
-      *ngIf="isEditable"
-    >
+    <button mat-raised-button color="accent" class="full-width" tabindex="-1" *ngIf="isEditable">
       <mat-icon>add</mat-icon> Agregar inventario
     </button>
-    <table
-      mat-table
-      [dataSource]="inventario"
-      class="mat-elevation-z8 full-width"
-    >
+    <table mat-table [dataSource]="inventario" class="mat-elevation-z8 full-width">
       <ng-container matColumnDef="bodega">
         <th mat-header-cell *matHeaderCellDef>BODEGA</th>
         <td mat-cell *matCellDef="let element">
@@ -199,7 +133,7 @@
           <span class="mat-title">{{ element.cantidadActual | number }}</span>
         </td>
       </ng-container>
-      <ng-container matColumnDef="acciones" >
+      <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element" class="text-center">
           <mat-icon color="accent">edit</mat-icon>
@@ -207,14 +141,8 @@
         </td>
       </ng-container>
 
-      <tr
-        mat-header-row
-        *matHeaderRowDef="inventoryColumns"
-      ></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: inventoryColumns"
-      ></tr>
+      <tr mat-header-row *matHeaderRowDef="inventoryColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: inventoryColumns"></tr>
     </table>
   </mat-card>
 </div>

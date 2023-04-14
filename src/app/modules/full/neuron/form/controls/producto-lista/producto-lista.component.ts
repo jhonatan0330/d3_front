@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ProductoDTO, UsuarioRolProductoDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
+import { ProductoDTO, UsuarioRolProductoDTO } from 'app/inventory/inventory.types';
 
 @Component({
   selector: 'app-producto-lista',
@@ -97,7 +97,7 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
       nombre: new FormControl(''),
       cantidad: new FormControl(0)
     });
-    this.usuarioRol = new UsuarioRolProductoDTO()
+    this.usuarioRol = new UsuarioRolProductoDTO();
     this.usuarioRol.producto = producto.llaveTabla;
     this.usuarioRol.productoNombre = producto.nombre;
     if (producto.cantidadPromocionBase === 0){

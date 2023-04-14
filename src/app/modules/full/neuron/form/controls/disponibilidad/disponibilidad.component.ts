@@ -1,17 +1,17 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { InventoryService } from 'app/inventory/inventory.service';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
-import { LocalStoreService } from 'app/shared/services/local-store.service';
-import { DetallePedidoVentaDTO, PedidoVentaCaracteristicaDTO, ProductoDTO } from '../../../model/sw42.domain';
+import { DetallePedidoVentaDTO, PedidoVentaCaracteristicaDTO } from '../../../model/sw42.domain';
 import { BaseComponent } from '../base/base.component';
 import { Estructura } from './estructura';
 import { Puesto } from './puesto';
+import { ProductoDTO } from 'app/inventory/inventory.types';
+import { LocalStoreService } from 'app/shared/local-store.service';
 
 @Component({
   selector: 'app-disponibilidad',
@@ -29,8 +29,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
     private api: ApiService,
     private ls: LocalStoreService,
     private template: TemplateService,
-    private utils: UtilsService,
-    private inventoryService: InventoryService
+    private utils: UtilsService
   ) {
     super();
   }
@@ -108,6 +107,8 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
         let formDetailLocation = puesto.detalle;
         if (!formDetailLocation) { formDetailLocation = this.addLocation(puesto, this.structure.productos[0]); }
         if (formDetailLocation) {
+          // TODO:  Toca vovler a activar esto
+/*
           this.inventoryService.modalProduct(formDetailLocation, this.isEnabled).subscribe((resp) => {
             // Aqui es donde se remueve el item
             if (!resp) {
@@ -116,7 +117,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
               //Como llamo a puesto no pasa por el observer de estructura
               this.ajustarData(puesto);
             }
-          });
+          });*/
         }
       } 
     }

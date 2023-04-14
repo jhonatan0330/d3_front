@@ -5,7 +5,7 @@ import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 
 import Swal from 'sweetalert2';
 import { EncuestaDTO, EncuestaGrupoDTO, EncuestaPreguntaDTO, EncuestaOpcionRespuestaDTO, EncuestaRespuestaDTO } from 'app/survey/survey.domain';
-import { SurveyService } from '../../modules/full/neuron/service/survey.service';
+import { SurveyService } from '../survey.service';
 
 @Component({
   selector: 'app-votar',

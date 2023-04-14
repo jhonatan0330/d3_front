@@ -22,7 +22,6 @@ import {
   PedidoVentaDTO,
   ProcesoEstadoDTO,
   ProcesoTransicionDTO,
-  PropiedadDTO,
   ReporteBaseDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import {
@@ -37,14 +36,11 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { IDynamicControl } from './controls/base/base.component';
 import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { InventoryService } from 'app/inventory/inventory.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {
-  LocalConstants,
-  LocalStoreService,
-} from 'app/shared/services/local-store.service';
 import { getComponent } from 'app/shared/helpers/form-helper';
 import Swal from 'sweetalert2';
+import { PropiedadDTO } from 'app/shared/shared.domain';
+import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 @Component({
   selector: 'app-form',
@@ -102,7 +98,6 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     private ls: LocalStoreService,
     private compiler: ComponentFactoryResolver,
-    private inventoryService: InventoryService,
     private utilsService: UtilsService
   ) { }
 
@@ -818,7 +813,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   showProduct() {
     if (this.canProduct) {
-      this.inventoryService.modalCatalog(this.pedido);
+      // colcoar la url para ir al inventario y cerrar el form
     }
   }
 
