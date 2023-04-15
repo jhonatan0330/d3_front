@@ -1,8 +1,9 @@
-<fuse-card class="flex items-center p-4 cursor-pointer h-18" (click)="showTemplate()">
+<!--//TODO: colcoar sombras-->
+<div class="flex items-center p-4 cursor-pointer h-18" (click)="showTemplate()">
   <img class="w-10 h-10 mr-4" alt="..." src="{{ imagen | imageFormat }}">
   <div class="flex flex-col">
     <div class="text-base font-medium leading-tight line-clamp-2">{{ nombre }}</div>
     <div *ngIf="type==='R'" class="text-xs text-secondary">Report</div>
     <div *ngIf="type==='T'" class="text-xs text-secondary">Process</div>
   </div>
-</fuse-card>
+</div>

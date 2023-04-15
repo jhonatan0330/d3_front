@@ -5,7 +5,7 @@ import {
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { ImageFormatPipe } from 'app/shared/pipes/local-image';
+import { ImageFormatPipe } from 'app/shared/local-image';
 import { BehaviorSubject } from 'rxjs';
 import { Puesto } from './puesto';
 import { LocalStoreService } from 'app/shared/local-store.service';

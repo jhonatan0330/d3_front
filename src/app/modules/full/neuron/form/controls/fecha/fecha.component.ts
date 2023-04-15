@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import * as moment from 'moment';
 import { timer } from 'rxjs';

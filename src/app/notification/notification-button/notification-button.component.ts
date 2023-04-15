@@ -6,7 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
 import { NotificationsService } from 'app/notification/notification.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';

@@ -2,7 +2,7 @@ import { DetallePedidoVentaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/m
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { ImageFormatPipe } from 'app/shared/pipes/local-image';
+import { ImageFormatPipe } from 'app/shared/local-image';
 
 export class Puesto {
   x: number;

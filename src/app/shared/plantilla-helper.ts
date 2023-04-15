@@ -1,7 +1,5 @@
-import {
-  DocumentoPlantillaCaracteristicaDTO,
-} from 'app/modules/full/neuron/model/sw42.domain';
-import { PropiedadDTO } from '../shared.domain';
+
+import { PropiedadDTO } from './shared.domain';
 
 export class PlantillaHelper {
   /*******************GENERALES***************/
@@ -127,16 +125,6 @@ export class PlantillaHelper {
       return p.valor;
     }
     return '';
-  }
-
-  static obtenerValorCampo(
-    campo: DocumentoPlantillaCaracteristicaDTO,
-    key: string
-  ): string {
-    if (!campo) {
-      return '';
-    }
-    return PlantillaHelper.buscarValor(campo.propiedades, key);
   }
 
   static buscarValorMultiple(

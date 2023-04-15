@@ -34,10 +34,10 @@ import {
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { IDynamicControl } from './controls/base/base.component';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { getComponent } from 'app/shared/helpers/form-helper';
+import { getComponent } from 'app/modules/full/neuron/form-helper';
 import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
@@ -807,7 +807,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   showMassive() {
     if (this.canMassive) {
-      this.utilsService.modalMassive(this.plantilla.llaveTabla, this.plantilla.server);
+      //TODO: this.utilsService.modalMassive(this.plantilla.llaveTabla, this.plantilla.server);
     }
   }
 

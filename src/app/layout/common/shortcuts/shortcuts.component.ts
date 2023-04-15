@@ -6,7 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({
     selector: 'shortcuts',

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ProductoDTO, ProductoInventarioDTO, TarifaDTO } from './inventory.types';
 import { HttpClient } from '@angular/common/http';

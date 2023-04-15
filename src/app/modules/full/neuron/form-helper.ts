@@ -17,7 +17,7 @@ import {
 import { Type } from '@angular/core';
 
 import { formatDate } from '@angular/common';
-import { PlantillaHelper } from './plantilla-helper';
+import { PlantillaHelper } from '../../../shared/plantilla-helper';
 import * as moment from 'moment';
 import { ProductoListaComponent } from 'app/modules/full/neuron/form/controls/producto-lista/producto-lista.component';
 import { GpsComponent } from 'app/modules/full/neuron/form/controls/gps/gps.component';

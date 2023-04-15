@@ -11,16 +11,15 @@ import { LayoutModule } from 'app/layout/layout.module';
 import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { HttpErrorInterceptor } from './shared/interceptors/error.interceptor';
+import { HttpErrorInterceptor } from './shared/error.interceptor';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { SharedModule } from './shared/shared.module';
-import { SharedMaterialModule } from './shared/shared-material.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { ErrorHandlerService } from './error-handler.service';
+import { ErrorHandlerService } from './shared/error-handler.service';
+import { TokenInterceptor } from './shared/token.interceptor';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -49,7 +48,6 @@ const routerConfig: ExtraOptions = {
 
     // 3rd party modules that require global configuration via forRoot
     SharedModule,
-    SharedMaterialModule,
 
     ReactiveFormsModule,
     FormsModule,

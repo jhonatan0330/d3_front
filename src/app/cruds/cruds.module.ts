@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
-import { SharedMaterialModule } from 'app/shared/shared-material.module';
 import { crudsRoutes } from './cruds.routing';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,6 +18,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Cruds2Component } from './cruds2.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 
 @NgModule({
@@ -28,7 +28,6 @@ import { Cruds2Component } from './cruds2.component';
     imports: [
         RouterModule.forChild(crudsRoutes),
         SharedModule,
-        SharedMaterialModule,
         MatButtonModule,
         MatCheckboxModule,
         MatDialogModule,
@@ -40,6 +39,7 @@ import { Cruds2Component } from './cruds2.component';
         MatProgressBarModule,
         MatSelectModule,
         MatSidenavModule,
+        MatDatepickerModule,
         FuseFindByKeyPipeModule,
         FuseNavigationModule,
         FuseScrollbarModule,

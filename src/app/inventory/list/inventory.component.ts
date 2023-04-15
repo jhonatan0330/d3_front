@@ -5,6 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { debounceTime, map, merge, Observable, Subject, switchMap, takeUntil } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { InventoryService } from '../inventory.service';
 
 @Component({
     selector       : 'inventory-list',

@@ -1,31 +1,28 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ImageFormatPipe } from './pipes/local-image';
+import { ImageFormatPipe } from './local-image';
 
-import { SharedPipesModule } from './pipes/shared-pipes.module';
 import { AuthenticationService } from 'app/authentication/authentication.service';
-import { InventoryService } from 'app/inventory/inventory.service';
 
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
-    SharedPipesModule
+    ReactiveFormsModule
   ],
   providers: [
-    ImageFormatPipe,
-    AuthenticationService,
-    InventoryService
+    AuthenticationService
+  ],
+  declarations:[
+    ImageFormatPipe
   ],
   exports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ImageFormatPipe,
-    SharedPipesModule
+    ImageFormatPipe
   ]
 })
 export class SharedModule {

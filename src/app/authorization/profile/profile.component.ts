@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit, AfterViewInit,  ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { Subject, takeUntil, Subscription, filter } from 'rxjs';
-import { FormControl, FormGroup, Validators, UntypedFormControl } from '@angular/forms';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { Subject, takeUntil, Subscription } from 'rxjs';
+import {  UntypedFormControl } from '@angular/forms';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { cloneDeep } from 'lodash';
 

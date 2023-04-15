@@ -4,7 +4,7 @@ import {
   OrganizacionDTO,
   RelacionInternaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { clone } from 'lodash';

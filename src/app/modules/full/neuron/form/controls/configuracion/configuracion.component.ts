@@ -7,7 +7,7 @@ import {
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';

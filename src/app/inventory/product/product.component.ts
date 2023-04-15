@@ -14,8 +14,8 @@ import {
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { getComponent } from 'app/shared/helpers/form-helper';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { getComponent } from 'app/modules/full/neuron/form-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { IDynamicControl } from '../../modules/full/neuron/form/controls/base/base.component';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { ProductoInventarioDTO, TarifaDTO } from '../inventory.types';
@@ -204,8 +204,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
         formItemRecurso.structure.formato ===
         DocumentoPlantillaCaracteristicaEnum.NUMERO
       ) {
-        const idTarifa: string = PlantillaHelper.obtenerValorCampo(
-          formItemRecurso.structure,
+        const idTarifa: string = PlantillaHelper.buscarValor(
+          formItemRecurso.structure.propiedades,
           PlantillaHelper.DETALLE_TARIFA_PRODUCTO
         );
         if (!idTarifa && idTarifa.length !== 0) {
@@ -288,8 +288,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
             iCampo.campoDTO.propiedades &&
             iCampo.campoDTO.propiedades.length !== 0
           ) {
-            const tarifario: string = PlantillaHelper.obtenerValorCampo(
-              iCampo.campoDTO,
+            const tarifario: string = PlantillaHelper.buscarValor(
+              iCampo.campoDTO.propiedades,
               PlantillaHelper.DETALLE_TARIFA_PRODUCTO
             );
             if (!tarifario && tarifario.length !== 0 ) {

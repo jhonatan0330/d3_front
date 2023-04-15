@@ -4,8 +4,8 @@ import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
-import { FormulaHelper } from 'app/shared/helpers/formula.helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { FormulaHelper } from 'app/modules/full/neuron/formula.helper';
 import { BaseComponent } from '../base/base.component';
 import { CurrencyMaskInputMode } from 'ngx-currency';
 import { debounceTime } from 'rxjs';

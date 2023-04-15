@@ -1,7 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { FuseCardModule } from "@fuse/components/card";
-import { SharedMaterialModule } from "app/shared/shared-material.module";
 import { SharedModule } from "app/shared/shared.module";
 import { VotarComponent } from "./votar/votar.component";
 import { surveyRoutes } from "./survey.routing";
@@ -14,9 +12,7 @@ import { surveyRoutes } from "./survey.routing";
     ],
     imports: [
         RouterModule.forChild(surveyRoutes),
-        SharedModule,
-        SharedMaterialModule,        
-
+        SharedModule
     ]
 })
 export class SurveyModule {

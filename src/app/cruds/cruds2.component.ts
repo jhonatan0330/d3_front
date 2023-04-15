@@ -10,7 +10,7 @@ import { PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter'
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { StatesEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { SelectionModel } from '@angular/cdk/collections';
 import Swal from 'sweetalert2';

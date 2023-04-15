@@ -2,7 +2,7 @@ import { Component,  OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 
 @Component({

@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { ProductoDTO, UsuarioRolProductoDTO } from 'app/inventory/inventory.types';

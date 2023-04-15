@@ -4,7 +4,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
-import { SharedMaterialModule } from 'app/shared/shared-material.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { TrazabilityComponent } from './trazability/trazability.component';
 
@@ -23,7 +22,6 @@ import { TrazabilityComponent } from './trazability/trazability.component';
         MatFormFieldModule,
         MatInputModule,
         FlexLayoutModule,
-        SharedMaterialModule,
         SharedModule
     ],
     exports : [

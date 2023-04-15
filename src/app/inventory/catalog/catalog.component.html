@@ -9,8 +9,8 @@
     </button>
   </div>
   <mat-progress-bar *ngIf="isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
-  <mat-card>
-    <mat-card-content>
+  <div>
+    <div>
       <mat-form-field>
         <div class="imagePreview" *ngIf="product && product.imagen !== ''">
           <img [src]="product.imagen" />
@@ -38,9 +38,9 @@
       <button *ngIf="isEditable" mat-raised-button class="mat-primary full-width mb-1">
         Modificar
       </button>
-    </mat-card-content>
-  </mat-card>
-  <mat-card>
+    </div>
+  </div>
+  <div>
     <button mat-raised-button color="accent" class="full-width" tabindex="-1" *ngIf="isEditable">
       <mat-icon>add</mat-icon> Agregar tarifa
     </button>
@@ -102,9 +102,9 @@
           columns: tarifaColumns
         "></tr>
     </table>
-  </mat-card>
+  </div>
 
-  <mat-card>
+  <div>
     <button mat-raised-button color="accent" class="full-width" tabindex="-1" *ngIf="isEditable">
       <mat-icon>add</mat-icon> Agregar inventario
     </button>
@@ -144,5 +144,5 @@
       <tr mat-header-row *matHeaderRowDef="inventoryColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: inventoryColumns"></tr>
     </table>
-  </mat-card>
+  </div>
 </div>

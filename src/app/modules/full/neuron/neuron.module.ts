@@ -26,13 +26,14 @@ import { SeccionComponent } from './form/controls/seccion/seccion.component';
 import { BaseComponent } from './form/controls/base/base.component';
 import { GpsComponent } from './form/controls/gps/gps.component';
 import { neuronRoutes } from './neuron.routing';
-import { SharedMaterialModule } from 'app/shared/shared-material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -65,7 +66,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         MatTooltipModule,
         FuseCardModule,
         SharedModule,
-        SharedMaterialModule,
         FlexLayoutModule,
         NgxMatTimepickerModule,
         NgxMatDatetimePickerModule,
@@ -73,6 +73,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         AngularSignaturePadModule ,
         ZXingScannerModule,
 
+        MatAutocompleteModule,
+        MatCheckboxModule,
     ]
 })
 export class NeuronModule {

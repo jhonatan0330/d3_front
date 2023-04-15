@@ -7,18 +7,18 @@ import {
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
-import { saveAs } from 'file-saver';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import {
   getFieldFromTemplate,
   getXMLBase,
   procesarXMLBase,
-} from 'app/shared/helpers/form-helper';
+} from 'app/modules/full/neuron/form-helper';
+import { saveAs } from 'file-saver';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
-import Swal from 'sweetalert2';
-import * as XLSX from 'xlsx';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PropiedadDTO } from 'app/shared/shared.domain';
+import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-massive',
@@ -421,11 +421,6 @@ export class MassiveComponent implements OnInit {
         }
 
         if (!campo) {
-          /*Swal.fire(
-            'Dev Error',
-            'El campo a generado un null.' + iCampo.nombre,
-            'warning'
-          );*/
           this.mensajeValidacion(pedido, i);
           this.isLoading = false;
           return;
@@ -435,7 +430,7 @@ export class MassiveComponent implements OnInit {
           campo.campoDTO.formato ===
           DocumentoPlantillaCaracteristicaEnum.PROCESO &&
           !campo.valorOpcion &&
-          !PlantillaHelper.obtenerValorCampo(campo.campoDTO, PlantillaHelper.DEPENDE) &&
+          !PlantillaHelper.buscarValor(campo.campoDTO.propiedades, PlantillaHelper.DEPENDE) &&
           campo.valorText
         ) {
           this.acumularProcesosConsulta(campo.campoDTO, campo.valorText);

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SignaturePadComponent } from '@almothafar/angular-signature-pad';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 

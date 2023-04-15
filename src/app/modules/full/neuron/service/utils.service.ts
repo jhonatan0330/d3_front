@@ -43,7 +43,7 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  modalMassive(template: string, server: string){
+  /*modalMassive(template: string, server: string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(MassiveComponent, {
       maxHeight: '90vh',
       maxWidth: '99vh',
@@ -51,5 +51,5 @@ export class UtilsService {
       data: { template: template, server: server},
     });
     return dialogRef.afterClosed();
-  }
+  }*/
 }

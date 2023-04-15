@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { SharedMaterialModule } from 'app/shared/shared-material.module';
 import { SharedModule } from 'app/shared/shared.module';
 
 import { NewPasswordComponent } from './new-password.component';
 import { newPasswordRoutes } from './new-password.routing';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
     declarations: [
@@ -12,8 +14,10 @@ import { newPasswordRoutes } from './new-password.routing';
     ],
     imports     : [
         RouterModule.forChild(newPasswordRoutes),
-        SharedMaterialModule,
-        SharedModule
+        SharedModule,
+        MatProgressBarModule,
+        MatCardModule,
+        MatFormFieldModule
     ]
 })
 export class NewPasswordModule

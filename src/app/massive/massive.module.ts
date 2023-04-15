@@ -4,9 +4,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
-import { SharedMaterialModule } from 'app/shared/shared-material.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { MassiveComponent } from './massive.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     declarations: [
@@ -22,8 +23,9 @@ import { MassiveComponent } from './massive.component';
         MatCheckboxModule,
         MatFormFieldModule,
         MatInputModule,
+        MatProgressBarModule,
+        MatIconModule,
         FlexLayoutModule,
-        SharedMaterialModule,
         SharedModule
     ],
     exports : [

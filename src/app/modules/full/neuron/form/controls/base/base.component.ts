@@ -7,7 +7,7 @@ import {
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import { PlantillaHelper } from 'app/shared/helpers/plantilla-helper';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 export interface IDynamicControl {
   structure: DocumentoPlantillaCaracteristicaDTO;
@@ -185,7 +185,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
   }
 
   obtenerValor(key: string): string {
-    return PlantillaHelper.obtenerValorCampo(this.structure, key);
+    if (!this) { return '';}
+    return PlantillaHelper.buscarValor(this.structure.propiedades, key);
   }
 
   obtenerPropiedad(key: string): PropiedadDTO {
