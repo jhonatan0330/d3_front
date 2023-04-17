@@ -14,6 +14,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
   conHora = false; // Define si se pide las fechas con hora
   sinCalendar = false; // Define si solo pide el time
   dateFrom: FormControl = new FormControl(); // Controlador de fecha de inicio
+  timeFrom: FormControl = new FormControl('00:00'); // Controlador del texto de la hora
   timerBackCount = false; // Define si solo pide el time
 
   isRango = false; // Define si se espera unas fechas con rango
@@ -53,6 +54,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
     if (this.data) {
       if (this.data.valorFecha) {
         this.dateFrom.setValue(new Date(this.data.valorFecha));
+        this.timeFrom.setValue(('0' + this.data.valorFecha.getHours()).slice(-2) + ":" + ('0' + this.data.valorFecha.getMinutes()).slice(-2));
         this.data.valorFecha = this.dateFrom.value;
         if (this.data.valorNumero) {
           this.fControlHoras.setValue(
@@ -79,6 +81,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
             initialDate.setMilliseconds(0);
           }
           this.dateFrom.setValue(initialDate);
+          this.timeFrom.setValue(('0' + initialDate.getHours()).slice(-2) + ":" + ('0' + initialDate.getMinutes()).slice(-2));
           this.data.valorFecha = initialDate;
         }
       }
@@ -86,6 +89,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
     if (this.required) {
       this.dateFrom.setValidators(Validators.required);
       this.dateFrom.updateValueAndValidity();
+      this.timeFrom.updateValueAndValidity();
       if (this.sinCalendar) {
         this.fControlHoras.setValidators(Validators.required);
         this.fControlHoras.updateValueAndValidity();
@@ -102,19 +106,22 @@ export class FechaComponent extends BaseComponent implements OnInit {
       });
     }
     if (this.isEnabled) {
-      // this.dateFrom.enable();
       this.fControlDateStart.enable();
       this.fControlDateEnd.enable();
       this.fControlHoras.enable();
       this.fControlMinutes.enable();
     } else {
-      // this.dateFrom.disable();
       this.fControlDateStart.disable();
       this.fControlDateEnd.disable();
       this.fControlHoras.disable();
       this.fControlMinutes.disable();
     }
     this.dateFrom.valueChanges.subscribe({
+      next: () => {
+        this.actualizar();
+      },
+    });
+    this.timeFrom.valueChanges.subscribe({
       next: () => {
         this.actualizar();
       },
@@ -129,6 +136,12 @@ export class FechaComponent extends BaseComponent implements OnInit {
   actualizar() {
     // Se supone que nunca llega por aqui
     const fecha: Date = this.dateFrom.value;
+    let hour = 0;
+    let minute = 0;
+    if (this.timeFrom && this.timeFrom.value){
+      hour = this.timeFrom.value.substring(0,2);
+      minute = this.timeFrom.value.substring(3,5);
+    }
     if (!fecha) {
       if (this.data.valorFecha) {
         this.data.valorFecha = null;
@@ -136,6 +149,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
         this.avisarModificacion();
       }
     } else {
+      fecha.setHours(hour, minute, 0, 0);
       if (!this.data.valorFecha) {
         this.data.valorFecha = fecha;
         this.data.valorText = fecha.toLocaleString('en-ZA');

@@ -19,6 +19,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Cruds2Component } from './cruds2.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 @NgModule({
@@ -40,11 +41,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
         MatSelectModule,
         MatSidenavModule,
         MatDatepickerModule,
+        MatNativeDateModule,
         FuseFindByKeyPipeModule,
         FuseNavigationModule,
         FuseScrollbarModule,
         FuseScrollResetModule,
-        SharedModule
+        SharedModule,
+        
     ]
 })
 export class CrudsModule {

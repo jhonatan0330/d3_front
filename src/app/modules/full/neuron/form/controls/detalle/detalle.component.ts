@@ -11,6 +11,8 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { CategoriaProductoDTO, ProductoDTO } from 'app/inventory/inventory.types';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ProductComponent } from '../product/product.component';
 
 @Component({
   selector: 'app-detalle',
@@ -40,7 +42,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   constructor(
     private templateService: TemplateService,
     private api: ApiService,
-    private cd:ChangeDetectorRef
+    private cd:ChangeDetectorRef,
+    private dialog: MatDialog
   ) {
     super();
   }
@@ -284,16 +287,21 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   modificarDetallePedido(item: DetallePedidoVentaDTO) {
-    //if (!this.isEnabled) {
-    //  return;
-    //}
-    //TODO: Aqui modal producto
-    /*this.inventoryService.modalProduct(item, this.isEnabled).subscribe((resp) => {
-      if (!resp) {
-        this.data.detalles.splice(1, 1);
-      }
-      this.actualizarDetalles(null);
-    });*/
+
+
+      const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
+        width: '720px',
+        maxHeight: '90vh',
+        disableClose: true,
+        data: { data: item, allowEdit: this.isEnabled},
+      });
+      dialogRef.afterClosed().subscribe((resp) => {
+        if (!resp) {
+          this.data.detalles.splice(1, 1);
+        }
+        this.actualizarDetalles(null);
+      });
+    
   }
 
   actualizarDetalles(producto: ProductoDTO) {

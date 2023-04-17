@@ -12,7 +12,7 @@ import { AppComponent } from 'app/app.component';
 import { appRoutes } from 'app/app.routing';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './shared/error.interceptor';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { SharedModule } from './shared/shared.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +20,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { ErrorHandlerService } from './shared/error-handler.service';
 import { TokenInterceptor } from './shared/token.interceptor';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -55,7 +56,11 @@ const routerConfig: ExtraOptions = {
 
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+
+    MatDatepickerModule,
+    MatNativeDateModule,
+
   ],
   providers: [
     { provide: ErrorHandler, useClass: ErrorHandlerService },
@@ -71,7 +76,6 @@ const routerConfig: ExtraOptions = {
     },
     { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },
     {
-
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: {
         appearance: 'outline'

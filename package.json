@@ -15,7 +15,6 @@
     },
     "dependencies": {
         "@almothafar/angular-signature-pad": "^5.0.1",
-        "@angular-material-components/datetime-picker": "^9.0.0",
         "@angular/animations": "15.1.1",
         "@angular/cdk": "15.1.1",
         "@angular/common": "15.1.1",

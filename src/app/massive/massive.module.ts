@@ -8,6 +8,7 @@ import { SharedModule } from 'app/shared/shared.module';
 import { MassiveComponent } from './massive.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     declarations: [
@@ -16,7 +17,11 @@ import { MatIconModule } from '@angular/material/icon';
     imports     : [
         RouterModule.forChild([
             {
-                path     : '',
+                path     : ':template',
+                component: MassiveComponent
+            },
+            {
+                path     : ':template/:server',
                 component: MassiveComponent
             }
         ]),
@@ -25,7 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
         MatInputModule,
         MatProgressBarModule,
         MatIconModule,
-        FlexLayoutModule,
+        MatButtonModule,
         SharedModule
     ],
     exports : [

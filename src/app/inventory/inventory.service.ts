@@ -14,27 +14,7 @@ export class InventoryService {
     private ls: LocalStoreService
   ) {
   }
-/*
-  public modalProduct( pDataModal: DetallePedidoVentaDTO, allowEdit) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
-      width: '720px',
-      maxHeight: '90vh',
-      disableClose: true,
-      data: { data: pDataModal, allowEdit: allowEdit},
-    });
-    return dialogRef.afterClosed();
-  }
 
-  modalCatalog( pDataModal: PedidoVentaDTO) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(CatalogComponent, {
-      width: '720px',
-      maxHeight: '90vh',
-      disableClose: true,
-      data: { data: pDataModal},
-    });
-    return dialogRef.afterClosed();
-  }
-  */
   consultarProducto(productoId: String, _server: string): Observable<ProductoDTO> {
     return this.http.get<ProductoDTO>(
       this.ls.getUrlAccess('/document/getProduct/' + productoId, _server)

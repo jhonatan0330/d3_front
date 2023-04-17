@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductComponent } from 'app/inventory/product/product.component';
+import { ProductComponent } from 'app/modules/full/neuron/form/controls/product/product.component';
 import {
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaCaracteristicaDTO,

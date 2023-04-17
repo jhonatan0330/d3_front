@@ -5,7 +5,6 @@ import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import { CatalogComponent } from './catalog/catalog.component';
-import { ProductComponent } from './product/product.component';
 import { StockComponent } from './stock/stock.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -14,7 +13,6 @@ import { MatIconModule } from '@angular/material/icon';
 @NgModule({
     declarations: [
         StockComponent,
-        ProductComponent,
         CatalogComponent
     ],
     imports     : [
@@ -33,7 +31,6 @@ import { MatIconModule } from '@angular/material/icon';
         SharedModule
     ],
     exports : [
-        ProductComponent
     ]
 })
 export class InventoryModule

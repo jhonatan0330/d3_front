@@ -62,11 +62,6 @@
         *ngIf="canProduct && modificable && pedido && pedido.llaveTabla" (click)="showProduct()" tabindex="-1">
         <mat-icon>style</mat-icon> Configurar Catalogo
       </button>
-      <!-- Boton Ayuda -->
-      <button mat-menu-item (click)="showHelp()">
-        <mat-icon>help</mat-icon>
-        <span>Ayuda</span>
-      </button>
       <!-- Boton Compartir -->
       <button *ngIf="pedido && pedido.llaveTabla" mat-menu-item (click)="copyUrl()">
         <mat-icon>link</mat-icon>

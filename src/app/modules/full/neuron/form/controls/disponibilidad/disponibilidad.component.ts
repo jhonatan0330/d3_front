@@ -12,6 +12,8 @@ import { Estructura } from './estructura';
 import { Puesto } from './puesto';
 import { ProductoDTO } from 'app/inventory/inventory.types';
 import { LocalStoreService } from 'app/shared/local-store.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ProductComponent } from '../product/product.component';
 
 @Component({
   selector: 'app-disponibilidad',
@@ -29,7 +31,8 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
     private api: ApiService,
     private ls: LocalStoreService,
     private template: TemplateService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private dialog: MatDialog
   ) {
     super();
   }
@@ -107,9 +110,14 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
         let formDetailLocation = puesto.detalle;
         if (!formDetailLocation) { formDetailLocation = this.addLocation(puesto, this.structure.productos[0]); }
         if (formDetailLocation) {
-          // TODO:  Toca vovler a activar esto
-/*
-          this.inventoryService.modalProduct(formDetailLocation, this.isEnabled).subscribe((resp) => {
+          
+          const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
+            width: '720px',
+            maxHeight: '90vh',
+            disableClose: true,
+            data: { data: formDetailLocation, allowEdit: this.isEnabled},
+          });
+          dialogRef.afterClosed().subscribe((resp) => {
             // Aqui es donde se remueve el item
             if (!resp) {
               this.removeLocation(puesto);
@@ -117,7 +125,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
               //Como llamo a puesto no pasa por el observer de estructura
               this.ajustarData(puesto);
             }
-          });*/
+          });
         }
       } 
     }

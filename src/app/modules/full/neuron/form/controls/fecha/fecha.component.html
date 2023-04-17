@@ -18,12 +18,14 @@
 <!-- Fecha normal -->
 <mat-form-field *ngIf="!isRango && !sinCalendar">
   <mat-label>{{ structure.nombre | titlecase }}</mat-label>
-  <input matInput [ngxMatDatetimePicker]="pickerFrom" [required]="required" [formControl]="dateFrom"
-    [readonly]="!isEnabled" autocomplete="off" />
-  <ngx-mat-datetime-picker #pickerFrom [hideTime]="!conHora"></ngx-mat-datetime-picker>
+  <input matInput [matDatepicker]="pickerFrom" [required]="required" [formControl]="dateFrom" [readonly]="!isEnabled"
+    autocomplete="off" />
   <mat-datepicker-toggle matSuffix [for]="pickerFrom" *ngIf="isEnabled"></mat-datepicker-toggle>
+  <mat-datepicker #pickerFrom></mat-datepicker>
 </mat-form-field>
-
+<div class="relative left-24 -top-10 h-0" *ngIf="conHora && data.valorFecha">
+  <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" onfocus="this.showPicker()"/>
+</div>
 <!-- Tiempo -->
 <div fxLayout="row wrap" fxLayoutAlign="none center" *ngIf="!isRango && sinCalendar">
   <span fxFlex.gt-sm="50" fxFlex.sm="50" fxFlex="100">{{

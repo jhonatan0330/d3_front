@@ -41,6 +41,7 @@ import { getComponent } from 'app/modules/full/neuron/form-helper';
 import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-form',
@@ -65,7 +66,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   identificadorInicial: string; // La use para llenar el campo inicial
   close2Save = false;
 
-  
+
   // ACTIONS
 
   auxPlantillaProxima: string; // LAs transiciones aveces no tienen cargados los campos y se encesitan
@@ -76,7 +77,6 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   // Carga Masiva
   canMassive = false;
-  canProduct = false;
 
   // Transferencias
   canTransfer = false;
@@ -95,10 +95,10 @@ export class FormComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<FormComponent>,
     private templateService: TemplateService,
     private api: ApiService,
-
     private ls: LocalStoreService,
     private compiler: ComponentFactoryResolver,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private _router: Router
   ) { }
 
   ngOnInit(): void {
@@ -235,7 +235,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
       if (!dp.caracteristicas) {
         this.api
-          .obtenerCampos(plantillaId,  dp.server)
+          .obtenerCampos(plantillaId, dp.server)
           .subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
               plantilla.server = dp.server;
@@ -545,10 +545,6 @@ export class FormComponent implements OnInit, AfterViewInit {
       this.plantilla.propiedades,
       PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA
     );
-    this.canProduct = !PlantillaHelper.isEmpty(
-      this.plantilla.propiedades,
-      PlantillaHelper.PLANTILLA_TIPO_PRODUCTO
-    );
     if (this.pedido.llaveTabla) {
       if (!this.pedido.estadoExpediente) {
         // Solo se pueden anular los que estan en estado activo y que no son de un proceso
@@ -762,7 +758,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
     return null;
   }
-  
+
   /*******************************REPORT *************/
   // Envio a imprimir los reportes
   getReports() {
@@ -807,24 +803,20 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   showMassive() {
     if (this.canMassive) {
-      //TODO: this.utilsService.modalMassive(this.plantilla.llaveTabla, this.plantilla.server);
-    }
-  }
-
-  showProduct() {
-    if (this.canProduct) {
-      // colcoar la url para ir al inventario y cerrar el form
+      let redirect = 'massive/' + this.plantilla.llaveTabla;
+      if (this.plantilla.server) { redirect = redirect + '/' + this.plantilla.server; }
+      this._router.navigateByUrl(redirect);
     }
   }
 
   showTransfer() {
     if (this.canTransfer) {
       this.utilsService.modalTransfer(this.pedido.llaveTabla, this.pedido.estadoExpediente, this.pedido.plantilla, this.plantilla.server)
-      .subscribe((res) => {
-        if (res && this.dialogRef) {
-          this.dialogRef.close();
-        }
-      });
+        .subscribe((res) => {
+          if (res && this.dialogRef) {
+            this.dialogRef.close();
+          }
+        });
     }
   }
 

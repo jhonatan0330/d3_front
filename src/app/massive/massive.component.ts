@@ -19,16 +19,17 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-massive',
   templateUrl: './massive.component.html',
 })
 export class MassiveComponent implements OnInit {
-  @Input() plantillaId: string;
-  @Input() urlServer: string;
+  plantillaId: string;
+  urlServer: string;
 
-  @Output() closeForm = new EventEmitter<string>();
+  // @Output() closeForm = new EventEmitter<string>();
 
   plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
 
@@ -56,29 +57,28 @@ export class MassiveComponent implements OnInit {
   fieldIdInTemplateSecondary: DocumentoPlantillaCaracteristicaDTO;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<MassiveComponent>,
+    private route: ActivatedRoute,
     private templateService: TemplateService,
     private api: ApiService
   ) { }
 
   ngOnInit(): void {
-    if(this.data){
-      this.plantillaId = this.data.template;
-      this.urlServer = this.data.server;
-    }
-    if (this.plantillaId) {
-      this.plantilla = this.templateService.getTemplate(
-        this.plantillaId,
-        this.urlServer
-      );
-      this.startForm();
-    }
+    this.route.params.subscribe((params: Params) => {
+      this.plantillaId = params.template;
+      this.urlServer = params.server;
+      if (this.plantillaId) {
+        this.plantilla = this.templateService.getTemplate(
+          this.plantillaId,
+          this.urlServer
+        );
+        this.startForm();
+      }
+    });
   }
 
   startForm() {
     if (!this.plantilla) {
-      this.closeMassiveForm();
+      // this.closeMassiveForm();
     } else {
       // Obtener Variables
       this.canMassive = !PlantillaHelper.isEmpty(
@@ -86,7 +86,7 @@ export class MassiveComponent implements OnInit {
         PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA
       );
       if (!this.canMassive) {
-        this.closeMassiveForm();
+        // this.closeMassiveForm();
       }
       this.validateCamposPlantilla(this.plantilla);
 
@@ -127,7 +127,7 @@ export class MassiveComponent implements OnInit {
               ).caracteristicas = plantilla.caracteristicas;
             },
             error: () => {
-              this.closeMassiveForm();
+              // this.closeMassiveForm();
             },
           });
           return;
@@ -457,12 +457,12 @@ export class MassiveComponent implements OnInit {
       const iCampo = template.caracteristicas[k];
       map.delete(this.formatStringXML(iCampo.nombre));
     }
-    if(map.size > 0) {
+    if (map.size > 0) {
       let camposSinValidar = '';
       for (let key of map.keys()) {
-        if(!key.endsWith("_NUMID")){ camposSinValidar = key + ", "+ camposSinValidar; }
+        if (!key.endsWith("_NUMID")) { camposSinValidar = key + ", " + camposSinValidar; }
       }
-      if(camposSinValidar)Swal.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar , "warning");
+      if (camposSinValidar) Swal.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar, "warning");
     }
     return documentosNewsFromXML;
   }
@@ -610,7 +610,7 @@ export class MassiveComponent implements OnInit {
       let detalle =
         'PROCESANDO DOCUMENTO # ' +
         (this.cantidadProcesada + this.failedDocuments.length).toString()
-        ' INICIO : ' +
+      ' INICIO : ' +
         this.inicio.toISOString() +
         ' HORA ACTUAL : ' +
         new Date().toISOString() +
@@ -650,7 +650,7 @@ export class MassiveComponent implements OnInit {
                 this.documentosGenerados.splice(0, 1);
                 this.cantidadProcesada = this.cantidadProcesada - 1;
                 Swal.fire({
-                  title: 'Se ha presentado un error, ' + err +' continuamos?',
+                  title: 'Se ha presentado un error, ' + err + ' continuamos?',
                   text: err,
                   icon: 'warning',
                   showCancelButton: true,
@@ -738,9 +738,9 @@ export class MassiveComponent implements OnInit {
     this.procesarDocumentos();
   }
 
-  closeMassiveForm() {
+  /*closeMassiveForm() {
     this.closeForm.emit('Succesfull');
-  }
+  }*/
 
   newMassiveLoad() {
     this.failedDocuments = [];
