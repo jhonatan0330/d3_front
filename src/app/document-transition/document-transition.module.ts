@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import { TrazabilityComponent } from './trazability/trazability.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     declarations: [
@@ -21,6 +22,7 @@ import { TrazabilityComponent } from './trazability/trazability.component';
         MatCheckboxModule,
         MatFormFieldModule,
         MatInputModule,
+        MatIconModule,
         FlexLayoutModule,
         SharedModule
     ],

@@ -186,8 +186,8 @@ export function procesarXMLBase(
             PlantillaHelper.PLANTILLA_AUXILIAR
           );
           if (!plantilla) {
-            Swal.fire('Formato incorrecto',
-              'Por el momento no se a desarrollado items sin plantilla auxiliar',
+            Swal.fire('Falta configurar campo',
+              'EL campo '  + pCampo.campoDTO.nombre +' no tiene una fuente de datos en dodne pueda buscar el numero del documento.',
               'info'
             );
             return null;
