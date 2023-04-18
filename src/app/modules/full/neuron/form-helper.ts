@@ -18,18 +18,17 @@ import { Type } from '@angular/core';
 
 import { formatDate } from '@angular/common';
 import { PlantillaHelper } from '../../../shared/plantilla-helper';
-import * as moment from 'moment';
 import { ProductoListaComponent } from 'app/modules/full/neuron/form/controls/producto-lista/producto-lista.component';
 import { GpsComponent } from 'app/modules/full/neuron/form/controls/gps/gps.component';
 import Swal from 'sweetalert2';
 import { ArchivoComponent } from 'app/modules/full/neuron/form/controls/archivo/archivo.component';
 
 
-export function getFieldFromTemplate(template:DocumentoPlantillaDTO, fieldId:String): DocumentoPlantillaCaracteristicaDTO{
-  if(!template || !template.caracteristicas) return null;
+export function getFieldFromTemplate(template: DocumentoPlantillaDTO, fieldId: String): DocumentoPlantillaCaracteristicaDTO {
+  if (!template || !template.caracteristicas) return null;
   for (let index = 0; index < template.caracteristicas.length; index++) {
     const element = template.caracteristicas[index];
-    if(element.llaveTabla=== fieldId) return element;
+    if (element.llaveTabla === fieldId) return element;
   }
   return null;
 }
@@ -113,33 +112,30 @@ export function procesarXMLBase(
   const result: PedidoVentaCaracteristicaDTO = pCampo;
   switch (pCampo.campoDTO.formato) {
     case DocumentoPlantillaCaracteristicaEnum.FECHA:
-      if(pCampo.valorText){
+      if (pCampo.valorText) {
         const fechaHora = PlantillaHelper.buscarPropiedad(
           pCampo.campoDTO.propiedades,
           PlantillaHelper.FECHA_CON_HORA
         );
         let formatoDate = '';
-        if (Number(pCampo.valorText)){
-          pCampo.valorFecha = new Date((Number(pCampo.valorText) - 25568.791)*86400*1000); // Este valor lo saque a prueba y error
+        if (Number(pCampo.valorText)) {
+          // Este valor lo saque a prueba y error
+          pCampo.valorFecha = new Date((Number(pCampo.valorText) - 25568.791) * 86400 * 1000);
         } else {
-          if (fechaHora){
-            formatoDate = 'DD/MM/YYYY HH:mm';        
+          if (fechaHora) {
+            formatoDate = '([0-2][0-9]|(3)[0-1])(\-)(((0)[0-9])|((1)[0-2]))(\-)\d{4}\s([0-1][0-9]|(2)[0-3])(:)([0-5][0-9])';
           } else {
-            formatoDate = 'DD/MM/YYYY';
+            formatoDate = "([0-2][0-9]|(3)[0-1])(\\-)(((0)[0-9])|((1)[0-2]))(\\-)\\d{4}";
           }
-          if (moment(pCampo.valorText, formatoDate, true).isValid()) {
-            pCampo.valorFecha = moment(pCampo.valorText, formatoDate).toDate();
-          }else {
-            pCampo.valorFecha = null
+          if (pCampo.valorText.match(formatoDate)) {
+            pCampo.valorFecha = new Date(pCampo.valorText);
+          } else {
+            Swal.fire('Formato incorrecto',
+              'El valor fecha no esta con el formato correcto. ' + formatoDate + '\nLa fecha actualmente tiene este formato ' + pCampo.valorText,
+              'error'
+            );
+            return null;
           }
-        }
-        
-        if (!pCampo.valorFecha) {
-          Swal.fire('Formato incorrecto',
-            'El valor fecha no esta con el formato correcto. ' + formatoDate + '\nLa fecha actualmente tiene este formato ' + pCampo.valorText,
-            'error'
-          );
-          return null;
         }
       }
       break;
@@ -147,8 +143,8 @@ export function procesarXMLBase(
       pCampo.valorNumero = Number(pCampo.valorText);
       break;
     case DocumentoPlantillaCaracteristicaEnum.CONFIGURACION:
-        pCampo.valorOpcion = pCampo.valorText;
-        break;
+      pCampo.valorOpcion = pCampo.valorText;
+      break;
     case DocumentoPlantillaCaracteristicaEnum.PROCESO:
       const herencia = PlantillaHelper.buscarPropiedad(
         pCampo.campoDTO.propiedades,
@@ -167,7 +163,7 @@ export function procesarXMLBase(
         );
         if (autoload) {
           const disponibles = pCampo.campoDTO.documentos;
-        if (disponibles) {
+          if (disponibles) {
             for (let index = 0; index < disponibles.length; index++) {
               const opcion = disponibles[index];
               if (opcion.nombre === pCampo.valorText || opcion.nombre === pCampo.valorText) {
@@ -177,11 +173,11 @@ export function procesarXMLBase(
             }
             Swal.fire('Info',
               'El codigo del documento no se encuentra en los que tiene cargados el campo : ' +
-                pCampo.valorText, 'info'
+              pCampo.valorText, 'info'
             );
             return null;
           } else {
-            Swal.fire('Info','El campo es autoload pero no tiene cargado items');
+            Swal.fire('Info', 'El campo es autoload pero no tiene cargado items');
             return null;
           }
         } else {
@@ -200,7 +196,7 @@ export function procesarXMLBase(
           }
         }
       }
-      
+
   }
   return result;
 }
