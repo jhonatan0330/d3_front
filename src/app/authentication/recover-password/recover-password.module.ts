@@ -7,6 +7,10 @@ import { recoverPasswordRoutes } from './recover-password.routing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FuseAlertModule } from '@fuse/components/alert';
 
 @NgModule({
     declarations: [
@@ -15,9 +19,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     imports     : [
         RouterModule.forChild(recoverPasswordRoutes),
         SharedModule,
-        MatFormFieldModule,
+        MatProgressBarModule,
         MatCardModule,
-        MatProgressBarModule
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        FuseAlertModule,
     ]
 })
 export class RecoverPasswordModule

@@ -23,7 +23,7 @@
   <mat-datepicker-toggle matSuffix [for]="pickerFrom" *ngIf="isEnabled"></mat-datepicker-toggle>
   <mat-datepicker #pickerFrom></mat-datepicker>
 </mat-form-field>
-<div class="relative left-24 -top-10 h-0" *ngIf="conHora && data.valorFecha">
+<div class="relative left-24 -top-10 h-0" *ngIf="!isRango && conHora && data.valorFecha">
   <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" onfocus="this.showPicker()"/>
 </div>
 <!-- Tiempo -->

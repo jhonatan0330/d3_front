@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
-import * as moment from 'moment';
 import { timer } from 'rxjs';
 
 @Component({
@@ -66,10 +65,10 @@ export class FechaComponent extends BaseComponent implements OnInit {
         }
         if (this.data.valorAuxiliar && this.data.valorAuxiliar==='R') {
           this.fControlDateStart.setValue( this.data.valorFecha );
-          let endDate = moment(this.fControlDateStart.value);
-          endDate = endDate.add(Math.floor(this.data.valorNumero / 3600000), 'hours');
-          endDate = endDate.add(((this.data.valorNumero / 1000) % 3600) / 60, 'minutes');
-          this.fControlDateEnd.setValue( endDate.toDate() );
+          let endDate:Date = new Date(this.fControlDateStart.value);
+          endDate.setHours(endDate.getHours() + Math.floor(this.data.valorNumero / 3600000));
+          endDate.setMinutes(endDate.getMinutes() + ((this.data.valorNumero / 1000) % 3600) / 60);
+          this.fControlDateEnd.setValue( endDate );
         }
       } else {
         if (this.required) {
@@ -166,14 +165,13 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
   datesUpdated() {
     if (this.fControlDateStart.value && this.fControlDateEnd.value) {
-      const startDate = moment(new Date(this.fControlDateStart.value));
-      let endDate = moment(new Date(this.fControlDateEnd.value));
-      endDate.hour(0).minute(0).second(0).millisecond(0);
-      endDate = endDate.add(1, 'days');
-
-      this.data.valorFecha = startDate.toDate();
+      const startDate = new Date(this.fControlDateStart.value);
+      let endDate = new Date(this.fControlDateEnd.value);
+      endDate.setHours(0,0,0,0);
+      endDate.setDate( endDate.getDate()  + 1);
+      this.data.valorFecha = startDate;
       this.data.valorNumero =
-        endDate.toDate().getTime() - startDate.toDate().getTime();
+        endDate.getTime() - startDate.getTime();
       if (this.data.valorNumero === 0) {
         this.data.valorNumero = 86399999;
       }

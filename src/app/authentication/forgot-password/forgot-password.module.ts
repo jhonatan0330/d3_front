@@ -10,6 +10,9 @@ import { FuseAlertModule } from '@fuse/components/alert';
 import { SharedModule } from 'app/shared/shared.module';
 import { AuthForgotPasswordComponent } from './forgot-password.component';
 import { authForgotPasswordRoutes } from './forgot-password.routing';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
     declarations: [
@@ -17,12 +20,12 @@ import { authForgotPasswordRoutes } from './forgot-password.routing';
     ],
     imports     : [
         RouterModule.forChild(authForgotPasswordRoutes),
-        MatButtonModule,
+        MatProgressBarModule,
+        MatCardModule,
         MatFormFieldModule,
-        MatIconModule,
         MatInputModule,
-        MatProgressSpinnerModule,
-        FuseCardModule,
+        MatButtonModule,
+        MatCheckboxModule,
         FuseAlertModule,
         SharedModule
     ]

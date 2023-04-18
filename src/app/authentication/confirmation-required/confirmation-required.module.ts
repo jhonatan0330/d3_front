@@ -5,6 +5,11 @@ import { FuseCardModule } from '@fuse/components/card';
 import { SharedModule } from 'app/shared/shared.module';
 import { AuthConfirmationRequiredComponent } from 'app/authentication/confirmation-required/confirmation-required.component';
 import { authConfirmationRequiredRoutes } from 'app/authentication/confirmation-required/confirmation-required.routing';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
     declarations: [
@@ -12,8 +17,12 @@ import { authConfirmationRequiredRoutes } from 'app/authentication/confirmation-
     ],
     imports     : [
         RouterModule.forChild(authConfirmationRequiredRoutes),
+        MatProgressBarModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
         MatButtonModule,
-        FuseCardModule,
+        MatCheckboxModule,
         SharedModule
     ]
 })

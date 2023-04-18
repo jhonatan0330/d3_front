@@ -18,8 +18,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     ],
     imports     : [
         RouterModule.forChild(authSignInRoutes),
-        FuseCardModule,
-        FuseAlertModule,
         MatProgressBarModule,
         MatCardModule,
         MatFormFieldModule,

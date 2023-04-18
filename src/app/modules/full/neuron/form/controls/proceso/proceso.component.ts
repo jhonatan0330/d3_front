@@ -21,7 +21,6 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
-import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import { BarcodeFormat } from '@zxing/library';
 import { PropiedadDTO } from 'app/shared/shared.domain';
@@ -1168,25 +1167,16 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         entity.nombre = null;
         entity.filtroParametro = this.fControlSearch.value;
         if (this.fControlDateStart.value) {
-          const startDate = moment(new Date(this.fControlDateStart.value));
-          startDate.hour(0);
-          startDate.minute(0);
-          startDate.second(0);
-          startDate.millisecond(0);
-          let endDate = moment(new Date(this.fControlDateStart.value)).add(
-            1,
-            'days'
-          );
+          const startDate = new Date(this.fControlDateStart.value);
+          startDate.setHours(0,0,0,0);
+          let endDate = new Date(this.fControlDateStart.value);
           if (this.fControlDateEnd.value) {
-            endDate = moment(new Date(this.fControlDateEnd.value));
-            endDate.hour(0);
-            endDate.minute(0);
-            endDate.second(0);
-            endDate.millisecond(0);
+            endDate = new Date(this.fControlDateEnd.value);
+            endDate.setHours(0,0,0,0);
           }
-          endDate = endDate.add(1, 'days');
-          entity.fechaMin = startDate.toDate();
-          entity.fechaMax = endDate.toDate();
+          endDate.setDate(endDate.getDate()+1);
+          entity.fechaMin = startDate;
+          entity.fechaMax = endDate;
         } else {
           if (this.solicitarFechas) {
             alert('Selecciona fechas');
