@@ -806,6 +806,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       let redirect = 'massive/' + this.plantilla.llaveTabla;
       if (this.plantilla.server) { redirect = redirect + '/' + this.plantilla.server; }
       this._router.navigateByUrl(redirect);
+      this.dialogRef.close()
     }
   }
 
