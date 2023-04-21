@@ -82,3 +82,13 @@ export class TarifaDTO extends BasicDTO {
   cantidadMaxima: number;
   totalMinimo: number;
 }
+
+export interface InventoryPagination
+{
+    length: number;
+    size: number;
+    page: number;
+    lastPage: number;
+    startIndex: number;
+    endIndex: number;
+}

@@ -7,15 +7,13 @@ import {
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-configuracion',
-  templateUrl: './configuracion.component.html',
-  styleUrls: ['./configuracion.component.scss'],
+  templateUrl: './configuracion.component.html'
 })
 export class ConfiguracionComponent extends BaseComponent implements OnInit {
   fControl: FormControl = new FormControl();

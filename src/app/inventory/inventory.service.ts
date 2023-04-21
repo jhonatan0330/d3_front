@@ -1,19 +1,42 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { ProductoDTO, ProductoInventarioDTO, TarifaDTO } from './inventory.types';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { InventoryPagination, ProductoDTO, ProductoInventarioDTO, TarifaDTO } from './inventory.types';
 import { HttpClient } from '@angular/common/http';
 import { LocalStoreService } from 'app/shared/local-store.service';
+import { tap } from 'lodash';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InventoryService {
-  
+
+  private _pagination: BehaviorSubject<InventoryPagination | null> = new BehaviorSubject(null);
+  private _products: BehaviorSubject<ProductoDTO[] | null> = new BehaviorSubject(null);
+
   constructor(
     public dialog: MatDialog,
     private http: HttpClient,
     private ls: LocalStoreService
   ) {
   }
+
+  /**
+ * Getter for pagination
+ */
+  get pagination$(): Observable<InventoryPagination> {
+    return this._pagination.asObservable();
+  }
+
+  /**
+ * Getter for products
+ */
+  get products$(): Observable<ProductoDTO[]> {
+    return this._products.asObservable();
+  }
+
+    
+ 
 
   consultarProducto(productoId: String, _server: string): Observable<ProductoDTO> {
     return this.http.get<ProductoDTO>(

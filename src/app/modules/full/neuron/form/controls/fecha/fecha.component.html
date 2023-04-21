@@ -24,7 +24,7 @@
   <mat-datepicker #pickerFrom></mat-datepicker>
 </mat-form-field>
 <div class="relative left-24 -top-10 h-0" *ngIf="!isRango && !sinCalendar && conHora && data.valorFecha">
-  <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" onfocus="this.showPicker()"/>
+  <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom"/>
 </div>
 <!-- Tiempo -->
 <div fxLayout="row wrap" fxLayoutAlign="none center" *ngIf="!isRango && sinCalendar">
