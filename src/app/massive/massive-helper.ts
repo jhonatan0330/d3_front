@@ -68,7 +68,7 @@ export function procesarXMLBase(
             pCampo.valorFecha.setHours(pCampo.valorFecha.getHours() + 5);
           } else {
             Swal.fire('Formato incorrecto',
-              'El valor fecha no esta con el formato correcto utiliza el formato año/Mes/dia como el siguiente ejemplo 26/04/2023. \nLa fecha actualmente tiene este formato ' + pCampo.valorText,
+              'El valor fecha no esta con el formato correcto utiliza el formato año/Mes/dia como el siguiente ejemplo 2023/04/26.      La fecha actualmente tiene este formato ' + pCampo.valorText,
               'error'
             );
             return null;
