@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   DocumentoPlantillaCaracteristicaDTO,
   DocumentoPlantillaDTO,
@@ -12,13 +12,12 @@ import {
   getFieldFromTemplate,
   getXMLBase,
   procesarXMLBase,
-} from 'app/modules/full/neuron/form-helper';
+} from './massive-helper';
 import { saveAs } from 'file-saver';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
@@ -28,8 +27,6 @@ import { ActivatedRoute, Params } from '@angular/router';
 export class MassiveComponent implements OnInit {
   plantillaId: string;
   urlServer: string;
-
-  // @Output() closeForm = new EventEmitter<string>();
 
   plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
 
