@@ -20,6 +20,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Cruds2Component } from './cruds2.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTableModule } from '@angular/material/table';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { MatNativeDateModule } from '@angular/material/core';
         MatSidenavModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatTableModule,
         FuseFindByKeyPipeModule,
         FuseNavigationModule,
         FuseScrollbarModule,
