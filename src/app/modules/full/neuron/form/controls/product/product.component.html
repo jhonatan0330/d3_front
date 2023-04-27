@@ -1,6 +1,11 @@
 <div fxFlex="100" fxLayout="column">
-  <div>
-    <span fxFlex fxLayoutAlign="center center">{{ detallePedidoVenta.nombre }}</span>
+  <div fxLayout="row wrap">
+    <div fxFlex class="items-center">
+      <span fxFlex fxLayoutAlign="center center">{{ detallePedidoVenta.nombre }}</span>
+    </div>
+    <div fxLayout="column">
+      <mat-icon class="h-6" (click)="dialogRef.close(false)">exit_to_app</mat-icon>
+    </div>
   </div>
   <mat-progress-bar
   *ngIf="isLoading"
