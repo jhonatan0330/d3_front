@@ -114,7 +114,9 @@
               <a (click)="openDialog(d)"><img src="{{ d.imagen | imageFormat }}" /></a>
             </div>
             <!--[style.backgroundColor]="getColor(d.estadoExpediente)" [style.color]="getColorFont(d.estadoExpediente)"-->
-            <div fxLayout="column" class="w-full p-1 rounded" fxFlex>
+            <div fxLayout="column" class="w-full p-1 rounded" fxFlex
+              [style.backgroundColor]="getColor(d.estadoExpediente)"
+              [style.color]="getColorFont(d.estadoExpediente)">
               <a (click)="openDialog(d)">
                 <div class="text-md">{{ d.nombre }}</div>
               </a>
