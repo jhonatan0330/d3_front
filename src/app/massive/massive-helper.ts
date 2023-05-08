@@ -61,18 +61,26 @@ export function procesarXMLBase(
           } else {
             formatoDate = "\\d{4}(\\-|\\/)(((0)[0-9])|((1)[0-2]))(\\-|\\/)([0-2][0-9]|(3)[0-1])";
           }
-          if (pCampo.valorText.match(formatoDate)) {
-            pCampo.valorText = pCampo.valorText.replaceAll("/", "-");
-            pCampo.valorFecha = new Date(pCampo.valorText);
-            // Esto es por el formato de la ubicacion en colombia
-            pCampo.valorFecha.setHours(pCampo.valorFecha.getHours() + 5);
-          } else {
-            Swal.fire('Formato incorrecto',
-              'El valor fecha no esta con el formato correcto utiliza el formato año/Mes/dia como el siguiente ejemplo 2023/04/26.      La fecha actualmente tiene este formato ' + pCampo.valorText,
-              'error'
-            );
-            return null;
+          if (!pCampo.valorText.match(formatoDate)) {
+            if (fechaHora) {
+              pCampo.valorText = pCampo.valorText.substring(0, pCampo.valorText.length - 6).split("/").reverse().join("-") + pCampo.valorText.substring(pCampo.valorText.length - 6);
+            } else { 
+              pCampo.valorText = pCampo.valorText.split("/").reverse().join("-");
+            }
+            //Cambio el orden de la fecha
+            if (!pCampo.valorText.match(formatoDate)) {
+              Swal.fire('Formato incorrecto',
+                'El valor fecha no esta con el formato correcto utiliza el formato año/Mes/dia como el siguiente ejemplo 2023/04/26.      La fecha actualmente tiene este formato ' + pCampo.valorText,
+                'error'
+              );
+              return null;
+            }
           }
+
+          pCampo.valorText = pCampo.valorText.replaceAll("/", "-");
+          pCampo.valorFecha = new Date(pCampo.valorText);
+          // Esto es por el formato de la ubicacion en colombia
+          pCampo.valorFecha.setHours(pCampo.valorFecha.getHours() + 5);
         }
       }
       break;
