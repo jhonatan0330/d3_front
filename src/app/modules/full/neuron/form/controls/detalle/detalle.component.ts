@@ -287,8 +287,6 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   modificarDetallePedido(item: DetallePedidoVentaDTO) {
-
-
       const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
         width: '720px',
         maxHeight: '90vh',
@@ -297,7 +295,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       });
       dialogRef.afterClosed().subscribe((resp) => {
         if (!resp) {
-          this.data.detalles.splice(1, 1);
+          this.data.detalles.splice(0, 1);
+          this.data.detalles = Object.assign([], this.data.detalles); // Para que se refresque la lista
         }
         this.actualizarDetalles(null);
       });
