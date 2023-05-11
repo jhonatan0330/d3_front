@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, UntypedFormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
@@ -53,7 +53,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     // Al finalzar se subscriben los cambios
     this.fControl.valueChanges
       .pipe(
-        debounceTime(300)
+        debounceTime(200)
       )
       .subscribe((value) => {
         this.actualizar();
