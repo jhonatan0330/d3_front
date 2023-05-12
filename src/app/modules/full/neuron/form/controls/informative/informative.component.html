@@ -1,0 +1,14 @@
+<mat-form-field [style.display]="isInvisible ? 'none': 'block'">
+    <mat-label>{{structure.nombre | titlecase }} </mat-label>
+    <input
+      matInput
+      [formControl]="fControl"
+      [name]="structure.llaveTabla"
+      [required]="required"
+      [readonly]="true"
+      autocomplete="off"
+    />
+    <button mat-icon-button matPrefix *ngIf="data.valorOpcion" (click)="openDialog(proceso)" tabindex="-1">
+      <mat-icon>open_in_new</mat-icon>
+    </button>
+  </mat-form-field>

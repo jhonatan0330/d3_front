@@ -507,9 +507,9 @@ export class FormComponent implements OnInit, AfterViewInit {
     // Colocar listener de Dependientes
     for (let j = 0; j < this.plantilla.caracteristicas.length; j++) {
       const iBase = this.plantilla.caracteristicas[j];
-      const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(
+      const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultipleFromManyKeys(
         iBase.propiedades,
-        PlantillaHelper.DEPENDE
+        [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA]
       );
       if (codigoDepende) {
         let iCampoDependiente; // Identifico el campo dependiente

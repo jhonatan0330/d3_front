@@ -17,6 +17,7 @@ import { Type } from '@angular/core';
 import { ProductoListaComponent } from 'app/modules/full/neuron/form/controls/producto-lista/producto-lista.component';
 import { GpsComponent } from 'app/modules/full/neuron/form/controls/gps/gps.component';
 import { ArchivoComponent } from 'app/modules/full/neuron/form/controls/archivo/archivo.component';
+import { InformativeComponent } from './form/controls/informative/informative.component';
 
 export function getComponent(
   pCampo: DocumentoPlantillaCaracteristicaDTO
@@ -61,6 +62,9 @@ export function getComponent(
       break;
     case DocumentoPlantillaCaracteristicaEnum.PRODUCTO_LISTA:
       componentDynamic = ProductoListaComponent;
+      break;
+    case DocumentoPlantillaCaracteristicaEnum.INFORMATIVE:
+      componentDynamic = InformativeComponent;
       break;
     default:
       componentDynamic = TextoComponent;

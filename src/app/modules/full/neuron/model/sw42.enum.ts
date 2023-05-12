@@ -11,7 +11,8 @@ export enum DocumentoPlantillaCaracteristicaEnum {
   DISPONIBILIDAD = 'U',
   PRODUCTO_LISTA = 'Q',
   SECCION = 'S',
-  GPS = 'P'
+  GPS = 'P',
+  INFORMATIVE = 'V'
 }
 
 export enum StatesEnum {

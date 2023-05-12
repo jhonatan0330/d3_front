@@ -67,6 +67,8 @@ export class PlantillaHelper {
   static READ_QR = 'READ_QR';
   static LINK_EXTERNO = 'LINK_EXTERNO';
 
+  static INFORMATIVE_DATA = 'INFORMATIVE_DATA';
+
   static ARCHIVO_TIPO = 'ARCHIVO_TIPO';
   static ARCHIVO_TAMANO_MAXIMO = 'ARCHIVO_TAMANO_MAXIMO';
   static MULTIPLE_FILE = 'MULTIPLE_FILE';
@@ -127,23 +129,34 @@ export class PlantillaHelper {
     return '';
   }
 
-  static buscarValorMultiple(
+  static buscarValorMultipleFromManyKeys(
     propiedades: PropiedadDTO[],
-    key: string
+    keys: string[]
   ): PropiedadDTO[] {
     if (propiedades == null || propiedades.length === 0) {
       return null;
     }
-    const result: PropiedadDTO[] = [];
-    propiedades.forEach((element) => {
-      if (element.key === key) {
-        result.push(element);
-      }
-    });
-    if (result.length === 0) {
+    if (keys == null || keys.length === 0) {
       return null;
     }
+    const result: PropiedadDTO[] = [];
+    keys.forEach((key) =>{
+      propiedades.forEach((element) => {
+        if (element.key === key) {
+          result.push(element);
+        }
+      });
+    });
+    if (result.length === 0) { return null; }
     return result;
+  }
+
+  static buscarValorMultiple(
+    propiedades: PropiedadDTO[],
+    key: string
+  ): PropiedadDTO[] {
+    if (key == null) { return null;}
+    return this.buscarValorMultipleFromManyKeys(propiedades,[key]);
   }
 
   static agregarPropiedad(

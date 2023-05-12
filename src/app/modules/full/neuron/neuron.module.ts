@@ -59,6 +59,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { InformativeComponent } from './form/controls/informative/informative.component';
 
 
 @NgModule({
@@ -78,7 +79,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
         BaseComponent,
         GpsComponent,
         FormComponent,
-        ProductComponent
+        ProductComponent,
+        InformativeComponent
     ],
     imports: [
         RouterModule.forChild(neuronRoutes),
