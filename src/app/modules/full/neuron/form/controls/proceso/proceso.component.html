@@ -68,8 +68,8 @@
               element.caracteristicas && element.caracteristicas.length !== 0
             ">
             <div class="flex flex-row" *ngFor="let f of element.caracteristicas">
-              <small class="w-full">{{ f.campoDTO.nombre }}</small>
-              <span>{{ f.valorText }}</span>
+              <small class="whitespace-nowrap font-extralight mr-2">{{ f.campoDTO.nombre }}</small>
+              <span class="text-right w-full truncate text-sm">{{ f.valorText }}</span>
             </div>
           </div>
         </td>
