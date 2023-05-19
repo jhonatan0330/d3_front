@@ -23,11 +23,9 @@
           <mat-icon class="ml-4" inline="true">history</mat-icon>
         </a>
         <span *ngIf="pedido && pedido.historico && pedido.historico !== 0">*</span></span>
-      <span *ngIf="instruccionCrear" class="px-1">{{
-        instruccionCrear
-        }}</span>
+      
     </div>
-
+    
     <div class="w-full text-right" *ngIf="pedido && pedido.dinero">
       <small *ngIf="pedido.dinero.saldo">{{
         pedido.dinero.saldo | currency
@@ -36,6 +34,7 @@
         pedido.dinero.valorTotal | currency
         }}</span>
     </div>
+    <span *ngIf="instruccionCrear" class="px-1">{{ instruccionCrear }}</span>
   </div>
   <!-- Botones de accion -->
   <div fxLayout="column" class="items-center">
