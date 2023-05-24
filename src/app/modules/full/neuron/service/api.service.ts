@@ -11,6 +11,7 @@ import {
   RelacionInternaDTO,
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaAjusteDTO,
+  ProductoInventarioDTO,
 } from '../model/sw42.domain';
 import { ApiErrorResponse } from '../model/sw42.utils';
 import {
@@ -167,5 +168,11 @@ export class ApiService {
     const formData: FormData = new FormData();
     formData.append('file', fileToUpload, fileToUpload.name);
     return this.http.post<UsuarioDTO>(endpoint, formData);
+  }
+
+  consultarInventario(productoId: String, _server: string): Observable<ProductoInventarioDTO[]> {
+    return this.http.get<ProductoInventarioDTO[]>(
+      this.ls.getUrlAccess('/document/getInventory/' + productoId, _server)
+    );
   }
 }

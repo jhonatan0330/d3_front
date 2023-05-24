@@ -273,3 +273,14 @@ export class IndicadorDTO extends BasicDTO {
   valorMes: number;
   valorYear: number;
 }
+
+export class ProductoInventarioDTO extends BasicDTO {
+  producto: string;
+  nombre: string;
+  codigo: string;
+  bodega: string;
+  nombreBodega: string;
+  cantidadActual: number;
+  cantidadMinima: number;
+  cantidadMaxima: number;
+}

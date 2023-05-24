@@ -363,7 +363,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.dialogRef.close(this.detallePedidoVenta);
   }
 
-  /*
+  
   consultarInventarios() {
     this.isLoading = true;
     this.api.consultarInventario(this.detallePedidoVenta.producto, this.server).subscribe({
@@ -375,7 +375,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
         this.isLoading = false;
       },
     });
-  }*/
+  }
 
   cantidadTarifario(): number {
     let pCantidad: number = this.detallePedidoVenta.cantidad;

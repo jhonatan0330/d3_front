@@ -3,6 +3,9 @@
     <div fxFlex class="items-center">
       <span fxFlex fxLayoutAlign="center center">{{ detallePedidoVenta.nombre }}</span>
     </div>
+    <button mat-icon-button color="primary" (click)="consultarInventarios()" tabindex="-1">
+      <mat-icon>find_in_page</mat-icon>
+  </button>
     <div fxLayout="column">
       <mat-icon class="h-6" (click)="dialogRef.close(true)">exit_to_app</mat-icon>
     </div>
