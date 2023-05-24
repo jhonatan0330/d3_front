@@ -51,13 +51,21 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       this.fControl.disable();
     }*/
     // Al finalzar se subscriben los cambios
-    this.fControl.valueChanges
-      //.pipe(
-      //  debounceTime(200)
-      //)
-      .subscribe((value) => {
+    if(this.funcion){
+      this.fControl.valueChanges
+      .pipe(
+        debounceTime(200)
+      )
+      .subscribe(() => {
         this.actualizar();
       });
+    }else{
+      this.fControl.valueChanges
+      .subscribe(() => {
+        this.actualizar();
+      });
+    }
+    
     // Tenia un error en Factura de SW apenas abria no tomaba el valor
     if (this.data.valorNumero !== this.fControl.value) {
       this.actualizar();
