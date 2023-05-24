@@ -52,9 +52,9 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     }*/
     // Al finalzar se subscriben los cambios
     this.fControl.valueChanges
-      .pipe(
-        debounceTime(200)
-      )
+      //.pipe(
+      //  debounceTime(200)
+      //)
       .subscribe((value) => {
         this.actualizar();
       });
