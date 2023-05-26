@@ -213,6 +213,7 @@
       <button mat-raised-button (click)="showFilterState = !showFilterState" class="ml-1">
         <mat-icon>filter_alt</mat-icon>
       </button>
+      <span class="text-28 font-weight-bold mat-color-primary w-full text-center">{{ labelSearch }}</span>
     </div>
     <div *ngIf="showFilterState">
       <mat-checkbox class="mr-1" [formControl]="fCheckActivo">Activos</mat-checkbox>
@@ -273,7 +274,7 @@
       </div>
       <button mat-flat-button color="accent" (click)="listar(pagina)" tabindex="-1" class="w-full"
         *ngIf="!isLoadingList && !isEndList">
-        <mat-icon>refresh</mat-icon> Mas resultados
+        <mat-icon>refresh</mat-icon> Mas resultados {{ labelSearch }}
       </button>
     </div>
     <mat-progress-bar mode="indeterminate" *ngIf="isLoadingList"></mat-progress-bar>

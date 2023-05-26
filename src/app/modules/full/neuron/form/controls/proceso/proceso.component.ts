@@ -58,6 +58,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   acabadoCrear = false;
   filtroBusqueda: string; // Sucede que cuando envio a buscar necesito que se guarde el id para que se llene en el formulario de crear
   titulo = ''; // lo uso para los campos multiples el titulo
+  labelSearch = ''; // lo uso para los campos multiples resumen de busqueda
 
   // Copiadas de cruds
   fControlSearch: FormControl; // Texto que digita el usuario para filtrar
@@ -616,9 +617,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   colocarTituloDisponibles() {
     this.titulo = '';
-    const camposPersonalizados: PedidoVentaCaracteristicaDTO[] = [];
-    let crearCampoTitulo: boolean;
-    //
     if (this.herencia) {
       if (this.dataProvider) {
         this.setValorNumero(0);
@@ -643,95 +641,103 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.data.valorText = this.dataProvider.length.toString();
       }
     } else {
-      if (this.data.expedientes && this.data.expedientes.length !== 0) {
-        this.titulo =
-          this.titulo + ' (' + this.data.expedientes.length.toString() + ')';
-        let valorCampo = 0;
-        let valorTotal = 0;
+      this.titulo = this.generateLabelToList(this.data.expedientes);
+    }
+  }
 
-        for (let i = 0; i < this.data.expedientes.length; i++) {
-          const expediente = this.data.expedientes[i];
-          if (
-            expediente.dinero &&
-            (!expediente.estado || expediente.estado !== StatesEnum.INACTIVE)
-          ) {
-            valorCampo = valorCampo + expediente.dinero.valorCampo;
-            valorTotal = valorTotal + expediente.dinero.valorTotal;
-          }
+  generateLabelToList(documents: PedidoVentaDTO[]): string {
+    const camposPersonalizados: PedidoVentaCaracteristicaDTO[] = [];
+    let crearCampoTitulo: boolean;
+    let result: string = '';
+    
+    if (documents && documents.length !== 0) {
+      result =
+      result + ' (' + documents.length.toString() + ')';
+      let valorCampo = 0;
+      let valorTotal = 0;
 
-          if (expediente.caracteristicas) {
-            for (let j = 0; j < expediente.caracteristicas.length; j++) {
-              const iCampoExpediente = expediente.caracteristicas[j];
-              if (!iCampoExpediente.valorFecha) {
-                // Se suman valores de fechas
-                crearCampoTitulo = true;
-                if (camposPersonalizados && camposPersonalizados.length !== 0) {
-                  for (let k = 0; k < camposPersonalizados.length; k++) {
-                    const iCampoTitulo = camposPersonalizados[k];
-                    if (iCampoTitulo.campo === iCampoExpediente.campoDTO.nombre) {
-                      iCampoTitulo.valorNumero =
-                        iCampoTitulo.valorNumero + iCampoExpediente.valorNumero;
-                      crearCampoTitulo = false;
-                      break;
-                    }
+      for (let i = 0; i < documents.length; i++) {
+        const expediente = documents[i];
+        if (
+          expediente.dinero &&
+          (!expediente.estado || expediente.estado !== StatesEnum.INACTIVE)
+        ) {
+          valorCampo = valorCampo + expediente.dinero.valorCampo;
+          valorTotal = valorTotal + expediente.dinero.valorTotal;
+        }
+
+        if (expediente.caracteristicas) {
+          for (let j = 0; j < expediente.caracteristicas.length; j++) {
+            const iCampoExpediente = expediente.caracteristicas[j];
+            if (!iCampoExpediente.valorFecha) {
+              // Se suman valores de fechas
+              crearCampoTitulo = true;
+              if (camposPersonalizados && camposPersonalizados.length !== 0) {
+                for (let k = 0; k < camposPersonalizados.length; k++) {
+                  const iCampoTitulo = camposPersonalizados[k];
+                  if (iCampoTitulo.campo === iCampoExpediente.campoDTO.nombre) {
+                    iCampoTitulo.valorNumero =
+                      iCampoTitulo.valorNumero + iCampoExpediente.valorNumero;
+                    crearCampoTitulo = false;
+                    break;
                   }
                 }
-                if (crearCampoTitulo) {
-                  const campoPersonalizadoTitulo: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
-                  campoPersonalizadoTitulo.campo = iCampoExpediente.campoDTO.nombre;
-                  campoPersonalizadoTitulo.valorNumero =
-                    iCampoExpediente.valorNumero;
-                  if (!campoPersonalizadoTitulo.valorNumero) {
-                    campoPersonalizadoTitulo.valorNumero = 0;
-                  }
-                  camposPersonalizados.push(campoPersonalizadoTitulo);
+              }
+              if (crearCampoTitulo) {
+                const campoPersonalizadoTitulo: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
+                campoPersonalizadoTitulo.campo = iCampoExpediente.campoDTO.nombre;
+                campoPersonalizadoTitulo.valorNumero =
+                  iCampoExpediente.valorNumero;
+                if (!campoPersonalizadoTitulo.valorNumero) {
+                  campoPersonalizadoTitulo.valorNumero = 0;
                 }
+                camposPersonalizados.push(campoPersonalizadoTitulo);
               }
             }
           }
         }
+      }
 
-        if (valorTotal !== 0) {
-          this.titulo =
-            this.titulo +
-            ' - Total (' +
-            new Intl.NumberFormat('es-CO', {
-              style: 'currency',
-              currency: 'COP',
-            }).format(valorTotal) +
-            ')';
-        }
-        if (valorCampo !== 0 && valorCampo !== valorTotal) {
-          this.titulo =
-            this.titulo +
-            ' - Valor (' +
-            new Intl.NumberFormat('es-CO', {
-              style: 'currency',
-              currency: 'COP',
-            }).format(valorCampo) +
-            ')';
-        }
+      if (valorTotal !== 0) {
+        result =
+        result +
+          ' - Total (' +
+          new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+          }).format(valorTotal) +
+          ')';
+      }
+      if (valorCampo !== 0 && valorCampo !== valorTotal) {
+        result =
+        result +
+          ' - Valor (' +
+          new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+          }).format(valorCampo) +
+          ')';
+      }
 
-        if (camposPersonalizados.length !== 0) {
-          for (let index = 0; index < camposPersonalizados.length; index++) {
-            const iTituloEnd = camposPersonalizados[index];
-            if (iTituloEnd.valorNumero !== 0) {
-              this.titulo =
-                this.titulo +
-                ' - ' +
-                iTituloEnd.campo +
-                ' (' +
-                new Intl.NumberFormat('es-CO', {
-                  style: 'currency',
-                  currency: 'COP',
-                }).format(iTituloEnd.valorNumero) +
-                ')';
-            }
+      if (camposPersonalizados.length !== 0) {
+        for (let index = 0; index < camposPersonalizados.length; index++) {
+          const iTituloEnd = camposPersonalizados[index];
+          if (iTituloEnd.valorNumero && iTituloEnd.valorNumero !== 0) {
+            result =
+            result +
+              ' - ' +
+              iTituloEnd.campo +
+              ' (' +
+              new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+              }).format(iTituloEnd.valorNumero) +
+              ')';
           }
         }
       }
     }
-
+    return result;
   }
 
   limpiarRepetidos() {
@@ -1299,6 +1305,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             this.openDialog(this.dataProvider[0]);
           }
         }
+        this.labelSearch = this.generateLabelToList(this.dataProvider);
       },
       error: () => {
         this.isLoadingList = false;
