@@ -183,11 +183,14 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   openManager(value: PedidoVentaDTO) {
-    if (!this.identificadorInicial && !this.close2Save) {
-      const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
+    const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
       pedidoVenta.plantilla = value.plantilla;
       pedidoVenta.llaveTabla = value.llaveTabla;
       pedidoVenta.server = this.plantilla.server;
+    if (this.dialogRef) {
+      this.dialogRef.close({ data: pedidoVenta });
+    } else {
+    if (!this.identificadorInicial && !this.close2Save) {
       this.utilsService.modalWithParams(pedidoVenta);
     } else {
       this.pedido.llaveTabla = value.llaveTabla;
@@ -198,10 +201,9 @@ export class FormComponent implements OnInit, AfterViewInit {
         }
       }
     }
-    this.submitted = false;
-    if (this.dialogRef) {
-      this.dialogRef.close({ data: value });
     }
+    
+    this.submitted = false;
   }
 
   // Consulta en el servidor el documento
@@ -729,8 +731,12 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
     _doc.server = this.plantilla.server;
     this.utilsService.modalWithParams(_doc).subscribe((res) => {
-      if (res && this.dialogRef) {
+      if (this.dialogRef) {
         this.dialogRef.close();
+        if (res) { 
+          this.utilsService.modalWithParams(this.pedido); 
+          this.utilsService.modalWithParams(res.data);
+        }
       }
     });
   }

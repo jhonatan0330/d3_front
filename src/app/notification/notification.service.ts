@@ -4,6 +4,7 @@ import { Observable, ReplaySubject, tap } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
 import { UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class NotificationsService {
 
   constructor(
     private http: HttpClient,
-    private ls: LocalStoreService
+    private ls: LocalStoreService,
+    private templateService: TemplateService
   ) {
   }
 
@@ -41,8 +43,23 @@ export class NotificationsService {
     ).pipe(
       tap((notifications) => {
         this._notifications.next(notifications);
+        this.getNotificationsFromOtherServers(notifications);
       })
     );
+  }
+
+  getNotificationsFromOtherServers(notificationMain:ActividadDTO[]){
+      if(this.templateService.conectionTemplates){
+        for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
+          const element = this.templateService.conectionTemplates[i];
+          this.http.get<ActividadDTO[]>(
+            this.ls.getUrlAccess('/notification/getNotifications', element.llaveTabla)
+          ).subscribe((notifications) => {
+              notificationMain = notificationMain.concat(notifications);
+              this._notifications.next(notificationMain);
+            });
+        }
+      }
   }
 
   clear(){
