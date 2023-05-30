@@ -99,47 +99,52 @@ export function procesarXMLBase(
         pCampo.campoDTO.propiedades,
         PlantillaHelper.MULTIPLE
       );
-      if (multiple || herencia != null) {
+      if (herencia != null) {
         return null;
       } else {
-        const autoload = PlantillaHelper.buscarPropiedad(
-          pCampo.campoDTO.propiedades,
-          PlantillaHelper.AUTOLOAD
-        );
-        if (autoload) {
-          const disponibles = pCampo.campoDTO.documentos;
-          if (disponibles) {
-            for (let index = 0; index < disponibles.length; index++) {
-              const opcion = disponibles[index];
-              if (opcion.nombre === pCampo.valorText || opcion.nombre === pCampo.valorText) {
-                pCampo.valorOpcion = opcion.llaveTabla;
-                return pCampo;
-              }
-            }
-            Swal.fire('Info',
-              'El codigo del documento no se encuentra en los que tiene cargados el campo : ' +
-              pCampo.valorText, 'info'
-            );
-            return null;
-          } else {
-            Swal.fire('Info', 'El campo es autoload pero no tiene cargado items');
-            return null;
-          }
+        if(multiple) {
+          return pCampo;
         } else {
-          const plantilla = PlantillaHelper.buscarValorMultiple(
+          const autoload = PlantillaHelper.buscarPropiedad(
             pCampo.campoDTO.propiedades,
-            PlantillaHelper.PLANTILLA_AUXILIAR
+            PlantillaHelper.AUTOLOAD
           );
-          if (!plantilla) {
-            Swal.fire('Falta configurar campo',
-              'EL campo '  + pCampo.campoDTO.nombre +' no tiene una fuente de datos en dodne pueda buscar el numero del documento.',
-              'info'
-            );
-            return null;
+          if (autoload) {
+            const disponibles = pCampo.campoDTO.documentos;
+            if (disponibles) {
+              for (let index = 0; index < disponibles.length; index++) {
+                const opcion = disponibles[index];
+                if (opcion.nombre === pCampo.valorText || opcion.nombre === pCampo.valorText) {
+                  pCampo.valorOpcion = opcion.llaveTabla;
+                  return pCampo;
+                }
+              }
+              Swal.fire('Info',
+                'El codigo del documento no se encuentra en los que tiene cargados el campo : ' +
+                pCampo.valorText, 'info'
+              );
+              return null;
+            } else {
+              Swal.fire('Info', 'El campo es autoload pero no tiene cargado items');
+              return null;
+            }
           } else {
-            return pCampo;
+            const plantilla = PlantillaHelper.buscarValorMultiple(
+              pCampo.campoDTO.propiedades,
+              PlantillaHelper.PLANTILLA_AUXILIAR
+            );
+            if (!plantilla) {
+              Swal.fire('Falta configurar campo',
+                'EL campo '  + pCampo.campoDTO.nombre +' no tiene una fuente de datos en dodne pueda buscar el numero del documento.',
+                'info'
+              );
+              return null;
+            } else {
+              return pCampo;
+            }
           }
         }
+        
       }
 
   }

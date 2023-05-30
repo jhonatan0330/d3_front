@@ -282,6 +282,11 @@ export class MassiveComponent implements OnInit {
       if (!this.validateCamposPlantilla(this.plantilla)) {
         return;
       }
+    } else { 
+      Swal.fire('Carga plantilla',
+        'No encontramos la informacion de la plantilla',
+        'info'
+      );
     }
     for (let i = 0; i < files.length; i++) {
       this.lblCarga = 'CARGANDO XML' + ' <-- ' + this.lblCarga;
@@ -347,6 +352,10 @@ export class MassiveComponent implements OnInit {
       this.inicio = new Date();
       if (template.llaveTabla === this.plantilla.llaveTabla) {
         this.documentosGenerados = this.generateVO(documentos, template);
+        if(!this.documentosGenerados || this.documentosGenerados.length ===0 ){ 
+          Swal.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
+          return;
+        }
         this.inicio = new Date();
         this.cantidadProcesada = 1;
         this.inicialCamposConsultar = this.camposConsultar.length;
@@ -360,6 +369,10 @@ export class MassiveComponent implements OnInit {
           documentos,
           template
         );
+        if(!this.documentosGeneradosMultiple || this.documentosGeneradosMultiple.length ===0 ){ 
+          Swal.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
+          return;
+        }
         this.inicio = new Date();
         this.cantidadProcesada = 1;
         this.inicialCamposConsultar = this.camposConsultar.length;
@@ -427,7 +440,7 @@ export class MassiveComponent implements OnInit {
           campo.campoDTO.formato ===
           DocumentoPlantillaCaracteristicaEnum.PROCESO &&
           !campo.valorOpcion &&
-          !PlantillaHelper.buscarValor(campo.campoDTO.propiedades, PlantillaHelper.DEPENDE) &&
+          (!PlantillaHelper.buscarValor(campo.campoDTO.propiedades, PlantillaHelper.DEPENDE) ||PlantillaHelper.buscarValor(campo.campoDTO.propiedades, PlantillaHelper.MULTIPLE)) &&
           campo.valorText
         ) {
           this.acumularProcesosConsulta(campo.campoDTO, campo.valorText);
@@ -563,7 +576,18 @@ export class MassiveComponent implements OnInit {
                     for (let c = 0; c < value.documentos.length; c++) {
                       const iPedidoVenta = value.documentos[c];
                       if (iPedidoVenta.nombre === iCampo.valorText) {
-                        iCampo.valorOpcion = iPedidoVenta.llaveTabla;
+                        if(!PlantillaHelper.buscarPropiedad(
+                          iCampo.campoDTO.propiedades,
+                          PlantillaHelper.MULTIPLE
+                        )) {
+                          iCampo.valorOpcion = iPedidoVenta.llaveTabla;
+                        } else{
+                          iCampo.expedientes = [];
+                          const multiple = new PedidoVentaDTO();
+                          multiple.llaveTabla = iPedidoVenta.llaveTabla;
+                          iCampo.expedientes.push(multiple);
+                        }
+                        
                         break;
                       }
                     }
