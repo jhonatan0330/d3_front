@@ -183,18 +183,20 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   openManager(value: PedidoVentaDTO) {
-
     if (!this.identificadorInicial && !this.close2Save) {
       const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
       pedidoVenta.plantilla = value.plantilla;
       pedidoVenta.llaveTabla = value.llaveTabla;
       pedidoVenta.server = this.plantilla.server;
-      if (this.dialogRef) {
-        this.dialogRef.close({ data: pedidoVenta });
-      } else {
-        this.utilsService.modalWithParams(pedidoVenta);
-      }
+      this.utilsService.modalWithParams(pedidoVenta);
     } else {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: value.nombre,
+        showConfirmButton: false,
+        timer: 1500
+      })
       this.pedido.llaveTabla = value.llaveTabla;
       for (let r = 0; r < this.reportes.length; r++) {
         const _report = this.reportes[r];
@@ -202,9 +204,11 @@ export class FormComponent implements OnInit, AfterViewInit {
           this.showReport(_report);
         }
       }
-      if (this.close2Save) { this.dialogRef.close(); }
     }
     this.submitted = false;
+    if (this.dialogRef) {
+      this.dialogRef.close({ data: value });
+    }
   }
 
   // Consulta en el servidor el documento
@@ -731,13 +735,10 @@ export class FormComponent implements OnInit, AfterViewInit {
       _doc.caracteristicas.push(campoBase);
     }
     _doc.server = this.plantilla.server;
-    this.utilsService.modalWithParams(_doc).subscribe((res) => {
-      if (this.dialogRef) {
+    this.utilsService.modalWithParams(_doc, true).subscribe((res) => {
+      if (res && this.dialogRef) {
         this.dialogRef.close();
-        if (res) {
-          this.utilsService.modalWithParams(this.pedido);
-          this.utilsService.modalWithParams(res.data);
-        }
+        if (!this.close2Save) { this.utilsService.modalWithParams(this.pedido); }
       }
     });
   }
