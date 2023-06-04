@@ -5,6 +5,7 @@ import { ActividadDTO } from 'app/notification/notification.types';
 import { UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import { template } from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -52,12 +53,16 @@ export class NotificationsService {
       if(this.templateService.conectionTemplates){
         for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
           const element = this.templateService.conectionTemplates[i];
-          this.http.get<ActividadDTO[]>(
-            this.ls.getUrlAccess('/notification/getNotifications', element.llaveTabla)
-          ).subscribe((notifications) => {
-              notificationMain = notificationMain.concat(notifications);
-              this._notifications.next(notificationMain);
-            });
+          // Al iniciar sesion por primera vez si el token no fuciona no me deja avanzar
+          if(this.templateService.getTokenConnection(element.servidorUrl)){
+            this.http.get<ActividadDTO[]>(
+              this.ls.getUrlAccess('/notification/getNotifications', element.llaveTabla)
+            ).subscribe((notifications) => {
+                notificationMain = notificationMain.concat(notifications);
+                this._notifications.next(notificationMain);
+              });
+          }
+          
         }
       }
   }
