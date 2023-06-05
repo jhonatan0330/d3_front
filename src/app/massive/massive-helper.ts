@@ -3,6 +3,7 @@ import {
   DocumentoPlantillaCaracteristicaDTO,
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
+  PedidoVentaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 
 import { formatDate } from '@angular/common';
@@ -103,6 +104,11 @@ export function procesarXMLBase(
         return null;
       } else {
         if(multiple) {
+          pCampo.expedientes = [];
+          const multiple = new PedidoVentaDTO();
+          //multiple.llaveTabla = iPedidoVenta.llaveTabla;
+          multiple.nombre = pCampo.valorText;
+          pCampo.expedientes.push(multiple);
           return pCampo;
         } else {
           const autoload = PlantillaHelper.buscarPropiedad(
