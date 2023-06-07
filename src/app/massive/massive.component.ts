@@ -247,6 +247,7 @@ export class MassiveComponent implements OnInit {
     }
     texto = texto.replace(new RegExp(' ', 'g'), '_');
     texto = texto.replace('Ñ', 'N');
+    texto = texto.trim();
     return texto;
   }
 
@@ -415,6 +416,7 @@ export class MassiveComponent implements OnInit {
             );
             if (this.formatStringXML(iCampo.nombre) === nombreCampoXML) {
               campo.valorText = camposTexto[j].textContent;
+              if(campo.valorText) {campo.valorText = campo.valorText.trim();}
               campo = procesarXMLBase(campo);
               break;
             }
@@ -423,7 +425,10 @@ export class MassiveComponent implements OnInit {
           for (let j = 0; j < source[i].length; j++) {
             const nombreCampoXML = this.formatStringXML(source[0][j]);
             if (this.formatStringXML(iCampo.nombre) === nombreCampoXML) {
-              if (source[i][j]) { campo.valorText = source[i][j].toString(); }
+              if (source[i][j]) { 
+                campo.valorText = source[i][j].toString(); 
+                if(campo.valorText) {campo.valorText = campo.valorText.trim();}
+              }
               campo = procesarXMLBase(campo);
               break;
             }

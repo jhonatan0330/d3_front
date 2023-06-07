@@ -1,6 +1,6 @@
 <!-- Titulo -->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle fxLayout="row wrap" *ngIf="plantilla"
-  fxLayoutAlign=" center">
+  fxLayoutAlign=" center" [style]="fullScreen ? 'width: 76vw;':''">
   <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1" />
   <!-- Texto del titulo -->
   <div fxFlex class="items-center">
@@ -35,6 +35,13 @@
         }}</span>
     </div>
     <span *ngIf="instruccionCrear" class="px-1">{{ instruccionCrear }}</span>
+  </div>
+  <!-- Botones de accion -->
+  <div fxLayout="column" class="items-center">
+    <!-- Boton Cerrar -->
+    <button mat-icon-button class="h-6" tabindex="-1" (click)="toogleScreen()">
+      <mat-icon class="h-6">fullscreen</mat-icon>
+    </button>
   </div>
   <!-- Botones de accion -->
   <div fxLayout="column" class="items-center">

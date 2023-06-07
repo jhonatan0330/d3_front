@@ -57,6 +57,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   submitted = false;
   modificable = false;
   instruccionCrear: string;
+  fullScreen = false;
 
   pedidoBase: PedidoVentaDTO; // Lo uso para guardar lo que recibi para crear el formulario
   plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
@@ -933,5 +934,9 @@ export class FormComponent implements OnInit, AfterViewInit {
         backdrop: false
       })
     }
+  }
+
+  toogleScreen(){
+    this.fullScreen = !this.fullScreen;
   }
 }
