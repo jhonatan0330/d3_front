@@ -4,13 +4,18 @@ import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
+import { BarcodeFormat } from '@zxing/library';
 
 @Component({
   selector: 'app-texto',
-  templateUrl: './texto.component.html'
+  templateUrl: './texto.component.html',
+  styleUrls: ['./texto.component.scss'],
 })
 export class TextoComponent extends BaseComponent implements OnInit {
   textoLargo = false;
+  scannerEnabled = false;
+  allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX];
+
   valorDefecto: string;
 
   fControl = new FormControl('');
@@ -45,6 +50,7 @@ export class TextoComponent extends BaseComponent implements OnInit {
     this.fControl.valueChanges.subscribe((value) => {
       this.actualizar();
      });
+     this.scannerEnabled = !this.isEmpty(this.obtenerValor(PlantillaHelper.READ_QR));
   }
 
   actualizar(): void {
@@ -84,5 +90,9 @@ export class TextoComponent extends BaseComponent implements OnInit {
     pCampo: PedidoVentaCaracteristicaDTO
   ): PedidoVentaCaracteristicaDTO {
     return pCampo;
+  }
+
+  onCodeResult(resultString: string) {
+    this.fControl.setValue(resultString + this.fControl.value);
   }
 }

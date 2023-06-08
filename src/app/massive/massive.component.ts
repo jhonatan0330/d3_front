@@ -354,7 +354,8 @@ export class MassiveComponent implements OnInit {
       if (template.llaveTabla === this.plantilla.llaveTabla) {
         this.documentosGenerados = this.generateVO(documentos, template);
         if (!this.documentosGenerados || this.documentosGenerados.length === 0) {
-          Swal.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
+          this.lblCarga = this.lblCarga + 'Revisa la carga debido a que no se generaron documentos';
+          //Swal.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
           return;
         }
         this.inicio = new Date();

@@ -127,11 +127,11 @@ export function procesarXMLBase(
               }
               Swal.fire('Info',
                 'El codigo del documento no se encuentra en los que tiene cargados el campo : ' +
-                pCampo.valorText, 'info'
+                pCampo.valorText, 'error'
               );
               return null;
             } else {
-              Swal.fire('Info', 'El campo es autoload pero no tiene cargado items');
+              Swal.fire('Info', 'El campo es autoload pero no tiene cargado items', 'error');
               return null;
             }
           } else {

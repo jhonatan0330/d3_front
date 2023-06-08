@@ -1,26 +1,15 @@
- <mat-form-field [style.display]="isInvisible ? 'none': 'block'">
-    <mat-label>{{structure.nombre | titlecase }} </mat-label>
-    <input
-      matInput
-      [formControl]="fControl"
-      [name]="structure.llaveTabla"
-      [required]="required"
-      [readonly]="!isEnabled"
-      autocomplete="off"
-      *ngIf="!textoLargo"
-    />
-    <textarea
-      *ngIf="textoLargo"
-      matInput
-      class="textarea-form"
-      [formControl]="fControl"
-      [name]="structure.llaveTabla"
-      [required]="required"
-      [readonly]="!isEnabled"
-      oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-      onclick='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-    ></textarea>
-    <!-- <button mat-button *ngIf="help" matSuffix mat-icon-button aria-label="help" (click)="help=''">
+<mat-form-field [style.display]="isInvisible ? 'none': 'block'">
+  <mat-label>{{structure.nombre | titlecase }} </mat-label>
+  <input matInput [formControl]="fControl" [name]="structure.llaveTabla" [required]="required" [readonly]="!isEnabled"
+    autocomplete="off" *ngIf="!textoLargo" />
+  <textarea *ngIf="textoLargo" matInput class="textarea-form" [formControl]="fControl" [name]="structure.llaveTabla"
+    [required]="required" [readonly]="!isEnabled"
+    oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
+    onclick='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+  <!-- <button mat-button *ngIf="help" matSuffix mat-icon-button aria-label="help" (click)="help=''">
       <mat-icon>help</mat-icon>
     </button> -->
-  </mat-form-field>
+</mat-form-field>
+<div *ngIf="scannerEnabled" class="w-full">
+  <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+</div>
