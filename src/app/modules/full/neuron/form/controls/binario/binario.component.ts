@@ -5,11 +5,11 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({
   selector: 'app-binario',
-  templateUrl: './binario.component.html',
-  styleUrls: ['./binario.component.scss'],
+  templateUrl: './binario.component.html'
 })
 export class BinarioComponent extends BaseComponent implements OnInit {
   fControl = new FormControl(false);
+  labelTextBinary = '';
 
   constructor() {
     super();
@@ -34,6 +34,9 @@ export class BinarioComponent extends BaseComponent implements OnInit {
     this.fControl.valueChanges.subscribe((value) => {
       this.actualizar();
     });
+    this.labelTextBinary = this.obtenerValor(PlantillaHelper.BINARIO_PREGUNTA);
+    if(this.labelTextBinary) { this.labelTextBinary = this.structure.nombre + ' - ' +  this.labelTextBinary;}
+    else {this.labelTextBinary = this.structure.nombre;}
   }
 
   startControl() {

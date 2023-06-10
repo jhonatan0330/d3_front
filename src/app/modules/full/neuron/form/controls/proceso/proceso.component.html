@@ -121,7 +121,7 @@
                 <div class="text-md">{{ d.nombre }}</div>
               </a>
               <a (click)="openDialog(d)" *ngIf="d.descripcion">
-                <div class="text-sm line-clamp-4">
+                <div class="text-sm line-clamp-4 leading-none">
                   {{ d.descripcion }}
                 </div>
               </a>
@@ -239,7 +239,7 @@
                   <div class="text-md">{{ iDocument.nombre }}</div>
                 </a>
                 <a (click)="openDialog(iDocument)" *ngIf="iDocument.descripcion">
-                  <div class="text-sm line-clamp-4">
+                  <div class="text-sm line-clamp-4 leading-none">
                     {{ iDocument.descripcion }}
                   </div>
                 </a>
