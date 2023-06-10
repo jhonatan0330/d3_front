@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { BaseComponent } from '../base/base.component';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({
   selector: 'app-binario',
@@ -18,7 +19,7 @@ export class BinarioComponent extends BaseComponent implements OnInit {
     super.ngOnInit();
     if (this.data) {
       if (!this.data.valorNumero) { this.data.valorNumero = 0 }
-      if (this.data.valorNumero === 1) { this.fControl.setValue(true);}
+      if (this.data.valorNumero === 1) { this.fControl.setValue(true); }
     }
     if (this.required) {
       this.fControl.setValidators(Validators.required);
@@ -47,12 +48,13 @@ export class BinarioComponent extends BaseComponent implements OnInit {
     const nuevoValor = this.fControl.value ? 1 : 0;
     if (this.data.valorNumero !== nuevoValor) {
       this.data.valorNumero = nuevoValor;
-      /*
-        if(chkBinario.selected){
-					// chkBinario.label = obtenerValor(BINARIO_VERDADERO);
-				}else{
-					// chkBinario.label = obtenerValor(BINARIO_FALSO);
-				}*/
+
+      if (nuevoValor === 1) {
+        this.data.valorText = this.obtenerValor(PlantillaHelper.BINARIO_VERDADERO);
+      } else {
+        this.data.valorText = this.obtenerValor(PlantillaHelper.BINARIO_VERDADERO);
+      }
+      if (!this.data.valorText) { this.data.valorText = nuevoValor.toString(); }
       this.avisarModificacion();
     }
   }

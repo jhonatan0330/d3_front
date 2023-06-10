@@ -1,5 +1,5 @@
 <!-- Timer -->
-<div class="time-countdown" *ngIf="timerBackCount">
+<div class="time-countdown" *ngIf="timerBackCount" [style.display]="isInvisible ? 'none': 'block'">
   <ul>
     <li>
       <span>{{ day }}</span>Dias
@@ -16,18 +16,20 @@
   </ul>
 </div>
 <!-- Fecha normal -->
-<mat-form-field *ngIf="!isRango && !sinCalendar">
+<mat-form-field *ngIf="!isRango && !sinCalendar" [style.display]="isInvisible ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }}</mat-label>
   <input matInput [matDatepicker]="pickerFrom" [required]="required" [formControl]="dateFrom" [readonly]="!isEnabled"
     autocomplete="off" />
   <mat-datepicker-toggle matSuffix [for]="pickerFrom" *ngIf="isEnabled"></mat-datepicker-toggle>
   <mat-datepicker #pickerFrom></mat-datepicker>
 </mat-form-field>
-<div class="relative left-24 -top-10 h-0" *ngIf="!isRango && !sinCalendar && conHora && data.valorFecha">
-  <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom"/>
+<div class="relative left-24 -top-10 h-0" *ngIf="!isRango && !sinCalendar && conHora && data.valorFecha"
+  [style.display]="isInvisible ? 'none': 'block'">
+  <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" />
 </div>
 <!-- Tiempo -->
-<div fxLayout="row wrap" fxLayoutAlign="none center" *ngIf="!isRango && sinCalendar">
+<div fxLayout="row wrap" fxLayoutAlign="none center" *ngIf="!isRango && sinCalendar"
+  [style.display]="isInvisible ? 'none': 'block'">
   <span fxFlex.gt-sm="50" fxFlex.sm="50" fxFlex="100">{{
     structure.nombre | titlecase
     }}</span>
@@ -43,7 +45,7 @@
   </mat-form-field>
 </div>
 <!-- Rango -->
-<mat-form-field *ngIf="isRango" class="dialog-control">
+<mat-form-field *ngIf="isRango" class="dialog-control" [style.display]="isInvisible ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }}</mat-label>
   <mat-date-range-input [rangePicker]="picker">
     <input matStartDate placeholder="Fecha inicial" [formControl]="fControlDateStart" (dateInput)="datesUpdated()"
