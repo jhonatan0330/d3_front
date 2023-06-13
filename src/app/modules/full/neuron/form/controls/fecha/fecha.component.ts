@@ -134,7 +134,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
   actualizar() {
     // Se supone que nunca llega por aqui
-    const fecha: Date = this.dateFrom.value;
+    const fecha: Date = new Date(this.dateFrom.value);
     let hour = 0;
     let minute = 0;
     if (this.timeFrom && this.timeFrom.value){
