@@ -8,6 +8,7 @@ import {
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface IDynamicControl {
   structure: DocumentoPlantillaCaracteristicaDTO;
@@ -15,8 +16,11 @@ export interface IDynamicControl {
   productForm: ProductComponent;
   parent: PedidoVentaDTO;
   formIsEnabled: boolean; //Muestra si el formulario tiene permisos para modificar
+  
   urlServer: string;
   isInvisible: boolean;
+
+  formIsModified: BehaviorSubject<boolean | null>;
 
   adicionarListener(pField: IDynamicControl);
   actualizarDependencia(campoModificado: PedidoVentaCaracteristicaDTO);
@@ -46,6 +50,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   isInvisible = false;
   productForm: ProductComponent;
   urlServer: string;
+  formIsModified: BehaviorSubject<boolean | null> = new BehaviorSubject(null);
 
   _structure: DocumentoPlantillaCaracteristicaDTO;
   get structure(): DocumentoPlantillaCaracteristicaDTO {
@@ -144,6 +149,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   avisarModificacion(inicioCampo: boolean = false): void {
     if (!inicioCampo && this.data) {
       this.data.modificado = true;
+      this.formIsModified.next(true);
     }
     if (this.listeners && this.listeners.length !== 0) {
       for (let index = 0; index < this.listeners.length; index++) {
@@ -248,4 +254,5 @@ export class BaseComponent implements OnInit, IDynamicControl {
   ): PedidoVentaCaracteristicaDTO {
     return null;
   }
+
 }

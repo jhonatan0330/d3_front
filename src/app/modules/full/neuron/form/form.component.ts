@@ -51,6 +51,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   // Variables para el control de los campos
   @ViewChild('dynamycFormElement', { read: ViewContainerRef })
   myForm: ViewContainerRef;
+  formIsModified = false;
   dynamicControls: IDynamicControl[] = [];
 
   // flags
@@ -442,6 +443,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         )
       ) {
         this.modificable = true;
+        this.formIsModified = true;
       }
     } else {
       this.modificable = !PlantillaHelper.isEmpty(
@@ -507,6 +509,9 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (element.campo === _campo.llaveTabla) {
           componentRef.instance.data = element;
           componentRef.instance.formIsEnabled = this.modificable;
+          componentRef.instance.formIsModified.subscribe((x:boolean)=>{
+            if(x) {this.formIsModified = true;}
+          });
           break;
         }
       }

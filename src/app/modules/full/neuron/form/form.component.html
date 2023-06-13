@@ -147,7 +147,7 @@
 <div *ngIf="modificable" class="pt-1">
   <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
   <div *ngIf="!submitted">
-    <button mat-raised-button color="primary" class="w-full" (click)="submit()">
+    <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified">
       <mat-icon>save</mat-icon> Guardar {{ plantilla.nombre | titlecase }}
     </button>
   </div>
