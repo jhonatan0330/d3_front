@@ -1,4 +1,4 @@
-import { Component,  OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
@@ -17,6 +17,7 @@ export class TextoComponent extends BaseComponent implements OnInit {
   textoLargo = false;
   scannerEnabled = false;
   allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX];
+  readingQR = false;
 
   valorDefecto: string;
 
@@ -28,11 +29,11 @@ export class TextoComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    if (this.data ) {
+    if (this.data) {
       if (this.data.valorText) {
         this.fControl.setValue(this.data.valorText);
       } else {
-        if (!this.data.llaveTabla && this.valorDefecto) { this.fControl.setValue(this.valorDefecto)};
+        if (!this.data.llaveTabla && this.valorDefecto) { this.fControl.setValue(this.valorDefecto) };
       }
     }
     this.valorDefecto = this.obtenerValor(PlantillaHelper.DEFAULT);
@@ -51,15 +52,15 @@ export class TextoComponent extends BaseComponent implements OnInit {
     // Al finalzar se subscriben los cambios
     this.fControl.valueChanges.subscribe((value) => {
       this.actualizar();
-     });
-     this.scannerEnabled = !this.isEmpty(this.obtenerValor(PlantillaHelper.READ_QR));
+    });
+    this.scannerEnabled = !this.isEmpty(this.obtenerValor(PlantillaHelper.READ_QR));
   }
 
   actualizar(): void {
-     const nuevoValor =  this.fControl.value;
+    const nuevoValor = this.fControl.value;
     if (this.data.valorText !== nuevoValor) {
-       this.data.valorText = nuevoValor;
-       this.avisarModificacion();
+      this.data.valorText = nuevoValor;
+      this.avisarModificacion();
     }
   }
 
@@ -75,7 +76,7 @@ export class TextoComponent extends BaseComponent implements OnInit {
           const element = this.data.dependientes[i];
           textoCalculado = textoCalculado.replace(
             element.campoDTO.codigo,
-            (!element.valorText)? '' : element.valorText
+            (!element.valorText) ? '' : element.valorText
           );
         }
       }
@@ -95,14 +96,22 @@ export class TextoComponent extends BaseComponent implements OnInit {
   }
 
   onCodeResult(resultString: string) {
+    if(this.readingQR) {return;}
+    this.readingQR = true;
+    const audio = new Audio();
+    audio.src = 'assets/audio/beep.mp3';
+    audio.load();
+    audio.play();
     this.fControl.setValue(resultString + this.fControl.value);
     Swal.fire({
       position: 'center',
       icon: 'info',
       title: resultString,
       showConfirmButton: false,
-      timer: 1500
+      timer: 2000
+    }).then(() => {
+      this.readingQR = false;
     });
-    timer(2000).subscribe();
+
   }
 }

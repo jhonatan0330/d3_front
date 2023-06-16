@@ -1325,6 +1325,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   onCodeResult(resultString: string) {
     this.qrResultString = resultString;
+    const audio = new Audio();
+    audio.src = 'assets/audio/beep.mp3';
+    audio.load();
+    audio.play();
+    this.fControl.setValue(resultString + this.fControl.value);
     if (!this.multiple) {
       this.fControl.setValue(resultString);
       this.gestionarKeyUpTexto()
