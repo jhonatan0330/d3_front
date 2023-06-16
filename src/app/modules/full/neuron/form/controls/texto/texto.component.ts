@@ -5,6 +5,8 @@ import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/mode
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { BarcodeFormat } from '@zxing/library';
+import { timer } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-texto',
@@ -94,5 +96,13 @@ export class TextoComponent extends BaseComponent implements OnInit {
 
   onCodeResult(resultString: string) {
     this.fControl.setValue(resultString + this.fControl.value);
+    Swal.fire({
+      position: 'center',
+      icon: 'info',
+      title: resultString,
+      showConfirmButton: false,
+      timer: 1500
+    });
+    timer(2000).subscribe();
   }
 }
