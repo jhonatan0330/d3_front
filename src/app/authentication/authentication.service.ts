@@ -24,7 +24,6 @@ export class AuthenticationService
     return: string;
     // company: OrganizacionDTO = new OrganizacionDTO();
     isAdmin = false;
-    otherCompany: OrganizacionDTO[] ;
     /**
      * Constructor
      */
@@ -258,12 +257,10 @@ export class AuthenticationService
           this.isAuthenticated = !!authDTO;
           this.token = authDTO.token;
           this.user = authDTO.usuarioDTO;
-          this.otherCompany = authDTO.organizaciones;
         } else {
           this.isAuthenticated = false;
           this.token = null;
           this.user = null;
-          this.otherCompany = undefined;
         }
         this.user$.next(this.user);
         this._ls.setItem(LocalConstants.JWT_TOKEN, this.token);

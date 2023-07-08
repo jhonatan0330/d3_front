@@ -14,6 +14,7 @@ import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 
 import { ClassicLayoutComponent } from 'app/layout/layouts/vertical/classic/classic.component';
+import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
 
 @NgModule({
     declarations: [
@@ -30,6 +31,7 @@ import { ClassicLayoutComponent } from 'app/layout/layouts/vertical/classic/clas
         FuseNavigationModule,
         NotificationsModule,
         SearchModule,
+        QuickChatModule,
         ShortcutsModule,
         UserModule,
         SharedModule

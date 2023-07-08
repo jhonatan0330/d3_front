@@ -243,7 +243,6 @@ export class UsuarioAutenticacionDTO extends BasicDTO {
   tableroControl: number;
   usuarioDTO: UsuarioDTO;
   organizacion: OrganizacionDTO;
-  organizaciones: OrganizacionDTO[];
   mensaje: string;
   token: string;
   modulos: ModuloContratadoDTO[];

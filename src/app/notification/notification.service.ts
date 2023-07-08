@@ -5,7 +5,6 @@ import { ActividadDTO } from 'app/notification/notification.types';
 import { UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { template } from 'lodash';
 
 @Injectable({
   providedIn: 'root'
