@@ -139,12 +139,12 @@
     </div>
   </div>
   <!-- Campos dinamicos -->
-  <div class="mt-1 pr-1">
+  <div class="mt-1 pr-4">
     <ng-template #dynamycFormElement></ng-template>
   </div>
 </div>
 <!-- Boton de guardar -->
-<div *ngIf="modificable" class="pt-1">
+<div *ngIf="modificable" class="pt-1 pr-4">
   <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
   <div *ngIf="!submitted">
     <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified">
