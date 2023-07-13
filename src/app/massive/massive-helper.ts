@@ -70,10 +70,18 @@ export function procesarXMLBase(
             }
             //Cambio el orden de la fecha
             if (!pCampo.valorText.match(formatoDate)) {
-              Swal.fire('Formato incorrecto',
+              if (fechaHora) {
+                Swal.fire('Formato incorrecto',
+                'El valor fecha no esta con el formato correcto utiliza el formato año/Mes/dia hora:minuto como el siguiente ejemplo 2023/04/26 23:59.      La fecha actualmente tiene este formato ' + pCampo.valorText,
+                'error'
+              );
+              } else { 
+                Swal.fire('Formato incorrecto',
                 'El valor fecha no esta con el formato correcto utiliza el formato año/Mes/dia como el siguiente ejemplo 2023/04/26.      La fecha actualmente tiene este formato ' + pCampo.valorText,
                 'error'
               );
+              }
+              
               return null;
             }
           }
