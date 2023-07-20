@@ -18,7 +18,7 @@
     <mat-icon>add_circle</mat-icon>
   </button>
   <mat-menu #clickHoverMenu="matMenu">
-    <button mat-menu-item (click)="createNewDocument(item.valor)" *ngFor="let item of acciones" tabindex="-1">
+    <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)" *ngFor="let item of acciones" tabindex="-1">
       Crear {{ item.texto | titlecase }}
     </button>
   </mat-menu>

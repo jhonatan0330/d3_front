@@ -112,10 +112,11 @@ export class ApiService {
     );
   }
 
-  guardarDocumento(documento: PedidoVentaDTO, _server: string): Observable<PedidoVentaDTO> {
+  guardarDocumento(documento: PedidoVentaDTO, _server: string, session: string): Observable<PedidoVentaDTO> {
+    const headers = { 'non-duplicate': session };
     return this.http.post<PedidoVentaDTO>(
       this.ls.getUrlAccess('/rest/guardarDocumento', _server),
-      documento
+      documento, {headers}
     );
   }
 

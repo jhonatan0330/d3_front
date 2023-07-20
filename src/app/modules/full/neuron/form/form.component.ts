@@ -73,6 +73,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   auxPlantillaProxima: string; // LAs transiciones aveces no tienen cargados los campos y se encesitan
   transiciones: ProcesoTransicionDTO[] = []; // Lista de botones
+  uidOpenToNotDuplicate: string;
 
   // REPORTS
   reportes: ReporteBaseDTO[] = [];
@@ -133,6 +134,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.showForm();
     });
+    this.uidOpenToNotDuplicate = Date.now().toString();
   }
 
   submit() {
@@ -173,7 +175,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       return;
     }
     this.api
-      .guardarDocumento(this.copiarPedidoBase(this.pedido, true), this.plantilla.server)
+      .guardarDocumento(this.copiarPedidoBase(this.pedido, true), this.plantilla.server, this.uidOpenToNotDuplicate)
       .subscribe({
         next: (dataResult: PedidoVentaDTO) => {
           this.openManager(dataResult);
@@ -185,10 +187,32 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   openManager(value: PedidoVentaDTO) {
-    if (!this.identificadorInicial && !this.close2Save) {
+    const openNewFormCopyData: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_INICIO_RAPIDO);
+    if ((!this.identificadorInicial && !this.close2Save) || openNewFormCopyData) {
       const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
       pedidoVenta.plantilla = value.plantilla;
-      pedidoVenta.llaveTabla = value.llaveTabla;
+      if (openNewFormCopyData) {
+        for (let i = 0; i < openNewFormCopyData.length; i++) {
+          const iCopyData = openNewFormCopyData[i];
+          for (let j = 0; j < this.pedido.caracteristicas.length; j++) {
+            const jField = this.pedido.caracteristicas[j];
+            if (jField.campo === iCopyData.valor) {
+              if (!pedidoVenta.caracteristicas) pedidoVenta.caracteristicas = [];
+              const uc: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
+              uc.valorOpcion = jField.valorOpcion;
+              uc.valorAuxiliar = jField.valorAuxiliar;
+              uc.valorFecha = jField.valorFecha;
+              uc.valorNumero = jField.valorNumero;
+              uc.valorText = jField.valorText;
+              uc.campo = jField.campo;
+              pedidoVenta.caracteristicas.push(uc);
+              break;
+            }
+          }
+        }
+      } else {
+        pedidoVenta.llaveTabla = value.llaveTabla;
+      }
       pedidoVenta.server = this.plantilla.server;
       this.utilsService.modalWithParams(pedidoVenta);
     } else {
@@ -209,7 +233,11 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
     this.submitted = false;
     if (this.dialogRef) {
-      this.dialogRef.close({ data: value });
+      if (!openNewFormCopyData) {
+        this.dialogRef.close({ data: value });
+      } else {
+        this.dialogRef.close();
+      }
     }
   }
 
@@ -509,8 +537,8 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (element.campo === _campo.llaveTabla) {
           componentRef.instance.data = element;
           componentRef.instance.formIsEnabled = this.modificable;
-          componentRef.instance.formIsModified.subscribe((x:boolean)=>{
-            if(x) {this.formIsModified = true;}
+          componentRef.instance.formIsModified.subscribe((x: boolean) => {
+            if (x) { this.formIsModified = true; }
           });
           break;
         }
@@ -941,7 +969,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  toogleScreen(){
+  toogleScreen() {
     this.fullScreen = !this.fullScreen;
   }
 }

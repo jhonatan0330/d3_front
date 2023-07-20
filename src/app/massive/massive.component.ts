@@ -648,7 +648,7 @@ export class MassiveComponent implements OnInit {
             detalle + '\n      ' + iCampo.campoDTO.nombre + ' : ' + valorTexto;
         }
         this.api
-          .guardarDocumento(this.currentPedido, this.plantilla.server)
+          .guardarDocumento(this.currentPedido, this.plantilla.server, Date.now().toString())
           .subscribe({
             next: (value: PedidoVentaDTO) => {
               if (value) {
@@ -711,7 +711,7 @@ export class MassiveComponent implements OnInit {
           if (fieldDoc.valorText === consecutive) {
             fieldDoc.valorOpcion = newDocument.llaveTabla;
             this.api
-              .guardarDocumento(element, this.plantilla.server)
+              .guardarDocumento(element, this.plantilla.server, Date.now().toString())
               .subscribe({
                 next: () => {
                   const indexList =

@@ -649,10 +649,10 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     const camposPersonalizados: PedidoVentaCaracteristicaDTO[] = [];
     let crearCampoTitulo: boolean;
     let result: string = '';
-    
+
     if (documents && documents.length !== 0) {
       result =
-      result + ' (' + documents.length.toString() + ')';
+        result + ' (' + documents.length.toString() + ')';
       let valorCampo = 0;
       let valorTotal = 0;
 
@@ -700,7 +700,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
       if (valorTotal !== 0) {
         result =
-        result +
+          result +
           ' - Total (' +
           new Intl.NumberFormat('es-CO', {
             style: 'currency',
@@ -710,7 +710,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
       if (valorCampo !== 0 && valorCampo !== valorTotal) {
         result =
-        result +
+          result +
           ' - Valor (' +
           new Intl.NumberFormat('es-CO', {
             style: 'currency',
@@ -724,7 +724,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           const iTituloEnd = camposPersonalizados[index];
           if (iTituloEnd.valorNumero && iTituloEnd.valorNumero !== 0) {
             result =
-            result +
+              result +
               ' - ' +
               iTituloEnd.campo +
               ' (' +
@@ -974,7 +974,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   sendCreate() {
     if (this.acciones && this.acciones.length !== 0) {
       if (this.acciones.length === 1) {
-        this.createNewDocument(this.acciones[0].valor);
+        this.createNewDocument(this.acciones[0].valor, this.acciones[0].llaveTabla);
         if (this.trigger) { this.trigger.closeMenu(); }
       } else {
         if (this.trigger) { this.trigger.openMenu(); }
@@ -982,10 +982,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
-  createNewDocument(_plantilla: string) {
+  createNewDocument(_plantilla: string, _property: string) {
     const _doc: PedidoVentaDTO = new PedidoVentaDTO();
     if (this.herencia) {
-      // Cuando se pueden crear multiples tipo de herencia, tenia un hz que solo tomaba la primera plantilla
+      // Cuando se pueden crear multiples tipo de herencia, 
+      //tenia un hz que solo tomaba la primera plantilla
       // Esto se puede mejorar muchisimo para evitar consultar todos
       if (this.relacionesHerencia) {
         let borrarRelaciones = true;
@@ -1008,7 +1009,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
           next: (value: RelacionInternaDTO[]) => {
             this.relacionesHerencia = value;
-            this.createNewDocument(_plantilla);
+            this.createNewDocument(_plantilla, _property);
           },
           error: () => {
             this.isLoadingList = false;
@@ -1028,6 +1029,51 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           campoHer.valorText = this.parent.descripcion;
           campoHer.campo = this.relacionesHerencia[0].campo;
           _doc.caracteristicas.push(campoHer);
+        }
+      }
+    } else {
+      //Esto es para que lso formularios llenen el campo principal de un crud
+      //ejemplo guia roa cliente - direccion de cliente nuevo
+      if (this.data.dependientes) {
+        // Tengo un inconveniente con esto de las relaciones pero loa rrelgo despues
+        const relations = this.templateService.getPropertyRelation(_property);
+        if (!relations) {
+          const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
+          filtro.estado = StatesEnum.ACTIVE;
+          filtro.propiedad = _property;
+          this.isLoadingList = true;
+          this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
+            next: (value: RelacionInternaDTO[]) => {
+              if(!value){
+                //Creo una relacion falsa para que no vuelva a filtrar
+                const ri: RelacionInternaDTO = new RelacionInternaDTO();
+                ri.propiedad = _property;
+                ri.campo = "FALSE";
+                ri.plantilla = "FALSE";
+                ri.auxiliar = "FALSE";
+                value = [];
+                value.push(ri);
+              }
+              this.templateService.addRelations(value);
+              this.isLoadingList = false;
+              this.createNewDocument(_plantilla, _property);
+            },
+            error: () => {
+              this.isLoadingList = false;
+            },
+          });
+          return;
+        }
+        for (let i = 0; i < relations.length; i++) {
+          const iRelation = relations[i];
+          if (iRelation.plantilla === _plantilla) {
+            _doc.caracteristicas = [];
+            const fieldNewToCreateDependent: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
+            fieldNewToCreateDependent.valorOpcion = this.data.dependientes[0].valorOpcion;
+            fieldNewToCreateDependent.campo = iRelation.campo;
+            _doc.caracteristicas.push(fieldNewToCreateDependent);
+            break;
+          }
         }
       }
     }
@@ -1174,13 +1220,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         entity.filtroParametro = this.fControlSearch.value;
         if (this.fControlDateStart.value) {
           const startDate = new Date(this.fControlDateStart.value);
-          startDate.setHours(0,0,0,0);
+          startDate.setHours(0, 0, 0, 0);
           let endDate = new Date(this.fControlDateStart.value);
           if (this.fControlDateEnd.value) {
             endDate = new Date(this.fControlDateEnd.value);
-            endDate.setHours(0,0,0,0);
+            endDate.setHours(0, 0, 0, 0);
           }
-          endDate.setDate(endDate.getDate()+1);
+          endDate.setDate(endDate.getDate() + 1);
           entity.fechaMin = startDate;
           entity.fechaMax = endDate;
         } else {
@@ -1263,10 +1309,10 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       entity.estado = StatesEnum.ACTIVE;
     } else {
       entity.estado = '';
-      if(this.fCheckActivo.value) {entity.estado = entity.estado + ";" + StatesEnum.ACTIVE;}
-      if(this.fCheckInactivo.value) {entity.estado = entity.estado + ";" + StatesEnum.INACTIVE;}
-      if(this.fCheckFinalizado.value) {entity.estado = entity.estado + ";" + StatesEnum.FINALIZADO;}
-      if(entity.estado===''){entity.estado = entity.estado + ";" + StatesEnum.ACTIVE;}
+      if (this.fCheckActivo.value) { entity.estado = entity.estado + ";" + StatesEnum.ACTIVE; }
+      if (this.fCheckInactivo.value) { entity.estado = entity.estado + ";" + StatesEnum.INACTIVE; }
+      if (this.fCheckFinalizado.value) { entity.estado = entity.estado + ";" + StatesEnum.FINALIZADO; }
+      if (entity.estado === '') { entity.estado = entity.estado + ";" + StatesEnum.ACTIVE; }
     }
     entity.estadoExpediente = null;
     this.isLoadingList = true;
