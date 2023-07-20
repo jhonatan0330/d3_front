@@ -4,9 +4,9 @@
     <!-- Navigation header hook -->
     <ng-container fuseVerticalNavigationContentHeader>
         <!-- App Logo -->
-        <div class="flex flex-col w-full items-center h-16 p-1">
+        <a [routerLink]="'/main'"><div class="flex flex-col w-full items-center h-16 p-1">
             <img *ngIf="user.company" src="{{ user.company | imageFormat }}" class="h-full" />
-            </div>
+        </div></a>
         <div class="flex flex-col items-center w-full p-1 ">
             <h2 class="text-center">{{ user.companyName }}</h2>
             <span class="text-center">{{ user.companySlogan }}</span>
@@ -14,12 +14,12 @@
                 <div
                     class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium">
                     {{user.name}}
-            </div>
-            <div class="relative w-24 h-24">
+                </div>
+                <div class="relative w-24 h-24">
                     <img class="w-full h-full rounded-full" *ngIf="user.avatar" [src]="user.avatar" alt="User avatar">
                     <mat-icon class="icon-size-24" *ngIf="!user.avatar" [svgIcon]="'heroicons_solid:user-circle'">
                     </mat-icon>
-            </div>
+                </div>
                 <div
                     class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-secondary">
                     <mat-icon svgIcon="heroicons_outline:identification" class="icon-size-4"></mat-icon>
@@ -58,10 +58,7 @@
             <search [appearance]="'bar'"></search>
             <shortcuts></shortcuts>
             <!--messages></messages-->
-            <button
-                class="lg:hidden"
-                mat-icon-button
-                (click)="quickChat.toggle()">
+            <button class="lg:hidden" mat-icon-button (click)="quickChat.toggle()">
                 <mat-icon [svgIcon]="'heroicons_outline:chat-alt-2'"></mat-icon>
             </button>
             <notifications></notifications>

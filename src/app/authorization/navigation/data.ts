@@ -3,6 +3,12 @@ import { FuseNavigationItem } from '@fuse/components/navigation';
 
 export const defaultNavigation: FuseNavigationItem[] = [
     {
+        id      : 'process',
+        title   : 'Procesos de Negocio',
+        type    : 'group',
+        children: []
+    },
+    {
         id      : 'apps',
         title   : 'Aplicaciones',
         type    : 'group',
@@ -61,12 +67,6 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 type: 'divider'
             }
         ]
-    },
-    {
-        id      : 'process',
-        title   : 'Procesos de Negocio',
-        type    : 'group',
-        children: [ ]
     }
    
 ];

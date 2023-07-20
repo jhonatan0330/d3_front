@@ -50,11 +50,12 @@ export class NavigationService
                     id   : process.proceso,
                     title: process.nombre[0].toUpperCase() + process.nombre.substr(1).toLowerCase(),
                     type : 'basic',
+                    image: process.imagen,
                     link : '/list/process_crud/' + process.proceso
                 };
                 processNavItem.push(newItem);
             });
-            this._defaultNavigation[1].children = cloneDeep(processNavItem);
+            this._defaultNavigation[0].children = cloneDeep(processNavItem);
         }
 
         // Fill compact navigation children using the default navigation
