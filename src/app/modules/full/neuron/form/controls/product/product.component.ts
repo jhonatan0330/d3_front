@@ -326,7 +326,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
             const pCantidad = this.cantidadTarifario();
             if (
               iTarifa.cantidadMinima <= Math.ceil(pCantidad) &&
-              iTarifa.cantidadMaxima >= Math.ceil(pCantidad)
+              (iTarifa.cantidadMaxima >= Math.ceil(pCantidad) || iTarifa.cantidadMaxima ===0)
             ) {
               if (tarifa.valor === 0 || tarifa.valor > iTarifa.valor) {
                 tarifa = iTarifa;
