@@ -123,4 +123,9 @@ export class UserComponent implements OnInit, OnDestroy {
         this._router.navigate(['/settings']);
     }
 
+    downloadApk(){
+        const url = '/cs.apk';
+        window.open(url, '_blank');
+    }
+
 }
