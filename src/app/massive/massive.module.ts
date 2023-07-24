@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -9,6 +8,7 @@ import { MassiveComponent } from './massive.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
     declarations: [
@@ -31,6 +31,7 @@ import { MatButtonModule } from '@angular/material/button';
         MatProgressBarModule,
         MatIconModule,
         MatButtonModule,
+        MatTableModule,
         SharedModule
     ],
     exports : [

@@ -56,6 +56,13 @@ export function procesarXMLBase(
         if (Number(pCampo.valorText)) {
           // Este valor lo saque a prueba y error
           pCampo.valorFecha = new Date((Number(pCampo.valorText) - 25568.791) * 86400 * 1000);
+          pCampo.valorFecha.setHours(pCampo.valorFecha.getHours() + 5)
+          pCampo.valorFecha.setSeconds(0);
+          if (!fechaHora) {
+            pCampo.valorFecha.setMinutes(0);
+            pCampo.valorFecha.setHours(0);
+          }
+          pCampo.valorText = pCampo.valorFecha.toLocaleString('en-ZA');
         } else {
           if (fechaHora) {
             formatoDate = '\\d{4}(\\-|\\/)(((0)[0-9])|((1)[0-2]))(\\-|\\/)([0-2][0-9]|(3)[0-1])\\s([0-1][0-9]|(2)[0-3])(:)([0-5][0-9])';

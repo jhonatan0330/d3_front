@@ -19,6 +19,7 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import { ActivatedRoute, Params } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-massive',
@@ -52,6 +53,9 @@ export class MassiveComponent implements OnInit {
   currentPedido: PedidoVentaDTO;
 
   fieldIdInTemplateSecondary: DocumentoPlantillaCaracteristicaDTO;
+
+  dataSource = new MatTableDataSource([]);
+  displayedColumns: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -307,6 +311,14 @@ export class MassiveComponent implements OnInit {
     }
   }
 
+  generateColumnNames(template:DocumentoPlantillaDTO){
+    this.displayedColumns = ['No.'];
+    for (let k = 0; k < template.caracteristicas.length; k++) {
+      const iCampo = template.caracteristicas[k];
+      this.displayedColumns.push(iCampo.nombre);
+    }
+  }
+
   onDataLoaded(_file: string, template: DocumentoPlantillaDTO, format: number) {
     let documentos;
     let encabezado = 0;
@@ -352,7 +364,9 @@ export class MassiveComponent implements OnInit {
         this.lblCarga;
       this.inicio = new Date();
       if (template.llaveTabla === this.plantilla.llaveTabla) {
+        this.generateColumnNames(this.plantilla);
         this.documentosGenerados = this.generateVO(documentos, template);
+        this.dataSource = new MatTableDataSource(this.documentosGenerados);
         if (!this.documentosGenerados || this.documentosGenerados.length === 0) {
           this.lblCarga = this.lblCarga + 'Revisa la carga debido a que no se generaron documentos';
           //Swal.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
@@ -398,6 +412,7 @@ export class MassiveComponent implements OnInit {
     }
     for (let i = indexInicialProcesar; i < source.length; i++) {
       pedido = new PedidoVentaDTO();
+      pedido.textoFiltro = (documentosNewsFromXML.length +1).toString();//Esto es para colocar una columna de cantidad
       pedido.imagen = template.imagen;
       pedido.plantilla = template.llaveTabla;
       pedido.caracteristicas = [];
@@ -754,10 +769,6 @@ export class MassiveComponent implements OnInit {
     this.procesarDocumentos();
   }
 
-  /*closeMassiveForm() {
-    this.closeForm.emit('Succesfull');
-  }*/
-
   newMassiveLoad() {
     this.failedDocuments = [];
 
@@ -776,6 +787,8 @@ export class MassiveComponent implements OnInit {
 
     this.inicialCamposConsultar = 0;
 
-    // this.currentPedido: PedidoVentaDTO;
   }
+
+
+
 }
