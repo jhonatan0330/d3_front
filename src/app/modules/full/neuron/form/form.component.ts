@@ -90,6 +90,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   isChangeState = false;
   changeStateIsLoading = false;
   changeStateForm: FormGroup;
+  isLoading = false;
 
   private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
 
@@ -271,14 +272,17 @@ export class FormComponent implements OnInit, AfterViewInit {
       }
       // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
       if (!dp.caracteristicas) {
+        this.isLoading = true;
         this.api
           .obtenerCampos(plantillaId, dp.server)
           .subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
               plantilla.server = dp.server;
+              this.isLoading = false;
               this.cargarCamposPlantilla(plantilla);
             },
             error: () => {
+              this.isLoading = false;
               this.dialogRef.close();
             }
           });

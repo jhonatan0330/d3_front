@@ -9,6 +9,7 @@ import { FormulaHelper } from 'app/modules/full/neuron/formula.helper';
 import { BaseComponent } from '../base/base.component';
 import { CurrencyMaskInputMode } from 'ngx-currency';
 import { debounceTime } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-numero',
@@ -119,22 +120,6 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     let controlValue = this.fControl.value;
     if (!controlValue) {
       controlValue = '0';
-    }
-    if (this.formulaMaximum) {
-      const textoMaximum = this.formulaReplaceDependents(this.formulaMaximum);
-      const resultadoMaximum = FormulaHelper.calcular(textoMaximum);
-      if (controlValue > resultadoMaximum) {
-        this.fControl.setValue(resultadoMaximum);
-        return;
-      }
-    }
-    if (this.formulaMinimum) {
-      const textoMinimum = this.formulaReplaceDependents(this.formulaMinimum);
-      const resultadoMinimum = FormulaHelper.calcular(textoMinimum);
-      if (controlValue < resultadoMinimum) {
-        this.fControl.setValue(resultadoMinimum);
-        return;
-      }
     }
     if (this.data.valorNumero !== controlValue) {
       this.data.valorNumero = Number(controlValue);
@@ -303,5 +288,33 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     if (event.target.value === '0' && this.numeroDecimales === 0) {
       event.target.value = '';
     }
+  }
+
+  send2Server(): boolean {
+    if (this.formulaMaximum) {
+      const textoMaximum = this.formulaReplaceDependents(this.formulaMaximum);
+      const resultadoMaximum = FormulaHelper.calcular(textoMaximum);
+      if (this.data.valorNumero > resultadoMaximum) {
+        Swal.fire(
+          'Valor Maximo',
+          'En el campo '+ this.structure.nombre + ' el valor maximo que puedes colocar es ' + resultadoMaximum,
+          'info'
+        );
+        return false;
+      }
+    }
+    if (this.formulaMinimum) {
+      const textoMinimum = this.formulaReplaceDependents(this.formulaMinimum);
+      const resultadoMinimum = FormulaHelper.calcular(textoMinimum);
+      if (this.data.valorNumero < resultadoMinimum) {
+        Swal.fire(
+          'Valor Minimo',
+          'En el campo '+ this.structure.nombre + ' el valor minimo que puedes colocar es ' + resultadoMinimum,
+          'info'
+        );
+        return false;
+      }
+    }
+    return true;
   }
 }
