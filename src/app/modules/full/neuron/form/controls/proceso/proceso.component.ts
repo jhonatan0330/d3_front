@@ -1124,7 +1124,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (this.proceso) {
       if (
         (!this.data.valorOpcion && this.proceso.llaveTabla) ||
-        this.data.valorOpcion !== this.proceso.llaveTabla
+        (this.data.valorOpcion !== this.proceso.llaveTabla) || 
+        (this.proceso.dinero && !this.data.valorNumero )
       ) {
         this.data.valorOpcion = this.proceso.llaveTabla;
         this.data.principal = this.proceso;
