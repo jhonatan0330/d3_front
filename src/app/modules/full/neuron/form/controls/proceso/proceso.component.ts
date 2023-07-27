@@ -1037,7 +1037,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (this.data.dependientes) {
         // Tengo un inconveniente con esto de las relaciones pero loa rrelgo despues
         const relations = this.templateService.getPropertyRelation(_property);
-        if (!relations) {
+        if (!relations || relations.length ==0) {
           const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
           filtro.estado = StatesEnum.ACTIVE;
           filtro.propiedad = _property;
@@ -1111,6 +1111,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             */
             } else {
               if (!this.disponibles) { this.disponibles = []; }
+              if (!this.structure.documentos) { this.structure.documentos = []; }
               this.structure.documentos.push(res.data);
               this.disponibles = this.structure.documentos;
               this.fControl.setValue(res.data);
