@@ -21,7 +21,7 @@ import { ProductComponent } from '../product/product.component';
 })
 export class DetalleComponent extends BaseComponent implements OnInit, AfterViewInit {
   unicoProducto = false;
-  fControl = new FormControl('') ; // Texto que digita el usuario para filtrar
+  fControl = new FormControl(''); // Texto que digita el usuario para filtrar
   isShowCategories = false;
   isShowProducts = false;
   autoload = false; // Indica que la fuente de datos se va a cargar en memoria
@@ -42,7 +42,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   constructor(
     private templateService: TemplateService,
     private api: ApiService,
-    private cd:ChangeDetectorRef,
+    private cd: ChangeDetectorRef,
     private dialog: MatDialog
   ) {
     super();
@@ -84,7 +84,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     }
     // Si es valor unico coloco el texto del producto
     if (this.unicoProducto && this.data.detalles) {
-        this.fControl.setValue(this.data.valorText);
+      this.fControl.setValue(this.data.valorText);
     } else {
       this.showCategories();
     }
@@ -95,7 +95,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   showCategories() {
     if (!this.isEnabled) { return; }
-    if (this.autoload && this.structure.categorias ) {
+    if (this.autoload && this.structure.categorias) {
       this.isShowCategories = true;
       this.isShowProducts = false;
     } else {
@@ -120,22 +120,22 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     let valorFiltro: string = this.fControl.value;
     if (valorFiltro) {
       valorFiltro = valorFiltro.toUpperCase();
-      if(this.unicoProducto && this.data.detalles && this.data.detalles.length ===1){
-        if(valorFiltro !== (this.data.detalles[0].productoCodigo + ' - ' + this.data.detalles[0].nombre)){
+      if (this.unicoProducto && this.data.detalles && this.data.detalles.length === 1) {
+        if (valorFiltro !== (this.data.detalles[0].productoCodigo + ' - ' + this.data.detalles[0].nombre)) {
           this.data.detalles = [];
         }
       }
-      if(this.productosDisponibles && this.productosDisponibles.length !==0){
+      if (this.productosDisponibles && this.productosDisponibles.length !== 0) {
         this.productosFiltrados = this.productosDisponibles.filter(
           (item) =>
-            ( item.codigo.indexOf(valorFiltro) !== -1
+          (item.codigo.indexOf(valorFiltro) !== -1
             || item.nombre.indexOf(valorFiltro) !== -1
             || item.filtros.indexOf(valorFiltro) !== -1)
         );
       } else {
         this.productosFiltrados = [];
       }
-      
+
       this.showProducts();
     } else {
       this.showCategories();
@@ -144,7 +144,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   showProducts() {
     if (!this.isEnabled) { return; }
-    if( this.unicoProducto && this.data.detalles && this.data.detalles.length!==0){
+    if (this.unicoProducto && this.data.detalles && this.data.detalles.length !== 0) {
       this.isShowProducts = false;
     } else {
       this.isShowProducts = true;
@@ -154,8 +154,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   searchAsincronous() {
     if (this.relatedFields || !this.autoload) {
-      if (this.fControl.value && this.fControl.value.length === 0) {
-        Swal.fire('', 'Selecciona un valor a buscar', 'info')
+      if (this.fControl.value !== undefined && this.fControl.value.length === 0) {
+        // Swal.fire('', 'Selecciona un valor a buscar', 'info')
         return;
       }
       this.listarProductosAsincronos();
@@ -176,7 +176,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         } else {
           this.productosDisponibles = Object.assign([], _value.campoDTO.productos);
           if (this.productosDisponibles.length === 0) {
-            Swal.fire ('Sin resultados', 'No encontramos resultados por el filtro' + this.fControl.value,  'info');
+            Swal.fire('Sin resultados', 'No encontramos resultados por el filtro' + this.fControl.value, 'info');
           } else {
             if (this.productosDisponibles.length === 1) {
               this.addProduct(this.productosDisponibles[0]);
@@ -287,20 +287,20 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   modificarDetallePedido(item: DetallePedidoVentaDTO) {
-      const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
-        width: '720px',
-        maxHeight: '90vh',
-        disableClose: true,
-        data: { data: item, allowEdit: this.isEnabled},
-      });
-      dialogRef.afterClosed().subscribe((resp) => {
-        if (!resp) {
-          this.data.detalles.splice(0, 1);
-          this.data.detalles = Object.assign([], this.data.detalles); // Para que se refresque la lista
-        }
-        this.actualizarDetalles(null);
-      });
-    
+    const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
+      width: '720px',
+      maxHeight: '90vh',
+      disableClose: true,
+      data: { data: item, allowEdit: this.isEnabled },
+    });
+    dialogRef.afterClosed().subscribe((resp) => {
+      if (!resp) {
+        this.data.detalles.splice(0, 1);
+        this.data.detalles = Object.assign([], this.data.detalles); // Para que se refresque la lista
+      }
+      this.actualizarDetalles(null);
+    });
+
   }
 
   actualizarDetalles(producto: ProductoDTO) {

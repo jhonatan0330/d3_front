@@ -1037,14 +1037,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (this.data.dependientes) {
         // Tengo un inconveniente con esto de las relaciones pero loa rrelgo despues
         const relations = this.templateService.getPropertyRelation(_property);
-        if (!relations || relations.length ==0) {
+        if (!relations || relations.length == 0) {
           const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
           filtro.estado = StatesEnum.ACTIVE;
           filtro.propiedad = _property;
           this.isLoadingList = true;
           this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
             next: (value: RelacionInternaDTO[]) => {
-              if(!value){
+              if (!value) {
                 //Creo una relacion falsa para que no vuelva a filtrar
                 const ri: RelacionInternaDTO = new RelacionInternaDTO();
                 ri.propiedad = _property;
@@ -1125,8 +1125,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (this.proceso) {
       if (
         (!this.data.valorOpcion && this.proceso.llaveTabla) ||
-        (this.data.valorOpcion !== this.proceso.llaveTabla) || 
-        (this.proceso.dinero && !this.data.valorNumero )
+        (this.data.valorOpcion !== this.proceso.llaveTabla) ||
+        (this.proceso.dinero && !this.data.valorNumero)
       ) {
         this.data.valorOpcion = this.proceso.llaveTabla;
         this.data.principal = this.proceso;
@@ -1428,4 +1428,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       });
     }
   }
+
+
 }
