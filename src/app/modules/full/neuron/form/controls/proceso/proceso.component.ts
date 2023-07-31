@@ -1429,5 +1429,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
+  gestionarFocus(){
+    if (this.proceso == null) { (this.filteredDocuments = this.disponibles); }
+    if ( this.readQR && !this.scannerEnabled) { this.toogleScanner(); }
+  }
 
 }

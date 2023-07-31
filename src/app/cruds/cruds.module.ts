@@ -21,6 +21,7 @@ import { Cruds2Component } from './cruds2.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { MatTableModule } from '@angular/material/table';
         MatIconModule,
         MatInputModule,
         MatMenuModule,
+        MatTooltipModule,
         MatProgressBarModule,
         MatSelectModule,
         MatSidenavModule,
