@@ -27,6 +27,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   autoload = false; // Indica que la fuente de datos se va a cargar en memoria
   titleCantity = 'Cantidad';
 
+
   productosDisponibles: ProductoDTO[];
   productosFiltrados: ProductoDTO[];
   columns: number = 2;
@@ -153,6 +154,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   searchAsincronous() {
+    if (this.isLoading) {return;}
     if (this.relatedFields || !this.autoload) {
       if (this.fControl.value !== undefined && this.fControl.value.length === 0) {
         // Swal.fire('', 'Selecciona un valor a buscar', 'info')
