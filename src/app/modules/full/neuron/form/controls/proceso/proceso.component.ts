@@ -159,6 +159,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.proceso = null;
           let filterValue: string = value.toLowerCase();
           if (filterValue === '*') { filterValue = ''; }
+          if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length -1); }
           if (this.disponibles) {
             this.filteredDocuments = this.disponibles.filter(
               (doc) => {
@@ -954,6 +955,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   gestionarKeyUpTexto() {
+    if(this.isLoading || this.isLoadingList){  return; }
     if (this.isEnabled) {
       /*if (this.filteredDocuments && this.filteredDocuments.length === 1) {
         this.fControl.setValue(this.filteredDocuments[0]);
@@ -1203,7 +1205,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   //// COPIADO  De LIST
   listar(_pagina: number) {
-    if (this.isLoadingList) {
+    if (this.isLoadingList || this.isLoading) {
       return;
     }
     const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();

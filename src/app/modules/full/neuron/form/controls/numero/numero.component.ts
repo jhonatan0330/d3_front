@@ -286,7 +286,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     event.target.select();
     // Cuando se necesitan decimales no los borro
     if (event.target.value === '0' && this.numeroDecimales === 0) {
-      event.target.value = '';
+      //event.target.value = '';
     }
   }
 
