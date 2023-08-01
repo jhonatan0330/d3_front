@@ -1048,7 +1048,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.isLoadingList = true;
           this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
             next: (value: RelacionInternaDTO[]) => {
-              if (!value) {
+              if (!value || value.length ===0) {
                 //Creo una relacion falsa para que no vuelva a filtrar
                 const ri: RelacionInternaDTO = new RelacionInternaDTO();
                 ri.propiedad = _property;
@@ -1079,6 +1079,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             break;
           }
         }
+        if(_doc.caracteristicas.length ===0) {return; }
       }
     }
     _doc.plantilla = _plantilla;
