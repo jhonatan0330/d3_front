@@ -3,7 +3,7 @@
 <mat-form-field class="w-full" *ngIf="!herencia && !multiple" [style.display]="isInvisible ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
   <input matInput [matAutocomplete]="auto" [formControl]="fControl" [required]="required" [readonly]="!isEnabled"
-    (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()"
+    (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [inputmode] ="inputModeText"
     translate="no" (focusout)="gestionarKeyUpTexto()" />
   <a *ngIf="proceso && linkExternal" class="a-hyperlink" (click)="goToLink()">{{linkExternal.valor}}</a>
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay">

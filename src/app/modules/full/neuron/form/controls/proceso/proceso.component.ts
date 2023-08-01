@@ -84,6 +84,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   scannerEnabled = false;
   allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX];
 
+  inputModeText = 'text';
+
   constructor(
     private templateService: TemplateService,
     private api: ApiService,
@@ -1181,6 +1183,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             } else {
               this.acabadoCrear = false;
             }
+            if (this.readQR){
+              this.submit();
+            }
           } else {
             // this.mostrarDisponiblesPop();
           }
@@ -1193,12 +1198,17 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         if (procesoEncontrado) {
           this.proceso = procesoEncontrado;
         }
+
         this.data.valorOpcion = this.proceso.llaveTabla;
         this.data.principal = this.proceso;
         if (this.proceso.dinero) {
           this.data.valorNumero = this.proceso.dinero.saldo;
         }
         this.actualizar();
+        // Por el momento solo apra los qr
+        if (this.readQR){
+          this.form.submit();
+        }
       }
     }
   }
@@ -1395,6 +1405,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (this.fControlCheck) { this.fControlCheck.setValue(true); }
       if (this.fControlSearch) { this.fControlSearch.setValue(null); }
       if (this.fControl) { this.fControl.setValue(null); }
+      this.inputModeText = 'none';
+    } else {
+      this.inputModeText = 'text';
     }
   }
 
@@ -1433,7 +1446,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   gestionarFocus(){
     if (this.proceso == null) { (this.filteredDocuments = this.disponibles); }
-    if ( this.readQR && !this.scannerEnabled) { this.toogleScanner(); }
+    // if ( this.readQR && !this.scannerEnabled) { this.toogleScanner(); }
   }
 
 }

@@ -536,6 +536,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       componentRef.instance.structure = _campo;
       componentRef.instance.parent = this.pedido;
       componentRef.instance.urlServer = this.plantilla.server;
+      componentRef.instance.form = this;
       for (let index = 0; index < this.pedido.caracteristicas.length; index++) {
         const element = this.pedido.caracteristicas[index];
         if (element.campo === _campo.llaveTabla) {

@@ -9,6 +9,7 @@ import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/mode
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { FormComponent } from '../../form.component';
 
 export interface IDynamicControl {
   structure: DocumentoPlantillaCaracteristicaDTO;
@@ -29,6 +30,8 @@ export interface IDynamicControl {
   setValorNumero(valor: number);
 
   send2Server(): boolean;
+
+  form:FormComponent;
 }
 
 @Component({
@@ -49,6 +52,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   help = 'x';
   isInvisible = false;
   productForm: ProductComponent;
+  form: FormComponent;
   urlServer: string;
   formIsModified: BehaviorSubject<boolean | null> = new BehaviorSubject(null);
 
@@ -254,5 +258,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   ): PedidoVentaCaracteristicaDTO {
     return null;
   }
+
+  submit: Function;
 
 }
