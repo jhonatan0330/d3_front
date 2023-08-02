@@ -543,6 +543,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
+        if(this.readQR) { 
+          this.fControl.setValue(null);
+        }
       },
     });
   }

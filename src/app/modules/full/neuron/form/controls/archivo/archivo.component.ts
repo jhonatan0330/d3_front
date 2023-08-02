@@ -206,8 +206,12 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
           if (!this.source) {
             this.source = returnedData;
           } else {
-            this.source =
-              this.source + ArchivoComponent.SEPARADOR + returnedData;
+            // Sucede que llegaba y como era lenta la carga entonces se duplicaban
+            if(this.multipleFiles){
+              this.source = this.source + ArchivoComponent.SEPARADOR + returnedData;
+            } else {
+              this.source = returnedData;
+            }
           }
           fileToUpload.isLoading = false;
           fileToUpload.url = returnedData;
