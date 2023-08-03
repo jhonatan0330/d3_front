@@ -2,7 +2,7 @@
 <!-- Input de productos -->
 <mat-form-field class="w-full">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-  <input matInput [formControl]="fControl" [required]="required" [readonly]="!isEnabled"
+  <input matInput [formControl]="fControl" [readonly]="!isEnabled"
     (keyup.enter)="searchAsincronous()" autocomplete="off" (focusout)="searchAsincronous()" />
   <!-- Buscar -->
   <button mat-icon-button matSuffix *ngIf="this.isEnabled" (click)="searchAsincronous()" tabindex="-1">

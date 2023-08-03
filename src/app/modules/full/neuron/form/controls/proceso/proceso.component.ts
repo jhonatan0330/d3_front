@@ -967,9 +967,10 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         return;
       }*/
       if (!this.proceso) {
-        const filtroParametro = this.fControl.value;
+        let filtroParametro:string = this.fControl.value;
         if (filtroParametro) {
           const campoFiltro: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
+          if(filtroParametro.startsWith(" ")){ filtroParametro = filtroParametro.substring(1)}
           campoFiltro.filtroParametro = filtroParametro;
           this.procesarCampo(campoFiltro);
           this.filtroBusqueda = filtroParametro;
@@ -1153,6 +1154,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (this.data.valorOpcion) {
         this.data.valorOpcion = null;
         this.data.principal = null;
+        this.data.valorText = null;
         // if(txtProceso!=null) txtProceso.text = null;
         this.avisarModificacion();
       }
