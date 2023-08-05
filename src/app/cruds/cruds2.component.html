@@ -270,7 +270,7 @@
                 <div class="w-full" *ngIf="element.caracteristicas && element.caracteristicas.length !== 0">
                   <div class="w-full" *ngFor="let f of element.caracteristicas">
                     <small >{{ f.campoDTO.nombre }}</small>
-                    <span class="w-full text-right ml-2">{{ f.valorText }}</span>
+                    <div class="w-full text-right ml-2">{{ f.valorText }}</div>
                   </div>
                 </div>
               </td>
