@@ -555,7 +555,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       const iBase = this.plantilla.caracteristicas[j];
       const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultipleFromManyKeys(
         iBase.propiedades,
-        [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA]
+        [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA, PlantillaHelper.UPDATE_INFORMATIVE_FIELD]
       );
       if (codigoDepende) {
         let iCampoDependiente; // Identifico el campo dependiente

@@ -26,6 +26,10 @@ export class InformativeComponent extends BaseComponent implements OnInit {
     if (this.data) {
       if (this.data.valorText) {
         this.fControl.setValue(this.data.valorText);
+      } else{
+        if(!this.data.principal){
+          this.procesarCampo(null);
+        }
       }
     }
     // Al finalzar se subscriben los cambios
@@ -43,7 +47,13 @@ export class InformativeComponent extends BaseComponent implements OnInit {
   }
 
   procesarCampo(campoFiltro: PedidoVentaCaracteristicaFilterDTO): void {
-
+    if(!this.data.dependientes || this.data.dependientes.length===0) {return;}
+    let filterVerification:string = null;
+    for (let i = 0; i < this.data.dependientes.length; i++) {
+      const iDependent = this.data.dependientes[i];
+      if(iDependent.valorOpcion) { filterVerification = iDependent.valorOpcion; }
+    }
+    if(!filterVerification) {return;}
     const filtro: PedidoVentaCaracteristicaFilterDTO =
     new PedidoVentaCaracteristicaFilterDTO();
     filtro.campoDTO = this.structure;
