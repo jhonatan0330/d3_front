@@ -498,6 +498,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       }
     }
     this.instruccionCrear = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_INSTRUCCION_CREAR);
+    if(this.instruccionCrear) { this.fullScreen = true;}
     this.showFields();
     this.resolvePropiertiesForm();
     this.getReports();
