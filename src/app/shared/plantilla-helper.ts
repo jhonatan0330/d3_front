@@ -66,6 +66,7 @@ export class PlantillaHelper {
   static AUTOLOAD = 'AUTOLOAD';
   static READ_QR = 'READ_QR';
   static LINK_EXTERNO = 'LINK_EXTERNO';
+  static SAVE_TO_SELECT = 'SAVE_TO_SELECT';
 
   static INFORMATIVE_DATA = 'INFORMATIVE_DATA';
   static UPDATE_INFORMATIVE_FIELD = 'UPDATE_INFORMATIVE_FIELD';

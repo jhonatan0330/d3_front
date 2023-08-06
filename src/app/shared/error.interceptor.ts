@@ -24,14 +24,21 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         let errorMessage = '';
         if (error.error &&  error.error.message) { // client-side error
           errorMessage = error.error.message;
-          Swal.fire({
-            icon: 'error',
-            title: errorMessage,
-            text: error.error.detail
-          });
           if (errorMessage.indexOf('CODE:caud_usuario') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
             this.jwtAuth.signout();
             this.templateService.clear();
+          } else{
+            let showButton = true;
+            if(errorMessage.startsWith("NOT_OK")) {
+              errorMessage = errorMessage.replace("NOT_OK","");
+              showButton = false;
+            }
+            Swal.fire({
+              icon: 'error',
+              title: errorMessage,
+              showConfirmButton: showButton,
+              text: error.error.detail
+            });
           }
         } else { // backend error
           errorMessage = `Connection error: ${error.status} ${error.message}`;

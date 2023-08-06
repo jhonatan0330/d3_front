@@ -44,6 +44,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   multiple = false; // Indica que este componete va a manejar varios documentos
   mostrarPop = false; // En algunos casos es necesario que las opciones se muestren grandes (compu touch)
   readQR = false; // Muestra el boton de leer codigo de barras
+  saveToSelect = false; //Cuando se selecciona el valor se guarda el formulario
   procesoValor: string; // Define si se va a tener en cuenta el valor del documento
   acciones: PropiedadDTO[]; // Contiene propiedades que indican que documentos se pueden crear a partir de el
   linkExternal: PropiedadDTO; // Permite abrir en otra venta paginas relacionadas
@@ -117,6 +118,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.autoload = !this.isEmpty(this.obtenerValor(PlantillaHelper.AUTOLOAD));
     this.readQR = !this.isEmpty(this.obtenerValor(PlantillaHelper.READ_QR));
     this.linkExternal = this.obtenerPropiedad(PlantillaHelper.LINK_EXTERNO);
+    this.linkExternal = this.obtenerPropiedad(PlantillaHelper.SAVE_TO_SELECT);
     this.mostrarPop = !this.isEmpty(
       this.obtenerValor(PlantillaHelper.PROCESO_POP)
     );
@@ -161,7 +163,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.proceso = null;
           let filterValue: string = value.toLowerCase();
           if (filterValue === '*') { filterValue = ''; }
-          if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length -1); }
+          if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length - 1); }
           if (this.disponibles) {
             this.filteredDocuments = this.disponibles.filter(
               (doc) => {
@@ -543,7 +545,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
-        if(this.readQR) { 
+        if (this.readQR) {
           this.fControl.setValue(null);
         }
       },
@@ -960,17 +962,17 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   gestionarKeyUpTexto() {
-    if(this.isLoading || this.isLoadingList){  return; }
+    if (this.isLoading || this.isLoadingList) { return; }
     if (this.isEnabled) {
       /*if (this.filteredDocuments && this.filteredDocuments.length === 1) {
         this.fControl.setValue(this.filteredDocuments[0]);
         return;
       }*/
       if (!this.proceso) {
-        let filtroParametro:string = this.fControl.value;
+        let filtroParametro: string = this.fControl.value;
         if (filtroParametro) {
           const campoFiltro: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
-          if(filtroParametro.startsWith(" ")){ filtroParametro = filtroParametro.substring(1)}
+          if (filtroParametro.startsWith(" ")) { filtroParametro = filtroParametro.substring(1) }
           campoFiltro.filtroParametro = filtroParametro;
           this.procesarCampo(campoFiltro);
           this.filtroBusqueda = filtroParametro;
@@ -1052,7 +1054,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.isLoadingList = true;
           this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
             next: (value: RelacionInternaDTO[]) => {
-              if (!value || value.length ===0) {
+              if (!value || value.length === 0) {
                 //Creo una relacion falsa para que no vuelva a filtrar
                 const ri: RelacionInternaDTO = new RelacionInternaDTO();
                 ri.propiedad = _property;
@@ -1083,7 +1085,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             break;
           }
         }
-        if(_doc.caracteristicas.length ===0) {return; }
+        if (_doc.caracteristicas.length === 0) { return; }
       }
     }
     _doc.plantilla = _plantilla;
@@ -1189,7 +1191,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             } else {
               this.acabadoCrear = false;
             }
-            if (this.readQR){
+            if (this.readQR) {
               this.submit();
             }
           } else {
@@ -1204,17 +1206,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         if (procesoEncontrado) {
           this.proceso = procesoEncontrado;
         }
-
         this.data.valorOpcion = this.proceso.llaveTabla;
         this.data.principal = this.proceso;
         if (this.proceso.dinero) {
           this.data.valorNumero = this.proceso.dinero.saldo;
         }
         this.actualizar();
-        // Por el momento solo apra los qr
-        if (this.readQR){
-          this.form.submit();
-        }
+        if (this.saveToSelect) { this.form.submit(); }
       }
     }
   }
@@ -1450,7 +1448,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
-  gestionarFocus(){
+  gestionarFocus() {
     if (this.proceso == null) { (this.filteredDocuments = this.disponibles); }
     // if ( this.readQR && !this.scannerEnabled) { this.toogleScanner(); }
   }
