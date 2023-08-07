@@ -118,7 +118,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.autoload = !this.isEmpty(this.obtenerValor(PlantillaHelper.AUTOLOAD));
     this.readQR = !this.isEmpty(this.obtenerValor(PlantillaHelper.READ_QR));
     this.linkExternal = this.obtenerPropiedad(PlantillaHelper.LINK_EXTERNO);
-    this.linkExternal = this.obtenerPropiedad(PlantillaHelper.SAVE_TO_SELECT);
+    this.saveToSelect = !this.isEmpty(this.obtenerValor(PlantillaHelper.SAVE_TO_SELECT));
     this.mostrarPop = !this.isEmpty(
       this.obtenerValor(PlantillaHelper.PROCESO_POP)
     );

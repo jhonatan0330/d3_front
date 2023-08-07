@@ -29,8 +29,8 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             this.templateService.clear();
           } else{
             let showButton = true;
-            if(errorMessage.startsWith("NOT_OK")) {
-              errorMessage = errorMessage.replace("NOT_OK","");
+            if(errorMessage.startsWith("ERROR: NOT_OK")) {
+              errorMessage = errorMessage.replace("ERROR: NOT_OK","");
               showButton = false;
             }
             Swal.fire({
