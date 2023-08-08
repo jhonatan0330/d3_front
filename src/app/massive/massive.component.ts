@@ -344,10 +344,10 @@ export class MassiveComponent implements OnInit {
       }
     }
 
-    if (documentos.length > 3000) {
+    if (documentos.length > 20000) {
       Swal.fire(
         'Cantidad maxima',
-        'El maximo de documentos a cargar son 3000',
+        'El maximo de documentos a cargar son 20000',
         'info'
       );
     } else {

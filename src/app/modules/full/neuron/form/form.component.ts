@@ -707,10 +707,10 @@ export class FormComponent implements OnInit, AfterViewInit {
     if (!plantillaProxima) {
       return;
     }
-    if( this.formIsModified) {
-      Swal.fire('Guarda documento', 'Por favor guarda los cambios del documento antes de crear una nueva accion', 'info');
-      return;
-    }
+    //if( this.formIsModified) {
+      //Swal.fire('Guarda documento', 'Por favor guarda los cambios del documento antes de crear una nueva accion', 'info');
+     // return;
+    //}
     this.auxPlantillaProxima = plantillaProxima;
     const _transition: DocumentoPlantillaDTO = this.cargarPlantilla(
       plantillaProxima, this.plantilla.server
