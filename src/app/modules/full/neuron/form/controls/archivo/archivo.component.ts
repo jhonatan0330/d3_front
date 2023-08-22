@@ -58,7 +58,8 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
       let extensionFilter = '';
       for (let i = 0; i < extensiones.length; i++) {
         const extension = extensiones[i];
-        extensionFilter = extensionFilter + '.' + extension + ',';
+        if(extension.indexOf("*") < 0) {extensionFilter + '.' ; }
+        extensionFilter = extensionFilter + extension + ',';
       }
       this.filtroExtension = extensionFilter;
     } else {
