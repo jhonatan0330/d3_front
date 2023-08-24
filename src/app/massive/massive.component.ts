@@ -57,6 +57,8 @@ export class MassiveComponent implements OnInit {
   dataSource = new MatTableDataSource([]);
   displayedColumns: string[] = [];
 
+  files: FileList;
+
   constructor(
     private route: ActivatedRoute,
     private templateService: TemplateService,
@@ -629,7 +631,7 @@ export class MassiveComponent implements OnInit {
     }
   }
 
-  //////////////////////////INICA LA CARGA MASIVA//////////////////////
+  //////////////////////////INICIA LA CARGA MASIVA//////////////////////
   startLoad() {
     this.inicio = new Date();
     this.isProcessing = true;
@@ -661,6 +663,25 @@ export class MassiveComponent implements OnInit {
           valorTexto = iCampo.valorText == null ? '' : iCampo.valorText;
           detalle =
             detalle + '\n      ' + iCampo.campoDTO.nombre + ' : ' + valorTexto;
+            if(iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO){
+              if(iCampo.valorText && !iCampo.valorText.startsWith('http')){
+                for (let j = 0; j < this.files.length; j++) {
+                  if(this.files[j].name === iCampo.valorText){
+                    this.api.uploadFile(this.files[j], this.urlServer).subscribe({
+                      next: (value) => {
+                        iCampo.valorText = value.message;
+                        this.procesarDocumentos();
+                      },
+                      error: (err: any) => {
+                        console.log(err);
+                      }
+                    });
+                    return;
+                  }
+                }
+                
+              }
+            }
         }
         this.api
           .guardarDocumento(this.currentPedido, this.plantilla.server, Date.now().toString())
@@ -789,6 +810,45 @@ export class MassiveComponent implements OnInit {
 
   }
 
+  handleFileInputToLoadArchivo(files: FileList) {
+    // En caso que no escoja nada
+    if (files.length === 0) {
+      return;
+    }
 
+    // Valido que todos los archivos se encuentren
+    for (let j = 0; j < files.length; j++) {
+      for (let i = 0; i <  this.documentosGenerados.length; i++) {
+        const pDocumento = this.documentosGenerados[i];
+        for (let b = 0; b < pDocumento.caracteristicas.length; b++) {
+          const iCampo = pDocumento.caracteristicas[b];
+          if (iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO) {
+            if (iCampo.valorOpcion === files[j].name){
+              iCampo.valorText = files[j].name;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i <  this.documentosGenerados.length; i++) {
+      const pDocumento = this.documentosGenerados[i];
+      for (let b = 0; b < pDocumento.caracteristicas.length; b++) {
+        const iCampo = pDocumento.caracteristicas[b];
+        if (iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO) {
+          if (iCampo.valorText ===  'SIN CARGAR'){
+            Swal.fire(
+              'Unsupported',
+              'Existen campos que no cargaron imagenes'
+            );
+            return;
+          }
+        }
+      }
+    }
+
+    this.files = files;
+  }
 
 }

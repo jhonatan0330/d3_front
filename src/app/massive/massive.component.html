@@ -50,6 +50,16 @@
       <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing" (click)="newMassiveLoad()">
         <mat-icon class="mr-2">autorenew</mat-icon> Nueva carga
       </button>
+
+      <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing" >
+        <mat-icon class="mr-2">autorenew</mat-icon> Cargar archivos
+        
+      </button>
+
+      <input [id]="'_file'" type="file" webkitdirectory directory multiple
+        (click)="$event.target.value = '';$event.stopPropagation();"
+        (change)="handleFileInputToLoadArchivo($event.target.files)" />
+
     </div>
     <mat-progress-bar [mode]="isProcessing ? 'indeterminate' : ''"></mat-progress-bar>
 

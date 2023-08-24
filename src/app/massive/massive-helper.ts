@@ -106,6 +106,10 @@ export function procesarXMLBase(
     case DocumentoPlantillaCaracteristicaEnum.CONFIGURACION:
       pCampo.valorOpcion = pCampo.valorText;
       break;
+    case DocumentoPlantillaCaracteristicaEnum.ARCHIVO:
+      pCampo.valorOpcion = pCampo.valorText;
+      pCampo.valorText = 'SIN CARGAR';
+      break;
     case DocumentoPlantillaCaracteristicaEnum.PROCESO:
       const herencia = PlantillaHelper.buscarPropiedad(
         pCampo.campoDTO.propiedades,
