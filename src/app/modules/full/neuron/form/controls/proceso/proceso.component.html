@@ -145,7 +145,7 @@
           <div *ngIf="d.caracteristicas && d.caracteristicas.length !== 0">
             <div fxLayout="row" class="flex" *ngFor="let f of d.caracteristicas">
               <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-              <div fxFlex class="text-right text-sm" *ngIf="f.valorText" [matTooltip]="f.valorText">
+              <div fxFlex class="text-right text-sm" *ngIf="f.valorText" >
                 {{ f.valorText }}
               </div>
             </div>
@@ -264,7 +264,7 @@
             <div *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
               <div fxLayout="row" class="flex" *ngFor="let f of iDocument.caracteristicas">
                 <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-                <div fxFlex class="text-right text-sm" *ngIf="f.valorText" [matTooltip]="f.valorText">
+                <div fxFlex class="text-right text-sm" *ngIf="f.valorText">
                   {{ f.valorText }}
                 </div>
               </div>
