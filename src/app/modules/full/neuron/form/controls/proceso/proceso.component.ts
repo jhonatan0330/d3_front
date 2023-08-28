@@ -1085,7 +1085,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             break;
           }
         }
-        if (_doc.caracteristicas.length === 0) { return; }
+        // if (!_doc.caracteristicas  || _doc.caracteristicas.length === 0) { return; }
       }
     }
     _doc.plantilla = _plantilla;
