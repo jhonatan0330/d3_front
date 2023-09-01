@@ -640,10 +640,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.titulo =
             this.titulo +
             'Total (' +
-            new Intl.NumberFormat('es-CO', {
-              style: 'currency',
-              currency: 'COP',
-            }).format(this.getValorNumero()) +
+            new Intl.NumberFormat('es-CO').format(this.getValorNumero()) +
             ')';
         }
         this.data.valorText = this.dataProvider.length.toString();
@@ -710,20 +707,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         result =
           result +
           ' - Total (' +
-          new Intl.NumberFormat('es-CO', {
-            style: 'currency',
-            currency: 'COP',
-          }).format(valorTotal) +
+          new Intl.NumberFormat('es-CO').format(valorTotal) +
           ')';
       }
       if (valorCampo !== 0 && valorCampo !== valorTotal) {
         result =
           result +
           ' - Valor (' +
-          new Intl.NumberFormat('es-CO', {
-            style: 'currency',
-            currency: 'COP',
-          }).format(valorCampo) +
+          new Intl.NumberFormat('es-CO').format(valorCampo) +
           ')';
       }
 
@@ -736,10 +727,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               ' - ' +
               iTituloEnd.campo +
               ' (' +
-              new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-              }).format(iTituloEnd.valorNumero) +
+              new Intl.NumberFormat('es-CO').format(iTituloEnd.valorNumero) +
               ')';
           }
         }
