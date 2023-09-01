@@ -10,6 +10,7 @@ import { BaseComponent } from '../base/base.component';
 import { CurrencyMaskInputMode } from 'ngx-currency';
 import { debounceTime } from 'rxjs';
 import Swal from 'sweetalert2';
+import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Component({
   selector: 'app-numero',
@@ -20,8 +21,9 @@ export class NumeroComponent extends BaseComponent implements OnInit {
 
   step = 1;
   formula: string;
-  formulaMaximum: string;
-  formulaMinimum: string;
+  formulaMaximum: PropiedadDTO;
+  formulaMinimum: PropiedadDTO;
+  errorMessage: string;
   funcion: string;
   isMoneda = false;
   numeroDecimales = 0;
@@ -65,6 +67,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       this.fControl.valueChanges
         .subscribe(() => {
           this.actualizar();
+          this.validateErrorMessage();
         });
     }
 
@@ -78,8 +81,8 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     /*const steps: string = this.obtenerValor(PlantillaHelper.NUMERO_STEP);
     if (steps) { this.step = steps; }*/
     this.formula = this.obtenerValor(PlantillaHelper.NUMERO_FORMULA);
-    this.formulaMaximum = this.obtenerValor(PlantillaHelper.NUMERO_MAXIMO);
-    this.formulaMinimum = this.obtenerValor(PlantillaHelper.NUMERO_MINIMO);
+    this.formulaMaximum = this.obtenerPropiedad(PlantillaHelper.NUMERO_MAXIMO);
+    this.formulaMinimum = this.obtenerPropiedad(PlantillaHelper.NUMERO_MINIMO);
     this.funcion = this.obtenerValor(PlantillaHelper.NUMERO_FUNCION);
     if (this.obtenerPropiedad(PlantillaHelper.NUMERO_MONEDA)) {
       this.isMoneda = true;
@@ -290,30 +293,39 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     }
   }
 
-  send2Server(): boolean {
+  validateErrorMessage() {
+    this.errorMessage = null;
     if (this.formulaMaximum) {
-      const textoMaximum = this.formulaReplaceDependents(this.formulaMaximum);
+      const textoMaximum = this.formulaReplaceDependents(this.formulaMaximum.valor);
       const resultadoMaximum = FormulaHelper.calcular(textoMaximum);
       if (this.data.valorNumero > resultadoMaximum) {
-        Swal.fire(
-          'Valor Maximo',
-          'En el campo '+ this.structure.nombre + ' el valor maximo que puedes colocar es ' + resultadoMaximum,
-          'info'
-        );
-        return false;
+        if(this.formulaMaximum.motivo){
+          this.errorMessage = 'En el campo '+ this.structure.nombre + ' ' + this.formulaMaximum.motivo + '. Maximo : '  + new Intl.NumberFormat('es-CO').format(resultadoMaximum);
+        } else {
+          this.errorMessage = 'En el campo '+ this.structure.nombre + ' el valor maximo que puedes colocar es ' + new Intl.NumberFormat('es-CO').format(resultadoMaximum);
+        }
+        
+        return;
       }
     }
     if (this.formulaMinimum) {
-      const textoMinimum = this.formulaReplaceDependents(this.formulaMinimum);
+      const textoMinimum = this.formulaReplaceDependents(this.formulaMinimum.valor);
       const resultadoMinimum = FormulaHelper.calcular(textoMinimum);
       if (this.data.valorNumero < resultadoMinimum) {
-        Swal.fire(
-          'Valor Minimo',
-          'En el campo '+ this.structure.nombre + ' el valor minimo que puedes colocar es ' + resultadoMinimum,
-          'info'
-        );
-        return false;
+        if(this.formulaMinimum.motivo){
+          this.errorMessage = 'En el campo '+ this.structure.nombre + ' ' + this.formulaMinimum.motivo + '. Minimo : '  + new Intl.NumberFormat('es-CO').format(resultadoMinimum);
+        } else {
+          this.errorMessage = 'En el campo '+ this.structure.nombre + ' el valor minimo que puedes colocar es ' + new Intl.NumberFormat('es-CO').format(resultadoMinimum);
+        }
+        return;
       }
+    }
+  }
+
+  send2Server(): boolean {
+    if (this.errorMessage) {
+      Swal.fire('Valores no permitidos',this.errorMessage, 'info');
+      return false;
     }
     return true;
   }
