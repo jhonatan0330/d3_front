@@ -253,6 +253,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
         this.cantidadTarifario() * this.detallePedidoVenta.valorUnitario;
     }
 
+    if(!this.detallePedidoVenta.valorSubtotal) {this.detallePedidoVenta.valorSubtotal = 0; }
     this.detallePedidoVenta.valorTotal = Math.round(
       this.detallePedidoVenta.valorSubtotal
     );
@@ -389,8 +390,9 @@ export class ProductComponent implements OnInit, AfterViewInit {
           break;
         }
       }
-      return pCantidad;
     }
+    if(!pCantidad) { pCantidad = 0;}
+    return pCantidad;
   }
 
 }

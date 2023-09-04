@@ -13,6 +13,7 @@ import { BaseComponent } from '../base/base.component';
 import { CategoriaProductoDTO, ProductoDTO } from 'app/inventory/inventory.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
+import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
 
 @Component({
   selector: 'app-detalle',
@@ -26,8 +27,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   isShowProducts = false;
   autoload = false; // Indica que la fuente de datos se va a cargar en memoria
   titleCantity = 'Cantidad';
-
-
+  busquedaSinTexto = false;
+  errorToFilter = null;
+  
   productosDisponibles: ProductoDTO[];
   productosFiltrados: ProductoDTO[];
   columns: number = 2;
@@ -55,6 +57,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       this.obtenerValor(PlantillaHelper.UNICO_PRODUCTO)
     );
     this.autoload = !this.isEmpty(this.obtenerValor(PlantillaHelper.AUTOLOAD));
+    this.busquedaSinTexto = !this.isEmpty(this.obtenerValor(PlantillaHelper.BUSQUEDA_SIN_TEXTO));
     if (!this.isEnabled) {
       const index = this.displayedColumns.indexOf('retirar', 0);
       if (index > -1) {
@@ -153,11 +156,27 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     this.isShowCategories = false;
   }
 
+  searchQuicly() {
+    if (this.isLoading) {return;}
+    this.errorToFilter = null;
+    if (this.relatedFields || !this.autoload) {
+      for (let i = 0; i < this.data.dependientes.length; i++) {
+        const element: PedidoVentaCaracteristicaDTO = this.data.dependientes[i];
+        if (!element.valorOpcion && element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO && !PlantillaHelper.buscarPropiedad(element.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
+          this.errorToFilter = 'Por favor coloca un valor en el campo ' + element.campoDTO.nombre;
+          return;
+        }
+      }
+    }
+    this.listarProductosAsincronos();
+  }
+
   searchAsincronous() {
     if (this.isLoading) {return;}
+    this.errorToFilter = null;
     if (this.relatedFields || !this.autoload) {
       if (this.fControl.value !== undefined && this.fControl.value.length === 0) {
-        // Swal.fire('', 'Selecciona un valor a buscar', 'info')
+        this.errorToFilter = 'Por favor coloca un valor en el campo de busqueda';
         return;
       }
       this.listarProductosAsincronos();

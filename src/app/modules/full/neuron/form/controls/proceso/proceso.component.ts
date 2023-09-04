@@ -455,7 +455,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   notificarModificacion(campoFiltro: PedidoVentaCaracteristicaDTO) {
     if (this.tipoTexto && this.relatedFields) {
-      return;
+      if (!campoFiltro.valorOpcion) {
+        if (!this.autoload) {
+          this.disponibles = [];
+          this.filteredDocuments = [];
+        }
+        this.fControl.setValue(null);
+        return;
+      }
     }
     if (
       this.obtenerPropiedad(PlantillaHelper.BODEGA_FIJA) ||
@@ -1032,49 +1039,62 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     } else {
       //Esto es para que lso formularios llenen el campo principal de un crud
       //ejemplo guia roa cliente - direccion de cliente nuevo
-      if (this.data.dependientes) {
-        // Tengo un inconveniente con esto de las relaciones pero loa rrelgo despues
-        const relations = this.templateService.getPropertyRelation(_property);
-        if (!relations || relations.length == 0) {
-          const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
-          filtro.estado = StatesEnum.ACTIVE;
-          filtro.propiedad = _property;
-          this.isLoadingList = true;
-          this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
-            next: (value: RelacionInternaDTO[]) => {
-              if (!value || value.length === 0) {
-                //Creo una relacion falsa para que no vuelva a filtrar
-                const ri: RelacionInternaDTO = new RelacionInternaDTO();
-                ri.propiedad = _property;
-                ri.campo = "FALSE";
-                ri.plantilla = "FALSE";
-                ri.auxiliar = "FALSE";
-                value = [];
-                value.push(ri);
-              }
-              this.templateService.addRelations(value);
-              this.isLoadingList = false;
-              this.createNewDocument(_plantilla, _property);
-            },
-            error: () => {
-              this.isLoadingList = false;
-            },
-          });
-          return;
-        }
-        for (let i = 0; i < relations.length; i++) {
-          const iRelation = relations[i];
-          if (iRelation.plantilla === _plantilla) {
-            _doc.caracteristicas = [];
-            const fieldNewToCreateDependent: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
-            fieldNewToCreateDependent.valorOpcion = this.data.dependientes[0].valorOpcion;
-            fieldNewToCreateDependent.campo = iRelation.campo;
-            _doc.caracteristicas.push(fieldNewToCreateDependent);
-            break;
+      if (this.relatedFields) {
+        // Primero valido que pueda obtener todas las relaciones del campo, propiedad depende
+        for (let i = 0; i < this.relatedFields.length; i++) {
+          const dependentIterato = this.relatedFields[i];
+          const relations = this.templateService.getPropertyRelation(dependentIterato.llaveTabla);
+          if (!relations || relations.length == 0) {
+            const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
+            filtro.estado = StatesEnum.ACTIVE;
+            filtro.propiedad = dependentIterato.llaveTabla;
+            this.isLoadingList = true;
+            this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
+              next: (value: RelacionInternaDTO[]) => {
+                if (!value || value.length === 0) {
+                  //Creo una relacion falsa para que no vuelva a filtrar
+                  const ri: RelacionInternaDTO = new RelacionInternaDTO();
+                  ri.propiedad = dependentIterato.llaveTabla;
+                  ri.campo = "FALSE";
+                  ri.plantilla = "FALSE";
+                  ri.auxiliar = "FALSE";
+                  value = [];
+                  value.push(ri);
+                }
+                this.templateService.addRelations(value);
+                this.isLoadingList = false;
+                this.createNewDocument(_plantilla, _property);
+              },
+              error: () => {
+                this.isLoadingList = false;
+              },
+            });
+            return;
           }
         }
-        // if (!_doc.caracteristicas  || _doc.caracteristicas.length === 0) { return; }
+
+        for (let i = 0; i < this.relatedFields.length; i++) {
+          const dependentIterator = this.relatedFields[i];
+          const relations = this.templateService.getPropertyRelation(dependentIterator.llaveTabla);
+          for (let k = 0; k < relations.length; k++) {
+            const iRelation = relations[k];
+            if (iRelation.plantilla === _plantilla) {
+              for (let j = 0; j < this.data.dependientes.length; j++) {
+                const valueDependent = this.data.dependientes[j];
+                if (valueDependent.campo === dependentIterator.valor) {
+                  if (!_doc.caracteristicas) { _doc.caracteristicas = []; }
+                  const fieldNewToCreateDependent: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
+                  fieldNewToCreateDependent.valorOpcion = valueDependent.valorOpcion;
+                  fieldNewToCreateDependent.campo = iRelation.campo;
+                  _doc.caracteristicas.push(fieldNewToCreateDependent);
+                  break;
+                }
+              }
+            }
+          }
+        }
       }
+
     }
     _doc.plantilla = _plantilla;
     _doc.server = this.urlServer;

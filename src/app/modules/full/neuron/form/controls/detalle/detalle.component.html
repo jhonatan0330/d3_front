@@ -1,14 +1,22 @@
 <mat-progress-bar *ngIf="isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
 <!-- Input de productos -->
-<mat-form-field class="w-full">
+<mat-form-field class="w-full" *ngIf="!busquedaSinTexto">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-  <input matInput [formControl]="fControl" [readonly]="!isEnabled"
-    (keyup.enter)="searchAsincronous()" autocomplete="off" (focusout)="searchAsincronous()" />
+  <input matInput [formControl]="fControl" [readonly]="!isEnabled" (keyup.enter)="searchAsincronous()"
+    autocomplete="off" (focusout)="searchAsincronous()" />
   <!-- Buscar -->
   <button mat-icon-button matSuffix *ngIf="this.isEnabled" (click)="searchAsincronous()" tabindex="-1">
     <mat-icon>search</mat-icon>
   </button>
 </mat-form-field>
+<!-- Titulo y boton buscar -->
+<div fxLayout="center center" *ngIf="busquedaSinTexto">
+  <button mat-raised-button color="accent" (click)="searchQuicly()" [disabled]="isLoading"
+    class="w-full">
+    {{ structure.nombre | titlecase }}
+  </button>
+</div>
+<label class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorToFilter}}</label>
 <!-- Categorias -->
 <div fxLayout="row wrap" *ngIf="isShowCategories && structure.categorias">
   <div *ngFor="let category of structure.categorias" fxFlex="100" fxFlex.gt-sm="25" fxFlex.sm="50">

@@ -23,7 +23,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   formula: string;
   formulaMaximum: PropiedadDTO;
   formulaMinimum: PropiedadDTO;
-  errorMessage: string;
+  errorMessage: string =  null;
   funcion: string;
   isMoneda = false;
   numeroDecimales = 0;
