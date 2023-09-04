@@ -1158,6 +1158,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         }
         this.fControl.setValue(this.proceso);
+        if(!this.data.valorText) { this.data.valorText = this.proceso.descripcion; }
         this.avisarModificacion();
       }
     } else {
