@@ -106,8 +106,9 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   filterItem() {
-    let value = this.filterControl.value;
+    let value:string = this.filterControl.value;
     if (!value) { value = ''; }
+    if (value.endsWith(' ')) { value = value.substring(0,value.length -1);}
     this.filteredModules = Object.assign([], this.modules).filter(
       (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
         && (item.estado && item.estado.indexOf('P') > -1))

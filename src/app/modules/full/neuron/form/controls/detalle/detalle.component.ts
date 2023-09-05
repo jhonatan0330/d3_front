@@ -157,7 +157,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   searchQuicly() {
-    if (this.isLoading) {return;}
+    if (this.isLoading || !this.isEnabled) {return;}
     this.errorToFilter = null;
     if (this.relatedFields || !this.autoload) {
       for (let i = 0; i < this.data.dependientes.length; i++) {
