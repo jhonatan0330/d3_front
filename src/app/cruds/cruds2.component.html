@@ -70,18 +70,30 @@
           <!-- Buscador de fecha -->
           <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fechas </div>
           <div>
-            <mat-form-field>
-              <mat-label>Escoge una fecha</mat-label>
-              <mat-date-range-input [rangePicker]="picker">
-                <input matStartDate placeholder="Fecha inicial" [formControl]="fControlDateStart" />
-                <input matEndDate placeholder="Fecha final" [formControl]="fControlDateEnd" />
-              </mat-date-range-input>
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-date-range-picker #picker></mat-date-range-picker>
-              <!--button matSuffix mat-icon-button (click)="fControlDateStart.setValue(null); fControlDateEnd.setValue(null)">
-                <mat-icon>close</mat-icon>
-              </button-->
-            </mat-form-field>
+            <div class="flex">
+              <mat-form-field class="pr-2">
+                <mat-label>Fecha Inicial</mat-label>
+                <input matInput [matDatepicker]="pickerFrom" [formControl]="fCDateStart" autocomplete="off" />
+                <mat-datepicker-toggle matSuffix [for]="pickerFrom" tabIndex="-1"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFrom></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field class="w-32">
+                <mat-label>Hora Inicial</mat-label>
+                <input matInput type="time" [formControl]="fCTimeStart" />
+              </mat-form-field>
+            </div>
+            <div class="flex">
+              <mat-form-field class="pr-2">
+                <mat-label>Fecha Final</mat-label>
+                <input matInput [matDatepicker]="pickerTo" [formControl]="fCDateEnd" autocomplete="off" />
+                <mat-datepicker-toggle matSuffix [for]="pickerTo" tabIndex="-1"></mat-datepicker-toggle>
+                <mat-datepicker #pickerTo></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field class="w-32">
+                <mat-label>Hora Final</mat-label>
+                <input matInput type="time" [formControl]="fCTimeEnd" />
+              </mat-form-field>
+            </div>
           </div>
           <!-- Filtro por Estados  -->
           <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por estados </div>

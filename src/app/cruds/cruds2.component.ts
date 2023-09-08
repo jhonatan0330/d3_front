@@ -32,8 +32,10 @@ export class Cruds2Component implements OnInit, OnDestroy {
   // Variables para sincronizar con la vista
   dataProvider: PedidoVentaDTO[] = []; // Conjunto de documentos a visualizar
   fControlSearch: FormControl = new FormControl(); // Texto que digita el usuario para filtrar
-  fControlDateStart: FormControl = new FormControl();
-  fControlDateEnd: FormControl = new FormControl();
+  fCDateStart: FormControl = new FormControl();
+  fCDateEnd: FormControl = new FormControl();
+  fCTimeStart: FormControl = new FormControl('00:00');
+  fCTimeEnd: FormControl = new FormControl('00:00');
   fControlCheck: FormControl = new FormControl(false); // Check que indica si se debe realizar una busqueda por codigo exacto
   pagina = 1; // Indica que pagina estamos buscando
   cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
@@ -146,8 +148,10 @@ export class Cruds2Component implements OnInit, OnDestroy {
         }
       }
       if (this.solicitarFechas) {
-        this.fControlDateStart.setValue(new Date());
-        this.fControlDateEnd.setValue(new Date());
+        this.fCDateStart.setValue(new Date());
+        let endDate = new Date(new Date());
+        endDate.setDate(endDate.getDate() + 1);
+        this.fCDateEnd.setValue(endDate);
       }
       this.hasCreatePermission = !PlantillaHelper.isEmpty(
         this.plantilla.propiedades,
@@ -264,7 +268,11 @@ export class Cruds2Component implements OnInit, OnDestroy {
     entity.proceso = this.procesoId;
     if (this.fControlCheck.value) {
       if (!this.fControlSearch.value) {
-        alert('Coloca el codigo del documento');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Oops...',
+          text: 'Seleccionaste la opcion codigo exacto, ayudanos colocando el codigo del documento. Gracias'
+        });
         return;
       }
       entity.nombre = this.fControlSearch.value;
@@ -272,23 +280,32 @@ export class Cruds2Component implements OnInit, OnDestroy {
     } else {
       entity.nombre = null;
       entity.filtroParametro = this.fControlSearch.value;
-      if (this.fControlDateStart.value) {
-        const startDate = new Date(this.fControlDateStart.value);
-        startDate.setHours(0,0,0,0);
-        let endDate = new Date(this.fControlDateStart.value);
-        if (this.fControlDateEnd.value) {
-          endDate = new Date(this.fControlDateEnd.value);
-          endDate.setHours(0,0,0,0);
-        }
-        endDate.setDate(endDate.getDate() + 1);
-        entity.fechaMin = startDate;
-        entity.fechaMax = endDate;
-      } else {
-        if (this.solicitarFechas) {
-          alert('Selecciona fechas');
-          return;
-        }
+      if (this.solicitarFechas && (!this.fCDateStart.value || !this.fCDateEnd.value)) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Oops...',
+          text: 'Por favor coloca una fecha de incio y una fecha de fin, esto nos ayudara a mejorar el resultado de tu busqueda'
+        });
+        return;
       }
+      if (this.fCDateStart.value) {
+        const startDate = new Date(this.fCDateStart.value);
+        if(this.fCTimeStart.value){
+          startDate.setHours(this.fCTimeStart.value.substring(0,2),this.fCTimeStart.value.substring(3,5),0,0);
+        } else {
+          startDate.setHours(0,0,0,0);
+        }
+        entity.fechaMin = startDate;
+      } 
+        if (this.fCDateEnd.value) {
+          const endDate = new Date(this.fCDateEnd.value);
+          if(this.fCTimeEnd.value){
+            endDate.setHours(this.fCTimeEnd.value.substring(0,2),this.fCTimeEnd.value.substring(3,5),0,0);
+          } else {
+            endDate.setHours(0,0,0,0);
+          }
+          entity.fechaMax = endDate;
+        }
     }
 
     if (this.plantilla.estados) {
@@ -328,6 +345,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
       this.dataProvider = [];
       this.isEnd = false;
       this.selection.clear();
+      this.pagina = 1;
     }
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;
