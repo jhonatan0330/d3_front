@@ -284,28 +284,37 @@ export class Cruds2Component implements OnInit, OnDestroy {
         Swal.fire({
           icon: 'warning',
           title: 'Oops...',
-          text: 'Por favor coloca una fecha de incio y una fecha de fin, esto nos ayudara a mejorar el resultado de tu busqueda'
+          text: 'Por favor coloca una fecha de inicio y una fecha de fin, esto nos ayudara a mejorar el resultado de tu busqueda'
         });
         return;
       }
       if (this.fCDateStart.value) {
         const startDate = new Date(this.fCDateStart.value);
-        if(this.fCTimeStart.value){
-          startDate.setHours(this.fCTimeStart.value.substring(0,2),this.fCTimeStart.value.substring(3,5),0,0);
+        if (this.fCTimeStart.value) {
+          startDate.setHours(this.fCTimeStart.value.substring(0, 2), this.fCTimeStart.value.substring(3, 5), 0, 0);
         } else {
-          startDate.setHours(0,0,0,0);
+          startDate.setHours(0, 0, 0, 0);
         }
         entity.fechaMin = startDate;
-      } 
-        if (this.fCDateEnd.value) {
-          const endDate = new Date(this.fCDateEnd.value);
-          if(this.fCTimeEnd.value){
-            endDate.setHours(this.fCTimeEnd.value.substring(0,2),this.fCTimeEnd.value.substring(3,5),0,0);
-          } else {
-            endDate.setHours(0,0,0,0);
-          }
-          entity.fechaMax = endDate;
+      }
+      if (this.fCDateEnd.value) {
+        const endDate = new Date(this.fCDateEnd.value);
+        if (this.fCTimeEnd.value) {
+          endDate.setHours(this.fCTimeEnd.value.substring(0, 2), this.fCTimeEnd.value.substring(3, 5), 0, 0);
+        } else {
+          endDate.setHours(0, 0, 0, 0);
         }
+        entity.fechaMax = endDate;
+      }
+      if(entity.fechaMax && entity.fechaMin){
+        if((entity.fechaMax.getTime() - entity.fechaMin.getTime() )<=0){
+          Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Estas seguro que la fecha maxima es menor que la fecha minima??'
+          });
+        }
+      }
     }
 
     if (this.plantilla.estados) {
