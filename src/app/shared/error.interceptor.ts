@@ -33,6 +33,10 @@ export class HttpErrorInterceptor implements HttpInterceptor {
               errorMessage = errorMessage.replace("ERROR: NOT_OK","");
               showButton = false;
             }
+            const audio = new Audio();
+            audio.src = 'assets/audio/incorrect.mp3';
+            audio.load();
+            audio.play();
             Swal.fire({
               icon: 'error',
               title: errorMessage,
