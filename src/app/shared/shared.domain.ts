@@ -14,20 +14,5 @@ export class PropiedadDTO extends BasicDTO {
   campo: string;
   valor: string;
   texto: string;
-  fechaDefinicion: Date;
-  fechaImplementacion: Date;
-  cambioCreacion: string;
-  cambioEliminacion: string;
-  rol: string;
-  rolNombre: string;
-  rolExcluyente: string;
-  rolExcluyenteNombre: string;
-  fechaInicial: Date;
-  fechaFinal: Date;
-  usuario: string;
-  usuarioNombre: string;
-  usuarioExcluyente: string;
-  usuarioExcluyenteNombre: string;
   motivo: string;
-  bloqueo: string;
 }

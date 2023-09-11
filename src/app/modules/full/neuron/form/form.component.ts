@@ -227,7 +227,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       this.pedido.llaveTabla = value.llaveTabla;
       for (let r = 0; r < this.reportes.length; r++) {
         const _report = this.reportes[r];
-        if (!_report.soloExistente) {
+        if (PlantillaHelper.buscarValor(_report.propiedades, PlantillaHelper.REP_AUTOPRINT)) {
           this.showReport(_report);
         }
       }
