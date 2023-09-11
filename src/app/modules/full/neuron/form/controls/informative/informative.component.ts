@@ -42,7 +42,8 @@ export class InformativeComponent extends BaseComponent implements OnInit {
     const nuevoValor = this.fControl.value;
     if (this.data.valorText !== nuevoValor) {
       this.data.valorText = nuevoValor;
-      this.avisarModificacion();
+      //Me estaba colocando los formularios como modificados pero no tenian valor
+      if(nuevoValor) {this.avisarModificacion();}
     }
   }
 

@@ -445,9 +445,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
         this.data.valorNumero = valorNumero;
         this.colocarTituloDisponibles();
-        this.avisarModificacion();
+        
         if (!this.isEnabled) {
+          this.avisarModificacion(false, true);
           this.data.modificado = false; // Cuando son solo listas de mostrar se activan la modificaicon y va y guarda doble
+        }else{
+          // Sucede que las listas hacian que el formulario se colcoara en estado modificado pero no era cierto y me dio como algo de quitar las notificaciones a otros campos, especialmente los de numeros
+          this.avisarModificacion();
         }
       }
     }
