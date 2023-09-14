@@ -3,7 +3,7 @@
 <mat-form-field class="w-full" *ngIf="!busquedaSinTexto">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
   <input matInput [formControl]="fControl" [readonly]="!isEnabled" (keyup.enter)="searchAsincronous()"
-    autocomplete="off" (focusout)="searchAsincronous()" />
+    autocomplete="off" />
   <!-- Buscar -->
   <button mat-icon-button matSuffix *ngIf="this.isEnabled" (click)="searchAsincronous()" tabindex="-1">
     <mat-icon>search</mat-icon>

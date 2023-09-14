@@ -960,6 +960,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
+  gestionarKeyUpTextoFocusOut() {
+    if (!this.isEnabled || this.proceso) { return; }
+    if (this.filteredDocuments && this.filteredDocuments.length !==0){ return; }
+    this.gestionarKeyUpTexto();
+  }
+
   gestionarKeyUpTexto() {
     if (this.isLoading || this.isLoadingList) { return; }
     if (this.isEnabled) {
