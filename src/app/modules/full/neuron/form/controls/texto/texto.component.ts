@@ -29,6 +29,11 @@ export class TextoComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
+    this.valorDefecto = this.obtenerValor(PlantillaHelper.DEFAULT);
+    this.textoLargo = !this.isEmpty(
+      this.obtenerValor(PlantillaHelper.TEXTO_LARGO)
+    );
+    this.scannerEnabled = !this.isEmpty(this.obtenerValor(PlantillaHelper.READ_QR));
     if (this.data) {
       if (this.data.valorText) {
         this.fControl.setValue(this.data.valorText);
@@ -36,10 +41,7 @@ export class TextoComponent extends BaseComponent implements OnInit {
         if (!this.data.llaveTabla && this.valorDefecto) { this.fControl.setValue(this.valorDefecto) };
       }
     }
-    this.valorDefecto = this.obtenerValor(PlantillaHelper.DEFAULT);
-    this.textoLargo = !this.isEmpty(
-      this.obtenerValor(PlantillaHelper.TEXTO_LARGO)
-    );
+    
     if (this.required) {
       this.fControl.setValidators(Validators.required);
       this.fControl.updateValueAndValidity();
@@ -53,7 +55,7 @@ export class TextoComponent extends BaseComponent implements OnInit {
     this.fControl.valueChanges.subscribe((value) => {
       this.actualizar();
     });
-    this.scannerEnabled = !this.isEmpty(this.obtenerValor(PlantillaHelper.READ_QR));
+    
   }
 
   actualizar(): void {
