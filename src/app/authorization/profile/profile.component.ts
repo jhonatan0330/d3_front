@@ -91,7 +91,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         this.modules.push(element);
         element.estado = 'T';
       }
-      if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE)) {
+      if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE) && PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
         const reportElement = cloneDeep(element);
         reportElement.estado = 'R';
         this.modules.push(reportElement);
