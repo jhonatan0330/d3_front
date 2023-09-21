@@ -60,8 +60,9 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
           this.fControl.setValue(l[0]);
         }
       } else {
-        if (this.disponibles.length === 1) {
+        if (this.disponibles.length === 1 && this.required) {
           this.fControl.setValue(this.disponibles[0]);
+          this.actualizar();
         }
       }
 
