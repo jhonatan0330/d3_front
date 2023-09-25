@@ -2,6 +2,8 @@ import { MVCTranslate } from '../../../shared/plantilla-helper';
 
 export class FormulaHelper {
   static calcular(formula: string): number {
+    formula = formula.replaceAll("+-","-");
+    formula = formula.replaceAll("--","+");
     console.log('For.Calc: ' + formula);
     let result: number;
 

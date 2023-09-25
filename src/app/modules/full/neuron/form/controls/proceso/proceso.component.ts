@@ -164,15 +164,16 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           let filterValue: string = value.toLowerCase();
           if (filterValue === '*') { filterValue = ''; }
           if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length - 1); }
+          filterValue = filterValue.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           if (this.disponibles) {
             this.filteredDocuments = this.disponibles.filter(
               (doc) => {
-                if (doc.nombre.toLowerCase().indexOf(filterValue) !== -1) return true;
-                if (doc.descripcion && doc.descripcion.toLowerCase().indexOf(filterValue) !== -1) return true;
+                if (doc.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
+                if (doc.descripcion && doc.descripcion.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
                 if (doc.caracteristicas) {
                   for (let filterItemField = 0; filterItemField < doc.caracteristicas.length; filterItemField++) {
                     const element = doc.caracteristicas[filterItemField];
-                    if (element.valorText != null && element.valorText.toLowerCase().indexOf(filterValue) !== -1) return true;
+                    if (element.valorText != null && element.valorText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
                   }
                 }
                 return false;

@@ -197,7 +197,7 @@ export class MVCTranslate {
     let leftOperator = 0;
     let righOperator = 0;
 
-    posOperator = text.indexOf('-');
+    posOperator = text.indexOf('-',1);
     if (posOperator !== -1) {
       leftOperator = Number(text.substring(0, posOperator));
       righOperator = Number(text.substring(posOperator + 1, text.length));
