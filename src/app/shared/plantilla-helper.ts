@@ -227,7 +227,12 @@ export class MVCTranslate {
             righOperator = Number(
               text.substring(posOperator + 1, text.length)
             );
-            text = (leftOperator / righOperator).toFixed(8); // Posiblemente falle por ceiling
+            if(righOperator === 0){
+              text = "0";
+            } else {
+              text = (leftOperator / righOperator).toFixed(8); // Posiblemente falle por ceiling
+            }
+            
           } else {
             posOperator = text.indexOf('%');
             if (posOperator !== -1) {
