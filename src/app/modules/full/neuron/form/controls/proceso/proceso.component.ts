@@ -550,6 +550,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       filtro.valorAuxiliar = campoFiltro.valorAuxiliar;
     }
     this.isLoading = true;
+    console.log("api");
     this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
         this.isLoading = false;
@@ -565,6 +566,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   consultaExitosaDatosBase(pCampo: PedidoVentaCaracteristicaFilterDTO) {
+    console.log("exitoso");
     if (this.tipoCombo) {
       this.recibirDocumentosCombo(pCampo);
     } else {
@@ -962,12 +964,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   gestionarKeyUpTextoFocusOut() {
+    console.log("out");
     if (!this.isEnabled || this.proceso) { return; }
     if (this.filteredDocuments && this.filteredDocuments.length !==0){ return; }
     this.gestionarKeyUpTexto();
   }
 
   gestionarKeyUpTexto() {
+    console.log("texto");
     if (this.isLoading || this.isLoadingList) { return; }
     if (this.isEnabled) {
       /*if (this.filteredDocuments && this.filteredDocuments.length === 1) {
@@ -1124,7 +1128,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           } else {
             if (this.tipoMultiple) {
               /*
-  provider.addEventListener('submitComplete',function (event:ChainEvent):void{
+            provider.addEventListener('submitComplete',function (event:ChainEvent):void{
             //dispatchEvent(new ChainEvent('submitComplete',ChainEvent(event).entityObject));
             if(provider!=null){
               if(event.entityObject !=null && event.entityObject is PedidoVentaVO){
@@ -1149,6 +1153,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         }
       });
+    this.fControl.setValue(null);
   }
 
   actualizarTexto(): void {
