@@ -8,9 +8,7 @@
       <!-- sidebar -->
       <div class="flex flex-col flex-auto w-full">
         <!-- Title -->
-
         <div class="p-2">
-
           <!-- Botones de accion en la lista -->
           <div fxLayout="row" *ngIf="!isLoading" class="w-full">
             <button mat-icon-button color="primary" matTooltip="Listar" (click)="listar(1)" class="m-1">
@@ -50,9 +48,9 @@
               </button>
             </div>
           </div>
-
           <!-- Buscador de texto -->
           <div class="text-primary text-xs uppercase font-bold py-2">Filtrar</div>
+          <mat-checkbox class="py-2" [formControl]="fControlCheck">Filtrar por codigo Exacto</mat-checkbox>
           <div>
             <mat-form-field>
               <input matInput type="text" placeholder="Coloca un texto y presiona enter" [formControl]="fControlSearch"
@@ -61,63 +59,61 @@
                 <mat-icon>close</mat-icon>
               </button>
             </mat-form-field>
-            <mat-checkbox class="py-2" [formControl]="fControlCheck">Filtrar por codigo Exacto</mat-checkbox>
             <button class="w-full " mat-flat-button [color]="'accent'" (click)="listar(1)">
               <mat-icon>refresh</mat-icon>
               <span>Listar</span>
             </button>
           </div>
-          <!-- Buscador de fecha -->
-          <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fechas </div>
-          <div>
-            <div class="flex">
-              <mat-form-field class="pr-2">
-                <mat-label>Fecha Inicial</mat-label>
-                <input matInput [matDatepicker]="pickerFrom" [formControl]="fCDateStart" autocomplete="off" />
-                <mat-datepicker-toggle matSuffix [for]="pickerFrom" tabIndex="-1"></mat-datepicker-toggle>
-                <mat-datepicker #pickerFrom></mat-datepicker>
-              </mat-form-field>
-              <mat-form-field class="w-52">
-                <mat-label>Hora Inicial</mat-label>
-                <input matInput type="time" [formControl]="fCTimeStart" />
-              </mat-form-field>
-            </div>
-            <div class="flex">
-              <mat-form-field class="pr-2">
-                <mat-label>Fecha Final</mat-label>
-                <input matInput [matDatepicker]="pickerTo" [formControl]="fCDateEnd" autocomplete="off" />
-                <mat-datepicker-toggle matSuffix [for]="pickerTo" tabIndex="-1"></mat-datepicker-toggle>
-                <mat-datepicker #pickerTo></mat-datepicker>
-              </mat-form-field>
-              <mat-form-field class="w-52">
-                <mat-label>Hora Final</mat-label>
-                <input matInput type="time" [formControl]="fCTimeEnd" />
-              </mat-form-field>
-            </div>
-          </div>
-          <!-- Filtro por Estados  -->
-          <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por estados </div>
-          <form [formGroup]="form">
-            <div *ngIf="plantilla?.estados ">
-              <div *ngFor="let _estado of plantilla.estados" class="p-0.5 w-full rounded flex">
-                <mat-checkbox [formControlName]="_estado.llaveTabla" class="w-full">
-                  <span class="text-sm">{{ _estado.nombre }}</span>
-                </mat-checkbox>
-                <div class="icon-size-4 border rounded" [style.backgroundColor]="getColor(_estado.llaveTabla)"
-                  [style.color]="getColorFont(_estado.llaveTabla)">
-                </div>
+          <div *ngIf="fControlCheck && !fControlCheck.value">
+            <!-- Buscador de fecha -->
+            <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fechas </div>
+            <div>
+              <div class="flex">
+                <mat-form-field class="pr-2">
+                  <mat-label>Fecha Inicial</mat-label>
+                  <input matInput [matDatepicker]="pickerFrom" [formControl]="fCDateStart" autocomplete="off" />
+                  <mat-datepicker-toggle matSuffix [for]="pickerFrom" tabIndex="-1"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerFrom></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="w-52">
+                  <mat-label>Hora Inicial</mat-label>
+                  <input matInput type="time" [formControl]="fCTimeStart" />
+                </mat-form-field>
+              </div>
+              <div class="flex">
+                <mat-form-field class="pr-2">
+                  <mat-label>Fecha Final</mat-label>
+                  <input matInput [matDatepicker]="pickerTo" [formControl]="fCDateEnd" autocomplete="off" />
+                  <mat-datepicker-toggle matSuffix [for]="pickerTo" tabIndex="-1"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerTo></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="w-52">
+                  <mat-label>Hora Final</mat-label>
+                  <input matInput type="time" [formControl]="fCTimeEnd" />
+                </mat-form-field>
               </div>
             </div>
-          </form>
+            <!-- Filtro por Estados  -->
+            <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por estados </div>
+            <form [formGroup]="form">
+              <div *ngIf="plantilla?.estados ">
+                <div *ngFor="let _estado of plantilla.estados" class="p-0.5 w-full rounded flex">
+                  <mat-checkbox [formControlName]="_estado.llaveTabla" class="w-full">
+                    <span class="text-sm">{{ _estado.nombre }}</span>
+                  </mat-checkbox>
+                  <div class="icon-size-4 border rounded" [style.backgroundColor]="getColor(_estado.llaveTabla)"
+                    [style.color]="getColorFont(_estado.llaveTabla)">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
-
       </div>
-
     </mat-drawer>
 
     <!-- Drawer content -->
     <mat-drawer-content class="flex flex-col" fuseScrollReset>
-
       <!-- Main -->
       <div class="flex-auto">
         <div class="flex flex-col flex-auto min-w-0">
@@ -193,7 +189,7 @@
                     <mat-divider></mat-divider>
                     <div class="flex items-center" *ngFor="let f of iDocument.caracteristicas">
                       <small class="whitespace-nowrap font-extralight mr-2">{{ f.campoDTO.nombre }}</small>
-                      <div class="text-right w-full truncate text-md" *ngIf="f.valorText" >
+                      <div class="text-right w-full truncate text-md" *ngIf="f.valorText">
                         <!-- [matTooltip]="f.valorText" -->
                         <div class="line-clamp-1" *ngIf="!f.valorText.startsWith('http')">{{
                           f.valorText
@@ -282,7 +278,7 @@
               <td mat-cell *matCellDef="let element">
                 <div class="w-full" *ngIf="element.caracteristicas && element.caracteristicas.length !== 0">
                   <div class="w-full" *ngFor="let f of element.caracteristicas">
-                    <small >{{ f.campoDTO.nombre }}</small>
+                    <small>{{ f.campoDTO.nombre }}</small>
                     <div class="w-full text-right ml-2">{{ f.valorText }}</div>
                   </div>
                 </div>

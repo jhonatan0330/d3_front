@@ -37,13 +37,6 @@
                 *ngIf="signInForm.controls['password'].hasError('required') && signInForm.controls['password'].touched" 
                 class="form-error-msg"> Password is required </small>
             </div>
-            
-            <div class="pb-1">
-              <mat-checkbox
-                name="rememberMe"
-                [formControl]="signInForm.controls['rememberMe']"
-                class="pb-1">Remember this computer</mat-checkbox>
-            </div>
             <button mat-raised-button class="mat-primary w-full mb-1" [disabled]="signInForm.invalid">Sign in</button>
             <small class="m-0">{{currentApplicationVersion}}</small>
             <div class="text-center">
