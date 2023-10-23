@@ -63,12 +63,12 @@ export class FechaComponent extends BaseComponent implements OnInit {
             ((this.data.valorNumero / 1000) % 3600) / 60
           );
         }
-        if (this.data.valorAuxiliar && this.data.valorAuxiliar==='R') {
-          this.fControlDateStart.setValue( this.data.valorFecha );
-          let endDate:Date = new Date(this.fControlDateStart.value);
+        if (this.data.valorAuxiliar && this.data.valorAuxiliar === 'R') {
+          this.fControlDateStart.setValue(this.data.valorFecha);
+          let endDate: Date = new Date(this.fControlDateStart.value);
           endDate.setHours(endDate.getHours() + Math.floor(this.data.valorNumero / 3600000));
           endDate.setMinutes(endDate.getMinutes() + ((this.data.valorNumero / 1000) % 3600) / 60);
-          this.fControlDateEnd.setValue( endDate );
+          this.fControlDateEnd.setValue(endDate);
         }
       } else {
         if (this.required) {
@@ -125,21 +125,24 @@ export class FechaComponent extends BaseComponent implements OnInit {
         this.actualizar();
       },
     });
-	if (this.timerBackCount) {
-		this.clock = this.source.subscribe((t) => {
-			this.showTimer();
-		  });
-	}
+    if (this.timerBackCount) {
+      this.clock = this.source.subscribe((t) => {
+        this.showTimer();
+      });
+    }
   }
 
   actualizar() {
     // Se supone que nunca llega por aqui
-    const fecha: Date = new Date(this.dateFrom.value);
+
+    let fecha: Date;
+    if (this.dateFrom.value && this.dateFrom.value.length != 0) { fecha = new Date(this.dateFrom.value); }
+    else { fecha = null; }
     let hour = 0;
     let minute = 0;
-    if (this.timeFrom && this.timeFrom.value){
-      hour = this.timeFrom.value.substring(0,2);
-      minute = this.timeFrom.value.substring(3,5);
+    if (this.timeFrom && this.timeFrom.value) {
+      hour = this.timeFrom.value.substring(0, 2);
+      minute = this.timeFrom.value.substring(3, 5);
     }
     if (!fecha) {
       if (this.data.valorFecha) {
@@ -167,8 +170,8 @@ export class FechaComponent extends BaseComponent implements OnInit {
     if (this.fControlDateStart.value && this.fControlDateEnd.value) {
       const startDate = new Date(this.fControlDateStart.value);
       let endDate = new Date(this.fControlDateEnd.value);
-      endDate.setHours(0,0,0,0);
-      endDate.setDate( endDate.getDate()  + 1);
+      endDate.setHours(0, 0, 0, 0);
+      endDate.setDate(endDate.getDate() + 1);
       this.data.valorFecha = startDate;
       this.data.valorNumero =
         endDate.getTime() - startDate.getTime();

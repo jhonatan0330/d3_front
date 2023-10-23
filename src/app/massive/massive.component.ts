@@ -20,6 +20,7 @@ import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import { ActivatedRoute, Params } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-massive',
@@ -62,7 +63,8 @@ export class MassiveComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private templateService: TemplateService,
-    private api: ApiService
+    private api: ApiService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -77,6 +79,7 @@ export class MassiveComponent implements OnInit {
         this.startForm();
       }
     });
+    this.dialog.closeAll();
   }
 
   startForm() {

@@ -14,6 +14,7 @@ import {
 import { of, BehaviorSubject, throwError } from 'rxjs';
 import { environment } from 'environments/environment';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,8 @@ export class JwtAuthService {
     private ls: LocalStoreService,
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {
     this.route.queryParams.subscribe(
       (params) => (this.return = params['return'] || '/')
@@ -95,6 +97,7 @@ export class JwtAuthService {
   signout() {
     this.setUserAndToken(null);
     this.router.navigateByUrl('sign-in');
+    this.dialog.closeAll();
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
