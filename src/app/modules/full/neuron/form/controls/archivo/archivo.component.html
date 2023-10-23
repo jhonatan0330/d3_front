@@ -1,22 +1,23 @@
 <div [style.display]="isInvisible ? 'none' : 'block'" class="mx-0">
-  <div class="py-1 flex" >
+  <div class="py-1 flex">
     <input [id]="structure.llaveTabla" *ngIf="isLoadingUrl && allowUrlTextFromUser" [(ngModel)]="urlText" fxFlex />
     <button mat-flat-button color="accent" [disabled]="isLoading" *ngIf="isEnabled && !isEnd && !isLoading"
-     [fxFlex]="100"
-      (click)="onClickExternal()">
+      [fxFlex]="100" (click)="onClickExternal()">
       <mat-icon svgIcon="attach_file"></mat-icon>
       {{ structure.nombre | titlecase }}
       <small *ngIf="required"> *</small>
       <!--style="display: none"-->
-      <input [id]="structure.llaveTabla + '_file'" type="file" style="opacity : 0; position : absolute; z-index: 2; width: 100%; height: 100%; top: 0;left: 0;" [multiple]="multipleFiles"
-        [accept]="filtroExtension" (click)="$event.target.value = '';$event.stopPropagation();"
-        (change)="handleFileInput($event.target.files)" capture="user" />
+      <input [id]="structure.llaveTabla + '_file'" type="file"
+        style="opacity : 0; position : absolute; z-index: 2; width: 100%; height: 100%; top: 0;left: 0;"
+        [multiple]="multipleFiles" [accept]="filtroExtension"
+        (click)="$event.target.value = '';$event.stopPropagation();" (change)="handleFileInput($event.target.files)"
+        capture="user" />
     </button>
     <button mat-flat-button color="accent" class="ml-1" *ngIf="isEnabled && !isEnd && allowUrlTextFromUser"
-    (click)="onClickLoadUrl()">
-    <mat-icon *ngIf="!isLoadingUrl">keyboard</mat-icon>
-    <mat-icon *ngIf="isLoadingUrl">check</mat-icon>
-  </button>
+      (click)="onClickLoadUrl()">
+      <mat-icon *ngIf="!isLoadingUrl">keyboard</mat-icon>
+      <mat-icon *ngIf="isLoadingUrl">check</mat-icon>
+    </button>
   </div>
   <mat-progress-bar *ngIf="isLoading" color="primary" class="full-width" mode="indeterminate"></mat-progress-bar>
   <!-- Firma -->
@@ -29,12 +30,13 @@
       <mat-icon>format_clear</mat-icon>
     </button>
   </div>
+  <div class="text-xs" *ngIf="files">{{ structure.nombre | titlecase }}</div>
   <!-- Tabla -->
   <div class="m-1" *ngFor="let item of files">
     <div class="m-4 text-center">
       <img *ngIf="item.blob" [src]="item.blob" class="middle-width"
         (load)="validateOrientationHandler($event.target, item)" [name]="item.url" />
-      <img *ngIf="!item.blob && item.url" [src]="item.url" class="middle-width" [name]="item.url" />
+      <img *ngIf="!item.blob && item.url && isImage(item.url)" [src]="item.url" class="middle-width" [name]="item.url" />
     </div>
     <div>
       <mat-progress-bar fxFlex *ngIf="item.isLoading" color="primary" mode="indeterminate"></mat-progress-bar>

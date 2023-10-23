@@ -365,4 +365,9 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
     this.isLoading =  !this.isLoadingUrl;
     this.isLoadingUrl = !this.isLoadingUrl;
   }
+
+  isImage(url) {
+    return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url);
+  }
+  
 }
