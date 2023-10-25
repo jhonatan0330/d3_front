@@ -56,11 +56,18 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link : '/academy'
             },
             {
-                id   : 'apps.academy',
+                id   : 'apps.inventary',
                 title: 'Inventario',
                 type : 'basic',
                 icon : 'heroicons_outline:archive',
                 link : '/inventory'
+            },
+            {
+                id   : 'apps.accounting',
+                title: 'Indicadores',
+                type : 'basic',
+                icon : 'heroicons_outline:chart-pie',
+                link : '/account'
             },
             {
                 id  : 'divider-1',
