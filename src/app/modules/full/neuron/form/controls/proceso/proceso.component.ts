@@ -1478,4 +1478,16 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     // if ( this.readQR && !this.scannerEnabled) { this.toogleScanner(); }
   }
 
+  send2Server(): boolean {
+    if (this.isLoading) {
+      /*Swal.fire(
+        'Consultando datos',
+        this.structure.nombre 'Todavia tienes imagenes pendientes por cargar, danos un minuto mas',
+        'info'
+      );*/
+      return false;
+    }
+    return true;
+  }
+
 }
