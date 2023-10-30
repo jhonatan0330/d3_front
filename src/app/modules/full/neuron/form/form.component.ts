@@ -7,6 +7,7 @@ import {
   ViewChild,
   Type,
   AfterViewInit,
+  HostListener,
 } from '@angular/core';
 import {
   MatDialogRef,
@@ -498,7 +499,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       }
     }
     this.instruccionCrear = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_INSTRUCCION_CREAR);
-    if(this.instruccionCrear) { this.fullScreen = true;}
+    if (this.instruccionCrear) { this.fullScreen = true; }
     this.showFields();
     this.resolvePropiertiesForm();
     this.getReports();
@@ -707,7 +708,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     if (!plantillaProxima) {
       return;
     }
-    if( this.formIsModified) {
+    if (this.formIsModified) {
       Swal.fire('Guarda documento', 'Por favor guarda los cambios del documento antes de crear una nueva accion', 'info');
       return;
     }
@@ -981,5 +982,12 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   toogleScreen() {
     this.fullScreen = !this.fullScreen;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.dialogRef.close(false);
+    }
   }
 }
