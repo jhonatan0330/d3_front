@@ -40,7 +40,7 @@
       <img *ngIf="!item.blob && item.url && isImage(item.url)" [src]="item.url" class="middle-width"
         [name]="item.url" />
     </div>
-    <div>
+    <div class="flex">
       <mat-progress-bar class="w-full" *ngIf="item.isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
       <mat-icon class="mx-4 cursor-pointer" (click)="openImage(item)" *ngIf="!item.isLoading">file_download</mat-icon>
       <mat-icon *ngIf="isEnabled" color="warn" (click)="deleteFile(item)" class="mx-1 cursor-pointer">cancel</mat-icon>

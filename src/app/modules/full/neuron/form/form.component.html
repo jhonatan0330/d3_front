@@ -105,7 +105,7 @@
   <div class="w-full rounded" *ngIf="pedido && pedido.llaveTabla" [style.backgroundColor]="getColor()">
     <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
     <!-- Acciones -->
-    <div *ngIf="!isLoading" class="p-1 w-full justify-center sm:justify-between sm:flex">
+    <div *ngIf="!isLoading" class="p-1 w-full justify-between flex flex-wrap">
       <!-- Botones de transiciones -->
       <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer">
         <div class="m-1 w-full items-center flex justify-center" [style.color]="getColorFont()">
