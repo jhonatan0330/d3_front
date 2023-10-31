@@ -21,7 +21,7 @@
         <div class="flex shrink-0 items-center py-4 pr-4 pl-6 bg-primary text-on-primary">
             <div class="sm:hidden -ml-1 mr-3">
                 <button mat-icon-button (click)="closePanel()">
-                    <mat-icon class="icon-size-5 text-current" [svgIcon]="'heroicons_solid:x'"></mat-icon>
+                    <mat-icon class="icon-size-5 text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
                 </button>
             </div>
             <div class="text-lg font-medium leading-10">Notifications</div>
@@ -54,25 +54,25 @@
                                         <div class="w-full text-right truncate text-md" >{{ notification.documentoDTO.estadoNombre }}</div>
                                     </div>
                                     <div *ngIf="notification.fechaRegistro" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:check"></mat-icon>
+                                        <mat-icon class="icon-size-3" svgIcon="heroicons_outline:check"></mat-icon>
                                         <div>Asignado</div>
                                         <div class="w-full text-right">{{ notification.fechaRegistro | date :'medium' }}
                                         </div>
                                     </div>
                                     <div *ngIf="notification.fechaLeido" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:check"></mat-icon>
+                                        <mat-icon class="icon-size-3" svgIcon="heroicons_outline:check"></mat-icon>
                                         <div>Leido</div>
                                         <div class="w-full text-right">{{ notification.fechaLeido | date :'medium' }}
                                         </div>
                                     </div>
                                     <div *ngIf="notification.fechaArrancar" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:check"></mat-icon>
+                                        <mat-icon class="icon-size-3" svgIcon="heroicons_outline:check"></mat-icon>
                                         <small> Inicia el :</small>
                                         <small class="w-full text-right">{{ notification.fechaArrancar | date :'medium'
                                             }}</small>
                                     </div>
                                     <div *ngIf="notification.fechaLimite" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="mat_solid:check"></mat-icon>
+                                        <mat-icon class="icon-size-3" svgIcon="heroicons_outline:check"></mat-icon>
                                         <small> Maximo hasta :</small>
                                         <small class="w-full text-right">{{ notification.fechaLimite | date :'medium'
                                             }}</small>

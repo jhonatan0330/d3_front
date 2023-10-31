@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { environment } from 'environments/environment';
-import { AuthenticationService } from '../authentication.service';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatButton } from '@angular/material/button';
 
@@ -16,12 +15,8 @@ import { MatButton } from '@angular/material/button';
 export class AuthSignInComponent implements OnInit, AfterViewInit {
   @ViewChild(MatProgressBar) progressBar: MatProgressBar;
   @ViewChild(MatButton) submitButton: MatButton;
-
   currentApplicationVersion = environment.appVersion;
-
   signInForm: UntypedFormGroup;
-
-
   image: string;
   errorMsg = '';
   company = 'Software para ti.com';
@@ -31,7 +26,6 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
    */
   constructor(
     private _activatedRoute: ActivatedRoute,
-    private _authService: AuthenticationService,
     private _formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
     private jwtAuth: JwtAuthService,
@@ -39,13 +33,6 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
   ) {
   }
 
-  // -----------------------------------------------------------------------------------------------------
-  // @ Lifecycle hooks
-  // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * On init
-   */
   ngOnInit(): void {
     // Create the form
     this.signInForm = this._formBuilder.group({
@@ -54,49 +41,31 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /**
-   * After Init
-   */
   ngAfterViewInit(): void {
     // this.autoSignIn();
     this.getUrlServices();
   }
 
-  // -----------------------------------------------------------------------------------------------------
-  // @ Public methods
-  // -----------------------------------------------------------------------------------------------------
-
-  /**
-   * Sign in
-   */
   signIn(): void {
     // Return if the form is invalid
     if (this.signInForm.invalid) {
       return;
     }
-
     // Disable the form
     this.signInForm.disable();
-
     this.submitButton.disabled = true;
     this.progressBar.mode = 'indeterminate';
-
     // Sign in
-    this._authService.signIn(this.signInForm.value)
-      .subscribe(
-        () => {
-
+    this.jwtAuth.signin(this.signInForm.value.username, this.signInForm.value.password)
+      .subscribe({
+        next: () => {
           const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/main';
-
           // Navigate to the redirect url
           this._router.navigateByUrl(redirectURL);
-
         },
-        (response) => {
-
+        error: (response) => {
           // Re-enable the form
           this.signInForm.enable();
-
           this.submitButton.disabled = false;
           this.progressBar.mode = 'determinate';
           this.errorMsg = response;
@@ -104,14 +73,13 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
             this._router.navigateByUrl('sessions/recover');
           }
         }
+      }
       );
   }
 
   getUrlServices() {
-    // this.submitButton.disabled = true;
-    // this.progressBar.mode = 'indeterminate';
-    this.apiService.getURL().subscribe(
-      (data) => {
+    this.apiService.getURL().subscribe({
+      next: (data) => {
         if (data !== '' && data !== 'SW42') {
           if (!data.endsWith('/')) {
             data = data + '/';
@@ -123,34 +91,27 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
           this.getOrganization();
         }
       },
-      (err) => {
+      error: (err) => {
         this.errorMsg = err.message;
-
         this.jwtAuth.setConfUrl(location.origin);
         this.getOrganization();
       }
-    );
+    });
   }
 
   getOrganization() {
-    //this.submitButton.disabled = true;
-    //this.progressBar.mode = 'indeterminate';
-    this.apiService
-      .obtenerPrincipalOrganizacion()
-      .subscribe(
-        (organization) => {
-          //this.submitButton.disabled = false;
-          this.signInForm.enable();
-          this.company = organization.nombre;
-          organization.imagen
-            ? (this.image = organization.imagen)
-            : (this.image = 'assets/images/egret.png');
-          this.jwtAuth.setCompany(organization);
-        },
-        (err) => {
-          this.signInForm.enable();
-          this.errorMsg = err.message;
-        }
-      );
+    this.apiService.obtenerPrincipalOrganizacion().subscribe({
+      next: (organization) => {
+        this.signInForm.enable();
+        this.company = organization.nombre;
+        (organization.imagen) ? (this.image = organization.imagen) : (this.image = 'assets/images/egret.png');
+        this.jwtAuth.setCompany(organization);
+      },
+      error: (err) => {
+        this.signInForm.enable();
+        this.errorMsg = err.message;
+      }
+    });
   }
+
 }

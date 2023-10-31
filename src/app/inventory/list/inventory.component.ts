@@ -1,10 +1,9 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import {  UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Observable, Subject, debounceTime, switchMap, takeUntil, map, merge } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations';
-import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { InventoryService } from '../inventory.service';
 import { InventoryPagination, ProductoDTO } from '../inventory.types';
 
@@ -42,7 +41,6 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
-        private _fuseConfirmationService: FuseConfirmationService,
         private _inventoryService: InventoryService
     )
     {
@@ -305,35 +303,7 @@ export class InventoryListComponent implements OnInit, AfterViewInit, OnDestroy
      */
     deleteSelectedProduct(): void
     {
-        // Open the confirmation dialog
-        const confirmation = this._fuseConfirmationService.open({
-            title  : 'Delete product',
-            message: 'Are you sure you want to remove this product? This action cannot be undone!',
-            actions: {
-                confirm: {
-                    label: 'Delete'
-                }
-            }
-        });
-
-       /* // Subscribe to the confirmation dialog closed action
-        confirmation.afterClosed().subscribe((result) => {
-
-            // If the confirm button pressed...
-            if ( result === 'confirmed' )
-            {
-
-                // Get the product object
-                const product = this.selectedProductForm.getRawValue();
-
-                // Delete the product on the server
-                this._inventoryService.deleteProduct(product.id).subscribe(() => {
-
-                    // Close the details
-                    this.closeDetails();
-                });
-            }
-        });*/
+        
     }
 
     /**

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, Observable, ReplaySubject, tap } from 'rxjs';
-import { User } from 'app/core/user/user.types';
+import { Observable, ReplaySubject } from 'rxjs';
+import { Company, User } from 'app/core/user/user.types';
 
 @Injectable({
     providedIn: 'root'
@@ -9,26 +8,10 @@ import { User } from 'app/core/user/user.types';
 export class UserService
 {
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
+    private _company: ReplaySubject<Company> = new ReplaySubject<Company>(1);
 
-    /**
-     * Constructor
-     */
-    constructor(private _httpClient: HttpClient)
-    {
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Setter & getter for user
-     *
-     * @param value
-     */
     set user(value: User)
     {
-        // Store the value
         this._user.next(value);
     }
 
@@ -37,37 +20,18 @@ export class UserService
         return this._user.asObservable();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Get the current logged in user data
-     */
-    /*get(): Observable<User>
+    set company(value: Company)
     {
-        return this._httpClient.get<User>('api/common/user').pipe(
-            tap((user) => {
-                this._user.next(user);
-            })
-        );
-    }*/
+        this._company.next(value);
+    }
 
-    /**
-     * Update the user
-     *
-     * @param user
-     */
-    /*update(user: User): Observable<any>
+    get company$(): Observable<Company>
     {
-        return this._httpClient.patch<User>('api/common/user', {user}).pipe(
-            map((response) => {
-                this._user.next(response);
-            })
-        );
-    }*/
+        return this._company.asObservable();
+    }
 
     clear(){
         this.user = null;
+        this.company = null;
     }
 }

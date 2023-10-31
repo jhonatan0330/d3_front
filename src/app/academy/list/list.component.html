@@ -47,7 +47,7 @@
                     <mat-icon
                         matPrefix
                         class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                        [svgIcon]="'heroicons_outline:search'"></mat-icon>
                     <input
                         (input)="filterByQuery(query.value)"
                         placeholder="Search by title or description"
@@ -85,7 +85,7 @@
                                         <ng-container *ngIf="course.progress.completed > 0">
                                             <mat-icon
                                                 class="icon-size-5 text-green-600"
-                                                [svgIcon]="'heroicons_solid:badge-check'"
+                                                [svgIcon]="'heroicons_outline:badge-check'"
                                                 [matTooltip]="'You completed this course at least once'"></mat-icon>
                                         </ng-container>
                                     </div>
@@ -98,14 +98,14 @@
                                 <div class="flex items-center leading-5 text-md text-secondary">
                                     <mat-icon
                                         class="icon-size-5 text-hint"
-                                        [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                                        [svgIcon]="'heroicons_outline:clock'"></mat-icon>
                                     <div class="ml-1.5">{{course.duration}} minutes</div>
                                 </div>
                                 <!-- Course completion -->
                                 <div class="flex items-center mt-2 leading-5 text-md text-secondary">
                                     <mat-icon
                                         class="icon-size-5 text-hint"
-                                        [svgIcon]="'heroicons_solid:academic-cap'"></mat-icon>
+                                        [svgIcon]="'heroicons_outline:academic-cap'"></mat-icon>
                                     <ng-container *ngIf="course.progress.completed === 0">
                                         <div class="ml-1.5">Never completed</div>
                                     </ng-container>
@@ -170,7 +170,7 @@
 
                                             <mat-icon
                                                 class="ml-1.5 icon-size-5"
-                                                [svgIcon]="'heroicons_solid:arrow-sm-right'"></mat-icon>
+                                                [svgIcon]="'heroicons_outline:arrow-sm-right'"></mat-icon>
                                         </span>
                                     </a>
                                 </div>

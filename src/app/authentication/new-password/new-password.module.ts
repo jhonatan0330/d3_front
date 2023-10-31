@@ -10,7 +10,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FuseAlertModule } from '@fuse/components/alert';
 
 @NgModule({
     declarations: [
@@ -24,8 +23,7 @@ import { FuseAlertModule } from '@fuse/components/alert';
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MatCheckboxModule,
-        FuseAlertModule,
+        MatCheckboxModule
     ]
 })
 export class NewPasswordModule

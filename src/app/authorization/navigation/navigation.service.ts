@@ -4,7 +4,8 @@ import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { FuseNavigationItem } from '@fuse/components/navigation';
 import { compactNavigation, defaultNavigation, futuristicNavigation, horizontalNavigation } from 'app/authorization/navigation/data';
-import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaDTO, ModuloDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Injectable({
     providedIn: 'root'
@@ -23,7 +24,7 @@ export class NavigationService
      */
     constructor()
     {
-        this.generate(null);
+        this.generate(null,null,null);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -42,20 +43,64 @@ export class NavigationService
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
-    generate(process: DocumentoPlantillaDTO[]) {
+    generate(process: DocumentoPlantillaDTO[], modules: ModuloDTO[], templates: DocumentoPlantillaDTO[]) {
+
+
+        if(modules){
+            const moduleNavItem: FuseNavigationItem[] = [];
+            modules.forEach((module:ModuloDTO)=>{
+                if(module.url && module.url.startsWith("/")){
+                    const newItem: FuseNavigationItem = {
+                        id   : module.llaveTabla,
+                        title: module.nombre[0].toUpperCase() + module.nombre.substring(1).toLowerCase(),
+                        type : 'basic',
+                        link : module.url,
+                    };
+                    if(module.imagen){
+                        newItem.image = module.imagen;
+                    }else{
+                        newItem.icon = 'heroicons_outline:check-circle';
+                    }
+                    moduleNavItem.push(newItem);
+                }
+            });
+            this._defaultNavigation[2].children = cloneDeep(moduleNavItem);
+        }
+
+        if(templates){
+            const templateNavItem: FuseNavigationItem[] = [];
+            templates.forEach((element:DocumentoPlantillaDTO)=>{
+                if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)) {
+                    const newItem: FuseNavigationItem = {
+                        id   : element.llaveTabla,
+                        title: element.nombre[0].toUpperCase() + element.nombre.substring(1).toLowerCase(),
+                        type : 'basic',
+                        link : '/list/list/' + element.llaveTabla,
+                        image: element.imagen
+                    };
+                    templateNavItem.push(newItem);
+                  }
+            });
+            this._defaultNavigation[3].children = cloneDeep(templateNavItem);
+        }
+
         if(process){
             const processNavItem: FuseNavigationItem[] = [];
             process.forEach((process:DocumentoPlantillaDTO)=>{
                 const newItem: FuseNavigationItem = {
                     id   : process.proceso,
-                    title: process.nombre[0].toUpperCase() + process.nombre.substr(1).toLowerCase(),
+                    title: process.nombre[0].toUpperCase() + process.nombre.substring(1).toLowerCase(),
                     type : 'basic',
                     image: process.imagen,
                     link : '/list/process_crud/' + process.proceso
                 };
                 processNavItem.push(newItem);
             });
-            this._defaultNavigation[0].children = cloneDeep(processNavItem);
+            if(process.length===0){
+                this._defaultNavigation.shift()
+            }else{
+                this._defaultNavigation[0].children = cloneDeep(processNavItem);
+            }
         }
 
         // Fill compact navigation children using the default navigation

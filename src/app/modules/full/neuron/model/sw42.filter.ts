@@ -247,14 +247,6 @@ export class ProductoFilterDTO extends BasicFilterDTO {
   baseNombre: string;
 }
 			
-export class ModuloContratadoFilterDTO extends BasicFilterDTO {
-  modulo: string;
-  nombre: string;
-  imagen: string;
-  moduloUrl: string;
-  moduloLlave: string;
-}
-			
 export class ReporteBaseFilterDTO extends BasicFilterDTO {
   plantilla: string;
   plantillaNombre: string;

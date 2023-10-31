@@ -35,10 +35,8 @@ export class UserComponent implements OnInit, OnDestroy {
         private _router: Router,
         private _userService: UserService,
         public jwtAuth: JwtAuthService,
-        private templateService: TemplateService,
-        private notificationService: NotificationsService,
         private apiService: ApiService,
-        private _navigationService: NavigationService
+        private templateService: TemplateService,
     ) {
     }
 
@@ -58,7 +56,6 @@ export class UserComponent implements OnInit, OnDestroy {
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
-        this.getMenu();
     }
 
     /**
@@ -70,17 +67,12 @@ export class UserComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
     /**
      * Sign out
      */
     signOut(): void {
-        this.templateService.clear();
+        
         this.jwtAuth.signout();
-        this.notificationService.clear();
         this._userService.clear();
         this.user = null;
     }
@@ -94,36 +86,11 @@ export class UserComponent implements OnInit, OnDestroy {
         });
     }
 
-
-    getMenu() {
-        if (!this.user) { return; }
-        if (
-            !this.templateService.template ||
-            this.templateService.template.length === 0
-        ) {
-            this.apiService.listarPlantillas(null)
-                .subscribe(templates => {
-                    this.templateService.setTemplates(templates);
-                    const processToMenu = [];
-                    // Transform document to MenuItems
-                    templates.forEach((element) => {
-                        if (!element.llaveTabla) {
-                            element.estado = 'T';
-                            processToMenu.push(element);
-                        }
-                    });
-
-                    this._navigationService.generate(processToMenu);
-                    //this.conect2Other();
-                });
-        }
-    }
-
     goToMyAccount() {
         this._router.navigate(['/settings']);
     }
 
-    downloadApk(){
+    downloadApk() {
         const url = '/cs.apk';
         window.open(url, '_blank');
     }

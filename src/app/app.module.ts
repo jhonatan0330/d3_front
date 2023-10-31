@@ -21,6 +21,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { ErrorHandlerService } from './shared/error-handler.service';
 import { TokenInterceptor } from './shared/token.interceptor';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -60,6 +61,7 @@ const routerConfig: ExtraOptions = {
 
     MatDatepickerModule,
     MatNativeDateModule,
+    MatDialogModule
 
   ],
   providers: [

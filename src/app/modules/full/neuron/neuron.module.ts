@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FuseCardModule } from '@fuse/components/card';
 import { SharedModule } from 'app/shared/shared.module';
 import { FormComponent } from './form/form.component';
 import { ArchivoComponent } from './form/controls/archivo/archivo.component';
@@ -87,7 +86,6 @@ import { InformativeComponent } from './form/controls/informative/informative.co
         DragDropModule,
         AngularSignaturePadModule,
         FlexLayoutModule,
-        FuseCardModule,
         MatAutocompleteModule,
         MatBadgeModule,
         MatBottomSheetModule,

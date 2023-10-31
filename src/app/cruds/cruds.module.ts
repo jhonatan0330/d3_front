@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { FuseScrollResetModule } from '@fuse/directives/scroll-reset';
 import { FuseScrollbarModule } from '@fuse/directives/scrollbar';
 import { FuseNavigationModule } from '@fuse/components/navigation';
-import { FuseFindByKeyPipeModule } from '@fuse/pipes/find-by-key';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
@@ -46,7 +45,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatDatepickerModule,
         MatNativeDateModule,
         MatTableModule,
-        FuseFindByKeyPipeModule,
         FuseNavigationModule,
         FuseScrollbarModule,
         FuseScrollResetModule,

@@ -17,7 +17,7 @@
                     <span class="inline-flex items-center">
                         <mat-icon
                             class="icon-size-5 text-current"
-                            [svgIcon]="'heroicons_solid:arrow-sm-left'"></mat-icon>
+                            [svgIcon]="'heroicons_outline:arrow-sm-left'"></mat-icon>
                         <span class="ml-1.5 font-medium leading-5">Back to courses</span>
                     </span>
                 </a>
@@ -39,7 +39,7 @@
                 <div class="mt-6 flex items-center leading-5 text-md text-secondary">
                     <mat-icon
                         class="icon-size-5 text-hint"
-                        [svgIcon]="'heroicons_solid:clock'"></mat-icon>
+                        [svgIcon]="'heroicons_outline:clock'"></mat-icon>
                     <div class="ml-1.5">{{course.duration}} minutes</div>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                                     <ng-container *ngIf="step.order < currentStep">
                                         <mat-icon
                                             class="icon-size-5 text-current"
-                                            [svgIcon]="'heroicons_solid:check'"></mat-icon>
+                                            [svgIcon]="'heroicons_outline:check'"></mat-icon>
                                     </ng-container>
                                     <!-- Step order, show if the step is the current step -->
                                     <ng-container *ngIf="step.order === currentStep">

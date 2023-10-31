@@ -9,71 +9,26 @@ export const defaultNavigation: FuseNavigationItem[] = [
         children: []
     },
     {
+        id   : 'apps.main',
+        title: 'Inicio',
+        type : 'basic',
+        icon : 'heroicons_outline:home',
+        link : '/main'
+    },
+    {
         id      : 'apps',
         title   : 'Aplicaciones',
         type    : 'group',
-        children: [
-            {
-                id   : 'apps.main',
-                title: 'Inicio',
-                type : 'basic',
-                icon : 'heroicons_outline:home',
-                link : '/main'
-            }
-            ,{
-                id   : 'apps.contacts',
-                title: 'Mapas',
-                type : 'basic',
-                icon : 'heroicons_outline:map',
-                link : '/maps'
-            },
-            {
-                id   : 'pages.settings',
-                title: 'Mi cuenta',
-                type : 'basic',
-                icon : 'heroicons_outline:cog',
-                link : '/settings'
-            },
-            {
-                id   : 'apps.tasks',
-                title: 'TO-DO',
-                type : 'basic',
-                icon : 'heroicons_outline:check-circle',
-                link : '/tasks'
-            },
-            {
-                id   : 'apps.designer',
-                title: 'Diseñador',
-                type : 'basic',
-                icon : 'heroicons_outline:cube-transparent',
-                link : '/designer'
-            },
-            {
-                id   : 'apps.academy',
-                title: 'Academia',
-                type : 'basic',
-                icon : 'heroicons_outline:academic-cap',
-                link : '/academy'
-            },
-            {
-                id   : 'apps.inventary',
-                title: 'Inventario',
-                type : 'basic',
-                icon : 'heroicons_outline:archive',
-                link : '/inventory'
-            },
-            {
-                id   : 'apps.accounting',
-                title: 'Indicadores',
-                type : 'basic',
-                icon : 'heroicons_outline:chart-pie',
-                link : '/account'
-            },
-            {
-                id  : 'divider-1',
-                type: 'divider'
-            }
-        ]
+        children: []
+    },
+    {
+        id      : 'list',
+        type    : 'group',
+        children: []
+    },
+    {
+        id  : 'divider-1',
+        type: 'divider'
     }
    
 ];

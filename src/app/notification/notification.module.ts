@@ -9,7 +9,6 @@ import { SharedModule } from 'app/shared/shared.module';
 import { NotificationButtonComponent } from './notification-button/notification-button.component';
 import { TransferFormComponent } from './transfer-form/transfer-form.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FuseCardModule } from '@fuse/components/card';
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -33,7 +32,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
         MatCardModule,
         MatAutocompleteModule,
         MatProgressBarModule,
-        FuseCardModule,
         FlexLayoutModule,
         SharedModule
     ],

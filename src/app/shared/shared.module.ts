@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ImageFormatPipe } from './local-image';
 
-import { AuthenticationService } from 'app/authentication/authentication.service';
-
 
 @NgModule({
   imports: [
@@ -13,7 +11,6 @@ import { AuthenticationService } from 'app/authentication/authentication.service
     ReactiveFormsModule
   ],
   providers: [
-    AuthenticationService
   ],
   declarations:[
     ImageFormatPipe

@@ -8,7 +8,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { FuseAlertModule } from '@fuse/components/alert';
 import { SharedModule } from 'app/shared/shared.module';
 import { SettingsComponent } from 'app/authentication/settings/settings.component';
 import { SettingsAccountComponent } from 'app/authentication/settings/account/account.component';
@@ -33,7 +32,6 @@ import { ChangePictureComponent } from './change-picture/change-picture.componen
         MatSelectModule,
         MatSidenavModule,
         MatSlideToggleModule,
-        FuseAlertModule,
         SharedModule
     ]
 })

@@ -5,12 +5,8 @@ import { combineLatest, filter, map, Subject, takeUntil } from 'rxjs';
 import { FuseConfigService } from '@fuse/services/config';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FusePlatformService } from '@fuse/services/platform';
-import { FUSE_VERSION } from '@fuse/version';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
-import { JwtAuthService } from 'app/authentication/jwt-auth.service';
-import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import Swal from 'sweetalert2';
 
 @Component({
     selector     : 'layout',
@@ -37,56 +33,11 @@ export class LayoutComponent implements OnInit, OnDestroy
         private _fuseConfigService: FuseConfigService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fusePlatformService: FusePlatformService,
-        private jwtAuth: JwtAuthService,
-        private templateService: TemplateService
+
     )
     {
-
-        // Check Auth Token is valid
-    this.jwtAuth.checkTokenIsValid().subscribe({ next: (response) => {
-        if (response && response.mensaje ){
-          Swal.fire({
-            position: 'top-end',
-            title: response.mensaje,
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-          })
-        }
-        if (response.modulos && response.modulos.find((modulo) => modulo.moduloLlave === 'AdministracionLogisticpymes')) {
-            this.jwtAuth.isAdmin = true;
-          } else {
-            this.jwtAuth.isAdmin = false;
-          }
-        if (!this.templateService.template || this.templateService.template.length === 0 ) {
-          // COPIADO DE SIGNIN
-          if (response && response.modulos && response.modulos.length !== 0) {
-            
-            // Esto lo oculto para ver como lo organizo bien
-            /*if (
-              response.modulos.find(
-                (modulo) => modulo.moduloLlave === 'UIVotacion'
-              )
-            ) {
-              this.router.navigateByUrl('/UIVotacion');
-              if (response.modulos.length === 1) {
-                this.navService.iconMenu = [];
-                this.navService.publishNavigationChange(null);
-              }
-              return;
-            }*/
-          }
-        }
-      }});
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void
     {
         // Set the theme and scheme based on the configuration
@@ -96,23 +47,19 @@ export class LayoutComponent implements OnInit, OnDestroy
         ]).pipe(
             takeUntil(this._unsubscribeAll),
             map(([config, mql]) => {
-
                 const options = {
                     scheme: config.scheme,
                     theme : config.theme
                 };
-
                 // If the scheme is set to 'auto'...
                 if ( config.scheme === 'auto' )
                 {
                     // Decide the scheme using the media query
                     options.scheme = mql.breakpoints['(prefers-color-scheme: dark)'] ? 'dark' : 'light';
                 }
-
                 return options;
             })
         ).subscribe((options) => {
-
             // Store the options
             this.scheme = options.scheme;
             this.theme = options.theme;
@@ -121,39 +68,30 @@ export class LayoutComponent implements OnInit, OnDestroy
             this._updateScheme();
             this._updateTheme();
         });
-
         // Subscribe to config changes
         this._fuseConfigService.config$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((config: AppConfig) => {
-
                 // Store the config
                 this.config = config;
-
                 // Update the layout
                 this._updateLayout();
             });
-
         // Subscribe to NavigationEnd event
         this._router.events.pipe(
             filter(event => event instanceof NavigationEnd),
             takeUntil(this._unsubscribeAll)
         ).subscribe(() => {
-
             // Update the layout
             this._updateLayout();
         });
 
         // Set the app version
-        this._renderer2.setAttribute(this._document.querySelector('[ng-version]'), 'fuse-version', FUSE_VERSION);
-
+        //this._renderer2.setAttribute(this._document.querySelector('[ng-version]'), 'fuse-version', FUSE_VERSION);
         // Set the OS name
         this._renderer2.addClass(this._document.body, this._fusePlatformService.osName);
     }
 
-    /**
-     * On destroy
-     */
     ngOnDestroy(): void
     {
         // Unsubscribe from all subscriptions
@@ -161,13 +99,6 @@ export class LayoutComponent implements OnInit, OnDestroy
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Update the selected layout
-     */
     private _updateLayout(): void
     {
         // Get the current activated route
@@ -179,7 +110,6 @@ export class LayoutComponent implements OnInit, OnDestroy
 
         // 1. Set the layout from the config
         this.layout = this.config.layout;
-
         // 2. Get the query parameter from the current route and
         // set the layout and save the layout to the config
         const layoutFromQueryParam = (route.snapshot.queryParamMap.get('layout') as Layout);
@@ -220,25 +150,14 @@ export class LayoutComponent implements OnInit, OnDestroy
         });
     }
 
-    /**
-     * Update the selected scheme
-     *
-     * @private
-     */
     private _updateScheme(): void
     {
         // Remove class names for all schemes
         this._document.body.classList.remove('light', 'dark');
-
         // Add class name for the currently selected scheme
         this._document.body.classList.add(this.scheme);
     }
 
-    /**
-     * Update the selected theme
-     *
-     * @private
-     */
     private _updateTheme(): void
     {
         // Find the class name for the previously selected theme and remove it
@@ -248,7 +167,6 @@ export class LayoutComponent implements OnInit, OnDestroy
                 this._document.body.classList.remove(className, className.split('-')[1]);
             }
         });
-
         // Add class name for the currently selected theme
         this._document.body.classList.add(this.theme);
     }

@@ -15,7 +15,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FuseFindByKeyPipeModule } from '@fuse/pipes/find-by-key';
 
 import { gpsRoutes } from './gps.routing';
 import { GPSComponent } from './gps.component';
@@ -48,7 +47,6 @@ import { MatSliderModule } from '@angular/material/slider';
         MatTableModule,
         MatTooltipModule,
         MatSliderModule,
-        FuseFindByKeyPipeModule,
         SharedModule
     ],
     providers   : [

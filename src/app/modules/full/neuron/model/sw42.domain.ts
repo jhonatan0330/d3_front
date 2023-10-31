@@ -206,13 +206,11 @@ export class DetallePedidoVentaDTO extends BasicParamDTO {
   campo: string;
 }
 
-export class ModuloContratadoDTO extends BasicDTO {
-  modulo: string;
+export class ModuloDTO extends BasicDTO {
   nombre: string;
-  identificador: string;
+  descripcion: string;
   imagen: string;
-  moduloUrl: string;
-  moduloLlave: string;
+  url: string;
 }
 export class ReporteBaseDTO extends BasicParamDTO {
   plantilla: string;
@@ -245,7 +243,7 @@ export class UsuarioAutenticacionDTO extends BasicDTO {
   organizacion: OrganizacionDTO;
   mensaje: string;
   token: string;
-  modulos: ModuloContratadoDTO[];
+  modulos: ModuloDTO[];
   fechaCreacion: Date;
 }
 export class OrganizacionDTO extends BasicParamDTO {

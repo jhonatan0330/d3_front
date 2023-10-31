@@ -13,16 +13,6 @@
                     Do you want to be notified when we are ready? Register below so we can notify you about the launch!
                 </div>
 
-                <!-- Alert -->
-                <fuse-alert
-                    class="mt-8 -mb-4"
-                    *ngIf="showAlert"
-                    [appearance]="'outline'"
-                    [showIcon]="false"
-                    [type]="alert.type"
-                    [@shake]="alert.type === 'error'">
-                    {{alert.message}}
-                </fuse-alert>
 
             </div>
         </div>

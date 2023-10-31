@@ -41,22 +41,6 @@ export class ApiService {
     );
   }
 
-  autenticar(
-    username: string,
-    password: string,
-    _server: string
-  ): Observable<UsuarioAutenticacionDTO> {
-    const autenticacion: UsuarioAutenticacionFilterDTO =
-      new UsuarioAutenticacionFilterDTO();
-    autenticacion.sesion = username;
-    autenticacion.clave = password;
-    autenticacion.claveAnterior = `${environment.dateCompile}`;
-    return this.http.post<UsuarioAutenticacionDTO>(
-      this.ls.getUrlAccess('/main/autenticarUsuarioAutenticacion', _server),
-      autenticacion
-    );
-  }
-
   listarPlantillas(_server: string): Observable<DocumentoPlantillaDTO[]> {
     return this.http.get<DocumentoPlantillaDTO[]>(
       this.ls.getUrlAccess('/template/getTemplates', _server)

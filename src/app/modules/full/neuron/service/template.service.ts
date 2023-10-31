@@ -5,7 +5,6 @@ import {
   RelacionInternaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { clone } from 'lodash';
 import { PropiedadDTO } from 'app/shared/shared.domain';
@@ -26,8 +25,7 @@ export class TemplateService {
   private propiedadesConRelaciones: RelacionInternaDTO[];
 
   constructor(
-    private ls: LocalStoreService,
-    private jwtAuth: JwtAuthService
+    private ls: LocalStoreService
   ) { }
 
   getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO {
@@ -60,8 +58,8 @@ export class TemplateService {
   }
 
   setTemplates(value: DocumentoPlantillaDTO[]) {
-    this.templates$.next(value);
     this.template = value;
+    this.templates$.next(value);
     this.colores = null;
     this.getColor('');
   }
@@ -225,6 +223,6 @@ export class TemplateService {
         }
       }
     }
-    return this.jwtAuth.token || this.jwtAuth.getJwtToken();
+    return this.ls.getItem(LocalConstants.JWT_TOKEN);
   }
 }

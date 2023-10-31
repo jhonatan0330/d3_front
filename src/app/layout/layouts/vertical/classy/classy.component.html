@@ -5,29 +5,29 @@
     <ng-container fuseVerticalNavigationContentHeader>
         <!-- App Logo -->
         <a [routerLink]="'/main'"><div class="flex flex-col w-full items-center h-16 p-1">
-            <img *ngIf="user.company" src="{{ user.company | imageFormat }}" class="h-full" />
+            <img *ngIf="company?.companyImage" src="{{ company?.companyImage | imageFormat }}" class="h-full" />
         </div></a>
         <div class="flex flex-col items-center w-full p-1 ">
-            <h2 class="text-center">{{ user.companyName }}</h2>
-            <span class="text-center">{{ user.companySlogan }}</span>
+            <h2 class="text-center">{{ company?.companyName }}</h2>
+            <span class="text-center">{{ company?.companySlogan }}</span>
             <div class="flex flex-col items-center justify-center w-full">
                 <div
                     class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium">
-                    {{user.name}}
+                    {{user?.name}}
                 </div>
                 <div class="relative w-24 h-24">
-                    <img class="w-full h-full rounded-full" *ngIf="user.avatar" [src]="user.avatar" alt="User avatar">
-                    <mat-icon class="icon-size-24" *ngIf="!user.avatar" [svgIcon]="'heroicons_solid:user-circle'">
+                    <img class="w-full h-full rounded-full" *ngIf="user?.avatar" [src]="user.avatar" alt="User avatar">
+                    <mat-icon class="icon-size-24" *ngIf="!user?.avatar" [svgIcon]="'heroicons_outline:user-circle'">
                     </mat-icon>
                 </div>
                 <div
                     class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-secondary">
                     <mat-icon svgIcon="heroicons_outline:identification" class="icon-size-4"></mat-icon>
-                    {{user.number}}
+                    {{user?.number}}
                 </div>
                 <div
                     class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center text-md leading-normal font-medium text-secondary">
-                    {{user.email}}
+                    {{user?.email}}
                 </div>
                 <span class="text-xs">{{ time | date: 'medium' }}</span>
                 <span class="text-xs">{{currentApplicationVersion}}</span>

@@ -93,7 +93,7 @@
                                         cdkDragHandle>
                                         <mat-icon
                                             class="icon-size-5 text-hint"
-                                            [svgIcon]="'heroicons_solid:menu'"></mat-icon>
+                                            [svgIcon]="'menu'"></mat-icon>
                                     </div>
 
                                     <!-- Complete task button 
@@ -127,13 +127,13 @@
                                             <mat-icon
                                                 class="icon-size-4 text-green-600 dark:text-green-400"
                                                 *ngIf="task.priority === 0"
-                                                [svgIcon]="'heroicons_solid:arrow-narrow-down'"
+                                                [svgIcon]="'heroicons_outline:arrow-narrow-down'"
                                                 [title]="'Low'"></mat-icon>
                                             <!-- High -->
                                             <mat-icon
                                                 class="icon-size-4 text-red-600 dark:text-red-400"
                                                 *ngIf="task.priority === 2"
-                                                [svgIcon]="'heroicons_solid:arrow-narrow-up'"
+                                                [svgIcon]="'heroicons_outline:arrow-narrow-up'"
                                                 [title]="'High'"></mat-icon>
                                         </div>
                                         <!-- Due date -->

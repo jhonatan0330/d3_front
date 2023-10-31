@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { FuseCardModule } from "@fuse/components/card";
 import { MatCarouselModule } from "@magloft/material-carousel";
 
 import { SharedModule } from "app/shared/shared.module";
@@ -9,6 +8,7 @@ import { profileRoutes } from "./profile.routing";
 import { TemplateComponent } from "./template/template.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
+import { MatCardModule } from "@angular/material/card";
 
 @NgModule({
     declarations: [
@@ -17,10 +17,10 @@ import { MatInputModule } from "@angular/material/input";
     ],
     imports: [
         RouterModule.forChild(profileRoutes),
-        FuseCardModule,
         SharedModule,
         MatFormFieldModule,
         MatInputModule,
+        MatCardModule,
         MatCarouselModule.forRoot(),
     ]
 })

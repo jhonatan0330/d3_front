@@ -18,14 +18,14 @@
 
             <!-- Avatar -->
             <div class="-mt-22 max-w-32 z-0">
-                <img class="w-full h-full rounded-full ring-4 ring-bg-card bg-white" [src]="user?.companyImage"
+                <img class="w-full h-full rounded-full ring-4 ring-bg-card bg-white" [src]="company?.companyImage"
                     alt="User avatar">
             </div>
 
             <!-- Details -->
             <div class="flex flex-col items-center lg:items-start mt-4 mb-4 lg:mt-0 lg:ml-8 lg:mb-0">
-                <div class="text-lg font-bold leading-none">{{ user?.companyName }}</div>
-                <div class="text-secondary">{{ user?.companySlogan }}</div>
+                <div class="text-lg font-bold leading-none">{{ company?.companyName }}</div>
+                <div class="text-secondary">{{ company?.companySlogan }}</div>
             </div>
 
         </div>
@@ -40,7 +40,7 @@
         <div class=" col-span-1 lg:col-span-2 flex flex-col items-start w-full">
 
             <!-- Filtro modulos -->
-            <fuse-card class="flex flex-col w-full p-3">
+            <mat-card class="flex flex-col w-full p-3">
                 <div class="text-xl font-semibold">Bienvenid@ {{ user?.name }}</div>
                 <div class="flex flex-col sm:flex-row items-start mt-2">
                     <div class="hidden sm:flex items-center">
@@ -51,7 +51,7 @@
                             (input)="filterItem()" (keyUp.enter)="selectFirst()" />
                     </mat-form-field>
                 </div>
-            </fuse-card>
+            </mat-card>
 
             <!-- modulos -->
             <div class="w-full">
@@ -67,7 +67,7 @@
         </div>
 
         <!-- Reportes -->
-        <fuse-card class=" col-span-1 flex flex-col w-full p-3">
+        <mat-card class=" col-span-1 flex flex-col w-full p-3">
             <div class="flex items-center justify-between">
                 <div class="text-2xl font-semibold leading-tight">Reportes</div>
             </div>
@@ -76,7 +76,7 @@
                     [imagen]="template.imagen" [process_id]="template.proceso" [serverId]="template.server"
                     [type]="template.estado"></app-template>
             </div>
-        </fuse-card>
+        </mat-card>
 
     </div>
 </div>

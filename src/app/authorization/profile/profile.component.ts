@@ -1,13 +1,13 @@
-import { Component, OnDestroy, OnInit, AfterViewInit,  ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { UserService } from 'app/core/user/user.service';
-import { User } from 'app/core/user/user.types';
+import { Company, User } from 'app/core/user/user.types';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { Subject, takeUntil, Subscription } from 'rxjs';
-import {  UntypedFormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { cloneDeep } from 'lodash';
@@ -19,14 +19,15 @@ import { cloneDeep } from 'lodash';
 })
 export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  user: User;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
+  private templateSub: Subscription;
 
+  user: User;
+  company: Company;
   modules: DocumentoPlantillaDTO[] = [];
   filteredReports: DocumentoPlantillaDTO[] = [];
   filteredModules: DocumentoPlantillaDTO[] = [];
   filterControl: UntypedFormControl = new UntypedFormControl();
-  private templateSub: Subscription;
   isLoading = false;
 
   slides = [
@@ -40,23 +41,25 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private _utilsService: UtilsService,
     private _userService: UserService
-
   ) {
-
   }
 
   ngOnInit(): void {
-    // Subscribe to the user service
     this._userService.user$
       .pipe((takeUntil(this._unsubscribeAll)))
       .subscribe((user: User) => {
         this.user = user;
-        if (user && user.companyCoverageImage) {
+      });
+
+    this._userService.company$
+      .pipe((takeUntil(this._unsubscribeAll)))
+      .subscribe((company: Company) => {
+        this.company = company;
+        if (company && company.companyCoverageImage) {
           this.slides = [];
-          user.companyCoverageImage.forEach(element => {
+          company.companyCoverageImage.forEach(element => {
             this.slides.push({ image: element })
           });
-
         }
       });
 
@@ -64,11 +67,8 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
       next: (value) => this.loadMenu(value),
     });
 
-
   }
-  /**
-   * On destroy
-   */
+
   ngOnDestroy(): void {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
@@ -85,30 +85,32 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loadMenu(templates: DocumentoPlantillaDTO[]) {
     this.modules = [];
-    // Transform document to MenuItems
-    templates.forEach((element) => {
-      if (!element.llaveTabla) {
-        this.modules.push(element);
-        element.estado = 'T';
-      }
-      if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE) && PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-        const reportElement = cloneDeep(element);
-        reportElement.estado = 'R';
-        this.modules.push(reportElement);
-      }
-      if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)) {
-        element.estado = 'P';
-        this.modules.push(element);
-      }
-    });
-    this.filterItem();
-    this.openFormLink();
+    if (templates && templates.length!==0) {
+      // Transform document to MenuItems
+      templates.forEach((element) => {
+        if (!element.llaveTabla) {
+          this.modules.push(element);
+          element.estado = 'T';
+        }
+        if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE) && PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+          const reportElement = cloneDeep(element);
+          reportElement.estado = 'R';
+          this.modules.push(reportElement);
+        }
+        if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)) {
+          element.estado = 'P';
+          this.modules.push(element);
+        }
+      });
+      this.filterItem();
+      this.openFormLink();
+    }
   }
 
   filterItem() {
-    let value:string = this.filterControl.value;
+    let value: string = this.filterControl.value;
     if (!value) { value = ''; }
-    if (value.endsWith(' ')) { value = value.substring(0,value.length -1);}
+    if (value.endsWith(' ')) { value = value.substring(0, value.length - 1); }
     this.filteredModules = Object.assign([], this.modules).filter(
       (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
         && (item.estado && item.estado.indexOf('P') > -1))
