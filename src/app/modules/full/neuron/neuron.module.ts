@@ -17,7 +17,6 @@ import { SeccionComponent } from './form/controls/seccion/seccion.component';
 import { BaseComponent } from './form/controls/base/base.component';
 import { GpsComponent } from './form/controls/gps/gps.component';
 import { neuronRoutes } from './neuron.routing';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -85,7 +84,6 @@ import { InformativeComponent } from './form/controls/informative/informative.co
         RouterModule.forChild(neuronRoutes),
         DragDropModule,
         AngularSignaturePadModule,
-        FlexLayoutModule,
         MatAutocompleteModule,
         MatBadgeModule,
         MatBottomSheetModule,

@@ -11,7 +11,6 @@ import { TransferFormComponent } from './transfer-form/transfer-form.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
@@ -32,7 +31,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
         MatCardModule,
         MatAutocompleteModule,
         MatProgressBarModule,
-        FlexLayoutModule,
         SharedModule
     ],
     exports     : [

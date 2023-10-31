@@ -1,84 +1,75 @@
 <!-- Titulo -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle fxLayout="row wrap" *ngIf="plantilla"
-  fxLayoutAlign=" center" [style]="fullScreen ? 'width: 76vw;':''">
-  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1" />
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex" *ngIf="plantilla"
+  [style]="fullScreen ? 'width: 76vw;':''">
+  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1 max-h-12" />
   <!-- Texto del titulo -->
-  <div fxFlex class="items-center">
-
-    <div *ngIf="pedido && pedido.llaveTabla" class="w-full" fxLayout.lt-sm="column">
-      <small *ngIf="pedido && pedido.llaveTabla" class="font-semibold">{{
-        pedido.estadoNombre
-        }}</small>
-      <small fxFlex class="text-center"> {{ pedido.funcionarioNombre }}</small>
-      <small>{{ pedido.fecha | date: 'medium' }}</small>
-    </div>
-    <div class="w-full">
-      <span fxFlex class="font-semibold">
+  <div class="w-full">
+    <div class="w-full flex sm:flex">
+      <span class="mx-1 font-semibold w-full">
         <span>{{ plantilla.nombre }}</span>
         <span *ngIf="pedido && pedido.llaveTabla"> - {{ pedido.nombre }}</span>
-        <a class="cursor-pointer" *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
-          <mat-icon class="ml-4" inline="true">content_copy</mat-icon>
-        </a>
-        <a class="cursor-pointer" *ngIf="pedido && pedido.llaveTabla" (click)="showTrace()">
-          <mat-icon class="ml-4" inline="true">history</mat-icon>
-        </a>
-        <span *ngIf="pedido && pedido.historico && pedido.historico !== 0">*</span></span>
-      
+        <span *ngIf="pedido && pedido.historico && pedido.historico !== 0">*</span>
+      </span>
+      <a class="cursor-pointer" *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
+        <mat-icon class="ml-1" inline="true">content_copy</mat-icon>
+      </a>
+      <a class="cursor-pointer" *ngIf="pedido && pedido.llaveTabla" (click)="showTrace()">
+        <mat-icon class="ml-1" inline="true">history</mat-icon>
+      </a>
+      <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen</mat-icon>
     </div>
-    
-    <div class="w-full text-right" *ngIf="pedido && pedido.dinero">
-      <small *ngIf="pedido.dinero.saldo">{{
-        pedido.dinero.saldo | currency
-        }}</small>
-      <span *ngIf="pedido.dinero.valorTotal">{{
-        pedido.dinero.valorTotal | currency
-        }}</span>
+    <div *ngIf="pedido && pedido.llaveTabla" class="w-full sm:flex justify-between">
+      <div *ngIf="pedido && pedido.llaveTabla" class="font-semibold px-1 text-center text-md">{{pedido.estadoNombre }}
+      </div>
+      <div class="text-center px-1 text-sm line-clamp-1"> {{ pedido.funcionarioNombre }}</div>
+      <div class="text-center text-xs  mx-2">{{ pedido.fecha | date: 'medium' }}</div>
+    </div>
+    <div class="w-full justify-center flex px-2" *ngIf="pedido && pedido.dinero">
+      <div *ngIf="pedido.dinero.saldo" class="px-2 text-sm">{{pedido.dinero.saldo | currency}}</div>
+      <div *ngIf="pedido.dinero.valorTotal" class="text-md">{{pedido.dinero.valorTotal | currency}}</div>
     </div>
     <span *ngIf="instruccionCrear" class="px-1">{{ instruccionCrear }}</span>
   </div>
+
   <!-- Botones de accion -->
-  <div fxLayout="column" class="items-center">
-    <!-- Boton fullScreen -->
-    <button mat-icon-button class="h-6" tabindex="-1" (click)="toogleScreen()">
-      <mat-icon class="h-6">fullscreen</mat-icon>
-    </button>
-  </div>
-  <!-- Botones de accion -->
-  <div fxLayout="column" class="items-center">
+  <div>
     <!-- Boton Cerrar -->
-    <mat-icon class="h-6" (click)="dialogRef.close(false)">exit_to_app</mat-icon>
-    <button mat-icon-button class="h-6" tabindex="-1" [matMenuTriggerFor]="formMenuList">
-      <mat-icon class="h-6">menu</mat-icon>
-    </button>
-    <mat-menu #formMenuList="matMenu">
-      <!-- Boton Cambiar estado -->
-      <button mat-menu-item matTooltip="Cambia estado" *ngIf="canChangeState" (click)="showChangeState()" tabindex="-1">
-        <mat-icon>swap_horiz</mat-icon>Cambiar estado
-      </button>
-      <!-- Boton transferir -->
-      <button mat-menu-item matTooltip="Transferir" *ngIf="canTransfer" (click)="showTransfer()" tabindex="-1">
-        <mat-icon>transfer_within_a_station</mat-icon>Transfer
-      </button>
-      <!-- Boton carga masiva -->
-      <button mat-menu-item matTooltip="Carga Masiva" *ngIf="canMassive" (click)="showMassive()" tabindex="-1">
-        <mat-icon>cloud_upload</mat-icon> Carga
-      </button>
-      <!-- Boton Configuracion producto -->
-      <button mat-menu-item matTooltip="Configuracion de producto"
-        *ngIf="canProduct && modificable && pedido && pedido.llaveTabla" (click)="showProduct()" tabindex="-1">
-        <mat-icon>style</mat-icon> Configurar Catalogo
-      </button>
-      <!-- Boton Compartir -->
-      <button *ngIf="pedido && pedido.llaveTabla" mat-menu-item (click)="copyUrl()">
-        <mat-icon>link</mat-icon>
-        <span>Copiar link</span>
-      </button>
-      <!-- Boton Whatsapp -->
-      <button mat-menu-item *ngIf="pedido && pedido.llaveTabla" (click)="sendWhatsApp()">
-        <mat-icon>share</mat-icon>
-        <span>Whatsapp</span>
-      </button>
-    </mat-menu>
+    <div>
+      <mat-icon class="h-6 cursor-pointer" (click)="dialogRef.close(false)">exit_to_app</mat-icon>
+    </div>
+    <div>
+      <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList">menu</mat-icon>
+      <mat-menu #formMenuList="matMenu">
+        <!-- Boton Cambiar estado -->
+        <button mat-menu-item matTooltip="Cambia estado" *ngIf="canChangeState" (click)="showChangeState()"
+          tabindex="-1">
+          <mat-icon>swap_horiz</mat-icon>Cambiar estado
+        </button>
+        <!-- Boton transferir -->
+        <button mat-menu-item matTooltip="Transferir" *ngIf="canTransfer" (click)="showTransfer()" tabindex="-1">
+          <mat-icon>transfer_within_a_station</mat-icon>Transfer
+        </button>
+        <!-- Boton carga masiva -->
+        <button mat-menu-item matTooltip="Carga Masiva" *ngIf="canMassive" (click)="showMassive()" tabindex="-1">
+          <mat-icon>cloud_upload</mat-icon> Carga
+        </button>
+        <!-- Boton Configuracion producto -->
+        <button mat-menu-item matTooltip="Configuracion de producto"
+          *ngIf="canProduct && modificable && pedido && pedido.llaveTabla" (click)="showProduct()" tabindex="-1">
+          <mat-icon>style</mat-icon> Configurar Catalogo
+        </button>
+        <!-- Boton Compartir -->
+        <button *ngIf="pedido && pedido.llaveTabla" mat-menu-item (click)="copyUrl()">
+          <mat-icon>link</mat-icon>
+          <span>Copiar link</span>
+        </button>
+        <!-- Boton Whatsapp -->
+        <button mat-menu-item *ngIf="pedido && pedido.llaveTabla" (click)="sendWhatsApp()">
+          <mat-icon>share</mat-icon>
+          <span>Whatsapp</span>
+        </button>
+      </mat-menu>
+    </div>
   </div>
 </div>
 <div class="max-h-[65vh] overflow-x-hidden">
@@ -111,31 +102,32 @@
     </form>
   </mat-card>
   <!-- Acciones  -->
-  <div class="p-1 w-full rounded mt-1" *ngIf="pedido && pedido.llaveTabla" [style.backgroundColor]="getColor()">
+  <div class="w-full rounded" *ngIf="pedido && pedido.llaveTabla" [style.backgroundColor]="getColor()">
     <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
     <!-- Acciones -->
-    <div *ngIf="!isLoading" class="p-1 w-full" fxLayout="row wrap" fxLayoutAlign="space-around center">
+    <div *ngIf="!isLoading" class="p-1 w-full justify-center sm:justify-between sm:flex">
       <!-- Botones de transiciones -->
       <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer">
-        <div class="m-1 w-full items-center" [style.color]="getColorFont()">
+        <div class="m-1 w-full items-center flex justify-center" [style.color]="getColorFont()">
           <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
-          <div class="ml-2 text-sm font-bold" fxFlex>{{ t.nombre }}</div>
+          <div class="ml-2 text-sm font-bold">{{ t.nombre }}</div>
         </div>
       </a>
       <!-- Botones de reportes -->
       <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer">
-        <div class="m-1 w-full items-center" [style.color]="getColorFont()">
+        <div class="m-1 w-full items-center flex justify-center" [style.color]="getColorFont()">
           <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
             <mat-icon class="icon-size-5 text-white" svgIcon="print">
             </mat-icon>
           </div>
-          <div class="ml-2 text-sm font-bold" fxFlex>{{ r.nombre | slice: 0:30 }}</div>
+          <div class="ml-2 text-sm font-bold">{{ r.nombre | slice: 0:30 }}</div>
         </div>
       </a>
       <!-- Boton de historial -->
       <button mat-flat-button (click)="showTrace()">
         <mat-icon>history</mat-icon> Historial
       </button>
+      
     </div>
   </div>
   <!-- Campos dinamicos -->

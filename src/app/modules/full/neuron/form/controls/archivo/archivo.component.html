@@ -1,8 +1,9 @@
 <div [style.display]="isInvisible ? 'none' : 'block'" class="mx-0">
   <div class="py-1 flex">
-    <input [id]="structure.llaveTabla" *ngIf="isLoadingUrl && allowUrlTextFromUser" [(ngModel)]="urlText" fxFlex />
+    <input [id]="structure.llaveTabla" *ngIf="isLoadingUrl && allowUrlTextFromUser" [(ngModel)]="urlText"
+      class="w-full" />
     <button mat-flat-button color="accent" [disabled]="isLoading" *ngIf="isEnabled && !isEnd && !isLoading"
-      [fxFlex]="100" (click)="onClickExternal()">
+      (click)="onClickExternal()" class="w-full">
       <mat-icon svgIcon="attach_file"></mat-icon>
       {{ structure.nombre | titlecase }}
       <small *ngIf="required"> *</small>
@@ -21,7 +22,7 @@
   </div>
   <mat-progress-bar *ngIf="isLoading" color="primary" class="full-width" mode="indeterminate"></mat-progress-bar>
   <!-- Firma -->
-  <div *ngIf="firma && isEnabled && !isEnd" fxLayoutAlign="center center" class="p-1">
+  <div *ngIf="firma && isEnabled && !isEnd" class="p-1 text-center">
     <signature-pad></signature-pad>
     <button mat-raised-button (click)="takeSignature()" tabindex="-1">
       <mat-icon>photo_camera</mat-icon>
@@ -30,19 +31,20 @@
       <mat-icon>format_clear</mat-icon>
     </button>
   </div>
-  <div class="text-xs" *ngIf="files">{{ structure.nombre | titlecase }}</div>
+  <div class="text-xs" *ngIf="files && files.length!==0">{{ structure.nombre | titlecase }}</div>
   <!-- Tabla -->
   <div class="m-1" *ngFor="let item of files">
     <div class="m-4 text-center">
       <img *ngIf="item.blob" [src]="item.blob" class="middle-width"
         (load)="validateOrientationHandler($event.target, item)" [name]="item.url" />
-      <img *ngIf="!item.blob && item.url && isImage(item.url)" [src]="item.url" class="middle-width" [name]="item.url" />
+      <img *ngIf="!item.blob && item.url && isImage(item.url)" [src]="item.url" class="middle-width"
+        [name]="item.url" />
     </div>
     <div>
-      <mat-progress-bar fxFlex *ngIf="item.isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
+      <mat-progress-bar class="w-full" *ngIf="item.isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
       <mat-icon class="mx-4 cursor-pointer" (click)="openImage(item)" *ngIf="!item.isLoading">file_download</mat-icon>
       <mat-icon *ngIf="isEnabled" color="warn" (click)="deleteFile(item)" class="mx-1 cursor-pointer">cancel</mat-icon>
-      <div fxFlex class="line-clamp-1 mx-2">
+      <div class="line-clamp-1 mx-2">
         <a class="mx-0.5 cursor-pointer text-primary" (click)="this.openImage(item)">{{ item.url }}</a>
       </div>
     </div>

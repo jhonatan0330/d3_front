@@ -1,7 +1,7 @@
 <div class="product-content-wrap" >
   <div class="main-info mb-16">
     <p class="mb-8">{{encuesta?.nombre}}</p>
-    <span fxFlex></span>
+    <span></span>
     <button mat-raised-button *ngIf="index !== 0"
     (click)="back()">
       Anterior
@@ -16,11 +16,11 @@
   <div class="profile-title text-center mb-16">
     <div class="main-title">{{opcion.codigo}} - {{opcion.nombre}}</div>
   </div>
-  <div class="profile-actions mb-16" fxLayoutAlign="center center" *ngIf="!isLoading">
+  <div class="profile-actions mb-16" *ngIf="!isLoading">
     <button mat-raised-button color="warn" (click)="opcion = null">
       <mat-icon>clear</mat-icon>
       Cambiar</button>
-    <span fxFlex="8px"></span>
+    <span></span>
     <button mat-raised-button color="primary" (click)="next()" >
       <mat-icon>check</mat-icon>
       Escoger

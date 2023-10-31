@@ -2,13 +2,13 @@
 <mat-card>
   <mat-card-content>
     <form [formGroup]="transferForm" (ngSubmit)="transfer()">
-      <mat-form-field>
+      <mat-form-field >
         <input matInput name="responsable" [matAutocomplete]="auto" [formControl]="transferForm.controls['responsable']"
           placeholder="Asignar a" required />
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayTransfer">
-          <mat-option *ngFor="let user of users" [value]="user">
+          <mat-option *ngFor="let user of users" [value]="user" class="flex">
             <img class="icon-size-10 rounded my-1" aria-hidden src="{{ user?.imagen | imageFormat }}" />
-            <small fxFlex class="mx-2">{{ user.nombre }}</small>
+            <small class="mx-2">{{ user.nombre }}</small>
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
@@ -16,12 +16,12 @@
         <textarea name="comentario" class="textarea-form" matInput [formControl]="transferForm.controls['comentario']"
           placeholder="Comentario" required></textarea>
       </mat-form-field>
-      <div>
+      <div class="flex">
 
         <button mat-raised-button color="accent" (click)="dialogRef.close(false)">
           <mat-icon>exit_to_app</mat-icon> Cerrar
         </button>
-        <span fxFlex></span>
+        <span></span>
         <button mat-raised-button class="mat-primary mb-1" [disabled]="transferForm.invalid" *ngIf="!isTransfering">
           Reasignar
         </button>

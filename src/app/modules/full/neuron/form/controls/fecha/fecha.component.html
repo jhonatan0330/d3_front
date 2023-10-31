@@ -28,17 +28,17 @@
   <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" />
 </div>
 <!-- Tiempo -->
-<div fxLayout="row wrap" fxLayoutAlign="none center" *ngIf="!isRango && sinCalendar"
+<div class="flex justify-end w-full" *ngIf="!isRango && sinCalendar"
   [style.display]="isInvisible ? 'none': 'block'">
-  <span fxFlex.gt-sm="50" fxFlex.sm="50" fxFlex="100">{{
+  <span >{{
     structure.nombre | titlecase
     }}</span>
-  <mat-form-field class="pl-2" fxFlex.gt-sm="25" fxFlex.sm="25" fxFlex="100">
+  <mat-form-field class="pl-2">
     <mat-label>Horas</mat-label>
     <input matInput type="number" min="0" max="23" autocomplete="off" [required]="required"
       [formControl]="fControlHoras" />
   </mat-form-field>
-  <mat-form-field class="pl-2" fxFlex.gt-sm="25" fxFlex.sm="25" fxFlex="100">
+  <mat-form-field class="pl-2" >
     <mat-label>Minutos</mat-label>
     <input matInput type="number" min="0" max="59" autocomplete="off" [required]="required"
       [formControl]="fControlMinutes" />

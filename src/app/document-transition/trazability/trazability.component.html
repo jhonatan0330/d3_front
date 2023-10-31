@@ -1,20 +1,19 @@
 <!-- Titulo -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle fxLayout="row wrap" *ngIf="plantilla"
-  fxLayoutAlign="center" class="p-4 md:p-6 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent ">
-  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1" />
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="w-full" *ngIf="plantilla"
+  class="p-1 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent flex">
+  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1 max-h-12" />
   <!-- Texto del titulo -->
-  <div fxFlex>
+  <div class="w-full">
     <small class="w-full font-semibold">{{documentState}}</small>
-    <div class="w-full">
-      <span fxFlex class="font-semibold">
+    <div>
+      <span class="flex font-semibold">
         <span>{{ plantilla.nombre }}</span>
-        <span > - {{ documentName }}</span>
+        <span> - {{ documentName }}</span>
       </span>
     </div>
   </div>
   <!-- Botones de accion -->
-  <div fxLayout="row" class="items-center">
-
+  <div class="flex">
     <a class="cursor-pointer" (click)="listar(1)">
       <mat-icon class="ml-3 h-6">refresh</mat-icon>
     </a>
@@ -28,7 +27,7 @@
   </div>
 </div>
 <!-- Filtros de la trazabilidad -->
-<div *ngIf="isFilterVisible" fxLayout="row wrap" class="px-4 md:px-6">
+<div *ngIf="isFilterVisible" class="w-full" class="px-4 md:px-6">
   <mat-checkbox class="mr-8" [formControl]="fCheckDocuments">
     <span class="text-small">Documentos</span>
   </mat-checkbox>
@@ -53,7 +52,7 @@
 </div>
 
 <!-- Lista de la trazabilidad -->
-<div class="p-4 md:p-6 bg-sky-100 dark:bg-transparent rounded">
+<div class="p-4 bg-sky-100 dark:bg-transparent rounded">
   <ol>
     <!-- Activities -->
     <ng-container *ngFor="let g of dataProvider">
@@ -82,27 +81,25 @@
             <!-- Description -->
             <ng-container>
               <!-- Primera linea:quien y cuando -->
-              <div class="w-full" fxLayout="row wrap" fxLayoutAlign="none end">
+              <div class="w-full flex justify-between">
                 <small>{{ getDateFormat(g.fecha) }}</small>
-                <span fxFlex></span>
                 <small class="text-small">{{ g.responsable }}</small>
               </div>
               <!-- Segunda linea: Accion y datos del documento que lo modifico -->
-              <div class="w-full" fxLayout="row wrap">
-                <b class="text-small">{{ g.nombre }}</b>
-                <a *ngIf="g.transaccion && !g.campos" (click)="showTraceField2Document(g)">
-                  <mat-icon inline="true">view_headline</mat-icon></a>
-                <span fxFlex></span>
-
-                <a class="cursor-pointer text-primary font-bold tracking-tight text-sm" *ngIf="g.documentoModificador"
-                  (click)="showTraceDocument(g.documentoModificador, g.plantilla)">
+              <div class="w-full flex justify-between">
+                <div class="flex">
+                  <b class="text-small">{{ g.nombre }}</b>
+                  <a *ngIf="g.transaccion && !g.campos" (click)="showTraceField2Document(g)"><mat-icon
+                      inline="true">view_headline</mat-icon></a>
+                </div>
+                <a class="cursor-pointer text-primary font-bold tracking-tight text-sm text-right"
+                  *ngIf="g.documentoModificador" (click)="showTraceDocument(g.documentoModificador, g.plantilla)">
                   <span>{{ g.plantillaNombre }} - {{ g.modificadorNombre }}</span>
                 </a>
               </div>
               <!-- Tercera linea: Estados y ubicacion -->
-              <div class="w-full" fxLayout="row wrap" *ngIf="g.ubicacionNombre || g.estadoFinal">
+              <div class="w-full flex justify-between" *ngIf="g.ubicacionNombre || g.estadoFinal">
                 <small>{{ g.estadoInicial }} - {{ g.estadoFinal }}</small>
-                <span fxFlex></span>
                 <b *ngIf="g.ubicacionNombre">[ {{ g.ubicacionPlantilla }} ] {{ g.ubicacionNombre }}</b>
               </div>
               <!-- Cuarta linea : comentario -->
@@ -111,14 +108,14 @@
                 </div>
               </div>
               <!-- Quinta linea dinero -->
-              <div class="w-full" fxLayout="row wrap">
+              <div class="w-full flex justify-between">
                 <small *ngIf="g.saldo && g.saldo !== 0">
                   {{ g.saldo | currency }}</small>
-                <span fxFlex></span>
+
                 <b *ngIf="g.total">{{ g.total | currency }}</b>
               </div>
               <!-- Sexta linea Adjuntos -->
-              <div *ngIf="g.adjunto">
+              <div *ngIf="g.adjunto" class="w-full">
                 <div *ngFor="let iUrl of g.adjunto.split(';;'); let i = index">
                   <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1 }}</a>
                 </div>
@@ -131,46 +128,6 @@
                 </div>
               </div>
             </ng-container>
-            <!-- Date 
-                            <div class="flex flex-col sm:flex-row sm:items-center mt-2 sm:mt-1 sm:space-x-2 text-md leading-5">
-                                <!-- Date 
-                                <div class="text-secondary">
-                                    {{activity.date | date:'MMM dd, h:mm a'}}
-                                </div>
-                                <!-- Linked content 
-                                <ng-container *ngIf="activity.linkedContent">
-                                    <div class="hidden sm:block">&bull;</div>
-                                    <!-- Internal link 
-                                    <ng-container *ngIf="activity.useRouter">
-                                        <a
-                                            class="cursor-pointer text-primary"
-                                            [routerLink]="activity.link">
-                                            {{activity.linkedContent}}
-                                        </a>
-                                    </ng-container>
-                                    <!-- External link 
-                                    <ng-container *ngIf="!activity.useRouter">
-                                        <a
-                                            class="cursor-pointer text-primary"
-                                            [href]="activity.link"
-                                            target="_blank">
-                                            {{activity.linkedContent}}
-                                        </a>
-                                    </ng-container>
-                                </ng-container>
-                            </div>
-                            <!-- Extra content 
-                            <ng-container *ngIf="activity.extraContent">
-                                <div
-                                    class="mt-4 py-4 px-5 rounded-lg bg-gray-200 dark:bg-gray-800"
-                                    [innerHTML]="activity.extraContent"></div>
-                            </ng-container>
-                            <div class="timeline-body-content">
-                              
-                              
-                             
-                              <div class="border-bottom mt-4"></div>
-                            </div>-->
           </div>
         </div>
       </li>

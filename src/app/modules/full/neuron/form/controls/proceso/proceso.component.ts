@@ -550,7 +550,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       filtro.valorAuxiliar = campoFiltro.valorAuxiliar;
     }
     this.isLoading = true;
-    console.log("api");
     this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
         this.isLoading = false;
@@ -566,7 +565,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   consultaExitosaDatosBase(pCampo: PedidoVentaCaracteristicaFilterDTO) {
-    console.log("exitoso");
     if (this.tipoCombo) {
       this.recibirDocumentosCombo(pCampo);
     } else {

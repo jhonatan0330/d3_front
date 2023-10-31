@@ -1,17 +1,13 @@
-<div fxFlex="100" fxLayout="column">
-  <div fxLayout="row wrap">
-    <div fxFlex class="items-center">
-      <span fxFlex fxLayoutAlign="center center">{{ detallePedidoVenta.nombre }}</span>
+<div class="flex w-full flex-col">
+  <div class="w-full flex">
+    <div class="w-full">
+      <span>{{ detallePedidoVenta.nombre }}</span>
     </div>
-    <button mat-icon-button color="primary" (click)="consultarInventarios()" tabindex="-1">
-      <mat-icon>find_in_page</mat-icon>
-    </button>
-    <div fxLayout="column">
-      <mat-icon class="h-6" (click)="dialogRef.close(true)">exit_to_app</mat-icon>
-    </div>
+    <mat-icon class="h-6" (click)="consultarInventarios()">find_in_page</mat-icon>
+    <mat-icon class="h-6" (click)="dialogRef.close(true)">exit_to_app</mat-icon>
   </div>
   <mat-progress-bar *ngIf="isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
-  <div *ngIf="inventories">
+  <div *ngIf="inventories" class="w-full">
     <table mat-table [dataSource]="inventories" class="w-full bg-default">
       <!-- Item Column -->
       <ng-container matColumnDef="item">
@@ -30,19 +26,17 @@
     </table>
   </div>
   <!-- Campos dinamicos -->
-  <div>
+  <div class="w-full p-4">
     <ng-template #dynamycFormElement></ng-template>
   </div>
   <!-- Boton de guardar -->
-  <div *ngIf="this.allowEdit">
-    <div fxFlex class="p-4">
-      <button mat-raised-button color="primary" class="full-width" (click)="dialogRef.close(false)">
+  
+    <div *ngIf="this.allowEdit" class="p-4 w-full flex justify-between">
+      <button mat-raised-button color="primary" (click)="dialogRef.close(false)">
         <mat-icon>clear</mat-icon> Borrar registro
       </button>
-      <span fxFlex></span>
-      <button mat-raised-button color="primary" class="full-width" (click)="closeWithValidation()">
+      <button mat-raised-button color="primary" (click)="closeWithValidation()">
         <mat-icon>save</mat-icon> Aceptar
       </button>
     </div>
-  </div>
 </div>

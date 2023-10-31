@@ -16,7 +16,6 @@ import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { SharedModule } from './shared/shared.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { ErrorHandlerService } from './shared/error-handler.service';
 import { TokenInterceptor } from './shared/token.interceptor';
@@ -44,7 +43,6 @@ const routerConfig: ExtraOptions = {
 
     // Core module of your application
     CoreModule,
-    FlexLayoutModule,
     // Layout module of your application
     LayoutModule,
 

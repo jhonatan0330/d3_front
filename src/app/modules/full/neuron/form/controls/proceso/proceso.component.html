@@ -68,9 +68,9 @@
           <div class="pr-1" *ngIf="
               element.caracteristicas && element.caracteristicas.length !== 0
             ">
-            <div class="flex flex-row" *ngFor="let f of element.caracteristicas">
+            <div class="flex justify-between" *ngFor="let f of element.caracteristicas">
               <small class="whitespace-nowrap font-extralight mr-2">{{ f.campoDTO.nombre }}</small>
-              <span class="text-right w-full truncate text-sm">{{ f.valorText }}</span>
+              <span class="text-right line-clamp-1 text-sm">{{ f.valorText }}</span>
             </div>
           </div>
         </td>
@@ -97,7 +97,7 @@
 <!-- Campos multiples -->
 <div *ngIf="tipoMultiple" class="pb-1">
   <!-- Titulo y boton buscar -->
-  <div fxLayout="center center">
+  <div>
     <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))" *ngIf="!isLoading"
       [matBadge]="data.valorText" matBadgeColor="primary" class="w-full">
       {{ structure.nombre | titlecase }}
@@ -106,16 +106,15 @@
       class="text-28 font-weight-bold mat-color-primary w-full text-center">{{ titulo }}</span>
   </div>
   <!-- Lista de seleccionados (Expedientes) -->
-  <div fxLayout="row wrap">
-    <div class="p-1" *ngFor="let d of data?.expedientes" fxFlex="100" fxFlex.gt-sm="33" fxFlex.sm="50">
+  <div class="flex flex-wrap p-1 w-full">
+    <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1" *ngFor="let d of data?.expedientes" >
       <mat-card class="p-0 rounded h-full">
         <mat-card-title class="p-1 rounded mb-0">
           <div class="flex items-center">
             <div class="w-16 p-1">
               <a (click)="openDialog(d)"><img src="{{ d.imagen | imageFormat }}" /></a>
             </div>
-            <!--[style.backgroundColor]="getColor(d.estadoExpediente)" [style.color]="getColorFont(d.estadoExpediente)"-->
-            <div fxLayout="column" class="w-full p-1 rounded" fxFlex
+            <div class="w-full p-1 rounded"
               [style.backgroundColor]="getColor(d.estadoExpediente)" [style.color]="getColorFont(d.estadoExpediente)">
               <a (click)="openDialog(d)">
                 <div class="text-md">{{ d.nombre }}</div>
@@ -131,21 +130,21 @@
             </button>
           </div>
           <!-- <mat-divider></mat-divider> -->
-          <div fxLayout="row" class="flex">
+          <div class="flex flex-row">
             <div class="text-sm">{{ d.fecha | date }}</div>
-            <div fxFlex class="text-sm mx-1 text-right">{{ d.estadoNombre }}</div>
+            <div class="text-sm mx-1 text-right">{{ d.estadoNombre }}</div>
           </div>
-          <div fxLayout="row" class="flex" *ngIf="d.dinero">
+          <div class="flex flex-row" *ngIf="d.dinero">
             <div *ngIf="d.dinero.valorTotal !== d.dinero.saldo &&  0 !== d.dinero.saldo">{{ d.dinero.saldo | number }}
             </div>
-            <div fxFlex class="text-right">{{ d.dinero.valorTotal | number }}</div>
+            <div class="text-right">{{ d.dinero.valorTotal | number }}</div>
           </div>
         </mat-card-title>
         <mat-card-content class="p-1">
           <div *ngIf="d.caracteristicas && d.caracteristicas.length !== 0">
-            <div fxLayout="row" class="flex" *ngFor="let f of d.caracteristicas">
+            <div class="flex justify-between" *ngFor="let f of d.caracteristicas">
               <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-              <div fxFlex class="text-right text-sm" *ngIf="f.valorText" >
+              <div class="text-right text-sm line-clamp-1" *ngIf="f.valorText" >
                 {{ f.valorText }}
               </div>
             </div>
@@ -156,7 +155,7 @@
   </div>
   <!-- Buscador de expedientes -->
   <div *ngIf="(data.expedientes || dataProvider) && (isEnabled || herencia)">
-    <div fxLayout="row wrap" fxLayoutAlign="center center" class="grey-200 my-1 w-[72vw]">
+    <div  class="grey-200 my-1 w-[72vw] flex justify-between">
       <!-- Fechas -->
       <div class="mr-1" *ngIf="fControlCheck && !fControlCheck.value">
         <mat-form-field>
@@ -224,15 +223,15 @@
       <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
     </div>
     <!-- Resultado de la busqueda -->
-    <div fxLayout="row wrap">
-      <div class="p-1" *ngFor="let iDocument of dataProvider" fxFlex="100" fxFlex.gt-sm="33" fxFlex.sm="50">
+    <div class="flex flex-row">
+      <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1" *ngFor="let iDocument of dataProvider" >
         <mat-card class="p-0 rounded h-full">
           <mat-card-title class="p-1 rounded">
             <div class="flex items-center">
               <div class="w-16 p-1">
                 <a (click)="openDialog(iDocument)"><img src="{{ iDocument.imagen | imageFormat }}" /></a>
               </div>
-              <div fxLayout="column" class="w-full p-1 rounded" fxFlex
+              <div  class="w-full p-1 rounded" 
                 [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
                 [style.color]="getColorFont(iDocument.estadoExpediente)">
                 <a (click)="openDialog(iDocument)">
@@ -249,22 +248,22 @@
               </button>
             </div>
             <!-- <mat-divider></mat-divider> -->
-            <div fxLayout="row" class="flex">
+            <div class="flex flex-row">
               <div class="text-sm">{{ iDocument.fecha | date }}</div>
               <div class="text-sm mx-1 text-right">{{ iDocument.estadoNombre }}</div>
             </div>
-            <div fxLayout="row" class="flex" *ngIf="iDocument.dinero">
+            <div class="flex flex-col" *ngIf="iDocument.dinero">
               <div *ngIf="iDocument.dinero.valorTotal !== iDocument.dinero.saldo && 0 !== iDocument.dinero.saldo">
                 {{iDocument.dinero.saldo | number}}
               </div>
-              <div fxFlex class="text-right">{{ iDocument.dinero.valorTotal | number }}</div>
+              <div class="text-right">{{ iDocument.dinero.valorTotal | number }}</div>
             </div>
           </mat-card-title>
           <mat-card-content class="p-1">
-            <div *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
-              <div fxLayout="row" class="flex" *ngFor="let f of iDocument.caracteristicas">
+            <div class="flex w-full" *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
+              <div class="flex justify-between" *ngFor="let f of iDocument.caracteristicas">
                 <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-                <div fxFlex class="text-right text-sm" *ngIf="f.valorText">
+                <div class="text-right text-sm line-clamp-1" *ngIf="f.valorText">
                   {{ f.valorText }}
                 </div>
               </div>
@@ -282,7 +281,7 @@
   </div>
   <div *ngIf="!tipoMultiple && herencia" class="pb-1">
     <!-- Titulo y boton buscar -->
-    <div fxLayout="center center">
+    <div class="text-center">
       <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))" *ngIf="!isLoading"
         class="w-full">
         {{ structure.nombre | titlecase }}

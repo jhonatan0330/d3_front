@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
@@ -49,7 +48,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatSelectModule,
         MatSlideToggleModule,
         MatTooltipModule,
-        FlexLayoutModule,
         SharedModule
     ],
     exports : [
