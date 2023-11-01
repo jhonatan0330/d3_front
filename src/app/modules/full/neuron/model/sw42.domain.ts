@@ -210,7 +210,7 @@ export class ModuloDTO extends BasicDTO {
   nombre: string;
   descripcion: string;
   imagen: string;
-  url: string;
+  moduloUrl: string;
 }
 export class ReporteBaseDTO extends BasicParamDTO {
   plantilla: string;

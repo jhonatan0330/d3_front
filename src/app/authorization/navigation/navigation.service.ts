@@ -49,12 +49,12 @@ export class NavigationService
         if(modules){
             const moduleNavItem: FuseNavigationItem[] = [];
             modules.forEach((module:ModuloDTO)=>{
-                if(module.url && module.url.startsWith("/")){
+                if(module.moduloUrl && module.moduloUrl.startsWith("/")){
                     const newItem: FuseNavigationItem = {
                         id   : module.llaveTabla,
                         title: module.nombre[0].toUpperCase() + module.nombre.substring(1).toLowerCase(),
                         type : 'basic',
-                        link : module.url,
+                        link : module.moduloUrl,
                     };
                     if(module.imagen){
                         newItem.image = module.imagen;
