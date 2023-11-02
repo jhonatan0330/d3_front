@@ -10,11 +10,11 @@
         <span *ngIf="pedido && pedido.llaveTabla"> - {{ pedido.nombre }}</span>
         <span *ngIf="pedido && pedido.historico && pedido.historico !== 0">*</span>
       </span>
-      <a class="cursor-pointer" *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
-        <mat-icon class="ml-1" inline="true">content_copy</mat-icon>
+      <a class="cursor-pointer h-6 px-1" *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
+        <mat-icon >content_copy</mat-icon>
       </a>
-      <a class="cursor-pointer" *ngIf="pedido && pedido.llaveTabla" (click)="showTrace()">
-        <mat-icon class="ml-1" inline="true">history</mat-icon>
+      <a class="cursor-pointer h-6 px-1" *ngIf="pedido && pedido.llaveTabla" (click)="showTrace()">
+        <mat-icon >history</mat-icon>
       </a>
       <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen</mat-icon>
     </div>
@@ -108,14 +108,14 @@
     <div *ngIf="!isLoading" class="p-1 w-full justify-between flex flex-wrap">
       <!-- Botones de transiciones -->
       <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer flex-auto">
-        <div class="m-1 w-full items-center flex justify-center" [style.color]="getColorFont()">
+        <div class="p-1 w-full h-full items-center flex justify-center" [style.color]="getColorFont()">
           <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
           <div class="ml-2 text-sm font-bold">{{ t.nombre }}</div>
         </div>
       </a>
       <!-- Botones de reportes -->
       <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer flex-auto">
-        <div class="m-1 w-full items-center flex justify-center" [style.color]="getColorFont()">
+        <div class="p-1 w-full h-full items-center flex justify-center" [style.color]="getColorFont()">
           <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
             <mat-icon class="icon-size-5 text-white" svgIcon="print">
             </mat-icon>
@@ -123,11 +123,17 @@
           <div class="ml-2 text-sm font-bold">{{ r.nombre | slice: 0:30 }}</div>
         </div>
       </a>
-      <!-- Boton de historial -->
+      <!-- Boton de historial
       <button mat-flat-button (click)="showTrace()" class="flex-auto">
         <mat-icon>history</mat-icon> Historial
-      </button>
-      
+      </button> -->
+      <a class="p-1 w-full h-full items-center flex justify-center cursor-pointer flex-auto" (click)="showTrace()">
+        <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
+          <mat-icon class="icon-size-5 text-white" svgIcon="history">
+          </mat-icon>
+        </div>
+        <div class="ml-2 text-sm font-bold" [style.color]="getColorFont()">HISTORIAL</div>
+      </a>
     </div>
   </div>
   <!-- Campos dinamicos -->

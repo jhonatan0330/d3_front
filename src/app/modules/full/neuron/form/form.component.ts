@@ -928,9 +928,10 @@ export class FormComponent implements OnInit, AfterViewInit {
     return window.location.origin + '/main/' + this.plantilla.llaveTabla + '/' + this.pedidoBase.llaveTabla;
   }
 
+  
   sendWhatsApp() {
     const url = 'whatsapp://send?text=' + this.getURLDocument();
-    window.open(url, "_self");
+    window.open(url, "_blank");
   }
 
   copyUrl() {
