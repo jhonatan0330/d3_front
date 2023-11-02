@@ -1,7 +1,7 @@
 <!-- Titulo -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="w-full" *ngIf="plantilla"
-  class="p-1 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent flex">
-  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1 max-h-12" />
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle *ngIf="plantilla"
+  class="p-4 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent flex">
+  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="max-h-12 px-1" />
   <!-- Texto del titulo -->
   <div class="w-full">
     <small class="w-full font-semibold">{{documentState}}</small>
@@ -14,45 +14,45 @@
   </div>
   <!-- Botones de accion -->
   <div class="flex">
-    <a class="cursor-pointer" (click)="listar(1)">
-      <mat-icon class="ml-3 h-6">refresh</mat-icon>
+    <a class="cursor-pointer px-1" (click)="listar(1)">
+      <mat-icon class=" h-6">refresh</mat-icon>
     </a>
-    <a class="cursor-pointer" (click)="changeVisibilityOfFilters()">
-      <mat-icon class="ml-3 h-6">checklist</mat-icon>
+    <a class="cursor-pointer px-1" (click)="changeVisibilityOfFilters()">
+      <mat-icon class="h-6">checklist</mat-icon>
     </a>
     <!-- Boton Cerrar -->
-    <a class="cursor-pointer" (click)="dialogRef.close(false)">
-      <mat-icon class="ml-3 h-6">exit_to_app</mat-icon>
+    <a class="cursor-pointer px-1" (click)="dialogRef.close(false)">
+      <mat-icon class="h-6">exit_to_app</mat-icon>
     </a>
   </div>
 </div>
 <!-- Filtros de la trazabilidad -->
-<div *ngIf="isFilterVisible" class="w-full flex flex-wrap" class="px-4 md:px-6">
-  <mat-checkbox class="mr-8" [formControl]="fCheckDocuments">
+<div *ngIf="isFilterVisible" class="w-full flex flex-wrap" class="px-4 md:px-8">
+  <mat-checkbox class="pr-8 flex-auto" [formControl]="fCheckDocuments">
     <span class="text-small">Documentos</span>
   </mat-checkbox>
-  <mat-checkbox class="mr-8" [formControl]="fCheckAssignations">
+  <mat-checkbox class="pr-8 flex-auto" [formControl]="fCheckAssignations">
     <span class="text-small">Asignaciones</span>
   </mat-checkbox>
-  <mat-checkbox class="mr-8" [formControl]="fCheckMessage">
+  <mat-checkbox class="pr-8 flex-auto" [formControl]="fCheckMessage">
     <span class="text-small">Mensajes</span>
   </mat-checkbox>
-  <mat-checkbox class="mr-8" [formControl]="fCheckInventary">
+  <mat-checkbox class="pr-8 flex-auto" [formControl]="fCheckInventary">
     <span class="text-small">Inventario</span>
   </mat-checkbox>
-  <mat-checkbox class="mr-8" [formControl]="fCheckAutomaticas">
+  <mat-checkbox class="pr-8 flex-auto" [formControl]="fCheckAutomaticas">
     <span class="text-small">Automaticas</span>
   </mat-checkbox>
-  <mat-checkbox class="mr-8" [formControl]="fCheckReportes">
+  <mat-checkbox class="pr-8 flex-auto" [formControl]="fCheckReportes">
     <span class="text-small">Reportes</span>
   </mat-checkbox>
-  <mat-checkbox class="mr-8" [formControl]="fCheckApi">
+  <mat-checkbox class="pr-8 flex-auto" [formControl]="fCheckApi">
     <span class="text-small">API</span>
   </mat-checkbox>
 </div>
 
 <!-- Lista de la trazabilidad -->
-<div class="p-4 bg-sky-100 dark:bg-transparent rounded">
+<div class="py-4 pr-4 pl-7 bg-sky-100 dark:bg-transparent rounded">
   <ol>
     <!-- Activities -->
     <ng-container *ngFor="let g of dataProvider">

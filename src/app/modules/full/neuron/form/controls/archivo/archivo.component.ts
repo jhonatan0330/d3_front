@@ -367,7 +367,8 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
   }
 
   isImage(url) {
-    return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url);
+    if(!url) {return false;}
+    return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url.toLowerCase());
   }
   
 }

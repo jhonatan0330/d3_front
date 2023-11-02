@@ -1,84 +1,36 @@
-<div class="flex flex-col max-w-240 md:min-w-160 max-h-screen -m-6">
-
-    <!-- Header -->
+<div class="flex flex-col max-w-240 md:min-w-160 max-h-screen ">
     <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
         <div class="text-lg font-medium">Nuevo Catalogo</div>
-        <button
-            mat-icon-button
-            (click)="saveAndClose()"
-            [tabIndex]="-1">
-            <mat-icon
-                class="text-current"
-                [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+        <button mat-icon-button (click)="saveAndClose()" [tabIndex]="-1">
+            <mat-icon class="text-current">close</mat-icon>
         </button>
     </div>
-
-    <!-- Compose form -->
-    <form
-        class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto"
-        [formGroup]="composeForm">
-
-        <!-- Subject -->
+    <form class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto" [formGroup]="composeForm">
         <mat-form-field>
-            <mat-label>Subject</mat-label>
-            <input
-                matInput
-                [formControlName]="'subject'">
+            <mat-label>Nombre</mat-label>
+            <input matInput [formControlName]="'name'" required="true"> 
         </mat-form-field>
-
-        <!-- Actions -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between mt-4 sm:mt-6">
-            <div class="-ml-2">
-                <!-- Attach file -->
-                <button mat-icon-button>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_outline:paper-clip'"></mat-icon>
-                </button>
-                <!-- Insert link -->
-                <button mat-icon-button>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_outline:link'"></mat-icon>
-                </button>
-                <!-- Insert emoji -->
-                <button mat-icon-button>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_outline:face-smile'"></mat-icon>
-                </button>
-                <!-- Insert image -->
-                <button mat-icon-button>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_outline:photo'"></mat-icon>
-                </button>
-            </div>
-
-            <div class="flex items-center mt-4 sm:mt-0">
-                <!-- Discard -->
-                <button
-                    class="ml-auto sm:ml-0"
-                    mat-stroked-button
-                    (click)="discard()">
-                    Discard
-                </button>
-                <!-- Save as draft -->
-                <button
-                    class="sm:mx-3"
-                    mat-stroked-button
-                    (click)="saveAsDraft()">
-                    <span>Save as draft</span>
-                </button>
-                <!-- Send -->
-                <button
-                    class="order-first sm:order-last"
-                    mat-flat-button
-                    [color]="'primary'"
-                    (click)="send()">
-                    Send
-                </button>
-            </div>
+        <mat-form-field>
+            <mat-label>Codigo</mat-label>
+            <input matInput [formControlName]="'code'" required="true">
+        </mat-form-field>
+        <!-- Fechas -->
+        <div class="flex justify-between">
+            <mat-form-field class="pr-2">
+                <mat-label>Fecha Inicial</mat-label>
+                <input matInput [matDatepicker]="pickerFrom" [formControlName]="'initialDate'" required="true">
+                <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFrom></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field class="pl-2">
+                <mat-label>Fecha Final</mat-label>
+                <input matInput [matDatepicker]="toFrom" [formControlName]="'finalDate'" required="true">
+                <mat-datepicker-toggle matSuffix [for]="toFrom"></mat-datepicker-toggle>
+                <mat-datepicker #toFrom></mat-datepicker>
+            </mat-form-field>
         </div>
+        <button class="order-first sm:order-last w-full" mat-flat-button [color]="'primary'" (click)="send()">
+            Guardar
+        </button>
     </form>
 </div>

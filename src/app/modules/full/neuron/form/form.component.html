@@ -1,32 +1,32 @@
 <!-- Titulo -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex pr-2" *ngIf="plantilla"
-  [style]="fullScreen ? 'width: 76vw;':''">
-  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1 max-h-12" />
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex p-4 shadow-md" *ngIf="plantilla"
+  [style]="fullScreen ? 'width: 76vw;':''" [style.color]="getColorFont()" [style.backgroundColor]="getColor()">
+  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12" />
   <!-- Texto del titulo -->
   <div class="w-full">
     <div class="w-full flex sm:flex">
-      <span class="mx-1 font-semibold w-full">
+      <span class="px-1 font-semibold w-full">
         <span>{{ plantilla.nombre }}</span>
         <span *ngIf="pedido && pedido.llaveTabla"> - {{ pedido.nombre }}</span>
         <span *ngIf="pedido && pedido.historico && pedido.historico !== 0">*</span>
+        <a class="cursor-pointer px-1" *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
+          <mat-icon inline="true" [style.color]="getColorFont()">content_copy</mat-icon>
+        </a>
       </span>
-      <a class="cursor-pointer h-6 px-1" *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
-        <mat-icon >content_copy</mat-icon>
-      </a>
       <a class="cursor-pointer h-6 px-1" *ngIf="pedido && pedido.llaveTabla" (click)="showTrace()">
-        <mat-icon >history</mat-icon>
+        <mat-icon [style.color]="getColorFont()">history</mat-icon>
       </a>
-      <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen</mat-icon>
+      <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()" [style.color]="getColorFont()">fullscreen</mat-icon>
     </div>
     <div *ngIf="pedido && pedido.llaveTabla" class="w-full sm:flex justify-between">
       <div *ngIf="pedido && pedido.llaveTabla" class="font-semibold px-1 text-center text-md">{{pedido.estadoNombre }}
       </div>
       <div class="text-center px-1 text-sm line-clamp-1"> {{ pedido.funcionarioNombre }}</div>
-      <div class="text-center text-xs  mx-2">{{ pedido.fecha | date: 'medium' }}</div>
+      <div class="text-center text-xs  px-2">{{ pedido.fecha | date: 'medium' }}</div>
     </div>
-    <div class="w-full justify-center flex px-2" *ngIf="pedido && pedido.dinero">
-      <div *ngIf="pedido.dinero.saldo" class="px-2 text-sm">{{pedido.dinero.saldo | currency}}</div>
-      <div *ngIf="pedido.dinero.valorTotal" class="text-md">{{pedido.dinero.valorTotal | currency}}</div>
+    <div class="w-full justify-between flex px-2" *ngIf="pedido && pedido.dinero">
+      <div *ngIf="pedido.dinero.saldo" class="px-2 text-sm">Saldo : {{pedido.dinero.saldo | currency}}</div>
+      <div *ngIf="pedido.dinero.valorTotal" class="text-md font-bold flex-auto text-right">Valor {{pedido.dinero.valorTotal | currency}}</div>
     </div>
     <span *ngIf="instruccionCrear" class="px-1">{{ instruccionCrear }}</span>
   </div>
@@ -35,10 +35,10 @@
   <div>
     <!-- Boton Cerrar -->
     <div>
-      <mat-icon class="h-6 cursor-pointer" (click)="dialogRef.close(false)">exit_to_app</mat-icon>
+      <mat-icon class="h-6 cursor-pointer" (click)="dialogRef.close(false)" [style.color]="getColorFont()">exit_to_app</mat-icon>
     </div>
     <div>
-      <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList">menu</mat-icon>
+      <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList" [style.color]="getColorFont()">menu</mat-icon>
       <mat-menu #formMenuList="matMenu">
         <!-- Boton Cambiar estado -->
         <button mat-menu-item matTooltip="Cambia estado" *ngIf="canChangeState" (click)="showChangeState()"
@@ -72,9 +72,9 @@
     </div>
   </div>
 </div>
-<div class="max-h-[65vh] overflow-x-hidden pr-2">
+<div class="max-h-[65vh] overflow-x-hidden px-4">
   <!-- Cambiar estado del documento -->
-  <mat-card class="mt-0 mx-0" *ngIf="isChangeState">
+  <mat-card class="p-2" *ngIf="isChangeState">
     <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>
     <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
       <div>
@@ -95,54 +95,56 @@
             placeholder="Motivo" required></textarea>
         </mat-form-field>
       </div>
-      <button mat-raised-button class="mat-primary w-full mb-1" [disabled]="changeStateForm.invalid"
+      <button mat-raised-button class="mat-primary w-full" [disabled]="changeStateForm.invalid"
         *ngIf="!changeStateIsLoading">
         Cambiar estado
       </button>
     </form>
   </mat-card>
   <!-- Acciones  -->
-  <div class="w-full rounded" *ngIf="pedido && pedido.llaveTabla" [style.backgroundColor]="getColor()">
+  <div class="w-full" *ngIf="pedido && pedido.llaveTabla" >
     <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
     <!-- Acciones -->
     <div *ngIf="!isLoading" class="p-1 w-full justify-between flex flex-wrap">
       <!-- Botones de transiciones -->
       <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer flex-auto">
-        <div class="p-1 w-full h-full items-center flex justify-center" [style.color]="getColorFont()">
+        <div class="p-1 w-full h-full items-center flex justify-center" >
           <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
-          <div class="ml-2 text-sm font-bold">{{ t.nombre }}</div>
+          <div class="pl-2 text-sm font-bold">{{ t.nombre }}</div>
         </div>
       </a>
       <!-- Botones de reportes -->
       <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer flex-auto">
-        <div class="p-1 w-full h-full items-center flex justify-center" [style.color]="getColorFont()">
+        <div class="p-1 w-full h-full items-center flex justify-center">
           <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
             <mat-icon class="icon-size-5 text-white" svgIcon="print">
             </mat-icon>
           </div>
-          <div class="ml-2 text-sm font-bold">{{ r.nombre | slice: 0:30 }}</div>
+          <div class="pl-2 text-sm font-bold">{{ r.nombre | slice: 0:30 }}</div>
         </div>
       </a>
       <!-- Boton de historial
       <button mat-flat-button (click)="showTrace()" class="flex-auto">
         <mat-icon>history</mat-icon> Historial
       </button> -->
-      <a class="p-1 w-full h-full items-center flex justify-center cursor-pointer flex-auto" (click)="showTrace()">
-        <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
-          <mat-icon class="icon-size-5 text-white" svgIcon="history">
-          </mat-icon>
+      <a class="cursor-pointer flex-auto" (click)="showTrace()">
+        <div class="p-1 w-full h-full items-center flex justify-center">
+          <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
+            <mat-icon class="icon-size-5 text-white" svgIcon="history">
+            </mat-icon>
+          </div>
+          <div class="pl-2 text-sm font-bold" >HISTORIAL</div>
         </div>
-        <div class="ml-2 text-sm font-bold" [style.color]="getColorFont()">HISTORIAL</div>
       </a>
     </div>
   </div>
   <!-- Campos dinamicos -->
-  <div class="mt-1 pr-2">
+  <div class="pt-2 pr-2">
     <ng-template #dynamycFormElement></ng-template>
   </div>
 </div>
 <!-- Boton de guardar -->
-<div *ngIf="modificable" class="pt-1 pr-2">
+<div *ngIf="modificable" class="pt-1 px-4 pb-4">
   <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
   <div *ngIf="!submitted">
     <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified">

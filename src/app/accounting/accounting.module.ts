@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { FuseNavigationModule } from '@fuse/components/navigation';
 import { accountRoutes } from 'app/accounting/accounting.routing';
 import { SharedModule } from 'app/shared/shared.module';
-import { CatalogSidebarComponent } from './sidebar/sidebar.component';
 import { FinanceComponent } from './finance/finance.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -20,10 +19,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AccountComponent } from './accounting.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
     declarations: [
-        CatalogSidebarComponent,
         CatalogFormComponent,
         AccountComponent,
         FinanceComponent
@@ -38,6 +37,7 @@ import { AccountComponent } from './accounting.component';
         MatDividerModule, 
         NgApexchartsModule, 
         MatTableModule,
+        MatDatepickerModule,
         MatSortModule,
         NgClass,
         MatProgressBarModule,

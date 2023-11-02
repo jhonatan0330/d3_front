@@ -644,10 +644,12 @@ export class FormComponent implements OnInit, AfterViewInit {
   // Cargo en el formulario los botones de accion
 
   getColor() {
+    if(!this.pedido) {  return null;}
     return this.templateService.getColor(this.pedido.estadoExpediente);
   }
 
   getColorFont() {
+    if(!this.pedido) {  return null;}
     return this.templateService.getColorFont(this.pedido.estadoExpediente);
   }
 
