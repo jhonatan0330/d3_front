@@ -3,17 +3,17 @@ import { FuseNavigationItem } from '@fuse/components/navigation';
 
 export const defaultNavigation: FuseNavigationItem[] = [
     {
-        id      : 'process',
-        title   : 'Procesos de Negocio',
-        type    : 'group',
-        children: []
-    },
-    {
         id   : 'apps.main',
         title: 'Inicio',
         type : 'basic',
         icon : 'heroicons_outline:home',
         link : '/main'
+    },
+    {
+        id      : 'process',
+        title   : 'Procesos de Negocio',
+        type    : 'group',
+        children: []
     },
     {
         id      : 'apps',
@@ -23,6 +23,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
     },
     {
         id      : 'list',
+        title   : 'Modulos',
         type    : 'group',
         children: []
     },

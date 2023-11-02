@@ -45,7 +45,25 @@ export class NavigationService
 
     generate(process: DocumentoPlantillaDTO[], modules: ModuloDTO[], templates: DocumentoPlantillaDTO[]) {
 
-
+        if(process){
+            const processNavItem: FuseNavigationItem[] = [];
+            process.forEach((process:DocumentoPlantillaDTO)=>{
+                const newItem: FuseNavigationItem = {
+                    id   : process.proceso,
+                    title: process.nombre[0].toUpperCase() + process.nombre.substring(1).toLowerCase(),
+                    type : 'basic',
+                    image: process.imagen,
+                    link : '/list/process_crud/' + process.proceso
+                };
+                processNavItem.push(newItem);
+            });
+            if(process.length===0){
+                //this._defaultNavigation.shift()
+            }else{
+                this._defaultNavigation[1].children = cloneDeep(processNavItem);
+            }
+        }
+        
         if(modules){
             const moduleNavItem: FuseNavigationItem[] = [];
             modules.forEach((module:ModuloDTO)=>{
@@ -82,25 +100,6 @@ export class NavigationService
                   }
             });
             this._defaultNavigation[3].children = cloneDeep(templateNavItem);
-        }
-
-        if(process){
-            const processNavItem: FuseNavigationItem[] = [];
-            process.forEach((process:DocumentoPlantillaDTO)=>{
-                const newItem: FuseNavigationItem = {
-                    id   : process.proceso,
-                    title: process.nombre[0].toUpperCase() + process.nombre.substring(1).toLowerCase(),
-                    type : 'basic',
-                    image: process.imagen,
-                    link : '/list/process_crud/' + process.proceso
-                };
-                processNavItem.push(newItem);
-            });
-            if(process.length===0){
-                this._defaultNavigation.shift()
-            }else{
-                this._defaultNavigation[0].children = cloneDeep(processNavItem);
-            }
         }
 
         // Fill compact navigation children using the default navigation

@@ -28,14 +28,12 @@ export class JwtAuthService {
 
   token: string;
   urlService: string;
-  isAuthenticated = false;
+  private isAuthenticated = false;
   user: UsuarioDTO = new UsuarioDTO();
   user$ = new BehaviorSubject<UsuarioDTO>(this.user);
-  signingIn: Boolean;
   return: string;
   company: OrganizacionDTO;
   isAdmin = false;
-  private _authenticated: boolean = false;
 
   constructor(
     private ls: LocalStoreService,
@@ -55,7 +53,6 @@ export class JwtAuthService {
   }
 
   public signin(username: string, password: string) {
-    this.signingIn = true;
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
     autenticacion.sesion = username;
     autenticacion.clave = password;
@@ -76,7 +73,6 @@ export class JwtAuthService {
           this.setUserAndToken(res);
           this.setCompany(res.organizacion);
           this.getUserDataFull(res);
-          this.signingIn = false;
           return res;
         }),
         catchError((error) => {
@@ -95,7 +91,7 @@ export class JwtAuthService {
       return of(false);
     }
     // Check if the user is logged in
-    if (this._authenticated) {
+    if (this.isAuthenticated) {
       return of(true);
     }
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
@@ -122,7 +118,7 @@ export class JwtAuthService {
     // Store the access token in the local storage
     this.token = response.token;
     // Set the authenticated flag to true
-    this._authenticated = true;
+    this.isAuthenticated = true;
     let imageCoverage;
     if (response && response.organizacion && response.organizacion.propiedades) {
       const backImages = PlantillaHelper.buscarValorMultiple(response.organizacion.propiedades, PlantillaHelper.COVERAGE_IMAGE);
@@ -164,9 +160,7 @@ export class JwtAuthService {
       this.isAdmin = false;
     }
     if (!this.templateService.template || this.templateService.template.length === 0) {
-      this.getMenu(response.modulos)
-      // COPIADO DE SIGNIN
-
+      this.getMenu(response.modulos);
     }
   }
 
