@@ -1,5 +1,5 @@
 <!-- Titulo -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex" *ngIf="plantilla"
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex pr-2" *ngIf="plantilla"
   [style]="fullScreen ? 'width: 76vw;':''">
   <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="mr-1 max-h-12" />
   <!-- Texto del titulo -->
@@ -72,7 +72,7 @@
     </div>
   </div>
 </div>
-<div class="max-h-[65vh] overflow-x-hidden">
+<div class="max-h-[65vh] overflow-x-hidden pr-2">
   <!-- Cambiar estado del documento -->
   <mat-card class="mt-0 mx-0" *ngIf="isChangeState">
     <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>
@@ -107,14 +107,14 @@
     <!-- Acciones -->
     <div *ngIf="!isLoading" class="p-1 w-full justify-between flex flex-wrap">
       <!-- Botones de transiciones -->
-      <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer">
+      <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer flex-auto">
         <div class="m-1 w-full items-center flex justify-center" [style.color]="getColorFont()">
           <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
           <div class="ml-2 text-sm font-bold">{{ t.nombre }}</div>
         </div>
       </a>
       <!-- Botones de reportes -->
-      <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer">
+      <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer flex-auto">
         <div class="m-1 w-full items-center flex justify-center" [style.color]="getColorFont()">
           <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
             <mat-icon class="icon-size-5 text-white" svgIcon="print">
@@ -124,19 +124,19 @@
         </div>
       </a>
       <!-- Boton de historial -->
-      <button mat-flat-button (click)="showTrace()">
+      <button mat-flat-button (click)="showTrace()" class="flex-auto">
         <mat-icon>history</mat-icon> Historial
       </button>
       
     </div>
   </div>
   <!-- Campos dinamicos -->
-  <div class="mt-1 pr-4">
+  <div class="mt-1 pr-2">
     <ng-template #dynamycFormElement></ng-template>
   </div>
 </div>
 <!-- Boton de guardar -->
-<div *ngIf="modificable" class="pt-1 pr-4">
+<div *ngIf="modificable" class="pt-1 pr-2">
   <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
   <div *ngIf="!submitted">
     <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified">
