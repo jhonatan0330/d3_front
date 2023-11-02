@@ -25,7 +25,7 @@ export class CatalogFormComponent implements OnInit {
         });
     }
 
-    saveAndClose(): void {
+    send(): void {
         this.matDialogRef.close();
     }
 
