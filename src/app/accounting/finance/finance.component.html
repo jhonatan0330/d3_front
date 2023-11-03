@@ -2,57 +2,6 @@
 
     <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-6 md:p-8">
 
-        <!-- Title and action buttons -->
-        <div class="flex items-center justify-between w-full">
-            <button mat-icon-button class="m-1">
-                <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
-              </button>
-            <div>
-                <h2 class="text-3xl font-semibold tracking-tight leading-8">Finance dashboard</h2>
-                <div class="font-medium tracking-tight text-secondary">Keep track of your financial status</div>
-            </div>
-            <div class="flex items-center ml-6">
-                <button
-                    class="hidden sm:inline-flex"
-                    mat-stroked-button>
-                    <!--mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_outline:document-chart-bar'"></mat-icon-->
-                    <span class="ml-2">Reports</span>
-                </button>
-                <button
-                    class="hidden sm:inline-flex ml-3"
-                    mat-stroked-button>
-                    <!--mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_outline:cog-8-tooth'"></mat-icon-->
-                    <span class="ml-2">Settings</span>
-                </button>
-                <button
-                    class="hidden sm:inline-flex ml-3"
-                    mat-flat-button
-                    [color]="'primary'">
-                    <!--mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_outline:arrow-small-up'"></mat-icon-->
-                    <span class="ml-2">Export</span>
-                </button>
-
-                <!-- Actions menu (visible on xs) -->
-                <div class="sm:hidden">
-                    <button
-                        [matMenuTriggerFor]="actionsMenu"
-                        mat-icon-button>
-                        <!--mat-icon [svgIcon]="'heroicons_mini:ellipsis-vertical'"></mat-icon-->
-                    </button>
-                    <mat-menu #actionsMenu="matMenu">
-                        <button mat-menu-item>Export</button>
-                        <button mat-menu-item>Reports</button>
-                        <button mat-menu-item>Settings</button>
-                    </mat-menu>
-                </div>
-            </div>
-        </div>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 w-full mt-8">
             <div class="grid gap-8 sm:grid-flow-col xl:grid-flow-row">

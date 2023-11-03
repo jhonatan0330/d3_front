@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { FuseNavigationModule } from '@fuse/components/navigation';
-import { accountRoutes } from 'app/accounting/accounting.routing';
 import { SharedModule } from 'app/shared/shared.module';
 import { FinanceComponent } from './finance/finance.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +27,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
         FinanceComponent
     ],
     imports     : [
-        RouterModule.forChild(accountRoutes),
+        RouterModule.forChild([
+            {
+                path     : '',
+                component: AccountComponent
+            }
+        ]),
         MatButtonModule,
         MatIconModule,
         SharedModule,

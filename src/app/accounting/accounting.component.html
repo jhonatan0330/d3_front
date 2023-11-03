@@ -1,28 +1,50 @@
 <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
 
-    <mat-drawer-container class="flex-auto h-full">
+    <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent">
 
         <!-- Drawer -->
-        <mat-drawer
-            class="w-72 dark:bg-gray-900"
-            [mode]="drawerMode"
-            [opened]="drawerOpened"
-            #drawer>
+        <mat-drawer class="w-72 dark:bg-gray-900" [mode]="drawerMode" [opened]="true" [position]="'start'"
+            [disableClose]="!catalogSelected" #drawer>
 
-            <div class="flex flex-col flex-auto w-full">
-                <!-- Title -->
-                <div class="mt-10 mb-8 mx-6 text-4xl font-extrabold tracking-tight leading-none">Catalogos</div>
-            
-                <!-- Compose button -->
-                <button
-                    class="mx-6"
-                    mat-flat-button
-                    [color]="'primary'"
-                    (click)="openComposeDialog()">
-                    <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                    <span class="ml-2">Catalogo nuevo</span>
-                </button>
-            
+            <!-- Main -->
+            <div class="flex-auto">
+                <!-- Header -->
+                <div class="py-8 px-6 border-b">
+                    <div class="text-4xl font-extrabold tracking-tight leading-none pb-4">Catalogos</div>
+                    <div class="flex-auto">
+                        <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full" subscriptSizing="dynamic">
+                            <mat-icon class="icon-size-5" matPrefix>search</mat-icon>
+                            <input matInput [formControl]="searchInputControl">
+                        </mat-form-field>
+                    </div>
+                    <button mat-flat-button [color]="'primary'" (click)="openComposeDialog()" class="w-full">
+                        <mat-icon>add</mat-icon>
+                        <span>Catalogo nuevo</span>
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+                    <ng-container *ngIf="catalogs && catalogs.length; else noCatalogs">
+                        <ng-container *ngFor="let catalog of catalogs; let i = index; trackBy: trackByFn">
+                            <a class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
+                                (click)="selectCatalog(catalog)"
+                                [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCatalog || selectedCatalog.key !== catalog.key,
+                                                'bg-primary-50 dark:bg-hover': selectedCatalog && selectedCatalog.key === catalog.key}">
+                                <div class="min-w-0 ml-4">
+                                    <div class="font-medium leading-5 truncate">{{catalog.name}}</div>
+                                    <div class="leading-5 truncate text-secondary">{{catalog.code}}</div>
+                                </div>
+                            </a>
+                        </ng-container>
+                    </ng-container>
+
+                    <!-- No catalogs -->
+                    <ng-template #noCatalogs>
+                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay
+                            catalogos creados!</div>
+                    </ng-template>
+                </div>
             </div>
 
         </mat-drawer>
@@ -30,10 +52,100 @@
         <!-- Drawer content -->
         <mat-drawer-content class="flex flex-col overflow-hidden">
 
-            <!-- Main -->
-            <div class="flex flex-auto overflow-hidden">
-                <router-outlet></router-outlet>
-            </div>
+            <ng-container *ngIf="catalogSelected; else noChats">
+                <div class="flex flex-col flex-auto w-full bg-gray-100 dark:bg-transparent">
+
+                    <div class="flex flex-wrap w-full max-w-screen-xl mx-auto p-4 md:p-6">
+
+                        <!-- Title and action buttons -->
+                        <div class="flex items-center justify-between w-full">
+                            <button mat-icon-button class="pl-1">
+                                <mat-icon>menu</mat-icon>
+                            </button>
+                            <div>
+                                <h2 class="text-3xl font-semibold tracking-tight leading-8">{{catalogSelected.name}}
+                                </h2>
+                                <!--div class="font-medium tracking-tight text-secondary">{{catalogSelected.code}}</div-->
+                            </div>
+                            <div class="flex items-center ">
+                                <button mat-flat-button [color]="'primary'" class="hidden sm:inline-flex">
+                                    <mat-icon class="icon-size-5">add</mat-icon>
+                                    <span>Cuenta</span>
+                                </button>
+
+                                <div>
+                                    <button [matMenuTriggerFor]="actionsMenu" mat-icon-button>
+                                        <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu #actionsMenu="matMenu">
+                                        <button mat-menu-item>Export</button>
+                                        <button mat-menu-item>Reports</button>
+                                        <button mat-menu-item>Settings</button>
+                                    </mat-menu>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account balance -->
+                        <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+                            <div class="flex flex-col p-6 pb-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex flex-col">
+                                        <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">Account
+                                            Balance
+                                        </div>
+                                        <div class="text-secondary font-medium">Monthly balance growth and avg. monthly
+                                            income
+                                        </div>
+                                    </div>
+                                    <div class="ml-2">
+                                        <button class="h-6 min-h-6 px-2 rounded-full bg-hover" mat-button
+                                            [matMenuTriggerFor]="accountBalanceMenu">
+                                            <span class="font-medium text-sm text-secondary">12 months</span>
+                                        </button>
+                                        <mat-menu #accountBalanceMenu="matMenu">
+                                            <button mat-menu-item>3 months</button>
+                                            <button mat-menu-item>6 months</button>
+                                            <button mat-menu-item>9 months</button>
+                                            <button mat-menu-item>12 months</button>
+                                        </mat-menu>
+                                    </div>
+                                </div>
+                                <div class="flex items-start mt-6 mr-2">
+                                    <div class="flex flex-col">
+                                        <div class="font-semibold text-3xl md:text-5xl tracking-tighter">38.33%</div>
+                                        <div class="font-medium text-sm text-secondary leading-none">Average Monthly
+                                            Growth
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col ml-8 md:ml-16">
+                                        <div class="font-semibold text-3xl md:text-5xl tracking-tighter">$45,332.00
+                                        </div>
+                                        <div class="font-medium text-sm text-secondary leading-none">Average Monthly
+                                            Income
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <finance></finance>
+            </ng-container>
+            <!-- No chats template -->
+            <ng-template #noChats>
+                <div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default">
+                    <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+                        <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:chat'"></mat-icon>
+                        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Selecciona un
+                            catalogo
+                        </div>
+                    </div>
+
+                </div>
+            </ng-template>
 
         </mat-drawer-content>
 

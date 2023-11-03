@@ -89,6 +89,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
         return;
       }
       this.dataProvider = [];
+      this.templatesFromProcess = [];
       //const serverUrl = this.templateService.getUrl4Id(params.server_id);
       if (propType === 'list') {
         this.plantilla = this.templateService.getTemplate(params.id, params.server_id);

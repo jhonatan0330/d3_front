@@ -4,7 +4,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ApexOptions } from 'ng-apexcharts';
 import { Subject, takeUntil } from 'rxjs';
 import { FinanceService } from './finance.service';
-import { AccountComponent } from '../accounting.component';
 
 @Component({
     selector       : 'finance',
@@ -42,7 +41,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy
     ngOnInit(): void
     {
         // Get the data
-        this._financeService.data$
+        /*this._financeService.data$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((data) =>
             {
@@ -54,7 +53,7 @@ export class FinanceComponent implements OnInit, AfterViewInit, OnDestroy
 
                 // Prepare the chart data
                 this._prepareChartData();
-            });
+            });*/
     }
 
     /**
