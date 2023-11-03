@@ -1,21 +1,21 @@
 <div class="flex flex-col max-w-240 md:min-w-160 max-h-screen ">
     <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
         <div class="text-lg font-medium">Nuevo Catalogo</div>
-        <button mat-icon-button (click)="send()" [tabIndex]="-1">
+        <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
             <mat-icon class="text-current">close</mat-icon>
         </button>
     </div>
-    <form class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto" [formGroup]="composeForm">
-        <mat-form-field>
+    <form class="p-6 sm:p-8" [formGroup]="composeForm">
+        <mat-form-field class="w-full">
             <mat-label>Nombre</mat-label>
             <input matInput [formControlName]="'name'" required="true"> 
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field class="w-full">
             <mat-label>Codigo</mat-label>
             <input matInput [formControlName]="'code'" required="true">
         </mat-form-field>
         <!-- Fechas -->
-        <div class="flex justify-between">
+        <div class="flex justify-between w-full">
             <mat-form-field class="pr-2">
                 <mat-label>Fecha Inicial</mat-label>
                 <input matInput [matDatepicker]="pickerFrom" [formControlName]="'initialDate'" required="true">

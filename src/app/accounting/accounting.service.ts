@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CatalogDTO } from './accounting.domain';
+import { AccountDTO, CatalogDTO } from './accounting.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -23,5 +23,8 @@ export class AccountingService {
         return this.http.get<CatalogDTO>(this.ls.getUrlAccess('/acc/plan/catalog/' + key));
     }
     
+    getAccounts(catalogId: string): Observable<AccountDTO[]> {
+        return this.http.get<AccountDTO[]>(this.ls.getUrlAccess('/acc/plan/account/' + catalogId));
+    }
 
 }

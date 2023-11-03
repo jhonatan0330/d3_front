@@ -1,6 +1,6 @@
 <!-- Titulo -->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex p-4 shadow-md" *ngIf="plantilla"
-  [style]="fullScreen ? 'width: 76vw;':''" [style.color]="getColorFont()" [style.backgroundColor]="getColor()">
+  [style]="fullScreen ? 'width: 90vw;':''" [style.color]="getColorFont()" [style.backgroundColor]="getColor()">
   <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12" />
   <!-- Texto del titulo -->
   <div class="w-full">
@@ -72,8 +72,8 @@
     </div>
   </div>
 </div>
-<!-- overflow-x-hidden-->
-<div class="max-h-[65vh] px-4">
+<!-- -->
+<div class="max-h-[65vh] px-4 overflow-x-hidden">
   <!-- Cambiar estado del documento -->
   <mat-card class="p-2" *ngIf="isChangeState">
     <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>

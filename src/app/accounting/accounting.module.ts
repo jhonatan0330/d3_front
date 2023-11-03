@@ -3,7 +3,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { FuseNavigationModule } from '@fuse/components/navigation';
 import { SharedModule } from 'app/shared/shared.module';
-import { FinanceComponent } from './finance/finance.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
@@ -23,8 +22,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 @NgModule({
     declarations: [
         CatalogFormComponent,
-        AccountComponent,
-        FinanceComponent
+        AccountComponent
     ],
     imports     : [
         RouterModule.forChild([

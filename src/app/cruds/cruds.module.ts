@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
-import { crudsRoutes } from './cruds.routing';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { FuseScrollResetModule } from '@fuse/directives/scroll-reset';
@@ -28,7 +27,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         Cruds2Component
     ],
     imports: [
-        RouterModule.forChild(crudsRoutes),
+        RouterModule.forChild([
+            {
+              path: ':type/:id',
+              component: Cruds2Component
+            },
+            {
+              path: ':type/:id/:server_id',
+              component: Cruds2Component
+            }
+          ]),
         SharedModule,
         MatButtonModule,
         MatCheckboxModule,
