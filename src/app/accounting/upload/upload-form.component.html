@@ -1,0 +1,29 @@
+<div class="flex flex-col max-w-240 md:min-w-160 max-h-screen ">
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg font-medium">Cargar cuentas en CSV</div>
+        <button *ngIf="!loading" mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
+            <mat-icon class="text-current">close</mat-icon>
+        </button>
+    </div>
+    <div class="p-6 sm:p-8">Para subir las cuentas usa un archivo de texto separando en tres columnas con comas
+        <ol>
+            <li>Codigo de la cuenta</li>
+            <li>Nombre de la cuenta</li>
+            <li>Codigo de la cuenta superior a la cual pertenece</li>
+        </ol>
+    </div>
+    <div class="p-6 sm:p-8">
+        <input type="file" class="hidden" accept=".csv" (change)="onFileSelected($event)" #fileUpload>
+
+        <div class="file-upload" *ngIf="!loading">
+
+            {{fileName || "No se ha seleccionado ningun archivo."}}
+            <button mat-mini-fab color="primary" class="upload-btn" (click)="fileUpload.click()">
+                <mat-icon>attach_file</mat-icon>
+            </button>
+        </div>
+        <div class="progress" *ngIf="loading">
+            <mat-progress-bar class="progress-bar" mode="indeterminate"></mat-progress-bar>
+        </div>
+    </div>
+</div>

@@ -90,6 +90,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
       }
       this.dataProvider = [];
       this.templatesFromProcess = [];
+      this.fControlSearch.setValue('');
       //const serverUrl = this.templateService.getUrl4Id(params.server_id);
       if (propType === 'list') {
         this.plantilla = this.templateService.getTemplate(params.id, params.server_id);

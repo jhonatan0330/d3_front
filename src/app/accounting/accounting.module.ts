@@ -18,10 +18,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AccountComponent } from './accounting.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { AccountFormComponent } from './account-form/account-form.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { UploadFormComponent } from './upload/upload-form.component';
 
 @NgModule({
     declarations: [
         CatalogFormComponent,
+        AccountFormComponent,
+        UploadFormComponent,
         AccountComponent
     ],
     imports     : [
@@ -40,6 +45,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
         NgApexchartsModule, 
         MatTableModule,
         MatDatepickerModule,
+        MatAutocompleteModule,
         MatSortModule,
         NgClass,
         MatProgressBarModule,

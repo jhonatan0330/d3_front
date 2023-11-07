@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="relative">
-                    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+                    <mat-progress-bar mode="indeterminate" *ngIf="isLoadingCatalog"></mat-progress-bar>
                     <ng-container *ngIf="catalogs && catalogs.length; else noCatalogs">
                         <ng-container *ngFor="let catalog of catalogs; let i = index; trackBy: trackByFn">
                             <a class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
@@ -56,72 +56,48 @@
                 <div class="flex flex-col flex-auto w-full bg-gray-100 dark:bg-transparent p-4 md:p-6 gap-2">
 
                     <!-- Title and action buttons -->
-                    <div class="flex items-center justify-between w-full">
+                    <div class="flex w-full">
                         <button mat-icon-button (click)="toggleDrawer()">
                             <mat-icon>menu</mat-icon>
                         </button>
-                        <div>
-                            <h2 class="text-3xl font-semibold tracking-tight leading-8">{{catalogSelected.name}}
-                            </h2>
-                        </div>
-                        <div class="flex items-center ">
-                            <button mat-flat-button [color]="'primary'" class="hidden sm:inline-flex">
-                                <mat-icon class="icon-size-5">add</mat-icon>
-                                <span>Cuenta</span>
-                            </button>
-
-                            <div>
-                                <button [matMenuTriggerFor]="actionsMenu" mat-icon-button>
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu #actionsMenu="matMenu">
-                                    <button mat-menu-item>Export</button>
-                                    <button mat-menu-item>Reports</button>
-                                    <button mat-menu-item>Settings</button>
-                                </mat-menu>
-                            </div>
+                        <div class="w-full text-center">
+                            <h2 class="text-3xl font-semibold tracking-tight leading-8">{{catalogSelected.name}}</h2>
                         </div>
                     </div>
 
                     <!-- Account balance -->
-                    <div class="flex bg-card shadow rounded-2xl ">
-                        <div class="flex flex-col p-6 pb-4">
-                            <div class="flex items-center justify-between">
-                                <div class="flex flex-col">
-                                    <div class="mr-4 text-lg font-medium tracking-tight leading-6 truncate">Account
-                                        Balance
-                                    </div>
-                                    <div class="text-secondary font-medium">Monthly balance growth and avg. monthly
-                                        income
-                                    </div>
-                                </div>
-                                <div class="ml-2">
-                                    <button class="h-6 min-h-6 px-2 rounded-full bg-hover" mat-button
-                                        [matMenuTriggerFor]="accountBalanceMenu">
-                                        <span class="font-medium text-sm text-secondary">12 months</span>
+                    <div class=" bg-card shadow rounded-2xl p-6 pb-4">
+                        <div class="flex justify-between w-full">
+                            <div class="text-lg font-medium tracking-tight leading-6 truncate">Balance general</div>
+                            <div>
+                                <button [matMenuTriggerFor]="actionsBalance" mat-icon-button>
+                                    <mat-icon>more_vert</mat-icon>
+                                </button>
+                                <mat-menu #actionsBalance="matMenu">
+                                    <button mat-menu-item (click)="getBalance()">
+                                        <mat-icon class="icon-size-5">refresh</mat-icon>
+                                        <span>Actualizar balance</span>
                                     </button>
-                                    <mat-menu #accountBalanceMenu="matMenu">
-                                        <button mat-menu-item>3 months</button>
-                                        <button mat-menu-item>6 months</button>
-                                        <button mat-menu-item>9 months</button>
-                                        <button mat-menu-item>12 months</button>
-                                    </mat-menu>
-                                </div>
+                                    <button mat-menu-item (click)="openAccountForm()">
+                                        <mat-icon class="icon-size-5">add</mat-icon>
+                                        <span>Crear Cuenta</span>
+                                    </button>
+                                    <button mat-menu-item (click)="openUploadForm()">
+                                        <mat-icon class="icon-size-5">attach_file</mat-icon>
+                                        <span>Cargar CSV de cuentas</span>
+                                    </button>
+                                </mat-menu>
                             </div>
-                            <div class="flex items-start mt-6 mr-2">
-                                <div class="flex flex-col">
-                                    <div class="font-semibold text-3xl md:text-5xl tracking-tighter">38.33%</div>
-                                    <div class="font-medium text-sm text-secondary leading-none">Average Monthly
-                                        Growth
-                                    </div>
+                        </div>
+                        <mat-progress-bar mode="indeterminate" *ngIf="isLoadingBalance"
+                            class="w-full"></mat-progress-bar>
+                        <div class="flex flex-wrap justify-between pt-4 px-2 w-full">
+
+                            <div *ngFor="let item of balance" class="px-4">
+                                <div class="font-medium text-md leading-none text-secondary w-full">{{item.accountName}}
                                 </div>
-                                <div class="flex flex-col ml-8 md:ml-16">
-                                    <div class="font-semibold text-3xl md:text-5xl tracking-tighter">$45,332.00
-                                    </div>
-                                    <div class="font-medium text-sm text-secondary leading-none">Average Monthly
-                                        Income
-                                    </div>
-                                </div>
+                                <div class="font-semibold text-3xl sm:text-6xl tracking-tighter w-full">
+                                    {{(item.value)?item.value:0| number}}</div>
                             </div>
                         </div>
                     </div>
@@ -131,21 +107,21 @@
                         <div class="px-6 py-2 text-lg font-medium tracking-tight leading-6 truncate">Cuentas del
                             catalogo</div>
                         <div class="px-6 py-2 overflow-x-auto">
-                            <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+                            <mat-progress-bar mode="indeterminate" *ngIf="isLoadingAccount"
+                                class="w-full"></mat-progress-bar>
                             <table class="w-full bg-transparent" mat-table matSort [dataSource]="dataSource">
-                                <!-- Code -->
+                                <!-- WBS -->
                                 <ng-container matColumnDef="code">
                                     <th mat-header-cell mat-sort-header *matHeaderCellDef>Codigo</th>
                                     <td mat-cell *matCellDef="let row">
                                         <div class="flex">
                                             <button mat-icon-button [style.visibility]="!row.expandable ? 'hidden' : ''"
-                                            (click)="treeControl.toggle(row)">
-                                            <mat-icon class="mat-icon-rtl-mirror">{{treeControl.isExpanded(row) ?
-                                                'expand_more' : 'chevron_right'}}</mat-icon>
-                                        </button>
+                                                (click)="treeControl.toggle(row)">
+                                                <mat-icon class="mat-icon-rtl-mirror">{{treeControl.isExpanded(row) ?
+                                                    'expand_more' : 'chevron_right'}}</mat-icon>
+                                            </button>
                                             <span class="pt-2 text-sm">{{row.code}}</span>
                                         </div>
-                                        
                                     </td>
                                 </ng-container>
                                 <!-- Name -->
@@ -170,8 +146,25 @@
                                         </span>
                                     </td>
                                 </ng-container>
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        Acciones
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <div>
+                                            <button [matMenuTriggerFor]="actionsTable" mat-icon-button>
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #actionsTable="matMenu">
+                                                <button mat-menu-item (click)="openAccountForm(row)">Crear
+                                                    Subcuenta</button>
+                                            </mat-menu>
+                                        </div>
+                                    </td>
+                                </ng-container>
                                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                <tr class="order-row h-16" mat-row *matRowDef="let row; columns: displayedColumns;">
+                                <tr class="h-16" mat-row *matRowDef="let row; columns: displayedColumns;"
+                                    [ngClass]="{'bg-slate-100': treeControl.isExpanded(row)}">
                                 </tr>
                             </table>
                         </div>

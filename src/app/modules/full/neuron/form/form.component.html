@@ -1,7 +1,7 @@
 <!-- Titulo -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex p-4 shadow-md" *ngIf="plantilla"
-  [style]="fullScreen ? 'width: 90vw;':''" [style.color]="getColorFont()" [style.backgroundColor]="getColor()">
-  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12" />
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex px-4 py-2 shadow-md" *ngIf="plantilla"
+  [style]="fullScreen ? 'width: 80vw;':''" [style.color]="getColorFont()" [style.backgroundColor]="getColor()">
+  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
   <!-- Texto del titulo -->
   <div class="w-full">
     <div class="w-full flex sm:flex">
@@ -28,7 +28,7 @@
       <div *ngIf="pedido.dinero.saldo" class="px-2 text-sm">Saldo : {{pedido.dinero.saldo | currency}}</div>
       <div *ngIf="pedido.dinero.valorTotal" class="text-md font-bold flex-auto text-right">Valor {{pedido.dinero.valorTotal | currency}}</div>
     </div>
-    <span *ngIf="instruccionCrear" class="px-1">{{ instruccionCrear }}</span>
+    <span *ngIf="instruccionCrear" class="px-1 text-xs">{{ instruccionCrear }}</span>
   </div>
 
   <!-- Botones de accion -->

@@ -9,7 +9,7 @@ import { AccountingService } from '../accounting.service';
     encapsulation: ViewEncapsulation.None
 })
 export class CatalogFormComponent implements OnInit {
-    composeForm: UntypedFormGroup;
+    form: UntypedFormGroup;
     loading = false;
     key: string;
 
@@ -21,7 +21,7 @@ export class CatalogFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.composeForm = this._formBuilder.group({
+        this.form = this._formBuilder.group({
             name: [''],
             code: [''],
             initialDate: [''],
@@ -31,7 +31,7 @@ export class CatalogFormComponent implements OnInit {
 
         if (!this.key) {
             this.accountingService.getCatalog(this.key)
-                .subscribe(x => this.composeForm.patchValue(x));
+                .subscribe(x => this.form.patchValue(x));
         }
     }
 
@@ -39,22 +39,22 @@ export class CatalogFormComponent implements OnInit {
         this.loading = true;
 
         // stop here if form is invalid
-        if (this.composeForm.invalid) {
+        if (this.form.invalid) {
             return;
         }
 
         this.loading = true;
         if (!this.key) {
-            this.createUser();
+            this.create();
         } else {
-            this.updateUser();
+            this.update();
         }
 
         
     }
 
-    private createUser() {
-        this.accountingService.createCatalog(this.composeForm.value)
+    private create() {
+        this.accountingService.createCatalog(this.form.value)
             .subscribe({
                 next: () => {
                     this.matDialogRef.close();
@@ -65,7 +65,7 @@ export class CatalogFormComponent implements OnInit {
             });
     }
 
-    private updateUser() {
+    private update() {
         this.matDialogRef.close();
     }
 
