@@ -50,16 +50,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
 
   solicitarFechas = true;
 
-  displayedColumns: string[] = [
-    'select',
-    'nombre',
-    'descripcion',
-    'estadoExpediente',
-    'fecha',
-    'valor',
-    'detalles',
-    'acciones',
-  ];
+  displayedColumns: string[] = [];
   selection = new SelectionModel<PedidoVentaDTO>(true, []);
   lastSelectedSegmentRow: PedidoVentaDTO; // this is the variable which holds the last selected row index
 
@@ -154,6 +145,9 @@ export class Cruds2Component implements OnInit, OnDestroy {
         let endDate = new Date(new Date());
         endDate.setDate(endDate.getDate() + 1);
         this.fCDateEnd.setValue(endDate);
+      } else {
+        this.fCDateStart.setValue(null);
+        this.fCDateEnd.setValue(null);
       }
       this.hasCreatePermission = !PlantillaHelper.isEmpty(
         this.plantilla.propiedades,
@@ -172,28 +166,15 @@ export class Cruds2Component implements OnInit, OnDestroy {
         }
         this.form = this.formBuilder.group(_controlEstado);
       }
-      if (
-        PlantillaHelper.isEmpty(
-          this.plantilla.propiedades,
-          PlantillaHelper.FORM_DESCRIPCION
-        )
-      ) {
-        this.removeColumn('descripcion');
-      }
-
-      if (
-        PlantillaHelper.isEmpty(
-          this.plantilla.propiedades,
-          PlantillaHelper.FORM_TOTAL
-        )
-      ) {
-        this.removeColumn('valor');
-      }
-
-      if (!this.plantilla.reportes || this.plantilla.reportes.length === 0) {
-        this.removeColumn('acciones');
-        this.removeColumn('select');
-      }
+      this.displayedColumns = [];
+      if (this.plantilla.reportes && this.plantilla.reportes.length !== 0) { this.displayedColumns.push('select'); }
+      this.displayedColumns.push('nombre');
+      if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FORM_DESCRIPCION)) { this.displayedColumns.push('descripcion'); }
+      this.displayedColumns.push('estadoExpediente');
+      this.displayedColumns.push('fecha');
+      if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FORM_TOTAL)) { this.displayedColumns.push('valor'); }
+      this.displayedColumns.push('detalles');
+      if (this.plantilla.reportes && this.plantilla.reportes.length !== 0) { this.displayedColumns.push('acciones'); }
     });
 
     // Subscribe to media changes
@@ -227,12 +208,12 @@ export class Cruds2Component implements OnInit, OnDestroy {
     this.drawer.toggle();
   }
 
-  removeColumn(pColumn: string) {
+  /*removeColumn(pColumn: string) {
     const index = this.displayedColumns.indexOf(pColumn, 0);
     if (index > -1) {
       this.displayedColumns.splice(index, 1);
     }
-  }
+  }*/
 
   openDialogFromTemplateModule() {
     if (!this.plantilla) { return; }
@@ -308,8 +289,8 @@ export class Cruds2Component implements OnInit, OnDestroy {
         }
         entity.fechaMax = endDate;
       }
-      if(entity.fechaMax && entity.fechaMin){
-        if((entity.fechaMax.getTime() - entity.fechaMin.getTime() )<=0){
+      if (entity.fechaMax && entity.fechaMin) {
+        if ((entity.fechaMax.getTime() - entity.fechaMin.getTime()) <= 0) {
           Swal.fire({
             icon: 'warning',
             title: 'Oops...',
