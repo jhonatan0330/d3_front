@@ -4,18 +4,16 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
+  PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
+  PedidoVentaFilterDTO,
   RelacionInternaDTO,
+  RelacionInternaFilterDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import {
   DocumentoPlantillaCaracteristicaEnum,
   StatesEnum,
 } from 'app/modules/full/neuron/model/sw42.enum';
-import {
-  PedidoVentaCaracteristicaFilterDTO,
-  PedidoVentaFilterDTO,
-  RelacionInternaFilterDTO,
-} from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';

@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
-import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormulaHelper } from 'app/modules/full/neuron/formula.helper';
 import { BaseComponent } from '../base/base.component';
-import { CurrencyMaskInputMode } from 'ngx-currency';
 import { debounceTime } from 'rxjs';
 import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
@@ -30,7 +28,6 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   optionsMask = {
     precision: 0,
     prefix: '',
-    inputMode: CurrencyMaskInputMode.NATURAL,
   };
 
   constructor(private api: ApiService) {

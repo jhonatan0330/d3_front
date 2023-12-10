@@ -21,12 +21,16 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AccountFormComponent } from './account-form/account-form.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { UploadFormComponent } from './upload/upload-form.component';
+import { ManualFormComponent } from './manual-form/manual-form.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 @NgModule({
     declarations: [
         CatalogFormComponent,
         AccountFormComponent,
         UploadFormComponent,
+        ManualFormComponent,
         AccountComponent
     ],
     imports     : [
@@ -55,7 +59,9 @@ import { UploadFormComponent } from './upload/upload-form.component';
         ReactiveFormsModule,
         MatFormFieldModule, 
         MatInputModule,
-        MatSidenavModule
+        MatSidenavModule,
+        CurrencyMaskModule,
+        MatProgressSpinnerModule
        ]
 })
 export class AccountingModule

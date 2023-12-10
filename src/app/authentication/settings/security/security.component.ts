@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { JwtAuthService } from 'app/authentication/jwt-auth.service';
+import { AuthenticationService } from 'app/authentication/authentication.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -18,7 +18,7 @@ export class SettingsSecurityComponent implements OnInit {
      */
     constructor(
         private _formBuilder: UntypedFormBuilder,
-        private jwtAuth: JwtAuthService
+        private jwtAuth: AuthenticationService
     ) {
     }
 

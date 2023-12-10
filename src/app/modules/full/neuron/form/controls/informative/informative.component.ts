@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { BaseComponent } from '../base/base.component';
 import { UtilsService } from '../../../service/utils.service';
-import { PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.filter';
 import { ApiService } from '../../../service/api.service';
 
 @Component({

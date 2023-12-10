@@ -17,7 +17,6 @@ import { SeccionComponent } from './form/controls/seccion/seccion.component';
 import { BaseComponent } from './form/controls/base/base.component';
 import { GpsComponent } from './form/controls/gps/gps.component';
 import { neuronRoutes } from './neuron.routing';
-import { NgxCurrencyModule } from 'ngx-currency';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -58,6 +57,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { InformativeComponent } from './form/controls/informative/informative.component';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 
 @NgModule({
@@ -118,7 +118,7 @@ import { InformativeComponent } from './form/controls/informative/informative.co
         MatToolbarModule,
         MatTooltipModule,
         MatTreeModule,
-        NgxCurrencyModule,
+        CurrencyMaskModule,
         SharedModule,
         ZXingScannerModule,
 

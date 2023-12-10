@@ -10,7 +10,7 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 import { Validators, FormGroup, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import Swal from 'sweetalert2';
-import { JwtAuthService } from '../jwt-auth.service';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-new-password',
@@ -29,7 +29,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private jwtAuth: JwtAuthService
+    private jwtAuth: AuthenticationService
   ) {
     this._unsubscribeAll = new Subject();
   }

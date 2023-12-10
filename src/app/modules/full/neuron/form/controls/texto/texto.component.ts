@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
+import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { BarcodeFormat } from '@zxing/library';

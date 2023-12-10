@@ -2,16 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { map, catchError } from 'rxjs/operators';
-import {
-  UsuarioDTO,
-  UsuarioAutenticacionDTO,
-  OrganizacionDTO,
-  UsuarioOrganizacionDTO,
-} from 'app/modules/full/neuron/model/sw42.domain';
-import {
-  UsuarioAutenticacionFilterDTO,
-} from 'app/modules/full/neuron/model/sw42.filter';
-import { of, BehaviorSubject, throwError } from 'rxjs';
+import { of, BehaviorSubject, throwError, Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,9 +13,10 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { NotificationsService } from 'app/notification/notification.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { NavigationService } from 'app/authorization/navigation/navigation.service';
+import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
 
 @Injectable({ providedIn: 'root' })
-export class JwtAuthService {
+export class AuthenticationService {
 
   token: string;
   urlService: string;
@@ -50,6 +42,34 @@ export class JwtAuthService {
     this.route.queryParams.subscribe(
       (params) => (this.return = params['return'] || '/')
     );
+  }
+
+  // CU01
+  obtenerPrincipalOrganizacion(): Observable<OrganizacionDTO> {
+    return this.http.get<OrganizacionDTO>(
+      this.ls.getUrlAccess('/main/obtenerPrincipalOrganizacion')
+    );
+  }
+
+  /*
+  consultarUsuario(usuario: UsuarioDTO): Observable<UsuarioDTO> {
+    return this.http.post<UsuarioDTO>(
+      this.ls.getUrlAccess('/rest/consultarUsuario'),
+      usuario
+    );
+  }*/
+
+  private _jsonURL = '/assets/conf.xml';
+
+  getURL(): Observable<String> {
+    return this.http.get(this._jsonURL, { responseType: 'text' });
+  }
+
+  changePictureUser(fileToUpload: File, _server: string): Observable<UsuarioDTO> {
+    const endpoint = this.ls.getUrlAccess('/rest/changePicture', _server);
+    const formData: FormData = new FormData();
+    formData.append('file', fileToUpload, fileToUpload.name);
+    return this.http.post<UsuarioDTO>(endpoint, formData);
   }
 
   public signin(username: string, password: string) {
@@ -209,6 +229,7 @@ export class JwtAuthService {
       );
   }
 
+  
   changePwdOtherSystem(autenticacion: UsuarioOrganizacionDTO) {
     return this.http
       .post<UsuarioOrganizacionDTO>(

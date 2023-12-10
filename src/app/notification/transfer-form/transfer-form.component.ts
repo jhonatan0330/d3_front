@@ -1,13 +1,14 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { DocumentoPlantillaDTO, UsuarioDTO } from "app/modules/full/neuron/model/sw42.domain";
+import { DocumentoPlantillaDTO } from "app/modules/full/neuron/model/sw42.domain";
 import { TemplateService } from "app/modules/full/neuron/service/template.service";
 import { NotificationsService } from 'app/notification/notification.service';
 import { PlantillaHelper } from "app/shared/plantilla-helper";
 import Swal from 'sweetalert2';
 import { ActividadDTO } from "../notification.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
+import { UsuarioDTO } from "app/authentication/authentication.domain";
 
 @Component({
   selector: 'transfer-form',

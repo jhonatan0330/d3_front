@@ -1,12 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
-import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { DetallePedidoVentaDTO, PedidoVentaCaracteristicaDTO } from '../../../model/sw42.domain';
+import { DetallePedidoVentaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.domain';
 import { BaseComponent } from '../base/base.component';
 import { Estructura } from './estructura';
 import { Puesto } from './puesto';

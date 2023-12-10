@@ -18,9 +18,6 @@ export class SettingsComponent implements OnInit, OnDestroy
     selectedPanel: string = 'account';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    /**
-     * Constructor
-     */
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService
@@ -28,17 +25,15 @@ export class SettingsComponent implements OnInit, OnDestroy
     {
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void
     {
-        // Setup available panels
         this.panels = [
+            {
+                id         : 'organization',
+                icon       : 'heroicons_outline:building-storefront',
+                title      : 'Organizacion',
+                description: 'Administre la configuración de su organización'
+            },
             {
                 id         : 'account',
                 icon       : 'heroicons_outline:user-circle',
@@ -50,10 +45,11 @@ export class SettingsComponent implements OnInit, OnDestroy
                 icon       : 'heroicons_outline:lock-closed',
                 title      : 'Seguridad',
                 description: 'Administre su contraseña'
-            }
+            },
+            
         ];
 
-        // Subscribe to media changes
+
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({matchingAliases}) => {
@@ -75,9 +71,6 @@ export class SettingsComponent implements OnInit, OnDestroy
             });
     }
 
-    /**
-     * On destroy
-     */
     ngOnDestroy(): void
     {
         // Unsubscribe from all subscriptions
@@ -85,15 +78,7 @@ export class SettingsComponent implements OnInit, OnDestroy
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Navigate to the panel
-     *
-     * @param panel
-     */
     goToPanel(panel: string): void
     {
         this.selectedPanel = panel;
@@ -105,22 +90,11 @@ export class SettingsComponent implements OnInit, OnDestroy
         }
     }
 
-    /**
-     * Get the details of the panel
-     *
-     * @param id
-     */
     getPanelInfo(id: string): any
     {
         return this.panels.find(panel => panel.id === id);
     }
 
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
     trackByFn(index: number, item: any): any
     {
         return item.id || index;

@@ -4,11 +4,9 @@ import { BooleanInput } from '@angular/cdk/coercion';
 import { Subject, takeUntil } from 'rxjs';
 import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
-import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { NotificationsService } from 'app/notification/notification.service';
-import { NavigationService } from 'app/authorization/navigation/navigation.service';
+import { AuthenticationService } from 'app/authentication/authentication.service';
 
 @Component({
     selector: 'user',
@@ -18,9 +16,7 @@ import { NavigationService } from 'app/authorization/navigation/navigation.servi
     exportAs: 'user'
 })
 export class UserComponent implements OnInit, OnDestroy {
-    /* eslint-disable @typescript-eslint/naming-convention */
     static ngAcceptInputType_showAvatar: BooleanInput;
-    /* eslint-enable @typescript-eslint/naming-convention */
 
     @Input() showAvatar: boolean = true;
     user: User;
@@ -34,7 +30,7 @@ export class UserComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
         private _userService: UserService,
-        public jwtAuth: JwtAuthService,
+        public jwtAuth: AuthenticationService,
         private apiService: ApiService,
         private templateService: TemplateService,
     ) {

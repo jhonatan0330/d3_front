@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { JwtAuthService } from './authentication/jwt-auth.service';
+import { AuthenticationService } from './authentication/authentication.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   constructor(
     public title: Title,
     private router: Router,
-    private jwtAut: JwtAuthService
+    private jwtAut: AuthenticationService
   ) {
   }
 

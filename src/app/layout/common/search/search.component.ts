@@ -3,10 +3,9 @@ import { UntypedFormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { Subject } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations/public-api';
-import { PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import Swal from 'sweetalert2';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 

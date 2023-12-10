@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { UserService } from 'app/core/user/user.service';
 import { Company, User } from 'app/core/user/user.types';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
@@ -11,6 +10,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { cloneDeep } from 'lodash';
+import { AuthenticationService } from 'app/authentication/authentication.service';
 
 @Component({
   selector: 'profile',
@@ -36,7 +36,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private templateService: TemplateService,
-    public jwtAuth: JwtAuthService,
+    public jwtAuth: AuthenticationService,
     private route: ActivatedRoute,
     private router: Router,
     private _utilsService: UtilsService,

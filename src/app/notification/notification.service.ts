@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject, tap } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
-import { UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import { UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
   providedIn: 'root'

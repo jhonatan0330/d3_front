@@ -3,8 +3,8 @@ import { FormControl } from '@angular/forms';
 import {
   DetallePedidoVentaDTO,
   PedidoVentaCaracteristicaDTO,
+  PedidoVentaCaracteristicaFilterDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
-import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';

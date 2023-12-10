@@ -6,6 +6,16 @@ export class BasicParamDTO extends BasicDTO {
   propiedades: PropiedadDTO[];
 }
 
+export class BasicFilterDTO {
+  paginacionRegistroInicial: number;
+  paginacionRegistroFinal: number;
+  filtroParametro: string;
+  llaveTabla: string;
+  estado: string;
+  securityToken: string;
+}
+
+
 export class PropiedadDTO extends BasicDTO {
   propiedadValor: string;
   tipo: string;

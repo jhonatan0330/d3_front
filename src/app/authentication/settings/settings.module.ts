@@ -14,13 +14,15 @@ import { SettingsAccountComponent } from 'app/authentication/settings/account/ac
 import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
 import { settingsRoutes } from 'app/authentication/settings/settings.routing';
 import { ChangePictureComponent } from './change-picture/change-picture.component';
+import { SettingsOrganizationComponent } from './organization/organization.component';
 
 @NgModule({
     declarations: [
         SettingsComponent,
         SettingsAccountComponent,
         SettingsSecurityComponent,
-        ChangePictureComponent
+        ChangePictureComponent,
+        SettingsOrganizationComponent
     ],
     imports     : [
         RouterModule.forChild(settingsRoutes),

@@ -1,5 +1,5 @@
 import { CategoriaProductoDTO, ProductoDTO, TarifaDTO, UsuarioRolProductoDTO } from "app/inventory/inventory.types";
-import { BasicDTO, BasicParamDTO } from "app/shared/shared.domain";
+import { BasicDTO, BasicFilterDTO, BasicParamDTO } from "app/shared/shared.domain";
 
 export class ProcesoEstadoDTO extends BasicParamDTO {
   tipo: string;
@@ -122,65 +122,7 @@ export class RelacionInternaDTO extends BasicDTO {
   campoNombre: string;
   auxiliar: string;
 }
-export class UsuarioRolDTO extends BasicDTO {
-  usuario: string;
-  usuarioIdentificacion: string;
-  usuarioNombre: string;
-  usuarioImagen: string;
-  rolAcceso: string;
-  rolNombre: string;
-  documento: string;
-  fechaInicial: Date;
-  fechaFinal: Date;
-}
-export class RolAccesoDTO extends BasicParamDTO {
-  plantilla: string;
-  nombre: string;
-  codigo: string;
-  imagen: string;
-  permisosCompletos: boolean;
-  minutosSesion: number;
-}
-export class UsuarioDTO extends BasicDTO {
-  identificacion: string;
-  nombre: string;
-  imagen: string;
-  rol: string;
-  documento: string;
-  productos: ProductoDTO[];
-  usuarioFiltroDependiente: string;
-  correo: string;
-  usuarioRol: string;
-  telefono: string;
-}
-export class PostRespuestaDTO extends BasicDTO {
-  calificacionesPositivas: number;
-  calificacionesNegativas: number;
-  fecha: Date;
-  autor: string;
-  autorNombre: string;
-  autorImagen: string;
-  pregunta: string;
-  respuesta: string;
-}
 
-export class PostCalificacionDTO extends BasicDTO {
-  usuario: string;
-  fecha: Date;
-  respuesta: string;
-  positiva: boolean;
-}
-export class PostPreguntaDTO extends BasicDTO {
-  campo: string;
-  tipo: string;
-  calificaciones: number;
-  fecha: Date;
-  autor: string;
-  autorImagen: string;
-  autorNombre: string;
-  pregunta: string;
-  respuestas: PostRespuestaDTO[];
-}
 export class DetallePedidoVentaDTO extends BasicParamDTO {
   documento: string;
   producto: string;
@@ -206,12 +148,6 @@ export class DetallePedidoVentaDTO extends BasicParamDTO {
   campo: string;
 }
 
-export class ModuloDTO extends BasicDTO {
-  nombre: string;
-  descripcion: string;
-  imagen: string;
-  moduloUrl: string;
-}
 export class ReporteBaseDTO extends BasicParamDTO {
   plantilla: string;
   plantillaNombre: string;
@@ -226,50 +162,6 @@ export class ReporteBaseDTO extends BasicParamDTO {
   servidorUrl: string;
   publico: boolean;
 }
-export class UsuarioOrganizacionDTO extends BasicDTO {
-  usuario: string;
-  organizacion: string;
-  tokenServer: string;
-  usuarioNombre: string;
-}
-export class UsuarioAutenticacionDTO extends BasicDTO {
-  usuario: string;
-  sesion: string;
-  clave: string;
-  usuarioNombre: string;
-  claveAnterior: string;
-  tableroControl: number;
-  usuarioDTO: UsuarioDTO;
-  organizacion: OrganizacionDTO;
-  mensaje: string;
-  token: string;
-  modulos: ModuloDTO[];
-  fechaCreacion: Date;
-}
-export class OrganizacionDTO extends BasicParamDTO {
-  nombre: string;
-  principal: string;
-  servidor: string;
-  usuarioSystem: string;
-  imagen: string;
-  slogan: string;
-  sincronizacion: boolean;
-  mensajeIngreso: string;
-  codigo: string;
-  servidorUrl: string;
-  servidorCorreo: string;
-  plantillas: DocumentoPlantillaDTO[];
-  menuPlantillas: DocumentoPlantillaDTO[];
-  reportePlantillas: DocumentoPlantillaDTO[];
-  token: string;
-}
-export class IndicadorDTO extends BasicDTO {
-  nombre: string;
-  codigo: string;
-  valorDia: number;
-  valorMes: number;
-  valorYear: number;
-}
 
 export class ProductoInventarioDTO extends BasicDTO {
   producto: string;
@@ -280,4 +172,169 @@ export class ProductoInventarioDTO extends BasicDTO {
   cantidadActual: number;
   cantidadMinima: number;
   cantidadMaxima: number;
+}
+
+
+export class ProcesoEstadoFilterDTO extends BasicFilterDTO {
+  tipo: string;
+  estadoDocumento: string;
+  avance: number;
+  nombre: string;
+  proceso: string;
+  procesoNombre: string;
+}
+			
+			
+export class DocumentoPlantillaCaracteristicaFilterDTO extends BasicFilterDTO {
+  plantilla: string;
+  plantillaNombre: string;
+  formato: string;
+  nombre: string;
+  codigo: string;
+  orden: number;
+  imagen: string;
+  documentos: PedidoVentaDTO[];
+}
+			
+export class PedidoVentaFilterDTO extends BasicFilterDTO {
+  fechaRegistroMin: Date;
+  fechaRegistroMax: Date;
+  fechaMin: Date;
+  fechaMax: Date;
+  funcionario: string;
+  funcionarioNombre: string;
+  proceso: string;
+  plantilla: string;
+  nombre: string;
+  imagen: string;
+  descripcion: string;
+  estadoExpediente: string;
+  textoFiltro: string;
+  estadoNombre: string;
+  historico: number;
+  transaccion: string;
+  caracteristicas: PedidoVentaCaracteristicaDTO[];
+  campoOrigen: string;
+  campoPropiedad: string;
+}
+			
+export class PedidoVentaCaracteristicaFilterDTO extends BasicFilterDTO {
+  documento: string;
+  campo: string;
+  campoDTO: DocumentoPlantillaCaracteristicaDTO;
+  valorText: string;
+  valorFechaMin: Date;
+  valorFechaMax: Date;
+  valorOpcion: string;
+  valorAuxiliar: string;
+  valorNumeroMin: number;
+  valorNumeroMax: number;
+  detalles: DetallePedidoVentaDTO[];
+  dependientes: PedidoVentaCaracteristicaDTO[];
+  expedientes: PedidoVentaDTO[];
+  transaccionRegistro: string;
+  transaccionInactivo: string;
+}
+			
+export class ProcesoTransicionFilterDTO extends BasicFilterDTO {
+  procesoNombre: string;
+  estadoPartidaOrden: number;
+  estadoLlegadaOrden: number;
+  nombre: string;
+  proceso: string;
+  estadoPartida: string;
+  estadoPartidaNombre: string;
+  plantilla: string;
+  plantillaNombre: string;
+  documentadorFilter: boolean;
+  afectaSaldo: string;
+  imagen: string;
+  rapidaFilter: boolean;
+  estadoLLegada: string;
+  estadoLlegadaNombre: string;
+  estadoLlegadaTipo: string;
+}
+			
+export class PedidoVentaAjusteFilterDTO extends BasicFilterDTO {
+  documento: string;
+  fechaMin: Date;
+  fechaMax: Date;
+  estadoInicial: string;
+  estadoFinal: string;
+  responsable: string;
+}
+			
+export class DocumentoPlantillaFilterDTO extends BasicFilterDTO {
+  nombre: string;
+  consecutivo: string;
+  imagen: string;
+  color: string;
+  codigo: string;
+  server: string;
+  proceso: string;
+}
+				
+export class RelacionInternaFilterDTO extends BasicFilterDTO {
+  propiedad: string;
+  propiedadNombre: string;
+  plantilla: string;
+  plantillaNombre: string;
+  campo: string;
+  campoNombre: string;
+  auxiliar: string;
+}
+			
+			
+export class DetallePedidoVentaFilterDTO extends BasicFilterDTO {
+  documento: string;
+  producto: string;
+  productoTercero: string;
+  productoCodigo: string;
+  productoImagen: string;
+  productoDocumento: string;
+  nombre: string;
+  cantidadPromocion: number;
+  cantidadPromocionBase: number;
+  plantilla: string;
+  transaccionRegistro: string;
+  transaccionInactivo: string;
+}
+			
+export class UsuarioRolProductoFilterDTO extends BasicFilterDTO {
+  documento: string;
+  documentoNombre: string;
+  producto: string;
+  productoNombre: string;
+  nombre: string;
+  modificador: string;
+  cantidadPromocion: number;
+  cantidadPromocionBase: number;
+}
+			
+export class ProductoFilterDTO extends BasicFilterDTO {
+  nombre: string;
+  codigo: string;
+  filtros: string;
+  imagen: string;
+  categoria: string;
+  categoriaNombre: string;
+  usuarioRol: string;
+  cantidadPromocion: number;
+  cantidadPromocionBase: number;
+  documento: string;
+  productoBase: string;
+  baseNombre: string;
+}
+			
+export class ReporteBaseFilterDTO extends BasicFilterDTO {
+  plantilla: string;
+  plantillaNombre: string;
+  nombre: string;
+  codigo: string;
+  soloExistenteFilter: boolean;
+  version: number;
+  servidor: string;
+  multiplesId: string;
+  servidorUrl: string;
+  publicoFilter: boolean;
 }

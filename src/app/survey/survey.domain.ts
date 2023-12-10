@@ -48,3 +48,64 @@ export class EncuestaRespuestaDTO extends BasicDTO {
   respuestaOpcion;
   comentario;
 }
+/*
+export class PostCalificacionDTO extends BasicDTO {
+  usuario: string;
+  fecha: Date;
+  respuesta: string;
+  positiva: boolean;
+}
+export class PostPreguntaDTO extends BasicDTO {
+  campo: string;
+  tipo: string;
+  calificaciones: number;
+  fecha: Date;
+  autor: string;
+  autorImagen: string;
+  autorNombre: string;
+  pregunta: string;
+  respuestas: PostRespuestaDTO[];
+}
+
+export class PostRespuestaDTO extends BasicDTO {
+  calificacionesPositivas: number;
+  calificacionesNegativas: number;
+  fecha: Date;
+  autor: string;
+  autorNombre: string;
+  autorImagen: string;
+  pregunta: string;
+  respuesta: string;
+}
+/*
+	
+export class PostCalificacionFilterDTO extends BasicFilterDTO {
+  usuario: string;
+  fechaMin: Date;
+  fechaMax: Date;
+  respuesta: string;
+  positivaFilter: boolean;
+}
+			
+export class PostPreguntaFilterDTO extends BasicFilterDTO {
+  campo: string;
+  tipo: string;
+  calificaciones: number;
+  fechaMin: Date;
+  fechaMax: Date;
+  autor: string;
+  autorImagen: string;
+  autorNombre: string;
+}
+
+export class PostRespuestaFilterDTO extends BasicFilterDTO {
+  calificacionesPositivas: number;
+  calificacionesNegativas: number;
+  fechaMin: Date;
+  fechaMax: Date;
+  autor: string;
+  autorNombre: string;
+  autorImagen: string;
+  pregunta: string;
+}
+			*/

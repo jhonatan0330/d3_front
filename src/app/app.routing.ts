@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
-import { AuthGuard } from 'app/authentication/auth.guard';
 import { LayoutComponent } from 'app/layout/layout.component';
+import { AuthGuard } from './authentication/authentication.guard';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -34,7 +34,7 @@ export const appRoutes: Route[] = [
     canActivate: [AuthGuard],
     component: LayoutComponent,
     children: [
-      { path: '', loadChildren: () => import('app/authorization/profile/profile.module').then(m => m.ProfileModule) },
+      { path: '', loadChildren: () => import('app/authorization/authorization.module').then(m => m.ProfileModule) },
       { path: 'settings', loadChildren: () => import('app/authentication/settings/settings.module').then(m => m.SettingsModule) },
       { path: 'list', loadChildren: () => import('app/cruds/cruds.module').then(m => m.CrudsModule) },
       { path: 'maps', loadChildren: () => import('app/gps/gps.module').then(m => m.GPSModule) },

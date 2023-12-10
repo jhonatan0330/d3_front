@@ -6,7 +6,7 @@ import {
   PedidoVentaDTO,
   ReporteBaseDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
-import { PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
+import { PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';

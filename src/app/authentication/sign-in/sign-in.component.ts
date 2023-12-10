@@ -1,11 +1,10 @@
 import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 import { environment } from 'environments/environment';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatButton } from '@angular/material/button';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'auth-sign-in',
@@ -27,8 +26,7 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
   constructor(
     private _activatedRoute: ActivatedRoute,
     private _formBuilder: UntypedFormBuilder,
-    private apiService: ApiService,
-    private jwtAuth: JwtAuthService,
+    private jwtAuth: AuthenticationService,
     private _router: Router
   ) {
   }
@@ -78,7 +76,7 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
   }
 
   getUrlServices() {
-    this.apiService.getURL().subscribe({
+    this.jwtAuth.getURL().subscribe({
       next: (data) => {
         if (data !== '' && data !== 'SW42') {
           if (!data.endsWith('/')) {
@@ -100,7 +98,7 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
   }
 
   getOrganization() {
-    this.apiService.obtenerPrincipalOrganizacion().subscribe({
+    this.jwtAuth.obtenerPrincipalOrganizacion().subscribe({
       next: (organization) => {
         this.signInForm.enable();
         this.company = organization.nombre;

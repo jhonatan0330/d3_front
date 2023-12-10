@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize, Subject, takeUntil, takeWhile, tap, timer } from 'rxjs';
-import { JwtAuthService } from '../jwt-auth.service';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
     selector     : 'auth-sign-out',
@@ -21,7 +21,7 @@ export class AuthSignOutComponent implements OnInit, OnDestroy
      * Constructor
      */
     constructor(
-        private _authService: JwtAuthService,
+        private _authService: AuthenticationService,
         private _router: Router
     )
     {

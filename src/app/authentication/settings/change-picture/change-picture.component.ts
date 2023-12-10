@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { JwtAuthService } from 'app/authentication/jwt-auth.service';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { AuthenticationService } from 'app/authentication/authentication.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import Swal from 'sweetalert2';
 
@@ -23,7 +23,7 @@ export class ChangePictureComponent {
 
   constructor(
     private api: ApiService,
-    public jwtAuth: JwtAuthService
+    public jwtAuth: AuthenticationService
   ) { }
 
   async setupDevices() {
@@ -40,7 +40,7 @@ export class ChangePictureComponent {
           Swal.fire('Video', 'You have no output video device', 'error');
         }
       } catch (e) {
-        if ( e && e.message) { Swal.fire('Video', e.message, 'error'); }
+        if (e && e.message) { Swal.fire('Video', e.message, 'error'); }
         else { Swal.fire('Video', 'Error desconocido', 'error'); }
       }
     }
@@ -105,8 +105,8 @@ export class ChangePictureComponent {
 
   submitFile(internalFile: File) {
     this.submitted = true;
-    this.api.changePictureUser(internalFile, null).subscribe(
-      (data) => {
+    this.jwtAuth.changePictureUser(internalFile, null).subscribe({
+      next: (data) => {
         this.jwtAuth.user = data;
         this.jwtAuth.user$.next(this.jwtAuth.user);
         this.submitted = false;
@@ -114,13 +114,13 @@ export class ChangePictureComponent {
         this.isTakingPicture = false;
         Swal.fire('Video', 'Cambio exitoso', 'success');
       },
-      (error) => {
+      error: (error) => {
         this.submitted = false;
         this.isReviewingPicture = false;
         this.isTakingPicture = false;
         Swal.fire('Video', error, 'error');
       }
-    );
+    });
   }
 
   // Copiado de archivo

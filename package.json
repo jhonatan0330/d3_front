@@ -34,7 +34,7 @@
         "file-saver": "^2.0.5",
         "lodash-es": "4.17.21",
         "ng-apexcharts": "1.8.0",
-        "ngx-currency": "^3.0.0",
+        "ng2-currency-mask": "~13.0.0",
         "ol": "^7.3.0",
         "perfect-scrollbar": "1.5.5",
         "rxjs": "7.8.0",

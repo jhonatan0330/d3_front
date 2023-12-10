@@ -1,45 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import {
   DocumentoPlantillaDTO,
-  OrganizacionDTO,
-  UsuarioAutenticacionDTO,
-  UsuarioDTO,
   PedidoVentaDTO,
   RelacionInternaDTO,
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaAjusteDTO,
   ProductoInventarioDTO,
+  PedidoVentaFilterDTO,
+  RelacionInternaFilterDTO,
+  PedidoVentaCaracteristicaFilterDTO,
 } from '../model/sw42.domain';
 import { ApiErrorResponse } from '../model/sw42.utils';
-import {
-  UsuarioAutenticacionFilterDTO,
-  PedidoVentaFilterDTO,
-  PedidoVentaCaracteristicaFilterDTO,
-  RelacionInternaFilterDTO,
-} from '../model/sw42.filter';
-import { environment } from 'environments/environment';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private _jsonURL = '/assets/conf.xml';
 
   constructor(
     private http: HttpClient,
     private ls: LocalStoreService
   ) {}
-
-  // CU01
-  obtenerPrincipalOrganizacion(): Observable<OrganizacionDTO> {
-    return this.http.get<OrganizacionDTO>(
-      this.ls.getUrlAccess('/main/obtenerPrincipalOrganizacion')
-    );
-  }
 
   listarPlantillas(_server: string): Observable<DocumentoPlantillaDTO[]> {
     return this.http.get<DocumentoPlantillaDTO[]>(
@@ -104,13 +88,6 @@ export class ApiService {
     );
   }
 
-  consultarUsuario(usuario: UsuarioDTO): Observable<UsuarioDTO> {
-    return this.http.post<UsuarioDTO>(
-      this.ls.getUrlAccess('/rest/consultarUsuario'),
-      usuario
-    );
-  }
-
   consultarDatosBase(
     campo: PedidoVentaCaracteristicaFilterDTO, _server: string
   ): Observable<PedidoVentaCaracteristicaFilterDTO> {
@@ -133,10 +110,6 @@ export class ApiService {
     return this.ls.getItem(LocalConstants.TEMPLATES);
   }
 
-  getURL(): Observable<String> {
-    return this.http.get(this._jsonURL, { responseType: 'text' });
-  }
-
   getImage(imageUrl: string): Observable<Blob> {
     return this.http.get(imageUrl, { responseType: 'blob' });
   }
@@ -148,12 +121,6 @@ export class ApiService {
     return this.http.post<ApiErrorResponse>(endpoint, formData);
   }
 
-  changePictureUser(fileToUpload: File, _server: string): Observable<UsuarioDTO> {
-    const endpoint = this.ls.getUrlAccess('/rest/changePicture', _server);
-    const formData: FormData = new FormData();
-    formData.append('file', fileToUpload, fileToUpload.name);
-    return this.http.post<UsuarioDTO>(endpoint, formData);
-  }
 
   consultarInventario(productoId: String, _server: string): Observable<ProductoInventarioDTO[]> {
     return this.http.get<ProductoInventarioDTO[]>(

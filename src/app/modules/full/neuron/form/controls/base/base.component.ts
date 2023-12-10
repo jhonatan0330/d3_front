@@ -3,9 +3,9 @@ import { ProductComponent } from 'app/modules/full/neuron/form/controls/product/
 import {
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaCaracteristicaDTO,
+  PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
-import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BehaviorSubject, Observable } from 'rxjs';

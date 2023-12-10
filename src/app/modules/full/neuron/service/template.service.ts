@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
   DocumentoPlantillaDTO,
-  OrganizacionDTO,
   RelacionInternaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -9,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { clone } from 'lodash';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
   providedIn: 'root',

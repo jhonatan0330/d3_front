@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PostPreguntaDTO, PostRespuestaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { Observable } from 'rxjs';
 import { EncuestaDTO, EncuestaGrupoDTO } from './survey.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
@@ -24,6 +23,7 @@ export class SurveyService {
     );
   }
 
+  /*
   getFAQ(): Observable<PostPreguntaDTO[]> {
     return this.http.get<PostPreguntaDTO[]>(
       this.ls.getUrlAccess('/survey/getFAQ')
@@ -34,5 +34,5 @@ export class SurveyService {
     return this.http.get<PostRespuestaDTO[]>(
       this.ls.getUrlAccess('/survey/getFAQResponse/' + id)
     );
-  }
+  }*/
 }

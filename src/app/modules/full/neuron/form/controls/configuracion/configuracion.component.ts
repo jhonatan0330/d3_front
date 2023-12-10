@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {
   DocumentoPlantillaDTO,
+  PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
-import { PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { Observable } from 'rxjs';

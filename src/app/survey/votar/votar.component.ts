@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { JwtAuthService } from 'app/authentication/jwt-auth.service';
 
 import Swal from 'sweetalert2';
 import { EncuestaDTO, EncuestaGrupoDTO, EncuestaPreguntaDTO, EncuestaOpcionRespuestaDTO, EncuestaRespuestaDTO } from 'app/survey/survey.domain';
@@ -24,9 +21,6 @@ export class VotarComponent implements OnInit {
 
   constructor(
     private survey: SurveyService,
-    private jwtAuth: JwtAuthService,
-    private templateService: TemplateService,
-    private router: Router
     ) {}
 
   ngOnInit(): void {

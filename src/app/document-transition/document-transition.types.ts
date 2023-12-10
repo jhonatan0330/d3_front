@@ -1,6 +1,5 @@
 import { PedidoVentaCaracteristicaDTO } from "app/modules/full/neuron/model/sw42.domain";
-import { BasicFilterDTO } from "app/modules/full/neuron/model/sw42.filter";
-import { BasicDTO } from "app/shared/shared.domain";
+import { BasicDTO, BasicFilterDTO } from "app/shared/shared.domain";
 
 export class DocumentoRelacionGestorDTO extends BasicDTO {
   documentoPrincipal: string;

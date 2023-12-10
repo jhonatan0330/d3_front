@@ -21,6 +21,7 @@ import {
   PedidoVentaCaracteristicaDTO,
   PedidoVentaDineroDTO,
   PedidoVentaDTO,
+  PedidoVentaFilterDTO,
   ProcesoEstadoDTO,
   ProcesoTransicionDTO,
   ReporteBaseDTO,
@@ -29,9 +30,6 @@ import {
   DocumentoPlantillaCaracteristicaEnum,
   StatesEnum,
 } from 'app/modules/full/neuron/model/sw42.enum';
-import {
-  PedidoVentaFilterDTO,
-} from 'app/modules/full/neuron/model/sw42.filter';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { IDynamicControl } from './controls/base/base.component';

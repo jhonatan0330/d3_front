@@ -6,6 +6,7 @@ export class CatalogDTO {
 	code: string;
 	initialDate: Date;
 	finalDate: Date;
+	accounts: AccountDTO[];
 }
 
 export class AccountDTO {
@@ -31,17 +32,52 @@ export class ResultMapDTO {
 	accountName: string;
 	accountCode: string;
 	level: number;
-	mapDate: Date;
+	startDate: Date;
+	endDate: Date;
+	period: string;
 	year: number;
 	month: number;
 	day: number;
 	hour: number;
 	minute: number;
 	quantity: number;
-	percentaje: number;
+	average: number;
 	lastBalance: number;
+	nextBalance: number;
 	positive: number;
 	negative: number;
 	value: number;
 	type: string;;
+}
+
+
+
+export class ManualDTO {
+	key: string;
+	state: string;
+	catalog: string;
+	code: string;
+	concept: string;
+	factDate: Date;
+	registerUser: Date;
+	registerDate: Date;
+	value: number;
+}
+
+export class ManualAccountDTO {
+	key: string;
+	state: string;
+	account: string;
+	accountName: string;
+	accountDTO: AccountDTO;
+	positive: number;
+	negative: number;
+	note: string;
+	third: string;
+	thirdName: string;
+}
+
+export class Voucher{
+	manual: ManualDTO;
+	records: ManualAccountDTO[];
 }

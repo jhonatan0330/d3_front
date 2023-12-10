@@ -10,7 +10,7 @@ import { Validators, FormGroup, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import Swal from 'sweetalert2';
-import { JwtAuthService } from '../jwt-auth.service';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-recover-password',
@@ -27,7 +27,7 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
 
   constructor(
-    private jwtAuth: JwtAuthService
+    private jwtAuth: AuthenticationService
   ) {
     this._unsubscribeAll = new Subject();
   }

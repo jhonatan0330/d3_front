@@ -4,13 +4,15 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Subject, takeUntil, Observable } from 'rxjs';
 import { CatalogFormComponent } from './catalog-form/catalog-form.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AccountDTO, CatalogDTO, ResultMapDTO } from './accounting.domain';
+import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from './accounting.domain';
 import { UntypedFormControl } from '@angular/forms';
 import { AccountingService } from './accounting.service';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { AccountFormComponent } from './account-form/account-form.component';
 import { UploadFormComponent } from './upload/upload-form.component';
+import { ManualFormComponent } from './manual-form/manual-form.component';
+import { MatTableDataSource } from '@angular/material/table';
 
 interface AccountNode {
     account: AccountDTO;
@@ -38,11 +40,14 @@ export class AccountComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     catalogs: CatalogDTO[];
-    catalogSelected: CatalogDTO;
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     isLoadingCatalog = false;
     isLoadingAccount = false;
     isLoadingBalance = false;
+    isLoadingVoucher = false;
+
+    recentTransactionsDataSource: MatTableDataSource<ManualDTO> = new MatTableDataSource();
+    recentTransactionsTableColumns: string[] = ['transactionId', 'date', 'name', 'amount', 'status'];
 
     balance: ResultMapDTO[];
 
@@ -71,7 +76,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     constructor(private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _matDialog: MatDialog,
-        private accountingService: AccountingService) {
+        public accountingService: AccountingService) {
     }
 
     ngOnInit(): void {
@@ -86,6 +91,7 @@ export class AccountComponent implements OnInit, OnDestroy {
                 }
             });
         this.getCatalogs();
+        this.accountingService.currentCatalog = null;
     }
 
     toggleDrawer(): void {
@@ -103,12 +109,26 @@ export class AccountComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(() => this.getCatalogs());
     }
 
+    getVouchers() {
+        this.isLoadingVoucher = true;
+        this.accountingService.getVouchers(this.accountingService.currentCatalog.key).subscribe({
+            next: (dataResult: ManualDTO[]) => {
+                this.recentTransactionsDataSource.data = dataResult;
+                this.isLoadingVoucher = false;
+            },
+            error: () => {
+                this.isLoadingVoucher = false;
+            },
+        });
+    }
+
     getCatalogs() {
         this.isLoadingCatalog = true;
         this.accountingService.getCatalogs().subscribe({
             next: (dataResult: CatalogDTO[]) => {
                 this.catalogs = dataResult;
                 this.isLoadingCatalog = false;
+                if (this.catalogs.length === 1) { this.selectCatalog(this.catalogs[0]); }
             },
             error: () => {
                 this.isLoadingCatalog = false;
@@ -117,20 +137,21 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     selectCatalog(catalog: CatalogDTO) {
-        if (catalog && this.catalogSelected && catalog.key === this.catalogSelected.key) {
+        if (catalog && this.accountingService.currentCatalog && catalog.key === this.accountingService.currentCatalog.key) {
             return;
         }
-        this.catalogSelected = catalog;
+        this.accountingService.currentCatalog = catalog;
         this.drawer.close();
         this.getAccounts();
         this.getBalance();
+        this.getVouchers();
     }
 
     getBalance() {
         this.balance = [];
-        if (this.catalogSelected) {
+        if (this.accountingService.currentCatalog) {
             this.isLoadingBalance = true;
-            this.accountingService.getBalance(this.catalogSelected.key).subscribe({
+            this.accountingService.getBalance(this.accountingService.currentCatalog.key).subscribe({
                 next: (dataResult: ResultMapDTO[]) => {
                     this.balance = dataResult;
                     this.isLoadingBalance = false;
@@ -139,15 +160,15 @@ export class AccountComponent implements OnInit, OnDestroy {
                     this.isLoadingBalance = false;
                 },
             });
-        } 
+        }
     }
 
     getAccounts() {
         this.dataSource.data = [];
-        if (this.catalogSelected) {
+        if (this.accountingService.currentCatalog) {
             this.isLoadingAccount = true;
             this.dataSource.data = [];
-            this.accountingService.getAccounts(this.catalogSelected.key).subscribe({
+            this.accountingService.getAccounts(this.accountingService.currentCatalog.key).subscribe({
                 next: (dataResult: AccountDTO[]) => {
                     const TREE_DATA: AccountNode[] = [];
                     for (let i = 0; i < dataResult.length; i++) {
@@ -164,7 +185,7 @@ export class AccountComponent implements OnInit, OnDestroy {
                     this.isLoadingAccount = false;
                 },
             });
-        } 
+        }
     }
 
     private searchParentNode(_account: AccountDTO, _tree: AccountNode[]) {
@@ -181,18 +202,30 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     openAccountForm(selectedAccount: AccountFlatNode = null): void {
-        if (!this.catalogSelected) { return; }
+        if (!this.accountingService.currentCatalog) { return; }
         const dialogRef = this._matDialog.open(AccountFormComponent, {
-            data: { catalogId: this.catalogSelected.key, parentId: (selectedAccount) ? selectedAccount.key : null }
+            data: { catalogId: this.accountingService.currentCatalog.key, parentId: (selectedAccount) ? selectedAccount.key : null },
+            disableClose: true, 
         });
         dialogRef.afterClosed().subscribe(() => this.getAccounts());
     }
 
+    openManualForm(): void {
+        if (!this.accountingService.currentCatalog) { return; }
+        const dialogRef = this._matDialog.open(ManualFormComponent, {
+            data: { catalogId: this.accountingService.currentCatalog.key },
+            maxHeight: '90vh',
+            disableClose: true,
+        });
+        dialogRef.afterClosed().subscribe(() => { this.getBalance(); this.getVouchers(); });
+    }
+
+
     openUploadForm(): void {
-        if (!this.catalogSelected) { return; }
+        if (!this.accountingService.currentCatalog) { return; }
         const dialogRef = this._matDialog.open(UploadFormComponent, {
             disableClose: true,
-            data: { catalogId: this.catalogSelected.key }
+            data: { catalogId: this.accountingService.currentCatalog.key }
         });
         dialogRef.afterClosed().subscribe(() => this.getAccounts());
     }

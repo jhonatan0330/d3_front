@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { GPSLocalizacionFilterDTO } from 'app/modules/full/neuron/model/sw42.filter';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { GPSDispositivoDTO, GPSLocalizacionDTO } from './gps.domain';
+import { GPSDispositivoDTO, GPSLocalizacionDTO, GPSLocalizacionFilterDTO } from './gps.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
 
 
