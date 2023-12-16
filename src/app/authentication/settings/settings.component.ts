@@ -29,26 +29,26 @@ export class SettingsComponent implements OnInit, OnDestroy
     {
         this.panels = [
             {
-                id         : 'organization',
-                icon       : 'heroicons_outline:building-storefront',
-                title      : 'Organizacion',
-                description: 'Administre la configuración de su organización'
-            },
-            {
                 id         : 'account',
-                icon       : 'heroicons_outline:user-circle',
+                icon       : 'person',
                 title      : 'Cuenta',
                 description: 'Consulte su perfil y la información personal'
             },
             {
                 id         : 'security',
-                icon       : 'heroicons_outline:lock-closed',
+                icon       : 'lock',
                 title      : 'Seguridad',
                 description: 'Administre su contraseña'
             },
+            {
+                id         : 'organization',
+                icon       : 'business',
+                title      : 'Organizacion',
+                description: 'Administre la configuración de su organización'
+            }
             
         ];
-
+        
 
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))

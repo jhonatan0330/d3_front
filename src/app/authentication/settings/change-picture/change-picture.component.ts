@@ -1,6 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { AuthenticationService } from 'app/authentication/authentication.service';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { LoginService } from 'app/authentication/login.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -22,8 +21,7 @@ export class ChangePictureComponent {
   public isReviewingPicture = false;
 
   constructor(
-    private api: ApiService,
-    public jwtAuth: AuthenticationService
+    public jwtAuth: LoginService
   ) { }
 
   async setupDevices() {

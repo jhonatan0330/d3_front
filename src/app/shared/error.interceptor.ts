@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
-import { AuthenticationService } from '../authentication/authentication.service';
+import { LoginService } from '../authentication/login.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 @Injectable({
@@ -14,7 +14,7 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 })
 export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
-    private jwtAuth: AuthenticationService,
+    private jwtAuth: LoginService,
     private templateService: TemplateService
   ) {}
 

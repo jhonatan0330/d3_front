@@ -46,7 +46,7 @@
                     <div class="hidden sm:flex items-center">
                         <img class="w-12 min-w-12 h-12 rounded-full mr-4" src="{{ user?.avatar }}">
                     </div>
-                    <mat-form-field class="fuse-mat-textarea fuse-mat-no-subscript w-full">
+                    <mat-form-field class="w-full">
                         <input #searchModule matInput [placeholder]="'Que deseas consultar?'" [formControl]="filterControl"
                             (input)="filterItem()" (keyUp.enter)="selectFirst()" />
                     </mat-form-field>

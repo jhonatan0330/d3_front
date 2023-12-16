@@ -53,7 +53,7 @@ export class NotificationsService {
         for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
           const element = this.templateService.conectionTemplates[i];
           // Al iniciar sesion por primera vez si el token no fuciona no me deja avanzar
-          if(this.templateService.getTokenConnection(element.servidorUrl)){
+          if(this.templateService.getTokenConnection(element.servidor)){
             this.http.get<ActividadDTO[]>(
               this.ls.getUrlAccess('/notification/getNotifications', element.llaveTabla)
             ).subscribe((notifications) => {

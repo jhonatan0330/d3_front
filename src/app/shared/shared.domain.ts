@@ -26,3 +26,21 @@ export class PropiedadDTO extends BasicDTO {
   texto: string;
   motivo: string;
 }
+
+export class PropiedadValorDefinidoDTO extends BasicDTO {
+  origen: string;
+  origenCategoria: string;
+  codigo: string;
+  nombre: string;
+  grupo: string;
+  textOculto: boolean;
+  necesitaDesarrollo: boolean;
+  incluirPreloadOrigen: boolean;
+  multiple: boolean;
+  pideRol: boolean;
+  pideTiempoBloqueo: boolean;
+  propiedadBoolean: boolean;
+  pideUsuario: boolean;
+  solicitaMotivo: boolean;
+  pideFechas: boolean;
+}

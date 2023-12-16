@@ -15,6 +15,8 @@ import { SettingsSecurityComponent } from 'app/authentication/settings/security/
 import { settingsRoutes } from 'app/authentication/settings/settings.routing';
 import { ChangePictureComponent } from './change-picture/change-picture.component';
 import { SettingsOrganizationComponent } from './organization/organization.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { PropertyForm } from './property-form/property-form.component';
 
 @NgModule({
     declarations: [
@@ -22,7 +24,8 @@ import { SettingsOrganizationComponent } from './organization/organization.compo
         SettingsAccountComponent,
         SettingsSecurityComponent,
         ChangePictureComponent,
-        SettingsOrganizationComponent
+        SettingsOrganizationComponent,
+        PropertyForm
     ],
     imports     : [
         RouterModule.forChild(settingsRoutes),
@@ -34,6 +37,7 @@ import { SettingsOrganizationComponent } from './organization/organization.compo
         MatSelectModule,
         MatSidenavModule,
         MatSlideToggleModule,
+        MatAutocompleteModule,
         SharedModule
     ]
 })

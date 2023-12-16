@@ -218,7 +218,7 @@ export class TemplateService {
     if (this.conectionTemplates && urlServer) {
       for (let i = 0; i < this.conectionTemplates.length; i++) {
         const element = this.conectionTemplates[i];
-        if (urlServer.indexOf(element.servidorUrl) !== -1) {
+        if (urlServer.indexOf(element.servidor) !== -1) {
           return element.token;
         }
       }

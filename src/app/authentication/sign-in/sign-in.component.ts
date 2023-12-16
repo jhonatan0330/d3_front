@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'environments/environment';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatButton } from '@angular/material/button';
-import { AuthenticationService } from '../authentication.service';
+import { LoginService } from '../login.service';
 
 @Component({
   selector: 'auth-sign-in',
@@ -26,7 +26,7 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
   constructor(
     private _activatedRoute: ActivatedRoute,
     private _formBuilder: UntypedFormBuilder,
-    private jwtAuth: AuthenticationService,
+    private jwtAuth: LoginService,
     private _router: Router
   ) {
   }

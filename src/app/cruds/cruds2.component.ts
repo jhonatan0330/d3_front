@@ -35,7 +35,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
   fCDateStart: FormControl = new FormControl();
   fCDateEnd: FormControl = new FormControl();
   fCTimeStart: FormControl = new FormControl('00:00');
-  fCTimeEnd: FormControl = new FormControl('00:00');
+  fCTimeEnd: FormControl = new FormControl('23:59');
   fControlCheck: FormControl = new FormControl(false); // Check que indica si se debe realizar una busqueda por codigo exacto
   pagina = 1; // Indica que pagina estamos buscando
   cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina

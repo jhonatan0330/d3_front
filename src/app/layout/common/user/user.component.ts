@@ -6,7 +6,7 @@ import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { AuthenticationService } from 'app/authentication/authentication.service';
+import { LoginService } from 'app/authentication/login.service';
 
 @Component({
     selector: 'user',
@@ -30,7 +30,7 @@ export class UserComponent implements OnInit, OnDestroy {
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
         private _userService: UserService,
-        public jwtAuth: AuthenticationService,
+        public jwtAuth: LoginService,
         private apiService: ApiService,
         private templateService: TemplateService,
     ) {

@@ -13,7 +13,7 @@
         <!-- Actions -->
         <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
             <!-- Search -->
-            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript fuse-mat-rounded min-w-64">
+            <mat-form-field class=" min-w-64">
                 <mat-icon
                     class="icon-size-5"
                     matPrefix
@@ -410,7 +410,7 @@
                                                 <ng-container *ngIf="tagsEditMode">
                                                     <div class="p-4 space-y-2">
                                                         <ng-container *ngFor="let tag of filteredTags; trackBy: trackByFn">
-                                                            <mat-form-field class="fuse-mat-dense fuse-mat-no-subscript w-full">
+                                                            <mat-form-field class="w-full">
                                                                 <input
                                                                     matInput
                                                                     [value]="tag.title"

@@ -9,7 +9,8 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { AuthenticationService } from 'app/authentication/authentication.service';
+import { LoginService } from 'app/authentication/login.service';
+
 
 @Component({
     selector: 'notifications',
@@ -36,7 +37,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         private _overlay: Overlay,
         private _viewContainerRef: ViewContainerRef,
         private templateService: TemplateService,
-        private _jwtAuth: AuthenticationService,
+        private _jwtAuth: LoginService,
         private utilsService: UtilsService
     ) {
     }

@@ -23,11 +23,8 @@ export class OrganizacionDTO extends BasicParamDTO {
   usuarioSystem: string;
   imagen: string;
   slogan: string;
-  sincronizacion: boolean;
   mensajeIngreso: string;
   codigo: string;
-  servidorUrl: string;
-  servidorCorreo: string;
   plantillas: DocumentoPlantillaDTO[];
   menuPlantillas: DocumentoPlantillaDTO[];
   reportePlantillas: DocumentoPlantillaDTO[];
