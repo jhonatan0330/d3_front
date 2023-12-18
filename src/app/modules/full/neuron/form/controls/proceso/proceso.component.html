@@ -61,12 +61,12 @@
       </ng-container>
       <ng-container matColumnDef="detalles">
         <td mat-cell *matCellDef="let element">
-          <div class="pr-1 min-w-50" *ngIf="
+          <div class="pr-1 min-w-48" *ngIf="
               element.caracteristicas && element.caracteristicas.length !== 0
             ">
             <div class="flex justify-between" *ngFor="let f of element.caracteristicas">
-              <div class="whitespace-nowrap font-extralight pr-2 text-xs">{{ f.campoDTO.nombre }}</div>
-              <div class="text-right line-clamp-1 text-xs hidden md:block">{{ f.valorText }}</div>
+              <div class="whitespace-nowrap font-extralight pr-2 text-xs hidden sm:block">{{ f.campoDTO.nombre }}</div>
+              <div class="text-right line-clamp-1 text-xs">{{ f.valorText }}</div>
             </div>
           </div>
         </td>
