@@ -1,8 +1,10 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
   DocumentoPlantillaDTO,
+  PedidoVentaCaracteristicaDTO,
+  PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
   ReporteBaseDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
@@ -11,13 +13,16 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { StatesEnum } from 'app/modules/full/neuron/model/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { SelectionModel } from '@angular/cdk/collections';
 import Swal from 'sweetalert2';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+import { PropiedadDTO } from 'app/shared/shared.domain';
+import { IDynamicControl } from 'app/modules/full/neuron/form/controls/base/base.component';
+import { getComponent } from 'app/modules/full/neuron/form-helper';
 
 @Component({
   selector: 'app-cruds',
@@ -61,6 +66,14 @@ export class Cruds2Component implements OnInit, OnDestroy {
   drawerOpened: boolean = true;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+
+  //VAriables del filtro
+  @ViewChild('dynamycFormElement', { read: ViewContainerRef })
+  myForm: ViewContainerRef;
+  formIsModified = false;
+  dynamicControls: IDynamicControl[] = [];
+  //filterDocument: PedidoVentaDTO; // Contiene la info del filtro por campo
+
   constructor(
     private route: ActivatedRoute,
     private templateService: TemplateService,
@@ -69,6 +82,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private ls: LocalStoreService,
     private utilsService: UtilsService,
+    private compiler: ComponentFactoryResolver,
     private _fuseMediaWatcherService: FuseMediaWatcherService
   ) { }
 
@@ -175,6 +189,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
       if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FORM_TOTAL)) { this.displayedColumns.push('valor'); }
       this.displayedColumns.push('detalles');
       if (this.plantilla.reportes && this.plantilla.reportes.length !== 0) { this.displayedColumns.push('acciones'); }
+      this.showFields();
     });
 
     // Subscribe to media changes
@@ -341,6 +356,17 @@ export class Cruds2Component implements OnInit, OnDestroy {
     }
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;
+    if (this.dynamicControls ) {
+      entity.filtersByFields = [];
+      this.dynamicControls.forEach(fieldFilter => {
+        const fieldEntity: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
+        fieldEntity.campo = fieldFilter.data.campo;
+        fieldEntity.valorOpcion = fieldFilter.data.valorOpcion;
+        fieldEntity.valorAuxiliar = fieldFilter.data.valorAuxiliar;
+        fieldEntity.valorText = fieldFilter.data.valorText;
+        entity.filtersByFields.push(fieldEntity);
+      });
+    }
 
     this.api.listarDocumentos(entity, this.plantilla.server).subscribe({
       next: (dataResult: PedidoVentaDTO[]) => {
@@ -456,5 +482,123 @@ export class Cruds2Component implements OnInit, OnDestroy {
       stringURL = stringURL + '&P_MULTIPLE=' + plantillaIdMultiple;
     }
     window.open(stringURL, '_blank');
+  }
+
+  ///////////////////////////////////////////////////////
+  ///////////////ESTO ES MUY PARECIDO///////////////////
+  ///////////////A FORM////////////////////////////////////
+
+
+  // Agrega los campos al formulario de busqueda
+  showFields() {
+
+    if (this.myForm) {
+      this.myForm.clear();
+      this.dynamicControls = [];
+    }
+    if (!this.plantilla) { return; }
+    if (!this.plantilla.caracteristicas) {
+      this.cargarPlantilla(this.plantilla.llaveTabla, null);
+      return;
+    }
+    const filterDocument = new PedidoVentaDTO;
+    this.plantilla.caracteristicas.forEach((_campo) => {
+      if (_campo.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
+        && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.MULTIPLE)
+        && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)) {
+        const componentDynamic: Type<any> = getComponent(_campo);
+        const _componentFactory = this.compiler.resolveComponentFactory(
+          componentDynamic
+        );
+        const componentRef = this.myForm.createComponent<IDynamicControl>(
+          _componentFactory
+        );
+        componentRef.instance.structure = _campo;
+        componentRef.instance.parent = filterDocument
+        componentRef.instance.urlServer = this.plantilla.server;
+        const uc: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
+        uc.campo = _campo.llaveTabla;
+        componentRef.instance.data = uc;
+        this.dynamicControls.push(componentRef.instance);
+      }
+    });
+    // Colocar listener de Dependientes
+    for (let j = 0; j < this.plantilla.caracteristicas.length; j++) {
+      const iBase = this.plantilla.caracteristicas[j];
+      const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultipleFromManyKeys(
+        iBase.propiedades,
+        [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA, PlantillaHelper.UPDATE_INFORMATIVE_FIELD]
+      );
+      if (codigoDepende) {
+        let iCampoDependiente; // Identifico el campo dependiente
+        for (let index = 0; index < this.dynamicControls.length; index++) {
+          const iFieldDependiente: IDynamicControl = this.dynamicControls[index];
+          if (iFieldDependiente.structure.codigo === iBase.codigo) {
+            iCampoDependiente = iFieldDependiente;
+            break;
+          }
+        }
+        if (iCampoDependiente) {
+          for (let z = 0; z < codigoDepende.length; z++) {
+            const codigo = codigoDepende[z];
+            for (let k = 0; k < this.dynamicControls.length; k++) {
+              const iFieldReferenciado = this.dynamicControls[k];
+              if (iFieldReferenciado.structure.llaveTabla === codigo.valor) {
+                iFieldReferenciado.adicionarListener(iCampoDependiente);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Consulto de las plantillas generales la plantilla
+  cargarPlantilla(plantillaId: string, urlServer: string): DocumentoPlantillaDTO {
+    const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
+      plantillaId, urlServer
+    );
+    if (dp) {
+      // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
+      if (!dp.caracteristicas) {
+        this.isLoading = true;
+        this.api
+          .obtenerCampos(plantillaId, dp.server)
+          .subscribe({
+            next: (plantilla: DocumentoPlantillaDTO) => {
+              plantilla.server = dp.server;
+              this.isLoading = false;
+              this.cargarCamposPlantilla(plantilla);
+            },
+            error: () => {
+              this.isLoading = false;
+            }
+          });
+        return;
+      } else {
+        return dp;
+      }
+    } else {
+      Swal.fire('Autorizacion', 'No tienes permisos para ver este documento.', 'info');
+      return;
+    }
+  }
+
+  // Metodo que recibe la llamada asincrona de cargar los campos de una plantilla
+  cargarCamposPlantilla(value: DocumentoPlantillaDTO) {
+    const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
+      value.llaveTabla, value.server
+    );
+    if (dp) {
+      dp.caracteristicas = value.caracteristicas;
+      this.templateService.getTemplate(value.llaveTabla, value.server).caracteristicas =
+        value.caracteristicas;
+      this.plantilla.caracteristicas = value.caracteristicas;
+      this.showFields();
+    } else {
+      console.error('No se encuentra cargada la plantilla en memoria');
+      return;
+    }
   }
 }

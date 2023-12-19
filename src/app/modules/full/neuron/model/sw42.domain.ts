@@ -214,6 +214,7 @@ export class PedidoVentaFilterDTO extends BasicFilterDTO {
   historico: number;
   transaccion: string;
   caracteristicas: PedidoVentaCaracteristicaDTO[];
+  filtersByFields: PedidoVentaCaracteristicaFilterDTO[];
   campoOrigen: string;
   campoPropiedad: string;
 }

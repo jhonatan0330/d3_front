@@ -17,7 +17,7 @@ export interface IDynamicControl {
   productForm: ProductComponent;
   parent: PedidoVentaDTO;
   formIsEnabled: boolean; //Muestra si el formulario tiene permisos para modificar
-  
+
   urlServer: string;
   isInvisible: boolean;
 
@@ -31,7 +31,7 @@ export interface IDynamicControl {
 
   send2Server(): boolean;
 
-  form:FormComponent;
+  form: FormComponent;
 }
 
 @Component({
@@ -62,26 +62,21 @@ export class BaseComponent implements OnInit, IDynamicControl {
   }
   set structure(value: DocumentoPlantillaCaracteristicaDTO) {
     this._structure = value;
-    this.required = PlantillaHelper.isEmpty(
-      this.structure.propiedades,
-      PlantillaHelper.PERMISO_CAMPO_OPCIONAL
-    );
-    this.isInvisible = !PlantillaHelper.isEmpty(
-      this.structure.propiedades,
-      PlantillaHelper.INVISIBLE
-    );
+    this.required = PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL);
+    this.isInvisible = !PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.INVISIBLE);
     this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);
-    this.propVisibleDepende = this.obtenerValorMultiple(
-      PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE
-    );
+    this.propVisibleDepende = this.obtenerValorMultiple(PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE);
   }
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.isEnabled = this._getEditable();
+    if(!this.form) { // Esto es para los campos en filtro de crud
+      this.required = false;
+    }
   }
 
-  actualizar(): void {}
+  actualizar(): void { }
 
   _getEditable(): boolean {
     const resultado = PlantillaHelper.isEmpty(
@@ -153,7 +148,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   avisarModificacion(inicioCampo: boolean = false, omitirFormModified: boolean = false): void {
     if (!inicioCampo && this.data) {
       this.data.modificado = true;
-      if(! omitirFormModified) { this.formIsModified.next(true);}
+      if (!omitirFormModified) { this.formIsModified.next(true); }
     }
     if (this.listeners && this.listeners.length !== 0) {
       for (let index = 0; index < this.listeners.length; index++) {
@@ -195,7 +190,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   }
 
   obtenerValor(key: string): string {
-    if (!this) { return '';}
+    if (!this) { return ''; }
     return PlantillaHelper.buscarValor(this.structure.propiedades, key);
   }
 
@@ -247,7 +242,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
     this.procesarCampo(this.transformPVCtoFilter(campoFiltro));
   }
 
-  procesarCampo(campoFiltro: PedidoVentaCaracteristicaFilterDTO) {}
+  procesarCampo(campoFiltro: PedidoVentaCaracteristicaFilterDTO) { }
 
   send2Server(): boolean {
     return true;

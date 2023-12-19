@@ -93,6 +93,13 @@
                 </mat-form-field>
               </div>
             </div>
+            <!-- Campos dinamicos -->
+            <div *ngIf="this.dynamicControls && this.dynamicControls.length !==0"
+              class="text-primary text-xs uppercase font-bold py-2"> Filtros por campos </div>
+            <div class="pt-2">
+              <ng-template #dynamycFormElement></ng-template>
+            </div>
+
             <!-- Filtro por Estados  -->
             <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por estados </div>
             <form [formGroup]="form">
@@ -150,7 +157,7 @@
                     <div class="w-16 p-1">
                       <a (click)="openDocument(iDocument)"><img src="{{ iDocument.imagen | imageFormat }}" /></a>
                     </div>
-                    <div  class="w-full p-1 rounded leading-tight font-semibold"
+                    <div class="w-full p-1 rounded leading-tight font-semibold"
                       [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
                       [style.color]="getColorFont(iDocument.estadoExpediente)">
                       <a (click)="openDocument(iDocument)">

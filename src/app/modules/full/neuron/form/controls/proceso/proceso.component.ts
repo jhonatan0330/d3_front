@@ -117,11 +117,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.readQR = !this.isEmpty(this.obtenerValor(PlantillaHelper.READ_QR));
     this.linkExternal = this.obtenerPropiedad(PlantillaHelper.LINK_EXTERNO);
     this.saveToSelect = !this.isEmpty(this.obtenerValor(PlantillaHelper.SAVE_TO_SELECT));
-    this.mostrarPop = !this.isEmpty(
-      this.obtenerValor(PlantillaHelper.PROCESO_POP)
-    );
+    this.mostrarPop = !this.isEmpty(this.obtenerValor(PlantillaHelper.PROCESO_POP));
     this.procesoValor = this.obtenerValor(PlantillaHelper.PROCESO_VALOR);
     this.acciones = this.obtenerValorMultiple(PlantillaHelper.PROCESO_ACCIONES);
+    if (!this.form) { // Esto es para los filtros
+      this.autoload = false;
+      this.acciones = null;
+    }
     this.tipoCombo = !this.multiple && this.autoload;
     this.tipoTexto = !this.multiple && !this.autoload;
     //Lo pase al iniciar
@@ -145,7 +147,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       this.fControl.updateValueAndValidity();
     }
     // Cuando cargo el combo se me pierde el valor opcion en la actualización de documents
-    if (this.data.valorOpcion) {
+    if (this.data && this.data.valorOpcion) {
       this.proceso = this.data.principal;
     }
     // Al momento de cambiar actualizo el proceso y actualizo todo lo necesario
@@ -388,6 +390,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   iniciarTexto() {
+    if (!this.data) { return; }
     // En caso de traer un dato
     if (this.data.principal) {
       const documentos: PedidoVentaDTO[] = [];
@@ -444,11 +447,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
         this.data.valorNumero = valorNumero;
         this.colocarTituloDisponibles();
-        
+
         if (!this.isEnabled) {
           this.avisarModificacion(false, true);
           this.data.modificado = false; // Cuando son solo listas de mostrar se activan la modificaicon y va y guarda doble
-        }else{
+        } else {
           // Sucede que las listas hacian que el formulario se colcoara en estado modificado pero no era cierto y me dio como algo de quitar las notificaciones a otros campos, especialmente los de numeros
           this.avisarModificacion();
         }
@@ -515,11 +518,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
       }
       for (let i = 0; i < this.relatedFields.length; i++) {
-        if (
-          !this.data.dependientes[i].valorOpcion &&
-          this.data.dependientes[i].campoDTO.formato ===
-          DocumentoPlantillaCaracteristicaEnum.PROCESO
-        ) {
+        if (!this.data.dependientes[i].valorOpcion && (!this.data.dependientes[i].campoDTO || this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO)) {
           /*alert(
             'Seleccione el campo ' + this.data.dependientes[i].campoDTO.nombre
           );*/
@@ -961,7 +960,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   gestionarKeyUpTextoFocusOut() {
     if (!this.isEnabled || this.proceso) { return; }
-    if (this.filteredDocuments && this.filteredDocuments.length !==0){ return; }
+    if (this.filteredDocuments && this.filteredDocuments.length !== 0) { return; }
     this.gestionarKeyUpTexto();
   }
 
@@ -1168,7 +1167,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         }
         this.fControl.setValue(this.proceso);
-        if(!this.data.valorText) { this.data.valorText = this.proceso.descripcion; }
+        if (!this.data.valorText) { this.data.valorText = this.proceso.descripcion; }
         this.avisarModificacion();
       }
     } else {
