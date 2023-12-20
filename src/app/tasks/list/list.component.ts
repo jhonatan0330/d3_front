@@ -78,7 +78,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
                         const menuItem = this._fuseNavigationService.getItem('apps.tasks', mainNavigation);
 
                         // Update the subtitle of the item
-                        menuItem.subtitle = this.tasksCount.incomplete + ' remaining tasks';
+                       // menuItem.subtitle = this.tasksCount.incomplete + ' remaining tasks';
 
                         // Refresh the navigation
                         mainNavigationComponent.refresh();
@@ -212,6 +212,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
     selectTask(_task: Task) {
         this._tasksService.selectTask(_task);
-        this._router.navigate(['./' + _task.id], { relativeTo: this._activatedRoute });
+        this._router.navigate(['./' + _task.key], { relativeTo: this._activatedRoute });
     }
 }

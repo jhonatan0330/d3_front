@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import {  NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { debounceTime, filter, Subject, takeUntil, tap } from 'rxjs';
@@ -46,7 +46,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Create the task form
         this.taskForm = this._formBuilder.group({
-            id: [''],
+            key: [''],
             title: [''],
             notes: ['', Validators.maxLength(4000)],
             dueDate: [null],
@@ -176,7 +176,10 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
      * Delete the task
      */
     deleteTask(): void {
-        
+        this._tasksService.deleteTask(this.task.key).subscribe(() => {
+            this.closeDrawer();
+            this._changeDetectorRef.markForCheck();
+        });
     }
 
     /**

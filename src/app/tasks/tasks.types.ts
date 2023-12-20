@@ -1,6 +1,6 @@
 export interface Task
 {
-    id: string;
+    key: string;
     title: string;
     notes: string;
     completed: Date;

@@ -17,10 +17,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SharedModule } from 'app/shared/shared.module';
-import { tasksRoutes } from 'app/tasks/tasks.routing';
 import { TasksComponent } from 'app/tasks/tasks.component';
 import { TasksDetailsComponent } from 'app/tasks/details/details.component';
 import { TasksListComponent } from 'app/tasks/list/list.component';
+import { CanDeactivateTasksDetails } from './tasks.guards';
 
 @NgModule({
     declarations: [
@@ -29,7 +29,19 @@ import { TasksListComponent } from 'app/tasks/list/list.component';
         TasksListComponent
     ],
     imports     : [
-        RouterModule.forChild(tasksRoutes),
+        RouterModule.forChild([
+            {
+                path     : '',
+                component: TasksListComponent,
+                children : [
+                    {
+                        path         : ':id',
+                        component    : TasksDetailsComponent,
+                        canDeactivate: [CanDeactivateTasksDetails]
+                    }
+                ]
+            }
+        ]),
         DragDropModule,
         MatAutocompleteModule,
         MatButtonModule,

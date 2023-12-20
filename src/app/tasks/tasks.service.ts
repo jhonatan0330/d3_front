@@ -88,7 +88,7 @@ export class TasksService {
     createTask(title: string, _server: string = null): Observable<string> {
         const task: Task = {
             title: title,
-            id: null,
+            key: null,
             notes: null,
             completed: null,
             dueDate: null,
@@ -102,7 +102,7 @@ export class TasksService {
                     this.ls.getUrlAccess('/task/create', _server), task
                 ).pipe(
                     map((idTask) => {
-                        task.id = idTask.id;
+                        task.key = idTask.id;
                         this._tasks.next([task, ...tasks]);
                         return idTask.id;
                     })
@@ -128,8 +128,17 @@ export class TasksService {
      * @param id
      */
     deleteTask(id: string, _server: string = null): Observable<IdResponse> {
-        return this._httpClient.post<IdResponse>(
-            this.ls.getUrlAccess('/task/delete/' + id, _server), null
+        return this.tasks$.pipe(
+            take(1),
+            switchMap(tasks =>
+                this._httpClient.post<IdResponse>(
+                    this.ls.getUrlAccess('/task/delete/' + id, _server), null
+                ).pipe(
+                    map((idTask) => {
+                        this._tasks.next(tasks.filter((item)=>{ return item.key !== idTask.id}));
+                        return idTask;
+                    })
+                ))
         );
     }
 }
