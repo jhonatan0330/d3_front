@@ -185,7 +185,7 @@
                     <div class="text-xs">{{ iDocument.fecha | date }}</div>
                     <div class="text-xs font-semibold mx-1">{{ iDocument.estadoNombre }}</div>
                   </div>
-                  <div class="flex flex-col" *ngIf="iDocument.dinero">
+                  <div class="flex justify-between" *ngIf="iDocument.dinero">
                     <div class="text-sm line-clamp-1">{{ iDocument.dinero.valorCampo | currency }}</div>
                     <div>{{ iDocument.dinero.valorTotal | currency }}</div>
                   </div>

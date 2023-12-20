@@ -88,42 +88,6 @@
           ]
         " (click)="fControl.setValue(row)"></tr>
     </table>
-
-    <!--table mat-table [dataSource]="filteredDocuments" class="w-full">
-      <ng-container matColumnDef="nombre">
-        
-        <td mat-cell *matCellDef="let element">
-          <span class="pr-1">{{ element.nombre }}</span>
-          <div [style.backgroundColor]="getColor(element.estadoExpediente)" class="text-xs">
-           {{ element.estadoNombre }}
-          </div>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="descripcion">
-        
-        <td mat-cell *matCellDef="let element">
-          <small class="pr-1">{{ element.descripcion }}</small>
-          <small *ngIf="element.dinero" class="pr-1">{{
-            element.dinero.valorTotal | number
-            }}</small>
-          <div class="pr-1" *ngIf="
-              element.caracteristicas && element.caracteristicas.length !== 0
-            ">
-            <div class="flex justify-between" *ngFor="let f of element.caracteristicas">
-              <small class="whitespace-nowrap font-extralight pr-2 text-xs hidden md:block">{{ f.campoDTO.nombre }}</small>
-              <span class="text-justify line-clamp-2 text-xs">{{ f.valorText }}</span>
-            </div>
-          </div>
-        </td>
-      </ng-container>
-      <tr mat-row class="cursor-pointer" *matRowDef="
-          let row;
-          columns: [
-            'nombre',
-            'descripcion'
-          ]
-        " (click)="fControl.setValue(row)"></tr>
-    </table-->
   </div>
 </mat-form-field>
 <!-- Campos multiples -->
@@ -281,11 +245,11 @@
               <div class="text-sm">{{ iDocument.fecha | date }}</div>
               <div class="text-sm mx-1 text-right">{{ iDocument.estadoNombre }}</div>
             </div>
-            <div class="flex" *ngIf="iDocument.dinero">
-              <div *ngIf="iDocument.dinero.valorTotal !== iDocument.dinero.saldo && 0 !== iDocument.dinero.saldo">
+            <div class="flex justify-between" *ngIf="iDocument.dinero">
+              <div class="text-sm line-clamp-1" *ngIf="iDocument.dinero.valorTotal !== iDocument.dinero.saldo && 0 !== iDocument.dinero.saldo">
                 {{iDocument.dinero.saldo | number}}
               </div>
-              <div class="text-right">{{ iDocument.dinero.valorTotal | number }}</div>
+              <div>{{ iDocument.dinero.valorTotal | number }}</div>
             </div>
           </mat-card-title>
           <mat-card-content class="p-1">
