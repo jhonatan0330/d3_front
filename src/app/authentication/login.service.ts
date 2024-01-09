@@ -88,6 +88,7 @@ export class LoginService {
           return res;
         }),
         catchError((error) => {
+          this.signout();
           return throwError(error);
         })
       );
