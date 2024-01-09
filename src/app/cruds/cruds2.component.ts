@@ -189,7 +189,8 @@ export class Cruds2Component implements OnInit, OnDestroy {
       if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FORM_TOTAL)) { this.displayedColumns.push('valor'); }
       this.displayedColumns.push('detalles');
       if (this.plantilla.reportes && this.plantilla.reportes.length !== 0) { this.displayedColumns.push('acciones'); }
-      this.showFields();
+      //Cuando es tipo proceso no puedo encontrar los campos de todas las plantillas
+      if (this.plantilla && this.plantilla.estado !== 'T') { this.showFields(); }
     });
 
     // Subscribe to media changes
@@ -356,7 +357,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
     }
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;
-    if (this.dynamicControls ) {
+    if (this.dynamicControls) {
       entity.filtersByFields = [];
       this.dynamicControls.forEach(fieldFilter => {
         const fieldEntity: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
