@@ -591,11 +591,12 @@ export class MassiveComponent implements OnInit {
         this.lblTipoProceso = detalle;
         this.cantidadProcesada++;
         //esto es para enviar a consultar solo de a 100
-        if(currentCampo.documentos.length> 100){
+        const numberToDistribute = 100;
+        if(currentCampo.documentos.length > numberToDistribute){
           const fieldToDistribute:DocumentoPlantillaCaracteristicaDTO = new DocumentoPlantillaCaracteristicaDTO();
           fieldToDistribute.llaveTabla = currentCampo.llaveTabla;
-          fieldToDistribute.documentos = currentCampo.documentos.slice(10);
-          currentCampo.documentos = currentCampo.documentos.slice(0,10);
+          fieldToDistribute.documentos = currentCampo.documentos.slice(numberToDistribute);
+          currentCampo.documentos = currentCampo.documentos.slice(0,numberToDistribute);
           fieldsToReview.push(fieldToDistribute);
         }
         this.api
