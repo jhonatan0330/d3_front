@@ -590,6 +590,14 @@ export class MassiveComponent implements OnInit {
           'seg';
         this.lblTipoProceso = detalle;
         this.cantidadProcesada++;
+        //esto es para enviar a consultar solo de a 100
+        if(currentCampo.documentos.length> 100){
+          const fieldToDistribute:DocumentoPlantillaCaracteristicaDTO = new DocumentoPlantillaCaracteristicaDTO();
+          fieldToDistribute.llaveTabla = currentCampo.llaveTabla;
+          fieldToDistribute.documentos = currentCampo.documentos.slice(10);
+          currentCampo.documentos = currentCampo.documentos.slice(0,10);
+          fieldsToReview.push(fieldToDistribute);
+        }
         this.api
           .validarTipoProcesoCarga(currentCampo, template.server)
           .subscribe((value: DocumentoPlantillaCaracteristicaDTO) => {
