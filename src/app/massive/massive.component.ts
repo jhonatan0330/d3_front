@@ -579,7 +579,7 @@ export class MassiveComponent implements OnInit {
       if (template) {
         const currentCampo = fieldsToReview[0];
         const detalle =
-          'CARGANDO CAMPOS' +
+          ' .......PROCESANDO CONSULTANDO ID  (' + this.cantidadProcesada + ')'
           currentCampo.nombre +
           ' INICIO : ' +
           this.inicio.toISOString() +
@@ -589,9 +589,9 @@ export class MassiveComponent implements OnInit {
           (new Date().getTime() - this.inicio.getTime()) / 1000 +
           'seg';
         this.lblTipoProceso = detalle;
-        this.cantidadProcesada++;
         //esto es para enviar a consultar solo de a 100
         const numberToDistribute = 100;
+        this.cantidadProcesada =  this.cantidadProcesada + numberToDistribute;
         if(currentCampo.documentos.length > numberToDistribute){
           const fieldToDistribute:DocumentoPlantillaCaracteristicaDTO = new DocumentoPlantillaCaracteristicaDTO();
           fieldToDistribute.llaveTabla = currentCampo.llaveTabla;
