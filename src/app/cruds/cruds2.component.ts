@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentFactoryResolver, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
@@ -28,7 +28,7 @@ import { getComponent } from 'app/modules/full/neuron/form-helper';
   selector: 'app-cruds',
   templateUrl: './cruds2.component.html'
 })
-export class Cruds2Component implements OnInit, OnDestroy {
+export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
   plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
   templatesFromProcess: DocumentoPlantillaDTO[];
   tableroId: string;
@@ -190,8 +190,7 @@ export class Cruds2Component implements OnInit, OnDestroy {
       if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FORM_TOTAL)) { this.displayedColumns.push('valor'); }
       this.displayedColumns.push('detalles');
       if (this.plantilla.reportes && this.plantilla.reportes.length !== 0) { this.displayedColumns.push('acciones'); }
-      //Cuando es tipo proceso no puedo encontrar los campos de todas las plantillas
-      if (this.plantilla && this.plantilla.estado !== 'T') { this.showFields(); }
+      this.showFields();
     });
 
     // Subscribe to media changes
@@ -209,6 +208,12 @@ export class Cruds2Component implements OnInit, OnDestroy {
           this.drawerOpened = false;
         }
       });
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.showFields();
+    });
   }
 
   ngOnDestroy(): void {
@@ -497,8 +502,13 @@ export class Cruds2Component implements OnInit, OnDestroy {
     if (this.myForm) {
       this.myForm.clear();
       this.dynamicControls = [];
+    } else {
+      // Espero que se cargue con el AfterInitView
+      return;
     }
     if (!this.plantilla) { return; }
+    //Cuando es tipo proceso no puedo encontrar los campos de todas las plantillas
+    if (this.plantilla.estado === 'T') { return; }
     if (!this.plantilla.caracteristicas) {
       this.cargarPlantilla(this.plantilla.llaveTabla, null);
       return;
