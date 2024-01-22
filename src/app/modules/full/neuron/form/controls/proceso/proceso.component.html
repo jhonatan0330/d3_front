@@ -126,14 +126,14 @@
             </button>
           </div>
           <!-- <mat-divider></mat-divider> -->
-          <div class="flex">
-            <div class="text-sm">{{ d.fecha | date }}</div>
-            <div class="text-sm mx-1 text-right">{{ d.estadoNombre }}</div>
+          <div class="text-sm flex justify-between">
+            <div>{{ d.fecha | date }}</div>
+            <div>{{ d.estadoNombre }}</div>
           </div>
           <div class="flex justify-between" *ngIf="d.dinero">
-            <div *ngIf="d.dinero.valorTotal !== d.dinero.saldo &&  0 !== d.dinero.saldo">{{ d.dinero.saldo | number }}
-            </div>
-            <div class="text-right">{{ d.dinero.valorTotal | number }}</div>
+            <div *ngIf="d.dinero.valorCampo && 0!== d.dinero.valorCampo && 0!== d.dinero.valorTotal"><small class="text-sm">Valor incluido: </small>{{ d.dinero.valorCampo | number }}</div>
+            <div *ngIf="d.dinero.valorTotal !== d.dinero.saldo &&  0 !== d.dinero.saldo"><small class="text-sm">Saldo: </small>{{ d.dinero.saldo | number }}</div>
+            <div><small class="text-sm">Valor Total: </small>{{ d.dinero.valorTotal | number }}</div>
           </div>
         </mat-card-title>
         <mat-card-content class="p-1">

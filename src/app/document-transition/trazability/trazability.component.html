@@ -108,11 +108,9 @@
                 </div>
               </div>
               <!-- Quinta linea dinero -->
-              <div class="w-full flex justify-between">
-                <small *ngIf="g.saldo && g.saldo !== 0">
-                  {{ g.saldo | currency }}</small>
-
-                <b *ngIf="g.total">{{ g.total | currency }}</b>
+              <div class="w-full flex justify-between" *ngIf="g.total">
+                <small>Saldo : {{ g.saldo | currency }}</small>
+                <b> Valor Total : {{ g.total | currency }}</b>
               </div>
               <!-- Sexta linea Adjuntos -->
               <div *ngIf="g.adjunto" class="w-full">
@@ -123,8 +121,7 @@
               <!-- Septima linea Campos nuevos -->
               <div class="w-full" *ngIf="g.campos">
                 <div *ngFor="let iCampoOriginal of g.campos">
-                  <b class="text-xs">{{ iCampoOriginal.campo }} :</b><small> {{ iCampoOriginal.valorText
-                    }}</small>
+                  <b class="text-xs">{{ iCampoOriginal.campo }} :</b><small> {{ iCampoOriginal.valorText }}</small>
                 </div>
               </div>
             </ng-container>
