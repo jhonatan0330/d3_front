@@ -78,9 +78,9 @@
                                         <small>{{ notification.fechaArrancar | date :'medium'
                                             }}</small>
                                     </div>
-                                    <div *ngIf="notification.fechaLimite" class="flex justify-between px-1 text-xs">
+                                    <div *ngIf="notification.fechaTerminar" class="flex justify-between px-1 text-xs">
                                         <small> Maximo hasta :</small>
-                                        <small>{{ notification.fechaLimite | date :'medium'
+                                        <small>{{ notification.fechaTerminar | date :'medium'
                                             }}</small>
                                     </div>
                                     <div *ngIf="notification.documentoDTO.dinero">
