@@ -1,10 +1,10 @@
 <!-- Notifications toggle -->
 <button mat-icon-button (click)="openPanel()" #notificationsOrigin>
-    <ng-container *ngIf="unreadCount > 0">
+    <ng-container *ngIf="notificationCount > 0">
         <span class="absolute top-0 right-0 left-0 flex items-center justify-center h-3">
             <span
                 class="flex items-center justify-center shrink-0 min-w-4 h-4 px-1 ml-4 mt-2.5 rounded-full bg-teal-600 text-indigo-50 text-xs font-medium">
-                {{unreadCount}}
+                {{notificationCount}}
             </span>
         </span>
     </ng-container>
@@ -34,6 +34,16 @@
 
         <!-- Content -->
         <div class="relative flex flex-col flex-auto sm:max-h-120 divide-y overflow-y-auto bg-card">
+            <!-- Past Time -->
+            <ng-container *ngIf="!pastTimeCount !==0">
+                <div class="flex flex-col flex-auto items-center justify-center sm:justify-start py-12 px-8">
+                    <div class="flex flex-0 items-center justify-center w-14 h-14 rounded-full bg-primary-100">
+                        <mat-icon class="text-primary-500-700" [svgIcon]="'heroicons_outline:bell'"></mat-icon>
+                    </div>
+                    <div class="mt-5 text-2xl font-semibold tracking-tight">{{pastTimeCount}} Tareas vencidas</div>
+                    <div class="w-full max-w-60 mt-1 text-md text-center text-secondary">Por favor revisa tus tareas vencidas.</div>
+                </div>
+            </ng-container>
             <!-- Notifications -->
             <ng-container *ngFor="let notification of notifications; trackBy: trackByFn">
                 <div class="group hover:bg-gray-50 dark:hover:bg-black dark:hover:bg-opacity-5 m-2"
@@ -48,38 +58,34 @@
                                 <div class="pt-2 pl-2">
                                     <img [src]="notification.documentoDTO.imagen" class="w-10 h-10 max-w-none" />
                                 </div>
-                                <div class="w-full pl-2">
-                                    <div class="flex font-semibold">
+                                <div class="px-2 w-full">
+                                    <div class="flex font-semibold justify-between">
                                         <div class="whitespace-nowrap">{{ notification.documentoDTO.nombre }}</div>
-                                        <div class="w-full text-right truncate text-md" >{{ notification.documentoDTO.estadoNombre }}</div>
+                                        <div class="text-right truncate text-md" >{{ notification.documentoDTO.estadoNombre }}</div>
                                     </div>
-                                    <div *ngIf="notification.fechaRegistro" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="heroicons_outline:check"></mat-icon>
+                                    <div *ngIf="notification.fechaRegistro" class="flex justify-between px-1 text-xs">
                                         <div>Asignado</div>
-                                        <div class="w-full text-right">{{ notification.fechaRegistro | date :'medium' }}
+                                        <div class="text-right">{{ notification.fechaRegistro | date :'medium' }}
                                         </div>
                                     </div>
-                                    <div *ngIf="notification.fechaLeido" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="heroicons_outline:check"></mat-icon>
+                                    <div *ngIf="notification.fechaLeido" class="flex justify-between px-1 text-xs">
                                         <div>Leido</div>
-                                        <div class="w-full text-right">{{ notification.fechaLeido | date :'medium' }}
+                                        <div class="text-right">{{ notification.fechaLeido | date :'medium' }}
                                         </div>
                                     </div>
-                                    <div *ngIf="notification.fechaArrancar" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="heroicons_outline:check"></mat-icon>
+                                    <div *ngIf="notification.fechaArrancar" class="flex justify-between px-1 text-xs">
                                         <small> Inicia el :</small>
-                                        <small class="w-full text-right">{{ notification.fechaArrancar | date :'medium'
+                                        <small>{{ notification.fechaArrancar | date :'medium'
                                             }}</small>
                                     </div>
-                                    <div *ngIf="notification.fechaLimite" class="flex w-full px-1 text-xs">
-                                        <mat-icon class="icon-size-3" svgIcon="heroicons_outline:check"></mat-icon>
+                                    <div *ngIf="notification.fechaLimite" class="flex justify-between px-1 text-xs">
                                         <small> Maximo hasta :</small>
-                                        <small class="w-full text-right">{{ notification.fechaLimite | date :'medium'
+                                        <small>{{ notification.fechaLimite | date :'medium'
                                             }}</small>
                                     </div>
                                     <div *ngIf="notification.documentoDTO.dinero">
                                         <span>{{ notification.documentoDTO.dinero.valorCampo | number }}</span>
-                                        <span class="w-full text-right">{{ notification.documentoDTO.dinero.valorTotal |
+                                        <span class="text-right">{{ notification.documentoDTO.dinero.valorTotal |
                                             number }}</span>
                                     </div>
                                 </div>

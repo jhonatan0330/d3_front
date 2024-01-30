@@ -124,8 +124,10 @@ export class MassiveComponent implements OnInit {
           this.templateService.getTemplate(crudProperty, null);
 
         if (!template.caracteristicas) {
+          this.isProcessing = true;
           this.api.obtenerCampos(crudProperty, template.server).subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
+              this.isProcessing = false;
               this.loadFiledInMultipleTemplate(plantilla);
               this.templateService.getTemplate(
                 plantilla.llaveTabla,
@@ -133,7 +135,7 @@ export class MassiveComponent implements OnInit {
               ).caracteristicas = plantilla.caracteristicas;
             },
             error: () => {
-              // this.closeMassiveForm();
+              this.isProcessing = false;
             },
           });
           return;
@@ -599,36 +601,42 @@ export class MassiveComponent implements OnInit {
           currentCampo.documentos = currentCampo.documentos.slice(0,numberToDistribute);
           fieldsToReview.push(fieldToDistribute);
         }
+        this.isProcessing = true;
         this.api
           .validarTipoProcesoCarga(currentCampo, template.server)
-          .subscribe((value: DocumentoPlantillaCaracteristicaDTO) => {
-            if (value != null) {
-              for (let a = 0; a < documentsToRefactor.length; a++) {
-                const iDocumento = documentsToRefactor[a];
-                for (let b = 0; b < iDocumento.caracteristicas.length; b++) {
-                  const iCampo = iDocumento.caracteristicas[b];
-                  if (iCampo.campo === value.llaveTabla) {
-                    for (let c = 0; c < value.documentos.length; c++) {
-                      const iPedidoVenta = value.documentos[c];
-                      if (iPedidoVenta.nombre === iCampo.valorText) {
-                        iCampo.valorOpcion = iPedidoVenta.llaveTabla;
-                        break;
+          .subscribe({
+            next:(value: DocumentoPlantillaCaracteristicaDTO)=>{
+              this.isProcessing = false;
+              if (value != null) {
+                for (let a = 0; a < documentsToRefactor.length; a++) {
+                  const iDocumento = documentsToRefactor[a];
+                  for (let b = 0; b < iDocumento.caracteristicas.length; b++) {
+                    const iCampo = iDocumento.caracteristicas[b];
+                    if (iCampo.campo === value.llaveTabla) {
+                      for (let c = 0; c < value.documentos.length; c++) {
+                        const iPedidoVenta = value.documentos[c];
+                        if (iPedidoVenta.nombre === iCampo.valorText) {
+                          iCampo.valorOpcion = iPedidoVenta.llaveTabla;
+                          break;
+                        }
                       }
+                      break;
                     }
-                    break;
                   }
                 }
+  
+                const index = fieldsToReview.indexOf(currentCampo);
+                if (index !== -1) {
+                  fieldsToReview.splice(index, 1);
+                }
+                this.procesarCamposProceso(
+                  fieldsToReview,
+                  template,
+                  documentsToRefactor
+                );
               }
-
-              const index = fieldsToReview.indexOf(currentCampo);
-              if (index !== -1) {
-                fieldsToReview.splice(index, 1);
-              }
-              this.procesarCamposProceso(
-                fieldsToReview,
-                template,
-                documentsToRefactor
-              );
+            }, error:()=>{
+              this.isProcessing = false;
             }
           });
       }
@@ -679,26 +687,30 @@ export class MassiveComponent implements OnInit {
               if(iCampo.valorText && !iCampo.valorText.startsWith('http')){
                 for (let j = 0; j < this.files.length; j++) {
                   if(this.files[j].name === iCampo.valorText){
+                    this.isProcessing = true;
                     this.api.uploadFile(this.files[j], this.urlServer).subscribe({
                       next: (value) => {
                         iCampo.valorText = value.message;
                         this.procesarDocumentos();
+                        this.isProcessing = false;
                       },
                       error: (err: any) => {
                         console.log(err);
+                        this.isProcessing = false;
                       }
                     });
                     return;
                   }
                 }
-                
               }
             }
         }
+        this.isProcessing = true;
         this.api
           .guardarDocumento(this.currentPedido, this.plantilla.server, Date.now().toString())
           .subscribe({
             next: (value: PedidoVentaDTO) => {
+              this.isProcessing = false;
               if (value) {
                 this.procesaMultiple(
                   value,
@@ -708,6 +720,7 @@ export class MassiveComponent implements OnInit {
               }
             },
             error: (err: any) => {
+              this.isProcessing = false;
               if (err) {
                 this.failedDocuments.push(this.currentPedido);
                 // if(tarifario!=null) failedList.dataProvider.addItem(currentTarifa);
@@ -758,10 +771,12 @@ export class MassiveComponent implements OnInit {
         if (fieldDoc.campo === this.fieldIdInTemplateSecondary.llaveTabla) {
           if (fieldDoc.valorText === consecutive) {
             fieldDoc.valorOpcion = newDocument.llaveTabla;
+            this.isProcessing = true;
             this.api
               .guardarDocumento(element, this.plantilla.server, Date.now().toString())
               .subscribe({
                 next: () => {
+                  this.isProcessing = false;
                   const indexList =
                     this.documentosGeneradosMultiple.indexOf(element);
                   if (indexList !== -1) {
@@ -770,6 +785,7 @@ export class MassiveComponent implements OnInit {
                   this.procesaMultiple(newDocument, consecutive);
                 },
                 error: (err: any) => {
+                  this.isProcessing = false;
                   if (err) {
                     Swal.fire({
                       title: 'Se ha presentado un error, continuamos?',

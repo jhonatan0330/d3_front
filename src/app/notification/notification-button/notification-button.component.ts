@@ -24,7 +24,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;
 
     notifications: ActividadDTO[];
-    unreadCount: number = 0;
+    notificationCount: number = 0;
+    pastTimeCount: number = 0;
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -186,13 +187,11 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
      * @private
      */
     private _calculateUnreadCount(): void {
-        let count = this.notifications.length;
-        /*if ( this.notifications && this.notifications.length )
+        this.notificationCount = this.notifications.length;
+        if ( this.notifications && this.notifications.length )
         {
-            count = this.notifications.filter(notification => !notification.read).length;
-        }*/
-
-        this.unreadCount = count;
+            this.pastTimeCount = this.notifications.filter(notification => (notification.fechaTerminar && notification.fechaTerminar < new Date())).length;
+        }
     }
 
     getColor(pEstado: string) {

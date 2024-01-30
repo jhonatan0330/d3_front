@@ -57,7 +57,7 @@
       </button>
 
       <input [id]="'_file'" type="file" webkitdirectory directory multiple
-        (click)="$event.target.value = '';$event.stopPropagation();"
+        (click)="$event.target.value = '';$event.stopPropagation();" [disabled]="isProcessing"
         (change)="handleFileInputToLoadArchivo($event.target.files)" />
 
     </div>
