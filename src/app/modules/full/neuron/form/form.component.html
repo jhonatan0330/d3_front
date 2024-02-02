@@ -1,7 +1,7 @@
 <!-- Titulo -->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex px-4 py-2 shadow-md" *ngIf="plantilla"
   [style]="fullScreen ? 'width: 80vw;':''" [style.color]="getColorFont()" [style.backgroundColor]="getColor()">
-  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
+  <img src="{{ pedido?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
   <!-- Texto del titulo -->
   <div class="w-full">
     <div class="w-full flex sm:flex">
