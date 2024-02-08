@@ -1,0 +1,50 @@
+<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+  <div class="flex flex-col flex-auto w-full bg-gray-100 dark:bg-transparent p-4 md:p-6 gap-2 overflow-auto">
+    <!-- Title and action buttons -->
+    <div class="flex w-full">
+      <div class="w-full text-center">
+        <h2 class="text-3xl font-semibold tracking-tight leading-8">{{title}}</h2>
+      </div>
+      <button mat-raised-button color="primary" class="w-full" (click)="getFees()" >
+        <mat-icon>save</mat-icon> Consultar Tarifas
+      </button>
+      <button mat-raised-button color="primary" class="w-full" (click)="getFees()" >
+        <mat-icon>save</mat-icon> Crear Tarifa
+      </button>
+    </div>
+
+    <div  class="overflow-auto">
+      <table mat-table [dataSource]="data" class="mat-elevation-z8">
+        <ng-container [matColumnDef]="'productoNombre'" >
+          <th mat-header-cell *matHeaderCellDef class="border-l"> PRODUCTO </th>
+          <td mat-cell *matCellDef="let element" class="border-l"> {{element.productoNombre}} </td>
+        </ng-container>
+        <ng-container [matColumnDef]="'recursoNombre'">
+          <th mat-header-cell *matHeaderCellDef class="border-l"> {{titleDim1}} </th>
+          <td mat-cell *matCellDef="let element" class="border-l"> {{element.recursoNombre}} </td>
+        </ng-container>
+        <ng-container [matColumnDef]="'dimension2Nombre'">
+          <th mat-header-cell *matHeaderCellDef class="border-l"> {{titleDim2}} </th>
+          <td mat-cell *matCellDef="let element" class="border-l"> {{element.dimension2Nombre}} </td>
+        </ng-container>
+        <ng-container [matColumnDef]="'dimension3Nombre'">
+          <th mat-header-cell *matHeaderCellDef class="border-l"> {{titleDim3}} </th>
+          <td mat-cell *matCellDef="let element" class="border-l"> {{element.dimension3Nombre}} </td>
+        </ng-container>
+        <ng-container [matColumnDef]="'dimension4Nombre'">
+          <th mat-header-cell *matHeaderCellDef class="border-l"> {{titleDim4}} </th>
+          <td mat-cell *matCellDef="let element" class="border-l"> {{element.dimension4Nombre}} </td>
+        </ng-container>
+        <ng-container [matColumnDef]="'valor'" >
+          <th mat-header-cell *matHeaderCellDef class="border-l"> TARIFA </th>
+          <td mat-cell *matCellDef="let element" class="border-l"> {{element.valor}} </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    
+    
+  </div>
+</div>

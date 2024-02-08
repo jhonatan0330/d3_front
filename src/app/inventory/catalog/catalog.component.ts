@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-import { ProductoDTO, ProductoInventarioDTO, TarifaDTO } from '../inventory.types';
+import { ProductoDTO, ProductoInventarioDTO } from '../inventory.types';
 import { InventoryService } from '../inventory.service';
 
 @Component({
@@ -20,10 +20,8 @@ export class CatalogComponent implements OnInit {
   isEditable = false; // activa el modo de edicion del producto
   isLoading = false; // ayuda a mostrar la barra de progreso en las busqueas
 
-  tarifaColumns: String[] = ['tarifario', 'recurso', 'cantidad', 'rango_valor', 'valor'];
   inventoryColumns: String[] = ['bodega', 'minimo', 'maximo', 'actual'];
 
-  tarifas: TarifaDTO[] =[];
   inventario: ProductoInventarioDTO[] =[];
 
   server: string;
@@ -57,7 +55,6 @@ export class CatalogComponent implements OnInit {
         this.descripcionControl.setValue(this.product.descripcion);
         this.imageControl.setValue(this.product.imagen);
         this.isLoading = false;
-        this.consultarTarifas();
       },
       error: () => {
         this.dialogRef.close();
@@ -111,19 +108,6 @@ export class CatalogComponent implements OnInit {
     }
   }
 
-  consultarTarifas() {
-    this.isLoading = true;
-    this.api.consultarTarifasProducto(this.product.llaveTabla, this.server).subscribe({
-      next: (_tarifas: TarifaDTO[]) => {
-        this.tarifas = _tarifas;
-        this.isLoading = false;
-        this.consultarInventarios();
-      },
-      error: () => {
-        this.isLoading = false;
-      }
-    });
-  }
 
   consultarInventarios() {
     this.isLoading = true;
@@ -141,7 +125,6 @@ export class CatalogComponent implements OnInit {
   toogleEdit() {
     this.isEditable = true;
     this.inventoryColumns.push('acciones');
-    this.tarifaColumns.push('acciones');
   }
 
 }

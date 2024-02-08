@@ -18,7 +18,8 @@ import { getComponent } from 'app/modules/full/neuron/form-helper';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { IDynamicControl } from '../base/base.component';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import { ProductoInventarioDTO, TarifaDTO } from 'app/inventory/inventory.types';
+import { ProductoInventarioDTO } from 'app/inventory/inventory.types';
+import { TarifaDTO } from 'app/tariff/tariff.domain';
 
 @Component({
   selector: 'form-control-product',

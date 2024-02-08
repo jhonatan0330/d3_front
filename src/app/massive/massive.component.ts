@@ -18,7 +18,7 @@ import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/mo
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -62,6 +62,7 @@ export class MassiveComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private templateService: TemplateService,
     private api: ApiService,
     private dialog: MatDialog
@@ -77,6 +78,8 @@ export class MassiveComponent implements OnInit {
           this.urlServer
         );
         this.startForm();
+      } else {
+        this.router.navigate(['/main']);
       }
     });
     this.dialog.closeAll();
@@ -84,7 +87,7 @@ export class MassiveComponent implements OnInit {
 
   startForm() {
     if (!this.plantilla) {
-      // this.closeMassiveForm();
+      this.router.navigate(['/main']);
     } else {
       // Obtener Variables
       this.canMassive = !PlantillaHelper.isEmpty(
@@ -723,7 +726,6 @@ export class MassiveComponent implements OnInit {
               this.isProcessing = false;
               if (err) {
                 this.failedDocuments.push(this.currentPedido);
-                // if(tarifario!=null) failedList.dataProvider.addItem(currentTarifa);
                 this.documentosGenerados.splice(0, 1);
                 this.cantidadProcesada = this.cantidadProcesada - 1;
                 Swal.fire({

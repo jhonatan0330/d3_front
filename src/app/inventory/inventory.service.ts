@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { InventoryPagination, ProductoDTO, ProductoInventarioDTO, TarifaDTO } from './inventory.types';
+import { InventoryPagination, ProductoDTO, ProductoInventarioDTO } from './inventory.types';
 import { HttpClient } from '@angular/common/http';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { tap } from 'lodash';
@@ -54,12 +54,6 @@ export class InventoryService {
   consultarProductos2Filter(filter: String, _server: string): Observable<ProductoDTO[]> {
     return this.http.get<ProductoDTO[]>(
       this.ls.getUrlAccess('/document/getProducts/' + filter, _server)
-    );
-  }
-
-  consultarTarifasProducto(productId: String, _server: string): Observable<TarifaDTO[]> {
-    return this.http.get<TarifaDTO[]>(
-      this.ls.getUrlAccess('/document/getTarifas/' + productId, _server)
     );
   }
 

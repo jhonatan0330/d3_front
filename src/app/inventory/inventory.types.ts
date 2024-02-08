@@ -67,21 +67,6 @@ export class ProductoDTO extends BasicParamDTO {
 
 
 
-export class TarifaDTO extends BasicDTO {
-  tarifario: string;
-  tarifarioNombre: string;
-  producto: string;
-  productoNombre: string;
-  recurso: string;
-  recursoNombre: string;
-  rangoPrecios: boolean;
-  valorMinimo: number;
-  valor: number;
-  valorMaximo: number;
-  cantidadMinima: number;
-  cantidadMaxima: number;
-  totalMinimo: number;
-}
 
 export interface InventoryPagination
 {

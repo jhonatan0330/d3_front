@@ -77,10 +77,9 @@ export class FormComponent implements OnInit, AfterViewInit {
   // REPORTS
   reportes: ReporteBaseDTO[] = [];
 
-  // Carga Masiva
-  canMassive = false;
 
-  // Transferencias
+  canMassive = false;
+  canTariff = false;
   canTransfer = false;
 
 
@@ -214,6 +213,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         pedidoVenta.llaveTabla = value.llaveTabla;
       }
       pedidoVenta.server = this.plantilla.server;
+      pedidoVenta.messages = value.messages;
       this.utilsService.modalWithParams(pedidoVenta);
     } else {
       Swal.fire({
@@ -248,6 +248,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.api.consultarDocumento(entity, this.plantilla.server).subscribe({
       next: (_value: PedidoVentaDTO) => {
         this.pedido = _value;
+        this.pedido.messages = this.pedidoBase.messages;
         this.showForm();
       },
       error: () => {
@@ -587,10 +588,8 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   // Resuelve las propiedades de la plantilla
   resolvePropiertiesForm() {
-    this.canMassive = !PlantillaHelper.isEmpty(
-      this.plantilla.propiedades,
-      PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA
-    );
+    this.canMassive = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA);
+    this.canTariff = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_TIPO_CONFIGURATION) === "TARIFARIO";
     if (this.pedido.llaveTabla) {
       if (!this.pedido.estadoExpediente) {
         // Solo se pueden anular los que estan en estado activo y que no son de un proceso
@@ -642,12 +641,12 @@ export class FormComponent implements OnInit, AfterViewInit {
   // Cargo en el formulario los botones de accion
 
   getColor() {
-    if(!this.pedido) {  return null;}
+    if (!this.pedido) { return null; }
     return this.templateService.getColor(this.pedido.estadoExpediente);
   }
 
   getColorFont() {
-    if(!this.pedido) {  return null;}
+    if (!this.pedido) { return null; }
     return this.templateService.getColorFont(this.pedido.estadoExpediente);
   }
 
@@ -783,7 +782,10 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.utilsService.modalWithParams(_doc, true).subscribe((res) => {
       if (res && this.dialogRef) {
         this.dialogRef.close();
-        if (!this.close2Save) { this.utilsService.modalWithParams(this.pedido); }
+        if (!this.close2Save) {
+          if (res && res.data && res.data.messages) { this.pedido.messages = res.data.messages; }
+          this.utilsService.modalWithParams(this.pedido);
+        }
       }
     });
   }
@@ -863,6 +865,14 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
   }
 
+  showTariff() {
+    if (this.canTariff) {
+      const redirect = 'tariff/' + this.plantilla.llaveTabla + '/' + this.pedido.llaveTabla;
+      this._router.navigateByUrl(redirect);
+      this.dialogRef.close()
+    }
+  }
+
   showTransfer() {
     if (this.canTransfer) {
       this.utilsService.modalTransfer(this.pedido.llaveTabla, this.pedido.estadoExpediente, this.pedido.plantilla, this.plantilla.server)
@@ -928,7 +938,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     return window.location.origin + '/main/' + this.plantilla.llaveTabla + '/' + this.pedidoBase.llaveTabla;
   }
 
-  
+
   sendWhatsApp() {
     const url = 'whatsapp://send?text=' + this.getURLDocument();
     window.open(url, "_blank");

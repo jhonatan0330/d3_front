@@ -53,6 +53,10 @@
         <button mat-menu-item matTooltip="Carga Masiva" *ngIf="canMassive" (click)="showMassive()" tabindex="-1">
           <mat-icon>cloud_upload</mat-icon> Carga
         </button>
+        <!-- Boton tarifas -->
+        <button mat-menu-item matTooltip="Tarifas" *ngIf="modificable && canTariff" (click)="showTariff()" tabindex="-1">
+          <mat-icon>monetization_on</mat-icon> Tarifas 
+        </button>
         <!-- Boton Configuracion producto -->
         <button mat-menu-item matTooltip="Configuracion de producto"
           *ngIf="canProduct && modificable && pedido && pedido.llaveTabla" (click)="showProduct()" tabindex="-1">
@@ -102,6 +106,15 @@
       </button>
     </form>
   </mat-card>
+  <!-- Alertas-->
+  <div *ngIf="pedido && pedido.messages" class="py-1 gap-1">
+    <div *ngFor="let msg of pedido.messages" class="flex items-center p-1 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+      <mat-icon class="text-red-800">error</mat-icon>
+      <div class="w-full px-2">
+        <span class="font-medium">Error</span> {{msg.message}}
+      </div>
+    </div>
+  </div>
   <!-- Acciones  -->
   <div class="w-full" *ngIf="pedido && pedido.llaveTabla" >
     <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>

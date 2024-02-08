@@ -1,5 +1,6 @@
-import { CategoriaProductoDTO, ProductoDTO, TarifaDTO, UsuarioRolProductoDTO } from "app/inventory/inventory.types";
+import { CategoriaProductoDTO, ProductoDTO, UsuarioRolProductoDTO } from "app/inventory/inventory.types";
 import { BasicDTO, BasicFilterDTO, BasicParamDTO } from "app/shared/shared.domain";
+import { TarifaDTO } from "app/tariff/tariff.domain";
 
 export class ProcesoEstadoDTO extends BasicParamDTO {
   tipo: string;
@@ -44,7 +45,17 @@ export class PedidoVentaDTO extends BasicDTO {
   campoOrigen: string;
   campoPropiedad: string;
   server: string;
+  messages: DocumentMessage[];
 }
+
+export class DocumentMessage  {
+  message: string;
+	type: string;
+	date: Date;
+	documentCode: string;
+	documentId: string;
+}
+
 export class PedidoVentaCaracteristicaDTO extends BasicDTO {
   documento: string;
   campo: string;

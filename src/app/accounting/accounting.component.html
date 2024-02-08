@@ -29,8 +29,8 @@
                         <ng-container *ngFor="let catalog of catalogs; let i = index; trackBy: trackByFn">
                             <a class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
                                 (click)="selectCatalog(catalog)"
-                                [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedCatalog || selectedCatalog.key !== catalog.key,
-                                                'bg-primary-50 dark:bg-hover': selectedCatalog && selectedCatalog.key === catalog.key}">
+                                [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !accountingService.currentCatalog || accountingService.currentCatalog.key !== catalog.key,
+                                                'bg-primary-50 dark:bg-hover': accountingService.currentCatalog && accountingService.currentCatalog.key === catalog.key}">
                                 <div class="min-w-0 ml-4">
                                     <div class="font-medium leading-5 truncate">{{catalog.name}}</div>
                                     <div class="leading-5 truncate text-secondary">{{catalog.code}}</div>

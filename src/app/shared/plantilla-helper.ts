@@ -1,4 +1,5 @@
 
+import { PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PropiedadDTO } from './shared.domain';
 
 export class PlantillaHelper {
@@ -25,6 +26,7 @@ export class PlantillaHelper {
   static PERMISO_PLANTILLA_INICIO_RAPIDO = 'PERMISO_PLANTILLA_INICIO_RAPIDO';
   static PERMISO_PLANTILLA_CARGA_MASIVA = 'PERMISO_PLANTILLA_CARGA_MASIVA';
   static PLANTILLA_CARGA_MASIVA_MULTIPLE = 'PLANTILLA_CARGA_MASIVA_MULTIPLE'; // arranco con decoentregas
+  static PLANTILLA_TIPO_CONFIGURATION = 'PLANTILLA_TIPO_CONFIGURATION';
   static PERMISO_PLANTILLA_CAMBIAR_ESTADO = 'PERMISO_PLANTILLA_CAMBIAR_ESTADO';
   static PERMISO_PLANTILLA_TRANSFERIR = 'PERMISO_PLANTILLA_TRANSFERIR';
   static PERMISO_PLANTILLA_LISTAR_MENU = 'PERMISO_PLANTILLA_LISTAR_MENU';
@@ -32,7 +34,6 @@ export class PlantillaHelper {
   static PLANTILLA_INSTRUCCION_CREAR = 'PLANTILLA_INSTRUCCION_CREAR';
   static PLANTILLA_HISTORIAL_ACTIVO = 'PLANTILLA_HISTORIAL_ACTIVO';
   static PLANTILLA_INICIA_PROCESO = 'PLANTILLA_INICIA_PROCESO';
-  
 
   static ROL = 'ROL';
   static FUNCION_VALIDAR = 'FUNCION_VALIDAR';
@@ -348,4 +349,44 @@ export class MVCTranslate {
     }
     return text;
   }
+
 }
+ export class FieldHelper {
+  
+  static getValueDate(document: PedidoVentaDTO, code:string): Date {
+		const field: PedidoVentaCaracteristicaDTO = FieldHelper.getField(document, code);
+		if (field==null) return null;
+		return field.valorFecha;
+	}
+
+	static getValueText(document: PedidoVentaDTO, code:string): string {
+		const field: PedidoVentaCaracteristicaDTO = FieldHelper.getField(document, code);
+		if (field==null) return null;
+		return field.valorText;
+	}
+	
+	static getValueOption(document: PedidoVentaDTO, code:string): string {
+		const field: PedidoVentaCaracteristicaDTO = FieldHelper.getField(document, code);
+		if (field==null) return null;
+		return field.valorOpcion;
+	}
+	
+	static getValueBool(document: PedidoVentaDTO, code:string):boolean {
+		const field: PedidoVentaCaracteristicaDTO = FieldHelper.getField(document, code);
+		if (field==null) return null;
+		if (!field.valorNumero) return false;
+		return (field.valorNumero===1);
+	}
+	
+	static getField(document: PedidoVentaDTO, code:String): PedidoVentaCaracteristicaDTO {
+		if(document==null)	return null;
+		if(!document.caracteristicas || document.caracteristicas.length==0) return null;
+
+    for (let i = 0; i < document.caracteristicas.length; i++) {
+      const iField = document.caracteristicas[i];
+      if (iField.campoDTO && iField.campoDTO.codigo===code)
+      return iField;
+    }
+		return null;
+	}
+ }
