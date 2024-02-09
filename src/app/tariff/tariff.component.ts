@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import Swal from 'sweetalert2';
 import { FieldHelper, MVCTranslate } from 'app/shared/plantilla-helper';
+import { FeeFormComponent } from './fee-form/fee-form.component';
 
 
 @Component({
@@ -21,7 +22,7 @@ export class TariffComponent implements OnInit {
     tariffId: string;
 
     plantilla: DocumentoPlantillaDTO;
-    pedido: PedidoVentaDTO; // Contiene la data del tarifario
+    tariffDocument: PedidoVentaDTO; // Contiene la data del tarifario
 
     title: string;
     isLoading = false;
@@ -67,25 +68,25 @@ export class TariffComponent implements OnInit {
             entity.llaveTabla = this.tariffId;
             this.api.consultarDocumento(entity, this.plantilla.server).subscribe({
                 next: (_value: PedidoVentaDTO) => {
-                    this.pedido = _value;
-                    this.title = FieldHelper.getValueText(this.pedido, "NOMBRE");
-                    if (FieldHelper.getValueText(this.pedido, "NOMBRE_DIM_4")) {
+                    this.tariffDocument = _value;
+                    this.title = FieldHelper.getValueText(this.tariffDocument, "NOMBRE");
+                    if (FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_4")) {
                         this.displayedColumns.unshift('dimension4Nombre');
-                        this.titleDim4 = FieldHelper.getValueText(this.pedido, "NOMBRE_DIM_4");
+                        this.titleDim4 = FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_4");
                     }
-                    if (FieldHelper.getValueText(this.pedido, "NOMBRE_DIM_3")) {
+                    if (FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_3")) {
                         this.displayedColumns.unshift('dimension3Nombre');
-                        this.titleDim3 = FieldHelper.getValueText(this.pedido, "NOMBRE_DIM_3");
+                        this.titleDim3 = FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_3");
                     }
-                    if (FieldHelper.getValueText(this.pedido, "NOMBRE_DIM_2")) {
+                    if (FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_2")) {
                         this.displayedColumns.unshift('dimension2Nombre');
-                        this.titleDim2 = FieldHelper.getValueText(this.pedido, "NOMBRE_DIM_2");
+                        this.titleDim2 = FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_2");
                     }
-                    if (FieldHelper.getValueText(this.pedido, "NOMBRE_DIM_1")) {
+                    if (FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_1")) {
                         this.displayedColumns.unshift('recursoNombre');
-                        this.titleDim1 = FieldHelper.getValueText(this.pedido, "NOMBRE_DIM_1");
+                        this.titleDim1 = FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_1");
                     }
-                    if (!FieldHelper.getValueBool(this.pedido, "PRODUCTO_OPCIONAL")) {
+                    if (!FieldHelper.getValueBool(this.tariffDocument, "PRODUCTO_OPCIONAL")) {
                         this.displayedColumns.unshift('productoNombre');
                     }
                 },
@@ -109,6 +110,15 @@ export class TariffComponent implements OnInit {
                 this.isLoading = false;
             }
         });
+    }
+
+    showFee(fee: TarifaDTO){
+        if (!this.tariffDocument) { return; }
+        const dialogRef = this.dialog.open(FeeFormComponent, {
+            data: { tariff: this.tariffDocument, parentId: fee.llaveTabla },
+            disableClose: true, 
+        });
+        dialogRef.afterClosed().subscribe(() => this.getFees());
     }
 
 }

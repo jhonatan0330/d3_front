@@ -51,7 +51,6 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
         MatDatepickerModule,
         MatAutocompleteModule,
         MatSortModule,
-        NgClass,
         MatProgressBarModule,
         CurrencyPipe,
         DatePipe,
