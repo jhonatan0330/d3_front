@@ -5,28 +5,28 @@
             <mat-icon class="text-current">close</mat-icon>
         </button>
     </div>
-    <form class="p-6 sm:p-8" [formGroup]="form">
-        <mat-form-field class="w-full">
+    <form class="p-6 sm:p-8" [formGroup]="form" *ngIf="!loading">
+        <mat-form-field class="w-full" *ngIf="viewProduct">
             <mat-label>Producto</mat-label>
             <input matInput [formControlName]="'producto'"> 
         </mat-form-field>
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full" *ngIf="titleDim1">
             <mat-label>Dimension 1</mat-label>
             <input matInput [formControlName]="'recurso'" >
         </mat-form-field>
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full" *ngIf="titleDim2">
             <mat-label>Dimension 2</mat-label>
             <input matInput [formControlName]="'dimension2'"> 
         </mat-form-field>
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full" *ngIf="titleDim3">
             <mat-label>Dimension 3</mat-label>
             <input matInput [formControlName]="'dimension3'">
         </mat-form-field>
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full" *ngIf="titleDim4">
             <mat-label>Dimension 4</mat-label>
             <input matInput [formControlName]="'dimension4'">
         </mat-form-field>
-        <div class="w-full gap-1 sm:justify-between sm:flex">
+        <div class="w-full gap-1 sm:justify-between sm:flex" *ngIf="viewQuantity">
             <mat-form-field class="w-full">
                 <mat-label>Cantidad Minima</mat-label>
                 <input matInput [formControlName]="'cantidadMinima'" type="number" >
@@ -37,7 +37,7 @@
             </mat-form-field>
         </div>
         <div class="w-full gap-1 sm:justify-between sm:flex">
-            <mat-form-field class="w-full">
+            <mat-form-field class="w-full" *ngIf="range">
                 <mat-label>Valor minimo</mat-label>
                 <input matInput [formControlName]="'valorMinimo'" type="number" >
             </mat-form-field>
@@ -45,17 +45,20 @@
                 <mat-label>Valor</mat-label>
                 <input matInput [formControlName]="'valor'" type="number" >
             </mat-form-field>
-            <mat-form-field class="w-full">
+            <mat-form-field class="w-full" *ngIf="range">
                 <mat-label>Valor Maximo</mat-label>
                 <input matInput [formControlName]="'valorMaximo'" type="number" >
             </mat-form-field>
             <mat-form-field class="w-full">
-                <mat-label>Total Minimo</mat-label>
+                <mat-label>Valor Minimo</mat-label>
                 <input matInput [formControlName]="'totalMinimo'" type="number" >
             </mat-form-field>
         </div>
         <button class="order-first sm:order-last w-full" mat-flat-button [color]="'primary'" (click)="send()">
             Guardar
         </button>
+        <div class="w-full flex justify-center p-8" *ngIf="loading">
+            <mat-spinner></mat-spinner>
+        </div>
     </form>
 </div>

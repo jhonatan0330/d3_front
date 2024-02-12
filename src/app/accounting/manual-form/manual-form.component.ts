@@ -3,7 +3,7 @@ import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountingService } from '../accounting.service';
 import { Observable, Subscription, debounceTime, pairwise, startWith, map } from 'rxjs';
-import { AccountDTO, CatalogDTO } from '../accounting.domain';
+import { AccountDTO } from '../accounting.domain';
 import Swal from 'sweetalert2';
 
 @Component({

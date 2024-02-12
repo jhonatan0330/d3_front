@@ -2,8 +2,8 @@ import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TariffService } from '../tariff.service';
-import { TarifaDTO, TarifarioDTO } from '../tariff.domain';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { FieldHelper } from 'app/shared/plantilla-helper';
 
 @Component({
     selector: 'tariff-fee-form',
@@ -15,7 +15,14 @@ export class FeeFormComponent implements OnInit {
     form: UntypedFormGroup;
     loading = false;
     key: string;
-    fee: TarifaDTO;
+
+    titleDim1: string;
+    titleDim2: string;
+    titleDim3: string;
+    titleDim4: string;
+    viewQuantity = false;
+    range = false;
+    viewProduct = false;
 
     private tariff: PedidoVentaDTO;
 
@@ -34,8 +41,18 @@ export class FeeFormComponent implements OnInit {
         }
         this.tariff = this.data.tariff;
         this.key = this.data.parentId;
+
+        this.titleDim1 = FieldHelper.getValueText(this.tariff, "NOMBRE_DIM_1");
+        this.titleDim2 = FieldHelper.getValueText(this.tariff, "NOMBRE_DIM_2");
+        this.titleDim3 = FieldHelper.getValueText(this.tariff, "NOMBRE_DIM_3");
+        this.titleDim4 = FieldHelper.getValueText(this.tariff, "NOMBRE_DIM_4");
+
+        this.viewQuantity = FieldHelper.getValueBool(this.tariff, "RANGO_CANTIDADES");
+        this.range = FieldHelper.getValueBool(this.tariff, "RANGO_VALORES");
+        this.viewProduct = !FieldHelper.getValueBool(this.tariff, "PRODUCTO_OPCIONAL");
         
         this.form = this._formBuilder.group({
+            llaveTabla: [this.key],
             tarifario: [this.tariff.llaveTabla],
             tarifarioNombre: [this.tariff.descripcion],
             producto: [''],
@@ -62,18 +79,25 @@ export class FeeFormComponent implements OnInit {
         });
 
         if (this.key) {
+            this.loading = true;
             this.tariffService.getFee(this.key)
-                .subscribe(x => this.form.patchValue(x));
+                .subscribe({
+                    next: (value) => {
+                        this.form.patchValue(value);
+                        //this.fee = 
+                        this.loading = false;
+                    },
+                    error:() => {
+                        this.loading = false;
+                    }
+                });
         }
     }
 
     send(): void {
-        this.loading = true;
-
         if (this.form.invalid) {
             return;
         }
-
         this.loading = true;
         if (!this.key) {
             this.create();

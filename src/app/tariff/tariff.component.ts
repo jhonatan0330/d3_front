@@ -28,7 +28,6 @@ export class TariffComponent implements OnInit {
     isLoading = false;
 
     displayedColumns: string[] = ['valor'];
-    //columnsToDisplay: string[] = ['valor'];
     titleDim1: string = 'DIMENSION 1';
     titleDim2: string = 'DIMENSION 2';
     titleDim3: string = 'DIMENSION 3';
@@ -70,6 +69,9 @@ export class TariffComponent implements OnInit {
                 next: (_value: PedidoVentaDTO) => {
                     this.tariffDocument = _value;
                     this.title = FieldHelper.getValueText(this.tariffDocument, "NOMBRE");
+                    if (FieldHelper.getValueBool(this.tariffDocument, "RANGO_CANTIDADES")) {
+                        this.displayedColumns.unshift('cantidadMinima');
+                    }
                     if (FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_4")) {
                         this.displayedColumns.unshift('dimension4Nombre');
                         this.titleDim4 = FieldHelper.getValueText(this.tariffDocument, "NOMBRE_DIM_4");
@@ -99,7 +101,7 @@ export class TariffComponent implements OnInit {
 
     getFees() {
         const filter: TarifaDTO = new TarifaDTO();
-        filter.tarifario = this.tariffId;
+        filter.documento = this.tariffId;
         this.isLoading = true;
         this.tariffService.getFeesFromTariff(filter).subscribe({
             next: (_tarifas: TarifaDTO[]) => {

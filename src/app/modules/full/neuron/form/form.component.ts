@@ -344,6 +344,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       copyPedido.estadoExpediente = actual.estadoExpediente;
     }
     copyPedido.plantilla = this.plantilla.llaveTabla;
+    copyPedido.imagen = this.plantilla.imagen;
     copyPedido.caracteristicas = [];
     let coincidenciaCampo = false;
     if (this.plantilla.caracteristicas) {
