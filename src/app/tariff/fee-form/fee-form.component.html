@@ -1,64 +1,112 @@
 <div class="flex flex-col max-w-240 md:min-w-160 max-h-screen ">
     <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
         <div class="text-lg font-medium">Tarifa</div>
-        <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
-            <mat-icon class="text-current">close</mat-icon>
-        </button>
+        <div class="flex items-center">
+            <!-- Delete-->
+            <button *ngIf="key" mat-icon-button (click)="deleteFee()" [tabIndex]="-1">
+                <mat-icon class="text-current">delete</mat-icon>
+            </button>
+            <!-- Close button -->
+            <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
+                <mat-icon class="text-current">close</mat-icon>
+            </button>
+        </div>
+
     </div>
-    <form class="p-6 sm:p-8" [formGroup]="form" *ngIf="!loading">
+    <form class="p-6 sm:p-8" [formGroup]="form" enabled="!loading">
         <mat-form-field class="w-full" *ngIf="viewProduct">
             <mat-label>Producto</mat-label>
-            <input matInput [formControlName]="'producto'"> 
+            <input matInput [formControlName]="'productoDTO'" [matAutocomplete]="autoP">
+            <mat-autocomplete #autoP="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let f of filteredOptionsP | async" [value]="f">
+                    <span *ngIf="f.code">{{f.code}} | </span><small>{{f.name}}</small>
+                </mat-option>
+            </mat-autocomplete>
+            <button mat-icon-button matSuffix (click)="form.controls['productoDTO'].setValue(null)" tabindex="-1">
+                <mat-icon>close</mat-icon>
+            </button>
         </mat-form-field>
         <mat-form-field class="w-full" *ngIf="titleDim1">
-            <mat-label>Dimension 1</mat-label>
-            <input matInput [formControlName]="'recurso'" >
+            <mat-label>{{titleDim1}}</mat-label>
+            <input matInput [formControlName]="'recursoDTO'" [matAutocomplete]="auto1">
+            <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let f of filteredOptions1 | async" [value]="f">
+                    <span *ngIf="f.code">{{f.code}} | </span><small>{{f.name}}</small>
+                </mat-option>
+            </mat-autocomplete>
+            <button mat-icon-button matSuffix (click)="form.controls['recursoDTO'].setValue(null)" tabindex="-1">
+                <mat-icon>close</mat-icon>
+            </button>
         </mat-form-field>
         <mat-form-field class="w-full" *ngIf="titleDim2">
-            <mat-label>Dimension 2</mat-label>
-            <input matInput [formControlName]="'dimension2'"> 
+            <mat-label>{{titleDim2}}</mat-label>
+            <input matInput [formControlName]="'dimension2DTO'" [matAutocomplete]="auto2">
+            <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let f of filteredOptions2 | async" [value]="f">
+                    <span *ngIf="f.code">{{f.code}} | </span><small>{{f.name}}</small>
+                </mat-option>
+            </mat-autocomplete>
+            <button mat-icon-button matSuffix (click)="form.controls['dimension2DTO'].setValue(null)" tabindex="-1">
+                <mat-icon>close</mat-icon>
+            </button>
         </mat-form-field>
         <mat-form-field class="w-full" *ngIf="titleDim3">
-            <mat-label>Dimension 3</mat-label>
-            <input matInput [formControlName]="'dimension3'">
+            <mat-label>{{titleDim3}}</mat-label>
+            <input matInput [formControlName]="'dimension3DTO'" [matAutocomplete]="auto3">
+            <mat-autocomplete #auto3="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let f of filteredOptions3 | async" [value]="f">
+                    <span *ngIf="f.code">{{f.code}} | </span><small>{{f.name}}</small>
+                </mat-option>
+            </mat-autocomplete>
+            <button mat-icon-button matSuffix (click)="form.controls['dimension3DTO'].setValue(null)" tabindex="-1">
+                <mat-icon>close</mat-icon>
+            </button>
         </mat-form-field>
         <mat-form-field class="w-full" *ngIf="titleDim4">
-            <mat-label>Dimension 4</mat-label>
-            <input matInput [formControlName]="'dimension4'">
+            <mat-label>{{titleDim4}}</mat-label>
+            <input matInput [formControlName]="'dimension4DTO'" [matAutocomplete]="auto4">
+            <mat-autocomplete #auto4="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let f of filteredOptions4 | async" [value]="f">
+                    <span *ngIf="f.code">{{f.code}} | </span><small>{{f.name}}</small>
+                </mat-option>
+            </mat-autocomplete>
+            <button mat-icon-button matSuffix (click)="form.controls['dimension4DTO'].setValue(null)" tabindex="-1">
+                <mat-icon>close</mat-icon>
+            </button>
         </mat-form-field>
         <div class="w-full gap-1 sm:justify-between sm:flex" *ngIf="viewQuantity">
             <mat-form-field class="w-full">
                 <mat-label>Cantidad Minima</mat-label>
-                <input matInput [formControlName]="'cantidadMinima'" type="number" >
+                <input matInput [formControlName]="'cantidadMinima'" type="number">
             </mat-form-field>
             <mat-form-field class="w-full">
                 <mat-label>Cantidad Maxima</mat-label>
-                <input matInput [formControlName]="'cantidadMaxima'" type="number" >
+                <input matInput [formControlName]="'cantidadMaxima'" type="number">
             </mat-form-field>
         </div>
         <div class="w-full gap-1 sm:justify-between sm:flex">
             <mat-form-field class="w-full" *ngIf="range">
                 <mat-label>Valor minimo</mat-label>
-                <input matInput [formControlName]="'valorMinimo'" type="number" >
+                <input matInput [formControlName]="'valorMinimo'" type="number">
             </mat-form-field>
             <mat-form-field class="w-full">
                 <mat-label>Valor</mat-label>
-                <input matInput [formControlName]="'valor'" type="number" >
+                <input matInput [formControlName]="'valor'" type="number">
             </mat-form-field>
             <mat-form-field class="w-full" *ngIf="range">
                 <mat-label>Valor Maximo</mat-label>
-                <input matInput [formControlName]="'valorMaximo'" type="number" >
+                <input matInput [formControlName]="'valorMaximo'" type="number">
             </mat-form-field>
             <mat-form-field class="w-full">
                 <mat-label>Valor Minimo</mat-label>
-                <input matInput [formControlName]="'totalMinimo'" type="number" >
+                <input matInput [formControlName]="'totalMinimo'" type="number">
             </mat-form-field>
         </div>
         <button class="order-first sm:order-last w-full" mat-flat-button [color]="'primary'" (click)="send()">
             Guardar
         </button>
-        <div class="w-full flex justify-center p-8" *ngIf="loading">
-            <mat-spinner></mat-spinner>
-        </div>
     </form>
+    <div class="w-full flex justify-center p-8" *ngIf="loading">
+        <mat-spinner></mat-spinner>
+    </div>
 </div>
