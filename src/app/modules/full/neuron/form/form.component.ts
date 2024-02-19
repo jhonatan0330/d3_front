@@ -173,7 +173,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       this.submitted = false;
       return;
     }
-    this.pedido.messages = null;
+    this.pedidoBase.messages = null;
     this.api
       .guardarDocumento(this.copiarPedidoBase(this.pedido, true), this.plantilla.server, this.uidOpenToNotDuplicate)
       .subscribe({

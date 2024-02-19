@@ -120,7 +120,8 @@ export function procesarXMLBase(
         PlantillaHelper.MULTIPLE
       );
       if (herencia != null) {
-        return null;
+        //Cambie de null a devolver el campo
+        return pCampo;
       } else {
         if(multiple) {
           pCampo.expedientes = [];
