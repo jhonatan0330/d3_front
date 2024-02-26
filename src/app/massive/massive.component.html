@@ -2,7 +2,7 @@
 
   <!-- Header -->
   <div
-    class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-6 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+    class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-2 sm:px-10 border-b bg-card dark:bg-transparent">
     <div class="flex-1 min-w-0">
       <!-- Title -->
       <div class="mt-2">
@@ -14,8 +14,8 @@
   </div>
 
   <!-- Main -->
-  <div class="flex-auto p-6 sm:p-10">
-    <div class="full-width flex">
+  <div class="flex flex-col flex-0 p-2 w-full">
+    <div class="flex w-full ">
       <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading || isProcessing"
         onclick="simpleUploadXML.click();">
         <mat-icon class="mr-2">cloud_upload</mat-icon> 2. Cargar
@@ -37,11 +37,11 @@
       </button>
     </div>
 
-    <mat-progress-bar [mode]="isLoading ? 'indeterminate' : ''">Validando Datos</mat-progress-bar>
+    <mat-progress-bar [mode]="isLoading ? 'indeterminate' : ''" class="w-full">Validando Datos</mat-progress-bar>
     {{ lblCarga }}
     {{ lblTipoProceso }}
-    <mat-progress-bar [mode]="isLoading ? 'indeterminate' : ''"></mat-progress-bar>
-    <div class="full-width">
+    <mat-progress-bar [mode]="isLoading ? 'indeterminate' : ''" class="w-full"></mat-progress-bar>
+    <div class="w-full">
       <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading || !isValidate || isProcessing"
         (click)="startLoad()">
         <mat-icon class="mr-2">fast_forward</mat-icon> 3. Procesar
@@ -61,10 +61,9 @@
         (change)="handleFileInputToLoadArchivo($event.target.files)" />
 
     </div>
-    <mat-progress-bar [mode]="isProcessing ? 'indeterminate' : ''"></mat-progress-bar>
-
-    <span>{{ lblProcesar }}</span>
-    <div>
+    <mat-progress-bar [mode]="isProcessing ? 'indeterminate' : ''" class="w-full"></mat-progress-bar>
+    <span class="w-full">{{ lblProcesar }}</span>
+    <div class="w-full">
       <div *ngFor="let iDocument of failedDocuments">
         <app-document [document]="iDocument"></app-document>
       </div>
@@ -72,17 +71,36 @@
   </div>
 
   <!-- Table -->
-  <div class="overflow-auto">
+  <div class="overflow-auto" *ngIf="dataSource.data" >
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns; let i=index">
-        <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-        <td mat-cell *matCellDef="let element">
-          <div *ngIf="i!==0">{{element.caracteristicas[i-1].valorText}}</div>
-          <div *ngIf="i===0">{{element.textoFiltro}}</div>
+      <ng-container [matColumnDef]="'orderNumber'" >
+        <th mat-header-cell *matHeaderCellDef>No.</th>
+        <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-500':element.status ==='FAILED'}">
+          <div>{{element.orderNumber}}</div>
         </td>
       </ng-container>
+      <ng-container [matColumnDef]="'status'" >
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-500':element.status ==='FAILED'}">
+          <div>{{element.status}}</div>
+        </td>
+      </ng-container>
+      <ng-container [matColumnDef]="'messages'" >
+        <th mat-header-cell *matHeaderCellDef>Mensajes</th>
+        <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-500':element.status ==='FAILED'}">
+          <div *ngFor="let msg of element.messages" class="min-w-100" >{{msg.message}}</div>
+          <div *ngIf="element.documentName">{{element.documentName}}</div>
+        </td>
+      </ng-container>
+      <ng-container [matColumnDef]="column" *ngFor="let column of titleColumns; let i=index">
+        <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{element.document.caracteristicas[i].valorText}}</div>
+        </td>
+      </ng-container>
+      
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"  ></tr>
     </table>
   </div>
 

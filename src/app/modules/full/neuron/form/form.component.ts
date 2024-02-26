@@ -786,6 +786,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.dialogRef.close();
         if (!this.close2Save) {
           if (res && res.data && res.data.messages) { this.pedido.messages = res.data.messages; }
+          else{ this.pedido.messages = null;}
           this.utilsService.modalWithParams(this.pedido);
         }
       }

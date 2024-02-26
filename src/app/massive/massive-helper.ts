@@ -131,7 +131,7 @@ export function procesarXMLBase(
           pCampo.expedientes.push(multiple);
           return pCampo;
         } else {
-          const autoload = PlantillaHelper.buscarPropiedad(
+          /*const autoload = PlantillaHelper.buscarPropiedad(
             pCampo.campoDTO.propiedades,
             PlantillaHelper.AUTOLOAD
           );
@@ -154,21 +154,21 @@ export function procesarXMLBase(
               Swal.fire('Info', 'El campo es autoload pero no tiene cargado items', 'error');
               return null;
             }
-          } else {
+          } else {*/
             const plantilla = PlantillaHelper.buscarValorMultiple(
               pCampo.campoDTO.propiedades,
               PlantillaHelper.PLANTILLA_AUXILIAR
             );
             if (!plantilla) {
               Swal.fire('Falta configurar campo',
-                'EL campo '  + pCampo.campoDTO.nombre +' no tiene una fuente de datos en dodne pueda buscar el numero del documento.',
+                'El campo '  + pCampo.campoDTO.nombre +' no tiene una fuente de datos en donde pueda buscar el numero del documento.',
                 'info'
               );
               return null;
             } else {
               return pCampo;
             }
-          }
+          //}
         }
         
       }
