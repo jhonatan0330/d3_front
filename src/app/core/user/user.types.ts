@@ -14,5 +14,6 @@ export interface Company
     companySlogan?: string;
     companyImage?: string;
     companyCoverageImage?: string[];
+    companyCoverageTemplate?: string;
 }
 

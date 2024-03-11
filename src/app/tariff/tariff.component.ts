@@ -11,7 +11,6 @@ import { FieldHelper, MVCTranslate } from 'app/shared/plantilla-helper';
 import { FeeFormComponent } from './fee-form/fee-form.component';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Observable, debounceTime } from 'rxjs';
-import { IdResponse } from 'app/modules/full/neuron/model/sw42.utils';
 
 
 @Component({

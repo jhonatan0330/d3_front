@@ -868,6 +868,13 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
   }
 
+  goToHelp() {
+    if (this.plantilla) {
+      window.open('help/l/' + this.plantilla.llaveTabla, '_blank');
+      this.dialogRef.close()
+    }
+  }
+
   showTariff() {
     if (this.canTariff) {
       const redirect = 'tariff/' + this.plantilla.llaveTabla + '/' + this.pedido.llaveTabla;

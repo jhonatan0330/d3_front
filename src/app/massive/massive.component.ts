@@ -223,10 +223,12 @@ export class MassiveComponent implements OnInit {
         xmlBase = xmlBase + '<' + nombre + '>';
         for (let i = 0; i < this.plantilla.caracteristicas.length; i++) {
           const iCampo = this.plantilla.caracteristicas[i];
-          const campoNombre: string = this.formatStringXML(iCampo.nombre);
-          xmlBase = xmlBase + '<' + campoNombre + '>';
-          xmlBase = xmlBase + getXMLBase(iCampo);
-          xmlBase = xmlBase + '</' + campoNombre + '>';
+          if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION){
+            const campoNombre: string = this.formatStringXML(iCampo.nombre);
+            xmlBase = xmlBase + '<' + campoNombre + '>';
+            xmlBase = xmlBase + getXMLBase(iCampo);
+            xmlBase = xmlBase + '</' + campoNombre + '>';
+          }
         }
         xmlBase = xmlBase + '</' + nombre + '>';
       }

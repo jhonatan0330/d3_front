@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, AfterViewInit, ViewEncapsulation } from '
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { UserService } from 'app/core/user/user.service';
 import { Company, User } from 'app/core/user/user.types';
-import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { Subject, takeUntil, Subscription } from 'rxjs';
@@ -11,6 +11,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { cloneDeep } from 'lodash';
 import { AuthenticationService } from 'app/authentication/authentication.service';
+import { ApiService } from 'app/modules/full/neuron/service/api.service';
 
 @Component({
   selector: 'profile',
@@ -37,6 +38,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private templateService: TemplateService,
     public jwtAuth: AuthenticationService,
+    private api: ApiService,
     private route: ActivatedRoute,
     private router: Router,
     private _utilsService: UtilsService,
@@ -59,6 +61,31 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
           this.slides = [];
           company.companyCoverageImage.forEach(element => {
             this.slides.push({ image: element })
+          });
+        }
+        if( this.company.companyCoverageTemplate){
+          const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
+          entity.plantilla = this.company.companyCoverageTemplate;
+          this.isLoading = true;
+          this.api.listarDocumentos(entity , null).subscribe({
+            next: (dataResult: PedidoVentaDTO[]) => {
+              if (dataResult) {
+                if (company && company.companyCoverageImage) {
+                  this.slides = [];
+                  dataResult.forEach(element => {
+                    this.slides.push({ image: element.imagen })
+                  });
+                  company.companyCoverageImage.forEach(element => {
+                    this.slides.push({ image: element })
+                  });
+                }
+              }
+              
+              this.isLoading = false;
+            },
+            error: () => {
+              this.isLoading = false;
+            },
           });
         }
       });

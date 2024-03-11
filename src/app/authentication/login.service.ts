@@ -155,7 +155,8 @@ export class LoginService {
       companyName: response.organizacion.nombre,
       companySlogan: response.organizacion.slogan,
       companyImage: response.organizacion.imagen,
-      companyCoverageImage: (imageCoverage ? imageCoverage : null)
+      companyCoverageImage: (imageCoverage ? imageCoverage : null),
+      companyCoverageTemplate: PlantillaHelper.buscarValor(response.organizacion.propiedades, PlantillaHelper.COVERAGE_TEMPLATE)
     }
 
     if (response && response.mensaje) {

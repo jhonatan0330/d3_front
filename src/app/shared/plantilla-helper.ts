@@ -115,6 +115,7 @@ export class PlantillaHelper {
   static REP_AUTOPRINT = 'REP_AUTOPRINT';
 
   static COVERAGE_IMAGE = 'COVERAGE_IMAGE';
+  static COVERAGE_TEMPLATE = 'COVERAGE_TEMPLATE';
 
 
   static buscarPropiedad(

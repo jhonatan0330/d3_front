@@ -48,6 +48,7 @@ export const appRoutes: Route[] = [
       { path: 'inventory', loadChildren: () => import('app/inventory/inventory.module').then(m => m.InventoryModule) },
       { path: 'account', loadChildren: () => import('app/accounting/accounting.module').then(m => m.AccountingModule) },
       { path: 'tariff', loadChildren: () => import('app/tariff/tariff.module').then(m => m.TariffModule) },
+      { path: 'help', loadChildren: () => import('app/help-center/help-center.routes')},
       { path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/layout/common/error-404/error-404.module').then(m => m.Error404Module) },
       { path: '**', redirectTo: '404-not-found' }
     ]
