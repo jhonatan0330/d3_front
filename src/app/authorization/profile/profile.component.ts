@@ -70,11 +70,11 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
           this.api.listarDocumentos(entity , null).subscribe({
             next: (dataResult: PedidoVentaDTO[]) => {
               if (dataResult) {
+                this.slides = [];
+                dataResult.forEach(element => {
+                  this.slides.push({ image: element.imagen })
+                });
                 if (company && company.companyCoverageImage) {
-                  this.slides = [];
-                  dataResult.forEach(element => {
-                    this.slides.push({ image: element.imagen })
-                  });
                   company.companyCoverageImage.forEach(element => {
                     this.slides.push({ image: element })
                   });
