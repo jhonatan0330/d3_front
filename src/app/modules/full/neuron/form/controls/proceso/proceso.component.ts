@@ -1295,6 +1295,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           } else {
             entity.llaveTabla = this.data.dependientes[0].valorOpcion; // Viaja el id del campo dependiente para el query
           }
+          entity.caracteristicas = this.data.dependientes;
         } else {
           // Oculte este campo porque en tcm las rutas de un despachador no se veian
           // pero tengo dudas de donde funcionaba
