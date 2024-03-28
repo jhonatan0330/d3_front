@@ -10,6 +10,7 @@ export enum TemplateEnum {
   TIPO_TABLERO = 'T'
 }
 
+
 @Component({
   selector: 'app-template',
   templateUrl: './template.component.html'
