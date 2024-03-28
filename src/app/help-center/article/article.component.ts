@@ -19,6 +19,9 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 export class ArticleHelpComponent implements OnInit {
     article = new Article();
     document: PedidoVentaDTO;
+    questions: PedidoVentaDTO[];
+
+    loadingQuestion: boolean;
 
     constructor(
         private _helpCenterService: HelpCenterService,
@@ -61,6 +64,21 @@ export class ArticleHelpComponent implements OnInit {
                 // Mensjae de erro
             }
         });
+    }
+
+    getQuestions() {
+        this.loadingQuestion = true;
+        this._helpCenterService.getQuestionByArticle(this.article.key).subscribe({
+            next: (_value: PedidoVentaDTO[]) => {
+                this.questions = _value;
+                this.loadingQuestion = false;
+            }
+            , error: () => { this.loadingQuestion = false; }
+        });
+    }
+
+    newQuestion() {
+
     }
 
 }

@@ -871,7 +871,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   goToHelp() {
     if (this.plantilla) {
       window.open('help/l/' + this.plantilla.llaveTabla, '_blank');
-      this.dialogRef.close()
+      //this.dialogRef.close()
     }
   }
 
