@@ -12,6 +12,7 @@ import { AcademyService } from 'app/academy/academy.service';
     encapsulation  : ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class AcademyDetailsComponent implements OnInit, OnDestroy
 {
     @ViewChild('courseSteps', {static: true}) courseSteps: MatTabGroup;
