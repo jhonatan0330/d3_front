@@ -461,7 +461,7 @@ export class MassiveComponent implements OnInit {
           for (let j = 0; j < source[i].length; j++) {
             const nombreCampoXML = this.formatStringXML(source[0][j]);
             if (this.formatStringXML(iCampo.nombre) === nombreCampoXML) {
-              if (source[i][j]) { 
+              if (source[i][j] || source[i][j]===0) { 
                 campo.valorText = source[i][j].toString(); 
                 if(campo.valorText) {campo.valorText = campo.valorText.trim();}
               }
