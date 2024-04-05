@@ -322,7 +322,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
         if (!usado) {
           if (iTarifa.cantidadMinima === 0 && iTarifa.cantidadMaxima === 0) {
             if (tarifa.valor === 0 || tarifa.valor > iTarifa.valor) {
-              tarifa = iTarifa;
+              // En box el cliente tenia un precio mayor
+              return iTarifa;
             }
           } else {
             const pCantidad = this.cantidadTarifario();
@@ -331,7 +332,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
               (iTarifa.cantidadMaxima >= Math.ceil(pCantidad) || iTarifa.cantidadMaxima ===0)
             ) {
               if (tarifa.valor === 0 || tarifa.valor > iTarifa.valor) {
-                tarifa = iTarifa;
+                return iTarifa;
               }
             }
           }
