@@ -28,9 +28,8 @@
   <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" />
 </div>
 <!-- Tiempo -->
-<div class="flex justify-end w-full" *ngIf="!isRango && sinCalendar"
-  [style.display]="isInvisible ? 'none': 'block'">
-  <span >{{
+<div class="flex justify-end w-full" *ngIf="!isRango && sinCalendar" [style.display]="isInvisible ? 'none': 'block'">
+  <span>{{
     structure.nombre | titlecase
     }}</span>
   <mat-form-field class="pl-2">
@@ -38,7 +37,7 @@
     <input matInput type="number" min="0" max="23" autocomplete="off" [required]="required"
       [formControl]="fControlHoras" />
   </mat-form-field>
-  <mat-form-field class="pl-2" >
+  <mat-form-field class="pl-2">
     <mat-label>Minutos</mat-label>
     <input matInput type="number" min="0" max="59" autocomplete="off" [required]="required"
       [formControl]="fControlMinutes" />
@@ -46,12 +45,12 @@
 </div>
 <!-- Rango -->
 <mat-form-field *ngIf="isRango" class="dialog-control" [style.display]="isInvisible ? 'none': 'block'">
-  <mat-label>{{ structure.nombre | titlecase }}</mat-label>
+  <mat-label>{{ structure.nombre | titlecase }} {{(required)?'*':''}}</mat-label>
   <mat-date-range-input [rangePicker]="picker">
     <input matStartDate placeholder="Fecha inicial" [formControl]="fControlDateStart" (dateInput)="datesUpdated()"
-      (dateChange)="datesUpdated()" autocomplete="off" />
+      (dateChange)="datesUpdated()" autocomplete="off" [required]="required" />
     <input matEndDate placeholder="Fecha final" [formControl]="fControlDateEnd" (dateInput)="datesUpdated()"
-      (dateChange)="datesUpdated()" autocomplete="off" />
+      (dateChange)="datesUpdated()" autocomplete="off" [required]="required" />
   </mat-date-range-input>
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-date-range-picker #picker></mat-date-range-picker>
