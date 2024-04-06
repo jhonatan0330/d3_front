@@ -26,6 +26,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     notifications: ActividadDTO[];
     notificationCount: number = 0;
     pastTimeCount: number = 0;
+    isOpen = false;
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -85,6 +86,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         // Dispose the overlay
         if (this._overlayRef) {
             this._overlayRef.dispose();
+            this.isOpen = false;
         }
     }
 
@@ -104,39 +106,26 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         // Create the overlay if it doesn't exist
         if (!this._overlayRef) {
             this._createOverlay();
-        }
+        } 
 
-        // Attach the portal to the overlay
+        //Al presionar espacio se abrian varios paneles
+        if(this.isOpen) return;
         this._overlayRef.attach(new TemplatePortal(this._notificationsPanel, this._viewContainerRef));
+        this.isOpen = true;
 
         this.refresh();
-    }
+     }
 
-    /**
-     * Close the notifications panel
-     */
     closePanel(): void {
         this._overlayRef.detach();
+        this.isOpen=false;
     }
 
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
     trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Create the overlay
-     */
     private _createOverlay(): void {
         // Create the overlay
         this._overlayRef = this._overlay.create({
@@ -178,6 +167,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         // Detach the overlay from the portal on backdrop click
         this._overlayRef.backdropClick().subscribe(() => {
             this._overlayRef.detach();
+            this.isOpen=false;
         });
     }
 
