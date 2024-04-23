@@ -124,9 +124,10 @@ export class ManualFormComponent implements OnInit {
             return;
         }
 
-        if (this.form.invalid) {
+        //Por el momento dejo las validaciones en back pero toca mejorar esto para evitar consultas innecesarias
+        /*if (this.form.invalid) {
             return;
-        }
+        }*/
         this.loading = true;
         if (!this.key) {
             this.create();
