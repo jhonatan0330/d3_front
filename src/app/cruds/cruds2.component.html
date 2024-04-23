@@ -114,6 +114,40 @@
                 </div>
               </div>
             </form>
+
+            <!-- Buscador de fecha registro -->
+            <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fecha registro </div>
+            <div>
+                <div class="flex">
+                    <mat-form-field class="pr-2">
+                        <mat-label>Fecha Inicial</mat-label>
+                        <input matInput [matDatepicker]="pickerFromR" [formControl]="fRegistroDateStart" (dateChange)="cambioFecha('start', $event)"
+                            autocomplete="off" />
+                        <mat-datepicker-toggle matSuffix [for]="pickerFromR"
+                            tabIndex="-1"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerFromR></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field class="w-52">
+                        <mat-label>Hora Inicial</mat-label>
+                        <input matInput type="time" [formControl]="fRegistroTimeStart" />
+                    </mat-form-field>
+                </div>
+                <div class="flex">
+                    <mat-form-field class="pr-2">
+                        <mat-label>Fecha Final</mat-label>
+                        <input matInput [matDatepicker]="pickerToR" [formControl]="fRegistroDateEnd" (dateChange)="cambioFecha('end', $event)"
+                            autocomplete="off" />
+                        <mat-datepicker-toggle matSuffix [for]="pickerToR"
+                            tabIndex="-1"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerToR></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field class="w-52">
+                        <mat-label>Hora Final</mat-label>
+                        <input matInput type="time" [formControl]="fRegistroTimeEnd" />
+                    </mat-form-field>
+                </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -296,17 +330,42 @@
           </table>
           <!-- Paginador -->
           <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-          <div class="w-full items-center" *ngIf="!isLoading && !isEnd">
+          <div class="w-full items-center text-center" *ngIf="!isLoading && !isEnd && dataProvider?.length > 0">
             <button mat-flat-button color="accent" tabindex="-1" (click)="listar(pagina)">
               <mat-icon>refresh</mat-icon> Presiona la imagen para buscar mas resultados
             </button>
           </div>
-          <!-- Pie de pagina, paginador -->
-          <div class="border w-full p-4 font-weight-bold items-center">
-            <div *ngIf="viewMode !== 'grid-view'">Seleccionados : {{ this.selection?.selected.length }}</div>
-            <div>Total : {{ dataProvider?.length }}</div>
-            <div>Puedes usar los filtros para mejorar tu busqueda</div>
+
+          <!-- Si no hay información -->
+          <div class="w-full items-center text-center" *ngIf="!isLoading && !isEnd && dataProvider?.length === 0">
+            <button mat-flat-button color="accent" tabindex="-1" (click)="listar(pagina)">
+                <mat-icon mat-icon>refresh</mat-icon> Presiona la imagen
+            </button>
           </div>
+
+          <!-- Pie de pagina, paginador -->
+          <div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default" *ngIf="!isLoading && !isEnd && dataProvider?.length === 0">
+            <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+                <!-- <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:filter'"></mat-icon> -->
+                <div class="mt-4 text-2xl font-bold tracking-tight text-blue-1 text-center">
+                    <!-- Por favor, introduce un término de búsqueda. -->
+                    Para encontrar lo que necesitas, simplemente utiliza los filtros.
+                </div>
+            </div>
+          </div>
+
+          <div class="m-auto my-48 flex flex-col items-center justify-center" *ngIf="isEnd && dataProvider?.length === 0">
+            <!-- <img class="dark:hidden w-30" src="assets/images/logo/warning.svg" alt="warning"> -->
+
+            <mat-icon class="icon-size-24" [svgIcon]="'description'"></mat-icon>
+            <div aria-label="sessions" class="mt-8 text-2xl font-bold text-blue-1">
+                No se han encontrado resultados</div>
+            <div class="pt-4 text-center">
+                Lo sentimos. no encontramos ningun resultado para su búsqueda,
+                puedes usar los filtros para mejorar tu busqueda
+            </div>
+          </div>
+
 
         </div>
       </div>
