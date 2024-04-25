@@ -50,7 +50,6 @@ export class CatalogFormComponent implements OnInit {
             this.update();
         }
 
-        
     }
 
     private create() {
