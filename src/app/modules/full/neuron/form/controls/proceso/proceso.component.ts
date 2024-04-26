@@ -518,7 +518,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
       }
       for (let i = 0; i < this.relatedFields.length; i++) {
-        if (!this.data.dependientes[i].valorOpcion && (!this.data.dependientes[i].campoDTO || this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO)) {
+        if (!this.data.dependientes[i].valorOpcion && (!this.data.dependientes[i].campoDTO || 
+          (this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO && !PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.MULTIPLE)))) {
           /*alert(
             'Seleccione el campo ' + this.data.dependientes[i].campoDTO.nombre
           );*/

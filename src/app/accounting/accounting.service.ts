@@ -52,5 +52,9 @@ export class AccountingService {
         return this.http.get<CatalogDTO>(this.ls.getUrlAccess('/acc/plan/catalog/' + key));
     }
 
+    updateCatalog(catalog: CatalogDTO): Observable<CatalogDTO> {
+        return this.http.put<CatalogDTO>(this.ls.getUrlAccess('/acc/plan/catalog'), catalog);
+    }
+
 
 }
