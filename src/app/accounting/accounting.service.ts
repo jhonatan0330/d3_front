@@ -22,22 +22,26 @@ export class AccountingService {
     }
 
     upload(catalogId: string, formData: FormData): Observable<void> {
-        return this.http.post<void>(this.ls.getUrlAccess('/acc/plan/upload/' + catalogId ), formData);
+        return this.http.post<void>(this.ls.getUrlAccess('/acc/plan/upload/' + catalogId), formData);
     }
 
     getBalance(catalogId: string): Observable<ResultMapDTO[]> {
-        return this.http.get<ResultMapDTO[]>(this.ls.getUrlAccess('/acc/plan/balance/' + catalogId ));
+        return this.http.get<ResultMapDTO[]>(this.ls.getUrlAccess('/acc/plan/balance/' + catalogId));
     }
 
     getAccounts(catalogId: string, nameFilter: string = null): Observable<AccountDTO[]> {
         let params = '';
         if (nameFilter) { params = params + 'filter=' + nameFilter; }
-        if (params.length!==0) params = '?' + params;
+        if (params.length !== 0) params = '?' + params;
         return this.http.get<AccountDTO[]>(this.ls.getUrlAccess('/acc/plan/account/' + catalogId + params));
     }
 
     createAccount(account: AccountDTO): Observable<AccountDTO> {
         return this.http.post<AccountDTO>(this.ls.getUrlAccess('/acc/plan/account'), account);
+    }
+
+    deleteAccount(key: string): Observable<AccountDTO> {
+        return this.http.delete<AccountDTO>(this.ls.getUrlAccess('/acc/plan/account/' + key));
     }
 
     getCatalogs(): Observable<CatalogDTO[]> {
@@ -54,6 +58,10 @@ export class AccountingService {
 
     updateCatalog(catalog: CatalogDTO): Observable<CatalogDTO> {
         return this.http.put<CatalogDTO>(this.ls.getUrlAccess('/acc/plan/catalog'), catalog);
+    }
+
+    deleteCatalog(key: string): Observable<CatalogDTO> {
+        return this.http.delete<CatalogDTO>(this.ls.getUrlAccess('/acc/plan/catalog/' + key));
     }
 
 

@@ -27,7 +27,7 @@
                     <mat-progress-bar mode="indeterminate" *ngIf="isLoadingCatalog"></mat-progress-bar>
                     <ng-container *ngIf="catalogs && catalogs.length; else noCatalogs">
                         <ng-container *ngFor="let catalog of catalogs; let i = index; trackBy: trackByFn">
-                            <a class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b"
+                            <a class="z-20 flex items-center justify-between px-6 py-4 md:px-8 cursor-pointer border-b"
                                 (click)="selectCatalog(catalog)"
                                 [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !accountingService.currentCatalog || accountingService.currentCatalog.key !== catalog.key,
                                                 'bg-primary-50 dark:bg-hover': accountingService.currentCatalog && accountingService.currentCatalog.key === catalog.key}">
@@ -35,6 +35,22 @@
                                     <div class="font-medium leading-5 truncate">{{catalog.name}}</div>
                                     <div class="leading-5 truncate text-secondary">{{catalog.code}}</div>
                                 </div>
+                                <div>
+                                    <button [matMenuTriggerFor]="actionsCatalog" mat-icon-button>
+                                        <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu #actionsCatalog="matMenu">
+                                        <button mat-menu-item (click)="editCatalog(catalog)">
+                                            <mat-icon class="icon-size-5">edit</mat-icon>
+                                            <span>Actualizar Catalogo</span>
+                                        </button>
+                                        <button mat-menu-item (click)="deleteCatalog(catalog)">
+                                            <mat-icon class="icon-size-5">delete</mat-icon>
+                                            <span>Eliminar Catalogo</span>
+                                        </button>
+                                    </mat-menu>
+                                </div>
+
                             </a>
                         </ng-container>
                     </ng-container>
@@ -110,7 +126,7 @@
                     <!-- Voucher List -->
                     <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
                         <div class="p-6 flex justify-between w-full">
-                            <div >
+                            <div>
                                 <div class=" text-lg font-medium tracking-tight leading-6 truncate">Comprobantes
                                     contables recientes</div>
                                 <div class="text-secondary font-medium">1 pending, 4 completed</div>
@@ -292,8 +308,17 @@
                                                 <mat-icon>more_vert</mat-icon>
                                             </button>
                                             <mat-menu #actionsTable="matMenu">
-                                                <button mat-menu-item (click)="openAccountForm(row)">Crear
-                                                    Subcuenta</button>
+                                                <button mat-menu-item (click)="editAccount(row)">
+                                                    <mat-icon class="icon-size-5">edit</mat-icon>
+                                                    <span>Actualizar Cuenta</span>
+                                                </button>
+                                                <button mat-menu-item (click)="deleteAccount(row)">
+                                                    <mat-icon class="icon-size-5">delete</mat-icon>
+                                                    <span>Eliminar Cuenta</span>
+                                                </button>
+                                                <button mat-menu-item (click)="openAccountForm(row)">
+                                                    Crear Subcuenta
+                                                </button>
                                             </mat-menu>
                                         </div>
                                     </td>

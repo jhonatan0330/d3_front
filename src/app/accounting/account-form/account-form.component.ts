@@ -16,6 +16,8 @@ export class AccountFormComponent implements OnInit {
     loading = false;
     key: string;
     filteredOptions: Observable<AccountDTO[]>;
+    tituloAccion: string = "Nueva Cuenta";
+    botonAccion: string = "Guardar";
 
     private catalogId: string;
     private parentId: string;
@@ -27,12 +29,16 @@ export class AccountFormComponent implements OnInit {
         private _formBuilder: UntypedFormBuilder,
         private accountingService: AccountingService
     ) {
+        if (this.data && this.data.account) {
+            this.tituloAccion = "Editar Cuenta";
+            this.botonAccion = "Actualizar";
+        }
     }
 
     ngOnInit(): void {
-        if (!this.data || !this.data.catalogId) { 
+        if (!this.data || !this.data.catalogId) {
             this.matDialogRef.close();
-            return; 
+            return;
         }
         this.catalogId = this.data.catalogId;
         this.parentId = this.data.parentId;
@@ -42,6 +48,15 @@ export class AccountFormComponent implements OnInit {
             code: [''],
             parent: this.parentId
         });
+
+        if (this.data && this.data.account) {
+            this.form = this._formBuilder.group({
+                name: [this.data.account.name],
+                code: [this.data.account.code],
+                parent: [this.data.account.parent]
+            });
+        }
+
 
        /* this.form.controls['parent'].valueChanges
             .pipe(
@@ -53,10 +68,10 @@ export class AccountFormComponent implements OnInit {
                 this.filteredOptions = this.accountingService.getAccounts(this.catalogId, text);
             });*/
 
-        if (!this.key) {
-            this.accountingService.getCatalog(this.key)
-                .subscribe(x => this.form.patchValue(x));
-        }
+        // if (!this.key) {
+        //     this.accountingService.getCatalog(this.key)
+        //         .subscribe(x => this.form.patchValue(x));
+        // }
     }
 
     /*displayFn(account: AccountDTO): string {

@@ -647,7 +647,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     }
 
     cambioFecha(type: string, event: MatDatepickerInputEvent<Date>) {
-        debugger;
         // Inicializar variable para controlar si se solicitan fechas de registro
         let solicitafechasRegistro = false;
 
