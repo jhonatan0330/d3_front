@@ -152,8 +152,8 @@ export class AccountComponent implements OnInit, OnDestroy {
         this._matDialog.open(CatalogFormComponent, {
             disableClose: true,
             data: catalog
-        }).afterClosed().subscribe(resultado => {
-            if (resultado === "true") this.getCatalogs();
+        }).afterClosed().subscribe(() => {
+            this.getCatalogs();
         });
     }
 
@@ -177,8 +177,11 @@ export class AccountComponent implements OnInit, OnDestroy {
                     error: () => {
                         this.isLoadingCatalog = false;
                     },
+                    complete: () =>{
+                        this.getCatalogs();
+                    }
                 });
-                this.getCatalogs();
+
             }
 
         })
@@ -229,8 +232,8 @@ export class AccountComponent implements OnInit, OnDestroy {
         this._matDialog.open(AccountFormComponent, {
             disableClose: true,
             data: { catalogId: this.accountingService.currentCatalog.key, parentId: (account) ? account.key : null, account: account }
-        }).afterClosed().subscribe(resultado => {
-            if (resultado === "true") this.getAccounts();
+        }).afterClosed().subscribe(() => {
+            this.getAccounts();
         });
     }
 
@@ -254,8 +257,10 @@ export class AccountComponent implements OnInit, OnDestroy {
                     error: () => {
                         this.isLoadingCatalog = false;
                     },
+                    complete: () =>{
+                        this.getAccounts();
+                    }
                 });
-                this.getAccounts();
             }
 
         })

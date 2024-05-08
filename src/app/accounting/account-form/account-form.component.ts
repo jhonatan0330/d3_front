@@ -42,18 +42,44 @@ export class AccountFormComponent implements OnInit {
         }
         this.catalogId = this.data.catalogId;
         this.parentId = this.data.parentId;
+
         this.form = this._formBuilder.group({
-            catalog: this.catalogId,
-            name: [''],
-            code: [''],
-            parent: this.parentId
+          catalog: this.catalogId,
+          name: [''],
+          code: [''],
+          parent: this.parentId
         });
 
         if (this.data && this.data.account) {
-            this.form = this._formBuilder.group({
-                name: [this.data.account.name],
-                code: [this.data.account.code],
-                parent: [this.data.account.parent]
+          this.key = this.data.account.key;
+          this.form = this._formBuilder.group({
+            key: [''],
+            state: [''],
+            catalog: [''],
+            code: [''],
+            name: [''],
+            parent: [''],
+            template: [''],
+            field: [''],
+            type: [''],
+            operation: [''],
+            status: [''],
+            wbs: [''],
+            level: ['']
+          });
+        }
+
+        if (this.key) {
+          this.loading = true;
+          this.accountingService.getAccount(this.catalogId, this.key)
+            .subscribe({
+              next: (value) => {
+                this.form.patchValue(value);
+                this.loading = false;
+              },
+              error: () => {
+                this.loading = false;
+              }
             });
         }
 
@@ -107,6 +133,15 @@ export class AccountFormComponent implements OnInit {
     }
 
     private update() {
-        this.matDialogRef.close();
+      this.accountingService.updateAccount(this.form.value)
+        .subscribe({
+          next: () => {
+            this.matDialogRef.close();
+
+          },
+          error: error => {
+            this.loading = false;
+          }
+        });
     }
 }

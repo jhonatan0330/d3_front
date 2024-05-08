@@ -29,27 +29,44 @@ export class CatalogFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.form = this._formBuilder.group({
+
+        if (this.catalog != null) {
+          this.form = this._formBuilder.group({
+            key: [''],
+            state: [''],
+            name: [''],
+            code: [''],
+            initialDate: [''],
+            finalDate: [''],
+            accounts: ['']
+          });
+          this.key = this.catalog.key
+        } else {
+          this.form = this._formBuilder.group({
             name: [''],
             code: [''],
             initialDate: [''],
             finalDate: ['']
-        });
-
+            });
+        }
 
         if (!this.key) {
             this.accountingService.getCatalog(this.key)
                 .subscribe(x => this.form.patchValue(x));
         }
 
-        if (this.catalog != null) {
-
-            this.form = this._formBuilder.group({
-                name: [this.catalog.name],
-                code: [this.catalog.code],
-                initialDate: [this.catalog.initialDate],
-                finalDate: [this.catalog.finalDate]
-            });
+        if (this.key) {
+          this.loading = true;
+          this.accountingService.getCatalog(this.key)
+          .subscribe({
+              next: (value) => {
+                this.form.patchValue(value);
+                this.loading = false;
+              },
+              error: () => {
+                this.loading = false;
+              }
+          });
         }
 
 
