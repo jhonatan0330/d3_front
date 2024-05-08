@@ -40,6 +40,14 @@ export class AccountingService {
         return this.http.post<AccountDTO>(this.ls.getUrlAccess('/acc/plan/account'), account);
     }
 
+    updateAccount(account: AccountDTO): Observable<AccountDTO> {
+      return this.http.put<AccountDTO>(this.ls.getUrlAccess('/acc/plan/account'), account);
+    }
+
+    getAccount(catalog: string, key: string): Observable<AccountDTO> {
+      return this.http.get<AccountDTO>(this.ls.getUrlAccess('/acc/plan/account/' + catalog + '/' + key));
+    }
+
     deleteAccount(key: string): Observable<AccountDTO> {
         return this.http.delete<AccountDTO>(this.ls.getUrlAccess('/acc/plan/account/' + key));
     }

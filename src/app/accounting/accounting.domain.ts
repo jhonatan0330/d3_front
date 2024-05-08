@@ -22,6 +22,7 @@ export class AccountDTO {
 	operation: string;
 	status: string;
 	wbs: string;
+    level:number;
 }
 
 export class ResultMapDTO {
