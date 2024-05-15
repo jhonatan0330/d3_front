@@ -751,14 +751,30 @@ export class MassiveComponent implements OnInit {
         }
         this.isProcessing = true;
 
-        // Establecer el tiempo de espera predeterminado en 0 segundos (valor por defecto)
-        const tiempoEsperaDefault = 0; // segundos
-
         // Obtener el tiempo de espera del formulario, o usar el valor predeterminado si no está definido
-        const tiempoEspera = this.fTiempoEspera.value !== null ? this.fTiempoEspera.value : tiempoEsperaDefault;
+        const tiempoEspera = this.fTiempoEspera.value !== null ? this.fTiempoEspera.value : 0;
 
-        // Convertir el tiempo de espera a milisegundos
-        const tiempoEsperaMs = tiempoEspera * 1000;
+        if(tiempoEspera > 2){
+          let timerInterval;
+          Swal.fire({
+            title: "Esperando!",
+            html: "Se guardara el siguiente registro en <b></b> milliseconds.",
+            timer: tiempoEspera * 1000,
+            timerProgressBar: true,
+            position: "top-end",
+            toast: true,
+            didOpen: () => {
+              Swal.showLoading();
+              const timer = Swal.getPopup().querySelector("b");
+              timerInterval = setInterval(() => {
+                timer.textContent = `${Swal.getTimerLeft()}`;
+              }, 100);
+            },
+            willClose: () => {
+              clearInterval(timerInterval);
+            }
+          });
+        }
         setTimeout(() => {
           this.api
             .guardarDocumento(this.currentPedido, this.plantilla.server, Date.now().toString())
@@ -810,7 +826,7 @@ export class MassiveComponent implements OnInit {
                 }
               },
             });
-        }, tiempoEsperaMs);
+        }, tiempoEspera * 1000);
       }
       this.lblProcesar = detalle;
       this.cantidadProcesada++;
