@@ -59,7 +59,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     // campoHerencia: string; // Usado para enviar el id del campo que tiene herencia
 
     solicitarFechas = true;
-    solicitafechasRegistro = false;
 
     displayedColumns: string[] = [];
     selection = new SelectionModel<PedidoVentaDTO>(true, []);
@@ -104,7 +103,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.templatesFromProcess = [];
             this.fControlSearch.setValue('');
             this.procesoId = null;
-            this.solicitafechasRegistro = false;
             //const serverUrl = this.templateService.getUrl4Id(params.server_id);
             if (propType === 'list') {
                 this.plantilla = this.templateService.getTemplate(params.id, params.server_id);
@@ -315,15 +313,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 entity.fechaMax = this.FormatoFecha(this.fCDateEnd, this.fCTimeEnd);
             this.ValidarFecha(entity.fechaMin, entity.fechaMax);
 
-            //FechaRegistro
-            if (this.solicitafechasRegistro && (!this.fRegistroDateStart.value || !this.fRegistroDateEnd.value)) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Por favor en Fecha Registro coloca una fecha de inicio y una fecha de fin, esto nos ayudara a mejorar el resultado de tu busqueda'
-                });
-                return;
-            }
             if (this.fRegistroDateStart.value)
                 entity.fechaRegistroMin = this.FormatoFecha(this.fRegistroDateStart, this.fRegistroTimeStart);
             if (this.fRegistroDateEnd.value)
@@ -646,36 +635,24 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    cambioFecha(type: string, event: MatDatepickerInputEvent<Date>) {
-        // Inicializar variable para controlar si se solicitan fechas de registro
-        let solicitafechasRegistro = false;
+    cambioFecha(type: string, fechaName: string, event: MatDatepickerInputEvent<Date>) {
+      // Obtener el control de tiempo correspondiente
+      let timeControl: FormControl;
 
-        // Función para configurar el control de tiempo
-        const configureTimeControl = (control: FormControl, defaultValue: string) => {
-            if (!event.value) {
-                control.reset();
-                control.disable();
-            } else {
-                control.setValue(defaultValue);
-                control.enable();
-                solicitafechasRegistro = true;
-            }
-        };
+      if (fechaName === 'registro') {
+        timeControl = type === 'start' ? this.fRegistroTimeStart : this.fRegistroTimeEnd;
+      } else {
+        timeControl = type === 'start' ? this.fCTimeStart : this.fCTimeEnd;
+      }
 
-        // Configurar controles de tiempo según el tipo de evento
-        if (type === 'start') {
-            configureTimeControl(this.fRegistroTimeStart, '00:00');
-        } else if (type === 'end') {
-            configureTimeControl(this.fRegistroTimeEnd, '23:59');
-        }
-
-        // Verificar si se han seleccionado fechas de inicio o fin
-        if (this.fRegistroDateStart.value || this.fRegistroDateEnd.value) {
-            solicitafechasRegistro = true;
-        }
-
-        // Actualizar estado de solicitud de fechas de registro
-        this.solicitafechasRegistro = solicitafechasRegistro;
+      // Configurar el control de tiempo
+      if (!event.value) {
+        timeControl.reset();
+        timeControl.disable();
+      } else {
+        timeControl.setValue(type === 'start' ? '00:00' : '23:59');
+        timeControl.enable();
+      }
     }
 
 
