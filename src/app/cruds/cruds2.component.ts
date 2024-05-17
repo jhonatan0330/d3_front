@@ -166,9 +166,17 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 let endDate = new Date(new Date());
                 endDate.setDate(endDate.getDate() + 1);
                 this.fCDateEnd.setValue(endDate);
+                this.fCTimeStart.enable();
+                this.fCTimeEnd.enable();
+                this.fCTimeStart.setValue('00:00');
+                this.fCTimeEnd.setValue('23:59')
             } else {
                 this.fCDateStart.setValue(null);
                 this.fCDateEnd.setValue(null);
+                this.fCTimeStart.reset();
+                this.fCTimeEnd.reset();
+                this.fCTimeStart.disable();
+                this.fCTimeEnd.disable();
             }
 
             //FechaRegistro

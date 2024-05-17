@@ -358,6 +358,13 @@
                         </button>
                     </div>
 
+                    <!-- Pie de pagina, paginador -->
+                    <div *ngIf="dataProvider?.length > 0" class="my-10 mb-3 font-normal text-gray-500 dark:text-gray-400 text-center">
+                        <div *ngIf="viewMode !== 'grid-view'">Seleccionados : {{ this.selection?.selected.length }}</div>
+                        <div>Total : {{ dataProvider?.length }}</div>
+                        <div>Puedes usar los filtros para mejorar tu busqueda</div>
+                    </div>
+
                     <!-- Si no hay información -->
                     <!-- <div class="w-full items-center text-center"
                         *ngIf="!isLoading && !isEnd && dataProvider?.length === 0">
