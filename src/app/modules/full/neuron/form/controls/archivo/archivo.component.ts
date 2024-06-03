@@ -63,7 +63,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
       }
       this.filtroExtension = extensionFilter;
     } else {
-      this.filtroExtension = '.pdf,.png,.jpg,jpeg';
+      this.filtroExtension = '.pdf,.png,.jpg,.jpeg';
     }
     if (this.maximoSize === 0) {
       this.maximoSize = 1024;
