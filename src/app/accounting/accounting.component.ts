@@ -48,7 +48,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     isLoadingVoucher = false;
 
     recentTransactionsDataSource: MatTableDataSource<ManualDTO> = new MatTableDataSource();
-    recentTransactionsTableColumns: string[] = ['transactionId', 'date', 'name', 'amount', 'status'];
+    recentTransactionsTableColumns: string[] = ['transactionId', 'date', 'name', 'amount', 'status', 'actions'];
 
     balance: ResultMapDTO[];
 
@@ -121,6 +121,44 @@ export class AccountComponent implements OnInit, OnDestroy {
                 this.isLoadingVoucher = false;
             },
         });
+    }
+
+    editVouchers(voucher: ManualDTO) {
+        this._matDialog.open(ManualFormComponent, {
+            disableClose: true,
+            data: voucher
+        }).afterClosed().subscribe(() => {
+            this.getAccounts();
+        });
+    }
+
+    deleteVouchers(voucher: ManualDTO) {
+
+        Swal.fire({
+            title: '¿Desea eliminar el comprobante?',
+            text: voucher.code,
+            icon: "warning",
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: "Si, eliminar",
+            showCancelButton: true,
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'No, volver'
+        }).then((resultado) => {
+
+            if (resultado.isConfirmed) {
+                this.accountingService.deleteVoucher(voucher.key).subscribe({
+                    next: (dataResult: ManualDTO) => {
+                    },
+                    error: () => {
+                        this.isLoadingCatalog = false;
+                    },
+                    complete: () =>{
+                        this.getVouchers();
+                    }
+                });
+            }
+
+        })
     }
 
     getCatalogs() {

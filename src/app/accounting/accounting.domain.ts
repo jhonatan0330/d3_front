@@ -75,6 +75,7 @@ export class ManualAccountDTO {
 	state: string;
 	account: string;
 	accountName: string;
+    accountCode: string;
 	accountDTO: AccountDTO;
 	positive: number;
 	negative: number;

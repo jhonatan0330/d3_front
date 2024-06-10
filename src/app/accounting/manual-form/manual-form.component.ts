@@ -3,7 +3,7 @@ import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountingService } from '../accounting.service';
 import { Observable, Subscription, debounceTime, pairwise, startWith, map } from 'rxjs';
-import { AccountDTO } from '../accounting.domain';
+import { AccountDTO, ManualAccountDTO } from '../accounting.domain';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -45,10 +45,31 @@ export class ManualFormComponent implements OnInit {
                 type: ['', Validators.required],
                 factDate: [new Date(), Validators.required],
                 value: 0
-            }), 
-            records: this._formBuilder.array([this.createRecord()], Validators.required)
+            }),
+            records: this._formBuilder.array([], Validators.required)
         });
         this.getAccounts();
+
+        if(this.data) {
+            this.key = this.data.key;
+            this.loading= true;
+            this.accountingService.getVoucher(this.data.catalog, this.data.key)
+            .subscribe(x => {
+                x.records.forEach(i => {
+                    i.accountDTO = new AccountDTO();
+                    i.accountDTO.name = i.accountName;
+                    i.accountDTO.code = i.accountCode;
+                    i.accountDTO.key = i.account;
+                    this.recordsArray.push(this.createRecord(i));
+                })
+                this.recordsArray.push(this.createRecord(new ManualAccountDTO()));
+                this.loading= false;
+            });
+            console.log('getVoucher Despues');
+        }
+        else {
+            this.recordsArray.push(this.createRecord(new ManualAccountDTO()));
+        }
 
         //this.data.forEach(() => this.addRow());
         //this.updateView();
@@ -94,7 +115,7 @@ export class ManualFormComponent implements OnInit {
     }
 
     displayFn(acc: AccountDTO): string {
-        if (!acc) return '';
+        if (!acc || !acc.key) return '';
         return acc.code + ' | ' + acc.name;
     }
 
@@ -153,24 +174,26 @@ export class ManualFormComponent implements OnInit {
         this.matDialogRef.close();
     }
 
-    createRecord(): FormGroup {
-        const group = this._formBuilder.group({
-            account: '',
-            accountName: '',
-            accountDTO: '',
-            positive: 0,
-            negative: 0,
-            note: '',
-            third: '',
-            center: ''
-        });
+    createRecord(manualaccount:ManualAccountDTO): FormGroup {
+
+        if(!manualaccount.accountDTO)
+            manualaccount.accountDTO = new AccountDTO();
+
+        if(!manualaccount.positive)
+            manualaccount.positive = 0;
+
+        if(!manualaccount.negative)
+            manualaccount.negative = 0;
+
+        const group = this._formBuilder.group(manualaccount);
+
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
 
         group.get('accountDTO').valueChanges.subscribe(
             (value) => {
-                if (!value) {
+                if (!value || !value.key) {
                     group.get('accountName').setValue('');
                     group.get('account').setValue('');
                     return;
@@ -233,7 +256,7 @@ export class ManualFormComponent implements OnInit {
         this.subscription = group.valueChanges.pipe(
             debounceTime(1000)).subscribe(item => {
                 if (item.account && (item.positive !== 0 || item.negative !== 0)) {
-                    this.recordsArray.push(this.createRecord());
+                    this.recordsArray.push(this.createRecord(new ManualAccountDTO()));
                 }
             });
 

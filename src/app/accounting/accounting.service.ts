@@ -17,8 +17,20 @@ export class AccountingService {
         return this.http.get<ManualDTO[]>(this.ls.getUrlAccess('/acc/voucher/' + catalogId));
     }
 
-    createManual(manual: Voucher): Observable<ManualDTO> {
-        return this.http.post<ManualDTO>(this.ls.getUrlAccess('/acc/voucher/manual'), manual);
+    getVoucher(catalogId: string, key: string): Observable<Voucher> {
+        return this.http.get<Voucher>(this.ls.getUrlAccess('/acc/voucher/' + catalogId + '/' + key));
+    }
+
+    createManual(voucher: Voucher): Observable<ManualDTO> {
+        return this.http.post<ManualDTO>(this.ls.getUrlAccess('/acc/voucher/manual'), voucher);
+    }
+
+    updateVoucher(voucher: ManualDTO): Observable<ManualDTO> {
+        return this.http.put<ManualDTO>(this.ls.getUrlAccess('/acc/voucher/manual'), voucher);
+    }
+
+    deleteVoucher(key: string): Observable<ManualDTO> {
+        return this.http.delete<ManualDTO>(this.ls.getUrlAccess('/acc/voucher/manual/' + key));
     }
 
     upload(catalogId: string, formData: FormData): Observable<void> {
