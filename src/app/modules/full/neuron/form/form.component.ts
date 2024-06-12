@@ -558,9 +558,17 @@ export class FormComponent implements OnInit, AfterViewInit {
       const iBase = this.plantilla.caracteristicas[j];
       const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultipleFromManyKeys(
         iBase.propiedades,
-        [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA, PlantillaHelper.UPDATE_INFORMATIVE_FIELD]
+        PlantillaHelper.DEPENDENT_PROPERTIES
       );
       if (codigoDepende) {
+        // Solo un dependiente
+        for (let index = 0; index < this.dynamicControls.length; index++) {
+          const iFieldDependiente: IDynamicControl = this.dynamicControls[
+            index
+          ];
+          
+        }
+
         let iCampoDependiente; // Identifico el campo dependiente
         for (let index = 0; index < this.dynamicControls.length; index++) {
           const iFieldDependiente: IDynamicControl = this.dynamicControls[

@@ -549,7 +549,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             const iBase = this.plantilla.caracteristicas[j];
             const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultipleFromManyKeys(
                 iBase.propiedades,
-                [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA, PlantillaHelper.UPDATE_INFORMATIVE_FIELD]
+                PlantillaHelper.DEPENDENT_PROPERTIES
             );
             if (codigoDepende) {
                 let iCampoDependiente; // Identifico el campo dependiente

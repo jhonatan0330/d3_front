@@ -296,11 +296,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           if (this.isEnabled || (!this.isEnabled && !this.data.principal)) {
             if (
               !this.data.dependientes ||
-              this.data.dependientes.length !== this.relatedFields.length
+              this.data.dependientes.length !== this.relatedFieldsCount
             ) {
               return;
             }
-            for (let i = 0; i < this.relatedFields.length; i++) {
+            for (let i = 0; i < this.data.dependientes.length; i++) {
               if (
                 !this.data.dependientes[i].valorOpcion &&
                 this.data.dependientes[i].campoDTO.formato ===
@@ -510,16 +510,17 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
       if (
         !this.data.dependientes ||
-        this.data.dependientes.length !== this.relatedFields.length
+        this.data.dependientes.length !== this.relatedFieldsCount
       ) {
         if (campoFiltro.filtroParametro != null) {
           alert('Revisa los dependientes del campo ' + this.structure.nombre);
           return;
         }
       }
-      for (let i = 0; i < this.relatedFields.length; i++) {
+      for (let i = 0; i < this.data.dependientes.length; i++) {
         if (!this.data.dependientes[i].valorOpcion && (!this.data.dependientes[i].campoDTO || 
-          (this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO && !PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.MULTIPLE)))) {
+          (this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO 
+            && !PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.MULTIPLE)))) {
           /*alert(
             'Seleccione el campo ' + this.data.dependientes[i].campoDTO.nombre
           );*/

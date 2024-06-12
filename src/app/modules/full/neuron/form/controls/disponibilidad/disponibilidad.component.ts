@@ -55,11 +55,11 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
     if (this.relatedFields) {
       if (
         !this.data.dependientes ||
-        this.data.dependientes.length !== this.relatedFields.length
+        this.data.dependientes.length !== this.relatedFieldsCount
       ) {
         return;
       }
-      for (let i = 0; i < this.relatedFields.length; i++) {
+      for (let i = 0; i <  this.data.dependientes.length; i++) {
         if (
           !this.data.dependientes[i].valorOpcion
           && this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
