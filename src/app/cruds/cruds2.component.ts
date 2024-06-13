@@ -48,7 +48,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     fRegistroTimeEnd: FormControl = new FormControl();
     fControlCheck: FormControl = new FormControl(false); // Check que indica si se debe realizar una busqueda por codigo exacto
     pagina = 1; // Indica que pagina estamos buscando
-    cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
+    pageControl: FormControl = new FormControl('30');
     isLoading = false;
     isEnd = false;
     viewMode = 'grid-view';
@@ -314,16 +314,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             if (this.fCDateEnd.value)
                 entity.fechaMax = this.FormatoFecha(this.fCDateEnd, this.fCTimeEnd);
             this.ValidarFecha(entity.fechaMin, entity.fechaMax);
-
-            //FechaRegistro
-            if (this.solicitafechasRegistro && (!this.fRegistroDateStart.value || !this.fRegistroDateEnd.value)) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Por favor en Fecha Registro coloca una fecha de inicio y una fecha de fin, esto nos ayudara a mejorar el resultado de tu busqueda'
-                });
-                return;
-            }
             if (this.fRegistroDateStart.value)
                 entity.fechaRegistroMin = this.FormatoFecha(this.fRegistroDateStart, this.fRegistroTimeStart);
             if (this.fRegistroDateEnd.value)
@@ -371,8 +361,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.selection.clear();
             this.pagina = 1;
         }
-        entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
-        entity.paginacionRegistroFinal = this.cantidadPagina;
+        entity.paginacionRegistroInicial = this.pageControl.value * (_pagina - 1);
+        entity.paginacionRegistroFinal = this.pageControl.value;
         if (this.dynamicControls) {
             entity.filtersByFields = [];
             this.dynamicControls.forEach(fieldFilter => {
@@ -395,7 +385,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 } else {
                     this.dataProvider = this.dataProvider.concat(dataResult);
                 }
-                if (dataResult.length >= this.cantidadPagina) {
+                if (dataResult.length >= this.pageControl.value) {
                     this.pagina++;
                 } else {
                     this.isEnd = true;

@@ -79,7 +79,7 @@
                                         tabIndex="-1"></mat-datepicker-toggle>
                                     <mat-datepicker #pickerFrom></mat-datepicker>
                                 </mat-form-field>
-                                <mat-form-field class="w-52">
+                                <mat-form-field class="w-52" *ngIf="fCDateStart.value">
                                     <mat-label>Hora Inicial</mat-label>
                                     <input matInput type="time" [formControl]="fCTimeStart" />
                                 </mat-form-field>
@@ -93,7 +93,7 @@
                                         tabIndex="-1"></mat-datepicker-toggle>
                                     <mat-datepicker #pickerTo></mat-datepicker>
                                 </mat-form-field>
-                                <mat-form-field class="w-52">
+                                <mat-form-field class="w-52" *ngIf="fCDateEnd.value">
                                     <mat-label>Hora Final</mat-label>
                                     <input matInput type="time" [formControl]="fCTimeEnd" />
                                 </mat-form-field>
@@ -349,42 +349,29 @@
                         <tr mat-row *matRowDef="let row; columns: displayedColumns"
                             (click)="multipleSelect($event, row)"></tr>
                     </table>
-                    <!-- Paginador -->
-                    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-                    <div class="w-full items-center text-center"
-                        *ngIf="!isLoading && !isEnd && dataProvider?.length > 0">
-                        <button mat-flat-button color="accent" tabindex="-1" (click)="listar(pagina)">
-                            <mat-icon>refresh</mat-icon> Presiona aquí para buscar mas resultados
-                        </button>
-                    </div>
 
-                    <!-- Si no hay información -->
-                    <!-- <div class="w-full items-center text-center"
-                        *ngIf="!isLoading && !isEnd && dataProvider?.length === 0">
-                        <button mat-flat-button color="accent" tabindex="-1" (click)="listar(pagina)">
-                            <mat-icon mat-icon>refresh</mat-icon> Presiona aquí
-                        </button>
-                    </div> -->
-
-                    <!-- Pie de pagina, paginador -->
+                    <!-- Star View-->
                     <div class="my-48 flex flex-col flex-auto overflow-y-auto lg:overflow-hidden dark:bg-default"
                         *ngIf="!isLoading && !isEnd && dataProvider?.length === 0">
-
-
-                        <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
-                            <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}"/>
+                        <div
+                            class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
+                            <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}" />
                             <a href="#">
-                                <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ plantilla?.nombre }}</h5>
+                                <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{
+                                    plantilla?.nombre }}</h5>
                             </a>
                             <p>{{ plantilla?.objetivo }}</p>
                             <br>
-                            <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Para encontrar lo que necesitas, simplemente utiliza los filtros.
+                            <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Para encontrar lo que
+                                necesitas, simplemente utiliza los filtros.
                                 <button class="icon-size-4" mat-icon-button (click)="toggleDrawer()">
                                     <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
                                 </button>
                             </p>
 
-                            <button mat-flat-button style="width: 100%;"  class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" tabindex="-1" (click)="listar(pagina)">
+                            <button mat-flat-button style="width: 100%;"
+                                class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                tabindex="-1" (click)="listar(pagina)">
                                 Buscar
                             </button>
                         </div>
@@ -392,25 +379,66 @@
 
                     <div class="m-auto my-48 flex flex-col items-center justify-center"
                         *ngIf="isEnd && dataProvider?.length === 0">
-                        <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
+                        <div
+                            class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
                             <!-- <mat-icon class="icon-size-24 m-auto" [svgIcon]="'description'"></mat-icon> -->
                             <img mat-card-image class="icon-size-24" [src]="'assets/images/noData.png'">
 
                             <p>No se han encontrado resultados</p>
                             <br>
-                            <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Lo sentimos. no encontramos ningun resultado para su búsqueda,
+                            <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Lo sentimos. no encontramos
+                                ningun resultado para su búsqueda,
                                 puedes usar los filtros para mejorar tu busqueda.
                                 <button class="icon-size-4" mat-icon-button (click)="toggleDrawer()">
                                     <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
                                 </button>
                             </p>
 
-                            <button mat-flat-button style="width: 100%;"  class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" tabindex="-1" (click)="listar(pagina)">
+                            <button mat-flat-button style="width: 100%;"
+                                class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                tabindex="-1" (click)="listar(pagina)">
                                 Buscar
                             </button>
                         </div>
                     </div>
+
+
                 </div>
+                <div class="w-full px-4 py-3 bg-white border-t border-gray-200 shadow-md sm:px-6">
+                    <!-- Paginador -->
+                    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+                    <div class="flex justify-between w-full items-center" *ngIf="!isLoading">
+                        <div class=" flex items-center flex-col">
+                            <div *ngIf="viewMode !== 'grid-view'">Seleccionados : {{ this.selection?.selected.length }}
+                            </div>
+                            <div class="flex items-center">
+                                <button mat-icon-button (click)="toggleDrawer()">
+                                    <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+                                </button>
+                                <span class="font-medium dark:text-white">Total :</span> {{
+                                dataProvider?.length }}</div>
+                        </div>
+                        <mat-form-field class="w-20">
+                            <mat-select [formControl]="pageControl" required>
+                                <mat-option value="30">30</mat-option>
+                                <mat-option value="50">50</mat-option>
+                                <mat-option value="100">100</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        
+                        <button mat-raise-button tabindex="-1" (click)="listar(pagina)"
+                            *ngIf="!isLoading && !isEnd"
+                            class="relative inline-flex items-center px-2 py-2 text-sm 5xl:text-xl   font-medium text-gray-700 bg-white border border-gray-300 rounded-md sm:rounded-none hover:bg-gray-50 sm:rounded-r-md"
+                            data-id="pagination-next">Presiona aquí para buscar mas resultados<svg stroke="currentColor"
+                                fill="currentColor" stroke-width="0" viewBox="0 0 20 20" class="w-5 h-5"
+                                aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg></button>
+                    </div>
+                </div>
+
             </div>
 
         </mat-drawer-content>
