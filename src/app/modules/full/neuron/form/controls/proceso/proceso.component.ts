@@ -521,7 +521,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         if (!this.data.dependientes[i].valorOpcion && (!this.data.dependientes[i].campoDTO || 
           (this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO 
             && !PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.MULTIPLE)
-            && !PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.DEPENDE)))) {
+            && PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.DEPENDE)))) {
           /*alert(
             'Seleccione el campo ' + this.data.dependientes[i].campoDTO.nombre
           );*/
