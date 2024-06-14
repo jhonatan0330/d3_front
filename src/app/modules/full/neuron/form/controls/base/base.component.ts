@@ -43,7 +43,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   data: PedidoVentaCaracteristicaDTO;
   parent: PedidoVentaDTO;
   relatedFields: PropiedadDTO[];
-  relatedFieldsCount: number = 0;
+  //relatedFieldsCount: number = 0;
   propVisibleDepende: PropiedadDTO[];
   listeners: IDynamicControl[];
   required = true;
@@ -65,7 +65,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
     this._structure = value;
     this.required = PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL);
     this.isInvisible = !PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.INVISIBLE);
-
+    this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);    
+    /*
     this.relatedFields = PlantillaHelper.buscarValorMultipleFromManyKeys(this.structure.propiedades, PlantillaHelper.DEPENDENT_PROPERTIES);
     if(this.relatedFields){
       this.relatedFieldsCount= 0;
@@ -81,7 +82,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
         }
         if(!flagDouble) this.relatedFieldsCount++;
       }
-    }
+    }*/
     this.propVisibleDepende = this.obtenerValorMultiple(PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE);
   }
   constructor() { }
@@ -201,13 +202,17 @@ export class BaseComponent implements OnInit, IDynamicControl {
     if (!pField.data.dependientes) {
       pField.data.dependientes = [];
     }
+    /*let flag=false;
     for (let index = 0; index < this.listeners.length; index++) {
       const element = this.listeners[index];
       if(element.structure.codigo === pField.structure.codigo){
-        return;
+        flag = true;
+        break;
       }
     }
-    pField.data.dependientes.push(this.data);
+    if (!flag)
+      */
+     pField.data.dependientes.push(this.data);
     this.listeners.push(pField);
     pField.validateVisibility(this.getValorTexto())
   }

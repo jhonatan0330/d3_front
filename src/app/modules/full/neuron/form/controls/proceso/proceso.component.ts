@@ -296,7 +296,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           if (this.isEnabled || (!this.isEnabled && !this.data.principal)) {
             if (
               !this.data.dependientes ||
-              this.data.dependientes.length !== this.relatedFieldsCount
+              this.data.dependientes.length !== this.relatedFields.length
             ) {
               return;
             }
@@ -499,7 +499,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     filtro.campo = this.structure.llaveTabla;
     filtro.documento = campoFiltro.documento;
     filtro.filtroParametro = campoFiltro.filtroParametro;
-
+    
     if (this.relatedFields) {
       if (this.multiple && !this.data.documento) {
         this.data.expedientes = [];
@@ -510,7 +510,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
       if (
         !this.data.dependientes ||
-        this.data.dependientes.length !== this.relatedFieldsCount
+        this.data.dependientes.length !== this.relatedFields.length
       ) {
         if (campoFiltro.filtroParametro != null) {
           alert('Revisa los dependientes del campo ' + this.structure.nombre);
@@ -520,7 +520,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       for (let i = 0; i < this.data.dependientes.length; i++) {
         if (!this.data.dependientes[i].valorOpcion && (!this.data.dependientes[i].campoDTO || 
           (this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO 
-            && !PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.MULTIPLE)))) {
+            && !PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.MULTIPLE)
+            && !PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.DEPENDE)))) {
           /*alert(
             'Seleccione el campo ' + this.data.dependientes[i].campoDTO.nombre
           );*/

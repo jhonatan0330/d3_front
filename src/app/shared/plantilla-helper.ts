@@ -123,9 +123,10 @@ export class PlantillaHelper {
   static FECHA_MAXIMA_CAMPO = "FECHA_MAXIMA_CAMPO";
 	static FECHA_MINIMA_CAMPO = "FECHA_MINIMA_CAMPO";
 
+  // Estos dos los quite porque genrarban muchos cilso infirnitos
+  //PlantillaHelper.RELACIONAR_DOCUMENTOS, PlantillaHelper.RETIRAR_DOCUMENTOS,
   static DEPENDENT_PROPERTIES = [
     PlantillaHelper.DEPENDE, PlantillaHelper.MODIFICAR_CAMPO, PlantillaHelper.INFORMATIVE_DATA,
-    PlantillaHelper.RELACIONAR_DOCUMENTOS, PlantillaHelper.RETIRAR_DOCUMENTOS,
     PlantillaHelper.UPDATE_INFORMATIVE_FIELD, PlantillaHelper.FECHA_MAXIMA_CAMPO, PlantillaHelper.FECHA_MINIMA_CAMPO];
 
   static buscarPropiedad(

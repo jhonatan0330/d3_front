@@ -227,7 +227,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         if (this.relatedFields) {
           if (
             !this.data.dependientes ||
-            this.data.dependientes.length !== this.relatedFieldsCount
+            this.data.dependientes.length !== this.relatedFields.length
           ) {
             return;
           }
