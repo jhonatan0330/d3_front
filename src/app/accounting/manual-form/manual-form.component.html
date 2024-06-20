@@ -92,7 +92,7 @@
             <div class="text-right font-medium">{{differenceValue | currency}}</div>
         </div>
         <button class="order-first sm:order-last w-full" mat-flat-button [color]="'primary'"
-            (click)="send()">Guardar</button>
+            (click)="send()">{{ botonAccion }}</button>
     </form>
 
     <div class="w-full flex justify-center p-8" *ngIf="loading">

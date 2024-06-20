@@ -88,3 +88,8 @@ export class Voucher{
 	manual: ManualDTO;
 	records: ManualAccountDTO[];
 }
+
+export class Voucher_{
+	header: ManualDTO;
+	records: ManualAccountDTO[];
+}

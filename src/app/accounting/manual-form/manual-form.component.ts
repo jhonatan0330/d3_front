@@ -23,6 +23,7 @@ export class ManualFormComponent implements OnInit {
 
     private key: string;
     private subscription: Subscription;
+    botonAccion: string = "Guardar";
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -50,22 +51,36 @@ export class ManualFormComponent implements OnInit {
         });
         this.getAccounts();
 
-        if(this.data) {
+        if(this.data.key) {
+            this.botonAccion = "Actualizar";
             this.key = this.data.key;
             this.loading= true;
             this.accountingService.getVoucher(this.data.catalog, this.data.key)
             .subscribe(x => {
+
+                this.form = this._formBuilder.group({
+                    header: this._formBuilder.group({
+                        catalog: this.accountingService.currentCatalog.key,
+                        concept: [x.header.concept],
+                        factDate: [x.header.factDate],
+                        value: [x.header.value]
+                    }),
+                    records: this._formBuilder.array([], Validators.required)
+                });
+
                 x.records.forEach(i => {
                     i.accountDTO = new AccountDTO();
                     i.accountDTO.name = i.accountName;
                     i.accountDTO.code = i.accountCode;
                     i.accountDTO.key = i.account;
+                    this.creditValue += i.negative;
+                    this.debitValue += i.positive;
                     this.recordsArray.push(this.createRecord(i));
                 })
+                this.differenceValue = this.debitValue - this.creditValue;
                 this.recordsArray.push(this.createRecord(new ManualAccountDTO()));
                 this.loading= false;
             });
-            console.log('getVoucher Despues');
         }
         else {
             this.recordsArray.push(this.createRecord(new ManualAccountDTO()));
@@ -171,7 +186,15 @@ export class ManualFormComponent implements OnInit {
     }
 
     private update() {
-        this.matDialogRef.close();
+        this.accountingService.updateManual(this.form.value)
+            .subscribe({
+                next: () => {
+                    this.matDialogRef.close();
+                },
+                error: error => {
+                    this.loading = false;
+                }
+            });
     }
 
     createRecord(manualaccount:ManualAccountDTO): FormGroup {
@@ -185,7 +208,19 @@ export class ManualFormComponent implements OnInit {
         if(!manualaccount.negative)
             manualaccount.negative = 0;
 
+        if(!manualaccount.account)
+            manualaccount.account = "";
+
         const group = this._formBuilder.group(manualaccount);
+
+        if (manualaccount.positive && group.get('negative').enabled)
+        {
+            group.get('negative').disable();
+        }
+        if (manualaccount.negative && group.get('positive').enabled)
+        {
+            group.get('positive').disable();
+         }
 
         if (this.subscription) {
             this.subscription.unsubscribe();
@@ -205,14 +240,14 @@ export class ManualFormComponent implements OnInit {
                     if(!value.key && value.indexOf("|")!==-1) group.get('accountDTO').setValue('');
                     return;
                 }
-                group.get('accountName').setValue(account.code + ' | ' + account.name);
                 group.get('account').setValue(account.key);
+                group.get('accountName').setValue(account.code + ' | ' + account.name);
             }
         )
 
         group.get('positive').valueChanges
             .pipe(
-                startWith(0),
+                startWith(manualaccount.positive),
                 pairwise())
             .subscribe(
                 ([prevValue, selectedValue]) => {
@@ -230,7 +265,7 @@ export class ManualFormComponent implements OnInit {
 
         group.get('negative').valueChanges
             .pipe(
-                startWith(0),
+                startWith(manualaccount.negative),
                 pairwise())
             .subscribe(
                 ([prevValue, selectedValue]) => {
