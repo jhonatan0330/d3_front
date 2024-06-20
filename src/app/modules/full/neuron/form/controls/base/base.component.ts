@@ -43,6 +43,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   data: PedidoVentaCaracteristicaDTO;
   parent: PedidoVentaDTO;
   relatedFields: PropiedadDTO[];
+  //relatedFieldsCount: number = 0;
   propVisibleDepende: PropiedadDTO[];
   listeners: IDynamicControl[];
   required = true;
@@ -64,14 +65,31 @@ export class BaseComponent implements OnInit, IDynamicControl {
     this._structure = value;
     this.required = PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL);
     this.isInvisible = !PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.INVISIBLE);
-    this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);
+    this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);    
+    /*
+    this.relatedFields = PlantillaHelper.buscarValorMultipleFromManyKeys(this.structure.propiedades, PlantillaHelper.DEPENDENT_PROPERTIES);
+    if(this.relatedFields){
+      this.relatedFieldsCount= 0;
+      for (let i = 0; i < this.relatedFields.length; i++) {
+        const elementUp = this.relatedFields[i];
+        let flagDouble = false;
+        for (let j = i+1; j < this.relatedFields.length; j++) {
+          const elementDown = this.relatedFields[j];
+          if(elementUp.valor ===elementDown.valor){
+            flagDouble = true;
+            break;
+          }
+        }
+        if(!flagDouble) this.relatedFieldsCount++;
+      }
+    }*/
     this.propVisibleDepende = this.obtenerValorMultiple(PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE);
   }
   constructor() { }
 
   ngOnInit(): void {
     this.isEnabled = this._getEditable();
-    if(!this.form) { // Esto es para los campos en filtro de crud
+    if (!this.form) { // Esto es para los campos en filtro de crud
       this.required = false;
     }
   }
@@ -184,7 +202,17 @@ export class BaseComponent implements OnInit, IDynamicControl {
     if (!pField.data.dependientes) {
       pField.data.dependientes = [];
     }
-    pField.data.dependientes.push(this.data);
+    /*let flag=false;
+    for (let index = 0; index < this.listeners.length; index++) {
+      const element = this.listeners[index];
+      if(element.structure.codigo === pField.structure.codigo){
+        flag = true;
+        break;
+      }
+    }
+    if (!flag)
+      */
+     pField.data.dependientes.push(this.data);
     this.listeners.push(pField);
     pField.validateVisibility(this.getValorTexto())
   }

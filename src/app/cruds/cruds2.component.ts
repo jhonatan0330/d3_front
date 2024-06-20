@@ -48,7 +48,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     fRegistroTimeEnd: FormControl = new FormControl();
     fControlCheck: FormControl = new FormControl(false); // Check que indica si se debe realizar una busqueda por codigo exacto
     pagina = 1; // Indica que pagina estamos buscando
-    cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
+    pageControl: FormControl = new FormControl('30');
     isLoading = false;
     isEnd = false;
     viewMode = 'grid-view';
@@ -319,13 +319,12 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 entity.fechaMin = this.FormatoFecha(this.fCDateStart, this.fCTimeStart);
             if (this.fCDateEnd.value)
                 entity.fechaMax = this.FormatoFecha(this.fCDateEnd, this.fCTimeEnd);
-            this.ValidarFecha(entity.fechaMin, entity.fechaMax);
-
+            if( !this.ValidarFecha(entity.fechaMin, entity.fechaMax)) { return; }
             if (this.fRegistroDateStart.value)
                 entity.fechaRegistroMin = this.FormatoFecha(this.fRegistroDateStart, this.fRegistroTimeStart);
             if (this.fRegistroDateEnd.value)
                 entity.fechaRegistroMax = this.FormatoFecha(this.fRegistroDateEnd, this.fRegistroTimeEnd);
-            this.ValidarFecha(entity.fechaRegistroMin, entity.fechaRegistroMax);
+            if(!this.ValidarFecha(entity.fechaRegistroMin, entity.fechaRegistroMax)){ return; }
 
         }
 
@@ -368,8 +367,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.selection.clear();
             this.pagina = 1;
         }
-        entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
-        entity.paginacionRegistroFinal = this.cantidadPagina;
+        entity.paginacionRegistroInicial = this.pageControl.value * (_pagina - 1);
+        entity.paginacionRegistroFinal = this.pageControl.value;
         if (this.dynamicControls) {
             entity.filtersByFields = [];
             this.dynamicControls.forEach(fieldFilter => {
@@ -392,7 +391,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 } else {
                     this.dataProvider = this.dataProvider.concat(dataResult);
                 }
-                if (dataResult.length >= this.cantidadPagina) {
+                if (dataResult.length >= this.pageControl.value) {
                     this.pagina++;
                 } else {
                     this.isEnd = true;
@@ -548,6 +547,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 iBase.propiedades,
                 [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA, PlantillaHelper.UPDATE_INFORMATIVE_FIELD]
             );
+            //No pude colocar todos los depends
+            // PlantillaHelper.DEPENDENT_PROPERTIES
             if (codigoDepende) {
                 let iCampoDependiente; // Identifico el campo dependiente
                 for (let index = 0; index < this.dynamicControls.length; index++) {
@@ -631,7 +632,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         return startDate;
     }
 
-    private ValidarFecha(fechaMin: Date, fechaMax: Date): void {
+    private ValidarFecha(fechaMin: Date, fechaMax: Date): boolean {
         if (fechaMin && fechaMax) {
             if ((fechaMax.getTime() - fechaMin.getTime()) <= 0) {
                 Swal.fire({
@@ -639,8 +640,10 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                     title: 'Oops...',
                     text: 'Estas seguro que la fecha maxima es menor que la fecha minima??'
                 });
+                return false;
             }
         }
+        return true;
     }
 
     cambioFecha(type: string, fechaName: string, event: MatDatepickerInputEvent<Date>) {

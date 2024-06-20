@@ -231,7 +231,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
           ) {
             return;
           }
-          for (let index = 0; index < this.relatedFields.length; index++) {
+          for (let index = 0; index < this.data.dependientes.length; index++) {
             const pvc: PedidoVentaCaracteristicaDTO =
               this.data.dependientes[index];
             if (!pvc.valorOpcion) {
