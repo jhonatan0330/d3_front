@@ -29,8 +29,8 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             this.templateService.clear();
           } else{
             let showButton = true;
-            if(errorMessage.startsWith("ERROR: NOT_OK")) {
-              errorMessage = errorMessage.replace("ERROR: NOT_OK","");
+            if(errorMessage.indexOf("ERROR: NOT_OK")!==-1) {
+              errorMessage = errorMessage.substring(errorMessage.indexOf("ERROR: NOT_OK") + "ERROR: NOT_OK".length);
               showButton = false;
               const audio = new Audio();
               audio.src = 'assets/audio/incorrect.mp3';
