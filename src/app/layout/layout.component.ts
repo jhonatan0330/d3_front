@@ -7,15 +7,16 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FusePlatformService } from '@fuse/services/platform';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
+import { UserService } from 'app/core/user/user.service';
+import { Company } from 'app/core/user/user.types';
 
 @Component({
-    selector     : 'layout',
-    templateUrl  : './layout.component.html',
-    styleUrls    : ['./layout.component.scss'],
+    selector: 'layout',
+    templateUrl: './layout.component.html',
+    styleUrls: ['./layout.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class LayoutComponent implements OnInit, OnDestroy
-{
+export class LayoutComponent implements OnInit, OnDestroy {
     config: AppConfig;
     layout: Layout;
     scheme: 'dark' | 'light';
@@ -33,13 +34,19 @@ export class LayoutComponent implements OnInit, OnDestroy
         private _fuseConfigService: FuseConfigService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fusePlatformService: FusePlatformService,
-
-    )
-    {
+        private _userService: UserService
+    ) {
     }
 
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
+        this._userService.company$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe((company: Company) => {
+                if(company) { 
+                    this.config.layout = company.companyLayout; 
+                    this._updateLayout();
+                }
+            });
         // Set the theme and scheme based on the configuration
         combineLatest([
             this._fuseConfigService.config$,
@@ -49,11 +56,10 @@ export class LayoutComponent implements OnInit, OnDestroy
             map(([config, mql]) => {
                 const options = {
                     scheme: config.scheme,
-                    theme : config.theme
+                    theme: config.theme
                 };
                 // If the scheme is set to 'auto'...
-                if ( config.scheme === 'auto' )
-                {
+                if (config.scheme === 'auto') {
                     // Decide the scheme using the media query
                     options.scheme = mql.breakpoints['(prefers-color-scheme: dark)'] ? 'dark' : 'light';
                 }
@@ -92,19 +98,16 @@ export class LayoutComponent implements OnInit, OnDestroy
         this._renderer2.addClass(this._document.body, this._fusePlatformService.osName);
     }
 
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
 
-    private _updateLayout(): void
-    {
+    private _updateLayout(): void {
         // Get the current activated route
         let route = this._activatedRoute;
-        while ( route.firstChild )
-        {
+        while (route.firstChild) {
             route = route.firstChild;
         }
 
@@ -113,11 +116,9 @@ export class LayoutComponent implements OnInit, OnDestroy
         // 2. Get the query parameter from the current route and
         // set the layout and save the layout to the config
         const layoutFromQueryParam = (route.snapshot.queryParamMap.get('layout') as Layout);
-        if ( layoutFromQueryParam )
-        {
+        if (layoutFromQueryParam) {
             this.layout = layoutFromQueryParam;
-            if ( this.config )
-            {
+            if (this.config) {
                 this.config.layout = layoutFromQueryParam;
             }
         }
@@ -142,28 +143,24 @@ export class LayoutComponent implements OnInit, OnDestroy
         paths.forEach((path) => {
 
             // Check if there is a 'layout' data
-            if ( path.routeConfig && path.routeConfig.data && path.routeConfig.data.layout )
-            {
+            if (path.routeConfig && path.routeConfig.data && path.routeConfig.data.layout) {
                 // Set the layout
                 this.layout = path.routeConfig.data.layout;
             }
         });
     }
 
-    private _updateScheme(): void
-    {
+    private _updateScheme(): void {
         // Remove class names for all schemes
         this._document.body.classList.remove('light', 'dark');
         // Add class name for the currently selected scheme
         this._document.body.classList.add(this.scheme);
     }
 
-    private _updateTheme(): void
-    {
+    private _updateTheme(): void {
         // Find the class name for the previously selected theme and remove it
         this._document.body.classList.forEach((className: string) => {
-            if ( className.startsWith('theme-') )
-            {
+            if (className.startsWith('theme-')) {
                 this._document.body.classList.remove(className, className.split('-')[1]);
             }
         });

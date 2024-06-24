@@ -1,3 +1,5 @@
+import { Layout } from "app/layout/layout.types";
+
 export interface User
 {
     id?: string;
@@ -13,6 +15,7 @@ export interface Company
     companyName?: string;
     companySlogan?: string;
     companyImage?: string;
+    companyLayout?: Layout;
     companyCoverageImage?: string[];
     companyCoverageTemplate?: string;
 }

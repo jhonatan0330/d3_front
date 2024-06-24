@@ -14,6 +14,7 @@ import { NotificationsService } from 'app/notification/notification.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { NavigationService } from 'app/authorization/navigation/navigation.service';
 import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
+import { Layout } from 'app/layout/layout.types';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -151,12 +152,15 @@ export class LoginService {
       avatar: response.usuarioDTO.imagen,
     };
 
+    let layoutCompany: string = PlantillaHelper.buscarValor(response.organizacion.propiedades, PlantillaHelper.LAYOUT_APP);
+    if (!layoutCompany) { layoutCompany = 'classy'; }
     this._userService.company = {
       companyName: response.organizacion.nombre,
       companySlogan: response.organizacion.slogan,
       companyImage: response.organizacion.imagen,
       companyCoverageImage: (imageCoverage ? imageCoverage : null),
-      companyCoverageTemplate: PlantillaHelper.buscarValor(response.organizacion.propiedades, PlantillaHelper.COVERAGE_TEMPLATE)
+      companyCoverageTemplate: PlantillaHelper.buscarValor(response.organizacion.propiedades, PlantillaHelper.COVERAGE_TEMPLATE),
+      companyLayout: layoutCompany as Layout
     }
 
     if (response && response.mensaje) {
@@ -223,7 +227,7 @@ export class LoginService {
       );
   }
 
-  
+
   changePwdOtherSystem(autenticacion: UsuarioOrganizacionDTO) {
     return this.http
       .post<UsuarioOrganizacionDTO>(
