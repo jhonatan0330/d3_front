@@ -7,7 +7,7 @@
         <mat-icon class="absolute ml-6 sm:ml-8" [svgIcon]="'heroicons_outline:search'" (click)="searchDocument()"></mat-icon>
         <input class="w-full h-full px-16 sm:px-18" [formControl]="searchControl" [matAutocomplete]="matAutocomplete"
             [placeholder]="'Search...'" (keyUp.enter)="searchDocument()" (keydown)="onKeydown($event)" #barSearchInput>
-        <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+        <mat-progress-bar  class="w-full right-16 sm:right-18" mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
         <mat-autocomplete class="max-h-128 sm:px-2 border-t rounded-b shadow-md" [autoSelectActiveOption]="true"
             [disableRipple]="true" #matAutocomplete="matAutocomplete" [displayWith]="autoCompleteDisplay">
             <mat-option *ngFor="let document of resultSets" [value]="document">

@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { SharedModule } from 'app/shared/shared.module';
 import { SearchComponent } from 'app/layout/common/search/search.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
     declarations: [
@@ -20,6 +21,7 @@ import { SearchComponent } from 'app/layout/common/search/search.component';
         MatFormFieldModule,
         MatIconModule,
         MatInputModule,
+        MatProgressBarModule,
         SharedModule
     ],
     exports     : [
