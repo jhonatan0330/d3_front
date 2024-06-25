@@ -41,6 +41,9 @@ import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { Router } from '@angular/router';
+import { takeUntil } from 'rxjs';
+import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { TraceResumeComponent } from 'app/document-transition/trace-resume/trace-resume.component';
 
 @Component({
   selector: 'app-form',
@@ -52,6 +55,8 @@ export class FormComponent implements OnInit, AfterViewInit {
   myForm: ViewContainerRef;
   formIsModified = false;
   dynamicControls: IDynamicControl[] = [];
+
+  @ViewChild('tracer') tracer: TraceResumeComponent;
 
   // flags
   submitted = false;
@@ -92,6 +97,9 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
 
+  drawerMode: 'over' | 'side' = 'side';
+  drawerOpened: boolean = false;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<FormComponent>,
@@ -100,7 +108,8 @@ export class FormComponent implements OnInit, AfterViewInit {
     private ls: LocalStoreService,
     private compiler: ComponentFactoryResolver,
     private utilsService: UtilsService,
-    private _router: Router
+    private _router: Router,
+    private _fuseMediaWatcherService: FuseMediaWatcherService
   ) { }
 
   ngOnInit(): void {
@@ -127,6 +136,17 @@ export class FormComponent implements OnInit, AfterViewInit {
       // Camino New
       this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
     }
+     // Subscribe to media changes
+     this._fuseMediaWatcherService.onMediaChange$
+     .subscribe(({ matchingAliases }) => {
+         // Set the drawerMode and drawerOpened if the given breakpoint is active
+         if (matchingAliases.includes('md')) {
+             this.drawerMode = 'side';
+         }
+         else {
+             this.drawerMode = 'over';
+         }
+     });
   }
 
   ngAfterViewInit(): void {
@@ -895,7 +915,9 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   showTrace() {
-    this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre);
+    this.drawerOpened = !this.drawerOpened;
+    if(this.drawerOpened && !this.tracer.dataProvider) this.tracer.listar(1);
+    //this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre);
   }
 
   showChangeState() {

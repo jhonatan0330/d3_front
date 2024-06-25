@@ -26,19 +26,21 @@
     </div>
     <div class="w-full justify-between flex px-2" *ngIf="pedido && pedido.dinero">
       <div *ngIf="pedido.dinero.saldo" class="px-2 text-sm">Saldo : {{pedido.dinero.saldo | currency}}</div>
-      <div *ngIf="pedido.dinero.valorTotal" class="text-md font-bold flex-auto text-right">Valor {{pedido.dinero.valorTotal | currency}}</div>
+      <div *ngIf="pedido.dinero.valorTotal" class="text-md font-bold flex-auto text-right">Valor
+        {{pedido.dinero.valorTotal | currency}}</div>
     </div>
     <span *ngIf="instruccionCrear" class="px-1 text-xs">{{ instruccionCrear }}</span>
   </div>
-
   <!-- Botones de accion -->
   <div>
     <!-- Boton Cerrar -->
     <div>
-      <mat-icon class="h-6 cursor-pointer" (click)="dialogRef.close(false)" [style.color]="getColorFont()">exit_to_app</mat-icon>
+      <mat-icon class="h-6 cursor-pointer" (click)="dialogRef.close(false)"
+        [style.color]="getColorFont()">exit_to_app</mat-icon>
     </div>
     <div>
-      <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList" [style.color]="getColorFont()">menu</mat-icon>
+      <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList"
+        [style.color]="getColorFont()">menu</mat-icon>
       <mat-menu #formMenuList="matMenu">
         <!-- Boton Cambiar estado -->
         <button mat-menu-item matTooltip="Cambia estado" *ngIf="canChangeState" (click)="showChangeState()"
@@ -54,8 +56,9 @@
           <mat-icon>cloud_upload</mat-icon> Carga
         </button>
         <!-- Boton tarifas -->
-        <button mat-menu-item matTooltip="Tarifas" *ngIf="modificable && canTariff" (click)="showTariff()" tabindex="-1">
-          <mat-icon>monetization_on</mat-icon> Tarifas 
+        <button mat-menu-item matTooltip="Tarifas" *ngIf="modificable && canTariff" (click)="showTariff()"
+          tabindex="-1">
+          <mat-icon>monetization_on</mat-icon> Tarifas
         </button>
         <!-- Boton Configuracion producto -->
         <button mat-menu-item matTooltip="Configuracion de producto"
@@ -73,7 +76,7 @@
           <span>Whatsapp</span>
         </button>
         <!-- Boton Ayuda -->
-        <button mat-menu-item  (click)="goToHelp()">
+        <button mat-menu-item (click)="goToHelp()">
           <mat-icon>help_outline</mat-icon>
           <span>Ayuda</span>
         </button>
@@ -82,86 +85,99 @@
   </div>
 </div>
 <!-- -->
-<div class="max-h-[65vh] px-4 overflow-x-hidden">
-  <!-- Cambiar estado del documento -->
-  <mat-card class="p-2" *ngIf="isChangeState">
-    <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>
-    <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
-      <div>
-        <mat-form-field class="w-full">
-          <input matInput name="estadoFinal" [matAutocomplete]="auto"
-            [formControl]="changeStateForm.controls['estadoFinal']" placeholder="Nuevo estado" required />
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayChangeState">
-            <mat-option *ngFor="let newState of plantilla.estados" [value]="newState">
-              <span>{{ newState.nombre }}</span>
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
+<mat-drawer-container class="flex-auto h-full">
+  <mat-drawer position="end" class="dark:bg-gray-900 max-w-3/4" [mode]="drawerMode" [(opened)]="drawerOpened" #drawer>
+    <div *ngIf="pedido && pedido.llaveTabla" class="pt-2">
+      <trace-resume #tracer [plantilla]="plantilla" [documentId]="pedido.llaveTabla"></trace-resume>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content class="flex flex-col" fuseScrollReset>
+    <div class="max-h-[65vh] px-4 overflow-x-hidden">
+      <!-- Cambiar estado del documento -->
+      <mat-card class="p-2" *ngIf="isChangeState">
+        <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>
+        <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
+          <div>
+            <mat-form-field class="w-full">
+              <input matInput name="estadoFinal" [matAutocomplete]="auto"
+                [formControl]="changeStateForm.controls['estadoFinal']" placeholder="Nuevo estado" required />
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayChangeState">
+                <mat-option *ngFor="let newState of plantilla.estados" [value]="newState">
+                  <span>{{ newState.nombre }}</span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
 
-      <div>
-        <mat-form-field class="w-full">
-          <textarea name="motivo" class="textarea-form" matInput [formControl]="changeStateForm.controls['motivo']"
-            placeholder="Motivo" required></textarea>
-        </mat-form-field>
+          <div>
+            <mat-form-field class="w-full">
+              <textarea name="motivo" class="textarea-form" matInput [formControl]="changeStateForm.controls['motivo']"
+                placeholder="Motivo" required></textarea>
+            </mat-form-field>
+          </div>
+          <button mat-raised-button class="mat-primary w-full" [disabled]="changeStateForm.invalid"
+            *ngIf="!changeStateIsLoading">
+            Cambiar estado
+          </button>
+        </form>
+      </mat-card>
+      <!-- Alertas-->
+      <div *ngIf="pedido && pedido.messages" class="py-1 gap-1">
+        <div *ngFor="let msg of pedido.messages"
+          class="flex items-center p-1 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+          role="alert">
+          <mat-icon class="text-red-800">error</mat-icon>
+          <div class="w-full px-2">
+            <span class="font-medium">Error</span> {{msg.message}}
+          </div>
+        </div>
       </div>
-      <button mat-raised-button class="mat-primary w-full" [disabled]="changeStateForm.invalid"
-        *ngIf="!changeStateIsLoading">
-        Cambiar estado
-      </button>
-    </form>
-  </mat-card>
-  <!-- Alertas-->
-  <div *ngIf="pedido && pedido.messages" class="py-1 gap-1">
-    <div *ngFor="let msg of pedido.messages" class="flex items-center p-1 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
-      <mat-icon class="text-red-800">error</mat-icon>
-      <div class="w-full px-2">
-        <span class="font-medium">Error</span> {{msg.message}}
+      <!-- Acciones  -->
+      <div class="w-full" *ngIf="pedido && pedido.llaveTabla">
+        <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+        <!-- Acciones -->
+        <div *ngIf="!isLoading" class="p-1 w-full justify-between flex flex-wrap">
+          <!-- Botones de transiciones -->
+          <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer flex-auto">
+            <div class="p-1 w-full h-full items-center flex justify-center">
+              <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
+              <div class="pl-2 text-sm font-bold">{{ t.nombre }}</div>
+            </div>
+          </a>
+          <!-- Botones de reportes -->
+          <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer flex-auto">
+            <div class="p-1 w-full h-full items-center flex justify-center">
+              <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
+                <mat-icon class="icon-size-5 text-white" svgIcon="print">
+                </mat-icon>
+              </div>
+              <div class="pl-2 text-sm font-bold">{{ r.nombre | slice: 0:30 }}</div>
+            </div>
+          </a>
+          <!-- Boton de historial
+          <button mat-flat-button (click)="showTrace()" class="flex-auto">
+            <mat-icon>history</mat-icon> Historial
+          </button> -->
+          <a class="cursor-pointer flex-auto" (click)="showTrace()">
+            <div class="p-1 w-full h-full items-center flex justify-center">
+              <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
+                <mat-icon class="icon-size-5 text-white" svgIcon="history">
+                </mat-icon>
+              </div>
+              <div class="pl-2 text-sm font-bold">HISTORIAL</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <!-- Campos dinamicos -->
+      <div class="pt-2">
+        <ng-template #dynamycFormElement></ng-template>
       </div>
     </div>
-  </div>
-  <!-- Acciones  -->
-  <div class="w-full" *ngIf="pedido && pedido.llaveTabla" >
-    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-    <!-- Acciones -->
-    <div *ngIf="!isLoading" class="p-1 w-full justify-between flex flex-wrap">
-      <!-- Botones de transiciones -->
-      <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer flex-auto">
-        <div class="p-1 w-full h-full items-center flex justify-center" >
-          <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
-          <div class="pl-2 text-sm font-bold">{{ t.nombre }}</div>
-        </div>
-      </a>
-      <!-- Botones de reportes -->
-      <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer flex-auto">
-        <div class="p-1 w-full h-full items-center flex justify-center">
-          <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
-            <mat-icon class="icon-size-5 text-white" svgIcon="print">
-            </mat-icon>
-          </div>
-          <div class="pl-2 text-sm font-bold">{{ r.nombre | slice: 0:30 }}</div>
-        </div>
-      </a>
-      <!-- Boton de historial
-      <button mat-flat-button (click)="showTrace()" class="flex-auto">
-        <mat-icon>history</mat-icon> Historial
-      </button> -->
-      <a class="cursor-pointer flex-auto" (click)="showTrace()">
-        <div class="p-1 w-full h-full items-center flex justify-center">
-          <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
-            <mat-icon class="icon-size-5 text-white" svgIcon="history">
-            </mat-icon>
-          </div>
-          <div class="pl-2 text-sm font-bold" >HISTORIAL</div>
-        </div>
-      </a>
-    </div>
-  </div>
-  <!-- Campos dinamicos -->
-  <div class="pt-2">
-    <ng-template #dynamycFormElement></ng-template>
-  </div>
-</div>
+  </mat-drawer-content>
+
+</mat-drawer-container>
+
 <!-- Boton de guardar -->
 <div *ngIf="modificable" class="pt-1 px-4 pb-4">
   <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>

@@ -58,6 +58,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { InformativeComponent } from './form/controls/informative/informative.component';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { TraceResumeComponent } from 'app/document-transition/trace-resume/trace-resume.component';
+import { DocumentTransitionModule } from 'app/document-transition/document-transition.module';
 
 
 @NgModule({
@@ -124,6 +126,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 
         MatDatepickerModule,
         MatNativeDateModule,
+        DocumentTransitionModule
     ],
     providers: [
         { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },

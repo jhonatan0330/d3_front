@@ -72,7 +72,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     drawerOpened: boolean = true;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-
     //VAriables del filtro
     @ViewChild('dynamycFormElement', { read: ViewContainerRef })
     myForm: ViewContainerRef;
