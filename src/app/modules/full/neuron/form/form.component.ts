@@ -915,9 +915,12 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   showTrace() {
+    if(PlantillaHelper.buscarPropiedad(this.plantilla.propiedades, PlantillaHelper.HISTORICO_VISTA)){
+      this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre);
+      return;
+    }
     this.drawerOpened = !this.drawerOpened;
-    if(this.drawerOpened && !this.tracer.dataProvider) this.tracer.listar(1);
-    //this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre);
+    if(this.drawerOpened && !this.tracer.dataProvider) this.tracer.listar(1);    
   }
 
   showChangeState() {

@@ -47,8 +47,7 @@
                      (click)="showTraceDocument(g.documentoModificador, g.plantilla)"><span>{{ g.plantillaNombre }} - {{ g.modificadorNombre }}</span></a> </span>
                   <span *ngIf="g.estadoInicial">, inicialmente estaba el documento en estado <b>{{ g.estadoInicial }}</b> </span><span *ngIf="g.estadoFinal">, finalizo en estado <b>{{ g.estadoFinal}}</b></span>
                   <span *ngIf="g.ubicacionNombre">, fue asignado al {{ g.ubicacionPlantilla }} <b>{{ g.ubicacionNombre }}</b></span>
-                  <span *ngIf="g.total">
-                    <small> contaba con un Saldo de {{ g.saldo | currency }}</small> y un Valor Total de <b>{{ g.total | currency }}</b>
+                  <span *ngIf="g.total">, contaba con un Saldo de {{ g.saldo | currency }} y un Valor Total de <b>{{ g.total | currency }}</b>
                   </span>
               </div>
               

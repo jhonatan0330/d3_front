@@ -263,6 +263,7 @@ export class MassiveComponent implements OnInit {
     return null;
   }
 
+  //tambien esta en tipo numero toca centralizarla
   formatStringXML(texto: string): string {
     if (!texto) {
       return 'EMPTY';
