@@ -74,7 +74,7 @@
                                 <mat-form-field class="pr-2">
                                     <mat-label>Fecha Inicial</mat-label>
                                     <input matInput [matDatepicker]="pickerFrom" [formControl]="fCDateStart"
-                                        autocomplete="off" />
+                                    (dateChange)="cambioFecha('start', '', $event)" autocomplete="off" />
                                     <mat-datepicker-toggle matSuffix [for]="pickerFrom"
                                         tabIndex="-1"></mat-datepicker-toggle>
                                     <mat-datepicker #pickerFrom></mat-datepicker>
@@ -88,7 +88,7 @@
                                 <mat-form-field class="pr-2">
                                     <mat-label>Fecha Final</mat-label>
                                     <input matInput [matDatepicker]="pickerTo" [formControl]="fCDateEnd"
-                                        autocomplete="off" />
+                                    (dateChange)="cambioFecha('end', '', $event)" autocomplete="off" />
                                     <mat-datepicker-toggle matSuffix [for]="pickerTo"
                                         tabIndex="-1"></mat-datepicker-toggle>
                                     <mat-datepicker #pickerTo></mat-datepicker>
@@ -129,7 +129,7 @@
                                 <mat-form-field class="pr-2">
                                     <mat-label>Fecha Inicial</mat-label>
                                     <input matInput [matDatepicker]="pickerFromR" [formControl]="fRegistroDateStart"
-                                        (dateChange)="cambioFecha('start', $event)" autocomplete="off" />
+                                        (dateChange)="cambioFecha('start', 'registro', $event)" autocomplete="off" />
                                     <mat-datepicker-toggle matSuffix [for]="pickerFromR"
                                         tabIndex="-1"></mat-datepicker-toggle>
                                     <mat-datepicker #pickerFromR></mat-datepicker>
@@ -143,7 +143,7 @@
                                 <mat-form-field class="pr-2">
                                     <mat-label>Fecha Final</mat-label>
                                     <input matInput [matDatepicker]="pickerToR" [formControl]="fRegistroDateEnd"
-                                        (dateChange)="cambioFecha('end', $event)" autocomplete="off" />
+                                        (dateChange)="cambioFecha('end', 'registro', $event)" autocomplete="off" />
                                     <mat-datepicker-toggle matSuffix [for]="pickerToR"
                                         tabIndex="-1"></mat-datepicker-toggle>
                                     <mat-datepicker #pickerToR></mat-datepicker>
@@ -425,7 +425,7 @@
                                 <mat-option value="100">100</mat-option>
                             </mat-select>
                         </mat-form-field>
-                        
+
                         <button mat-raise-button tabindex="-1" (click)="listar(pagina)"
                             *ngIf="!isLoading && !isEnd"
                             class="relative inline-flex items-center px-2 py-2 text-sm 5xl:text-xl   font-medium text-gray-700 bg-white border border-gray-300 rounded-md sm:rounded-none hover:bg-gray-50 sm:rounded-r-md"

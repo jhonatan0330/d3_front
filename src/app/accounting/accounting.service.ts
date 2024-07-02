@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO, Voucher } from './accounting.domain';
+import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO, Voucher, Voucher_ } from './accounting.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -17,8 +17,24 @@ export class AccountingService {
         return this.http.get<ManualDTO[]>(this.ls.getUrlAccess('/acc/voucher/' + catalogId));
     }
 
-    createManual(manual: Voucher): Observable<ManualDTO> {
-        return this.http.post<ManualDTO>(this.ls.getUrlAccess('/acc/voucher/manual'), manual);
+    getVoucher(catalogId: string, key: string): Observable<Voucher_> {
+        return this.http.get<Voucher_>(this.ls.getUrlAccess('/acc/voucher/' + catalogId + '/' + key));
+    }
+
+    createManual(voucher: Voucher): Observable<ManualDTO> {
+        return this.http.post<ManualDTO>(this.ls.getUrlAccess('/acc/voucher/manual'), voucher);
+    }
+
+    updateManual(voucher: Voucher): Observable<ManualDTO> {
+        return this.http.put<ManualDTO>(this.ls.getUrlAccess('/acc/voucher/manual'), voucher);
+    }
+
+    updateVoucher(voucher: ManualDTO): Observable<ManualDTO> {
+        return this.http.put<ManualDTO>(this.ls.getUrlAccess('/acc/voucher/manual'), voucher);
+    }
+
+    deleteVoucher(key: string): Observable<ManualDTO> {
+        return this.http.delete<ManualDTO>(this.ls.getUrlAccess('/acc/voucher/manual/' + key));
     }
 
     upload(catalogId: string, formData: FormData): Observable<void> {

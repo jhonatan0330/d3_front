@@ -216,6 +216,30 @@
                                     </td>
                                 </ng-container>
 
+                                <!-- actions -->
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        Acciones
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <div>
+                                            <button [matMenuTriggerFor]="actionsTable" mat-icon-button>
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #actionsTable="matMenu">
+                                                <button mat-menu-item (click)="editVouchers(row)">
+                                                    <mat-icon class="icon-size-5">edit</mat-icon>
+                                                    <span>Actualizar Comprobante</span>
+                                                </button>
+                                                <button mat-menu-item (click)="deleteVouchers(row)">
+                                                    <mat-icon class="icon-size-5">delete</mat-icon>
+                                                    <span>Eliminar Comprobante</span>
+                                                </button>
+                                            </mat-menu>
+                                        </div>
+                                    </td>
+                                </ng-container>
+
                                 <!-- Footer -->
                                 <ng-container matColumnDef="recentOrdersTableFooter">
                                     <td class="py-6 px-0 border-0" mat-footer-cell *matFooterCellDef colspan="6">

@@ -75,6 +75,7 @@ export class ManualAccountDTO {
 	state: string;
 	account: string;
 	accountName: string;
+    accountCode: string;
 	accountDTO: AccountDTO;
 	positive: number;
 	negative: number;
@@ -85,5 +86,10 @@ export class ManualAccountDTO {
 
 export class Voucher{
 	manual: ManualDTO;
+	records: ManualAccountDTO[];
+}
+
+export class Voucher_{
+	header: ManualDTO;
 	records: ManualAccountDTO[];
 }
