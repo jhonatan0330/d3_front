@@ -99,6 +99,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   drawerMode: 'over' | 'side' = 'side';
   drawerOpened: boolean = false;
+  styleSizePop = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -520,7 +521,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       }
     }
     this.instruccionCrear = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_INSTRUCCION_CREAR);
-    if (this.instruccionCrear) { this.fullScreen = true; }
+    if (this.instruccionCrear) {  this.toogleScreen();}
     this.showFields();
     this.resolvePropiertiesForm();
     this.getReports();
@@ -920,7 +921,8 @@ export class FormComponent implements OnInit, AfterViewInit {
       return;
     }
     this.drawerOpened = !this.drawerOpened;
-    if(this.drawerOpened && !this.tracer.dataProvider) this.tracer.listar(1);    
+    if(this.drawerOpened && !this.tracer.dataProvider) this.tracer.listar(1); 
+    this.getSizePop();  
   }
 
   showChangeState() {
@@ -1028,6 +1030,16 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   toogleScreen() {
     this.fullScreen = !this.fullScreen;
+    this.getSizePop();
+  }
+
+  getSizePop(){
+    if(this.fullScreen){
+      this.styleSizePop = 'width: 95vw;';
+    } else {
+      this.styleSizePop = '';
+    }
+    if(this.drawerOpened) {this.styleSizePop = this.styleSizePop + 'height:95vh;';}
   }
 
   @HostListener('document:keydown', ['$event'])

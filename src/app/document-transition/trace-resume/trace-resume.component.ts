@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from "app/modules/full/neuron/model/sw42.domain";
 import { UtilsService } from "app/modules/full/neuron/service/utils.service";
@@ -39,6 +39,7 @@ export class TraceResumeComponent implements OnInit {
 
   @Input() plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
   @Input() documentId: string;
+  @Output() close = new EventEmitter();
   
   constructor(
     private _traceService: DocumentTransitionService,
