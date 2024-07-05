@@ -313,7 +313,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               this.fControl.setValue(this.data.principal); // Esto es para que se vea el proceso cuando es relacionado y combo
             } else {
               this.keyInicial = this.data.valorOpcion;
-              this.procesarCampo(filtro);
+              if(this.formIsEnabled) this.procesarCampo(filtro);
             }
             return;
           } else {
