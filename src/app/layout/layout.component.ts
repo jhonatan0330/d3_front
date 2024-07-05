@@ -43,7 +43,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             .pipe((takeUntil(this._unsubscribeAll)))
             .subscribe((company: Company) => {
                 if(company) { 
-                    this.config.layout = company.companyLayout; 
+                    if(this.config) this.config.layout = company.companyLayout; 
                     this._updateLayout();
                 }
             });

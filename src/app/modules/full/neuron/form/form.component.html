@@ -22,10 +22,9 @@
         [style.color]="getColorFont()">fullscreen_exit</mat-icon>
     </div>
     <div *ngIf="pedido && pedido.llaveTabla" class="w-full sm:flex justify-between">
-      <div *ngIf="pedido && pedido.llaveTabla" class="font-semibold px-1 text-center text-md">{{pedido.estadoNombre }}
-      </div>
-      <div class="text-center px-1 text-sm line-clamp-1"> {{ pedido.funcionarioNombre }}</div>
-      <div class="text-center text-xs  px-2">{{ pedido.fecha | date: 'medium' }}</div>
+      <div *ngIf="pedido && pedido.llaveTabla" class="font-semibold px-1 text-center text-md">{{pedido.estadoNombre }}</div>
+      <!--div class="text-center px-1 text-sm line-clamp-1"> {{ pedido.funcionarioNombre }}</div-->
+      <div class="text-right text-xs px-2">{{ pedido.fecha | date: 'medium' }}</div>
     </div>
     <div class="w-full justify-between flex px-2" *ngIf="pedido && pedido.dinero">
       <div *ngIf="pedido.dinero.saldo" class="px-2 text-sm">Saldo : {{pedido.dinero.saldo | currency}}</div>

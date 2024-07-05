@@ -1039,7 +1039,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     } else {
       this.styleSizePop = '';
     }
-    if(this.drawerOpened) {this.styleSizePop = this.styleSizePop + 'height:95vh;';}
+    if(this.drawerOpened) {this.styleSizePop = this.styleSizePop + 'height:80vh;';}
   }
 
   @HostListener('document:keydown', ['$event'])
