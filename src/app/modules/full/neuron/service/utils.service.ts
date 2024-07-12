@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DetallePedidoVentaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { FormComponent } from 'app/modules/full/neuron/form/form.component';
 import { TransferFormComponent } from 'app/notification/transfer-form/transfer-form.component';
 import { TrazabilityComponent } from 'app/document-transition/trazability/trazability.component';
-import { ProductComponent } from '../form/controls/product/product.component';
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +15,8 @@ export class UtilsService {
   modalWithParams( pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null ) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(FormComponent, {
       // width: '720px',
-      maxHeight: '90vh',
-      maxWidth: '99vw',
+       maxHeight: '100vh',
+      maxWidth: '100vw',
       disableClose: true,
       data: { data: pDataModal , close2Save: pClose2Save, identificador:  pIdentificador},
     });

@@ -1035,11 +1035,11 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   getSizePop(){
     if(this.fullScreen){
-      this.styleSizePop = 'width: 95vw;';
+      this.styleSizePop = 'width: 100vw;';
     } else {
       this.styleSizePop = '';
     }
-    if(this.drawerOpened) {this.styleSizePop = this.styleSizePop + 'height:80vh;';}
+    //if(this.drawerOpened) {this.styleSizePop = this.styleSizePop + 'height:90vh;';}
   }
 
   @HostListener('document:keydown', ['$event'])

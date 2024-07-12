@@ -1,5 +1,5 @@
-<!-- Titulo -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex px-4 py-2 shadow-md" *ngIf="plantilla"
+<!-- Titulo  [style]="styleSizePop"-->
+  <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex px-4 py-2 shadow-md" [style]="styleSizePop" *ngIf="plantilla"
   [style.color]="getColorFont()" [style.backgroundColor]="getColor()">
   <img src="{{ pedido?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
   <!-- Texto del titulo -->
@@ -85,17 +85,16 @@
       </mat-menu>
     </div>
   </div>
-</div>
-<div class="transition duration-1000" [style]="styleSizePop">
+  </div>
   <!-- -->
-  <mat-drawer-container class="flex-auto h-full">
+  <mat-drawer-container >
     <mat-drawer position="end" class="dark:bg-gray-900 max-w-3/4" [mode]="drawerMode" [(opened)]="drawerOpened" #drawer>
-      <div *ngIf="pedido && pedido.llaveTabla" class="pt-2">
+      <div *ngIf="pedido && pedido.llaveTabla" class="pt-2 min-h-[70vh]">
         <trace-resume #tracer [plantilla]="plantilla" [documentId]="pedido.llaveTabla" (close) ="showTrace()"></trace-resume>
       </div>
     </mat-drawer>
-    <mat-drawer-content class="flex flex-col bg-white dark:bg-gray-900" fuseScrollReset>
-      <div class="max-h-[80vh] px-4 overflow-x-hidden">
+    <mat-drawer-content class="flex flex-col bg-white dark:bg-gray-900 max-h-[70vh]" fuseScrollReset>
+      <div class="px-4 overflow-x-hidden">
         <!-- Cambiar estado del documento -->
         <mat-card class="p-2" *ngIf="isChangeState">
           <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>
@@ -177,11 +176,7 @@
           <ng-template #dynamycFormElement></ng-template>
         </div>
       </div>
-    </mat-drawer-content>
-
-  </mat-drawer-container>
-
-  <!-- Boton de guardar -->
+        <!-- Boton de guardar -->
   <div *ngIf="modificable" class="pt-1 px-4 pb-4">
     <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
     <div *ngIf="!submitted">
@@ -190,4 +185,6 @@
       </button>
     </div>
   </div>
-</div>
+    </mat-drawer-content>
+
+  </mat-drawer-container>
