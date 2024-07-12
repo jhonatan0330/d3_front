@@ -16,7 +16,7 @@ export class UtilsService {
   modalWithParams( pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null ) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(FormComponent, {
       // width: '720px',
-      maxHeight: '99vh',
+      maxHeight: '90vh',
       maxWidth: '99vw',
       disableClose: true,
       data: { data: pDataModal , close2Save: pClose2Save, identificador:  pIdentificador},
