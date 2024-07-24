@@ -102,6 +102,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
       PlantillaHelper.PERMISO_CAMPO_BLOQUEAR
     );
     if (this.data && this.data.documento) {
+      if (!this.formIsEnabled) { return false;}
       if (
         !PlantillaHelper.isEmpty(
           this.structure.propiedades,
