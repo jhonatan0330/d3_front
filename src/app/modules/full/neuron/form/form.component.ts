@@ -41,7 +41,6 @@ import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { Router } from '@angular/router';
-import { takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { TraceResumeComponent } from 'app/document-transition/trace-resume/trace-resume.component';
 

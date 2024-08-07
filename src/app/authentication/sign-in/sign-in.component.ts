@@ -5,6 +5,8 @@ import { environment } from 'environments/environment';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatButton } from '@angular/material/button';
 import { LoginService } from '../login.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({
   selector: 'auth-sign-in',
@@ -20,16 +22,19 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
   errorMsg = '';
   company = 'Software para ti.com';
 
-  /**
-   * Constructor
-   */
+  landing =  this.domSanitizer.bypassSecurityTrustHtml(`<div class="min-h-full flex items-center w-full bg-slate-900"></div>`);
+  isloginView = true;
+
   constructor(
     private _activatedRoute: ActivatedRoute,
     private _formBuilder: UntypedFormBuilder,
     private jwtAuth: LoginService,
-    private _router: Router
+    private _router: Router,
+    private domSanitizer:DomSanitizer
   ) {
   }
+
+
 
   ngOnInit(): void {
     // Create the form
@@ -42,6 +47,10 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // this.autoSignIn();
     this.getUrlServices();
+  }
+
+  toogleShowLogin(){
+    this.isloginView = !this.isloginView;
   }
 
   signIn(): void {
@@ -104,6 +113,10 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
         this.company = organization.nombre;
         (organization.imagen) ? (this.image = organization.imagen) : (this.image = 'assets/images/egret.png');
         this.jwtAuth.setCompany(organization);
+        if (PlantillaHelper.buscarPropiedad(organization.propiedades, PlantillaHelper.LANDING_PAGE)) {
+          this.landing = this.domSanitizer.bypassSecurityTrustHtml(PlantillaHelper.buscarValor(organization.propiedades, PlantillaHelper.LANDING_PAGE));
+          this.toogleShowLogin();
+        }
       },
       error: (err) => {
         this.signInForm.enable();

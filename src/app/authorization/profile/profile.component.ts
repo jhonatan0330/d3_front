@@ -57,7 +57,8 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe((takeUntil(this._unsubscribeAll)))
       .subscribe((company: Company) => {
         this.company = company;
-        if (company && company.companyCoverageImage) {
+        if (!company) {return;}
+        if (company.companyCoverageImage) {
           this.slides = [];
           company.companyCoverageImage.forEach(element => {
             this.slides.push({ image: element })
