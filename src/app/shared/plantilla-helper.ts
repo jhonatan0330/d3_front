@@ -53,6 +53,8 @@ export class PlantillaHelper {
 
   static PLANTILLA_TIPO_PRODUCTO = 'PLANTILLA_TIPO_PRODUCTO';
   static PLANTILLA_TIPO_REPORTE = 'PLANTILLA_TIPO_REPORTE';
+  static REPORT_MODULE_REFERENCE = 'REPORT_MODULE_REFERENCE';
+  
 
   /*******************CAMPOS***************/
   static DEFAULT = 'DEFAULT';

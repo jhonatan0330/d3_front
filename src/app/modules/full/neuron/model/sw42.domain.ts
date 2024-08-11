@@ -1,6 +1,6 @@
 import { CategoriaProductoDTO, ProductoDTO, UsuarioRolProductoDTO } from "app/inventory/inventory.types";
 import { BasicDTO, BasicFilterDTO, BasicParamDTO } from "app/shared/shared.domain";
-import { TarifaDTO } from "app/tariff/tariff.domain";
+import { TarifaDTO } from "../model/tariff.domain";
 
 export class ProcesoEstadoDTO extends BasicParamDTO {
   tipo: string;

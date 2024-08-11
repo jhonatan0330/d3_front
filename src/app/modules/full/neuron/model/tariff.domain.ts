@@ -3,7 +3,7 @@ import { BasicDTO } from "app/shared/shared.domain";
 export class TarifaDTO extends BasicDTO {
 	tarifario: string;
 	tarifarioNombre: string;
-	documento: string;
+	tarifarioDocumento: string;
 	producto: string;
 	productoDTO: string;
 	productoNombre: string;

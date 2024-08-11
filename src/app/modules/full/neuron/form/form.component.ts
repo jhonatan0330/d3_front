@@ -83,7 +83,6 @@ export class FormComponent implements OnInit, AfterViewInit {
 
 
   canMassive = false;
-  canTariff = false;
   canTransfer = false;
 
 
@@ -611,7 +610,6 @@ export class FormComponent implements OnInit, AfterViewInit {
   // Resuelve las propiedades de la plantilla
   resolvePropiertiesForm() {
     this.canMassive = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA);
-    this.canTariff = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_TIPO_CONFIGURATION) === "TARIFARIO";
     if (this.pedido.llaveTabla) {
       if (!this.pedido.estadoExpediente) {
         // Solo se pueden anular los que estan en estado activo y que no son de un proceso
@@ -895,13 +893,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  showTariff() {
-    if (this.canTariff) {
-      const redirect = 'tariff/' + this.plantilla.llaveTabla + '/' + this.pedido.llaveTabla;
-      this._router.navigateByUrl(redirect);
-      this.dialogRef.close()
-    }
-  }
 
   showTransfer() {
     if (this.canTransfer) {

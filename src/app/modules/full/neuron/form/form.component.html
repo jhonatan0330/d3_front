@@ -57,11 +57,6 @@
         <button mat-menu-item matTooltip="Carga Masiva" *ngIf="canMassive" (click)="showMassive()" tabindex="-1">
           <mat-icon>cloud_upload</mat-icon> Carga
         </button>
-        <!-- Boton tarifas -->
-        <button mat-menu-item matTooltip="Tarifas" *ngIf="modificable && canTariff" (click)="showTariff()"
-          tabindex="-1">
-          <mat-icon>monetization_on</mat-icon> Tarifas
-        </button>
         <!-- Boton Configuracion producto -->
         <button mat-menu-item matTooltip="Configuracion de producto"
           *ngIf="canProduct && modificable && pedido && pedido.llaveTabla" (click)="showProduct()" tabindex="-1">

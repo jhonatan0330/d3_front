@@ -54,6 +54,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     viewMode = 'grid-view';
     form: FormGroup = new FormGroup({});
     hasCreatePermission = false;
+    reportForms: PropiedadDTO[];
 
     // textoInicial: string; // Usado para colocar el texto incial de los fomrularios nuevos, ejemplo un cliente buscado no encontrado
     // campoHerencia: string; // Usado para enviar el id del campo que tiene herencia
@@ -147,6 +148,10 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.solicitarFechas = !PlantillaHelper.isEmpty(
                 this.plantilla.propiedades,
                 PlantillaHelper.FORM_SOLICITAR_FECHAS
+            );
+            this.reportForms = PlantillaHelper.buscarValorMultiple(
+                this.plantilla.propiedades,
+                PlantillaHelper.REPORT_MODULE_REFERENCE
             );
             if (!this.solicitarFechas && this.templatesFromProcess) {
                 for (let i = 0; i < this.templatesFromProcess.length; i++) {

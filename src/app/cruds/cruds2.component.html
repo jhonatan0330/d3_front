@@ -23,7 +23,7 @@
                             <mat-icon>apps</mat-icon>
                         </button>
                         <div *ngIf="viewMode !== 'grid-view' && plantilla.reportes">
-                            <button mat-flat-button color="accent" class="m-1" [matMenuTriggerFor]="userMenuList">
+                            <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="userMenuList">
                                 <mat-icon>print</mat-icon>Imprimir
                             </button>
                             <mat-menu #userMenuList="matMenu">
@@ -31,6 +31,18 @@
                                     (click)="showReport(r, null)">
                                     <mat-icon>print</mat-icon>
                                     <span>{{ r.nombre }}</span>
+                                </button>
+                            </mat-menu>
+                        </div>
+                        <div *ngIf="reportForms" class="py-1">
+                            <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="reportFormMenuList">
+                                <mat-icon>print</mat-icon>Informes
+                            </button>
+                            <mat-menu #reportFormMenuList="matMenu">
+                                <button mat-menu-item *ngFor="let rf of reportForms"
+                                    (click)="openDialog(rf.valor)">
+                                    <mat-icon>print</mat-icon>
+                                    <span>{{ rf.texto }}</span>
                                 </button>
                             </mat-menu>
                         </div>
@@ -155,6 +167,11 @@
                             </div>
                         </div>
 
+                        <!-- Informes Modulo -->
+                        <div class="text-primary text-xs uppercase font-bold py-2"> Informes </div>
+                        <div class="w-full  p-1" *ngFor="let template of filteredReports">
+                            
+                        </div>
                     </div>
                 </div>
             </div>
