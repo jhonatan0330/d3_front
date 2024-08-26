@@ -2,7 +2,6 @@ import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation } from '
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from 'environments/environment';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatButton } from '@angular/material/button';
 import { LoginService } from '../login.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -14,7 +13,6 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
   encapsulation: ViewEncapsulation.None
 })
 export class AuthSignInComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatProgressBar) progressBar: MatProgressBar;
   @ViewChild(MatButton) submitButton: MatButton;
   currentApplicationVersion = environment.appVersion;
   signInForm: UntypedFormGroup;
@@ -61,7 +59,6 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
     // Disable the form
     this.signInForm.disable();
     this.submitButton.disabled = true;
-    this.progressBar.mode = 'indeterminate';
     // Sign in
     this.jwtAuth.signin(this.signInForm.value.username, this.signInForm.value.password)
       .subscribe({
@@ -74,7 +71,6 @@ export class AuthSignInComponent implements OnInit, AfterViewInit {
           // Re-enable the form
           this.signInForm.enable();
           this.submitButton.disabled = false;
-          this.progressBar.mode = 'determinate';
           this.errorMsg = response;
           if (this.errorMsg.startsWith('Por seguridad')) {
             this._router.navigateByUrl('sessions/recover');

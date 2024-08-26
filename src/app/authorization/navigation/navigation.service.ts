@@ -49,12 +49,13 @@ export class NavigationService
         if(process){
             const processNavItem: FuseNavigationItem[] = [];
             process.forEach((process:DocumentoPlantillaDTO)=>{
+                let idProcess = (process.proceso==null)?process.codigo:process.proceso;
                 const newItem: FuseNavigationItem = {
-                    id   : process.proceso,
+                    id   : idProcess,
                     title: process.nombre[0].toUpperCase() + process.nombre.substring(1).toLowerCase(),
                     type : 'basic',
                     image: process.imagen,
-                    link : '/list/process_crud/' + process.proceso
+                    link : '/list/process_crud/' + idProcess
                 };
                 processNavItem.push(newItem);
             });

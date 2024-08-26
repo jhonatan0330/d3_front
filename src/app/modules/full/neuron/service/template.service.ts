@@ -200,7 +200,7 @@ export class TemplateService {
 
   getProceso(id: string): DocumentoPlantillaDTO {
     if (this.template && this.template.length !== 0) {
-      return this.template.find(x => (!x.llaveTabla && x.proceso === id));
+      return this.template.find(x => (!x.llaveTabla && (x.proceso === id|| x.codigo === id)));
     }
   }
 

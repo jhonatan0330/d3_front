@@ -114,27 +114,17 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 this.procesoId = params.id;
                 if (this.procesoId) {
                     this.plantilla = this.templateService.getProceso(this.procesoId);
-                    this.templatesFromProcess = this.templateService.getTemplateOfProcess(this.procesoId)
+                    if(this.plantilla && this.plantilla.proceso){
+                        this.templatesFromProcess = this.templateService.getTemplateOfProcess(this.procesoId)
                         .filter((item) => item.propiedades &&
                             PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)
                             && PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PLANTILLA_INICIA_PROCESO)
                         );
+                    }
+                    
                 } else {
                     this.router.navigate(['/main']);
                     return;
-                }
-            } else if (propType === 'tablet') {
-                this.tableroId = params.id;
-                if (this.tableroId) {
-                    const propTablero = this.templateService.getTablero(this.tableroId);
-                    if (propTablero) {
-                        this.plantilla = new DocumentoPlantillaDTO();
-                        this.plantilla.nombre = propTablero.texto;
-                        this.plantilla.imagen = propTablero.motivo;
-                    } else {
-                        this.router.navigate(['/main']);
-                        return;
-                    }
                 }
             } else {
                 this.router.navigate(['/main']);

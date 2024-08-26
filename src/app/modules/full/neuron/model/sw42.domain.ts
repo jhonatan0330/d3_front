@@ -38,7 +38,6 @@ export class PedidoVentaDTO extends BasicDTO {
   estadoExpediente: string;
   textoFiltro: string;
   estadoNombre: string;
-  historico: number;
   transaccion: string;
   dinero: PedidoVentaDineroDTO;
   caracteristicas: PedidoVentaCaracteristicaDTO[];
@@ -222,7 +221,6 @@ export class PedidoVentaFilterDTO extends BasicFilterDTO {
   estadoExpediente: string;
   textoFiltro: string;
   estadoNombre: string;
-  historico: number;
   transaccion: string;
   caracteristicas: PedidoVentaCaracteristicaDTO[];
   filtersByFields: PedidoVentaCaracteristicaFilterDTO[];

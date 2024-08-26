@@ -10,7 +10,7 @@ class=" uppercase group fixed z-99999 top-2 right-2 px-4 py-2 text-sm text-white
             <mat-icon class="h-6 cursor-pointer" (click)="toogleShowLogin()">exit_to_app</mat-icon>
           </div>
           <div class="text-center p-4">
-            <img class="m-auto" src="{{ image | imageFormat }}" alt="" (click)="toogleShowLogin()">
+            <img class="m-auto" src="{{ image | imageFormat }}" alt="">
             <p class="m-0">{{company}}</p>
           </div>
           <p *ngIf="errorMsg" class="text-center"><small class="text-red">{{errorMsg}}</small></p>
@@ -42,7 +42,6 @@ class=" uppercase group fixed z-99999 top-2 right-2 px-4 py-2 text-sm text-white
             </div>
             
             <button mat-raised-button class="mat-primary w-full mb-1" [disabled]="signInForm.invalid">Sign in</button>
-            <mat-progress-bar class="p-2" mode="determinate" class="session-progress"></mat-progress-bar>
             <small class="m-0">{{currentApplicationVersion}}</small>
             <div class="text-center">
               <a [routerLink]="'/sessions/recover'" class="mat-primary text-center w-full">Recordar clave acceso</a>
