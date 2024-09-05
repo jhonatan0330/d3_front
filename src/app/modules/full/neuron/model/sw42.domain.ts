@@ -1,4 +1,4 @@
-import { CategoriaProductoDTO, ProductoDTO, UsuarioRolProductoDTO } from "app/inventory/inventory.types";
+import { ProductoDTO, UsuarioRolProductoDTO } from "app/inventory/inventory.types";
 import { BasicDTO, BasicFilterDTO, BasicParamDTO } from "app/shared/shared.domain";
 import { TarifaDTO } from "../model/tariff.domain";
 
@@ -21,7 +21,6 @@ export class DocumentoPlantillaCaracteristicaDTO extends BasicParamDTO {
   codigo: string;
   orden: number;
   imagen: string;
-  categorias: CategoriaProductoDTO[];
   productos: ProductoDTO[];
   documentos: PedidoVentaDTO[];
 }
@@ -148,7 +147,6 @@ export class DetallePedidoVentaDTO extends BasicParamDTO {
   valorMinimo: number;
   valorTotal: number;
   valorUnitario: number;
-  caracteristicas: PedidoVentaCaracteristicaDTO[];
   valorMaximo: number;
   plantilla: string;
   valorSubtotal: number;
@@ -156,6 +154,9 @@ export class DetallePedidoVentaDTO extends BasicParamDTO {
   transaccionRegistro: string;
   transaccionInactivo: string;
   campo: string;
+  plantillaDetalle: string;
+  documentoDetalle: PedidoVentaDTO;
+	detalleId: string;
 }
 
 export class ReporteBaseDTO extends BasicParamDTO {

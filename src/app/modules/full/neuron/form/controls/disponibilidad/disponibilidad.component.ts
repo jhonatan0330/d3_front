@@ -148,14 +148,14 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
     copyDetalle.valorMinimo = producto.detallePlantilla.valorMinimo;
     copyDetalle.valorMaximo = producto.detallePlantilla.valorMaximo;
     copyDetalle.tarifas = producto.detallePlantilla.tarifas;
-    if (producto.detallePlantilla.caracteristicas) {
-      copyDetalle.caracteristicas = [];
+    if (producto.detallePlantilla.documentoDetalle.caracteristicas) {
+      copyDetalle.documentoDetalle.caracteristicas = [];
       for (
         let i = 0;
-        i < producto.detallePlantilla.caracteristicas.length;
+        i < producto.detallePlantilla.documentoDetalle.caracteristicas.length;
         i++
       ) {
-        const campoDetalle = producto.detallePlantilla.caracteristicas[i];
+        const campoDetalle = producto.detallePlantilla.documentoDetalle.caracteristicas[i];
         const uc: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
         uc.campo = campoDetalle.campo;
         uc.campoDTO = campoDetalle.campoDTO;
@@ -163,7 +163,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
         uc.principal = campoDetalle.principal;
         uc.valorNumero = campoDetalle.valorNumero;
         uc.valorText = campoDetalle.valorText;
-        copyDetalle.caracteristicas.push(uc);
+        copyDetalle.documentoDetalle.caracteristicas.push(uc);
       }
     }
     copyDetalle.cantidadPromocion =

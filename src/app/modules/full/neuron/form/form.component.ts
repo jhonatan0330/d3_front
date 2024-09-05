@@ -431,9 +431,10 @@ export class FormComponent implements OnInit, AfterViewInit {
                   newDetalle.cantidadPromocion = dpv.cantidadPromocion;
                   newDetalle.cantidadPromocionBase = dpv.cantidadPromocionBase;
 
-                  newDetalle.caracteristicas = [];
-                  for (let n = 0; n < dpv.caracteristicas.length; n++) {
-                    const campoInterno = dpv.caracteristicas[n];
+                  newDetalle.documentoDetalle = new PedidoVentaDTO();
+                  newDetalle.documentoDetalle.caracteristicas = [];
+                  for (let n = 0; n < dpv.documentoDetalle.caracteristicas.length; n++) {
+                    const campoInterno = dpv.documentoDetalle.caracteristicas[n];
                     const cpInterno: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
                     cpInterno.campo = campoInterno.campo;
                     if (!toSave) { cpInterno.campoDTO = campoInterno.campoDTO; }
@@ -444,7 +445,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                     cpInterno.valorText = campoInterno.valorText;
                     cpInterno.modificado = campoInterno.modificado;
                     cpInterno.principal = campoInterno.principal;
-                    newDetalle.caracteristicas.push(cpInterno);
+                    newDetalle.documentoDetalle.caracteristicas.push(cpInterno);
                   }
 
                   if (!toSave) {

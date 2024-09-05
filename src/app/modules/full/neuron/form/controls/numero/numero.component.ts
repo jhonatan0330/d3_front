@@ -152,10 +152,10 @@ export class NumeroComponent extends BaseComponent implements OnInit {
             if (iterable.detalles) {
               for (let k = 0; k < iterable.detalles.length; k++) {
                 const iterableDetalle = iterable.detalles[k];
-                if (iterableDetalle.caracteristicas && iterableDetalle.caracteristicas.length !== 0) {
-                  for (let l = 0; l < iterableDetalle.caracteristicas.length; l++
+                if (iterableDetalle.documentoDetalle.caracteristicas && iterableDetalle.documentoDetalle.caracteristicas.length !== 0) {
+                  for (let l = 0; l < iterableDetalle.documentoDetalle.caracteristicas.length; l++
                   ) {
-                    const iterableDetalleCampo = iterableDetalle.caracteristicas[l];
+                    const iterableDetalleCampo = iterableDetalle.documentoDetalle.caracteristicas[l];
                     if (!diccionario.get(iterableDetalleCampo.campoDTO.codigo)) {
                       diccionario.set(iterableDetalleCampo.campoDTO.codigo, iterableDetalleCampo.valorNumero);
                     } else {

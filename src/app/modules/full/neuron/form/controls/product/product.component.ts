@@ -103,14 +103,14 @@ export class ProductComponent implements OnInit, AfterViewInit {
   // Agrega los campos al formulario
   showFields() {
     if (
-      !this.detallePedidoVenta.caracteristicas ||
-      this.detallePedidoVenta.caracteristicas.length === 0
+      !this.detallePedidoVenta.documentoDetalle.caracteristicas ||
+      this.detallePedidoVenta.documentoDetalle.caracteristicas.length === 0
     ) {
       return;
     }
 
-    for (let d = 0; d < this.detallePedidoVenta.caracteristicas.length; d++) {
-      const _campo = this.detallePedidoVenta.caracteristicas[d];
+    for (let d = 0; d < this.detallePedidoVenta.documentoDetalle.caracteristicas.length; d++) {
+      const _campo = this.detallePedidoVenta.documentoDetalle.caracteristicas[d];
       const componentDynamic: Type<any> = getComponent(_campo.campoDTO);
       const _componentFactory = this.compiler.resolveComponentFactory(
         componentDynamic
@@ -123,10 +123,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
       componentRef.instance.formIsEnabled = this.allowEdit;
       for (
         let index = 0;
-        index < this.detallePedidoVenta.caracteristicas.length;
+        index < this.detallePedidoVenta.documentoDetalle.caracteristicas.length;
         index++
       ) {
-        const element = this.detallePedidoVenta.caracteristicas[index];
+        const element = this.detallePedidoVenta.documentoDetalle.caracteristicas[index];
         if (element.campo === _campo.campoDTO.llaveTabla) {
           componentRef.instance.data = element;
           break;
@@ -138,8 +138,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
     }
 
     // Colocar listener de Dependientes
-    for (let j = 0; j < this.detallePedidoVenta.caracteristicas.length; j++) {
-      const iBase = this.detallePedidoVenta.caracteristicas[j].campoDTO;
+    for (let j = 0; j < this.detallePedidoVenta.documentoDetalle.caracteristicas.length; j++) {
+      const iBase = this.detallePedidoVenta.documentoDetalle.caracteristicas[j].campoDTO;
       const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(
         iBase.propiedades,
         PlantillaHelper.DEPENDE
@@ -276,15 +276,15 @@ export class ProductComponent implements OnInit, AfterViewInit {
       }
       let tarifariosUsadosOtrosCampos: string[];
       if (
-        this.detallePedidoVenta.caracteristicas &&
-        this.detallePedidoVenta.caracteristicas.length !== 0
+        this.detallePedidoVenta.documentoDetalle.caracteristicas &&
+        this.detallePedidoVenta.documentoDetalle.caracteristicas.length !== 0
       ) {
         for (
           let i = 0;
-          i < this.detallePedidoVenta.caracteristicas.length;
+          i < this.detallePedidoVenta.documentoDetalle.caracteristicas.length;
           i++
         ) {
-          const iCampo = this.detallePedidoVenta.caracteristicas[i];
+          const iCampo = this.detallePedidoVenta.documentoDetalle.caracteristicas[i];
           if (
             iCampo.campoDTO &&
             iCampo.campoDTO.propiedades &&

@@ -855,11 +855,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               const iCampoProducto = iCampoPlantilla.productos[j];
               for (
                 let k = 0;
-                k < iCampoProducto.detallePlantilla.caracteristicas.length;
+                k < iCampoProducto.detallePlantilla.documentoDetalle.caracteristicas.length;
                 k++
               ) {
                 const iCampoDetalle =
-                  iCampoProducto.detallePlantilla.caracteristicas[k];
+                  iCampoProducto.detallePlantilla.documentoDetalle.caracteristicas[k];
                 if (
                   iCampoDetalle.campoDTO.llaveTabla ===
                   this.structure.llaveTabla
