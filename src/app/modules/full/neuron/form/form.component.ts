@@ -431,6 +431,10 @@ export class FormComponent implements OnInit, AfterViewInit {
                   newDetalle.cantidadPromocion = dpv.cantidadPromocion;
                   newDetalle.cantidadPromocionBase = dpv.cantidadPromocionBase;
 
+                  newDetalle.detalleId = dpv.detalleId;
+                  newDetalle.plantilla = dpv.plantilla;
+                  newDetalle.plantillaDetalle =dpv.plantillaDetalle;
+
                   newDetalle.documentoDetalle = new PedidoVentaDTO();
                   newDetalle.documentoDetalle.caracteristicas = [];
                   for (let n = 0; n < dpv.documentoDetalle.caracteristicas.length; n++) {
