@@ -22,7 +22,7 @@
                             (click)="viewMode = 'grid-view'" *ngIf="plantilla">
                             <mat-icon>apps</mat-icon>
                         </button>
-                        <div *ngIf="viewMode !== 'grid-view' && plantilla.reportes">
+                        <div *ngIf="viewMode !== 'grid-view' && plantilla.reportes" class="py-1">
                             <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="userMenuList">
                                 <mat-icon>print</mat-icon>Imprimir
                             </button>

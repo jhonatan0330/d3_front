@@ -472,23 +472,41 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             stringURL = stringURL + '&' + reporte.variables;
         }
         if (this.selection && this.selection.selected.length >= 1) {
-            if (this.selection.selected.length > 50) {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Oops...',
-                    text:
-                        'Se puede imprimir maximo 50 documentos a la vez, Divide la impresion',
-                });
-                return;
-            }
-            let plantillaIdMultiple = '';
-            for (let i = 0; i < this.selection.selected.length; i++) {
-                const pdPrint = this.selection.selected[i];
-                plantillaIdMultiple = plantillaIdMultiple + pdPrint.llaveTabla + ';';
-            }
-            stringURL = stringURL + '&P_MULTIPLE=' + plantillaIdMultiple;
+            let msj = 'Vas a imprimir ' + (this.selection.selected.length).toString() + ' documentos .';
+            if(this.selection.selected.length> 50) { msj = msj + 'Lo haremos abriendo ' + Math.ceil(this.selection.selected.length/50).toString() + ' pestañas en tu explorador, ¿estas deacuerdo?';}
+            Swal.fire({
+                title: 'Impresion de varios documentos',
+                text: msj,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si, quiero continuar!',
+                cancelButtonText: 'No, Paremos',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    let plantillaIdMultiple = '';
+                    for (let i = 1; i <= this.selection.selected.length; i++) {
+                        const pdPrint = this.selection.selected[i-1];
+                        plantillaIdMultiple = plantillaIdMultiple + pdPrint.llaveTabla + ';';
+                        //La idea es poder imprimir muchos pero laurl no deja asi que lo hago con varias ventanas
+                        if((i%50)===0){
+                            window.open(stringURL + '&P_MULTIPLE=' + plantillaIdMultiple, '_blank');
+                            plantillaIdMultiple = '';
+                        }
+                    }
+                    //En caso que sean exactamente 50 no se imprime 2 veces
+                    if(plantillaIdMultiple === '') return;
+                    stringURL = stringURL + '&P_MULTIPLE=' + plantillaIdMultiple;
+                    window.open(stringURL, '_blank');
+                } 
+              });
+              
+            
+        } else{
+            window.open(stringURL, '_blank');
         }
-        window.open(stringURL, '_blank');
+        
     }
 
     ///////////////////////////////////////////////////////
