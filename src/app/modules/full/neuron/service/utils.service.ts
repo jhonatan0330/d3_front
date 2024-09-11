@@ -16,7 +16,7 @@ export class UtilsService {
     const dialogRef: MatDialogRef<any> = this.dialog.open(FormComponent, {
       // width: '720px',
        maxHeight: '100vh',
-      maxWidth: '100vw',
+      maxWidth: '98vw',
       disableClose: true,
       data: { data: pDataModal , close2Save: pClose2Save, identificador:  pIdentificador},
     });

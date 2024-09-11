@@ -1030,7 +1030,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   getSizePop(){
     if(this.fullScreen){
-      this.styleSizePop = 'width: 100vw;';
+      this.styleSizePop = 'width: 98vw;';
     } else {
       this.styleSizePop = '';
     }
