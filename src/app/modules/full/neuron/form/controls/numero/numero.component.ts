@@ -204,7 +204,8 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   procesarCampo(campoFiltro: PedidoVentaCaracteristicaFilterDTO) {
     if (!this.isEmpty(this.formula)) {
       const textoCalculado = this.formulaReplaceDependents(this.formula);
-      const resultado = FormulaHelper.calcular(textoCalculado); // Lo puse por fuera de dependientes porque asi tambien se puede calcular
+      let resultado = FormulaHelper.calcular(textoCalculado); // Lo puse por fuera de dependientes porque asi tambien se puede calcular
+      resultado  = Number(resultado.toFixed(this.numeroDecimales));
       if (this.data.valorNumero !== resultado) {
         this.fControl.setValue(resultado);
         // Debido a que No se a colocado el listener de actualizar toca adecuar bien el campo

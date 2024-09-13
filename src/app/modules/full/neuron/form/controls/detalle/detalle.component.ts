@@ -102,7 +102,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   showCategories() {
     if (!this.isEnabled) { return; }
-    if(!this.categories){
+    if( !this.productosDisponibles) {return;}
+    if(!this.categories ){
       this.categories = [];
       const map = new Map();
       for (const item of this.productosDisponibles) {
