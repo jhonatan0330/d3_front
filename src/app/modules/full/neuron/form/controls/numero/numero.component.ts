@@ -174,7 +174,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
                 if (iterableExpediente.caracteristicas && iterableExpediente.caracteristicas.length !== 0) {
                   for (let n = 0; n < iterableExpediente.caracteristicas.length; n++) {
                     const iterableExpedienteCampo = iterableExpediente.caracteristicas[n];
-                    if(iterableExpediente.dinero){
+                    if (iterableExpediente.dinero) {
                       const codeToReplace = this.formatStringXML(iterableExpedienteCampo.campo) + "_" + this.formatStringXML(iterableExpedienteCampo.valorText);
                       if (!diccionario.get(codeToReplace)) {
                         diccionario.set(codeToReplace, iterableExpediente.dinero.valorTotal);
@@ -205,7 +205,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     if (!this.isEmpty(this.formula)) {
       const textoCalculado = this.formulaReplaceDependents(this.formula);
       let resultado = FormulaHelper.calcular(textoCalculado); // Lo puse por fuera de dependientes porque asi tambien se puede calcular
-      resultado  = Number(resultado.toFixed(this.numeroDecimales));
+      resultado = Number(resultado.toFixed(this.numeroDecimales));
       if (this.data.valorNumero !== resultado) {
         this.fControl.setValue(resultado);
         // Debido a que No se a colocado el listener de actualizar toca adecuar bien el campo
