@@ -135,17 +135,17 @@ export class FormComponent implements OnInit, AfterViewInit {
       // Camino New
       this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
     }
-     // Subscribe to media changes
-     this._fuseMediaWatcherService.onMediaChange$
-     .subscribe(({ matchingAliases }) => {
-         // Set the drawerMode and drawerOpened if the given breakpoint is active
-         if (matchingAliases.includes('md')) {
-             this.drawerMode = 'side';
-         }
-         else {
-             this.drawerMode = 'over';
-         }
-     });
+    // Subscribe to media changes
+    this._fuseMediaWatcherService.onMediaChange$
+      .subscribe(({ matchingAliases }) => {
+        // Set the drawerMode and drawerOpened if the given breakpoint is active
+        if (matchingAliases.includes('md')) {
+          this.drawerMode = 'side';
+        }
+        else {
+          this.drawerMode = 'over';
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -433,7 +433,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
                   newDetalle.detalleId = dpv.detalleId;
                   newDetalle.plantilla = dpv.plantilla;
-                  newDetalle.plantillaDetalle =dpv.plantillaDetalle;
+                  newDetalle.plantillaDetalle = dpv.plantillaDetalle;
 
                   newDetalle.documentoDetalle = new PedidoVentaDTO();
                   newDetalle.documentoDetalle.caracteristicas = [];
@@ -524,7 +524,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       }
     }
     this.instruccionCrear = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_INSTRUCCION_CREAR);
-    if (this.instruccionCrear) {  this.toogleScreen();}
+    if (this.instruccionCrear) { this.toogleScreen(); }
     this.showFields();
     this.resolvePropiertiesForm();
     this.getReports();
@@ -809,7 +809,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.dialogRef.close();
         if (!this.close2Save) {
           if (res && res.data && res.data.messages) { this.pedido.messages = res.data.messages; }
-          else{ this.pedido.messages = null;}
+          else { this.pedido.messages = null; }
           this.utilsService.modalWithParams(this.pedido);
         }
       }
@@ -911,13 +911,13 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   showTrace() {
-    if(PlantillaHelper.buscarPropiedad(this.plantilla.propiedades, PlantillaHelper.HISTORICO_VISTA)){
+    if (PlantillaHelper.buscarPropiedad(this.plantilla.propiedades, PlantillaHelper.HISTORICO_VISTA)) {
       this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre);
       return;
     }
     this.drawerOpened = !this.drawerOpened;
-    if(this.drawerOpened && !this.tracer.dataProvider) this.tracer.listar(1); 
-    this.getSizePop();  
+    if (this.drawerOpened && !this.tracer.dataProvider) this.tracer.listar(1);
+    this.getSizePop();
   }
 
   showChangeState() {
@@ -1028,8 +1028,8 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.getSizePop();
   }
 
-  getSizePop(){
-    if(this.fullScreen){
+  getSizePop() {
+    if (this.fullScreen) {
       this.styleSizePop = 'width: 98vw;';
     } else {
       this.styleSizePop = '';
