@@ -3,6 +3,9 @@ import { FormControl, Validators } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { timer } from 'rxjs';
+import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.domain';
+import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
+import { ApiService } from '../../../service/api.service';
 
 @Component({
   selector: 'app-fecha',
@@ -31,7 +34,9 @@ export class FechaComponent extends BaseComponent implements OnInit {
   source = timer(0, 1000);
   clock: any;
 
-  constructor() {
+  funcion: string;
+
+  constructor(private api: ApiService) {
     super();
   }
 
@@ -43,6 +48,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
     this.conHora = !this.isEmpty(
       this.obtenerValor(PlantillaHelper.FECHA_CON_HORA)
     );
+    this.funcion = this.obtenerValor(PlantillaHelper.FECHA_FUNCION);
     this.sinCalendar = !this.isEmpty(
       this.obtenerValor(PlantillaHelper.FECHA_SIN_CALENDAR)
     );
@@ -71,17 +77,22 @@ export class FechaComponent extends BaseComponent implements OnInit {
           this.fControlDateEnd.setValue(endDate);
         }
       } else {
+
         if (this.required) {
-          const initialDate: Date = new Date();
-          if (!this.conHora) {
-            initialDate.setHours(0);
-            initialDate.setMinutes(0);
-            initialDate.setSeconds(0);
-            initialDate.setMilliseconds(0);
+          if (!this.data.documento && !this.isEmpty(this.funcion)) {
+            this.procesarCampo(this.transformPVCtoFilter(this.data));
+          } else{
+            const initialDate: Date = new Date();
+            if (!this.conHora) {
+              initialDate.setHours(0);
+              initialDate.setMinutes(0);
+              initialDate.setSeconds(0);
+              initialDate.setMilliseconds(0);
+            }
+            this.dateFrom.setValue(initialDate);
+            this.timeFrom.setValue(('0' + initialDate.getHours()).slice(-2) + ":" + ('0' + initialDate.getMinutes()).slice(-2));
+            this.data.valorFecha = initialDate;
           }
-          this.dateFrom.setValue(initialDate);
-          this.timeFrom.setValue(('0' + initialDate.getHours()).slice(-2) + ":" + ('0' + initialDate.getMinutes()).slice(-2));
-          this.data.valorFecha = initialDate;
         }
       }
     }
@@ -219,6 +230,56 @@ export class FechaComponent extends BaseComponent implements OnInit {
       );
       this.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       this.seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    }
+  }
+
+  procesarCampo(campoFiltro: PedidoVentaCaracteristicaFilterDTO) {
+    if (!this.isEmpty(this.obtenerValor(PlantillaHelper.FECHA_FUNCION))) {
+      if (campoFiltro) {
+        const filtro: PedidoVentaCaracteristicaFilterDTO =
+          new PedidoVentaCaracteristicaFilterDTO();
+        if (this.relatedFields) {
+          if (
+            !this.data.dependientes ||
+            this.data.dependientes.length !== this.relatedFields.length
+          ) {
+            return;
+          }
+          for (let index = 0; index < this.data.dependientes.length; index++) {
+            const pvc: PedidoVentaCaracteristicaDTO =
+              this.data.dependientes[index];
+            if (!pvc.valorOpcion) {
+              if (
+                !pvc.campoDTO ||
+                pvc.campoDTO.formato ===
+                DocumentoPlantillaCaracteristicaEnum.PROCESO
+              ) {
+                return;
+              }
+            }
+          }
+          filtro.dependientes = this.data.dependientes;
+        } else {
+          // Si no tiene dependencia debe tener id de documento como minimo
+          if (!this.data.documento) {
+            return;
+          }
+        }
+        // Por dependientes siempre coloco el base ahora toca ver en donde me falla
+        filtro.campoDTO = this.structure;
+        filtro.campo = this.structure.llaveTabla;
+        filtro.documento = campoFiltro.documento;
+
+        this.api
+          .consultarDatosBase(filtro, this.urlServer)
+          .subscribe((_value: PedidoVentaCaracteristicaFilterDTO) => {
+            if(_value && _value.valorFechaMax){
+              this.dateFrom.setValue(_value.valorFechaMax);
+              this.timeFrom.setValue(('0' + _value.valorFechaMax.getHours()).slice(-2) + ":" + ('0' + _value.valorFechaMax.getMinutes()).slice(-2));
+            }
+            
+          });
+      }
     }
   }
 }
