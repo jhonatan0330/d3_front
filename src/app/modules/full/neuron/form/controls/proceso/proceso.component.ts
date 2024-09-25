@@ -517,11 +517,18 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           return;
         }
       }
+      // La parte de modifciado la coloque porque en roa no se veia la ciudad de una guia al cambiar el destinatario
       for (let i = 0; i < this.data.dependientes.length; i++) {
-        if (!this.data.dependientes[i].valorOpcion && (!this.data.dependientes[i].campoDTO || 
-          (this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO 
-            && !PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.MULTIPLE)
-            && PlantillaHelper.buscarValor(this.data.dependientes[i].campoDTO.propiedades,PlantillaHelper.DEPENDE)))) {
+        const iDepen = this.data.dependientes[i];
+        if (!iDepen.valorOpcion 
+          && (!iDepen.campoDTO || 
+            (iDepen.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO 
+              && !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.MULTIPLE)
+              && (PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.DEPENDE)
+                || iDepen.modificado)
+            )
+          )
+        ) {
           /*alert(
             'Seleccione el campo ' + this.data.dependientes[i].campoDTO.nombre
           );*/
@@ -943,7 +950,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         // Sucede que los valores se perdian porque el fcontrol era vacio
         this.fControl.setValue(this.proceso);
       } else {
-        if (!this.data.llaveTabla && this.disponibles.length === 1) {
+        if ((!this.data.llaveTabla || this.data.modificado) && this.disponibles.length === 1) {
           this.fControl.setValue(this.disponibles[0]);
         } else {
           if (this.data.valorOpcion) {
