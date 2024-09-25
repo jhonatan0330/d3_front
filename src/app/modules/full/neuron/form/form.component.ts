@@ -84,6 +84,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   canMassive = false;
   canTransfer = false;
+  canDuplicate = false;
 
 
   // Cambiar estado
@@ -1041,6 +1042,41 @@ export class FormComponent implements OnInit, AfterViewInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Escape') {
       this.dialogRef.close(false);
+    } else if (event.key === 'F9') {
+      this.submit();
     }
+  }
+
+  duplicate() {
+
+    const _doc: PedidoVentaDTO = new PedidoVentaDTO();
+    _doc.plantilla = this.plantilla.llaveTabla;
+    _doc.caracteristicas = [];
+
+    for (let k = 0; k < this.pedido.caracteristicas.length; k++) {
+      const campoDocumento = this.pedido.caracteristicas[k];
+      if (campoDocumento.campoDTO 
+        && (campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.FECHA
+            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.NUMERO
+            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
+            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.TEXTO
+            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PRODUCTO
+        )
+      ) {
+        const campoBase: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
+        campoBase.campo = campoDocumento.campo;
+        if (!campoDocumento.dependientes) {
+          campoBase.valorText = campoDocumento.valorText;
+          campoBase.valorNumero = campoDocumento.valorNumero;
+          campoBase.valorFecha = campoDocumento.valorFecha;
+          campoBase.valorOpcion = campoDocumento.valorOpcion;
+        }
+        _doc.caracteristicas.push(campoBase);
+      }
+    }
+
+
+    _doc.server = this.plantilla.server;
+    this.utilsService.modalWithParams(_doc, false).subscribe();
   }
 }

@@ -1,3 +1,4 @@
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 <mat-form-field [style.display]="isInvisible ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
   <input

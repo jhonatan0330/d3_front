@@ -251,11 +251,17 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         filtro.campoDTO = this.structure;
         filtro.campo = this.structure.llaveTabla;
         filtro.documento = campoFiltro.documento;
-
+        this. isLoading = true;
         this.api
           .consultarDatosBase(filtro, this.urlServer)
-          .subscribe((_value: PedidoVentaCaracteristicaFilterDTO) => {
-            this.fControl.setValue(_value.valorNumeroMax);
+          .subscribe({
+            next:(_value: PedidoVentaCaracteristicaFilterDTO) => {
+              this.fControl.setValue(_value.valorNumeroMax);
+              this.isLoading = false;
+            },
+            error:()=>{
+              this.isLoading = false;
+            }
           });
       }
     }
@@ -316,6 +322,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   }
 
   send2Server(): boolean {
+    if (this.isLoading) { return false; }
     if (this.errorMessage) {
       Swal.fire('Valores no permitidos', this.errorMessage, 'info');
       return false;

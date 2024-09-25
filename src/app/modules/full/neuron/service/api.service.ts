@@ -11,6 +11,7 @@ import {
   PedidoVentaFilterDTO,
   RelacionInternaFilterDTO,
   PedidoVentaCaracteristicaFilterDTO,
+  PedidoVentaCaracteristicaDTO,
 } from '../model/sw42.domain';
 import { ApiErrorResponse } from '../model/sw42.utils';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
@@ -91,9 +92,44 @@ export class ApiService {
   consultarDatosBase(
     campo: PedidoVentaCaracteristicaFilterDTO, _server: string
   ): Observable<PedidoVentaCaracteristicaFilterDTO> {
+    const filter: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
+    // Fijo se necesitan
+    filter.campo = campo.campo;
+    filter.securityToken = campo.securityToken;
+    filter.llaveTabla = campo.llaveTabla;
+    filter.filtroParametro = campo.filtroParametro;
+    filter.documento = campo.documento;
+    filter.valorOpcion = campo.valorOpcion;
+    filter.valorText = campo.valorText;
+    // Creo que no lo necesito
+    filter.paginacionRegistroFinal = campo.paginacionRegistroFinal;
+    filter.paginacionRegistroInicial = campo.paginacionRegistroInicial;
+    filter.valorAuxiliar = campo.valorAuxiliar;
+    filter.valorFechaMax = campo.valorFechaMax;
+    filter.valorFechaMin = campo.valorFechaMin;
+    filter.valorNumeroMax = campo.valorNumeroMax;
+    filter.valorNumeroMin = campo.valorNumeroMin;
+    
+    if(campo.dependientes){
+      filter.dependientes = [];
+      for (let i = 0; i < campo.dependientes.length; i++) {
+        const element = campo.dependientes[i];
+        const newElement = new PedidoVentaCaracteristicaDTO();
+
+        newElement.valorOpcion = element.valorOpcion;
+        newElement.valorNumero = element.valorNumero;
+        newElement.valorFecha = element.valorFecha;
+        newElement.valorText = element.valorText;
+        newElement.campo = element.campo;
+        
+        filter.dependientes.push(newElement)
+      }
+    }
+
+    
     return this.http.post<PedidoVentaCaracteristicaFilterDTO>(
       this.ls.getUrlAccess('/rest/consultarDatosBase', _server),
-      campo
+      filter
     );
   }
 

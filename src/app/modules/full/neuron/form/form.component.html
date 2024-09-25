@@ -52,6 +52,10 @@
         <button mat-menu-item matTooltip="Transferir" *ngIf="canTransfer" (click)="showTransfer()" tabindex="-1">
           <mat-icon>transfer_within_a_station</mat-icon>Transfer
         </button>
+        <!-- Boton Duplicar -->
+        <button mat-menu-item matTooltip="Duplicar" (click)="duplicate()" tabindex="-1">
+          <mat-icon>file_copy</mat-icon>Duplicar
+        </button>
         <!-- Boton carga masiva -->
         <button mat-menu-item matTooltip="Carga Masiva" *ngIf="canMassive" (click)="showMassive()" tabindex="-1">
           <mat-icon>cloud_upload</mat-icon> Carga
