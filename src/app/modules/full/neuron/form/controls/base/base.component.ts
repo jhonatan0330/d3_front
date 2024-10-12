@@ -257,8 +257,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
     // nFilter.m = campoFiltro.modificado;
     // nFilter. = campoFiltro.principal;
     // nFilter.productosExclusivos = campoFiltro.productosExclusivos;
-    nFilter.transaccionInactivo = campoFiltro.transaccionInactivo;
-    nFilter.transaccionRegistro = campoFiltro.transaccionRegistro;
+    //nFilter.transaccionInactivo = campoFiltro.transaccionInactivo;
+    //nFilter.transaccionRegistro = campoFiltro.transaccionRegistro;
     nFilter.valorAuxiliar = campoFiltro.valorAuxiliar;
     // nFilter.val = campoFiltro.valorFecha;
     // nFilter.valo = campoFiltro.valorNumero;

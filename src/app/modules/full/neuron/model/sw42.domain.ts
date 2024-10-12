@@ -69,8 +69,8 @@ export class PedidoVentaCaracteristicaDTO extends BasicDTO {
   dependientes: PedidoVentaCaracteristicaDTO[];
   expedientes: PedidoVentaDTO[];
   modificado: boolean;
-  transaccionRegistro: string;
-  transaccionInactivo: string;
+  //transaccionRegistro: string;
+  //transaccionInactivo: string;
 }
 export class ProcesoTransicionDTO extends BasicParamDTO {
   procesoNombre: string;

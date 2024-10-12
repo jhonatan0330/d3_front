@@ -45,11 +45,13 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       this.fControl.updateValueAndValidity();
     }
     this.startControl();
-    /* if (this.isEnabled) {
+    /*
+    if (this.isEnabled) {
       this.fControl.enable();
     } else {
       this.fControl.disable();
-    }*/
+    }
+      */
     // Al finalzar se subscriben los cambios
     if (this.funcion) {
       // Solo tomo unos segundos en los casos que el campo tenga funcion asi evito tantas consultas al server
