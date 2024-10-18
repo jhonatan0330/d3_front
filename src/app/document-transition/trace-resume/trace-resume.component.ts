@@ -32,8 +32,8 @@ export class TraceResumeComponent implements OnInit {
     {value: '2', viewValue: 'Asignaciones'} ,
     {value: '3', viewValue: 'Mensajes'} ,
     {value: '4', viewValue: 'Inventario'},
-    {value: '5', viewValue: 'Automaticas'},
-    {value: '6', viewValue: 'Reportes'},
+    {value: '5', viewValue: 'Reportes'},
+    {value: '6', viewValue: 'Automaticas'},
     {value: '7', viewValue: 'APIs'}];
   selectedTrace = new FormControl(['1']);
 
