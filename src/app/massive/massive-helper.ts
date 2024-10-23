@@ -124,11 +124,15 @@ export function procesarXMLBase(
         return pCampo;
       } else {
         if(multiple) {
-          pCampo.expedientes = [];
-          const multiple = new PedidoVentaDTO();
-          //multiple.llaveTabla = iPedidoVenta.llaveTabla;
-          multiple.nombre = pCampo.valorText;
-          pCampo.expedientes.push(multiple);
+          // En roa las notas credito envian esto y fallan
+          if(pCampo.valorText){
+            pCampo.expedientes = [];
+            const multiple = new PedidoVentaDTO();
+            // No se porque comentarie esto
+            //multiple.llaveTabla = iPedidoVenta.llaveTabla;
+            multiple.nombre = pCampo.valorText;
+            pCampo.expedientes.push(multiple);
+          }
           return pCampo;
         } else {
           /*const autoload = PlantillaHelper.buscarPropiedad(

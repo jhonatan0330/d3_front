@@ -1055,17 +1055,23 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     for (let k = 0; k < this.pedido.caracteristicas.length; k++) {
       const campoDocumento = this.pedido.caracteristicas[k];
+      const block = !PlantillaHelper.isEmpty(
+        campoDocumento.campoDTO.propiedades,
+        PlantillaHelper.PERMISO_CAMPO_BLOQUEAR
+      );
       if (campoDocumento.campoDTO 
+        && !block
         && (campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.FECHA
             || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.NUMERO
             || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
             || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.TEXTO
             || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PRODUCTO
+            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.CONFIGURACION
         )
       ) {
         const campoBase: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
         campoBase.campo = campoDocumento.campo;
-        if (!campoDocumento.dependientes) {
+        if (!campoDocumento.dependientes && !(campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO && !campoDocumento.valorOpcion)) {
           campoBase.valorText = campoDocumento.valorText;
           campoBase.valorNumero = campoDocumento.valorNumero;
           campoBase.valorFecha = campoDocumento.valorFecha;
