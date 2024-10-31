@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { cloneDeep } from 'lodash-es';
 import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { FuseNavigationItem } from '@fuse/components/navigation';
@@ -62,7 +61,8 @@ export class NavigationService
             if(process.length===0){
                 //this._defaultNavigation.shift()
             }else{
-                this._defaultNavigation[1].children = cloneDeep(processNavItem);
+                //this._defaultNavigation[1].children = cloneDeep(processNavItem);
+                this._defaultNavigation[1].children = processNavItem;
             }
         }
         
@@ -84,7 +84,8 @@ export class NavigationService
                     moduleNavItem.push(newItem);
                 }
             });
-            this._defaultNavigation[2].children = cloneDeep(moduleNavItem);
+            this._defaultNavigation[2].children = moduleNavItem;
+            //this._defaultNavigation[2].children = cloneDeep(moduleNavItem);
         }
 
         if(templates){
@@ -101,7 +102,8 @@ export class NavigationService
                     templateNavItem.push(newItem);
                   }
             });
-            this._defaultNavigation[3].children = cloneDeep(templateNavItem);
+            this._defaultNavigation[3].children = templateNavItem;
+            //this._defaultNavigation[3].children = cloneDeep(templateNavItem);
         }
 
         // Fill compact navigation children using the default navigation
@@ -109,7 +111,8 @@ export class NavigationService
             this._defaultNavigation.forEach((defaultNavItem) => {
                 if ( defaultNavItem.id === compactNavItem.id )
                 {
-                    compactNavItem.children = cloneDeep(defaultNavItem.children);
+                    //compactNavItem.children = cloneDeep(defaultNavItem.children);
+                    compactNavItem.children = defaultNavItem.children;
                 }
             });
         });
@@ -119,7 +122,8 @@ export class NavigationService
             this._defaultNavigation.forEach((defaultNavItem) => {
                 if ( defaultNavItem.id === futuristicNavItem.id )
                 {
-                    futuristicNavItem.children = cloneDeep(defaultNavItem.children);
+                    //futuristicNavItem.children = cloneDeep(defaultNavItem.children);
+                    futuristicNavItem.children = defaultNavItem.children;
                 }
             });
         });
@@ -129,15 +133,20 @@ export class NavigationService
             this._defaultNavigation.forEach((defaultNavItem) => {
                 if ( defaultNavItem.id === horizontalNavItem.id )
                 {
-                    horizontalNavItem.children = cloneDeep(defaultNavItem.children);
+                    //horizontalNavItem.children = cloneDeep(defaultNavItem.children);
+                    horizontalNavItem.children = defaultNavItem.children;
                 }
             });
         });
         const navigation = {
-            compact   : cloneDeep(this._compactNavigation),
-            default   : cloneDeep(this._defaultNavigation),
-            futuristic: cloneDeep(this._futuristicNavigation),
-            horizontal: cloneDeep(this._horizontalNavigation)
+            //compact   : cloneDeep(this._compactNavigation),
+            //default   : cloneDeep(this._defaultNavigation),
+            //futuristic: cloneDeep(this._futuristicNavigation),
+            //horizontal: cloneDeep(this._horizontalNavigation)
+            compact   : this._compactNavigation,
+            default   : this._defaultNavigation,
+            futuristic: this._futuristicNavigation,
+            horizontal: this._horizontalNavigation
         }
         this._navigation.next(navigation);
     }

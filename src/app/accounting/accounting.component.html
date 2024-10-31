@@ -17,10 +17,6 @@
                             <input matInput [formControl]="searchInputControl">
                         </mat-form-field>
                     </div>
-                    <button mat-flat-button [color]="'primary'" (click)="openComposeDialog()" class="w-full">
-                        <mat-icon>add</mat-icon>
-                        <span>Catalogo nuevo</span>
-                    </button>
                 </div>
 
                 <div class="relative">
@@ -34,21 +30,6 @@
                                 <div class="min-w-0 ml-4">
                                     <div class="font-medium leading-5 truncate">{{catalog.name}}</div>
                                     <div class="leading-5 truncate text-secondary">{{catalog.code}}</div>
-                                </div>
-                                <div>
-                                    <button [matMenuTriggerFor]="actionsCatalog" mat-icon-button>
-                                        <mat-icon>more_vert</mat-icon>
-                                    </button>
-                                    <mat-menu #actionsCatalog="matMenu">
-                                        <button mat-menu-item (click)="editCatalog(catalog)">
-                                            <mat-icon class="icon-size-5">edit</mat-icon>
-                                            <span>Actualizar Catalogo</span>
-                                        </button>
-                                        <button mat-menu-item (click)="deleteCatalog(catalog)">
-                                            <mat-icon class="icon-size-5">delete</mat-icon>
-                                            <span>Eliminar Catalogo</span>
-                                        </button>
-                                    </mat-menu>
                                 </div>
 
                             </a>
@@ -270,14 +251,6 @@
                                         <mat-icon class="icon-size-5">refresh</mat-icon>
                                         <span>Actualizar cuentas</span>
                                     </button>
-                                    <button mat-menu-item (click)="openAccountForm()">
-                                        <mat-icon class="icon-size-5">add</mat-icon>
-                                        <span>Crear Cuenta</span>
-                                    </button>
-                                    <button mat-menu-item (click)="openUploadForm()">
-                                        <mat-icon class="icon-size-5">attach_file</mat-icon>
-                                        <span>Cargar CSV de cuentas</span>
-                                    </button>
                                 </mat-menu>
                             </div>
                         </div>
@@ -320,31 +293,6 @@
                                             <span
                                                 class="leading-relaxed whitespace-nowrap">{{transaction.status}}</span>
                                         </span>
-                                    </td>
-                                </ng-container>
-                                <ng-container matColumnDef="actions">
-                                    <th mat-header-cell *matHeaderCellDef>
-                                        Acciones
-                                    </th>
-                                    <td mat-cell *matCellDef="let row">
-                                        <div>
-                                            <button [matMenuTriggerFor]="actionsTable" mat-icon-button>
-                                                <mat-icon>more_vert</mat-icon>
-                                            </button>
-                                            <mat-menu #actionsTable="matMenu">
-                                                <button mat-menu-item (click)="editAccount(row)">
-                                                    <mat-icon class="icon-size-5">edit</mat-icon>
-                                                    <span>Actualizar Cuenta</span>
-                                                </button>
-                                                <button mat-menu-item (click)="deleteAccount(row)">
-                                                    <mat-icon class="icon-size-5">delete</mat-icon>
-                                                    <span>Eliminar Cuenta</span>
-                                                </button>
-                                                <button mat-menu-item (click)="openAccountForm(row)">
-                                                    Crear Subcuenta
-                                                </button>
-                                            </mat-menu>
-                                        </div>
                                     </td>
                                 </ng-container>
                                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

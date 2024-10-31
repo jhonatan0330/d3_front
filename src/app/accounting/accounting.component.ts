@@ -2,15 +2,12 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { MatDrawer } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Subject, takeUntil } from 'rxjs';
-import { CatalogFormComponent } from './catalog-form/catalog-form.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from './accounting.domain';
 import { UntypedFormControl } from '@angular/forms';
 import { AccountingService } from './accounting.service';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { AccountFormComponent } from './account-form/account-form.component';
-import { UploadFormComponent } from './upload/upload-form.component';
 import { ManualFormComponent } from './manual-form/manual-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import Swal from 'sweetalert2';
@@ -64,7 +61,7 @@ export class AccountComponent implements OnInit, OnDestroy {
         };
     }
 
-    displayedColumns: string[] = ['code', 'name', 'status', 'actions'];
+    displayedColumns: string[] = ['code', 'name', 'status'];
 
     treeControl = new FlatTreeControl<AccountFlatNode>(
         node => node.level, node => node.expandable);
@@ -105,10 +102,6 @@ export class AccountComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    openComposeDialog(): void {
-        const dialogRef = this._matDialog.open(CatalogFormComponent);
-        dialogRef.afterClosed().subscribe(() => this.getCatalogs());
-    }
 
     getVouchers() {
         this.isLoadingVoucher = true;
@@ -186,45 +179,6 @@ export class AccountComponent implements OnInit, OnDestroy {
         this.getVouchers();
     }
 
-    editCatalog(catalog: CatalogDTO) {
-        this._matDialog.open(CatalogFormComponent, {
-            disableClose: true,
-            data: catalog
-        }).afterClosed().subscribe(() => {
-            this.getCatalogs();
-        });
-    }
-
-    deleteCatalog(catalog: CatalogDTO) {
-
-        Swal.fire({
-            title: '¿Desea eliminar el catalogo?',
-            text: catalog.name,
-            icon: "warning",
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: "Si, eliminar",
-            showCancelButton: true,
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'No, volver'
-        }).then((resultado) => {
-
-            if (resultado.isConfirmed) {
-                this.accountingService.deleteCatalog(catalog.key).subscribe({
-                    next: (dataResult: CatalogDTO) => {
-                    },
-                    error: () => {
-                        this.isLoadingCatalog = false;
-                    },
-                    complete: () =>{
-                        this.getCatalogs();
-                    }
-                });
-
-            }
-
-        })
-    }
-
     getBalance() {
         this.balance = [];
         if (this.accountingService.currentCatalog) {
@@ -266,44 +220,6 @@ export class AccountComponent implements OnInit, OnDestroy {
         }
     }
 
-    editAccount(account: AccountDTO) {
-        this._matDialog.open(AccountFormComponent, {
-            disableClose: true,
-            data: { catalogId: this.accountingService.currentCatalog.key, parentId: (account) ? account.key : null, account: account }
-        }).afterClosed().subscribe(() => {
-            this.getAccounts();
-        });
-    }
-
-    deleteAccount(account: AccountDTO) {
-
-        Swal.fire({
-            title: '¿Desea eliminar la cuenta?',
-            text: account.name,
-            icon: "warning",
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: "Si, eliminar",
-            showCancelButton: true,
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'No, volver'
-        }).then((resultado) => {
-
-            if (resultado.isConfirmed) {
-                this.accountingService.deleteAccount(account.key).subscribe({
-                    next: (dataResult: AccountDTO) => {
-                    },
-                    error: () => {
-                        this.isLoadingCatalog = false;
-                    },
-                    complete: () =>{
-                        this.getAccounts();
-                    }
-                });
-            }
-
-        })
-    }
-
     private searchParentNode(_account: AccountDTO, _tree: AccountNode[]) {
         if (!_account.parent) { return; }
         for (let i = _tree.length - 1; i >= 0; i--) {
@@ -317,14 +233,6 @@ export class AccountComponent implements OnInit, OnDestroy {
         }
     }
 
-    openAccountForm(selectedAccount: AccountFlatNode = null): void {
-        if (!this.accountingService.currentCatalog) { return; }
-        const dialogRef = this._matDialog.open(AccountFormComponent, {
-            data: { catalogId: this.accountingService.currentCatalog.key, parentId: (selectedAccount) ? selectedAccount.key : null },
-            disableClose: true,
-        });
-        dialogRef.afterClosed().subscribe(() => this.getAccounts());
-    }
 
     openManualForm(): void {
         if (!this.accountingService.currentCatalog) { return; }
@@ -336,13 +244,4 @@ export class AccountComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(() => { this.getBalance(); this.getVouchers(); });
     }
 
-
-    openUploadForm(): void {
-        if (!this.accountingService.currentCatalog) { return; }
-        const dialogRef = this._matDialog.open(UploadFormComponent, {
-            disableClose: true,
-            data: { catalogId: this.accountingService.currentCatalog.key }
-        });
-        dialogRef.afterClosed().subscribe(() => this.getAccounts());
-    }
 }

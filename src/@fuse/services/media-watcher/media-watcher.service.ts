@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { map, Observable, ReplaySubject, switchMap } from 'rxjs';
-import { fromPairs } from 'lodash-es';
 import { FuseConfigService } from '@fuse/services/config';
 
 @Injectable()
@@ -18,7 +17,13 @@ export class FuseMediaWatcherService
     )
     {
         this._fuseConfigService.config$.pipe(
-            map(config => fromPairs(Object.entries(config.screens).map(([alias, screen]) => ([alias, `(min-width: ${screen})`])))),
+            map(config => 
+                Object.fromEntries(
+                    Object.entries(config.screens).map(
+                            ([alias, screen]) => ([alias, `(min-width: ${screen})`])
+                    )
+                )
+            ),
             switchMap(screens => this._breakpointObserver.observe(Object.values(screens)).pipe(
                 map((state) => {
 
