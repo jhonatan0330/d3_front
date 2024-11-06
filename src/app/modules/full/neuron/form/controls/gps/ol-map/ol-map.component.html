@@ -1,1 +1,26 @@
-<div id="{{target}}" class="map"></div>
+<div class="p-4 h-full">
+    <mat-form-field>
+        <mat-label>{{nombre}}</mat-label>
+        <button
+          mat-icon-button
+          matPrefix
+          tabindex="-1">
+          <mat-icon>map</mat-icon>
+        </button>
+        <input
+          matInput
+          [formControl]="fControl"
+          [readonly]="true"
+          autocomplete="off"
+          class="cursor-pointer text-primary underline"/>
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="closeMap()"
+          tabindex="-1">
+          <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+    <div id="{{target}}" class="map" (click)="handlerClick($event)" class="w-full h-full"></div>
+</div>
+

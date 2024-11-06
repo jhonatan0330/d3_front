@@ -59,6 +59,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { InformativeComponent } from './form/controls/informative/informative.component';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { DocumentTransitionModule } from 'app/document-transition/document-transition.module';
+import { OlMapComponent } from './form/controls/gps/ol-map/ol-map.component';
+import { FullMapComponent } from './form/controls/gps-map/full-map/full-map.component';
 
 
 @NgModule({
@@ -76,6 +78,8 @@ import { DocumentTransitionModule } from 'app/document-transition/document-trans
         ProductoListaComponent,
         SeccionComponent,
         BaseComponent,
+        OlMapComponent,
+        FullMapComponent,
         GpsComponent,
         FormComponent,
         ProductComponent,
