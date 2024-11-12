@@ -45,6 +45,8 @@ export class NavigationService
 
     generate(process: DocumentoPlantillaDTO[], modules: ModuloDTO[], templates: DocumentoPlantillaDTO[]) {
 
+        if(!templates){ return;}
+
         if(process){
             const processNavItem: FuseNavigationItem[] = [];
             process.forEach((process:DocumentoPlantillaDTO)=>{
@@ -139,14 +141,14 @@ export class NavigationService
             });
         });
         const navigation = {
-            //compact   : cloneDeep(this._compactNavigation),
-            //default   : cloneDeep(this._defaultNavigation),
-            //futuristic: cloneDeep(this._futuristicNavigation),
-            //horizontal: cloneDeep(this._horizontalNavigation)
-            compact   : this._compactNavigation,
-            default   : this._defaultNavigation,
-            futuristic: this._futuristicNavigation,
-            horizontal: this._horizontalNavigation
+            compact   : [...this._compactNavigation],
+            default   : [...this._defaultNavigation],
+            futuristic: [...this._futuristicNavigation],
+            horizontal: [...this._horizontalNavigation]
+            //compact   : this._compactNavigation,
+            //default   : this._defaultNavigation,
+            //futuristic: this._futuristicNavigation,
+            //horizontal: this._horizontalNavigation
         }
         this._navigation.next(navigation);
     }

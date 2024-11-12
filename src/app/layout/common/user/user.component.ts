@@ -7,6 +7,7 @@ import { UserService } from 'app/core/user/user.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { LoginService } from 'app/authentication/login.service';
+import { NavigationService } from 'app/authorization/navigation/navigation.service';
 
 @Component({
     selector: 'user',
@@ -33,6 +34,7 @@ export class UserComponent implements OnInit, OnDestroy {
         public jwtAuth: LoginService,
         private apiService: ApiService,
         private templateService: TemplateService,
+        private _navigationService: NavigationService
     ) {
     }
 
@@ -78,6 +80,15 @@ export class UserComponent implements OnInit, OnDestroy {
         this.apiService.listarDocumentosFull().subscribe({
             next: (value) => {
                 this.templateService.setTemplates(value);
+                const processToMenu = [];
+          // Transform document to MenuItems
+          value.forEach((element) => {
+            if (!element.llaveTabla) {
+              element.estado = 'T';
+              processToMenu.push(element);
+            }
+          });
+                this._navigationService.generate(processToMenu, null, value);
             }
         });
     }

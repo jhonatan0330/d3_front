@@ -57,6 +57,8 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((navigation: Navigation) => {
                 this.navigation = navigation;
+                const _navigation = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>('mainNavigation');
+                _navigation.refresh();
             });
 
         // Subscribe to the user service

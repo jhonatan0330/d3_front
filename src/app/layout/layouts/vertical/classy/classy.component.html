@@ -1,6 +1,6 @@
 <!-- Navigation -->
 <fuse-vertical-navigation class="dark bg-gray-900 print:hidden" [mode]="isScreenSmall ? 'over' : 'side'"
-    [name]="'mainNavigation'" [navigation]="navigation.default" [opened]="!isScreenSmall">
+    [name]="'mainNavigation'" [navigation]="navigation?.default" [opened]="!isScreenSmall">
     <!-- Navigation header hook -->
     <ng-container fuseVerticalNavigationContentHeader>
         <!-- App Logo -->
