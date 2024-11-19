@@ -1,6 +1,36 @@
-import { ProductoDTO, UsuarioRolProductoDTO } from "app/inventory/inventory.types";
 import { BasicDTO, BasicFilterDTO, BasicParamDTO } from "app/shared/shared.domain";
 import { TarifaDTO } from "../model/tariff.domain";
+
+
+export class UsuarioRolProductoDTO extends BasicDTO {
+  documento: string;
+  documentoNombre: string;
+  producto: string;
+  productoNombre: string;
+  nombre: string;
+  modificador: string;
+  cantidadPromocion: number;
+  cantidadPromocionBase: number;
+}
+export class ProductoDTO extends BasicParamDTO {
+  nombre: string;
+  codigo: string;
+  filtros: string;
+  imagen: string;
+  descripcion: string;
+  categoria: string;
+  categoriaNombre: string;
+  categoriaPlantilla: string;
+  usuarioRol: string;
+  valorMinimoPromocion: number;
+  cantidadPromocion: number;
+  cantidadPromocionBase: number;
+  detallePlantilla: DetallePedidoVentaDTO;
+  documento: string;
+  productoBase: string;
+  baseNombre: string;
+  templateFields: string;
+}
 
 export class ProcesoEstadoDTO extends BasicParamDTO {
   tipo: string;

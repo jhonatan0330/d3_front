@@ -44,7 +44,6 @@ export const appRoutes: Route[] = [
       { path: 'noseperolodejopormodule', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
       { path: 'trace-doc', loadChildren: () => import('app/document-transition/document-transition.module').then(m => m.DocumentTransitionModule) },
       { path: 'massive', loadChildren: () => import('app/massive/massive.module').then(m => m.MassiveModule) },
-      { path: 'inventory', loadChildren: () => import('app/inventory/inventory.module').then(m => m.InventoryModule) },
       { path: 'account', loadChildren: () => import('app/accounting/accounting.module').then(m => m.AccountingModule) },
       { path: 'help', loadChildren: () => import('app/help-center/help-center.routes')},
       { path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/layout/common/error-404/error-404.module').then(m => m.Error404Module) },

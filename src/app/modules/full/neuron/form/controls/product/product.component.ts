@@ -18,7 +18,6 @@ import { getComponent } from 'app/modules/full/neuron/form-helper';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { IDynamicControl } from '../base/base.component';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import { ProductoInventarioDTO } from 'app/inventory/inventory.types';
 import { TarifaDTO } from 'app/modules/full/neuron/model/tariff.domain';
 
 @Component({
@@ -36,7 +35,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
   campoCantidad2Tarifario: string;
   campoTotal: PropiedadDTO;
 
-  inventories: ProductoInventarioDTO[];
   isLoading = false; // ayuda a mostrar la barra de progreso en las busqueas
   allowEdit = false;
 
@@ -364,20 +362,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
       return;
     }
     this.dialogRef.close(this.detallePedidoVenta);
-  }
-
-  
-  consultarInventarios() {
-    this.isLoading = true;
-    this.api.consultarInventario(this.detallePedidoVenta.producto, this.server).subscribe({
-      next: (_value: ProductoInventarioDTO[]) => {
-        this.inventories = _value;
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
-      },
-    });
   }
 
   cantidadTarifario(): number {

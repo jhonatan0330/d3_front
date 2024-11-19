@@ -6,13 +6,13 @@ import {
   PedidoVentaCaracteristicaDTO,
   PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
+  ProductoDTO
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
-import { ProductoDTO } from 'app/inventory/inventory.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
 import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
