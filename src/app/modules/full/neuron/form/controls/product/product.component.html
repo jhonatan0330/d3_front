@@ -3,7 +3,27 @@
     <div class="w-full font-semibold">
       <span>{{ detallePedidoVenta.nombre }}</span>
     </div>
+    <mat-icon class="h-6" (click)="consultarInventarios()">find_in_page</mat-icon>
     <mat-icon class="h-6" (click)="dialogRef.close(true)">exit_to_app</mat-icon>
+  </div>
+  <mat-progress-bar *ngIf="isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
+  <div *ngIf="inventories" class="w-full">
+    <table mat-table [dataSource]="inventories" class="w-full bg-default">
+      <!-- Item Column -->
+      <ng-container matColumnDef="item">
+        <th mat-header-cell *matHeaderCellDef> Bodega </th>
+        <td mat-cell *matCellDef="let transaction"> {{transaction.nombreBodega}} </td>
+      </ng-container>
+
+      <!-- Cost Column -->
+      <ng-container matColumnDef="cost">
+        <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+        <td mat-cell *matCellDef="let transaction"> {{transaction.cantidadActual | number}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['item', 'cost']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['item', 'cost'];"></tr>
+    </table>
   </div>
   <mat-progress-bar *ngIf="isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
   <!-- Campos dinamicos -->

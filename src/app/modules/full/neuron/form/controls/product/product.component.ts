@@ -11,6 +11,7 @@ import {
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   DetallePedidoVentaDTO,
+  ProductoInventarioDTO
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -35,6 +36,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   campoCantidad2Tarifario: string;
   campoTotal: PropiedadDTO;
 
+  inventories: ProductoInventarioDTO[];
   isLoading = false; // ayuda a mostrar la barra de progreso en las busqueas
   allowEdit = false;
 
@@ -362,6 +364,19 @@ export class ProductComponent implements OnInit, AfterViewInit {
       return;
     }
     this.dialogRef.close(this.detallePedidoVenta);
+  }
+
+  consultarInventarios() {
+    this.isLoading = true;
+    this.api.consultarInventario(this.detallePedidoVenta.producto, this.server).subscribe({
+      next: (_value: ProductoInventarioDTO[]) => {
+        this.inventories = _value;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+      },
+    });
   }
 
   cantidadTarifario(): number {
