@@ -7,8 +7,9 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FusePlatformService } from '@fuse/services/platform';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
-import { UserService } from 'app/core/user/user.service';
-import { Company } from 'app/core/user/user.types';
+import { LoginService } from 'app/authentication/login.service';
+import { OrganizacionDTO } from 'app/authentication/authentication.domain';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({
     selector: 'layout',
@@ -34,17 +35,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
         private _fuseConfigService: FuseConfigService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fusePlatformService: FusePlatformService,
-        private _userService: UserService
+        private _userService: LoginService
     ) {
     }
 
     ngOnInit(): void {
         this._userService.company$
             .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((company: Company) => {
+            .subscribe((company: OrganizacionDTO) => {
                 if(company) { 
-                    if(this.config) this.config.layout = company.companyLayout; 
-                    this._updateLayout();
+                    if(this.config){
+                        let layoutCompany: string = PlantillaHelper.buscarValor(company.propiedades, PlantillaHelper.LAYOUT_APP);
+                        if (!layoutCompany) { layoutCompany = 'classy'; }
+                        this.config.layout = layoutCompany as Layout; 
+                        this._updateLayout();
+                    } 
                 }
             });
         // Set the theme and scheme based on the configuration

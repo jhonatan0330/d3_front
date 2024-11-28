@@ -21,8 +21,6 @@ export class MaterialLayoutComponent implements OnInit, OnDestroy
      * Constructor
      */
     constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _router: Router,
         private _navigationService: NavigationService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fuseNavigationService: FuseNavigationService
@@ -30,17 +28,6 @@ export class MaterialLayoutComponent implements OnInit, OnDestroy
     {
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Getter for current year
-     */
-    get currentYear(): number
-    {
-        return new Date().getFullYear();
-    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks

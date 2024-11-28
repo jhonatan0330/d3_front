@@ -15,16 +15,3 @@ export class RolAccesoDTO extends BasicParamDTO {
   permisosCompletos: boolean;
   minutosSesion: number;
 }
-
-/*export class UsuarioRolDTO extends BasicDTO {
-  usuario: string;
-  usuarioIdentificacion: string;
-  usuarioNombre: string;
-  usuarioImagen: string;
-  rolAcceso: string;
-  rolNombre: string;
-  documento: string;
-  fechaInicial: Date;
-  fechaFinal: Date;
-}*/
-

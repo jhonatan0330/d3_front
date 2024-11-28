@@ -11,7 +11,6 @@ import { CompactLayoutModule } from 'app/layout/layouts/vertical/compact/compact
 import { DenseLayoutModule } from 'app/layout/layouts/vertical/dense/dense.module';
 import { FuturisticLayoutModule } from 'app/layout/layouts/vertical/futuristic/futuristic.module';
 import { ThinLayoutModule } from 'app/layout/layouts/vertical/thin/thin.module';
-import { SettingsModule } from 'app/layout/common/settings/settings.module';
 import { SharedModule } from 'app/shared/shared.module';
 
 const layoutModules = [
@@ -39,7 +38,6 @@ const layoutModules = [
     ],
     imports     : [
         SharedModule,
-        SettingsModule,
         ...layoutModules
     ],
     exports     : [

@@ -26,7 +26,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           errorMessage = error.error.message;
           if (errorMessage.indexOf('CODE:caud_usuario') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
             this.jwtAuth.signout();
-            this.templateService.clear();
           } else{
             let showButton = true;
             if(errorMessage.indexOf("ERROR: NOT_OK")!==-1) {

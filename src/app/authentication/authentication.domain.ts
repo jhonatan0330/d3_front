@@ -28,6 +28,8 @@ export class OrganizacionDTO extends BasicParamDTO {
   menuPlantillas: DocumentoPlantillaDTO[];
   reportePlantillas: DocumentoPlantillaDTO[];
   token: string;
+  templates: DocumentoPlantillaDTO[];
+  publicToken: string;
 }
 
 export class UsuarioOrganizacionDTO extends BasicDTO {

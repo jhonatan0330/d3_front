@@ -6,7 +6,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "build": "ng build",
+        "build": "ng build --build-optimizer",
         "build:stats": "ng build --stats-json",
         "analyze": "webpack-bundle-analyzer dist/fuse/stats.json",
         "watch": "ng build --watch --configuration development",
@@ -15,7 +15,6 @@
     },
     "dependencies": {
         "@almothafar/angular-signature-pad": "^5.0.1",
-        "@angular/animations": "15.1.1",
         "@angular/cdk": "15.1.1",
         "@angular/common": "15.1.1",
         "@angular/compiler": "15.1.1",

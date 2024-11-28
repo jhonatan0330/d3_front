@@ -4,8 +4,8 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { NavigationService } from 'app/authorization/navigation/navigation.service';
-import { User } from 'app/core/user/user.types';
-import { UserService } from 'app/core/user/user.service';
+import { UsuarioDTO } from 'app/authentication/authentication.domain';
+import { LoginService } from 'app/authentication/login.service';
 
 @Component({
     selector     : 'futuristic-layout',
@@ -16,7 +16,7 @@ export class FuturisticLayoutComponent implements OnInit, OnDestroy
 {
     isScreenSmall: boolean;
     navigation: Navigation;
-    user: User;
+    user: UsuarioDTO;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     /**
@@ -24,23 +24,11 @@ export class FuturisticLayoutComponent implements OnInit, OnDestroy
      */
     constructor(
         private _navigationService: NavigationService,
-        private _userService: UserService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService
+        private _fuseNavigationService: FuseNavigationService,
+        private _loginService: LoginService
     )
     {
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Getter for current year
-     */
-    get currentYear(): number
-    {
-        return new Date().getFullYear();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -60,9 +48,9 @@ export class FuturisticLayoutComponent implements OnInit, OnDestroy
             });
 
         // Subscribe to the user service
-        this._userService.user$
+        this._loginService.user$
             .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((user: User) => {
+            .subscribe((user: UsuarioDTO) => {
                 this.user = user;
             });
 

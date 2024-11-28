@@ -53,8 +53,6 @@ const routerConfig: ExtraOptions = {
     FormsModule,
     DragDropModule,
 
-    BrowserModule,
-    BrowserAnimationsModule,
     HttpClientModule,
 
     MatDatepickerModule,

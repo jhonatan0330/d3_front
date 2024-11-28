@@ -24,24 +24,24 @@
                         </button>
                         <div *ngIf="viewMode !== 'grid-view' && plantilla.reportes" class="py-1">
                             <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="userMenuList">
-                                <mat-icon>print</mat-icon>Imprimir
+                                <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Imprimir
                             </button>
                             <mat-menu #userMenuList="matMenu">
                                 <button mat-menu-item *ngFor="let r of plantilla.reportes"
                                     (click)="showReport(r, null)">
-                                    <mat-icon>print</mat-icon>
+                                    <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
                                     <span>{{ r.nombre }}</span>
                                 </button>
                             </mat-menu>
                         </div>
                         <div *ngIf="reportForms" class="py-1">
                             <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="reportFormMenuList">
-                                <mat-icon>print</mat-icon>Informes
+                                <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Informes
                             </button>
                             <mat-menu #reportFormMenuList="matMenu">
                                 <button mat-menu-item *ngFor="let rf of reportForms"
                                     (click)="openDialog(rf.valor)">
-                                    <mat-icon>print</mat-icon>
+                                    <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
                                     <span>{{ rf.texto }}</span>
                                 </button>
                             </mat-menu>
@@ -70,7 +70,7 @@
                             <input matInput type="text" placeholder="Coloca un texto y presiona enter"
                                 [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
                             <button matSuffix mat-icon-button (click)="fControlSearch.setValue('')">
-                                <mat-icon>close</mat-icon>
+                                <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
                             </button>
                         </mat-form-field>
                         <button class="w-full " mat-flat-button [color]="'accent'" (click)="listar(1)">
@@ -237,7 +237,7 @@
                                             <mat-menu #userMenu="matMenu">
                                                 <button mat-menu-item *ngFor="let r of plantilla.reportes"
                                                     (click)="showReport(r, iDocument)">
-                                                    <mat-icon>print</mat-icon>
+                                                    <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
                                                     <span>{{ r.nombre }}</span>
                                                 </button>
                                             </mat-menu>
@@ -341,7 +341,7 @@
                                     <mat-menu #userMenu="matMenu">
                                         <button mat-menu-item *ngFor="let r of plantilla.reportes"
                                             (click)="showReport(r, element)">
-                                            <mat-icon>print</mat-icon>
+                                            <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
                                             <span>{{ r.nombre }}</span>
                                         </button>
                                     </mat-menu>

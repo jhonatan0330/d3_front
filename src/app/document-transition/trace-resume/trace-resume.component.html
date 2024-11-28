@@ -5,10 +5,10 @@
     </mat-select>
   </mat-form-field>
   <button mat-raise-button class="mx-4" (click)="listar(1)">
-    <mat-icon>history</mat-icon>
+    <mat-icon svgIcon="heroicons_outline:clock"></mat-icon>
   </button>
   <button mat-raise-button class="mx-4" (click)="close.emit(1)">
-    <mat-icon>close</mat-icon>
+    <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
   </button>
 </div>
 
@@ -79,6 +79,6 @@
     </ng-container>
   </ol>
   <button mat-flat-button (click)="listar(pagina)" *ngIf="!isEnd">
-    <mat-icon>history</mat-icon> Seguir consultando
+    <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Seguir consultando
   </button>
 </div>

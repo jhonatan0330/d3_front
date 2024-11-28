@@ -28,8 +28,10 @@ export const defaultNavigation: FuseNavigationItem[] = [
         children: []
     },
     {
-        id  : 'divider-1',
-        type: 'divider'
+        id      : 'list',
+        title   : 'Reportes',
+        type    : 'group',
+        children: []
     }
    
 ];

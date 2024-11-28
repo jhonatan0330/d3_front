@@ -4,7 +4,7 @@
       class="w-full" />
     <button mat-flat-button color="accent" [disabled]="isLoading" *ngIf="isEnabled && !isEnd && !isLoading"
       (click)="onClickExternal()" class="w-full">
-      <mat-icon svgIcon="attach_file"></mat-icon>
+      <mat-icon svgIcon="heroicons_outline:paper-clip"></mat-icon>
       {{ structure.nombre | titlecase }}
       <small *ngIf="required"> *</small>
       <!--style="display: none"
@@ -17,8 +17,8 @@
     </button>
     <button mat-flat-button color="accent" class="ml-1" *ngIf="isEnabled && !isEnd && allowUrlTextFromUser"
       (click)="onClickLoadUrl()">
-      <mat-icon *ngIf="!isLoadingUrl">keyboard</mat-icon>
-      <mat-icon *ngIf="isLoadingUrl">check</mat-icon>
+      <mat-icon *ngIf="!isLoadingUrl" svgIcon="heroicons_outline:pencil-square"></mat-icon>
+      <mat-icon *ngIf="isLoadingUrl" svgIcon="heroicons_outline:check"></mat-icon>
     </button>
   </div>
   <mat-progress-bar *ngIf="isLoading" color="primary" class="full-width" mode="indeterminate"></mat-progress-bar>
@@ -26,7 +26,7 @@
   <div *ngIf="firma && isEnabled && !isEnd" class="p-1 text-center">
     <signature-pad></signature-pad>
     <button mat-raised-button (click)="takeSignature()" tabindex="-1">
-      <mat-icon>photo_camera</mat-icon>
+      <mat-icon svgIcon="heroicons_outline:camera"></mat-icon>
     </button>
     <button mat-raised-button (click)="clearSignature()" tabindex="-1">
       <mat-icon>format_clear</mat-icon>

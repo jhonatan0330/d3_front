@@ -71,7 +71,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         this.templateService.templates$
             .pipe((takeUntil(this._unsubscribeAll)))
             .subscribe((templates) => {
-                if (templates && templates.length !== 0) { this.refresh(); }
+                if (templates && templates.length !== 0) { this.refresh();}
             });
     }
 
@@ -221,7 +221,9 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     }
 
     refresh() {
-        this._notificationsService.getAll().subscribe();
+        if (this._jwtAuth.user && this._jwtAuth.user.llaveTabla) { 
+            this._notificationsService.getAll().subscribe();
+        }
     }
 
     showMessage() {

@@ -14,7 +14,7 @@
         </a>
       </span>
       <a class="cursor-pointer h-6 px-1" *ngIf="pedido && pedido.llaveTabla" (click)="showTrace()">
-        <mat-icon [style.color]="getColorFont()">history</mat-icon>
+        <mat-icon [style.color]="getColorFont()" svgIcon="heroicons_outline:clock"></mat-icon>
       </a>
       <mat-icon *ngIf="!fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()"
         [style.color]="getColorFont()">fullscreen</mat-icon>
@@ -156,21 +156,19 @@
             <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer flex-auto">
               <div class="p-1 w-full h-full items-center flex justify-center">
                 <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
-                  <mat-icon class="icon-size-5 text-white" svgIcon="print">
-                  </mat-icon>
+                  <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_outline:printer"></mat-icon>
                 </div>
                 <div class="pl-2 text-sm font-bold">{{ r.nombre | slice: 0:30 }}</div>
               </div>
             </a>
             <!-- Boton de historial
           <button mat-flat-button (click)="showTrace()" class="flex-auto">
-            <mat-icon>history</mat-icon> Historial
+            <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Historial
           </button> -->
             <a class="cursor-pointer flex-auto" (click)="showTrace()">
               <div class="p-1 w-full h-full items-center flex justify-center">
                 <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
-                  <mat-icon class="icon-size-5 text-white" svgIcon="history">
-                  </mat-icon>
+                  <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_outline:clock">                  </mat-icon>
                 </div>
                 <div class="pl-2 text-sm font-bold">HISTORIAL</div>
               </div>

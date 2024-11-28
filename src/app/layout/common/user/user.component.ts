@@ -1,13 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { BooleanInput } from '@angular/cdk/coercion';
 import { Subject, takeUntil } from 'rxjs';
-import { User } from 'app/core/user/user.types';
-import { UserService } from 'app/core/user/user.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { LoginService } from 'app/authentication/login.service';
-import { NavigationService } from 'app/authorization/navigation/navigation.service';
+import { UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Component({
     selector: 'user',
@@ -17,62 +14,37 @@ import { NavigationService } from 'app/authorization/navigation/navigation.servi
     exportAs: 'user'
 })
 export class UserComponent implements OnInit, OnDestroy {
-    static ngAcceptInputType_showAvatar: BooleanInput;
 
-    @Input() showAvatar: boolean = true;
-    user: User;
-
+    user: UsuarioDTO;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    /**
-     * Constructor
-     */
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
-        private _userService: UserService,
         public jwtAuth: LoginService,
         private apiService: ApiService,
-        private templateService: TemplateService,
-        private _navigationService: NavigationService
+        private templateService: TemplateService
     ) {
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void {
-        // Subscribe to user changes
-        this._userService.user$
+        this.jwtAuth.user$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((user: User) => {
+            .subscribe((user: UsuarioDTO) => {
                 this.user = user;
-                // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
     }
 
-    /**
-     * On destroy
-     */
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
 
-    /**
-     * Sign out
-     */
+
     signOut(): void {
-        
         this.jwtAuth.signout();
-        this._userService.clear();
-        this.user = null;
     }
 
     getFullTemplates() {
@@ -80,15 +52,15 @@ export class UserComponent implements OnInit, OnDestroy {
         this.apiService.listarDocumentosFull().subscribe({
             next: (value) => {
                 this.templateService.setTemplates(value);
-                const processToMenu = [];
-          // Transform document to MenuItems
-          value.forEach((element) => {
-            if (!element.llaveTabla) {
-              element.estado = 'T';
-              processToMenu.push(element);
             }
-          });
-                this._navigationService.generate(processToMenu, null, value);
+        });
+    }
+
+    getRefreshTemplates() {
+        this.templateService.setTemplates([]);
+        this.apiService.listarPlantillas(null).subscribe({
+            next: (value) => {
+                this.templateService.setTemplates(value);
             }
         });
     }

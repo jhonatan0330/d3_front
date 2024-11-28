@@ -4,9 +4,9 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { NavigationService } from 'app/authorization/navigation/navigation.service';
-import { Company, User } from 'app/core/user/user.types';
-import { UserService } from 'app/core/user/user.service';
 import { environment } from 'environments/environment';
+import { LoginService } from 'app/authentication/login.service';
+import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Component({
     selector: 'classy-layout',
@@ -16,8 +16,8 @@ import { environment } from 'environments/environment';
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;
     navigation: Navigation;
-    user: User;
-    company: Company;
+    user: UsuarioDTO;
+    company: OrganizacionDTO;
     time = new Date();
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -26,23 +26,13 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
      * Constructor
      */
     constructor(
-        private _navigationService: NavigationService,
-        private _userService: UserService,
+        public _loginService: LoginService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService
+        private _fuseNavigationService: FuseNavigationService,
+        private _navigationService: NavigationService
     ) {
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Getter for current year
-     */
-    get currentYear(): number {
-        return new Date().getFullYear();
-    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -57,21 +47,27 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((navigation: Navigation) => {
                 this.navigation = navigation;
-                const _navigation = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>('mainNavigation');
-                _navigation.refresh();
             });
 
         // Subscribe to the user service
-        this._userService.user$
+        this._loginService.user$
             .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((user: User) => {
+            .subscribe((user: UsuarioDTO) => {
+                if (!user || !user.llaveTabla) {
+                    this.user = undefined;
+                    return;
+                }
                 this.user = user;
             });
 
         // Subscribe to the user service
-        this._userService.company$
+        this._loginService.company$
             .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((company: Company) => {
+            .subscribe((company: OrganizacionDTO) => {
+                if (!company || !company.llaveTabla) {
+                    this.company = undefined;
+                    return;
+                }
                 this.company = company;
             });
 
@@ -89,24 +85,13 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
         }, 1000);
     }
 
-    /**
-     * On destroy
-     */
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * Toggle navigation
-     *
-     * @param name
-     */
     toggleNavigation(name: string): void {
         // Get the navigation
         const navigation = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(name);
@@ -115,5 +100,8 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
             // Toggle the opened status
             navigation.toggle();
         }
+    }
+    openLogin(){
+        this._loginService.isloginView = true;
     }
 }

@@ -1,8 +1,8 @@
 <!-- Button -->
 <button mat-icon-button [matMenuTriggerFor]="userActions">
     <span class="relative">
-        <img class="w-7 h-7 rounded-full" *ngIf="showAvatar && user?.avatar" [src]="user?.avatar">
-        <mat-icon *ngIf="!showAvatar || !user?.avatar" [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+        <img class="w-7 h-7 rounded-full" *ngIf="user?.imagen" [src]="user?.imagen">
+        <mat-icon *ngIf="!user?.imagen" [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
         <!--span class="absolute right-0 bottom-0 w-2 h-2 rounded-full" [ngClass]="{'mr-px mb-px': !showAvatar || !user?.avatar,
                           'bg-green-500': user.status === 'online',
                           'bg-amber-500': user.status === 'away',
@@ -15,7 +15,7 @@
     <button mat-menu-item>
         <span class="flex flex-col leading-none">
             <span>Authenticado como</span>
-            <span class="mt-1.5 text-md font-medium">{{user?.email}}</span>
+            <span class="mt-1.5 text-md font-medium">{{user?.correo}}</span>
         </span>
     </button>
     <mat-divider class="my-2"></mat-divider>
@@ -23,13 +23,16 @@
         <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
         <span>Mi cuenta</span>
     </button>
-
+    <button mat-menu-item (click)="getRefreshTemplates()">
+        <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+        <span>Cargar de nuevo</span>
+    </button>
     <button mat-menu-item *ngIf="jwtAuth.isAdmin" (click)="getFullTemplates()">
-        <mat-icon [svgIcon]="'developer_mode'"></mat-icon>
+        <mat-icon [svgIcon]="'heroicons_outline:shield-check'"></mat-icon>
         <span>Administrador</span>
     </button>
     <button mat-menu-item (click)="downloadApk()">
-        <mat-icon svgIcon="settings_cell"></mat-icon>
+        <mat-icon [svgIcon]="'heroicons_outline:device-mobile'"></mat-icon>
         <span>Version Android</span>
     </button>
     <mat-divider class="my-2"></mat-divider>

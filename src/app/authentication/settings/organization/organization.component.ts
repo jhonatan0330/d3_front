@@ -5,7 +5,7 @@ import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { AuthenticationService } from 'app/authentication/authentication.service';
 import { PropertyService } from 'app/authentication/property.service';
 import { PropiedadDTO, PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
-import { Observable, debounceTime } from 'rxjs';
+import { debounceTime } from 'rxjs';
 import { PropertyForm } from '../property-form/property-form.component';
 
 
