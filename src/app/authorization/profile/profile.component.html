@@ -50,7 +50,7 @@
         <div *ngFor="let iHeader of headerSection" [innerHTML]="iHeader" class="w-full"></div>
     </div>
     
-    <div *ngIf="user">
+    <div *ngIf="user" class="flex flex-auto flex-col">
         <!-- Header -->
         <div class="flex flex-col shadow bg-card">
 
@@ -133,7 +133,7 @@
         </div>
 
     </div>
-    <div *ngIf="!hasLanding" class="min-h-full flex items-center w-full bg-slate-900"></div>
+    <div *ngIf="!hasLanding && !user" class="min-h-full flex items-center w-full bg-slate-900"></div>
     <div *ngIf="landing" class="w-full" >
         <div *ngFor="let iFooter of landing" [innerHTML]="iFooter" class="w-full"></div>
     </div>
