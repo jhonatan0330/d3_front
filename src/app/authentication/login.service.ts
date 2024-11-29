@@ -29,7 +29,8 @@ export class LoginService {
   isAdmin = false;
   isPublicUser = true;
 
-  slides = [];
+  slides:string[] = [];
+  slides$ = new BehaviorSubject<string[]>(this.slides);
 
   constructor(
     private ls: LocalStoreService,
@@ -62,6 +63,7 @@ export class LoginService {
       )
       .pipe(
         map((res: UsuarioAutenticacionDTO) => {
+          this.isAuthenticated = true;
           this.setCompany(res.organizacion)
           this.setUserAndToken(res);
           this.getUserDataFull(res);
@@ -79,31 +81,39 @@ export class LoginService {
       //Evito que se vuelva a consultar los template coverad
       return;
     }
+    this.getCarrousel(_company);
+    this.company = _company;
+    this.company$.next(this.company);
+  }
+
+  private getCarrousel(_company: OrganizacionDTO) {
+    this.slides = [];
     if (_company.propiedades) {
       const backImages = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.COVERAGE_IMAGE);
       if (backImages) {
         backImages.forEach(element => {
-          this.slides.push({ image: element.valor });
+          this.slides.push(element.valor);
+        });
+      }
+
+      if (PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE) && this.isAuthenticated) {
+        const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
+        entity.plantilla = PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE);
+        this.apiService.listarDocumentos(entity, null).subscribe({
+          next: (dataResult: PedidoVentaDTO[]) => {
+            if (dataResult) {
+              dataResult.forEach(element => {
+                this.slides.push(element.imagen);
+                this.slides$.next(this.slides);
+              });
+            }
+          },
+          error: () => {
+          },
         });
       }
     }
-    if (PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE)) {
-      const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
-      entity.plantilla = PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE);
-      this.apiService.listarDocumentos(entity, null).subscribe({
-        next: (dataResult: PedidoVentaDTO[]) => {
-          if (dataResult) {
-            dataResult.forEach(element => {
-              this.slides.push({ image: element.imagen })
-            });
-          }
-        },
-        error: () => {
-        },
-      });
-    }
-    this.company = _company;
-    this.company$.next(this.company);
+    this.slides$.next(this.slides);
   }
 
   public checkTokenIsValid() {
@@ -166,11 +176,11 @@ export class LoginService {
     }
     this.templateService.modulos = response.modulos;
     //if (!this.templateService.template || this.templateService.template.length === 0) {
-      if (!this.user) { return; }
-      this.apiService.listarPlantillas(null)
-        .subscribe(templates => {
-          this.templateService.setTemplates(templates);
-        });
+    if (!this.user) { return; }
+    this.apiService.listarPlantillas(null)
+      .subscribe(templates => {
+        this.templateService.setTemplates(templates);
+      });
     //}
   }
 
@@ -182,7 +192,7 @@ export class LoginService {
     this.templateService.clear();
     this.notificationService.clear();
     this.dialog.closeAll();
-    if(this.company.publicToken){ this.configureOrganization(this.company);}
+    if (this.company.publicToken) { this.configureOrganization(this.company); }
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
@@ -238,7 +248,7 @@ export class LoginService {
 
   setUserAndToken(authDTO: UsuarioAutenticacionDTO) {
     if (authDTO) {
-      this.isAuthenticated = !!authDTO;
+      this.isAuthenticated = true;
       this.token = authDTO.token;
       this.user = authDTO.usuarioDTO;
     } else {
@@ -247,11 +257,11 @@ export class LoginService {
       this.user = null;
     }
     this.isPublicUser = false;
-    if(this.user && this.user.llaveTabla ){
-      if(PlantillaHelper.buscarValor(this.company.propiedades, PlantillaHelper.PUBLIC_USER) 
-        && this.user.llaveTabla ===PlantillaHelper.buscarValor(this.company.propiedades, PlantillaHelper.PUBLIC_USER)){
+    if (this.user && this.user.llaveTabla) {
+      if (PlantillaHelper.buscarValor(this.company.propiedades, PlantillaHelper.PUBLIC_USER)
+        && this.user.llaveTabla === PlantillaHelper.buscarValor(this.company.propiedades, PlantillaHelper.PUBLIC_USER)) {
         this.isPublicUser = true;
-      } 
+      }
     } else {
       //Aqui no hay usuario publico y mostramos solo el login
       this.isPublicUser = true;

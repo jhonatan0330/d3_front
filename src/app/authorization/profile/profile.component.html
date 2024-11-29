@@ -61,7 +61,7 @@
                     [useKeyboard]="true" [useMouseWheel]="false" orientation="ltr"
                     class="h-40 lg:h-50 object-cover w-full">
                     <mat-carousel-slide #matCarouselSlide *ngFor="let slide of slides; let i = index"
-                        [image]="slide.image" overlayColor="#00000040" [hideOverlay]="true"></mat-carousel-slide>
+                        [image]="slide" overlayColor="#00000040" [hideOverlay]="true"></mat-carousel-slide>
                 </mat-carousel>
             </div>
 

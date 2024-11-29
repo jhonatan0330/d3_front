@@ -122,6 +122,17 @@ export class FormComponent implements OnInit, AfterViewInit {
     if (this.data.close2Save) {
       this.close2Save = this.data.close2Save;
     }
+        // Subscribe to media changes
+        this._fuseMediaWatcherService.onMediaChange$
+        .subscribe(({ matchingAliases }) => {
+          // Set the drawerMode and drawerOpened if the given breakpoint is active
+          if (matchingAliases.includes('md')) {
+            this.drawerMode = 'side';
+          }
+          else {
+            this.drawerMode = 'over';
+          }
+        });
     // Cargo la plantilla al formulario para comenzar
     this.plantilla = this.cargarPlantilla(this.pedidoBase.plantilla, this.pedidoBase.server);
     // Si la plantilla se consulta por primera vez se va asincrona asi que finaliza este metodo
@@ -136,17 +147,6 @@ export class FormComponent implements OnInit, AfterViewInit {
       // Camino New
       this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
     }
-    // Subscribe to media changes
-    this._fuseMediaWatcherService.onMediaChange$
-      .subscribe(({ matchingAliases }) => {
-        // Set the drawerMode and drawerOpened if the given breakpoint is active
-        if (matchingAliases.includes('md')) {
-          this.drawerMode = 'side';
-        }
-        else {
-          this.drawerMode = 'over';
-        }
-      });
   }
 
   ngAfterViewInit(): void {

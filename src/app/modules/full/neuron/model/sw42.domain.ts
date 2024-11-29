@@ -74,6 +74,7 @@ export class PedidoVentaDTO extends BasicDTO {
   campoPropiedad: string;
   server: string;
   messages: DocumentMessage[];
+  historico: number;
 }
 
 export class DocumentMessage  {

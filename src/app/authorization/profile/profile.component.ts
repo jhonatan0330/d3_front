@@ -5,7 +5,6 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import Swal from 'sweetalert2';
 import { AuthenticationService } from 'app/authentication/authentication.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { environment } from 'environments/environment';
@@ -31,7 +30,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   filterControl: UntypedFormControl = new UntypedFormControl();
   isLoading = false;
 
-  slides = [];
+  slides: string[] = [];
 
   user: UsuarioDTO;
   isPublicUser
@@ -71,7 +70,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         this.company = company;
-        this.slides = this.loginservice.slides;
         
         this.hasLanding = false;
         const _iHeaders = PlantillaHelper.buscarValorMultiple(company.propiedades, PlantillaHelper.LANDING_PAGE);
@@ -122,6 +120,13 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((result:boolean) => {
        if(!result) {this.loginservice.getUrlServices();}
       });  
+
+       // Subscribe to the user service
+    this.loginservice.slides$
+    .pipe((takeUntil(this._unsubscribeAll)))
+    .subscribe((_slides: []) => {
+        this.slides = _slides;
+    });
 
     
   }
