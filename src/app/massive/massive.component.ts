@@ -23,6 +23,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadLineDTO } from './massive.domain';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-massive',
@@ -60,6 +61,7 @@ export class MassiveComponent implements OnInit {
   dataSource = new MatTableDataSource([]);
   displayedColumns: string[] = [];
   titleColumns: string[] = [];
+  fTiempoEspera: FormControl = new FormControl();
 
   files: FileList;
 
@@ -86,6 +88,7 @@ export class MassiveComponent implements OnInit {
       }
     });
     this.dialog.closeAll();
+    this.fTiempoEspera.setValue('0');
   }
 
   startForm() {
@@ -260,6 +263,7 @@ export class MassiveComponent implements OnInit {
     return null;
   }
 
+  //tambien esta en tipo numero toca centralizarla
   formatStringXML(texto: string): string {
     if (!texto) {
       return 'EMPTY';
@@ -336,7 +340,7 @@ export class MassiveComponent implements OnInit {
       this.displayedColumns.push(iCampo.nombre);
       this.titleColumns.push(iCampo.nombre);
     }
-    
+
   }
 
   onDataLoaded(_file: string, template: DocumentoPlantillaDTO, format: number) {
@@ -461,8 +465,8 @@ export class MassiveComponent implements OnInit {
           for (let j = 0; j < source[i].length; j++) {
             const nombreCampoXML = this.formatStringXML(source[0][j]);
             if (this.formatStringXML(iCampo.nombre) === nombreCampoXML) {
-              if (source[i][j] || source[i][j]===0) { 
-                campo.valorText = source[i][j].toString(); 
+              if (source[i][j] || source[i][j]===0) {
+                campo.valorText = source[i][j].toString();
                 if(campo.valorText) {campo.valorText = campo.valorText.trim();}
               }
               campo = procesarXMLBase(campo);
@@ -650,7 +654,7 @@ export class MassiveComponent implements OnInit {
                     }
                   }
                 }
-  
+
                 const index = fieldsToReview.indexOf(currentCampo);
                 if (index !== -1) {
                   fieldsToReview.splice(index, 1);
@@ -686,8 +690,8 @@ export class MassiveComponent implements OnInit {
         )
           this.isValidate = true;
       }
-      
-      
+
+
       this.cantidadProcesada = 1;
     }
   }
@@ -747,56 +751,83 @@ export class MassiveComponent implements OnInit {
             }
         }
         this.isProcessing = true;
-        this.api
-          .guardarDocumento(this.currentPedido, this.plantilla.server, Date.now().toString())
-          .subscribe({
-            next: (value: PedidoVentaDTO) => {
-              this.isProcessing = false;
-              if (value) {
-                if(value.messages){
-                  this.documentosGenerados[this.cantidadProcesada - 2].messages = value.messages;
-                  this.documentosGenerados[this.cantidadProcesada - 2].status = 'FAILED';
-                } else{
-                  this.documentosGenerados[this.cantidadProcesada - 2].status = 'SAVE OK';
-                  this.documentosGenerados[this.cantidadProcesada - 2].documentId = value.llaveTabla;
-                  this.documentosGenerados[this.cantidadProcesada - 2].documentName = value.nombre;
-                }
-                this.procesaMultiple(
-                  value,
-                  (this.cantidadProcesada - 1).toString()
-                );
-                // this.procesarDocumentos();
-              }
+
+        // Obtener el tiempo de espera del formulario, o usar el valor predeterminado si no está definido
+        const tiempoEspera = this.fTiempoEspera.value !== null ? this.fTiempoEspera.value : 0;
+
+        if(tiempoEspera > 2){
+          let timerInterval;
+          Swal.fire({
+            title: "Esperando!",
+            html: "Se guardara el siguiente registro en <b></b> milliseconds.",
+            timer: tiempoEspera * 1000,
+            timerProgressBar: true,
+            position: "top-end",
+            toast: true,
+            didOpen: () => {
+              Swal.showLoading();
+              const timer = Swal.getPopup().querySelector("b");
+              timerInterval = setInterval(() => {
+                timer.textContent = `${Swal.getTimerLeft()}`;
+              }, 100);
             },
-            error: (err: any) => {
-              this.isProcessing = false;
-              if (err) {
-                const msg = new DocumentMessage();
-                msg.message = err;
-                this.documentosGenerados[this.cantidadProcesada - 2].messages = [msg];
-                this.documentosGenerados[this.cantidadProcesada - 2].status = 'FAILED';
-                this.failedDocuments.push(this.currentPedido);
-                this.documentosGenerados.splice(0, 1);
-                this.cantidadProcesada = this.cantidadProcesada - 1;
-                Swal.fire({
-                  title: 'Se ha presentado un error, ' + err + ' continuamos?',
-                  text: err,
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Si, quiero continuar!',
-                  cancelButtonText: 'No, Paremos',
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    this.procesarDocumentos();
-                  } else {
-                    this.isProcessing = false;
-                  }
-                });
-              }
-            },
+            willClose: () => {
+              clearInterval(timerInterval);
+            }
           });
+        }
+        setTimeout(() => {
+          this.api
+            .guardarDocumento(this.currentPedido, this.plantilla.server, Date.now().toString())
+            .subscribe({
+              next: (value: PedidoVentaDTO) => {
+                this.isProcessing = false;
+                if (value) {
+                  if (value.messages) {
+                    this.documentosGenerados[this.cantidadProcesada - 2].messages = value.messages;
+                    this.documentosGenerados[this.cantidadProcesada - 2].status = 'FAILED';
+                  } else {
+                    this.documentosGenerados[this.cantidadProcesada - 2].status = 'SAVE OK';
+                    this.documentosGenerados[this.cantidadProcesada - 2].documentId = value.llaveTabla;
+                    this.documentosGenerados[this.cantidadProcesada - 2].documentName = value.nombre;
+                  }
+                  this.procesaMultiple(
+                    value,
+                    (this.cantidadProcesada - 1).toString()
+                  );
+                  // this.procesarDocumentos();
+                }
+              },
+              error: (err: any) => {
+                this.isProcessing = false;
+                if (err) {
+                  const msg = new DocumentMessage();
+                  msg.message = err;
+                  this.documentosGenerados[this.cantidadProcesada - 2].messages = [msg];
+                  this.documentosGenerados[this.cantidadProcesada - 2].status = 'FAILED';
+                  this.failedDocuments.push(this.currentPedido);
+                  this.documentosGenerados.splice(0, 1);
+                  this.cantidadProcesada = this.cantidadProcesada - 1;
+                  Swal.fire({
+                    title: 'Se ha presentado un error, ' + err + ' continuamos?',
+                    text: err,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, quiero continuar!',
+                    cancelButtonText: 'No, Paremos',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      this.procesarDocumentos();
+                    } else {
+                      this.isProcessing = false;
+                    }
+                  });
+                }
+              },
+            });
+        }, tiempoEspera * 1000);
       }
       this.lblProcesar = detalle;
       this.cantidadProcesada++;
@@ -860,7 +891,7 @@ export class MassiveComponent implements OnInit {
                         if (index !== -1) {
                             this.documentosGeneradosMultiple[indexList].messages = err;
                             this.documentosGeneradosMultiple[indexList].status = 'ERROR';
-                          
+
                           this.documentosGeneradosMultiple.splice(indexList, 1);
                         }
                         this.procesaMultiple(newDocument, consecutive);

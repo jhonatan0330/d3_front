@@ -216,7 +216,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
               this.openDocument(_value[0]);
               this.searchControl.setValue('');
             } else {
-              this.resultSets = _value;
+              this.resultSets = _value.filter((item: PedidoVentaDTO) => item.estado !== 'I');
             }
           },
           error: (err: any) => {

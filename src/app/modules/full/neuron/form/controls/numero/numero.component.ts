@@ -21,7 +21,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   formula: string;
   formulaMaximum: PropiedadDTO;
   formulaMinimum: PropiedadDTO;
-  errorMessage: string =  null;
+  errorMessage: string = null;
   funcion: string;
   isMoneda = false;
   numeroDecimales = 0;
@@ -45,11 +45,13 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       this.fControl.updateValueAndValidity();
     }
     this.startControl();
-    /* if (this.isEnabled) {
+    /*
+    if (this.isEnabled) {
       this.fControl.enable();
     } else {
       this.fControl.disable();
-    }*/
+    }
+      */
     // Al finalzar se subscriben los cambios
     if (this.funcion) {
       // Solo tomo unos segundos en los casos que el campo tenga funcion asi evito tantas consultas al server
@@ -107,14 +109,23 @@ export class NumeroComponent extends BaseComponent implements OnInit {
           // txtNumero.value = Number(campo.valorNumero);
         } else {
           if (this.obtenerValorMultiple(PlantillaHelper.DEFAULT)) {
-            this.data.valorNumero = Number(
-              this.obtenerValor(PlantillaHelper.DEFAULT)
-            );
+            this.data.valorNumero = Number(this.obtenerValor(PlantillaHelper.DEFAULT));
           }
         }
       }
     }
   }
+
+  formatStringXML(texto: string): string {
+    if (!texto) {
+      return 'EMPTY';
+    }
+    texto = texto.replace(new RegExp(' ', 'g'), '_');
+    texto = texto.replace('Ñ', 'N');
+    texto = texto.trim();
+    return texto;
+  }
+
 
   actualizar() {
     let controlValue = this.fControl.value;
@@ -129,11 +140,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   }
 
   private formulaReplaceDependents(textoCalculado: string): string {
-    if (
-      this.data &&
-      this.data.dependientes &&
-      this.data.dependientes.length !== 0
-    ) {
+    if (this.data && this.data.dependientes && this.data.dependientes.length !== 0) {
       if (!this.isEmpty(textoCalculado)) {
         // Inicia el calculo de cada deduccion
         for (let it = 0; it < this.data.dependientes.length; it++) {
@@ -142,64 +149,54 @@ export class NumeroComponent extends BaseComponent implements OnInit {
           if (!valorNumero) {
             valorNumero = 0;
           }
-          if (
-            iterable.campoDTO &&
-            iterable.campoDTO.formato ===
-            DocumentoPlantillaCaracteristicaEnum.PRODUCTO
-          ) {
-            const diccionario = new Map();
+          const diccionario = new Map();
+          if (iterable.campoDTO && iterable.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PRODUCTO) {
             if (iterable.detalles) {
               for (let k = 0; k < iterable.detalles.length; k++) {
                 const iterableDetalle = iterable.detalles[k];
-                if (
-                  iterableDetalle.caracteristicas &&
-                  iterableDetalle.caracteristicas.length !== 0
-                ) {
-                  for (
-                    let l = 0;
-                    l < iterableDetalle.caracteristicas.length;
-                    l++
+                if (iterableDetalle.documentoDetalle.caracteristicas && iterableDetalle.documentoDetalle.caracteristicas.length !== 0) {
+                  for (let l = 0; l < iterableDetalle.documentoDetalle.caracteristicas.length; l++
                   ) {
-                    const iterableDetalleCampo =
-                      iterableDetalle.caracteristicas[l];
-                    if (
-                      !diccionario.get(iterableDetalleCampo.campoDTO.codigo)
-                    ) {
-                      diccionario.set(
-                        iterableDetalleCampo.campoDTO.codigo,
-                        iterableDetalleCampo.valorNumero
-                      );
+                    const iterableDetalleCampo = iterableDetalle.documentoDetalle.caracteristicas[l];
+                    if (!diccionario.get(iterableDetalleCampo.campoDTO.codigo)) {
+                      diccionario.set(iterableDetalleCampo.campoDTO.codigo, iterableDetalleCampo.valorNumero);
                     } else {
-                      diccionario.set(
-                        iterableDetalleCampo.campoDTO.codigo,
-                        diccionario.get(
-                          iterableDetalleCampo.campoDTO.codigo
-                        ) + iterableDetalleCampo.valorNumero
-                      );
+                      diccionario.set(iterableDetalleCampo.campoDTO.codigo, diccionario.get(iterableDetalleCampo.campoDTO.codigo) + iterableDetalleCampo.valorNumero);
                     }
                   }
                 }
               }
             }
-            for (const key of diccionario.keys()) {
-              let nuevoValor = diccionario.get(key);
-              if (!nuevoValor) {
-                nuevoValor = 0;
+            //Esta parte la copie de arriba de producto
+            //Cree una nueva para poder calcular los tipo proceso
+          } else if (iterable.campoDTO && iterable.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO && PlantillaHelper.buscarPropiedad(iterable.campoDTO.propiedades, PlantillaHelper.MULTIPLE)) {
+            if (iterable.expedientes) {
+              for (let m = 0; m < iterable.expedientes.length; m++) {
+                const iterableExpediente = iterable.expedientes[m];
+                if (iterableExpediente.caracteristicas && iterableExpediente.caracteristicas.length !== 0) {
+                  for (let n = 0; n < iterableExpediente.caracteristicas.length; n++) {
+                    const iterableExpedienteCampo = iterableExpediente.caracteristicas[n];
+                    if (iterableExpediente.dinero) {
+                      const codeToReplace = this.formatStringXML(iterableExpedienteCampo.campo) + "_" + this.formatStringXML(iterableExpedienteCampo.valorText);
+                      if (!diccionario.get(codeToReplace)) {
+                        diccionario.set(codeToReplace, iterableExpediente.dinero.valorTotal);
+                      } else {
+                        diccionario.set(codeToReplace, diccionario.get(codeToReplace) + iterableExpediente.dinero.valorTotal);
+                      }
+                    }
+                  }
+                }
               }
-              textoCalculado = textoCalculado
-                .split(iterable.campoDTO.codigo + '_' + key)
-                .join(nuevoValor.toFixed(8));
             }
           }
-          textoCalculado = textoCalculado
-            .split(iterable.campoDTO.codigo)
-            .join(valorNumero.toString());
-          console.log(
-            'Codigo: ' +
-            iterable.campoDTO.codigo +
-            ' \t Valor:' +
-            valorNumero.toFixed(8)
-          );
+          for (const key of diccionario.keys()) {
+            let nuevoValor = diccionario.get(key);
+            if (!nuevoValor) { nuevoValor = 0; }
+            textoCalculado = textoCalculado.split(iterable.campoDTO.codigo + '_' + key).join(nuevoValor.toFixed(8));
+            console.log('Codigo: ' + iterable.campoDTO.codigo + '_' + key + ' \t Valor:' + nuevoValor.toFixed(8));
+          }
+          textoCalculado = textoCalculado.split(iterable.campoDTO.codigo).join(valorNumero.toString());
+          console.log('Codigo: ' + iterable.campoDTO.codigo + ' \t Valor:' + valorNumero.toFixed(8));
         }
       }
     }
@@ -209,7 +206,8 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   procesarCampo(campoFiltro: PedidoVentaCaracteristicaFilterDTO) {
     if (!this.isEmpty(this.formula)) {
       const textoCalculado = this.formulaReplaceDependents(this.formula);
-      const resultado = FormulaHelper.calcular(textoCalculado); // Lo puse por fuera de dependientes porque asi tambien se puede calcular
+      let resultado = FormulaHelper.calcular(textoCalculado); // Lo puse por fuera de dependientes porque asi tambien se puede calcular
+      resultado = Number(resultado.toFixed(this.numeroDecimales));
       if (this.data.valorNumero !== resultado) {
         this.fControl.setValue(resultado);
         // Debido a que No se a colocado el listener de actualizar toca adecuar bien el campo
@@ -231,7 +229,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
           ) {
             return;
           }
-          for (let index = 0; index < this.relatedFields.length; index++) {
+          for (let index = 0; index < this.data.dependientes.length; index++) {
             const pvc: PedidoVentaCaracteristicaDTO =
               this.data.dependientes[index];
             if (!pvc.valorOpcion) {
@@ -255,11 +253,17 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         filtro.campoDTO = this.structure;
         filtro.campo = this.structure.llaveTabla;
         filtro.documento = campoFiltro.documento;
-
+        this. isLoading = true;
         this.api
           .consultarDatosBase(filtro, this.urlServer)
-          .subscribe((_value: PedidoVentaCaracteristicaFilterDTO) => {
-            this.fControl.setValue(_value.valorNumeroMax);
+          .subscribe({
+            next:(_value: PedidoVentaCaracteristicaFilterDTO) => {
+              this.fControl.setValue(_value.valorNumeroMax);
+              this.isLoading = false;
+            },
+            error:()=>{
+              this.isLoading = false;
+            }
           });
       }
     }
@@ -296,12 +300,12 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       const textoMaximum = this.formulaReplaceDependents(this.formulaMaximum.valor);
       const resultadoMaximum = FormulaHelper.calcular(textoMaximum);
       if (this.data.valorNumero > resultadoMaximum) {
-        if(this.formulaMaximum.motivo){
-          this.errorMessage = 'En el campo '+ this.structure.nombre + ' ' + this.formulaMaximum.motivo + '. Maximo : '  + new Intl.NumberFormat('es-CO').format(resultadoMaximum);
+        if (this.formulaMaximum.motivo) {
+          this.errorMessage = 'En el campo ' + this.structure.nombre + ' ' + this.formulaMaximum.motivo + '. Maximo : ' + new Intl.NumberFormat('es-CO').format(resultadoMaximum);
         } else {
-          this.errorMessage = 'En el campo '+ this.structure.nombre + ' el valor maximo que puedes colocar es ' + new Intl.NumberFormat('es-CO').format(resultadoMaximum);
+          this.errorMessage = 'En el campo ' + this.structure.nombre + ' el valor maximo que puedes colocar es ' + new Intl.NumberFormat('es-CO').format(resultadoMaximum);
         }
-        
+
         return;
       }
     }
@@ -309,10 +313,10 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       const textoMinimum = this.formulaReplaceDependents(this.formulaMinimum.valor);
       const resultadoMinimum = FormulaHelper.calcular(textoMinimum);
       if (this.data.valorNumero < resultadoMinimum) {
-        if(this.formulaMinimum.motivo){
-          this.errorMessage = 'En el campo '+ this.structure.nombre + ' ' + this.formulaMinimum.motivo + '. Minimo : '  + new Intl.NumberFormat('es-CO').format(resultadoMinimum);
+        if (this.formulaMinimum.motivo) {
+          this.errorMessage = 'En el campo ' + this.structure.nombre + ' ' + this.formulaMinimum.motivo + '. Minimo : ' + new Intl.NumberFormat('es-CO').format(resultadoMinimum);
         } else {
-          this.errorMessage = 'En el campo '+ this.structure.nombre + ' el valor minimo que puedes colocar es ' + new Intl.NumberFormat('es-CO').format(resultadoMinimum);
+          this.errorMessage = 'En el campo ' + this.structure.nombre + ' el valor minimo que puedes colocar es ' + new Intl.NumberFormat('es-CO').format(resultadoMinimum);
         }
         return;
       }
@@ -320,8 +324,9 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   }
 
   send2Server(): boolean {
+    if (this.isLoading) { return false; }
     if (this.errorMessage) {
-      Swal.fire('Valores no permitidos',this.errorMessage, 'info');
+      Swal.fire('Valores no permitidos', this.errorMessage, 'info');
       return false;
     }
     return true;

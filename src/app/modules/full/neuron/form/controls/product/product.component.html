@@ -25,6 +25,7 @@
       <tr mat-row *matRowDef="let row; columns: ['item', 'cost'];"></tr>
     </table>
   </div>
+  <mat-progress-bar *ngIf="isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
   <!-- Campos dinamicos -->
   <div class="w-full p-4">
     <ng-template #dynamycFormElement></ng-template>

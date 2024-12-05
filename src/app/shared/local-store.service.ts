@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 export const LocalConstants = {
   JWT_TOKEN: 'JWT_TOKEN',
+  PUBLIC_TOKEN: 'PUBLIC_TOKEN',
   APP_USER: 'EGRET_USER',
   TEMPLATES: 'SW42_TEMPLATES',
   URL_CONF: 'URL_CONF',

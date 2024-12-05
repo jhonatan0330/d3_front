@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
@@ -14,7 +14,7 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
     templateUrl: './article.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone: true,
-    imports: [MatButtonModule, RouterLink, MatIconModule, CommonModule],
+    imports: [MatButtonModule, MatIconModule, CommonModule],
 })
 export class ArticleHelpComponent implements OnInit {
     article = new Article();

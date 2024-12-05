@@ -2,7 +2,7 @@
     <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
         <div class="text-lg font-medium">Comprobante contable Manual</div>
         <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
-            <mat-icon class="text-current">close</mat-icon>
+            <mat-icon class="text-current" svgIcon="heroicons_outline:x-circle"></mat-icon>
         </button>
     </div>
     <form class="p-6 sm:p-8" [formGroup]="form" *ngIf="!loading">
@@ -92,7 +92,7 @@
             <div class="text-right font-medium">{{differenceValue | currency}}</div>
         </div>
         <button class="order-first sm:order-last w-full" mat-flat-button [color]="'primary'"
-            (click)="send()">Guardar</button>
+            (click)="send()">{{ botonAccion }}</button>
     </form>
 
     <div class="w-full flex justify-center p-8" *ngIf="loading">

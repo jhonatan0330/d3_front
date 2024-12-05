@@ -70,12 +70,17 @@ export class GpsComponent extends BaseComponent implements OnInit {
       Swal.fire("Sin coordenadas", "No reconocemos el separador de las coordenadas.", 'warning');
     }
     const dialogRef: MatDialogRef<any> = this.dialog.open(OlMapComponent, {
-      maxWidth: '90vh',
-      maxHeight: '90vh',
-      disableClose: false,
-      data: { latitude: this.data.valorText.substring(0, coma), longitud: this.data.valorText.substring(coma + 1, this.data.valorText.length) }
+      width: '90vw',
+      height: '90vh',
+      maxWidth: '90vw',
+      disableClose: true,
+      data: { latitude: this.data.valorText.substring(0, coma), longitud: this.data.valorText.substring(coma + 1, this.data.valorText.length) , nombre: this.structure.nombre}
     });
-    return dialogRef.afterClosed();
+    return dialogRef.afterClosed().subscribe((res) => {
+      this.fControl.setValue(res.lat + "," + res.lon);
+    });
   }
+
+  
 
 }

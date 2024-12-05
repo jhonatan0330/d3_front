@@ -3,7 +3,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { debounceTime, filter, Subject, takeUntil, tap } from 'rxjs';
-import { assign } from 'lodash-es';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksListComponent } from 'app/tasks/list/list.component';
 import { TasksService } from 'app/tasks/tasks.service';
@@ -78,7 +77,9 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(
                 tap((value) => {
                     // Update the task object
-                    this.task = assign(this.task, value);
+                    this.task.title = value.title;
+                    this.task.notes = value.notes;
+                    this.task.completed = value.completed;
                 }),
                 debounceTime(500),
                 takeUntil(this._unsubscribeAll)

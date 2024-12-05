@@ -300,7 +300,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             ) {
               return;
             }
-            for (let i = 0; i < this.relatedFields.length; i++) {
+            for (let i = 0; i < this.data.dependientes.length; i++) {
               if (
                 !this.data.dependientes[i].valorOpcion &&
                 this.data.dependientes[i].campoDTO.formato ===
@@ -313,7 +313,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               this.fControl.setValue(this.data.principal); // Esto es para que se vea el proceso cuando es relacionado y combo
             } else {
               this.keyInicial = this.data.valorOpcion;
-              this.procesarCampo(filtro);
+              if(this.formIsEnabled) this.procesarCampo(filtro);
             }
             return;
           } else {
@@ -499,7 +499,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     filtro.campo = this.structure.llaveTabla;
     filtro.documento = campoFiltro.documento;
     filtro.filtroParametro = campoFiltro.filtroParametro;
-
+    
     if (this.relatedFields) {
       if (this.multiple && !this.data.documento) {
         this.data.expedientes = [];
@@ -517,8 +517,18 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           return;
         }
       }
-      for (let i = 0; i < this.relatedFields.length; i++) {
-        if (!this.data.dependientes[i].valorOpcion && (!this.data.dependientes[i].campoDTO || this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO)) {
+      // La parte de modifciado la coloque porque en roa no se veia la ciudad de una guia al cambiar el destinatario
+      for (let i = 0; i < this.data.dependientes.length; i++) {
+        const iDepen = this.data.dependientes[i];
+        if (!iDepen.valorOpcion 
+          && (!iDepen.campoDTO || 
+            (iDepen.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO 
+              && !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.MULTIPLE)
+              && (PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.DEPENDE)
+                || iDepen.modificado)
+            )
+          )
+        ) {
           /*alert(
             'Seleccione el campo ' + this.data.dependientes[i].campoDTO.nombre
           );*/
@@ -852,11 +862,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               const iCampoProducto = iCampoPlantilla.productos[j];
               for (
                 let k = 0;
-                k < iCampoProducto.detallePlantilla.caracteristicas.length;
+                k < iCampoProducto.detallePlantilla.documentoDetalle.caracteristicas.length;
                 k++
               ) {
                 const iCampoDetalle =
-                  iCampoProducto.detallePlantilla.caracteristicas[k];
+                  iCampoProducto.detallePlantilla.documentoDetalle.caracteristicas[k];
                 if (
                   iCampoDetalle.campoDTO.llaveTabla ===
                   this.structure.llaveTabla
@@ -940,7 +950,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         // Sucede que los valores se perdian porque el fcontrol era vacio
         this.fControl.setValue(this.proceso);
       } else {
-        if (!this.data.llaveTabla && this.disponibles.length === 1) {
+        if ((!this.data.llaveTabla || this.data.modificado) && this.disponibles.length === 1) {
           this.fControl.setValue(this.disponibles[0]);
         } else {
           if (this.data.valorOpcion) {

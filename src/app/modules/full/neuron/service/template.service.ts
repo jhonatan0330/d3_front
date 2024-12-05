@@ -5,15 +5,17 @@ import {
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BehaviorSubject } from 'rxjs';
-import { clone } from 'lodash';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { OrganizacionDTO } from 'app/authentication/authentication.domain';
+import { NavigationService } from 'app/authorization/navigation/navigation.service';
+import { ModuloDTO } from 'app/authorization/authorization.domain';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TemplateService {
+  
   template: DocumentoPlantillaDTO[] = [];
   templates$ = new BehaviorSubject<DocumentoPlantillaDTO[]>(this.template);
   private colores: PropiedadDTO[];
@@ -21,11 +23,13 @@ export class TemplateService {
 
   conectionTemplates: OrganizacionDTO[];
 
+  modulos: ModuloDTO[];
   private tableros: PropiedadDTO[];
   private propiedadesConRelaciones: RelacionInternaDTO[];
 
   constructor(
-    private ls: LocalStoreService
+    private ls: LocalStoreService,
+    private _navigationService: NavigationService
   ) { }
 
   getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO {
@@ -44,7 +48,7 @@ export class TemplateService {
     return result;
   }
 
-  setOtherSystems(value: OrganizacionDTO[])  {
+  setOtherSystems(value: OrganizacionDTO[]) {
     this.conectionTemplates = value;
     this.ls.setItem(LocalConstants.SERVERS, value);
   }
@@ -59,19 +63,33 @@ export class TemplateService {
 
   setTemplates(value: DocumentoPlantillaDTO[]) {
     this.template = value;
-    this.templates$.next(value);
     this.colores = null;
     this.getColor('');
+    const processToMenu = [];
+    // Transform document to MenuItems
+    value.forEach((element) => {
+      if (!element.llaveTabla) {
+        element.estado = 'T';
+        processToMenu.push(element);
+      }
+    });
+    this._navigationService.generate(processToMenu, this.modulos, value);
+    this.templates$.next(value);
   }
 
   addTemplatesFromOtherSystems() {
-    if(!this.conectionTemplates) {return;}
-    let allTemplates = clone(this.template);
+    if (!this.conectionTemplates) { return; }
+    //Aqui retire el clone lo mejor si seria vo
+    let allTemplates = this.clone(this.template);
     for (let i = 0; i < this.conectionTemplates.length; i++) {
-      allTemplates = allTemplates.concat(clone(this.conectionTemplates[i].plantillas));
+      allTemplates = allTemplates.concat(this.clone(this.conectionTemplates[i].plantillas));
     }
     this.templates$.next(allTemplates);
 
+  }
+
+  private clone(_templates:DocumentoPlantillaDTO[]): DocumentoPlantillaDTO[]{
+    return _templates;
   }
 
   getColor(stateId: string): string {
@@ -143,7 +161,7 @@ export class TemplateService {
     const color2 = this.getColor(stateId);
     if (!color2) return color3;
     // read the colors and transform them into rgb format
-    if(color2.length!=7) { console.log('Color incorrecto' + color2);   }
+    if (color2.length != 7) { console.log('Color incorrecto' + color2); }
 
     const color1rgb = this.hexToRgb(color1);
     const color2rgb = this.hexToRgb(color2);
@@ -182,10 +200,10 @@ export class TemplateService {
   }
 
   clear() {
-    this.templates$.next([]);
-    this.template = null;
     this.colores = null;
     this.tableros = null;
+    this.modulos = null;
+    this.setTemplates([]);
   }
 
   setTableros(value: PropiedadDTO[]) {
@@ -200,7 +218,7 @@ export class TemplateService {
 
   getProceso(id: string): DocumentoPlantillaDTO {
     if (this.template && this.template.length !== 0) {
-      return this.template.find(x => (!x.llaveTabla && x.proceso === id));
+      return this.template.find(x => (!x.llaveTabla && (x.proceso === id || x.codigo === id)));
     }
   }
 
@@ -225,4 +243,5 @@ export class TemplateService {
     }
     return this.ls.getItem(LocalConstants.JWT_TOKEN);
   }
+
 }

@@ -22,6 +22,22 @@ export class AccountDTO {
 	operation: string;
 	status: string;
 	wbs: string;
+    level:number;
+}
+
+
+export class TimeFrame {
+	key: string;
+	state: string;
+	level: number;
+	code: string;
+	startDate: Date;
+	endDate: Date;
+	year: number;
+	month: number;
+	day: number;
+	hour: number;
+	minute: number;
 }
 
 export class ResultMapDTO {
@@ -31,15 +47,8 @@ export class ResultMapDTO {
 	account: string;
 	accountName: string;
 	accountCode: string;
-	level: number;
-	startDate: Date;
-	endDate: Date;
-	period: string;
-	year: number;
-	month: number;
-	day: number;
-	hour: number;
-	minute: number;
+	timeFrame: string;
+	timeFrameName: string;
 	quantity: number;
 	average: number;
 	lastBalance: number;
@@ -47,10 +56,7 @@ export class ResultMapDTO {
 	positive: number;
 	negative: number;
 	value: number;
-	type: string;;
 }
-
-
 
 export class ManualDTO {
 	key: string;
@@ -69,6 +75,7 @@ export class ManualAccountDTO {
 	state: string;
 	account: string;
 	accountName: string;
+    accountCode: string;
 	accountDTO: AccountDTO;
 	positive: number;
 	negative: number;
@@ -79,5 +86,10 @@ export class ManualAccountDTO {
 
 export class Voucher{
 	manual: ManualDTO;
+	records: ManualAccountDTO[];
+}
+
+export class Voucher_{
+	header: ManualDTO;
 	records: ManualAccountDTO[];
 }

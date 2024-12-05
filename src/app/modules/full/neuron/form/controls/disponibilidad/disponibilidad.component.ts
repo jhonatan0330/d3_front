@@ -5,11 +5,10 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { DetallePedidoVentaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.domain';
+import { DetallePedidoVentaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, ProductoDTO } from '../../../model/sw42.domain';
 import { BaseComponent } from '../base/base.component';
 import { Estructura } from './estructura';
 import { Puesto } from './puesto';
-import { ProductoDTO } from 'app/inventory/inventory.types';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
@@ -59,7 +58,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
       ) {
         return;
       }
-      for (let i = 0; i < this.relatedFields.length; i++) {
+      for (let i = 0; i <  this.data.dependientes.length; i++) {
         if (
           !this.data.dependientes[i].valorOpcion
           && this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
@@ -148,14 +147,14 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
     copyDetalle.valorMinimo = producto.detallePlantilla.valorMinimo;
     copyDetalle.valorMaximo = producto.detallePlantilla.valorMaximo;
     copyDetalle.tarifas = producto.detallePlantilla.tarifas;
-    if (producto.detallePlantilla.caracteristicas) {
-      copyDetalle.caracteristicas = [];
+    if (producto.detallePlantilla.documentoDetalle.caracteristicas) {
+      copyDetalle.documentoDetalle.caracteristicas = [];
       for (
         let i = 0;
-        i < producto.detallePlantilla.caracteristicas.length;
+        i < producto.detallePlantilla.documentoDetalle.caracteristicas.length;
         i++
       ) {
-        const campoDetalle = producto.detallePlantilla.caracteristicas[i];
+        const campoDetalle = producto.detallePlantilla.documentoDetalle.caracteristicas[i];
         const uc: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
         uc.campo = campoDetalle.campo;
         uc.campoDTO = campoDetalle.campoDTO;
@@ -163,7 +162,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
         uc.principal = campoDetalle.principal;
         uc.valorNumero = campoDetalle.valorNumero;
         uc.valorText = campoDetalle.valorText;
-        copyDetalle.caracteristicas.push(uc);
+        copyDetalle.documentoDetalle.caracteristicas.push(uc);
       }
     }
     copyDetalle.cantidadPromocion =

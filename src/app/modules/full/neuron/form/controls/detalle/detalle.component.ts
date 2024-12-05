@@ -2,15 +2,17 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/co
 import { FormControl } from '@angular/forms';
 import {
   DetallePedidoVentaDTO,
+  DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
   PedidoVentaCaracteristicaFilterDTO,
+  PedidoVentaDTO,
+  ProductoDTO
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
-import { CategoriaProductoDTO, ProductoDTO } from 'app/inventory/inventory.types';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
 import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
@@ -23,13 +25,14 @@ import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
 export class DetalleComponent extends BaseComponent implements OnInit, AfterViewInit {
   unicoProducto = false;
   fControl = new FormControl(''); // Texto que digita el usuario para filtrar
+  categories: DocumentoPlantillaDTO[];
   isShowCategories = false;
   isShowProducts = false;
   autoload = false; // Indica que la fuente de datos se va a cargar en memoria
   titleCantity = 'Cantidad';
   busquedaSinTexto = false;
   errorToFilter = null;
-  
+
   productosDisponibles: ProductoDTO[];
   productosFiltrados: ProductoDTO[];
   columns: number = 2;
@@ -99,7 +102,19 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   showCategories() {
     if (!this.isEnabled) { return; }
-    if (this.autoload && this.structure.categorias) {
+    if (!this.productosDisponibles) { return; }
+    if (!this.categories) {
+      this.categories = [];
+      const map = new Map();
+      for (const item of this.productosDisponibles) {
+        if (!map.has(item.categoriaPlantilla)) {
+          map.set(item.categoriaPlantilla, true);    // set any value to Map
+          const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(item.categoriaPlantilla, null);
+          if (dp) { this.categories.push(dp); }
+        }
+      }
+    }
+    if (this.autoload && this.categories) {
       this.isShowCategories = true;
       this.isShowProducts = false;
     } else {
@@ -107,11 +122,11 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     }
   }
 
-  selectCategory(pCategory: CategoriaProductoDTO) {
+  selectCategory(pCategory: DocumentoPlantillaDTO) {
     if (pCategory) {
       this.productosFiltrados = this.productosDisponibles.filter(
         (doc) =>
-          doc.categoria === pCategory.llaveTabla
+          doc.categoriaPlantilla === pCategory.llaveTabla
       );
     } else {
       this.productosFiltrados = this.productosDisponibles;
@@ -157,7 +172,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   searchQuicly() {
-    if (this.isLoading || !this.isEnabled) {return;}
+    if (this.isLoading || !this.isEnabled) { return; }
     this.errorToFilter = null;
     if (this.relatedFields || !this.autoload) {
       for (let i = 0; i < this.data.dependientes.length; i++) {
@@ -172,7 +187,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   searchAsincronous() {
-    if (this.isLoading) {return;}
+    if (this.isLoading) { return; }
     this.errorToFilter = null;
     if (this.relatedFields || !this.autoload) {
       if (this.fControl.value !== undefined && this.fControl.value.length === 0) {
@@ -218,15 +233,11 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   private loadInfo(_value: PedidoVentaCaracteristicaFilterDTO) {
     // Copia toda la informacion a las variables del campo
     this.productosDisponibles = Object.assign([], _value.campoDTO.productos);
-    if (_value.campoDTO.categorias) {
-      this.structure.categorias = Object.assign([], _value.campoDTO.categorias);
-    }
     const plantillaBase = this.templateService.getTemplate(this.structure.plantilla, this.urlServer);
     for (let i = 0; i < plantillaBase.caracteristicas.length; i++) {
       const iCampo = plantillaBase.caracteristicas[i];
       if (iCampo.llaveTabla === this.structure.llaveTabla) {
         iCampo.productos = _value.campoDTO.productos;
-        iCampo.categorias = _value.campoDTO.categorias;
         break;
       }
     }
@@ -250,14 +261,16 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       copyDetalle.valorMinimo = producto.detallePlantilla.valorMinimo;
       copyDetalle.valorMaximo = producto.detallePlantilla.valorMaximo;
       copyDetalle.tarifas = producto.detallePlantilla.tarifas;
-      if (producto.detallePlantilla.caracteristicas) {
-        copyDetalle.caracteristicas = [];
+      copyDetalle.plantillaDetalle = producto.detallePlantilla.plantillaDetalle;
+      if (producto.detallePlantilla.documentoDetalle.caracteristicas) {
+        copyDetalle.documentoDetalle = new PedidoVentaDTO();
+        copyDetalle.documentoDetalle.caracteristicas = [];
         for (
           let i = 0;
-          i < producto.detallePlantilla.caracteristicas.length;
+          i < producto.detallePlantilla.documentoDetalle.caracteristicas.length;
           i++
         ) {
-          const campoDetalle = producto.detallePlantilla.caracteristicas[i];
+          const campoDetalle = producto.detallePlantilla.documentoDetalle.caracteristicas[i];
           const uc: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
           uc.campo = campoDetalle.campo;
           uc.campoDTO = campoDetalle.campoDTO;
@@ -265,7 +278,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
           uc.principal = campoDetalle.principal;
           uc.valorNumero = campoDetalle.valorNumero;
           uc.valorText = campoDetalle.valorText;
-          copyDetalle.caracteristicas.push(uc);
+          copyDetalle.documentoDetalle.caracteristicas.push(uc);
         }
       }
       copyDetalle.cantidadPromocion =
@@ -286,8 +299,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       } else {
         if (
           copyDetalle.valorMinimo !== copyDetalle.valorMaximo ||
-          (copyDetalle.caracteristicas &&
-            copyDetalle.caracteristicas.length !== 0)
+          (copyDetalle.documentoDetalle.caracteristicas &&
+            copyDetalle.documentoDetalle.caracteristicas.length !== 0)
         ) {
           this.modificarDetallePedido(copyDetalle);
         }
@@ -321,8 +334,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       }
       this.actualizarDetalles(null);
     });
-
   }
+
 
   actualizarDetalles(producto: ProductoDTO) {
     let valorNumero = 0;

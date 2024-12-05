@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { merge } from 'lodash-es';
 import { FUSE_APP_CONFIG } from '@fuse/services/config/config.constants';
 
 @Injectable({
@@ -29,7 +28,8 @@ export class FuseConfigService
     set config(value: any)
     {
         // Merge the new config over to the current config
-        const config = merge({}, this._config.getValue(), value);
+        //const config = merge({}, this._config.getValue(), value);
+        const config = value;
 
         // Execute the observable
         this._config.next(config);

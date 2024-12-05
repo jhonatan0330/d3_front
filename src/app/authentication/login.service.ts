@@ -1,79 +1,60 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { map, catchError } from 'rxjs/operators';
 import { of, BehaviorSubject, throwError, Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { MatDialog } from '@angular/material/dialog';
-import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { UserService } from 'app/core/user/user.service';
 import Swal from 'sweetalert2';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { NotificationsService } from 'app/notification/notification.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { NavigationService } from 'app/authorization/navigation/navigation.service';
 import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
 
+  isloginView = true;
   token: string;
   urlService: string;
   private isAuthenticated = false;
   user: UsuarioDTO = new UsuarioDTO();
   user$ = new BehaviorSubject<UsuarioDTO>(this.user);
   return: string;
-  company: OrganizacionDTO;
+  company: OrganizacionDTO = new OrganizacionDTO();
+  company$ = new BehaviorSubject<OrganizacionDTO>(this.company);
   isAdmin = false;
+  isPublicUser = true;
+
+  slides:string[] = [];
+  slides$ = new BehaviorSubject<string[]>(this.slides);
 
   constructor(
     private ls: LocalStoreService,
-    private http: HttpClient,
-    private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private _userService: UserService,
     private templateService: TemplateService,
     private notificationService: NotificationsService,
     private apiService: ApiService,
-    private _navigationService: NavigationService,
+    private http: HttpClient
   ) {
     this.route.queryParams.subscribe(
       (params) => (this.return = params['return'] || '/')
     );
   }
 
-  // CU01
-  obtenerPrincipalOrganizacion(): Observable<OrganizacionDTO> {
-    return this.http.get<OrganizacionDTO>(
-      this.ls.getUrlAccess('/main/obtenerPrincipalOrganizacion')
-    );
-  }
-
-  private _jsonURL = '/assets/conf.xml';
-
-  getURL(): Observable<String> {
-    return this.http.get(this._jsonURL, { responseType: 'text' });
-  }
-
-  changePictureUser(fileToUpload: File, _server: string): Observable<UsuarioDTO> {
-    const endpoint = this.ls.getUrlAccess('/rest/changePicture', _server);
-    const formData: FormData = new FormData();
-    formData.append('file', fileToUpload, fileToUpload.name);
-    return this.http.post<UsuarioDTO>(endpoint, formData);
-  }
-
-  public signin(username: string, password: string) {
+  public signin(username: string, password: string, tokenAuto: string) {
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
     autenticacion.sesion = username;
     autenticacion.clave = password;
     autenticacion.claveAnterior = `${environment.dateCompile}`;
     //Esto lo hice porque me estoy autenticando 2 veces, tengo que mejorar esta parte
     if (username === null && password === null) {
-      const tokenLocal = this.getJwtToken();
-      if (!tokenLocal) { return null };
-      autenticacion.securityToken = tokenLocal;
+      if (!tokenAuto) { return null };
+      autenticacion.securityToken = tokenAuto;
     }
     return this.http
       .post<UsuarioAutenticacionDTO>(
@@ -82,8 +63,9 @@ export class LoginService {
       )
       .pipe(
         map((res: UsuarioAutenticacionDTO) => {
+          this.isAuthenticated = true;
+          this.setCompany(res.organizacion)
           this.setUserAndToken(res);
-          this.setCompany(res.organizacion);
           this.getUserDataFull(res);
           return res;
         }),
@@ -92,6 +74,46 @@ export class LoginService {
           return throwError(error);
         })
       );
+  }
+
+  private setCompany(_company: OrganizacionDTO) {
+    if (this.company && this.company.llaveTabla === _company.llaveTabla) {
+      //Evito que se vuelva a consultar los template coverad
+      return;
+    }
+    this.getCarrousel(_company);
+    this.company = _company;
+    this.company$.next(this.company);
+  }
+
+  private getCarrousel(_company: OrganizacionDTO) {
+    this.slides = [];
+    if (_company.propiedades) {
+      const backImages = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.COVERAGE_IMAGE);
+      if (backImages) {
+        backImages.forEach(element => {
+          this.slides.push(element.valor);
+        });
+      }
+
+      if (PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE) && this.isAuthenticated) {
+        const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
+        entity.plantilla = PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE);
+        this.apiService.listarDocumentos(entity, null).subscribe({
+          next: (dataResult: PedidoVentaDTO[]) => {
+            if (dataResult) {
+              dataResult.forEach(element => {
+                this.slides.push(element.imagen);
+                this.slides$.next(this.slides);
+              });
+            }
+          },
+          error: () => {
+          },
+        });
+      }
+    }
+    this.slides$.next(this.slides);
   }
 
   public checkTokenIsValid() {
@@ -105,6 +127,7 @@ export class LoginService {
     }
     // Check if the user is logged in
     if (this.isAuthenticated) {
+      this.isloginView = false;
       return of(true);
     }
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
@@ -117,7 +140,10 @@ export class LoginService {
       )
       .pipe(
         map((profile: UsuarioAutenticacionDTO) => {
-          if (!this.company) { this.signin(null, null).subscribe(); }
+          // Cuando ingreso todavia no tengo organizacion
+          //if (!this.company) { 
+          this.signin(null, null, tokenLocal).subscribe();
+          //}
           return profile;
         }),
         catchError((error) => {
@@ -132,32 +158,7 @@ export class LoginService {
     this.token = response.token;
     // Set the authenticated flag to true
     this.isAuthenticated = true;
-    let imageCoverage;
-    if (response && response.organizacion && response.organizacion.propiedades) {
-      const backImages = PlantillaHelper.buscarValorMultiple(response.organizacion.propiedades, PlantillaHelper.COVERAGE_IMAGE);
-      if (backImages) {
-        imageCoverage = [];
-        backImages.forEach(element => {
-          imageCoverage.push(element.valor);
-        });
-      }
-    }
-    // Store the user on the user service
-    this._userService.user = {
-      id: response.usuarioDTO.llaveTabla,
-      name: response.usuarioDTO.nombre,
-      number: response.usuarioDTO.identificacion,
-      email: response.usuarioDTO.correo,
-      avatar: response.usuarioDTO.imagen,
-    };
-
-    this._userService.company = {
-      companyName: response.organizacion.nombre,
-      companySlogan: response.organizacion.slogan,
-      companyImage: response.organizacion.imagen,
-      companyCoverageImage: (imageCoverage ? imageCoverage : null),
-      companyCoverageTemplate: PlantillaHelper.buscarValor(response.organizacion.propiedades, PlantillaHelper.COVERAGE_TEMPLATE)
-    }
+    this.isloginView = false;
 
     if (response && response.mensaje) {
       Swal.fire({
@@ -173,41 +174,25 @@ export class LoginService {
     } else {
       this.isAdmin = false;
     }
-    if (!this.templateService.template || this.templateService.template.length === 0) {
-      this.getMenu(response.modulos);
-    }
-  }
-
-
-  getMenu(modulos) {
+    this.templateService.modulos = response.modulos;
+    //if (!this.templateService.template || this.templateService.template.length === 0) {
     if (!this.user) { return; }
-    /*if (response && response.modulos && response.modulos.length !== 0) {
-    }*/
-    if (!this.templateService.template || this.templateService.template.length === 0
-    ) {
-      this.apiService.listarPlantillas(null)
-        .subscribe(templates => {
-          this.templateService.setTemplates(templates);
-          const processToMenu = [];
-          // Transform document to MenuItems
-          templates.forEach((element) => {
-            if (!element.llaveTabla) {
-              element.estado = 'T';
-              processToMenu.push(element);
-            }
-          });
-          this._navigationService.generate(processToMenu, modulos, templates);
-          //this.conect2Other();
-        });
-    }
+    this.apiService.listarPlantillas(null)
+      .subscribe(templates => {
+        this.templateService.setTemplates(templates);
+      });
+    //}
   }
+
+
 
   signout() {
+    this.isloginView = true;
     this.setUserAndToken(null);
     this.templateService.clear();
-    this.router.navigateByUrl('sign-in');
     this.notificationService.clear();
     this.dialog.closeAll();
+    if (this.company.publicToken) { this.configureOrganization(this.company); }
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
@@ -223,7 +208,7 @@ export class LoginService {
       );
   }
 
-  
+
   changePwdOtherSystem(autenticacion: UsuarioOrganizacionDTO) {
     return this.http
       .post<UsuarioOrganizacionDTO>(
@@ -260,9 +245,10 @@ export class LoginService {
     return this.ls.getItem(LocalConstants.APP_USER);
   }
 
+
   setUserAndToken(authDTO: UsuarioAutenticacionDTO) {
     if (authDTO) {
-      this.isAuthenticated = !!authDTO;
+      this.isAuthenticated = true;
       this.token = authDTO.token;
       this.user = authDTO.usuarioDTO;
     } else {
@@ -270,6 +256,17 @@ export class LoginService {
       this.token = null;
       this.user = null;
     }
+    this.isPublicUser = false;
+    if (this.user && this.user.llaveTabla) {
+      if (PlantillaHelper.buscarValor(this.company.propiedades, PlantillaHelper.PUBLIC_USER)
+        && this.user.llaveTabla === PlantillaHelper.buscarValor(this.company.propiedades, PlantillaHelper.PUBLIC_USER)) {
+        this.isPublicUser = true;
+      }
+    } else {
+      //Aqui no hay usuario publico y mostramos solo el login
+      this.isPublicUser = true;
+    }
+
     this.user$.next(this.user);
     this.ls.setItem(LocalConstants.JWT_TOKEN, this.token);
     this.ls.setItem(LocalConstants.APP_USER, this.user);
@@ -283,9 +280,66 @@ export class LoginService {
     this.ls.setItem(LocalConstants.URL_CONF, url);
   }
 
-  setCompany(company: OrganizacionDTO) {
-    this.company = company;
+  // CU01
+  obtenerPrincipalOrganizacion(): Observable<OrganizacionDTO> {
+    return this.http.get<OrganizacionDTO>(
+      this.ls.getUrlAccess('/main/obtenerPrincipalOrganizacion')
+    );
   }
 
+  private _jsonURL = '/assets/conf.xml';
+
+  getURL(): Observable<String> {
+    return this.http.get(this._jsonURL, { responseType: 'text' });
+  }
+
+  changePictureUser(fileToUpload: File, _server: string): Observable<UsuarioDTO> {
+    const endpoint = this.ls.getUrlAccess('/rest/changePicture', _server);
+    const formData: FormData = new FormData();
+    formData.append('file', fileToUpload, fileToUpload.name);
+    return this.http.post<UsuarioDTO>(endpoint, formData);
+  }
+
+  getUrlServices() {
+    if (this.company && this.company.llaveTabla) {
+      this.configureOrganization(this.company);
+      return;
+    }
+    this.getURL().subscribe({
+      next: (data) => {
+        if (data !== '' && data !== 'SW42') {
+          if (!data.endsWith('/')) {
+            data = data + '/';
+          }
+          this.setConfUrl(data.toString());
+        } else {
+          this.setConfUrl(location.origin);
+        }
+        this.getOrganization();
+      },
+      error: () => {
+        this.setConfUrl(location.origin);
+        this.getOrganization();
+      }
+    });
+  }
+
+  getOrganization() {
+    this.obtenerPrincipalOrganizacion().subscribe({
+      next: (organization) => {
+        this.configureOrganization(organization);
+      },
+      error: () => { }
+    });
+  }
+
+  configureOrganization(organization: OrganizacionDTO) {
+    this.setCompany(organization);
+    if (organization.publicToken) {
+      this.token = organization.publicToken;
+      this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
+      this.checkTokenIsValid().subscribe();
+    }
+  }
 
 }

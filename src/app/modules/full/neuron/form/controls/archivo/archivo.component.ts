@@ -4,6 +4,7 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
+import { NgxImageCompressService } from 'ngx-image-compress';
 
 @Component({
   selector: 'app-archivo',
@@ -18,6 +19,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
   validateOrientation: string;
   firma = false;
   maximoSize: number;
+  porcentajeCalidad: number;
   source: string;
   filtroExtension: string;
   isEnd = false;
@@ -32,7 +34,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
   isLoadingUrl = false;
   urlText = '';
 
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, private imageCompress: NgxImageCompressService) {
     super();
   }
 
@@ -52,18 +54,24 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
     this.maximoSize = Number(
       this.obtenerValor(PlantillaHelper.ARCHIVO_TAMANO_MAXIMO)
     );
+    this.porcentajeCalidad = Number(
+      this.obtenerValor(PlantillaHelper.PORCENTAJE_CALIDAD)
+    );
+    if(this.porcentajeCalidad && this.porcentajeCalidad> 100){
+      this.porcentajeCalidad = undefined;
+    }
     this.filtroExtension = this.obtenerValor(PlantillaHelper.ARCHIVO_TIPO);
     if (!this.isEmpty(this.filtroExtension)) {
       const extensiones = this.filtroExtension.split(',');
       let extensionFilter = '';
       for (let i = 0; i < extensiones.length; i++) {
         const extension = extensiones[i];
-        if(extension.indexOf("*") < 0) {extensionFilter + '.' ; }
+        if (extension.indexOf("*") < 0) { extensionFilter + '.'; }
         extensionFilter = extensionFilter + extension + ',';
       }
       this.filtroExtension = extensionFilter;
     } else {
-      this.filtroExtension = '.pdf,.png,.jpg,jpeg';
+      this.filtroExtension = '.pdf,.png,.jpg,.jpeg';
     }
     if (this.maximoSize === 0) {
       this.maximoSize = 1024;
@@ -106,9 +114,9 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
           Swal.fire(
             'Orientacion Horizontal',
             'El ancho de la imagen es menor al alto. ' +
-              image.width +
-              'x' +
-              image.height,
+            image.width +
+            'x' +
+            image.height,
             'error'
           );
           this.deleteFile(item);
@@ -120,9 +128,9 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
           Swal.fire(
             'Orientacion Vertical',
             'El alto de la imagen es menor al ancho. ' +
-              image.width +
-              'x' +
-              image.height,
+            image.width +
+            'x' +
+            image.height,
             'error'
           );
           this.deleteFile(item);
@@ -157,13 +165,64 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
       var reader = new FileReader();
       reader.readAsDataURL(iFile);
       reader.onload = (_event) => {
-        this.addFileToTable(iFile.name, reader.result, iFile);
+        if(this.porcentajeCalidad){
+          this.compressFile(reader.result, iFile.name);
+        } else{
+          this.addFileToTable(iFile.name, reader.result, iFile);
+        }
       };
     } else {
       this.uploadFileToActivity(this.addFileToTable(iFile.name, null, iFile));
     }
     this.sincronizeFiles();
   }
+
+  compressFile(image, fileName) {
+    var orientation = -1;
+    console.warn('Size in bytes is now:',  this.imageCompress.byteCount(image) / (1024 * 1024));
+    this.imageCompress.compressFile(image, orientation, this.porcentajeCalidad, this.porcentajeCalidad).then(
+    result => {
+        console.warn('Size in bytes after compression:', this.imageCompress.byteCount(result) / (1024 * 1024));
+        // call method that creates a blob from dataUri
+        //const imageBlob = this.dataURItoBlob(result);
+        //imageFile created below is the new compressed file which can be send to API in form data
+        //const imageFile = new File([result], fileName, { type: imageBlob.type });
+        this.addFileToTable(fileName, result, null);
+      });
+  }
+
+  //Esto es casi lo mismo que b64toFile
+  dataURItoBlob(dataURI) {
+    // convert the data URL to a byte string
+    const byteString = window.atob(dataURI.split(',')[1]);
+
+    // pull out the mime type from the data URL
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // Convert to byte array
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+
+    // Create a blob that looks like a file.
+    const blob = new Blob([ab], { type: mimeString });
+    blob['lastModifiedDate'] = new Date().toISOString();
+    blob['name'] = 'file';
+
+    // Figure out what extension the file should have
+    switch (blob.type) {
+      case 'image/jpeg':
+        blob['name'] += '.jpg';
+        break;
+      case 'image/png':
+        blob['name'] += '.png';
+        break;
+    }
+    return blob;
+  }
+
 
   addFileToTable(pName: string, pBlob, pFile): any {
     if (!this.files) {
@@ -208,7 +267,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
             this.source = returnedData;
           } else {
             // Sucede que llegaba y como era lenta la carga entonces se duplicaban
-            if(this.multipleFiles){
+            if (this.multipleFiles) {
               this.source = this.source + ArchivoComponent.SEPARADOR + returnedData;
             } else {
               this.source = returnedData;
@@ -234,7 +293,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
       if (
         this.source.length > 2 &&
         this.source.substr(this.source.length - 2) ===
-          ArchivoComponent.SEPARADOR
+        ArchivoComponent.SEPARADOR
       ) {
         this.source = this.source.substr(0, this.source.length - 2);
       }
@@ -309,35 +368,8 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
   }
 
   b64toFile(dataURI): File {
-    // convert the data URL to a byte string
-    const byteString = atob(dataURI.split(',')[1]);
-
-    // pull out the mime type from the data URL
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    // Convert to byte array
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-
-    // Create a blob that looks like a file.
-    const blob = new Blob([ab], { type: mimeString });
-    blob['lastModifiedDate'] = new Date().toISOString();
-    blob['name'] = 'file';
-
-    // Figure out what extension the file should have
-    switch (blob.type) {
-      case 'image/jpeg':
-        blob['name'] += '.jpg';
-        break;
-      case 'image/png':
-        blob['name'] += '.png';
-        break;
-    }
     // cast to a File
-    return <File>blob;
+    return <File>this.dataURItoBlob(dataURI);
   }
 
   send2Server(): boolean {
@@ -356,19 +388,19 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
     document.getElementById(this.structure.llaveTabla + '_file').click();
   }
 
-  onClickLoadUrl(){
+  onClickLoadUrl() {
     if (this.isLoadingUrl) {
-     this.source = this.urlText;
-     this.actualizarVista();
-     this.actualizar();
+      this.source = this.urlText;
+      this.actualizarVista();
+      this.actualizar();
     }
-    this.isLoading =  !this.isLoadingUrl;
+    this.isLoading = !this.isLoadingUrl;
     this.isLoadingUrl = !this.isLoadingUrl;
   }
 
   isImage(url) {
-    if(!url) {return false;}
+    if (!url) { return false; }
     return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url.toLowerCase());
   }
-  
+
 }

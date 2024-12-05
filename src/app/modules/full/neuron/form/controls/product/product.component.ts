@@ -11,6 +11,7 @@ import {
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   DetallePedidoVentaDTO,
+  ProductoInventarioDTO
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -18,8 +19,7 @@ import { getComponent } from 'app/modules/full/neuron/form-helper';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { IDynamicControl } from '../base/base.component';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import { ProductoInventarioDTO } from 'app/inventory/inventory.types';
-import { TarifaDTO } from 'app/tariff/tariff.domain';
+import { TarifaDTO } from 'app/modules/full/neuron/model/tariff.domain';
 
 @Component({
   selector: 'form-control-product',
@@ -103,14 +103,14 @@ export class ProductComponent implements OnInit, AfterViewInit {
   // Agrega los campos al formulario
   showFields() {
     if (
-      !this.detallePedidoVenta.caracteristicas ||
-      this.detallePedidoVenta.caracteristicas.length === 0
+      !this.detallePedidoVenta.documentoDetalle.caracteristicas ||
+      this.detallePedidoVenta.documentoDetalle.caracteristicas.length === 0
     ) {
       return;
     }
 
-    for (let d = 0; d < this.detallePedidoVenta.caracteristicas.length; d++) {
-      const _campo = this.detallePedidoVenta.caracteristicas[d];
+    for (let d = 0; d < this.detallePedidoVenta.documentoDetalle.caracteristicas.length; d++) {
+      const _campo = this.detallePedidoVenta.documentoDetalle.caracteristicas[d];
       const componentDynamic: Type<any> = getComponent(_campo.campoDTO);
       const _componentFactory = this.compiler.resolveComponentFactory(
         componentDynamic
@@ -123,10 +123,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
       componentRef.instance.formIsEnabled = this.allowEdit;
       for (
         let index = 0;
-        index < this.detallePedidoVenta.caracteristicas.length;
+        index < this.detallePedidoVenta.documentoDetalle.caracteristicas.length;
         index++
       ) {
-        const element = this.detallePedidoVenta.caracteristicas[index];
+        const element = this.detallePedidoVenta.documentoDetalle.caracteristicas[index];
         if (element.campo === _campo.campoDTO.llaveTabla) {
           componentRef.instance.data = element;
           break;
@@ -138,8 +138,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
     }
 
     // Colocar listener de Dependientes
-    for (let j = 0; j < this.detallePedidoVenta.caracteristicas.length; j++) {
-      const iBase = this.detallePedidoVenta.caracteristicas[j].campoDTO;
+    for (let j = 0; j < this.detallePedidoVenta.documentoDetalle.caracteristicas.length; j++) {
+      const iBase = this.detallePedidoVenta.documentoDetalle.caracteristicas[j].campoDTO;
       const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(
         iBase.propiedades,
         PlantillaHelper.DEPENDE
@@ -276,15 +276,15 @@ export class ProductComponent implements OnInit, AfterViewInit {
       }
       let tarifariosUsadosOtrosCampos: string[];
       if (
-        this.detallePedidoVenta.caracteristicas &&
-        this.detallePedidoVenta.caracteristicas.length !== 0
+        this.detallePedidoVenta.documentoDetalle.caracteristicas &&
+        this.detallePedidoVenta.documentoDetalle.caracteristicas.length !== 0
       ) {
         for (
           let i = 0;
-          i < this.detallePedidoVenta.caracteristicas.length;
+          i < this.detallePedidoVenta.documentoDetalle.caracteristicas.length;
           i++
         ) {
-          const iCampo = this.detallePedidoVenta.caracteristicas[i];
+          const iCampo = this.detallePedidoVenta.documentoDetalle.caracteristicas[i];
           if (
             iCampo.campoDTO &&
             iCampo.campoDTO.propiedades &&
@@ -322,7 +322,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
         if (!usado) {
           if (iTarifa.cantidadMinima === 0 && iTarifa.cantidadMaxima === 0) {
             if (tarifa.valor === 0 || tarifa.valor > iTarifa.valor) {
-              tarifa = iTarifa;
+              // En box el cliente tenia un precio mayor
+              return iTarifa;
             }
           } else {
             const pCantidad = this.cantidadTarifario();
@@ -331,7 +332,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
               (iTarifa.cantidadMaxima >= Math.ceil(pCantidad) || iTarifa.cantidadMaxima ===0)
             ) {
               if (tarifa.valor === 0 || tarifa.valor > iTarifa.valor) {
-                tarifa = iTarifa;
+                return iTarifa;
               }
             }
           }
@@ -365,7 +366,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.dialogRef.close(this.detallePedidoVenta);
   }
 
-  
   consultarInventarios() {
     this.isLoading = true;
     this.api.consultarInventario(this.detallePedidoVenta.producto, this.server).subscribe({

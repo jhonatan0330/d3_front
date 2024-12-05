@@ -56,7 +56,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         FuseNavigationModule,
         FuseScrollbarModule,
         FuseScrollResetModule,
-        SharedModule,
         
     ]
 })

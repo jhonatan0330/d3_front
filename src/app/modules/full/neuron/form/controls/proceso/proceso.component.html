@@ -29,7 +29,7 @@
   </button>
   <!-- Limpiar -->
   <button mat-icon-button matSuffix *ngIf="proceso && isEnabled" (click)="fControl.setValue('')" tabindex="-1">
-    <mat-icon>close</mat-icon>
+    <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
   </button>
   <!-- Boton codigo QR-->
   <button mat-icon-button matPrefix (click)="toogleScanner()" tabindex="-1" *ngIf="isEnabled && readQR && !proceso">
@@ -171,7 +171,7 @@
           <input matInput type="text" placeholder="Coloca un texto y presiona enter" name="fControlSearch"
             [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
           <button matSuffix (click)="fControlSearch.setValue('')">
-            <mat-icon>close</mat-icon>
+            <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
           </button>
         </mat-form-field>
       </div>

@@ -58,6 +58,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { InformativeComponent } from './form/controls/informative/informative.component';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { DocumentTransitionModule } from 'app/document-transition/document-transition.module';
+import { OlMapComponent } from './form/controls/gps/ol-map/ol-map.component';
+import { FullMapComponent } from './form/controls/gps-map/full-map/full-map.component';
 
 
 @NgModule({
@@ -75,6 +78,8 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
         ProductoListaComponent,
         SeccionComponent,
         BaseComponent,
+        OlMapComponent,
+        FullMapComponent,
         GpsComponent,
         FormComponent,
         ProductComponent,
@@ -124,6 +129,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 
         MatDatepickerModule,
         MatNativeDateModule,
+        DocumentTransitionModule
     ],
     providers: [
         { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },

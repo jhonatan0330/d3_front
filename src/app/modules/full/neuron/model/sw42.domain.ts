@@ -1,6 +1,36 @@
-import { CategoriaProductoDTO, ProductoDTO, UsuarioRolProductoDTO } from "app/inventory/inventory.types";
 import { BasicDTO, BasicFilterDTO, BasicParamDTO } from "app/shared/shared.domain";
-import { TarifaDTO } from "app/tariff/tariff.domain";
+import { TarifaDTO } from "../model/tariff.domain";
+
+
+export class UsuarioRolProductoDTO extends BasicDTO {
+  documento: string;
+  documentoNombre: string;
+  producto: string;
+  productoNombre: string;
+  nombre: string;
+  modificador: string;
+  cantidadPromocion: number;
+  cantidadPromocionBase: number;
+}
+export class ProductoDTO extends BasicParamDTO {
+  nombre: string;
+  codigo: string;
+  filtros: string;
+  imagen: string;
+  descripcion: string;
+  categoria: string;
+  categoriaNombre: string;
+  categoriaPlantilla: string;
+  usuarioRol: string;
+  valorMinimoPromocion: number;
+  cantidadPromocion: number;
+  cantidadPromocionBase: number;
+  detallePlantilla: DetallePedidoVentaDTO;
+  documento: string;
+  productoBase: string;
+  baseNombre: string;
+  templateFields: string;
+}
 
 export class ProcesoEstadoDTO extends BasicParamDTO {
   tipo: string;
@@ -21,7 +51,6 @@ export class DocumentoPlantillaCaracteristicaDTO extends BasicParamDTO {
   codigo: string;
   orden: number;
   imagen: string;
-  categorias: CategoriaProductoDTO[];
   productos: ProductoDTO[];
   documentos: PedidoVentaDTO[];
 }
@@ -38,7 +67,6 @@ export class PedidoVentaDTO extends BasicDTO {
   estadoExpediente: string;
   textoFiltro: string;
   estadoNombre: string;
-  historico: number;
   transaccion: string;
   dinero: PedidoVentaDineroDTO;
   caracteristicas: PedidoVentaCaracteristicaDTO[];
@@ -46,6 +74,7 @@ export class PedidoVentaDTO extends BasicDTO {
   campoPropiedad: string;
   server: string;
   messages: DocumentMessage[];
+  historico: number;
 }
 
 export class DocumentMessage  {
@@ -71,8 +100,8 @@ export class PedidoVentaCaracteristicaDTO extends BasicDTO {
   dependientes: PedidoVentaCaracteristicaDTO[];
   expedientes: PedidoVentaDTO[];
   modificado: boolean;
-  transaccionRegistro: string;
-  transaccionInactivo: string;
+  //transaccionRegistro: string;
+  //transaccionInactivo: string;
 }
 export class ProcesoTransicionDTO extends BasicParamDTO {
   procesoNombre: string;
@@ -149,7 +178,6 @@ export class DetallePedidoVentaDTO extends BasicParamDTO {
   valorMinimo: number;
   valorTotal: number;
   valorUnitario: number;
-  caracteristicas: PedidoVentaCaracteristicaDTO[];
   valorMaximo: number;
   plantilla: string;
   valorSubtotal: number;
@@ -157,6 +185,9 @@ export class DetallePedidoVentaDTO extends BasicParamDTO {
   transaccionRegistro: string;
   transaccionInactivo: string;
   campo: string;
+  plantillaDetalle: string;
+  documentoDetalle: PedidoVentaDTO;
+	detalleId: string;
 }
 
 export class ReporteBaseDTO extends BasicParamDTO {
@@ -222,7 +253,6 @@ export class PedidoVentaFilterDTO extends BasicFilterDTO {
   estadoExpediente: string;
   textoFiltro: string;
   estadoNombre: string;
-  historico: number;
   transaccion: string;
   caracteristicas: PedidoVentaCaracteristicaDTO[];
   filtersByFields: PedidoVentaCaracteristicaFilterDTO[];

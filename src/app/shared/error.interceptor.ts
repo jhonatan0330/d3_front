@@ -26,11 +26,10 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           errorMessage = error.error.message;
           if (errorMessage.indexOf('CODE:caud_usuario') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
             this.jwtAuth.signout();
-            this.templateService.clear();
           } else{
             let showButton = true;
-            if(errorMessage.startsWith("ERROR: NOT_OK")) {
-              errorMessage = errorMessage.replace("ERROR: NOT_OK","");
+            if(errorMessage.indexOf("ERROR: NOT_OK")!==-1) {
+              errorMessage = errorMessage.substring(errorMessage.indexOf("ERROR: NOT_OK") + "ERROR: NOT_OK".length);
               showButton = false;
               const audio = new Audio();
               audio.src = 'assets/audio/incorrect.mp3';

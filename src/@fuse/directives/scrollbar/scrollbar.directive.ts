@@ -1,15 +1,10 @@
 import { Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { Router } from '@angular/router';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Platform } from '@angular/cdk/platform';
 import { debounceTime, fromEvent, Subject, takeUntil } from 'rxjs';
 import PerfectScrollbar from 'perfect-scrollbar';
-import { merge } from 'lodash-es';
 import { ScrollbarGeometry, ScrollbarPosition } from '@fuse/directives/scrollbar/scrollbar.types';
 
-/**
- * Wrapper directive for the Perfect Scrollbar: https://github.com/mdbootstrap/perfect-scrollbar
- */
 @Directive({
     selector: '[fuseScrollbar]',
     exportAs: 'fuseScrollbar'
@@ -34,7 +29,6 @@ export class FuseScrollbarDirective implements OnChanges, OnInit, OnDestroy
     constructor(
         private _elementRef: ElementRef,
         private _platform: Platform,
-        private _router: Router
     )
     {
     }
@@ -92,7 +86,23 @@ export class FuseScrollbarDirective implements OnChanges, OnInit, OnDestroy
         if ( 'fuseScrollbarOptions' in changes )
         {
             // Merge the options
-            this._options = merge({}, this._options, changes.fuseScrollbarOptions.currentValue);
+            //this._options = merge({}, this._options, changes.fuseScrollbarOptions.currentValue);
+            if(!this._options){ this._options = {} };
+            if(changes.fuseScrollbarOptions.currentValue){ 
+                if(changes.fuseScrollbarOptions.currentValue.handlers){ this._options.handlers= changes.fuseScrollbarOptions.currentValue.handlers; } ;
+                if(changes.fuseScrollbarOptions.currentValue.maxScrollbarLength){ this._options.maxScrollbarLength= changes.fuseScrollbarOptions.currentValue.maxScrollbarLength; } ;
+                if(changes.fuseScrollbarOptions.currentValue.minScrollbarLength){ this._options.minScrollbarLength= changes.fuseScrollbarOptions.currentValue.minScrollbarLength; } ;
+                if(changes.fuseScrollbarOptions.currentValue.scrollingThreshold){ this._options.scrollingThreshold= changes.fuseScrollbarOptions.currentValue.scrollingThreshold; } ;
+                if(changes.fuseScrollbarOptions.currentValue.scrollXMarginOffset){ this._options.scrollXMarginOffset= changes.fuseScrollbarOptions.currentValue.scrollXMarginOffset; } ;
+                if(changes.fuseScrollbarOptions.currentValue.scrollYMarginOffset){ this._options.scrollYMarginOffset= changes.fuseScrollbarOptions.currentValue.scrollYMarginOffset; } ;
+                if(changes.fuseScrollbarOptions.currentValue.suppressScrollX){ this._options.suppressScrollX= changes.fuseScrollbarOptions.currentValue.suppressScrollX; } ;
+                if(changes.fuseScrollbarOptions.currentValue.suppressScrollY){ this._options.suppressScrollY= changes.fuseScrollbarOptions.currentValue.suppressScrollY; } ;
+                if(changes.fuseScrollbarOptions.currentValue.swipeEasing){ this._options.swipeEasing= changes.fuseScrollbarOptions.currentValue.swipeEasing; } ;
+                if(changes.fuseScrollbarOptions.currentValue.useBothWheelAxes){ this._options.useBothWheelAxes= changes.fuseScrollbarOptions.currentValue.useBothWheelAxes; } ;
+                if(changes.fuseScrollbarOptions.currentValue.wheelPropagation){ this._options.wheelPropagation= changes.fuseScrollbarOptions.currentValue.wheelPropagation; } ;
+                if(changes.fuseScrollbarOptions.currentValue.wheelSpeed){ this._options.wheelSpeed= changes.fuseScrollbarOptions.currentValue.wheelSpeed; } ;
+            };
+            
 
             // Return if not initialized
             if ( !this._ps )

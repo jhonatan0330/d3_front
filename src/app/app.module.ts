@@ -24,7 +24,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
-  scrollPositionRestoration: 'enabled'
+  scrollPositionRestoration: 'enabled',
+  useHash: false,
+  anchorScrolling: 'enabled',
+  onSameUrlNavigation: 'reload'
 };
 
 @NgModule({
@@ -53,8 +56,6 @@ const routerConfig: ExtraOptions = {
     FormsModule,
     DragDropModule,
 
-    BrowserModule,
-    BrowserAnimationsModule,
     HttpClientModule,
 
     MatDatepickerModule,

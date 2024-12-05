@@ -12,6 +12,7 @@ export enum DocumentoPlantillaCaracteristicaEnum {
   PRODUCTO_LISTA = 'Q',
   SECCION = 'S',
   GPS = 'P',
+  GPS_MAP = 'M',
   INFORMATIVE = 'V'
 }
 

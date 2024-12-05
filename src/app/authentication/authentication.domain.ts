@@ -9,7 +9,6 @@ export class UsuarioDTO extends BasicDTO {
   imagen: string;
   rol: string;
   documento: string;
-  //productos: ProductoDTO[];
   usuarioFiltroDependiente: string;
   correo: string;
   usuarioRol: string;
@@ -29,6 +28,8 @@ export class OrganizacionDTO extends BasicParamDTO {
   menuPlantillas: DocumentoPlantillaDTO[];
   reportePlantillas: DocumentoPlantillaDTO[];
   token: string;
+  templates: DocumentoPlantillaDTO[];
+  publicToken: string;
 }
 
 export class UsuarioOrganizacionDTO extends BasicDTO {
