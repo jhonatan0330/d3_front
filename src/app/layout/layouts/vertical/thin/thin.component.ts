@@ -4,38 +4,37 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { NavigationService } from 'app/authorization/navigation/navigation.service';
+import { environment } from 'environments/environment';
+import { LoginService } from 'app/authentication/login.service';
+import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Component({
-    selector     : 'thin-layout',
-    templateUrl  : './thin.component.html',
+    selector: 'thin-layout',
+    templateUrl: './thin.component.html',
     encapsulation: ViewEncapsulation.None
 })
-export class ThinLayoutComponent implements OnInit, OnDestroy
-{
+export class ThinLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;
     navigation: Navigation;
+    user: UsuarioDTO;
+    company: OrganizacionDTO;
+    time = new Date();
+    currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    /**
-     * Constructor
-     */
     constructor(
-        private _navigationService: NavigationService,
+        public _loginService: LoginService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService
-    )
-    {
+        private _fuseNavigationService: FuseNavigationService,
+        private _navigationService: NavigationService
+    ) {
     }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * On init
-     */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Subscribe to navigation data
         this._navigationService.navigation$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -43,21 +42,44 @@ export class ThinLayoutComponent implements OnInit, OnDestroy
                 this.navigation = navigation;
             });
 
+        // Subscribe to the user
+        this._loginService.user$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe((user: UsuarioDTO) => {
+                if (!user || !user.llaveTabla) {
+                    this.user = undefined;
+                    return;
+                }
+                this.user = user;
+            });
+
+        // Subscribe to the company
+        this._loginService.company$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe((company: OrganizacionDTO) => {
+                if (!company || !company.llaveTabla) {
+                    this.company = undefined;
+                    return;
+                }
+                this.company = company;
+            });
+
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) => {
+            .subscribe(({ matchingAliases }) => {
 
                 // Check if the screen is small
                 this.isScreenSmall = !matchingAliases.includes('md');
             });
+
+        // Reloj
+        setInterval(() => {
+            this.time = new Date();
+        }, 1000);
     }
 
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
@@ -72,15 +94,17 @@ export class ThinLayoutComponent implements OnInit, OnDestroy
      *
      * @param name
      */
-    toggleNavigation(name: string): void
-    {
+    toggleNavigation(name: string): void {
         // Get the navigation
         const navigation = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(name);
 
-        if ( navigation )
-        {
+        if (navigation) {
             // Toggle the opened status
             navigation.toggle();
         }
+    }
+
+    openLogin() {
+        this._loginService.isloginView = true;
     }
 }
