@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map, catchError } from 'rxjs/operators';
 import { of, BehaviorSubject, throwError, Observable } from 'rxjs';
 import { environment } from 'environments/environment';
@@ -35,6 +35,7 @@ export class LoginService {
   constructor(
     private ls: LocalStoreService,
     private route: ActivatedRoute,
+    private router: Router,
     private dialog: MatDialog,
     private templateService: TemplateService,
     private notificationService: NotificationsService,
@@ -193,6 +194,7 @@ export class LoginService {
     this.notificationService.clear();
     this.dialog.closeAll();
     if (this.company.publicToken) { this.configureOrganization(this.company); }
+    this.router.navigate(['/main']);
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
