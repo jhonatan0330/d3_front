@@ -79,6 +79,7 @@ export class NavigationService {
                     id      : 'rapid',
                     title   : 'Accesos rapidos',
                     type    : 'group',
+                    icon    : 'heroicons_outline:bolt',
                     children: items
                 };
                 const moduleItemCompact:FuseNavigationItem = {
@@ -113,6 +114,7 @@ export class NavigationService {
                     id      : 'process',
                     title   : 'Procesos de Negocio',
                     type    : 'group',
+                    icon    : 'heroicons_outline:squares-plus',
                     children: processNavItem
                 };
                 const processItemCompact:FuseNavigationItem = {
@@ -151,8 +153,9 @@ export class NavigationService {
             if(moduleNavItem && moduleNavItem.length!==0){
                 const moduleItemLocal:FuseNavigationItem = {
                     id      : 'apps',
-                    title   : 'Modulos',
+                    title   : 'Apps',
                     type    : 'group',
+                    icon    : 'heroicons_outline:squares-2x2',
                     children: moduleNavItem
                 };
                 const moduleItemCompact:FuseNavigationItem = {
@@ -188,6 +191,7 @@ export class NavigationService {
                     id      : 'modulos',
                     title   : 'Modulos',
                     type    : 'group',
+                    icon    : 'heroicons_outline:table-cells',
                     children: templateNavItem
                 };
                 const moduleItemCompact:FuseNavigationItem = {
@@ -220,6 +224,7 @@ export class NavigationService {
                     id      : 'report',
                     title   : 'Reportes',
                     type    : 'group',
+                    icon    : 'heroicons_outline:newspaper',    
                     children: reportNavItem
                 };
                 const moduleItemCompact:FuseNavigationItem = {
@@ -254,7 +259,7 @@ export class NavigationService {
         //     });
         // });
 
-        // // Fill horizontal navigation children using the default navigation
+        // Fill horizontal navigation children using the default navigation
         // this._horizontalNavigation.forEach((horizontalNavItem) => {
         //     this._defaultNavigation.forEach((defaultNavItem) => {
         //         if (defaultNavItem.id === horizontalNavItem.id) {
@@ -265,8 +270,10 @@ export class NavigationService {
         // });
         const navigation = {
             default: [...localNavigation],
+
             compact: [...compactNavigation],
             futuristic: [...localNavigation],
+
             horizontal: [...localNavigation],
             //compact   : this._compactNavigation,
             //default   : this._defaultNavigation,

@@ -104,6 +104,11 @@
             [svgIcon]="item.icon"></mat-icon>
     </ng-container>
 
+     <!-- Image -->
+     <ng-container *ngIf="item.image">
+        <img class="w-7 h-7 rounded-full mr-2" [src]="item.image">
+    </ng-container>
+
     <!-- Title & Subtitle -->
     <div class="fuse-horizontal-navigation-item-title-wrapper">
         <div class="fuse-horizontal-navigation-item-title">
