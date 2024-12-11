@@ -996,6 +996,19 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   sendCreate() {
     if (this.acciones && this.acciones.length !== 0) {
+      if (this.relatedFields) {
+        for (let i = 0; i < this.data.dependientes.length; i++) {
+          const iCampoPedido = this.data.dependientes[i];
+          if (!iCampoPedido.valorText && !PlantillaHelper.buscarValor(iCampoPedido.campoDTO.propiedades,PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
+            Swal.fire(iCampoPedido.campoDTO.nombre, 'Por favor revisa que este seleccionado el campo ' +
+              iCampoPedido.campoDTO.nombre, 'error');
+            
+            if (this.trigger) { this.trigger.closeMenu(); }
+            return;
+          }
+        }
+      }
+
       if (this.acciones.length === 1) {
         this.createNewDocument(this.acciones[0].valor, this.acciones[0].llaveTabla);
         if (this.trigger) { this.trigger.closeMenu(); }
