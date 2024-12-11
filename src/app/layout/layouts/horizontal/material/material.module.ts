@@ -13,30 +13,31 @@ import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { MaterialLayoutComponent } from 'app/layout/layouts/horizontal/material/material.component';
+import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
 
 @NgModule({
-    declarations: [
-        MaterialLayoutComponent
-    ],
-    imports     : [
-        HttpClientModule,
-        RouterModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatIconModule,
-        MatMenuModule,
-        FuseFullscreenModule,
-        FuseNavigationModule,
-        NotificationsModule,
-        SearchModule,
-        ShortcutsModule,
-        UserModule,
-        SharedModule
-    ],
-    exports     : [
-        MaterialLayoutComponent
-    ]
+  declarations: [
+    MaterialLayoutComponent
+  ],
+  imports: [
+    HttpClientModule,
+    RouterModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatMenuModule,
+    FuseFullscreenModule,
+    FuseNavigationModule,
+    NotificationsModule,
+    SearchModule,
+    ShortcutsModule,
+    UserModule,
+    SharedModule,
+    QuickChatModule
+  ],
+  exports: [
+    MaterialLayoutComponent
+  ]
 })
-export class MaterialLayoutModule
-{
+export class MaterialLayoutModule {
 }

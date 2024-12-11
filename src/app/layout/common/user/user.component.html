@@ -12,11 +12,11 @@
 </button>
 
 <mat-menu [xPosition]="'before'" #userActions="matMenu">
-    <button mat-menu-item>
-        <span class="flex flex-col leading-none">
+    <button mat-menu-item class="flex flex-col items-center justify-center leading-none text-center">
+        <span class="flex flex-col items-center justify-center leading-none text-center">
             <span>Authenticado como</span>
             <span class="mt-1.5 text-md font-medium">{{user?.correo}}</span>
-        </span>
+        </span>             
     </button>
     <mat-divider class="my-2"></mat-divider>
     <button mat-menu-item (click)="goToMyAccount()">
@@ -24,7 +24,7 @@
         <span>Mi cuenta</span>
     </button>
     <button mat-menu-item (click)="getRefreshTemplates()">
-        <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+        <mat-icon [svgIcon]="'heroicons_outline:arrow-path'"></mat-icon>
         <span>Cargar de nuevo</span>
     </button>
     <button mat-menu-item *ngIf="jwtAuth.isAdmin" (click)="getFullTemplates()">
@@ -32,12 +32,16 @@
         <span>Administrador</span>
     </button>
     <button mat-menu-item (click)="downloadApk()">
-        <mat-icon [svgIcon]="'heroicons_outline:device-mobile'"></mat-icon>
+        <mat-icon [svgIcon]="'heroicons_outline:device-phone-mobile'"></mat-icon>
         <span>Version Android</span>
     </button>
     <mat-divider class="my-2"></mat-divider>
     <button mat-menu-item (click)="signOut()">
-        <mat-icon [svgIcon]="'heroicons_outline:logout'"></mat-icon>
+        <mat-icon [svgIcon]="'heroicons_outline:arrow-right-on-rectangle'"></mat-icon>
         <span>Salir</span>
     </button>
+    <div
+        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-gray-500 text-xxs leading-none whitespace-nowrap">
+        {{ time | date : "medium" }} - {{ currentApplicationVersion }}
+    </div>
 </mat-menu>

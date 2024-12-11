@@ -16,29 +16,28 @@ import { ModernLayoutComponent } from 'app/layout/layouts/horizontal/modern/mode
 import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
 
 @NgModule({
-    declarations: [
-        ModernLayoutComponent
-    ],
-    imports     : [
-        HttpClientModule,
-        RouterModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatIconModule,
-        MatMenuModule,
-        FuseFullscreenModule,
-        FuseNavigationModule,
-        NotificationsModule,
-        SearchModule,
-        ShortcutsModule,
-        UserModule,
-        SharedModule,
-        QuickChatModule
-    ],
-    exports     : [
-        ModernLayoutComponent
-    ]
+  declarations: [
+    ModernLayoutComponent
+  ],
+  imports: [
+    HttpClientModule,
+    RouterModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatMenuModule,
+    FuseFullscreenModule,
+    FuseNavigationModule,
+    NotificationsModule,
+    SearchModule,
+    ShortcutsModule,
+    UserModule,
+    SharedModule,
+    QuickChatModule
+  ],
+  exports: [
+    ModernLayoutComponent
+  ]
 })
-export class ModernLayoutModule
-{
+export class ModernLayoutModule {
 }
