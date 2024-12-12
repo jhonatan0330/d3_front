@@ -84,6 +84,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX];
 
   inputModeText = 'text';
+  errorMessage: string = null;
 
   constructor(
     private templateService: TemplateService,
@@ -485,6 +486,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (this.isLoading) {
       return;
     }
+    this.errorMessage = null;
     // Nunca deberia ser nulo
     if (!campoFiltro) {
       alert('No deberia ser null la respuesta del servidor');
@@ -524,14 +526,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           && (!iDepen.campoDTO || 
             (iDepen.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO 
               && !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.MULTIPLE)
-              && (PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.DEPENDE)
-                || iDepen.modificado)
+              && PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.DEPENDE)
+                || (iDepen.modificado || !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.PERMISO_CAMPO_OPCIONAL))
             )
           )
         ) {
-          /*alert(
-            'Seleccione el campo ' + this.data.dependientes[i].campoDTO.nombre
-          );*/
+          this.errorMessage = 'Selecciona una opcion del campo ' + iDepen.campoDTO.nombre;
           this.actualizarDataProvider(null);
           this.fControl.setValue(null);
           return;
@@ -1000,9 +1000,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         for (let i = 0; i < this.data.dependientes.length; i++) {
           const iCampoPedido = this.data.dependientes[i];
           if (!iCampoPedido.valorText && !PlantillaHelper.buscarValor(iCampoPedido.campoDTO.propiedades,PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
-            Swal.fire(iCampoPedido.campoDTO.nombre, 'Por favor revisa que este seleccionado el campo ' +
-              iCampoPedido.campoDTO.nombre, 'error');
-            
+            this.errorMessage =  'Por favor revisa que este seleccionado el campo ' + iCampoPedido.campoDTO.nombre;
             if (this.trigger) { this.trigger.closeMenu(); }
             return;
           }
