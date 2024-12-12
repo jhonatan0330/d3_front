@@ -1,0 +1,45 @@
+
+<div class="inset-0 flex justify-center items-center bg-black bg-opacity-50">
+
+      <mat-card class="w-96">
+        <mat-card-content>
+          <div class="w-full flex justify-end">
+            <button mat-icon-button (click)="closeLogin()">
+              <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
+            </button>
+          </div>
+          <div class="text-center p-4">
+            <img class="m-auto" src="{{ company?.imagen | imageFormat }}" alt="">
+            <p class="m-0">{{company?.nombre}}</p>
+          </div>
+          <form [formGroup]="signInForm" (ngSubmit)="signIn()">
+            <div>
+              <mat-form-field>
+                <input matInput name="username" [formControl]="signInForm.controls['username']" placeholder="Usuario"
+                  value="">
+              </mat-form-field>
+              <small
+                *ngIf="signInForm.controls['username'].hasError('required') && signInForm.controls['username'].touched"
+                class="form-error-msg"> Necesitamos tu usuario para poder autenticarnos </small>
+            </div>
+            <div>
+              <mat-form-field>
+                <input type="password" name="password" matInput [formControl]="signInForm.controls['password']"
+                  placeholder="Clave de aceso" autocomplete="new-password" value="">
+              </mat-form-field>
+              <small
+                *ngIf="signInForm.controls['password'].hasError('required') && signInForm.controls['password'].touched"
+                class="form-error-msg"> No olvides colocar tu clave y que nadie la sepa :)</small>
+            </div>
+
+            <button mat-raised-button class="mat-primary w-full mb-1" [disabled]="signInForm.invalid">Ingresar</button>
+            <small class="m-0">{{currentApplicationVersion}}</small>
+            <div class="text-center">
+              <a [routerLink]="'/sessions/recover'" class="mat-primary text-center w-full">Recordar clave
+                acceso</a>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+    </div>

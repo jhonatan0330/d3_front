@@ -13,11 +13,11 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { LoginComponent } from 'app/authorization/login/login.component';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
 
-  isloginView = true;
   token: string;
   urlService: string;
   private isAuthenticated = false;
@@ -29,7 +29,7 @@ export class LoginService {
   isAdmin = false;
   isPublicUser = true;
 
-  slides:string[] = [];
+  slides: string[] = [];
   slides$ = new BehaviorSubject<string[]>(this.slides);
 
   constructor(
@@ -45,6 +45,16 @@ export class LoginService {
     this.route.queryParams.subscribe(
       (params) => (this.return = params['return'] || '/')
     );
+  }
+
+  openLoginDialog(): void {
+    this.dialog.open(LoginComponent, {
+      // width: '400px',
+      // height: '400px',
+      // disableClose: true,
+      panelClass: 'custom-dialog-container',
+      data: {}
+    });
   }
 
   public signin(username: string, password: string, tokenAuto: string) {
@@ -128,7 +138,6 @@ export class LoginService {
     }
     // Check if the user is logged in
     if (this.isAuthenticated) {
-      this.isloginView = false;
       return of(true);
     }
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
@@ -159,7 +168,6 @@ export class LoginService {
     this.token = response.token;
     // Set the authenticated flag to true
     this.isAuthenticated = true;
-    this.isloginView = false;
 
     if (response && response.mensaje) {
       Swal.fire({
@@ -188,7 +196,7 @@ export class LoginService {
 
 
   signout() {
-    this.isloginView = true;
+    this.openLoginDialog();
     this.setUserAndToken(null);
     this.templateService.clear();
     this.notificationService.clear();
