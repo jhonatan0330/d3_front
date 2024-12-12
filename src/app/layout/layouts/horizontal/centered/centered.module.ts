@@ -13,6 +13,7 @@ import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { CenteredLayoutComponent } from 'app/layout/layouts/horizontal/centered/centered.component';
+import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
 
 @NgModule({
     declarations: [
@@ -31,7 +32,8 @@ import { CenteredLayoutComponent } from 'app/layout/layouts/horizontal/centered/
         SearchModule,
         ShortcutsModule,
         UserModule,
-        SharedModule
+        SharedModule,
+        QuickChatModule
     ],
     exports     : [
         CenteredLayoutComponent

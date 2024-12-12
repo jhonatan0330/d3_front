@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { FuseNavigationItem, FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
-import { compactNavigation, defaultNavigation, futuristicNavigation, horizontalNavigation } from 'app/authorization/navigation/data';
 import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { ModuloDTO } from '../authorization.domain';
@@ -12,11 +11,6 @@ import { ModuloDTO } from '../authorization.domain';
 })
 export class NavigationService {
     private _navigation: ReplaySubject<Navigation> = new ReplaySubject<Navigation>(1);
-
-    private readonly _compactNavigation: FuseNavigationItem[] = compactNavigation;
-    private readonly _defaultNavigation: FuseNavigationItem[] = defaultNavigation;
-    private readonly _futuristicNavigation: FuseNavigationItem[] = futuristicNavigation;
-    private readonly _horizontalNavigation: FuseNavigationItem[] = horizontalNavigation;
 
     /**
      * Constructor
@@ -51,15 +45,21 @@ export class NavigationService {
                 icon : 'heroicons_outline:home',
                 link : '/main'
             }]
-           
+        
+        const compactNavigation: FuseNavigationItem[] = [
+            {
+                id   : 'apps.main',
+                title: 'Inicio',
+                type : 'basic',
+                icon : 'heroicons_outline:home',
+                link : '/main'
+            }]
+
         if (!templates) {
-            this._defaultNavigation[1].children = [];
-            this._defaultNavigation[2].children = [];
-            this._defaultNavigation[3].children = [];
-            this._defaultNavigation[4].children = [];
             return;
         }
 
+        // ACCESOS RAPIDOS
         if (templates) {
              const items: FuseNavigationItem[] = [];
             templates.forEach((element: DocumentoPlantillaDTO) => {
@@ -79,12 +79,22 @@ export class NavigationService {
                     id      : 'rapid',
                     title   : 'Accesos rapidos',
                     type    : 'group',
+                    icon    : 'heroicons_outline:bolt',
+                    children: items
+                };
+                const moduleItemCompact:FuseNavigationItem = {
+                    id      : 'rapid',
+                    title   : 'Accesos rapidos',
+                    type    : 'aside',
+                    icon    : 'heroicons_outline:bolt',
                     children: items
                 };
                 localNavigation.push(moduleItemLocal);
+                compactNavigation.push(moduleItemCompact);
             }
         }
 
+        // PROCESOS
         const processNavItem: FuseNavigationItem[] = [];
         if (process) {
             
@@ -104,17 +114,24 @@ export class NavigationService {
                     id      : 'process',
                     title   : 'Procesos de Negocio',
                     type    : 'group',
+                    icon    : 'heroicons_outline:squares-plus',
+                    children: processNavItem
+                };
+                const processItemCompact:FuseNavigationItem = {
+                    id      : 'process',
+                    title   : 'Procesos de Negocio',
+                    type    : 'aside',
+                    icon    : 'heroicons_outline:squares-plus',
                     children: processNavItem
                 };
                 localNavigation.push(processItemLocal);
+                compactNavigation.push(processItemCompact);
             }
             
         }
-        this._defaultNavigation[1].children = processNavItem;
-
     
 
-
+        // APPS
         const moduleNavItem: FuseNavigationItem[] = [];
         if (modules) {
             modules.forEach((module: ModuloDTO) => {
@@ -136,16 +153,25 @@ export class NavigationService {
             if(moduleNavItem && moduleNavItem.length!==0){
                 const moduleItemLocal:FuseNavigationItem = {
                     id      : 'apps',
-                    title   : 'Aplicaciones',
+                    title   : 'Apps',
                     type    : 'group',
+                    icon    : 'heroicons_outline:squares-2x2',
+                    children: moduleNavItem
+                };
+                const moduleItemCompact:FuseNavigationItem = {
+                    id      : 'apps',
+                    title   : 'Apps',
+                    type    : 'aside',
+                    icon    : 'heroicons_outline:squares-2x2',
                     children: moduleNavItem
                 };
                 localNavigation.push(moduleItemLocal);
+                compactNavigation.push(moduleItemCompact);
             }
             
         }
-        this._defaultNavigation[2].children = moduleNavItem;
 
+        // MODULOS
         if (templates) {
             const templateNavItem: FuseNavigationItem[] = [];
             templates.forEach((element: DocumentoPlantillaDTO) => {
@@ -165,12 +191,21 @@ export class NavigationService {
                     id      : 'modulos',
                     title   : 'Modulos',
                     type    : 'group',
+                    icon    : 'heroicons_outline:table-cells',
+                    children: templateNavItem
+                };
+                const moduleItemCompact:FuseNavigationItem = {
+                    id      : 'modulos',
+                    title   : 'Modulos',
+                    type    : 'aside',
+                    icon    : 'heroicons_outline:table-cells',
                     children: templateNavItem
                 };
                 localNavigation.push(moduleItemLocal);
+                compactNavigation.push(moduleItemCompact);
             }
-            this._defaultNavigation[3].children = templateNavItem;
 
+        // REPORTES
             const reportNavItem: FuseNavigationItem[] = [];
             templates.forEach((element: DocumentoPlantillaDTO) => {
                 if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE) && PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
@@ -189,47 +224,57 @@ export class NavigationService {
                     id      : 'report',
                     title   : 'Reportes',
                     type    : 'group',
+                    icon    : 'heroicons_outline:newspaper',    
+                    children: reportNavItem
+                };
+                const moduleItemCompact:FuseNavigationItem = {
+                    id      : 'report',
+                    title   : 'Reportes',
+                    type    : 'aside',
+                    icon    : 'heroicons_outline:newspaper',
                     children: reportNavItem
                 };
                 localNavigation.push(moduleItemLocal);
+                compactNavigation.push(moduleItemCompact);
             }
-            this._defaultNavigation[4].children = reportNavItem;
         }
 
-        // Fill compact navigation children using the default navigation
-        this._compactNavigation.forEach((compactNavItem) => {
-            this._defaultNavigation.forEach((defaultNavItem) => {
-                if (defaultNavItem.id === compactNavItem.id) {
-                    //compactNavItem.children = cloneDeep(defaultNavItem.children);
-                    compactNavItem.children = defaultNavItem.children;
-                }
-            });
-        });
+        // // Fill compact navigation children using the default navigation
+        // this._compactNavigation.forEach((compactNavItem) => {
+        //     this._defaultNavigation.forEach((defaultNavItem) => {
+        //         if (defaultNavItem.id === compactNavItem.id) {
+        //             //compactNavItem.children = cloneDeep(defaultNavItem.children);
+        //             compactNavItem.children = defaultNavItem.children;
+        //         }
+        //     });
+        // });
 
-        // Fill futuristic navigation children using the default navigation
-        this._futuristicNavigation.forEach((futuristicNavItem) => {
-            this._defaultNavigation.forEach((defaultNavItem) => {
-                if (defaultNavItem.id === futuristicNavItem.id) {
-                    //futuristicNavItem.children = cloneDeep(defaultNavItem.children);
-                    futuristicNavItem.children = defaultNavItem.children;
-                }
-            });
-        });
+        // // Fill futuristic navigation children using the default navigation
+        // this._futuristicNavigation.forEach((futuristicNavItem) => {
+        //     this._defaultNavigation.forEach((defaultNavItem) => {
+        //         if (defaultNavItem.id === futuristicNavItem.id) {
+        //             //futuristicNavItem.children = cloneDeep(defaultNavItem.children);
+        //             futuristicNavItem.children = defaultNavItem.children;
+        //         }
+        //     });
+        // });
 
         // Fill horizontal navigation children using the default navigation
-        this._horizontalNavigation.forEach((horizontalNavItem) => {
-            this._defaultNavigation.forEach((defaultNavItem) => {
-                if (defaultNavItem.id === horizontalNavItem.id) {
-                    //horizontalNavItem.children = cloneDeep(defaultNavItem.children);
-                    horizontalNavItem.children = defaultNavItem.children;
-                }
-            });
-        });
+        // this._horizontalNavigation.forEach((horizontalNavItem) => {
+        //     this._defaultNavigation.forEach((defaultNavItem) => {
+        //         if (defaultNavItem.id === horizontalNavItem.id) {
+        //             //horizontalNavItem.children = cloneDeep(defaultNavItem.children);
+        //             horizontalNavItem.children = defaultNavItem.children;
+        //         }
+        //     });
+        // });
         const navigation = {
-            compact: [...this._compactNavigation],
             default: [...localNavigation],
-            futuristic: [...this._futuristicNavigation],
-            horizontal: [...this._horizontalNavigation]
+
+            compact: [...compactNavigation],
+            futuristic: [...localNavigation],
+
+            horizontal: [...localNavigation],
             //compact   : this._compactNavigation,
             //default   : this._defaultNavigation,
             //futuristic: this._futuristicNavigation,

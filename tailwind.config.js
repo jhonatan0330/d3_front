@@ -69,6 +69,8 @@ const config = {
     important  : true,
     theme      : {
         fontSize: {
+            'xxxs'  : '0.300rem',
+            'xxs'  : '0.500rem',
             'xs'  : '0.625rem',
             'sm'  : '0.75rem',
             'md'  : '0.8125rem',

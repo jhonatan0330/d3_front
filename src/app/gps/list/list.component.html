@@ -9,14 +9,14 @@
             <!-- Search -->
             <div class="flex-auto">
                 <mat-form-field class="w-full min-w-50">
-                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_outline:search'"></mat-icon>
+                    <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
                     <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
                         [placeholder]="'Search devices'">
                 </mat-form-field>
             </div>
             <!-- Search device button -->
             <button class="ml-1" (click)="searchDevices()">
-                <mat-icon [svgIcon]="'heroicons_outline:refresh'"></mat-icon>
+                <mat-icon [svgIcon]="'heroicons_outline:arrow-path'"></mat-icon>
             </button>
         </div>
     </div>

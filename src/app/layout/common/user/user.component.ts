@@ -5,6 +5,7 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { LoginService } from 'app/authentication/login.service';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'user',
@@ -16,6 +17,8 @@ import { UsuarioDTO } from 'app/authentication/authentication.domain';
 export class UserComponent implements OnInit, OnDestroy {
 
     user: UsuarioDTO;
+    time = new Date();
+    currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     constructor(

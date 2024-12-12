@@ -13,30 +13,31 @@ import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { ModernLayoutComponent } from 'app/layout/layouts/horizontal/modern/modern.component';
+import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
 
 @NgModule({
-    declarations: [
-        ModernLayoutComponent
-    ],
-    imports     : [
-        HttpClientModule,
-        RouterModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatIconModule,
-        MatMenuModule,
-        FuseFullscreenModule,
-        FuseNavigationModule,
-        NotificationsModule,
-        SearchModule,
-        ShortcutsModule,
-        UserModule,
-        SharedModule
-    ],
-    exports     : [
-        ModernLayoutComponent
-    ]
+  declarations: [
+    ModernLayoutComponent
+  ],
+  imports: [
+    HttpClientModule,
+    RouterModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatIconModule,
+    MatMenuModule,
+    FuseFullscreenModule,
+    FuseNavigationModule,
+    NotificationsModule,
+    SearchModule,
+    ShortcutsModule,
+    UserModule,
+    SharedModule,
+    QuickChatModule
+  ],
+  exports: [
+    ModernLayoutComponent
+  ]
 })
-export class ModernLayoutModule
-{
+export class ModernLayoutModule {
 }

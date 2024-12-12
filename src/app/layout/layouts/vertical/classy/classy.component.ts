@@ -22,9 +22,6 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    /**
-     * Constructor
-     */
     constructor(
         public _loginService: LoginService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
@@ -33,14 +30,10 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
     ) {
     }
 
-
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * On init
-     */
     ngOnInit(): void {
         // Subscribe to navigation data
         this._navigationService.navigation$
@@ -49,7 +42,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
                 this.navigation = navigation;
             });
 
-        // Subscribe to the user service
+        // Subscribe to the user
         this._loginService.user$
             .pipe((takeUntil(this._unsubscribeAll)))
             .subscribe((user: UsuarioDTO) => {
@@ -60,7 +53,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
                 this.user = user;
             });
 
-        // Subscribe to the user service
+        // Subscribe to the company
         this._loginService.company$
             .pipe((takeUntil(this._unsubscribeAll)))
             .subscribe((company: OrganizacionDTO) => {
@@ -101,7 +94,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
             navigation.toggle();
         }
     }
-    openLogin(){
+    openLogin() {
         this._loginService.isloginView = true;
     }
 }

@@ -1,3 +1,8 @@
 node_modules
 .angular
 dist
+
+*.pem
+*.key
+*.pub
+colombiansofture.fuze
