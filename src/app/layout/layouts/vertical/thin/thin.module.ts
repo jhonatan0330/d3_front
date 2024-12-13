@@ -14,6 +14,7 @@ import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { ThinLayoutComponent } from 'app/layout/layouts/vertical/thin/thin.component';
 import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
+import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
     declarations: [
@@ -33,7 +34,8 @@ import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module'
         ShortcutsModule,
         UserModule,
         SharedModule,
-        QuickChatModule
+        QuickChatModule,
+        HomeButtonModule
     ],
     exports     : [
         ThinLayoutComponent

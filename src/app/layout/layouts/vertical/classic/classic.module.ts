@@ -15,6 +15,7 @@ import { SharedModule } from 'app/shared/shared.module';
 
 import { ClassicLayoutComponent } from 'app/layout/layouts/vertical/classic/classic.component';
 import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
+import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
     declarations: [
@@ -34,7 +35,8 @@ import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module'
         QuickChatModule,
         ShortcutsModule,
         UserModule,
-        SharedModule
+        SharedModule,
+        HomeButtonModule
     ],
     exports     : [
         ClassicLayoutComponent

@@ -14,6 +14,8 @@ import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { CompactLayoutComponent } from 'app/layout/layouts/vertical/compact/compact.component';
 import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
+import { HomeButtonComponent } from 'app/layout/common/home-button/home-button.component';
+import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 
 @NgModule({
@@ -34,7 +36,8 @@ import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module'
         ShortcutsModule,
         UserModule,
         SharedModule,
-        QuickChatModule
+        QuickChatModule,
+        HomeButtonModule
     ],
     exports     : [
         CompactLayoutComponent
