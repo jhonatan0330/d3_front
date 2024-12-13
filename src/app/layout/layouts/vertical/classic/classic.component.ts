@@ -105,7 +105,4 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
         }
     }
 
-    openLogin() {
-        this._loginService.isloginView = true;
-    }
 }

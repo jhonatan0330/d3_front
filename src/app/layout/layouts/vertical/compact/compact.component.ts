@@ -95,7 +95,4 @@ export class CompactLayoutComponent implements OnInit, OnDestroy {
         }
     }
 
-    openLogin() {
-        this._loginService.isloginView = true;
-    }
 }

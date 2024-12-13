@@ -104,7 +104,4 @@ export class ThinLayoutComponent implements OnInit, OnDestroy {
         }
     }
 
-    openLogin() {
-        this._loginService.isloginView = true;
-    }
 }
