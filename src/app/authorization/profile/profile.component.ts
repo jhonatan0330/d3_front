@@ -78,7 +78,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
           _iHeaders.forEach((element: PropiedadDTO) => {
             this.landing.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
           });
-          this.loginservice.isloginView = false;
           this.hasLanding = true;
         }
         const _iFooters = PlantillaHelper.buscarValorMultiple(company.propiedades, PlantillaHelper.HEADER_PAGE);
@@ -87,7 +86,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
           _iFooters.forEach((element: PropiedadDTO) => {
             this.headerSection.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
           });
-          this.loginservice.isloginView = false;
           this.hasLanding = true;
         }
       });
@@ -230,42 +228,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       this.filterControl.setValue(null);
       this.filterItem();
     }
-  }
-
-  toogleShowLogin() {
-    this.loginservice.isloginView = !this.loginservice.isloginView;
-  }
-
-  signIn(): void {
-    // Return if the form is invalid
-    if (this.signInForm.invalid) {
-      return;
-    }
-    // Disable the form
-    this.signInForm.disable();
-    this.isLoading = true;
-    // Sign in
-    this.loginservice.signin(this.signInForm.value.username, this.signInForm.value.password, null)
-      .subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.loginservice.isloginView = false;
-          this.signInForm.enable();
-          this.signInForm.controls['password'].setValue('');
-          const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL') || '/main';
-          // Navigate to the redirect url
-          this.router.navigateByUrl(redirectURL);
-        },
-        error: (response) => {
-          // Re-enable the form
-          this.signInForm.enable();
-          this.isLoading = false;
-          if (response.startsWith('Por seguridad')) {
-            this.router.navigateByUrl('sessions/recover');
-          }
-        }
-      }
-      );
   }
 
 }

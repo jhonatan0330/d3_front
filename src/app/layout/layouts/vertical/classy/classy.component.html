@@ -57,10 +57,7 @@
       <search *ngIf="!_loginService.isPublicUser" [appearance]="'bar'"></search>
       <shortcuts *ngIf="!_loginService.isPublicUser"></shortcuts>
       <notifications *ngIf="!_loginService.isPublicUser"></notifications>
-      <user *ngIf="!_loginService.isPublicUser"></user>
-      <button *ngIf="_loginService.isPublicUser" mat-icon-button (click)="openLogin()">
-        <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-      </button>
+      <user></user>
     </div>
   </div>
 

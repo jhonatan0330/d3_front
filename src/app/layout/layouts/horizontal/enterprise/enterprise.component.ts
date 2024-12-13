@@ -96,7 +96,4 @@ export class EnterpriseLayoutComponent implements OnInit, OnDestroy {
         }
     }
 
-    openLogin() {
-        this._loginService.isloginView = true;
-    }
 }

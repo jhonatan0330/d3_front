@@ -106,7 +106,4 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
         this.navigationAppearance = (this.navigationAppearance === 'default' ? 'dense' : 'default');
     }
 
-    openLogin() {
-        this._loginService.isloginView = true;
-    }
 }

@@ -1,16 +1,15 @@
 <!-- Button -->
-<button mat-icon-button [matMenuTriggerFor]="userActions">
+<button mat-icon-button [matMenuTriggerFor]="userActions" *ngIf="!jwtAuth.isPublicUser"> 
     <span class="relative">
         <img class="w-7 h-7 rounded-full" *ngIf="user?.imagen" [src]="user?.imagen">
         <mat-icon *ngIf="!user?.imagen" [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-        <!--span class="absolute right-0 bottom-0 w-2 h-2 rounded-full" [ngClass]="{'mr-px mb-px': !showAvatar || !user?.avatar,
-                          'bg-green-500': user.status === 'online',
-                          'bg-amber-500': user.status === 'away',
-                          'bg-red-500': user.status === 'busy',
-                          'bg-gray-400': user.status === 'not-visible'}"></span-->
     </span>
 </button>
 
+<button *ngIf="jwtAuth.isPublicUser" mat-icon-button (click)="openLogin()">
+    <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+  </button>
+  
 <mat-menu [xPosition]="'before'" #userActions="matMenu">
     <button mat-menu-item class="flex flex-col items-center justify-center leading-none text-center">
         <span class="flex flex-col items-center justify-center leading-none text-center">
