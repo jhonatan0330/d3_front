@@ -38,6 +38,7 @@
   <div *ngIf="scannerEnabled && !proceso" class="w-full">
     <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
   </div>
+  
   <!-- Opciones de seleccion -->
   <div class="w-full" *ngIf="isEnabled && !proceso" style="overflow: auto">
     <!-- Vista modo tabla -->
@@ -90,6 +91,7 @@
     </table>
   </div>
 </mat-form-field>
+<label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
 <!-- Campos multiples -->
 <div *ngIf="tipoMultiple" class="pb-1">
   <!-- Titulo y boton buscar -->
