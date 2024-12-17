@@ -12,43 +12,49 @@ export class IndiCardsComponent implements OnInit, OnDestroy {
       title: '📊 Guías Procesadas Mensuales',
       value: '875',
       subtitle: 'Total de guías procesadas este mes.',
-      detail: { label: 'Facturadas', value: 650 }
-    },
-    {
-      title: '📊 Tasa de Entregas a Tiempo',
-      value: '92%',
-      subtitle: 'Porcentaje de entregas realizadas puntualmente.',
-      detail: { label: 'Meta', value: '95%' }
-    },
-    {
-      title: '📊 Desempeño de la Flota',
-      value: '87%',
-      subtitle: 'Eficiencia general de vehículos y rutas.',
-      detail: { label: 'Vehículos en operación', value: 52 }
-    },
-    {
-      title: '📊 Costo de Combustible',
-      value: '$3,450',
-      subtitle: 'Gasto total en combustible este mes.',
-      detail: { label: 'Promedio por guía', value: '$3.94' }
+      detail: { label: 'Facturadas', value: 650 },
+      type: 'quantity',
+      color: 'text-blue-500'
     },
     {
       title: '📊 Órdenes Retrasadas',
       value: '28',
       subtitle: 'Cantidad de entregas con retrasos.',
-      detail: { label: 'Retrasos críticos', value: 5 }
+      detail: { label: 'Retrasos críticos', value: 5 },
+      type: 'quantity',
+      color: 'text-blue-500'
+    },
+    {
+      title: '📊 Tasa de Entregas a Tiempo',
+      value: '92%',
+      subtitle: 'Porcentaje de entregas realizadas puntualmente.',
+      detail: { label: 'Meta', value: '95%' },
+      type: 'percentage'
+    },
+    {
+      title: '📊 Desempeño de la Flota',
+      value: '37%',
+      subtitle: 'Eficiencia general de vehículos y rutas.',
+      detail: { label: 'Vehículos en operación', value: 52 },
+      type: 'percentage'
+    },
+    {
+      title: '📊 Costo de Combustible',
+      value: '$3,450',
+      subtitle: 'Gasto total en combustible este mes.',
+      detail: { label: 'Promedio por guía', value: '$3.94' },
+      type: 'price'
     },
     {
       title: '📊 Satisfacción del Cliente',
-      value: '89%',
+      value: '49%',
       subtitle: 'Clientes satisfechos en la última encuesta.',
-      detail: { label: 'Respuestas obtenidas', value: 1_235 }
+      detail: { label: 'Respuestas obtenidas', value: 1_235 },
+      type: 'percentage'
     }
   ];
 
-
   constructor() {
-
   }
 
   ngOnInit(): void { }
@@ -67,6 +73,31 @@ export class IndiCardsComponent implements OnInit, OnDestroy {
       this.menuOpenCard = null;
     }
   }
+
+  getValueColor(card: any): string {
+    if (card.color) return card.color;
+
+    const numericValue = parseFloat(card.value.replace('%', '').replace('$', '').replace(',', ''));
+
+    if (isNaN(numericValue)) return 'text-blue-500';
+
+    switch (card.type) {
+      case 'percentage':
+        if (numericValue >= 90) return 'text-green-500';
+        if (numericValue > 30 && numericValue < 70) return 'text-yellow-500';
+        return 'text-red-500';
+      case 'price':
+        return numericValue < 1000 ? 'text-green-500' : 'text-red-500';
+      case 'quantity':
+        if (numericValue <= 10) return 'text-red-500';
+        if (numericValue <= 50) return 'text-yellow-500';
+        return 'text-green-500';
+      default:
+        return 'text-blue-500';
+    }
+  }
+
+
 
 }
 
