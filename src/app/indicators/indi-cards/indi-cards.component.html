@@ -1,0 +1,53 @@
+<div class="flex flex-col gap-2 p-2 bg-gray-50 dark:bg-gray-800">
+  <div class="max-h-[90%] overflow-y-auto flex flex-col gap-2">
+    <div *ngFor="let card of cards"
+      class="relative bg-white dark:bg-gray-900 rounded-lg shadow-sm p-3 flex items-center justify-between transition-transform">
+
+      <!-- Contenido principal -->
+      <div class="flex flex-col gap-1 w-3/5">
+        <!-- Título -->
+        <div class="text-[0.7rem] font-semibold text-gray-800 dark:text-gray-100 truncate">
+          {{ card.title }}
+        </div>
+
+        <!-- Valor -->
+        <div class="absolute bottom-2 right-2 mr-2 text-[1.2rem] font-bold text-primary-600 dark:text-primary-400">
+          {{ card.value }}
+        </div>
+
+        <!-- Subtítulo -->
+        <div class="text-xs text-gray-500 dark:text-gray-400 truncate">
+          {{ card.subtitle }}
+        </div>
+
+        <!-- Detalle -->
+        <div class="flex items-baseline text-gray-600 dark:text-gray-300 text-xs">
+          <div class="font-medium">{{ card.detail.label }}:</div>
+          <div class="ml-1 font-semibold text-gray-700 dark:text-gray-200">{{ card.detail.value }}</div>
+        </div>
+      </div>
+
+      <!-- Botón de 3 punticos -->
+      <div class="absolute top-2 right-2">
+        <button class="p-1 rounded-full" (click)="openMenu(card)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-300" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v.01M12 12v.01M12 18v.01" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Menú (visible solo si está abierto) -->
+      <div *ngIf="menuOpenCard === card"
+        class="absolute top-8 right-2 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-1">
+        <button
+          class="block w-full text-left px-2 py-1 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Ver
+          detalles</button>
+        <button
+          class="block w-full text-left px-2 py-1 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Editar</button>
+        <button
+          class="block w-full text-left px-2 py-1 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

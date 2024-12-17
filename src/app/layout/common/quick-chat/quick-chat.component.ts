@@ -5,14 +5,13 @@ import { QuickChatService } from 'app/layout/common/quick-chat/quick-chat.servic
 import { Chat } from 'app/layout/common/quick-chat/quick-chat.types';
 
 @Component({
-    selector     : 'quick-chat',
-    templateUrl  : './quick-chat.component.html',
-    styleUrls    : ['./quick-chat.component.scss'],
+    selector: 'quick-chat',
+    templateUrl: './quick-chat.component.html',
+    styleUrls: ['./quick-chat.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    exportAs     : 'quickChat'
+    exportAs: 'quickChat'
 })
-export class QuickChatComponent implements OnInit, OnDestroy
-{
+export class QuickChatComponent implements OnInit, OnDestroy {
     @ViewChild('messageInput') messageInput: ElementRef;
     chat: Chat;
     chats: Chat[];
@@ -31,8 +30,7 @@ export class QuickChatComponent implements OnInit, OnDestroy
         private _ngZone: NgZone,
         private _quickChatService: QuickChatService,
         private _scrollStrategyOptions: ScrollStrategyOptions
-    )
-    {
+    ) {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -42,8 +40,7 @@ export class QuickChatComponent implements OnInit, OnDestroy
     /**
      * Host binding for component classes
      */
-    @HostBinding('class') get classList(): any
-    {
+    @HostBinding('class') get classList(): any {
         return {
             'quick-chat-opened': this.opened
         };
@@ -56,8 +53,7 @@ export class QuickChatComponent implements OnInit, OnDestroy
      */
     @HostListener('input')
     @HostListener('ngModelChange')
-    private _resizeMessageInput(): void
-    {
+    private _resizeMessageInput(): void {
         // This doesn't need to trigger Angular's change detection by itself
         this._ngZone.runOutsideAngular(() => {
 
@@ -79,8 +75,7 @@ export class QuickChatComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Chat
         this._quickChatService.chat$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -93,6 +88,7 @@ export class QuickChatComponent implements OnInit, OnDestroy
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((chats: Chat[]) => {
                 this.chats = chats;
+                console.log('chats recibidos:', this.chats);
             });
 
         // Selected chat
@@ -101,13 +97,16 @@ export class QuickChatComponent implements OnInit, OnDestroy
             .subscribe((chat: Chat) => {
                 this.selectedChat = chat;
             });
+
+
+        // // Obtener los chats iniciales
+        this._quickChatService.getChats().subscribe();
     }
 
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
@@ -120,11 +119,9 @@ export class QuickChatComponent implements OnInit, OnDestroy
     /**
      * Open the panel
      */
-    open(): void
-    {
+    open(): void {
         // Return if the panel has already opened
-        if ( this.opened )
-        {
+        if (this.opened) {
             return;
         }
 
@@ -135,11 +132,9 @@ export class QuickChatComponent implements OnInit, OnDestroy
     /**
      * Close the panel
      */
-    close(): void
-    {
+    close(): void {
         // Return if the panel has already closed
-        if ( !this.opened )
-        {
+        if (!this.opened) {
             return;
         }
 
@@ -150,14 +145,11 @@ export class QuickChatComponent implements OnInit, OnDestroy
     /**
      * Toggle the panel
      */
-    toggle(): void
-    {
-        if ( this.opened )
-        {
+    toggle(): void {
+        if (this.opened) {
             this.close();
         }
-        else
-        {
+        else {
             this.open();
         }
     }
@@ -167,8 +159,7 @@ export class QuickChatComponent implements OnInit, OnDestroy
      *
      * @param id
      */
-    selectChat(id: string): void
-    {
+    selectChat(id: string): void {
         // Open the panel
         this._toggleOpened(true);
 
@@ -182,8 +173,7 @@ export class QuickChatComponent implements OnInit, OnDestroy
      * @param index
      * @param item
      */
-    trackByFn(index: number, item: any): any
-    {
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 
@@ -196,8 +186,7 @@ export class QuickChatComponent implements OnInit, OnDestroy
      *
      * @private
      */
-    private _showOverlay(): void
-    {
+    private _showOverlay(): void {
         // Try hiding the overlay in case there is one already opened
         this._hideOverlay();
 
@@ -205,8 +194,7 @@ export class QuickChatComponent implements OnInit, OnDestroy
         this._overlay = this._renderer2.createElement('div');
 
         // Return if overlay couldn't be create for some reason
-        if ( !this._overlay )
-        {
+        if (!this._overlay) {
             return;
         }
 
@@ -230,16 +218,13 @@ export class QuickChatComponent implements OnInit, OnDestroy
      *
      * @private
      */
-    private _hideOverlay(): void
-    {
-        if ( !this._overlay )
-        {
+    private _hideOverlay(): void {
+        if (!this._overlay) {
             return;
         }
 
         // If the backdrop still exists...
-        if ( this._overlay )
-        {
+        if (this._overlay) {
             // Remove the backdrop
             this._overlay.parentNode.removeChild(this._overlay);
             this._overlay = null;
@@ -255,19 +240,16 @@ export class QuickChatComponent implements OnInit, OnDestroy
      * @param open
      * @private
      */
-    private _toggleOpened(open: boolean): void
-    {
+    private _toggleOpened(open: boolean): void {
         // Set the opened
         this.opened = open;
 
         // If the panel opens, show the overlay
-        if ( open )
-        {
+        if (open) {
             this._showOverlay();
         }
         // Otherwise, hide the overlay
-        else
-        {
+        else {
             this._hideOverlay();
         }
     }

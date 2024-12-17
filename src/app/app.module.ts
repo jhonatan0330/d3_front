@@ -21,6 +21,7 @@ import { ErrorHandlerService } from './shared/error-handler.service';
 import { TokenInterceptor } from './shared/token.interceptor';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
+import { IndicatorsModule } from './indicators/indicators.module';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -48,6 +49,7 @@ const routerConfig: ExtraOptions = {
     CoreModule,
     // Layout module of your application
     LayoutModule,
+    IndicatorsModule,
 
     // 3rd party modules that require global configuration via forRoot
     SharedModule,
