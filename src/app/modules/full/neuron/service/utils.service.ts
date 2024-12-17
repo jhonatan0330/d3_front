@@ -4,6 +4,7 @@ import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { FormComponent } from 'app/modules/full/neuron/form/form.component';
 import { TransferFormComponent } from 'app/notification/transfer-form/transfer-form.component';
 import { TrazabilityComponent } from 'app/document-transition/trazability/trazability.component';
+import { SuccessComponent } from '../form/success/success.component';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,15 @@ export class UtilsService {
       maxWidth: '98vw',
       disableClose: true,
       data: { data: pDataModal , close2Save: pClose2Save, identificador:  pIdentificador},
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalSuccess( pHtmlToPrint : string) {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(SuccessComponent, {
+      maxHeight: '100vh',
+      maxWidth: '98vw',
+      data: { data: pHtmlToPrint},
     });
     return dialogRef.afterClosed();
   }

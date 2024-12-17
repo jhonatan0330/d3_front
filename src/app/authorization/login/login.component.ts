@@ -6,6 +6,9 @@ import { environment } from 'environments/environment';
 import { OrganizacionDTO } from '../../authentication/authentication.domain';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +16,8 @@ import { Subject, takeUntil } from 'rxjs';
 })
 
 export class LoginComponent implements OnInit, OnDestroy {
+
+  templateNewUser: string;
 
   signInForm: UntypedFormGroup;
   isLoading = false;
@@ -27,7 +32,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     public dialogRef: MatDialogRef<LoginComponent>,
-
+    private utilsService: UtilsService
   ) { }
 
   ngOnInit() {
@@ -41,14 +46,17 @@ export class LoginComponent implements OnInit, OnDestroy {
           return;
         }
         this.company = company;
+        this.templateNewUser = PlantillaHelper.buscarValor(
+          this.company.propiedades,
+          PlantillaHelper.PLANTILLA_NUEVO_USUARIO
+        );
       });
-
-    console.log('company', this.company);
-
     this.signInForm = this._formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required]
     });
+
+
   }
 
   ngOnDestroy(): void {
@@ -93,5 +101,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   closeLogin() {
     this.dialogRef.close(false);
   }
-  
+
+  newUser() {
+    if (!this.templateNewUser) { return; }
+    const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
+    pedidoVenta.plantilla = this.templateNewUser;
+    this.utilsService.modalWithParams(pedidoVenta, true).subscribe((documentResponse) => {
+
+      this.signInForm.controls['username'].setValue(documentResponse.data.nombre);
+      this.signInForm.controls['password'].setValue(documentResponse.data.nombre);
+      this.signIn();
+    });
+  }
+
 }

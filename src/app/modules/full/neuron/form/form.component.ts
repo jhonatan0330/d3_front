@@ -208,7 +208,8 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   openManager(value: PedidoVentaDTO) {
     const openNewFormCopyData: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_INICIO_RAPIDO);
-    if ((!this.identificadorInicial && !this.close2Save) || openNewFormCopyData) {
+    const successFullText = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_SUCCESS_INFORMATION);
+    if ((!this.identificadorInicial && !this.close2Save && !successFullText) || openNewFormCopyData) {
       const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
       pedidoVenta.plantilla = value.plantilla;
       if (openNewFormCopyData) {
@@ -243,16 +244,21 @@ export class FormComponent implements OnInit, AfterViewInit {
         title: value.nombre,
         showConfirmButton: false,
         timer: 1500
-      })
-      this.pedido.llaveTabla = value.llaveTabla;
+      });
+    }
+    this.pedido.llaveTabla = value.llaveTabla;
       for (let r = 0; r < this.reportes.length; r++) {
         const _report = this.reportes[r];
         if (PlantillaHelper.buscarValor(_report.propiedades, PlantillaHelper.REP_AUTOPRINT)) {
           this.showReport(_report);
         }
       }
-    }
     this.submitted = false;
+   
+    if(successFullText){
+      // Aqui va los cambios de variables
+      this.utilsService.modalSuccess(successFullText);
+    }
     if (this.dialogRef) {
       if (!openNewFormCopyData) {
         this.dialogRef.close({ data: value });
