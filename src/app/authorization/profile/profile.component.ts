@@ -34,7 +34,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   user: UsuarioDTO;
   company: OrganizacionDTO;
 
-  hasLanding = false;
   landing: SafeHtml[];
   headerSection: SafeHtml[];
 
@@ -67,9 +66,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         this.company = company;
-
-        this.hasLanding = false;
-
       });
 
     // Subscribe to the user service
@@ -118,8 +114,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((_header: []) => {
         this.headerSection = _header;
       });
-
-
   }
 
   ngOnDestroy(): void {
