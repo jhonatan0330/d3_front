@@ -14,8 +14,7 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 })
 export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
-    private jwtAuth: LoginService,
-    private templateService: TemplateService
+    private jwtAuth: LoginService
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
@@ -27,21 +26,25 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           if (errorMessage.indexOf('CODE:caud_usuario') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
             this.jwtAuth.signout();
           } else{
-            let showButton = true;
-            if(errorMessage.indexOf("ERROR: NOT_OK")!==-1) {
-              errorMessage = errorMessage.substring(errorMessage.indexOf("ERROR: NOT_OK") + "ERROR: NOT_OK".length);
-              showButton = false;
-              const audio = new Audio();
-              audio.src = 'assets/audio/incorrect.mp3';
-              audio.load();
-              audio.play();
+            if (errorMessage.indexOf('CODE:private_user') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
+              this.jwtAuth.openLoginDialog();
+            } else{
+              let showButton = true;
+              if(errorMessage.indexOf("ERROR: NOT_OK")!==-1) {
+                errorMessage = errorMessage.substring(errorMessage.indexOf("ERROR: NOT_OK") + "ERROR: NOT_OK".length);
+                showButton = false;
+                const audio = new Audio();
+                audio.src = 'assets/audio/incorrect.mp3';
+                audio.load();
+                audio.play();
+              }
+              Swal.fire({
+                icon: 'error',
+                title: errorMessage,
+                showConfirmButton: showButton,
+                text: error.error.detail
+              });
             }
-            Swal.fire({
-              icon: 'error',
-              title: errorMessage,
-              showConfirmButton: showButton,
-              text: error.error.detail
-            });
           }
         } else { // backend error
           errorMessage = `Connection error: ${error.status} ${error.message}`;

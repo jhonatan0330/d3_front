@@ -21,6 +21,7 @@ export class LoginService {
   token: string;
   urlService: string;
   private isAuthenticated = false;
+  private isOpenPopOfAuthenticate = false;
   user: UsuarioDTO = new UsuarioDTO();
   user$ = new BehaviorSubject<UsuarioDTO>(this.user);
   return: string;
@@ -48,12 +49,16 @@ export class LoginService {
   }
 
   openLoginDialog(): void {
+    if(this.isOpenPopOfAuthenticate) { this.return; }
+    this.isOpenPopOfAuthenticate = true;
     this.dialog.open(LoginComponent, {
       // width: '400px',
       // height: '400px',
       // disableClose: true,
       panelClass: 'custom-dialog-container',
       data: {}
+    }).afterClosed().subscribe(() => {
+      this.isOpenPopOfAuthenticate = false;
     });
   }
 
@@ -196,13 +201,16 @@ export class LoginService {
 
 
   signout() {
-    this.openLoginDialog();
-    this.setUserAndToken(null);
-    this.templateService.clear();
-    this.notificationService.clear();
-    this.dialog.closeAll();
-    if (this.company.publicToken) { this.configureOrganization(this.company); }
-    this.router.navigate(['/main']);
+
+    if(!this.isPublicUser){
+      this.setUserAndToken(null);
+      this.templateService.clear();
+      this.notificationService.clear();
+      this.dialog.closeAll();
+      if (this.company.publicToken) { this.configureOrganization(this.company); }
+      this.router.navigate(['/main']);
+      this.openLoginDialog();
+    }
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
