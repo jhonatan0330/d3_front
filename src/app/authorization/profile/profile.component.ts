@@ -6,12 +6,11 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { AuthenticationService } from 'app/authentication/authentication.service';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SafeHtml } from '@angular/platform-browser';
 import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
-import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Component({
   selector: 'profile',
@@ -33,7 +32,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   slides: string[] = [];
 
   user: UsuarioDTO;
-  isPublicUser
   company: OrganizacionDTO;
 
   hasLanding = false;
@@ -50,12 +48,11 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private _utilsService: UtilsService,
     private _formBuilder: UntypedFormBuilder,
-    public loginservice: LoginService,
-    private domSanitizer: DomSanitizer
+    public loginservice: LoginService
   ) {
   }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
 
     this.signInForm = this._formBuilder.group({
       username: ['', [Validators.required]],
@@ -70,24 +67,9 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         this.company = company;
-        
+
         this.hasLanding = false;
-        const _iHeaders = PlantillaHelper.buscarValorMultiple(company.propiedades, PlantillaHelper.LANDING_PAGE);
-        if (_iHeaders &&_iHeaders.length!==0) {
-          this.landing = [];
-          _iHeaders.forEach((element: PropiedadDTO) => {
-            this.landing.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
-          });
-          this.hasLanding = true;
-        }
-        const _iFooters = PlantillaHelper.buscarValorMultiple(company.propiedades, PlantillaHelper.HEADER_PAGE);
-        if (_iFooters &&_iFooters.length!==0) {
-          this.headerSection = [];
-          _iFooters.forEach((element: PropiedadDTO) => {
-            this.headerSection.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
-          });
-          this.hasLanding = true;
-        }
+
       });
 
     // Subscribe to the user service
@@ -106,31 +88,41 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe({
         next: (value) => {
           this.loadMenu(value);
-          if(this.tempTemplateOpen){
+          if (this.tempTemplateOpen) {
             this.openDialog(this.tempTemplateOpen, this.tempIdOpen);
-            this.tempTemplateOpen= undefined;
+            this.tempTemplateOpen = undefined;
             this.tempIdOpen = undefined;
           }
         }
       });
 
-      this.loginservice.checkTokenIsValid()
-      .subscribe((result:boolean) => {
-       if(!result) {this.loginservice.getUrlServices();}
-      });  
+    this.loginservice.checkTokenIsValid()
+      .subscribe((result: boolean) => {
+        if (!result) { this.loginservice.getUrlServices(); }
+      });
 
-       // Subscribe to the user service
     this.loginservice.slides$
-    .pipe((takeUntil(this._unsubscribeAll)))
-    .subscribe((_slides: []) => {
+      .pipe((takeUntil(this._unsubscribeAll)))
+      .subscribe((_slides: []) => {
         this.slides = _slides;
-    });
+      });
 
-    
+    this.loginservice.landing$
+      .pipe((takeUntil(this._unsubscribeAll)))
+      .subscribe((_landing: []) => {
+        this.landing = _landing;
+      });
+
+    this.loginservice.headerSection$
+      .pipe((takeUntil(this._unsubscribeAll)))
+      .subscribe((_header: []) => {
+        this.headerSection = _header;
+      });
+
+
   }
 
   ngOnDestroy(): void {
-    // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
   }
@@ -199,7 +191,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private openDialog(_type, _id){
+  private openDialog(_type, _id) {
     const plantilla = this.templateService.getTemplate(_type, null);
     if (plantilla) {
       const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();

@@ -88,7 +88,6 @@ export class QuickChatComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((chats: Chat[]) => {
                 this.chats = chats;
-                console.log('chats recibidos:', this.chats);
             });
 
         // Selected chat
@@ -100,7 +99,7 @@ export class QuickChatComponent implements OnInit, OnDestroy {
 
 
         // // Obtener los chats iniciales
-        this._quickChatService.getChats().subscribe();
+       // this._quickChatService.getChats().subscribe();
     }
 
     /**

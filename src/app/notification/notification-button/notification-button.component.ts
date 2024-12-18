@@ -7,7 +7,7 @@ import { ActividadDTO } from 'app/notification/notification.types';
 import { NotificationsService } from 'app/notification/notification.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { LoginService } from 'app/authentication/login.service';
 
@@ -70,8 +70,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
             });
         this.templateService.templates$
             .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((templates) => {
-                if (templates && templates.length !== 0) { this.refresh();}
+            .subscribe((_value: DocumentoPlantillaDTO[]) => {
+                if (_value && _value.length !== 0) { this.refresh(); }
             });
     }
 
@@ -106,19 +106,19 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         // Create the overlay if it doesn't exist
         if (!this._overlayRef) {
             this._createOverlay();
-        } 
+        }
 
         //Al presionar espacio se abrian varios paneles
-        if(this.isOpen) return;
+        if (this.isOpen) return;
         this._overlayRef.attach(new TemplatePortal(this._notificationsPanel, this._viewContainerRef));
         this.isOpen = true;
 
         this.refresh();
-     }
+    }
 
     closePanel(): void {
         this._overlayRef.detach();
-        this.isOpen=false;
+        this.isOpen = false;
     }
 
     trackByFn(index: number, item: any): any {
@@ -167,7 +167,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         // Detach the overlay from the portal on backdrop click
         this._overlayRef.backdropClick().subscribe(() => {
             this._overlayRef.detach();
-            this.isOpen=false;
+            this.isOpen = false;
         });
     }
 
@@ -178,8 +178,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
      */
     private _calculateUnreadCount(): void {
         this.notificationCount = this.notifications.length;
-        if ( this.notifications && this.notifications.length )
-        {
+        if (this.notifications && this.notifications.length) {
             this.pastTimeCount = this.notifications.filter(notification => (notification.fechaTerminar && notification.fechaTerminar < new Date())).length;
         }
     }
@@ -221,7 +220,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     }
 
     refresh() {
-        if (this._jwtAuth.user && this._jwtAuth.user.llaveTabla) { 
+        if (this._jwtAuth.user && this._jwtAuth.user.llaveTabla) {
             this._notificationsService.getAll().subscribe();
         }
     }

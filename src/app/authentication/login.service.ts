@@ -14,6 +14,8 @@ import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LoginComponent } from 'app/authorization/login/login.component';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -24,7 +26,7 @@ export class LoginService {
   private isOpenPopOfAuthenticate = false;
   user: UsuarioDTO = new UsuarioDTO();
   user$ = new BehaviorSubject<UsuarioDTO>(this.user);
-  return: string;
+  returnPath: string;
   company: OrganizacionDTO = new OrganizacionDTO();
   company$ = new BehaviorSubject<OrganizacionDTO>(this.company);
   isAdmin = false;
@@ -32,6 +34,13 @@ export class LoginService {
 
   slides: string[] = [];
   slides$ = new BehaviorSubject<string[]>(this.slides);
+
+
+  landing: SafeHtml[] = [];
+  landing$ = new BehaviorSubject<SafeHtml[]>(this.landing);
+
+  headerSection: SafeHtml[] = [];
+  headerSection$ = new BehaviorSubject<SafeHtml[]>(this.headerSection);
 
   constructor(
     private ls: LocalStoreService,
@@ -41,25 +50,22 @@ export class LoginService {
     private templateService: TemplateService,
     private notificationService: NotificationsService,
     private apiService: ApiService,
+    private domSanitizer: DomSanitizer,
     private http: HttpClient
   ) {
     this.route.queryParams.subscribe(
-      (params) => (this.return = params['return'] || '/')
+      (params) => (this.returnPath = params['return'] || '/')
     );
   }
 
   openLoginDialog(): void {
-    if(this.isOpenPopOfAuthenticate) { this.return; }
-    this.isOpenPopOfAuthenticate = true;
-    this.dialog.open(LoginComponent, {
-      // width: '400px',
-      // height: '400px',
-      // disableClose: true,
-      panelClass: 'custom-dialog-container',
-      data: {}
-    }).afterClosed().subscribe(() => {
-      this.isOpenPopOfAuthenticate = false;
-    });
+    if (!this.isOpenPopOfAuthenticate) {
+      this.isOpenPopOfAuthenticate = true;
+      this.dialog.open(LoginComponent, {}).afterClosed().subscribe(() => {
+        this.isOpenPopOfAuthenticate = false;
+      });
+    }
+
   }
 
   public signin(username: string, password: string, tokenAuto: string) {
@@ -69,7 +75,7 @@ export class LoginService {
     autenticacion.claveAnterior = `${environment.dateCompile}`;
     //Esto lo hice porque me estoy autenticando 2 veces, tengo que mejorar esta parte
     if (username === null && password === null) {
-      if (!tokenAuto) { return null };
+      if (!tokenAuto) { return null; };
       autenticacion.securityToken = tokenAuto;
     }
     return this.http
@@ -93,17 +99,23 @@ export class LoginService {
   }
 
   private setCompany(_company: OrganizacionDTO) {
+    if (_company) {
+      this.getCarrousel(_company);
+    }
     if (this.company && this.company.llaveTabla === _company.llaveTabla) {
+
       //Evito que se vuelva a consultar los template coverad
       return;
     }
-    this.getCarrousel(_company);
+
     this.company = _company;
     this.company$.next(this.company);
   }
 
   private getCarrousel(_company: OrganizacionDTO) {
     this.slides = [];
+    this.landing = [];
+    this.headerSection = [];
     if (_company.propiedades) {
       const backImages = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.COVERAGE_IMAGE);
       if (backImages) {
@@ -128,8 +140,25 @@ export class LoginService {
           },
         });
       }
+
+      const _iHeaders = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.LANDING_PAGE);
+      if (_iHeaders && _iHeaders.length !== 0) {
+        _iHeaders.forEach((element: PropiedadDTO) => {
+          this.landing.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
+        });
+      }
+      const _iFooters = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.HEADER_PAGE);
+      if (_iFooters && _iFooters.length !== 0) {
+        this.headerSection = [];
+        _iFooters.forEach((element: PropiedadDTO) => {
+          this.headerSection.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
+        });
+      }
+
     }
     this.slides$.next(this.slides);
+    this.landing$.next(this.landing);
+    this.headerSection$.next(this.headerSection);
   }
 
   public checkTokenIsValid() {
@@ -192,7 +221,7 @@ export class LoginService {
     //if (!this.templateService.template || this.templateService.template.length === 0) {
     if (!this.user) { return; }
     this.apiService.listarPlantillas(null)
-      .subscribe(templates => {
+      .subscribe((templates) => {
         this.templateService.setTemplates(templates);
       });
     //}
@@ -202,15 +231,16 @@ export class LoginService {
 
   signout() {
 
-    if(!this.isPublicUser){
+    if (!this.isPublicUser) {
       this.setUserAndToken(null);
       this.templateService.clear();
       this.notificationService.clear();
       this.dialog.closeAll();
-      if (this.company.publicToken) { this.configureOrganization(this.company); }
       this.router.navigate(['/main']);
-      this.openLoginDialog();
     }
+    this.isPublicUser = true;
+    this.getOrganization();
+    this.openLoginDialog();
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
@@ -353,7 +383,7 @@ export class LoginService {
 
   configureOrganization(organization: OrganizacionDTO) {
     this.setCompany(organization);
-    if (organization.publicToken) {
+    if (organization && organization.publicToken) {
       this.token = organization.publicToken;
       this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
       this.checkTokenIsValid().subscribe();

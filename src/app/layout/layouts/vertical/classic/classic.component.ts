@@ -37,14 +37,6 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
-        console.log('objNd: ', {
-            isScreenSmall: this.isScreenSmall,
-            navigation: this.navigation,
-            user: this.user,
-            company: this.company,
-            time: this.time
-        })
-
         // Subscribe to navigation data
         this._navigationService.navigation$
             .pipe(takeUntil(this._unsubscribeAll))
