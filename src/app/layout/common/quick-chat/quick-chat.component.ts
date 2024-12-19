@@ -81,6 +81,7 @@ export class QuickChatComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((chat: Chat) => {
                 this.chat = chat;
+                this.selectedChat = chat;
             });
 
         // Chats
@@ -90,16 +91,6 @@ export class QuickChatComponent implements OnInit, OnDestroy {
                 this.chats = chats;
             });
 
-        // Selected chat
-        this._quickChatService.chat$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((chat: Chat) => {
-                this.selectedChat = chat;
-            });
-
-
-        // // Obtener los chats iniciales
-       // this._quickChatService.getChats().subscribe();
     }
 
     /**
@@ -126,6 +117,7 @@ export class QuickChatComponent implements OnInit, OnDestroy {
 
         // Open the panel
         this._toggleOpened(true);
+        this._quickChatService.getChats().subscribe();
     }
 
     /**
