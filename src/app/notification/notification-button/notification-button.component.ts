@@ -220,7 +220,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     }
 
     refresh() {
-        if (this._jwtAuth.user && this._jwtAuth.user.llaveTabla) {
+        if (this._jwtAuth.user && this._jwtAuth.user.llaveTabla && !this._jwtAuth.isPublicUser) {
             this._notificationsService.getAll().subscribe();
         }
     }

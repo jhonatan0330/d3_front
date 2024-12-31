@@ -34,6 +34,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   user: UsuarioDTO;
   company: OrganizacionDTO;
 
+  hasHTML = false;
   landing: SafeHtml[];
   headerSection: SafeHtml[];
 
@@ -107,12 +108,14 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe((takeUntil(this._unsubscribeAll)))
       .subscribe((_landing: []) => {
         this.landing = _landing;
+        if((this.landing && this.landing.length!==0) || (this.headerSection && this.headerSection.length!==0))this.hasHTML = true;
       });
 
     this.loginservice.headerSection$
       .pipe((takeUntil(this._unsubscribeAll)))
       .subscribe((_header: []) => {
         this.headerSection = _header;
+        if((this.landing && this.landing.length!==0) || (this.headerSection && this.headerSection.length!==0))this.hasHTML = true;
       });
   }
 

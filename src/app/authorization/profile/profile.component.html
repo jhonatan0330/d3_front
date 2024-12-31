@@ -1,8 +1,10 @@
 <div class="flex flex-col flex-auto min-w-0">
 
-  <div *ngIf="headerSection" class="w-full">
+  <div *ngIf="headerSection && headerSection.length!==0" class="w-full">
     <div *ngFor="let iHeader of headerSection" [innerHTML]="iHeader" class="w-full"></div>
   </div>
+
+  
 
   <div *ngIf="user" class="flex flex-auto flex-col">
     <!-- Header -->
@@ -85,8 +87,10 @@
     </div>
 
   </div>
-  <div *ngIf="!landing && !headerSection && !user" class="min-h-full flex items-center w-full bg-slate-900"></div>
-  <div *ngIf="landing" class="w-full">
+
+  <div *ngIf="!hasHTML && loginservice.isPublicUser" class="min-h-full flex items-center w-full bg-slate-900"></div>
+  
+  <div *ngIf="landing && landing.length!==0" class="w-full">
     <div *ngFor="let iFooter of landing" [innerHTML]="iFooter" class="w-full"></div>
   </div>
 
