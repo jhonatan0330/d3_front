@@ -76,7 +76,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
         this.data.valorOpcion !== this.fControl.value.llaveTabla
       ) {
         this.data.valorOpcion = this.fControl.value.llaveTabla;
-        this.data.valorText = this.fControl.value.nombre;
+        this.data.valorText = this.fControl.value.descripcion;
         this.avisarModificacion();
       }
     } else {
