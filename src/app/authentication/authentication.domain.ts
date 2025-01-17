@@ -45,7 +45,6 @@ export class UsuarioAutenticacionDTO extends BasicDTO {
   clave: string;
   usuarioNombre: string;
   claveAnterior: string;
-  tableroControl: number;
   usuarioDTO: UsuarioDTO;
   organizacion: OrganizacionDTO;
   mensaje: string;
@@ -68,7 +67,6 @@ export class UsuarioAutenticacionFilterDTO extends BasicFilterDTO {
   clave: string;
   usuarioNombre: string;
   claveAnterior: string;
-  tableroControl: number;
   mensaje: string;
   token: string;
   fechaMaximaMin: Date;
