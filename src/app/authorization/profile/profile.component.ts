@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy, AfterViewInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -11,6 +11,18 @@ import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { ScriptService } from './ScriptService';
+
+const SCRIPT_PATH = 'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js';
+const SCRIPT_PATH2 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/main.js';
+const SCRIPT_PATH3 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/lenis.min.js';
+const SCRIPT_PATH4 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/ScrollTrigger.min.js';
+const SCRIPT_PATH5 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/gsap.min.js';
+const SCRIPT_PATH6 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/swiper.min.js';
+const SCRIPT_PATH7 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/waypoints.min.js';
+const SCRIPT_PATH8 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/wow.min.js';
+const SCRIPT_PATH9 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/jquery.nice-select.min.js';
+const SCRIPT_PATH10 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/venobox.min.js';
 
 @Component({
   selector: 'profile',
@@ -48,11 +60,114 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private _utilsService: UtilsService,
     private _formBuilder: UntypedFormBuilder,
-    public loginservice: LoginService
+    public loginservice: LoginService,
+
+    private renderer: Renderer2,
+    private scriptService: ScriptService
   ) {
   }
 
   ngOnInit(): void {
+
+    const scriptElement = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH);
+    scriptElement.onload = (result) => {
+      console.log('Carga ok del Script: loaded');
+      console.log(result);
+
+      const scriptElement3 = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH3);
+      scriptElement3.onload = (result) => {
+        console.log('Carga ok del Script: 33333');
+        console.log(result);
+
+        const scriptElement4 = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH4);
+        scriptElement4.onload = (result) => {
+          console.log('Carga ok del Script: 4444');
+          console.log(result);
+
+          const scriptElement5 = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH5);
+          scriptElement5.onload = (result) => {
+            console.log('Carga ok del Script: 5555');
+            console.log(result);
+
+            const scriptElement6 = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH6);
+            scriptElement6.onload = (result) => {
+              console.log('Carga ok del Script: 6666');
+              console.log(result);
+
+              const scriptElement7 = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH7);
+              scriptElement7.onload = (result) => {
+                console.log('Carga ok del Script: 7777');
+                console.log(result);
+
+                const scriptElement8 = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH8);
+                scriptElement8.onload = (result) => {
+                  console.log('Carga ok del Script: 8888');
+                  console.log(result);
+
+                  const scriptElement9 = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH9);
+                  scriptElement9.onload = (result) => {
+                    console.log('Carga ok del Script: 9999');
+                    console.log(result);
+
+                    const scriptElement10 = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH10);
+                    scriptElement10.onload = (result) => {
+                      console.log('Carga ok del Script: 2222');
+                      console.log(result);
+
+                      const scriptElement2 = this.scriptService.loadJsScript(this.renderer, SCRIPT_PATH2);
+                      scriptElement2.onload = (result) => {
+                        console.log('Carga ok del Script: 2222');
+                        console.log(result);
+
+                      }
+                      scriptElement2.onerror = () => {
+                        console.log('Error en carga de script2222!');
+                      }
+
+                    }
+                    scriptElement10.onerror = () => {
+                      console.log('Error en carga de script2222!');
+                    }
+
+                  }
+                  scriptElement9.onerror = () => {
+                    console.log('Error en carga de script9999!');
+                  }
+
+                }
+                scriptElement8.onerror = () => {
+                  console.log('Error en carga de script8888!');
+                }
+
+              }
+              scriptElement7.onerror = () => {
+                console.log('Error en carga de script7777!');
+              }
+
+            }
+            scriptElement6.onerror = () => {
+              console.log('Error en carga de script6666!');
+            }
+
+          }
+          scriptElement5.onerror = () => {
+            console.log('Error en carga de script5555');
+          }
+
+        }
+        scriptElement4.onerror = () => {
+          console.log('Error en carga de script4444!');
+        }
+
+      }
+      scriptElement3.onerror = () => {
+        console.log('Error en carga de script3333!');
+      }
+
+    }
+    scriptElement.onerror = () => {
+      console.log('Error en carga de scriptScript!');
+    }
 
     this.signInForm = this._formBuilder.group({
       username: ['', [Validators.required]],
@@ -108,15 +223,19 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe((takeUntil(this._unsubscribeAll)))
       .subscribe((_landing: []) => {
         this.landing = _landing;
-        if((this.landing && this.landing.length!==0) || (this.headerSection && this.headerSection.length!==0))this.hasHTML = true;
+        if ((this.landing && this.landing.length !== 0) || (this.headerSection && this.headerSection.length !== 0)) this.hasHTML = true;
       });
 
     this.loginservice.headerSection$
       .pipe((takeUntil(this._unsubscribeAll)))
       .subscribe((_header: []) => {
         this.headerSection = _header;
-        if((this.landing && this.landing.length!==0) || (this.headerSection && this.headerSection.length!==0))this.hasHTML = true;
+        if ((this.landing && this.landing.length !== 0) || (this.headerSection && this.headerSection.length !== 0)) this.hasHTML = true;
       });
+  }
+
+  initOK() {
+    console.log('OK');
   }
 
   ngOnDestroy(): void {
