@@ -86,8 +86,9 @@ export class LoginService {
       .pipe(
         map((res: UsuarioAutenticacionDTO) => {
           this.isAuthenticated = true;
-          this.setCompany(res.organizacion)
+          //Coloque primero la autenticacion ya que la company trae el carrousel y este carrousel necesita el token
           this.setUserAndToken(res);
+          this.setCompany(res.organizacion)
           this.getUserDataFull(res);
           return res;
         }),
