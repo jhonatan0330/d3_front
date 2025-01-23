@@ -45,8 +45,11 @@ export class GPSService {
      * @param query
      */
     searchDevices(query: string): Observable<GPSDispositivoDTO[]> {
+        let urlQuery = '/gps/get-device'
+        if(query) { urlQuery = urlQuery + '/' +query }
+
         return this._httpClient.get<GPSDispositivoDTO[]>(
-            this.ls.getUrlAccess('/gps/get-device/' + query)
+            this.ls.getUrlAccess( urlQuery )
         ).pipe(
             tap((devices) => {
                 this._devices.next(devices);
@@ -71,7 +74,7 @@ export class GPSService {
         filter.fechaMin.setSeconds(0);
         filter.fechaMax = new Date(filter.fechaMin.getTime() + 1000 * 60 * 60 * 24);
         return this._httpClient.post<GPSLocalizacionDTO[]>(
-            this.ls.getUrlAccess('/gps/getGPSLocation/'), filter
+            this.ls.getUrlAccess('/gps/getGPSLocation'), filter
         ).pipe(
             tap((locations) => {
                 this._locations.next(locations);
