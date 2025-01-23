@@ -34,8 +34,8 @@ export class LoginService {
 
   slides: string[] = [];
   slides$ = new BehaviorSubject<string[]>(this.slides);
-
-
+  
+  
   landing: SafeHtml[] = [];
   landing$ = new BehaviorSubject<SafeHtml[]>(this.landing);
 
@@ -61,11 +61,13 @@ export class LoginService {
   openLoginDialog(): void {
     if (!this.isOpenPopOfAuthenticate) {
       this.isOpenPopOfAuthenticate = true;
-      this.dialog.open(LoginComponent, {}).afterClosed().subscribe(() => {
+      this.dialog.open(LoginComponent, {
+        disableClose: true,
+        // panelClass: 'custom-login-dialog'
+      }).afterClosed().subscribe(() => {
         this.isOpenPopOfAuthenticate = false;
       });
     }
-
   }
 
   public signin(username: string, password: string, tokenAuto: string) {
@@ -87,7 +89,7 @@ export class LoginService {
         map((res: UsuarioAutenticacionDTO) => {
           this.isAuthenticated = true;
           //Coloque primero la autenticacion ya que la company trae el carrousel y este carrousel necesita el token
-          this.setUserAndToken(res);
+          this.setUserAndToken(res, res.organizacion);
           this.setCompany(res.organizacion)
           this.getUserDataFull(res);
           return res;
@@ -136,8 +138,10 @@ export class LoginService {
                 this.slides$.next(this.slides);
               });
             }
+            this.checkAndShowLogin();
           },
           error: () => {
+            this.checkAndShowLogin();
           },
         });
       }
@@ -160,6 +164,16 @@ export class LoginService {
     this.slides$.next(this.slides);
     this.landing$.next(this.landing);
     this.headerSection$.next(this.headerSection);
+
+    this.checkAndShowLogin(); 
+  }
+
+  checkAndShowLogin(): void {
+    const isEmptyHeadersAndLanding = this.headerSection.length === 0 && this.landing.length === 0;
+  
+    if (this.isPublicUser && isEmptyHeadersAndLanding) {
+      this.openLoginDialog();
+    }
   }
 
   public checkTokenIsValid() {
@@ -233,7 +247,7 @@ export class LoginService {
   signout() {
 
     if (!this.isPublicUser) {
-      this.setUserAndToken(null);
+      this.setUserAndToken(null, null);
       this.templateService.clear();
       this.notificationService.clear();
       this.dialog.closeAll();
@@ -295,7 +309,7 @@ export class LoginService {
   }
 
 
-  setUserAndToken(authDTO: UsuarioAutenticacionDTO) {
+  setUserAndToken(authDTO: UsuarioAutenticacionDTO, _company: OrganizacionDTO) {
     if (authDTO) {
       this.isAuthenticated = true;
       this.token = authDTO.token;
@@ -305,15 +319,14 @@ export class LoginService {
       this.token = null;
       this.user = null;
     }
-    this.isPublicUser = false;
-    if (this.user && this.user.llaveTabla) {
-      if (PlantillaHelper.buscarValor(this.company.propiedades, PlantillaHelper.PUBLIC_USER)
-        && this.user.llaveTabla === PlantillaHelper.buscarValor(this.company.propiedades, PlantillaHelper.PUBLIC_USER)) {
-        this.isPublicUser = true;
+
+    // El usuario público comienza como true
+    this.isPublicUser = true;
+    if (this.user && this.user.llaveTabla && _company)  {
+      const companyUserPublic = PlantillaHelper.buscarPropiedad(_company.propiedades, PlantillaHelper.PUBLIC_USER);
+      if (!companyUserPublic || this.user.llaveTabla !== companyUserPublic.valor) {
+        this.isPublicUser = false;
       }
-    } else {
-      //Aqui no hay usuario publico y mostramos solo el login
-      this.isPublicUser = true;
     }
 
     this.user$.next(this.user);
