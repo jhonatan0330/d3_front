@@ -51,11 +51,11 @@ export class ManualFormComponent implements OnInit {
         });
         this.getAccounts();
 
-        if(this.data.key) {
+        if(this.data) {
             this.botonAccion = "Actualizar";
-            this.key = this.data.key;
+            this.key = this.data;
             this.loading= true;
-            this.accountingService.getVoucher(this.data.catalog, this.data.key)
+            this.accountingService.getVoucher( this.data)
             .subscribe(x => {
 
                 this.form = this._formBuilder.group({

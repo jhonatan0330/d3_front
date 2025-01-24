@@ -43,6 +43,7 @@ import { LocalConstants, LocalStoreService } from 'app/shared/local-store.servic
 import { Router } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { TraceResumeComponent } from 'app/document-transition/trace-resume/trace-resume.component';
+import { IdResponse } from '../model/sw42.utils';
 
 @Component({
   selector: 'app-form',
@@ -85,6 +86,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   canMassive = false;
   canTransfer = false;
   canDuplicate = false;
+  hasVoucher = false;
 
 
   // Cambiar estado
@@ -621,8 +623,10 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   // Resuelve las propiedades de la plantilla
   resolvePropiertiesForm() {
+    
     this.canMassive = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA);
     if (this.pedido.llaveTabla) {
+      this.hasVoucher = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.TEMPLATE_VOUCHER);
       if (!this.pedido.estadoExpediente) {
         // Solo se pueden anular los que estan en estado activo y que no son de un proceso
         if (this.pedido.estado === StatesEnum.ACTIVE) {
@@ -1090,5 +1094,20 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     _doc.server = this.plantilla.server;
     this.utilsService.modalWithParams(_doc, false).subscribe();
+  }
+
+  showVoucherAccount(){
+    if (this.hasVoucher && this.pedido && this.pedido.llaveTabla) {
+      this.api
+      .getVoucherOfDocument(this.pedido.llaveTabla)
+      .subscribe({
+        next: (value: IdResponse) => {
+         this.utilsService.modalVoucher(value.id);
+        },
+        error: () => {
+          this.submitted = false;
+        },
+      });
+    }
   }
 }

@@ -225,6 +225,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
     if (this.data.valorFecha) {
       let distance = this.data.valorFecha.getTime() - new Date().getTime();
       this.day = Math.floor(distance / (1000 * 60 * 60 * 24));
+      if(this.day < 0){ this.day = this.day + 1 ;}
       this.hours = Math.floor(
         (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
       );

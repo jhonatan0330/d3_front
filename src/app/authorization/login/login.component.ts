@@ -102,6 +102,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.dialogRef.close(false);
   }
 
+  recoverPassword() {
+    this.router.navigateByUrl('/sessions/recover');
+    this.closeLogin();
+  }
+
   newUser() {
     if (!this.templateNewUser) { return; }
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();

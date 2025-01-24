@@ -5,6 +5,7 @@ import { FormComponent } from 'app/modules/full/neuron/form/form.component';
 import { TransferFormComponent } from 'app/notification/transfer-form/transfer-form.component';
 import { TrazabilityComponent } from 'app/document-transition/trazability/trazability.component';
 import { SuccessComponent } from '../form/success/success.component';
+import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.component';
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +50,14 @@ export class UtilsService {
       maxWidth: '99vh',
       disableClose: false,
       data: { document: document, template: template, server: server, documentName: documentName, documentState: documentState},
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalVoucher(key: string){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(ManualFormComponent, {
+      disableClose: true,
+      data: key
     });
     return dialogRef.afterClosed();
   }

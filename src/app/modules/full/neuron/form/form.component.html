@@ -44,6 +44,10 @@
       <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList"
         [style.color]="getColorFont()">menu</mat-icon>
       <mat-menu #formMenuList="matMenu">
+        <!-- Boton transferir -->
+        <button mat-menu-item matTooltip="Contable" *ngIf="hasVoucher" (click)="showVoucherAccount()" tabindex="-1">
+          <mat-icon>presentation-chart-bar</mat-icon>Comprobante contable
+        </button>
         <!-- Boton Cambiar estado -->
         <button mat-menu-item matTooltip="Cambia estado" *ngIf="canChangeState" (click)="showChangeState()"
           tabindex="-1">

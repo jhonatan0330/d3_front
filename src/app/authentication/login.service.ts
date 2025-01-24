@@ -245,7 +245,6 @@ export class LoginService {
 
 
   signout() {
-
     if (!this.isPublicUser) {
       this.setUserAndToken(null, null);
       this.templateService.clear();
@@ -255,7 +254,7 @@ export class LoginService {
     }
     this.isPublicUser = true;
     this.getOrganization();
-    this.openLoginDialog();
+    //this.openLoginDialog();
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
@@ -401,7 +400,9 @@ export class LoginService {
       this.token = organization.publicToken;
       this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
       //Si no coloco esto se va a crear un ciclo infintio solicitando el token
-      if (!this.isOpenPopOfAuthenticate) { this.checkTokenIsValid().subscribe();}
+      if (!this.isOpenPopOfAuthenticate) { 
+        this.checkTokenIsValid().subscribe();
+      }
     }
   }
 
