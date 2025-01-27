@@ -45,7 +45,7 @@
         [style.color]="getColorFont()">menu</mat-icon>
       <mat-menu #formMenuList="matMenu">
         <!-- Boton transferir -->
-        <button mat-menu-item matTooltip="Contable" *ngIf="hasVoucher" (click)="showVoucherAccount()" tabindex="-1">
+        <button mat-menu-item matTooltip="Contable" (click)="showVoucherAccount()" tabindex="-1">
           <mat-icon>presentation-chart-bar</mat-icon>Comprobante contable
         </button>
         <!-- Boton Cambiar estado -->

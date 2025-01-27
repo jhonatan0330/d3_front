@@ -1090,19 +1090,22 @@ export class FormComponent implements OnInit, AfterViewInit {
         _doc.caracteristicas.push(campoBase);
       }
     }
-
-
     _doc.server = this.plantilla.server;
     this.utilsService.modalWithParams(_doc, false).subscribe();
   }
 
   showVoucherAccount(){
-    if (this.hasVoucher && this.pedido && this.pedido.llaveTabla) {
+    //this.hasVoucher && 
+    if (this.pedido && this.pedido.llaveTabla) {
       this.api
       .getVoucherOfDocument(this.pedido.llaveTabla)
       .subscribe({
         next: (value: IdResponse) => {
-         this.utilsService.modalVoucher(value.id);
+          if(value && value.id){
+            this.utilsService.modalVoucher(value.id, null).subscribe();
+          } else {
+            Swal.fire('Comprobante', 'No se encontro comprobante para este documento', 'info');
+          }
         },
         error: () => {
           this.submitted = false;

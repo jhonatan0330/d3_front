@@ -54,10 +54,11 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  modalVoucher(key: string){
+  modalVoucher(_key: string, _catalog:string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(ManualFormComponent, {
       disableClose: true,
-      data: key
+      maxHeight: '90vh',
+      data: { key:_key, catalogId: _catalog }
     });
     return dialogRef.afterClosed();
   }

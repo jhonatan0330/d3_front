@@ -18,7 +18,7 @@ export class AccountingService {
     }
 
     getVoucher(key: string): Observable<Voucher_> {
-        return this.http.get<Voucher_>(this.ls.getUrlAccess('/acc/voucher/' + key));
+        return this.http.get<Voucher_>(this.ls.getUrlAccess('/acc/voucher/one/' + key));
     }
 
     createManual(voucher: Voucher): Observable<ManualDTO> {

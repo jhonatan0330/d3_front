@@ -8,9 +8,9 @@ import { UntypedFormControl } from '@angular/forms';
 import { AccountingService } from './accounting.service';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { ManualFormComponent } from './manual-form/manual-form.component';
 import { MatTableDataSource } from '@angular/material/table';
 import Swal from 'sweetalert2';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 
 interface AccountNode {
     account: AccountDTO;
@@ -74,6 +74,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     constructor(private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _matDialog: MatDialog,
+        private utilsService: UtilsService,
         public accountingService: AccountingService) {
     }
 
@@ -117,12 +118,10 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     editVouchers(voucher: ManualDTO) {
-        this._matDialog.open(ManualFormComponent, {
-            disableClose: true,
-            data: voucher
-        }).afterClosed().subscribe(() => {
-            this.getAccounts();
-        });
+        this.utilsService.modalVoucher(voucher.key, voucher.catalog)
+            .subscribe(() => {
+                this.getAccounts();
+            });
     }
 
     deleteVouchers(voucher: ManualDTO) {
@@ -236,12 +235,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     openManualForm(): void {
         if (!this.accountingService.currentCatalog) { return; }
-        const dialogRef = this._matDialog.open(ManualFormComponent, {
-            data: { catalogId: this.accountingService.currentCatalog.key },
-            maxHeight: '90vh',
-            disableClose: true,
-        });
-        dialogRef.afterClosed().subscribe(() => { this.getBalance(); this.getVouchers(); });
+        this.utilsService.modalVoucher(null, this.accountingService.currentCatalog.key)
+        .subscribe(() => { this.getBalance(); this.getVouchers(); });
     }
-
 }

@@ -19,6 +19,7 @@ export class ManualFormComponent implements OnInit {
     public filteredOptions: Observable<AccountDTO[]>;
     public debitValue: number = 0;
     public differenceValue: number = 0;
+    public codigoComprobante = '';
     private creditValue: number = 0;
 
     private key: string;
@@ -34,14 +35,14 @@ export class ManualFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (!this.accountingService.currentCatalog) {
+       /* if (!this.accountingService.currentCatalog) {
             this.matDialogRef.close();
             return;
-        }
+        }*/
 
         this.form = this._formBuilder.group({
             header: this._formBuilder.group({
-                catalog: this.accountingService.currentCatalog.key,
+                catalog: (this.accountingService.currentCatalog)?this.accountingService.currentCatalog.key:'',
                 concept: ['', Validators.required],
                 type: ['', Validators.required],
                 factDate: [new Date(), Validators.required],
@@ -52,15 +53,19 @@ export class ManualFormComponent implements OnInit {
         this.getAccounts();
 
         if(this.data) {
-            this.botonAccion = "Actualizar";
-            this.key = this.data;
+             if(this.data.catalogId){
+                this.botonAccion = "Actualizar";
+             } else {
+                this.botonAccion = undefined;
+             }
+            this.key = this.data.key;
             this.loading= true;
-            this.accountingService.getVoucher( this.data)
+            this.accountingService.getVoucher( this.data.key)
             .subscribe(x => {
 
                 this.form = this._formBuilder.group({
                     header: this._formBuilder.group({
-                        catalog: this.accountingService.currentCatalog.key,
+                        catalog: [x.header.catalog],
                         concept: [x.header.concept],
                         factDate: [x.header.factDate],
                         value: [x.header.value]
@@ -77,6 +82,7 @@ export class ManualFormComponent implements OnInit {
                     this.debitValue += i.positive;
                     this.recordsArray.push(this.createRecord(i));
                 })
+                this.codigoComprobante = x.header.code;
                 this.differenceValue = this.debitValue - this.creditValue;
                 this.recordsArray.push(this.createRecord(new ManualAccountDTO()));
                 this.loading= false;
@@ -99,10 +105,10 @@ export class ManualFormComponent implements OnInit {
                  this.filteredOptions = this.accountingService.getAccounts(this.catalogId, text);
              });*/
 
-        if (!this.key) {
+        /*if (!this.key) {
             this.accountingService.getCatalog(this.key)
                 .subscribe(x => this.form.patchValue(x));
-        }
+        }*/
 
         this.timeFrom.valueChanges.subscribe({
             next: () => {
@@ -116,7 +122,7 @@ export class ManualFormComponent implements OnInit {
     }
 
     getAccounts() {
-        if (!this.accountingService.currentCatalog.accounts) {
+        if (this.accountingService.currentCatalog && !this.accountingService.currentCatalog.accounts) {
             this.loading = true;
             this.accountingService.getAccounts(this.accountingService.currentCatalog.key).subscribe({
                 next: (items) => {

@@ -90,7 +90,7 @@ export class ApiService {
   }
 
   getVoucherOfDocument(key: string): Observable<IdResponse> {
-    return this.http.get<IdResponse>(this.ls.getUrlAccess('/acc/voucher/' + key));
+    return this.http.get<IdResponse>(this.ls.getUrlAccess('/acc/voucher/document/' + key));
   }
 
   consultarDatosBase(
