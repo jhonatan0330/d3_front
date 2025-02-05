@@ -9,15 +9,16 @@
             <ng-container *ngIf="!opened || (opened && !selectedChat)">
                 <div class="flex flex-auto items-center justify-center">
                     <div class="flex flex-0 items-center justify-center w-16">
-                        <mat-icon class="icon-size-6" [svgIcon]="'heroicons_outline:chat-bubble-left-right'"></mat-icon>
+                        <!-- <mat-icon class="icon-size-6" [svgIcon]="'heroicons_outline:chat-bubble-left-right'"></mat-icon> -->
+                        <img class="w-6 h-6" src="assets/images/img-test/robot.png" alt="robot-icon">
                     </div>
                     <div class="text-lg font-medium text-secondary">
                         <div class="text-lg font-medium text-secondary">
-                            {{ selectedChat?.id === 'indicators' ? 'Indicadores' : 'Team Chat' }}
+                            {{ selectedChat?.id === 'indicators' ? 'Indicadores' : 'Quark - Tu Asistente Virtual' }}
                         </div>
                     </div>
                     <button class="ml-auto mr-4" mat-icon-button>
-                        <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+                        <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>s
                     </button>
                 </div>
             </ng-container>

@@ -16,14 +16,14 @@ export class IndiCardsComponent implements OnInit, OnDestroy {
       type: 'quantity',
       color: 'text-blue-500'
     },
-    {
-      title: '📊 Órdenes Retrasadas',
-      value: '28',
-      subtitle: 'Cantidad de entregas con retrasos.',
-      detail: { label: 'Retrasos críticos', value: 5 },
-      type: 'quantity',
-      color: 'text-blue-500'
-    },
+    // {
+    //   title: '📊 Órdenes Retrasadas', 
+    //   value: '28',
+    //   subtitle: 'Cantidad de entregas con retrasos.',
+    //   detail: { label: 'Retrasos críticos', value: 5 },
+    //   type: 'quantity',
+    //   color: 'text-blue-500'
+    // },
     {
       title: '📊 Tasa de Entregas a Tiempo',
       value: '92%',
@@ -47,9 +47,9 @@ export class IndiCardsComponent implements OnInit, OnDestroy {
     },
     {
       title: '📊 Satisfacción del Cliente',
-      value: '49%',
+      value: '73%',
       subtitle: 'Clientes satisfechos en la última encuesta.',
-      detail: { label: 'Respuestas obtenidas', value: 1_235 },
+      detail: { label: 'Respuestas obtenidas', value: '90%' },
       type: 'percentage'
     }
   ];
@@ -83,7 +83,7 @@ export class IndiCardsComponent implements OnInit, OnDestroy {
 
     switch (card.type) {
       case 'percentage':
-        if (numericValue >= 90) return 'text-green-500';
+        if (numericValue > 71) return 'text-green-500';
         if (numericValue > 30 && numericValue < 70) return 'text-yellow-500';
         return 'text-red-500';
       case 'price':
