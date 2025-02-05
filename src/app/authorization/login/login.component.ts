@@ -91,6 +91,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.signInForm.enable();
           this.isLoading = false;
           if (response.startsWith('Por seguridad')) {
+            this.closeLogin();
             this.router.navigateByUrl('sessions/recover');
           }
         }

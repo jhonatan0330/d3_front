@@ -7,7 +7,6 @@ import {
 import { catchError, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
 import { LoginService } from '../authentication/login.service';
-import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 @Injectable({
   providedIn: 'root',
