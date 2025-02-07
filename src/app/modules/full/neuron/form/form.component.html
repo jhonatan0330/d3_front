@@ -44,26 +44,26 @@
       <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList"
         [style.color]="getColorFont()">menu</mat-icon>
       <mat-menu #formMenuList="matMenu">
-        <!-- Boton transferir -->
-        <button mat-menu-item *ngIf="hasVoucher" (click)="showVoucherAccount()" tabindex="-1">
-          <mat-icon>table_view-chart-bar</mat-icon>Comprobante contable
-        </button>
         <!-- Boton Cambiar estado -->
-        <button mat-menu-item matTooltip="Cambia estado" *ngIf="canChangeState" (click)="showChangeState()"
+        <button mat-menu-item *ngIf="canChangeState" (click)="showChangeState()"
           tabindex="-1">
           <mat-icon>swap_horiz</mat-icon>Cambiar estado
         </button>
         <!-- Boton transferir -->
-        <button mat-menu-item matTooltip="Transferir" *ngIf="canTransfer" (click)="showTransfer()" tabindex="-1">
-          <mat-icon>transfer_within_a_station</mat-icon>Transfer
+        <button mat-menu-item  *ngIf="canTransfer" (click)="showTransfer()" tabindex="-1">
+          <mat-icon>transfer_within_a_station</mat-icon>Transferir
         </button>
         <!-- Boton carga masiva -->
-        <button mat-menu-item matTooltip="Carga Masiva" *ngIf="canMassive" (click)="showMassive()" tabindex="-1">
+        <button mat-menu-item  *ngIf="canMassive" (click)="showMassive()" tabindex="-1">
           <mat-icon>cloud_upload</mat-icon> Carga
         </button>
         <!-- Boton Duplicar -->
-        <button mat-menu-item matTooltip="Duplicar" (click)="duplicate()" tabindex="-1">
+        <button mat-menu-item  (click)="duplicate()" tabindex="-1">
           <mat-icon>file_copy</mat-icon>Duplicar
+        </button>
+        <!-- Boton Voucher -->
+        <button mat-menu-item *ngIf="hasVoucher" (click)="showVoucherAccount()" tabindex="-1">
+          <mat-icon>table_view-chart-bar</mat-icon>Comprobante contable
         </button>
         <!-- Boton Compartir -->
         <button *ngIf="pedido && pedido.llaveTabla" mat-menu-item (click)="copyUrl()">

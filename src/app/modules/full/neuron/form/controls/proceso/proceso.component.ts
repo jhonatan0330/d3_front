@@ -523,6 +523,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       for (let i = 0; i < this.data.dependientes.length; i++) {
         const iDepen = this.data.dependientes[i];
         if (!iDepen.valorOpcion 
+          // Esto es por brandingbox el formulario de averias, no cargaba la bodega
+          && (!iDepen.campoDTO && iDepen.campoDTO.formato !== DocumentoPlantillaCaracteristicaEnum.PRODUCTO)
           && (!iDepen.campoDTO || 
             (iDepen.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO 
               && !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.MULTIPLE)
