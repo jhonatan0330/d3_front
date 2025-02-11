@@ -1,8 +1,9 @@
+import { DocumentoPlantillaDTO } from "app/modules/full/neuron/model/sw42.domain";
+
 export interface Chat
 {
     id?: string;
-    contactId?: string;
-    contact?: Contact;
+    contact?: DocumentoPlantillaDTO;
     unreadCount?: number;
     muted?: boolean;
     lastMessage?: string;
@@ -16,7 +17,7 @@ export interface Chat
         createdAt?: string;
     }[];
 }
-
+/*
 export interface Contact
 {
     id?: string;
@@ -43,4 +44,4 @@ export interface Contact
         docs?: any[];
         links?: any[];
     };
-}
+}*/

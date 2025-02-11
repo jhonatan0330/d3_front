@@ -234,9 +234,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  initOK() {
-    console.log('OK');
-  }
 
   ngOnDestroy(): void {
     this._unsubscribeAll.next(null);

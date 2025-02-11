@@ -1,8 +1,14 @@
 import { Component, ElementRef, HostBinding, HostListener, NgZone, OnDestroy, OnInit, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { Subject, takeUntil } from 'rxjs';
-import { QuickChatService } from 'app/layout/common/quick-chat/quick-chat.service';
 import { Chat } from 'app/layout/common/quick-chat/quick-chat.types';
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { FormControl } from '@angular/forms';
+import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { QuickChatService } from './quick-chat.service';
 
 @Component({
     selector: 'quick-chat',
@@ -12,30 +18,30 @@ import { Chat } from 'app/layout/common/quick-chat/quick-chat.types';
     exportAs: 'quickChat'
 })
 export class QuickChatComponent implements OnInit, OnDestroy {
-    @ViewChild('messageInput') messageInput: ElementRef;
     chat: Chat;
-    chats: Chat[];
+    chats: Chat[] = [];
     opened: boolean = false;
-    selectedChat: Chat;
+    isLoading = false;
+    hasCreatePermission = false;
+
     private _scrollStrategy: ScrollStrategy = this._scrollStrategyOptions.block();
     private _overlay: HTMLElement;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    /**
-     * Constructor
-     */
+    fControlSearch: FormControl = new FormControl(); // Texto que digita el usuario para filtrar
+
+    modules: DocumentoPlantillaDTO[] = [];
+
     constructor(
         private _elementRef: ElementRef,
         private _renderer2: Renderer2,
-        private _ngZone: NgZone,
+        private templateService: TemplateService,
+        private api: ApiService,
+        private utilsService: UtilsService,
         private _quickChatService: QuickChatService,
         private _scrollStrategyOptions: ScrollStrategyOptions
     ) {
     }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Decorated methods
-    // -----------------------------------------------------------------------------------------------------
 
     /**
      * Host binding for component classes
@@ -46,42 +52,20 @@ export class QuickChatComponent implements OnInit, OnDestroy {
         };
     }
 
-    /**
-     * Resize on 'input' and 'ngModelChange' events
-     *
-     * @private
-     */
-    @HostListener('input')
-    @HostListener('ngModelChange')
-    private _resizeMessageInput(): void {
-        // This doesn't need to trigger Angular's change detection by itself
-        this._ngZone.runOutsideAngular(() => {
 
-            setTimeout(() => {
 
-                // Set the height to 'auto' so we can correctly read the scrollHeight
-                this.messageInput.nativeElement.style.height = 'auto';
-
-                // Get the scrollHeight and subtract the vertical padding
-                this.messageInput.nativeElement.style.height = `${this.messageInput.nativeElement.scrollHeight}px`;
-            });
-        });
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void {
         // Chat
         this._quickChatService.chat$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((chat: Chat) => {
                 this.chat = chat;
-                this.selectedChat = chat;
+                this.hasCreatePermission = false;
+                if (!this.chat || !this.chat.contact) { return; }
+                this.hasCreatePermission = !PlantillaHelper.isEmpty(
+                    this.chat.contact.propiedades,
+                    PlantillaHelper.PERMISO_PLANTILLA_CREAR
+                );
             });
 
         // Chats
@@ -91,11 +75,26 @@ export class QuickChatComponent implements OnInit, OnDestroy {
                 this.chats = chats;
             });
 
+        this.templateService.templates$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe({
+                next: (templates) => {
+                    this.modules = [];
+                    if (templates && templates.length !== 0) {
+                        // Transform document to MenuItems
+                        templates.forEach((element) => {
+                            if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.CONTACT_CHAT)) {
+                                this.modules.push(element);
+                            }
+                        });
+                    }
+                    if (this.modules.length > 0 && this.opened) {
+                        this.selectChat(this.modules[0].llaveTabla);
+                    }
+                }
+            });
     }
 
-    /**
-     * On destroy
-     */
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
@@ -117,7 +116,6 @@ export class QuickChatComponent implements OnInit, OnDestroy {
 
         // Open the panel
         this._toggleOpened(true);
-        this._quickChatService.getChats().subscribe();
     }
 
     /**
@@ -145,25 +143,24 @@ export class QuickChatComponent implements OnInit, OnDestroy {
         }
     }
 
-    /**
-     * Select the chat
-     *
-     * @param id
-     */
-    selectChat(id: string): void {
+    selectChat(_id: string): void {
         // Open the panel
         this._toggleOpened(true);
+        if (!this.chats) this.chats = [];
+        const currentChat = this.chats.find((chat) => { return chat.id === _id; });
+        if (currentChat) {
+            this._quickChatService.setChat(currentChat);
+        } else {
+            this._quickChatService.setChat({
+                id: _id,
+                contact: this.modules.find((module) => { return module.llaveTabla === _id; }),
+            });
+            this.chats.push(this.chat);
+            this._quickChatService.setChats(this.chats);
+        }
 
-        // Get the chat data
-        this._quickChatService.getChatById(id).subscribe();
     }
 
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
     trackByFn(index: number, item: any): any {
         return item.id || index;
     }
@@ -244,4 +241,66 @@ export class QuickChatComponent implements OnInit, OnDestroy {
             this._hideOverlay();
         }
     }
+
+    sendMesssage(): void {
+        if (!this.chat || !this.fControlSearch.value) { return; }
+        if (!this.chat.messages) {
+            this.chat.messages = [];
+        }
+        this.chat.messages.push({
+            chatId: this.chat.id,
+            isMine: false,
+            value: this.fControlSearch.value,
+            createdAt: new Date().toISOString()
+        });
+        const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
+        entity.plantilla = this.chat.contact.llaveTabla;
+        entity.filtroParametro = this.fControlSearch.value;
+        entity.estado = 'A';
+        this.isLoading = true;
+        this.api.listarDocumentos(entity, null).subscribe({
+            next: (dataResult: PedidoVentaDTO[]) => {
+                if (!dataResult) { dataResult = []; }
+                if (dataResult.length === 0) {
+                    this.chat.messages.push({
+                        chatId: this.chat.id,
+                        isMine: true,
+                        value: 'Sin resultados',
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                dataResult.forEach((element) => {
+                    this.chat.messages.push({
+                        id: element.llaveTabla,
+                        chatId: this.chat.id,
+                        contactId: this.chat.contact.llaveTabla,
+                        isMine: true,
+                        value: element.descripcion,
+                        createdAt: new Date().toISOString()
+                    });
+                });
+                this._quickChatService.setChat(this.chat);
+                this.isLoading = false;
+            },
+            error: () => {
+                this.isLoading = false;
+            },
+        });
+        this._quickChatService.setChat(this.chat);
+        this.fControlSearch.setValue('');
+    }
+
+    openDialog(_id: string, _template: string) {
+        if (!_template ) { return; }
+        const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
+        pedidoVenta.plantilla = _template;
+        pedidoVenta.llaveTabla = _id;
+        this.utilsService.modalWithParams(pedidoVenta);
+    }
+
+    sendCreate() {
+        if (!this.chat || !this.chat.contact) { return; }
+        this.openDialog(null, this.chat.contact.llaveTabla);
+    }
+
 }

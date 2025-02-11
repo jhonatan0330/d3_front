@@ -54,7 +54,8 @@ export class PlantillaHelper {
   static PLANTILLA_TIPO_REPORTE = 'PLANTILLA_TIPO_REPORTE';
   static REPORT_MODULE_REFERENCE = 'REPORT_MODULE_REFERENCE';
   static PLANTILLA_SUCCESS_INFORMATION = 'PLANTILLA_SUCCESS_INFORMATION';
-   
+
+  static CONTACT_CHAT = 'CONTACT_CHAT';
 
   /*******************CAMPOS***************/
   static DEFAULT = 'DEFAULT';

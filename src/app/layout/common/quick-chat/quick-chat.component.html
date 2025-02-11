@@ -6,7 +6,7 @@
         <div class="quick-chat-header flex flex-0 items-center justify-start cursor-pointer" (click)="toggle()">
 
             <!-- Toggle -->
-            <ng-container *ngIf="!opened || (opened && !selectedChat)">
+            <ng-container *ngIf="!opened || (opened && !chat)">
                 <div class="flex flex-auto items-center justify-center">
                     <div class="flex flex-0 items-center justify-center w-16">
                         <!-- <mat-icon class="icon-size-6" [svgIcon]="'heroicons_outline:chat-bubble-left-right'"></mat-icon> -->
@@ -14,7 +14,7 @@
                     </div>
                     <div class="text-lg font-medium text-secondary">
                         <div class="text-lg font-medium text-secondary">
-                            {{ selectedChat?.id === 'indicators' ? 'Indicadores' : 'Quark - Tu Asistente Virtual' }}
+                            {{ chat? chat.contact.nombre : 'Quark - Tu Asistente Virtual' }}
                         </div>
                     </div>
                     <button class="ml-auto mr-4" mat-icon-button>
@@ -24,21 +24,21 @@
             </ng-container>
 
             <!-- Contact info -->
-            <ng-container *ngIf="opened && selectedChat">
+            <ng-container *ngIf="opened && chat">
                 <div class="flex flex-auto items-center ml-3">
                     <div class="relative flex flex-0 items-center justify-center w-10 h-10">
-                        <ng-container *ngIf="chat.contact.avatar">
-                            <img class="w-full h-full rounded-full object-cover" [src]="chat.contact.avatar"
+                        <ng-container *ngIf="chat.contact.imagen">
+                            <img class="w-full h-full rounded-full object-cover" [src]="chat.contact.imagen"
                                 alt="Contact avatar" />
                         </ng-container>
-                        <ng-container *ngIf="!chat.contact.avatar">
+                        <!--ng-container *ngIf="!chat.contact.avatar">
                             <div
                                 class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                                 {{chat.contact.name.charAt(0)}}
                             </div>
-                        </ng-container>
+                        </ng-container-->
                     </div>
-                    <div class="ml-4 text-lg font-medium leading-5 truncate">{{chat.contact.name}}</div>
+                    <div class="ml-4 text-lg font-medium leading-5 truncate">{{chat.contact.nombre}}</div>
                     <button class="ml-auto mr-4" mat-icon-button>
                         <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
                     </button>
@@ -53,25 +53,25 @@
             <div class="flex-0 w-16 h-full overflow-y-auto overscroll-y-contain sm:overflow-hidden sm:overscroll-auto"
                 fuseScrollbar [fuseScrollbarOptions]="{wheelPropagation: false}">
                 <div class="flex-auto">
-                    <ng-container *ngFor="let chat of chats; trackBy: trackByFn">
-                        <div class="flex items-center py-3 px-3 cursor-pointer" [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !selectedChat || selectedChat.id !== chat.id,
-                                        'bg-primary-50 dark:bg-hover': selectedChat && selectedChat.id === chat.id}"
-                            (click)="selectChat(chat.id)">
+                    <ng-container *ngFor="let chatModule of modules; trackBy: trackByFn">
+                        <div class="flex items-center py-3 px-3 cursor-pointer" [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !chat || chat.id !== chatModule.llaveTabla,
+                                        'bg-primary-50 dark:bg-hover': chat && chat.id === chatModule.llaveTabla}"
+                            (click)="selectChat(chatModule.llaveTabla)">
                             <div class="relative flex flex-0 items-center justify-center w-8 h-8">
-                                <ng-container *ngIf="chat.unreadCount > 0">
+                                <!--ng-container *ngIf="chat.unreadCount > 0">
                                     <div class="absolute bottom-0 right-0 flex-0 w-2 h-2 -ml-0.5 rounded-full ring-2 ring-bg-card dark:ring-gray-900 bg-primary dark:bg-primary-500 text-on-primary"
-                                        [class.ring-primary-50]="selectedChat && selectedChat.id === chat.id"></div>
-                                </ng-container>
-                                <ng-container *ngIf="chat.contact.avatar">
-                                    <img class="w-full h-full rounded-full object-cover" [src]="chat.contact.avatar"
+                                        [class.ring-primary-50]="chat && chat.id === chatModule.id"></div>
+                                </ng-container-->
+                                <ng-container>
+                                    <img class="w-full h-full rounded-full object-cover" [src]="chatModule.imagen"
                                         alt="Contact avatar" />
                                 </ng-container>
-                                <ng-container *ngIf="!chat.contact.avatar">
+                                <!--ng-container *ngIf="!chat.contact.avatar">
                                     <div
                                         class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
                                         {{chat.contact.name.charAt(0)}}
                                     </div>
-                                </ng-container>
+                                </ng-container-->
                             </div>
                         </div>
                     </ng-container>
@@ -81,8 +81,8 @@
             <!-- Conversation -->
             <div class="flex flex-col flex-auto border-l overflow-hidden bg-gray-50 dark:bg-transparent">
                 <ng-container *ngIf="chat; else selectChatOrStartNew">
-                    <app-indi-cards *ngIf="selectedChat && selectedChat.id === 'indicators'"
-                        class="flex-1 overflow-y-auto p-2"></app-indi-cards>
+                    <!--app-indi-cards *ngIf="chat && chat.id === 'indicators'"
+                        class="flex-1 overflow-y-auto p-2"></app-indi-cards-->
                     <div class="flex flex-col-reverse overflow-y-auto overscroll-y-contain">
                         <div class="flex flex-col flex-auto shrink p-2 w-[87%] mx-auto">
                             <ng-container
@@ -114,7 +114,9 @@
                                             </div>
                                         </ng-container>
                                         <!-- Message -->
-                                        <div class="min-w-4 leading-5" [innerHTML]="message.value">
+                                        <div class="min-w-4 leading-5" [ngClass]="{'cursor-pointer': message.id}"
+                                            [innerHTML]="message.value"
+                                            (click)="openDialog(message.id, message.contactId)">
                                         </div>
                                     </div>
                                     <!-- Time -->
@@ -133,17 +135,28 @@
                     </div>
 
                     <!-- Message field -->
-                    <div class="flex items-end p-4 border-t bg-gray-50 dark:bg-transparent mt-auto">
-                        <mat-form-field class="w-full">
-                            <textarea class="min-h-5 my-0 resize-none"
-                                style="margin: 11px 0 !important; padding: 0 !important;" [rows]="1" matInput
+                    <div class="flex items-end p-1 border-t bg-gray-50 dark:bg-transparent mt-auto">
+                        <mat-form-field class="w-full" *ngIf="!isLoading">
+                            <button mat-icon-button matPrefix  *ngIf="hasCreatePermission" (click)="sendCreate()" tabindex="-1">
+                                <mat-icon>add_circle</mat-icon>
+                            </button>
+                            <input #messageInput rows="1" matInput [formControl]="fControlSearch"
+                                (keyup.enter)="sendMesssage()"
+                                class="block p-1 m-2 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            <button mat-icon-button matSuffix (click)="sendMesssage()">
+                                <mat-icon [svgIcon]="'heroicons_outline:paper-airplane'"></mat-icon>
+                            </button>
+                        </mat-form-field>
+                        <!--mat-form-field class="w-full">
+                            <textarea class="min-h-5 my-0 resize-none" matInput
                                 #messageInput></textarea>
                         </mat-form-field>
                         <div class="flex items-center h-11 my-px ml-4">
                             <button mat-icon-button>
-                                <mat-icon class="rotate-90" [svgIcon]="'heroicons_outline:paper-airplane'"></mat-icon>
+                                <mat-icon [svgIcon]="'heroicons_outline:paper-airplane'"></mat-icon>
                             </button>
-                        </div>
+                        </div-->
+                        <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
                     </div>
                 </ng-container>
             </div>
