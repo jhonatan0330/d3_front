@@ -323,9 +323,13 @@ export class MassiveComponent implements OnInit {
         reader.readAsText(fileUpload);
       } else {
         reader.onload = (e: any) => {
-          this.onDataLoaded(e.target.result, this.plantilla, 2);
+          if (e.target && e.target.result instanceof ArrayBuffer) {
+            const decoder = new TextDecoder("utf-8"); // Especifica el encoding si es necesario
+            const text = decoder.decode(e.target.result);
+            this.onDataLoaded(text, this.plantilla, 2);
+          }
         };
-        reader.readAsBinaryString(fileUpload);
+        reader.readAsArrayBuffer(fileUpload);
       }
     }
   }
