@@ -729,7 +729,10 @@ export class MassiveComponent implements OnInit {
           detalle =
             detalle + '\n      ' + iCampo.campoDTO.nombre + ' : ' + valorTexto;
             if(iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO){
-              if(iCampo.valorText && !iCampo.valorText.startsWith('http')){
+              if(iCampo.valorText && iCampo.valorText ==='SIN CARGAR'){
+                iCampo.valorText = null;
+              }
+              if(iCampo.valorText && this.files && !iCampo.valorText.startsWith('http')){
                 for (let j = 0; j < this.files.length; j++) {
                   if(this.files[j].name === iCampo.valorText){
                     this.isProcessing = true;
