@@ -81,6 +81,15 @@ export class ApiService {
     );
   }
 
+  validateBeforeNew(
+    documentoFiltro: PedidoVentaFilterDTO, _server: string
+  ): Observable<PedidoVentaDTO> {
+    return this.http.post<PedidoVentaDTO>(
+      this.ls.getUrlAccess('/rest/validateBeforeNew', _server),
+      documentoFiltro
+    );
+  }
+
   guardarDocumento(documento: PedidoVentaDTO, _server: string, session: string): Observable<PedidoVentaDTO> {
     const headers = { 'non-duplicate': session };
     return this.http.post<PedidoVentaDTO>(

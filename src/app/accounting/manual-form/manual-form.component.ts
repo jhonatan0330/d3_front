@@ -84,7 +84,7 @@ export class ManualFormComponent implements OnInit {
                 })
                 this.codigoComprobante = x.header.code;
                 this.differenceValue = this.debitValue - this.creditValue;
-                this.recordsArray.push(this.createRecord(new ManualAccountDTO()));
+                if(this.data.catalogId){this.recordsArray.push(this.createRecord(new ManualAccountDTO()));}
                 this.loading= false;
             });
         }

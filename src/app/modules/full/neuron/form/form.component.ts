@@ -146,8 +146,11 @@ export class FormComponent implements OnInit, AfterViewInit {
       // Camino Update
       this.consultarDocumento(this.pedidoBase.llaveTabla);
     } else {
-      // Camino New
-      this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
+      if (!PlantillaHelper.isEmpty(this.plantilla.propiedades,  PlantillaHelper.FUNCION_SQL_NEW_ANTES)){
+        this.validacionPrevia();
+      } else {
+        this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
+      }
     }
   }
 
@@ -279,6 +282,30 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.pedido = _value;
         this.pedido.messages = this.pedidoBase.messages;
         this.showForm();
+      },
+      error: () => {
+        this.dialogRef.close();
+      }
+    });
+  }
+
+  validacionPrevia() {
+    if(!this.plantilla || !this.plantilla.llaveTabla) return;
+    const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
+    entity.plantilla = this.plantilla.llaveTabla;
+    this.api.validateBeforeNew(entity, this.plantilla.server).subscribe({
+      next: (_value: PedidoVentaDTO) => {
+        if(_value && _value.messages && _value.messages.length > 0){
+          let mensajeToShow = '';
+          for (let i = 0; i < _value.messages.length; i++) {
+            const element = _value.messages[i];
+            mensajeToShow += element.message + '\n';
+          }
+          Swal.fire('Validacion', mensajeToShow, 'info');
+          this.dialogRef.close();
+        } else {
+          this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
+        }
       },
       error: () => {
         this.dialogRef.close();
