@@ -120,10 +120,22 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.saveToSelect = !this.isEmpty(this.obtenerValor(PlantillaHelper.SAVE_TO_SELECT));
     this.mostrarPop = !this.isEmpty(this.obtenerValor(PlantillaHelper.PROCESO_POP));
     this.procesoValor = this.obtenerValor(PlantillaHelper.PROCESO_VALOR);
-    this.acciones = this.obtenerValorMultiple(PlantillaHelper.PROCESO_ACCIONES);
     if (!this.form) { // Esto es para los filtros
       this.autoload = false;
       this.acciones = null;
+    } else {
+      this.acciones = this.obtenerValorMultiple(PlantillaHelper.PROCESO_ACCIONES);
+      if (this.acciones && this.acciones.length !== 0) {
+        for (let index = this.acciones.length - 1; index >= 0; index--) {
+          const element = this.acciones[index];
+          const prop = this.templateService.getTemplate(element.valor, this.urlServer);
+          if (!prop || !PlantillaHelper.buscarPropiedad(prop.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+            this.acciones.splice(index, 1);
+          }
+        }
+        //Para que no se vea el + en el combo
+        if (this.acciones.length === 0) { this.acciones = null; }
+      }
     }
     this.tipoCombo = !this.multiple && this.autoload;
     this.tipoTexto = !this.multiple && !this.autoload;
@@ -314,7 +326,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               this.fControl.setValue(this.data.principal); // Esto es para que se vea el proceso cuando es relacionado y combo
             } else {
               this.keyInicial = this.data.valorOpcion;
-              if(this.formIsEnabled) this.procesarCampo(filtro);
+              if (this.formIsEnabled) this.procesarCampo(filtro);
             }
             return;
           } else {
@@ -501,7 +513,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     filtro.campo = this.structure.llaveTabla;
     filtro.documento = campoFiltro.documento;
     filtro.filtroParametro = campoFiltro.filtroParametro;
-    
+
     if (this.relatedFields) {
       if (this.multiple && !this.data.documento) {
         this.data.expedientes = [];
@@ -522,17 +534,26 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       // La parte de modifciado la coloque porque en roa no se veia la ciudad de una guia al cambiar el destinatario
       for (let i = 0; i < this.data.dependientes.length; i++) {
         const iDepen = this.data.dependientes[i];
-        if (!iDepen.valorOpcion 
-          // Esto es por brandingbox el formulario de averias, no cargaba la bodega
-          && (!iDepen.campoDTO && iDepen.campoDTO.formato !== DocumentoPlantillaCaracteristicaEnum.PRODUCTO)
-          && (!iDepen.campoDTO || 
-            (iDepen.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO 
-              && !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.MULTIPLE)
-              && PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.DEPENDE)
-                || (iDepen.modificado || !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades,PlantillaHelper.PERMISO_CAMPO_OPCIONAL))
-            )
-          )
-        ) {
+        let bCampoRequerido = false;
+        //Todos estos if es por depurar que no me funcionaba en asotrnsnorte con un campo que necesitaba 2 dependientes
+        if (!iDepen.valorOpcion) {
+          if (iDepen.campoDTO) {
+            // Esto es por brandingbox el formulario de averias, no cargaba la bodega
+            if (iDepen.campoDTO.formato !== DocumentoPlantillaCaracteristicaEnum.PRODUCTO) {
+              if (iDepen.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
+                && !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades, PlantillaHelper.MULTIPLE)
+              ) {
+                if (PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades, PlantillaHelper.DEPENDE)
+                  || (iDepen.modificado || !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL))) {
+                  bCampoRequerido = true;
+                }
+              }
+            }
+          } else {
+            bCampoRequerido = true;
+          }
+        }
+        if (bCampoRequerido) {
           this.errorMessage = 'Selecciona una opcion del campo ' + iDepen.campoDTO.nombre;
           this.actualizarDataProvider(null);
           this.fControl.setValue(null);
@@ -1001,8 +1022,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (this.relatedFields) {
         for (let i = 0; i < this.data.dependientes.length; i++) {
           const iCampoPedido = this.data.dependientes[i];
-          if (!iCampoPedido.valorText && !PlantillaHelper.buscarValor(iCampoPedido.campoDTO.propiedades,PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
-            this.errorMessage =  'Por favor revisa que este seleccionado el campo ' + iCampoPedido.campoDTO.nombre;
+          if (!iCampoPedido.valorText && !PlantillaHelper.buscarValor(iCampoPedido.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
+            this.errorMessage = 'Por favor revisa que este seleccionado el campo ' + iCampoPedido.campoDTO.nombre;
             if (this.trigger) { this.trigger.closeMenu(); }
             return;
           }
