@@ -16,9 +16,7 @@ export const appRoutes: Route[] = [
     children: [
       { path: '', loadChildren: () => import('app/authorization/authorization.module').then(m => m.ProfileModule) },
       { path: 'sessions/recover', loadChildren: () => import('app/authentication/recover-password/recover-password.module').then(m => m.RecoverPasswordModule) },
-      { path: 'sessions/new/:id', loadChildren: () => import('app/authentication/new-password/new-password.module').then(m => m.NewPasswordModule) },
-      { path: '404', pathMatch: 'full', loadChildren: () => import('app/layout/common/error-404/error-404.module').then(m => m.Error404Module) },
-      { path: 'error', pathMatch: 'full', loadChildren: () => import('app/layout/common/error-500/error-500.module').then(m => m.Error500Module) },
+      { path: 'sessions/new/:id', loadChildren: () => import('app/authentication/new-password/new-password.module').then(m => m.NewPasswordModule) }
     ]
   },
    // Admin routes
@@ -33,12 +31,9 @@ export const appRoutes: Route[] = [
       { path: 'maps', loadChildren: () => import('app/gps/gps.module').then(m => m.GPSModule) },
       { path: 'tasks', loadChildren: () => import('app/tasks/tasks.module').then(m => m.TasksModule) },
       { path: 'noseperolodejopormodule', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
-      { path: 'trace-doc', loadChildren: () => import('app/document-transition/document-transition.module').then(m => m.DocumentTransitionModule) },
       { path: 'massive', loadChildren: () => import('app/massive/massive.module').then(m => m.MassiveModule) },
       { path: 'account', loadChildren: () => import('app/accounting/accounting.module').then(m => m.AccountingModule) },
-      { path: 'help', loadChildren: () => import('app/help-center/help-center.routes')},
-      { path: '404-not-found', pathMatch: 'full', loadChildren: () => import('app/layout/common/error-404/error-404.module').then(m => m.Error404Module) },
-      { path: '**', redirectTo: '404-not-found' }
+      { path: '**', redirectTo: 'main' }
     ]
 
 

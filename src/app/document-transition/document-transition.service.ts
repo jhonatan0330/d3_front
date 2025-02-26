@@ -4,6 +4,7 @@ import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from './
 import { Observable } from 'rxjs';
 import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
+import { IdResponse } from 'app/modules/full/neuron/model/sw42.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -38,4 +39,7 @@ export class DocumentTransitionService {
     );
   }
 
+  getVoucherOfDocument(key: string): Observable<IdResponse> {
+    return this.http.get<IdResponse>(this.ls.getUrlAccess('/acc/voucher/document/' + key));
+  }
 }

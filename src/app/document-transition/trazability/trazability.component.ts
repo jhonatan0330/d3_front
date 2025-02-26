@@ -9,6 +9,12 @@ import Swal from "sweetalert2";
 import { DocumentTransitionService } from "../document-transition.service";
 import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from "../document-transition.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
+import { IdResponse } from "app/modules/full/neuron/model/sw42.utils";
+
+interface OptionTrace {
+  value: string;
+  viewValue: string;
+}
 
 @Component({
   selector: 'trazability',
@@ -24,17 +30,21 @@ export class TrazabilityComponent implements OnInit {
   isEnd = false;
   dataProvider: DocumentoRelacionGestorDTO[]; // Conjunto de documentos a visualizar
 
-  fCheckDocuments: FormControl = new FormControl(true);
-  fCheckAssignations: FormControl = new FormControl(false);
-  fCheckMessage: FormControl = new FormControl(false);
-  fCheckInventary: FormControl = new FormControl(false);
-  fCheckAutomaticas: FormControl = new FormControl(false);
-  fCheckApi: FormControl = new FormControl(false);
-  fCheckReportes: FormControl = new FormControl(false);
+  optionsTrace: OptionTrace[] = [
+    {value: '0', viewValue: 'Todos'},
+    {value: '1', viewValue: 'Documentos'} ,
+    {value: '2', viewValue: 'Asignaciones'} ,
+    {value: '3', viewValue: 'Mensajes'} ,
+    {value: '4', viewValue: 'Inventario'},
+    {value: '5', viewValue: 'Reportes'},
+    {value: '6', viewValue: 'Automaticas'},
+    {value: '7', viewValue: 'APIs'}];
+  selectedTrace = new FormControl(['1']);
 
   plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
 
-  isFilterVisible = false;
+  vouchersTemplate: PropiedadDTO[];
+
   documentName;
   documentState;
   
@@ -62,35 +72,45 @@ export class TrazabilityComponent implements OnInit {
       this.dialogRef.close(false);
       return;
     }
+    this.vouchersTemplate = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.TEMPLATE_VOUCHER);
 
     // Colocar los valores iniciales de la consulta historica
     const checksHistorial: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_HISTORIAL_ACTIVO);
     if (checksHistorial && checksHistorial.length != 0) {
+      const initialOptions = ['1'];
       for (let i = 0; i < checksHistorial.length; i++) {
         switch (checksHistorial[i].valor) {
           case "1":
-            this.fCheckDocuments.setValue(true);
+            initialOptions.push(this.optionsTrace[1].value);
+            //initialOptions + "," + this.optionsTrace[2].value;
             break;
           case "2":
-            this.fCheckAssignations.setValue(true);
+            initialOptions.push(this.optionsTrace[2].value);
+            //initialOptions + "," + this.optionsTrace[2].value;
             break;
           case "3":
-            this.fCheckMessage.setValue(true);
+            //initialOptions + "," + this.optionsTrace[3].value;
+            initialOptions.push(this.optionsTrace[3].value);
             break;
           case "4":
-            this.fCheckInventary.setValue(true);
+            //initialOptions + "," + this.optionsTrace[4].value;
+            initialOptions.push(this.optionsTrace[4].value);
             break;
           case "5":
-            this.fCheckAutomaticas.setValue(true);
+            //initialOptions + "," + this.optionsTrace[5].value;
+            initialOptions.push(this.optionsTrace[5].value);
             break;
           case "6":
-            this.fCheckReportes.setValue(true);
+            //initialOptions + "," + this.optionsTrace[6].value;
+            initialOptions.push(this.optionsTrace[6].value);
             break;
           case "7":
-            this.fCheckApi.setValue(true);
+            //initialOptions + "," + this.optionsTrace[7].value;
+            initialOptions.push(this.optionsTrace[7].value);
             break;
         }
       }
+      this.selectedTrace.setValue(initialOptions);
     }
     this.listar(1);
   }
@@ -106,14 +126,24 @@ export class TrazabilityComponent implements OnInit {
     }
     const entity: DocumentoRelacionGestorFilterDTO = new DocumentoRelacionGestorFilterDTO();
     entity.documentoPrincipal = this.data.document;
-    const docs: string = this.fCheckDocuments.value ? '1' : '0';
+   
+    /*const docs: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[1].value) ? '1' : '0';
     const asg: string = this.fCheckAssignations.value ? '1' : '0';
     const msj: string = this.fCheckMessage.value ? '1' : '0';
     const inv: string = this.fCheckInventary.value ? '1' : '0';
     const rep: string = this.fCheckReportes.value ? '1' : '0';
     const aut: string = this.fCheckAutomaticas.value ? '1' : '0';
     const api: string = this.fCheckApi.value ? '1' : '0';
+    entity.estado = docs + asg + msj + inv + rep + aut + api;*/
+    const docs: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[1].value) ? '1' : '0';
+    const asg: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[2].value) ? '1' : '0';
+    const msj: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[3].value) ? '1' : '0';
+    const inv: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[4].value) ? '1' : '0';
+    const rep: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[5].value) ? '1' : '0';
+    const aut: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[6].value) ? '1' : '0';
+    const api: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[7].value) ? '1' : '0';
     entity.estado = docs + asg + msj + inv + rep + aut + api;
+    if( this.selectedTrace.value.find((item)=> item === this.optionsTrace[0].value)) {entity.estado = '1111111';}
 
     if (_pagina === 1) {
       this.dataProvider = [];
@@ -160,8 +190,25 @@ export class TrazabilityComponent implements OnInit {
     this.utilsService.modalWithParams(_doc);
   }
 
-  changeVisibilityOfFilters(){
-    this.isFilterVisible = ! this.isFilterVisible;
+  showVoucherAccount(){
+    //this.hasVoucher && 
+    if (this.data.document) {
+      this.isLoading = true;
+      this._traceService
+      .getVoucherOfDocument(this.data.document)
+      .subscribe({
+        next: (value: IdResponse) => {
+          if(value && value.id){
+            this.utilsService.modalVoucher(value.id, null).subscribe();
+          } else {
+            Swal.fire('Comprobante', 'No se encontro comprobante para este documento', 'info');
+          }
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+        },
+      });
+    }
   }
-
 }

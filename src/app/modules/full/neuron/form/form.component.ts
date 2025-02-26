@@ -42,7 +42,6 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { Router } from '@angular/router';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { TraceResumeComponent } from 'app/document-transition/trace-resume/trace-resume.component';
 import { IdResponse } from '../model/sw42.utils';
 
 @Component({
@@ -55,8 +54,6 @@ export class FormComponent implements OnInit, AfterViewInit {
   myForm: ViewContainerRef;
   formIsModified = false;
   dynamicControls: IDynamicControl[] = [];
-
-  @ViewChild('tracer') tracer: TraceResumeComponent;
 
   // flags
   submitted = false;
@@ -98,8 +95,6 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
 
-  drawerMode: 'over' | 'side' = 'side';
-  drawerOpened: boolean = false;
   styleSizePop = '';
 
   constructor(
@@ -124,17 +119,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     if (this.data.close2Save) {
       this.close2Save = this.data.close2Save;
     }
-        // Subscribe to media changes
-        this._fuseMediaWatcherService.onMediaChange$
-        .subscribe(({ matchingAliases }) => {
-          // Set the drawerMode and drawerOpened if the given breakpoint is active
-          if (matchingAliases.includes('md')) {
-            this.drawerMode = 'side';
-          }
-          else {
-            this.drawerMode = 'over';
-          }
-        });
     // Cargo la plantilla al formulario para comenzar
     this.plantilla = this.cargarPlantilla(this.pedidoBase.plantilla, this.pedidoBase.server);
     // Si la plantilla se consulta por primera vez se va asincrona asi que finaliza este metodo
@@ -942,13 +926,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   showTrace() {
-    if (PlantillaHelper.buscarPropiedad(this.plantilla.propiedades, PlantillaHelper.HISTORICO_VISTA)) {
-      this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre);
-      return;
-    }
-    this.drawerOpened = !this.drawerOpened;
-    if (this.drawerOpened && !this.tracer.dataProvider) this.tracer.listar(1);
-    this.getSizePop();
+    this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre);
   }
 
   showChangeState() {
@@ -1114,23 +1092,5 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.utilsService.modalWithParams(_doc, false).subscribe();
   }
 
-  showVoucherAccount(){
-    //this.hasVoucher && 
-    if (this.pedido && this.pedido.llaveTabla) {
-      this.api
-      .getVoucherOfDocument(this.pedido.llaveTabla)
-      .subscribe({
-        next: (value: IdResponse) => {
-          if(value && value.id){
-            this.utilsService.modalVoucher(value.id, null).subscribe();
-          } else {
-            Swal.fire('Comprobante', 'No se encontro comprobante para este documento', 'info');
-          }
-        },
-        error: () => {
-          this.submitted = false;
-        },
-      });
-    }
-  }
+
 }

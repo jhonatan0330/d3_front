@@ -13,7 +13,7 @@ import {
   PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaCaracteristicaDTO,
 } from '../model/sw42.domain';
-import { ApiErrorResponse, IdResponse } from '../model/sw42.utils';
+import { ApiErrorResponse } from '../model/sw42.utils';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
@@ -96,10 +96,6 @@ export class ApiService {
       this.ls.getUrlAccess('/rest/guardarDocumento', _server),
       documento, {headers}
     );
-  }
-
-  getVoucherOfDocument(key: string): Observable<IdResponse> {
-    return this.http.get<IdResponse>(this.ls.getUrlAccess('/acc/voucher/document/' + key));
   }
 
   consultarDatosBase(

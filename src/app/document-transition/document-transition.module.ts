@@ -6,13 +6,13 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import { TrazabilityComponent } from './trazability/trazability.component';
 import { MatIconModule } from '@angular/material/icon';
-import { TraceResumeComponent } from './trace-resume/trace-resume.component';
 import { MatSelectModule } from '@angular/material/select';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     declarations: [
-        TrazabilityComponent,
-        TraceResumeComponent
+        TrazabilityComponent
     ],
     imports     : [
         RouterModule.forChild( [
@@ -26,11 +26,12 @@ import { MatSelectModule } from '@angular/material/select';
         MatSelectModule,
         MatInputModule,
         MatIconModule,
+        MatButtonModule,
+        DragDropModule,
         SharedModule
     ],
     exports : [
-        TrazabilityComponent,
-        TraceResumeComponent
+        TrazabilityComponent
     ]
 })
 export class DocumentTransitionModule
