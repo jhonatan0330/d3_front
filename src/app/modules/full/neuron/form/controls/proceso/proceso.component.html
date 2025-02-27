@@ -13,7 +13,7 @@
     <mat-icon>open_in_new</mat-icon>
   </button>
   <!-- Create -->
-  <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenu" *ngIf="acciones && !proceso && !fControl.value"
+  <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenu" *ngIf="acciones && !errorMessage && !proceso && !fControl.value"
     #clickHoverMenuTrigger="matMenuTrigger" (click)="sendCreate()" tabindex="-1">
     <mat-icon>add_circle</mat-icon>
   </button>
