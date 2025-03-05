@@ -28,7 +28,7 @@ export function getXMLBase(
     case DocumentoPlantillaCaracteristicaEnum.BINARIO:
       return '0-1';
     case DocumentoPlantillaCaracteristicaEnum.FECHA:
-      return formatDate(new Date(), 'dd/MM/YYYY', 'en');
+      return formatDate(new Date(), 'YYYY/MM/dd', 'en');
     case DocumentoPlantillaCaracteristicaEnum.NUMERO:
       return '0';
     case DocumentoPlantillaCaracteristicaEnum.PROCESO:

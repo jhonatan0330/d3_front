@@ -351,10 +351,11 @@ export class MassiveComponent implements OnInit {
     let documentos;
     let encabezado = 0;
     if (format === 2) {
-      const wb: XLSX.WorkBook = XLSX.read(_file, { type: 'binary' });
+      const wb: XLSX.WorkBook = XLSX.read(_file, { type: 'string' });
       const wsname: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-      documentos = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, dateNF: 'number' });
+      //Coloco raw false y dateNf string para validar que coloquen el formato correcto de la fecha
+      documentos = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, dateNF: 'string', blankrows:false });
       encabezado = 1;
     } else {
       if (!window.DOMParser) {
