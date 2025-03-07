@@ -105,8 +105,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private ls: LocalStoreService,
     private compiler: ComponentFactoryResolver,
     private utilsService: UtilsService,
-    private _router: Router,
-    private _fuseMediaWatcherService: FuseMediaWatcherService
+    private _router: Router
   ) { }
 
   ngOnInit(): void {

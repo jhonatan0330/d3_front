@@ -93,7 +93,7 @@
 </mat-form-field>
 <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
 <!-- Campos multiples -->
-<div *ngIf="tipoMultiple" class="pb-1">
+<div *ngIf="tipoMultiple" class="pb-1" [style.display]="isInvisible ? 'none': 'block'">
   <!-- Titulo y boton buscar -->
   <div>
     <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))" *ngIf="!isLoading"
@@ -284,3 +284,4 @@
       </button>
     </div>
   </div>
+</div>

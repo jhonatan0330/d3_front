@@ -10,6 +10,7 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormComponent } from '../../form.component';
+import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
 
 export interface IDynamicControl {
   structure: DocumentoPlantillaCaracteristicaDTO;
@@ -52,6 +53,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   isLoading = false; // ayuda a mostrar la barra de progreso en las busqueas
   help = 'x';
   isInvisible = false;
+  sectionIsInvisible = false;
   productForm: ProductComponent;
   form: FormComponent;
   urlServer: string;
@@ -65,6 +67,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
     this._structure = value;
     this.required = PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL);
     this.isInvisible = !PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.INVISIBLE);
+    if( value.formato === DocumentoPlantillaCaracteristicaEnum.SECCION){  this.sectionIsInvisible = this.isInvisible; }
+    if(this.sectionIsInvisible){ this.isInvisible = true; }
     this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);    
     /*
     this.relatedFields = PlantillaHelper.buscarValorMultipleFromManyKeys(this.structure.propiedades, PlantillaHelper.DEPENDENT_PROPERTIES);
@@ -190,6 +194,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
         const propVisible = this.propVisibleDepende[index];
         if (propVisible.campo === this.structure.llaveTabla) {
           this.isInvisible = !(textSelected === propVisible.valor);
+          if( this._structure.formato === DocumentoPlantillaCaracteristicaEnum.SECCION){  this.sectionIsInvisible = this.isInvisible; }
+          if(this.sectionIsInvisible) { this.isInvisible = true; }
           break;
         }
       }
