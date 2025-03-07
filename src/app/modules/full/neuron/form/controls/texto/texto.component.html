@@ -1,4 +1,4 @@
-<mat-form-field [style.display]="isInvisible ? 'none': 'block'">
+<mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <mat-label>{{structure.nombre | titlecase }} </mat-label>
   <input matInput [formControl]="fControl" [name]="structure.llaveTabla" [required]="required" [readonly]="!isEnabled"
     autocomplete="off" *ngIf="!textoLargo" />

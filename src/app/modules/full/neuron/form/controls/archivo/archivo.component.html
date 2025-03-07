@@ -1,4 +1,4 @@
-<div [style.display]="isInvisible ? 'none' : 'block'" class="mx-0">
+<div [style.display]="(isInvisible || isSectionInvisible) ? 'none' : 'block'" class="mx-0">
   <div class="py-1 flex">
     <input [id]="structure.llaveTabla" *ngIf="isLoadingUrl && allowUrlTextFromUser" [(ngModel)]="urlText"
       class="w-full" />

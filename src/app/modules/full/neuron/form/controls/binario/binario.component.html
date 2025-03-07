@@ -1,4 +1,4 @@
-<div>
-  <mat-checkbox class="border-b mb-1 pb-1" [name]="structure.llaveTabla" [formControl]="fControl"
+<div [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+  <mat-checkbox class="border-b mb-1 pb-1" [name]="structure.llaveTabla" [formControl]="fControl" 
     [required]="required">{{ labelTextBinary }}</mat-checkbox>
 </div>

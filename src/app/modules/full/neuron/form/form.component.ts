@@ -1091,5 +1091,17 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.utilsService.modalWithParams(_doc, false).subscribe();
   }
 
+  public reviewFieldsVisibility(){
+    let sectionIsInvisible = false; 
+    for (let i = 0; i < this.dynamicControls.length; i++) {
+      const element = this.dynamicControls[i];
+      if( element.structure.formato === DocumentoPlantillaCaracteristicaEnum.SECCION){  
+        sectionIsInvisible = element.isInvisible; 
+      } else{
+        element.isSectionInvisible = sectionIsInvisible; 
+      }
+      
+    }
+  }
 
 }

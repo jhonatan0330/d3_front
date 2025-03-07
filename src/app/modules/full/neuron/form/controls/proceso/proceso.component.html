@@ -1,6 +1,6 @@
 <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 <!-- Campos unicos -->
-<mat-form-field class="w-full" *ngIf="!herencia && !multiple" [style.display]="isInvisible ? 'none': 'block'">
+<mat-form-field class="w-full" *ngIf="!herencia && !multiple" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
   <input matInput [matAutocomplete]="auto" [formControl]="fControl" [required]="required" [readonly]="!isEnabled"
     (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [inputmode]="inputModeText" translate="no"
@@ -93,7 +93,7 @@
 </mat-form-field>
 <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
 <!-- Campos multiples -->
-<div *ngIf="tipoMultiple" class="pb-1" [style.display]="isInvisible ? 'none': 'block'">
+<div *ngIf="tipoMultiple" class="pb-1" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <!-- Titulo y boton buscar -->
   <div>
     <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))" *ngIf="!isLoading"

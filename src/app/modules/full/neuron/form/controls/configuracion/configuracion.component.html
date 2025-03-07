@@ -1,4 +1,4 @@
-<mat-form-field [style.display]="isInvisible ? 'none': 'block'">
+<mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }}</mat-label>
   <input type="text" matInput [formControl]="fControl" [matAutocomplete]="auto"
   [name]="structure.llaveTabla"

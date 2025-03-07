@@ -21,6 +21,7 @@ export interface IDynamicControl {
 
   urlServer: string;
   isInvisible: boolean;
+  isSectionInvisible: boolean;
 
   formIsModified: BehaviorSubject<boolean | null>;
 
@@ -53,7 +54,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   isLoading = false; // ayuda a mostrar la barra de progreso en las busqueas
   help = 'x';
   isInvisible = false;
-  sectionIsInvisible = false;
+  isSectionInvisible = false;// Por el momento toca asi mientras me imagino otra forma de agrupar
   productForm: ProductComponent;
   form: FormComponent;
   urlServer: string;
@@ -67,8 +68,6 @@ export class BaseComponent implements OnInit, IDynamicControl {
     this._structure = value;
     this.required = PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL);
     this.isInvisible = !PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.INVISIBLE);
-    if( value.formato === DocumentoPlantillaCaracteristicaEnum.SECCION){  this.sectionIsInvisible = this.isInvisible; }
-    if(this.sectionIsInvisible){ this.isInvisible = true; }
     this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);    
     /*
     this.relatedFields = PlantillaHelper.buscarValorMultipleFromManyKeys(this.structure.propiedades, PlantillaHelper.DEPENDENT_PROPERTIES);
@@ -194,8 +193,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
         const propVisible = this.propVisibleDepende[index];
         if (propVisible.campo === this.structure.llaveTabla) {
           this.isInvisible = !(textSelected === propVisible.valor);
-          if( this._structure.formato === DocumentoPlantillaCaracteristicaEnum.SECCION){  this.sectionIsInvisible = this.isInvisible; }
-          if(this.sectionIsInvisible) { this.isInvisible = true; }
+          this.form.reviewFieldsVisibility();
           break;
         }
       }

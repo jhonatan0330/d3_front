@@ -1,5 +1,5 @@
 <!-- Timer -->
-<div class="time-countdown" *ngIf="timerBackCount" [style.display]="isInvisible ? 'none': 'block'">
+<div class="time-countdown" *ngIf="timerBackCount" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <ul>
     <li>
       <span>{{ day }}</span>Dias
@@ -16,7 +16,7 @@
   </ul>
 </div>
 <!-- Fecha normal -->
-<mat-form-field *ngIf="!isRango && !sinCalendar" [style.display]="isInvisible ? 'none': 'block'">
+<mat-form-field *ngIf="!isRango && !sinCalendar" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }}</mat-label>
   <input matInput [matDatepicker]="pickerFrom" [required]="required" [formControl]="dateFrom" [readonly]="!isEnabled"
     autocomplete="off" />
@@ -28,7 +28,7 @@
   <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" />
 </div>
 <!-- Tiempo -->
-<div class="flex justify-end w-full" *ngIf="!isRango && sinCalendar" [style.display]="isInvisible ? 'none': 'block'">
+<div class="flex justify-end w-full" *ngIf="!isRango && sinCalendar" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <span>{{
     structure.nombre | titlecase
     }}</span>
@@ -44,7 +44,7 @@
   </mat-form-field>
 </div>
 <!-- Rango -->
-<mat-form-field *ngIf="isRango" class="dialog-control" [style.display]="isInvisible ? 'none': 'block'">
+<mat-form-field *ngIf="isRango" class="dialog-control" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }} {{(required)?'*':''}}</mat-label>
   <mat-date-range-input [rangePicker]="picker">
     <input matStartDate placeholder="Fecha inicial" [formControl]="fControlDateStart" (dateInput)="datesUpdated()"
