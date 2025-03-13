@@ -65,10 +65,10 @@ export class ManualFormComponent implements OnInit {
 
                 this.form = this._formBuilder.group({
                     header: this._formBuilder.group({
-                        catalog: [x.manual.catalog],
-                        concept: [x.manual.concept],
-                        factDate: [x.manual.factDate],
-                        value: [x.manual.value]
+                        catalog: [x.header.catalog],
+                        concept: [x.header.concept],
+                        factDate: [x.header.factDate],
+                        value: [x.header.value]
                     }),
                     records: this._formBuilder.array([], Validators.required)
                 });
@@ -82,7 +82,7 @@ export class ManualFormComponent implements OnInit {
                     this.debitValue += i.positive;
                     this.recordsArray.push(this.createRecord(i));
                 })
-                this.codigoComprobante = x.manual.code;
+                this.codigoComprobante = x.header.code;
                 this.differenceValue = this.debitValue - this.creditValue;
                 if(this.data.catalogId){this.recordsArray.push(this.createRecord(new ManualAccountDTO()));}
                 this.loading= false;
