@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO, Voucher, Voucher_ } from './accounting.domain';
+import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO, Voucher } from './accounting.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({ providedIn: 'root' })
@@ -17,8 +17,8 @@ export class AccountingService {
         return this.http.get<ManualDTO[]>(this.ls.getUrlAccess('/acc/voucher/' + catalogId));
     }
 
-    getVoucher(key: string): Observable<Voucher_> {
-        return this.http.get<Voucher_>(this.ls.getUrlAccess('/acc/voucher/one/' + key));
+    getVoucher(key: string): Observable<Voucher> {
+        return this.http.get<Voucher>(this.ls.getUrlAccess('/acc/voucher/one/' + key));
     }
 
     createManual(voucher: Voucher): Observable<ManualDTO> {

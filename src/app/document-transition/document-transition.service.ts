@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { PedidoVentaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { IdResponse } from 'app/modules/full/neuron/model/sw42.utils';
+import { VoucherPrepareRequest } from 'app/accounting/accounting.domain';
 
 @Injectable({
   providedIn: 'root'
@@ -42,4 +43,12 @@ export class DocumentTransitionService {
   getVoucherOfDocument(key: string): Observable<IdResponse> {
     return this.http.get<IdResponse>(this.ls.getUrlAccess('/acc/voucher/document/' + key));
   }
+
+  generateVoucher(pPrepareVoucher: VoucherPrepareRequest): Observable<IdResponse> {
+    return this.http.post<IdResponse>(
+      this.ls.getUrlAccess('/acc/voucher/generate-voucher', null),
+      pPrepareVoucher
+    );
+  }
+  
 }

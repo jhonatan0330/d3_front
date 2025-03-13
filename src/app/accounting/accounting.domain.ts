@@ -89,7 +89,7 @@ export class Voucher{
 	records: ManualAccountDTO[];
 }
 
-export class Voucher_{
-	header: ManualDTO;
-	records: ManualAccountDTO[];
+export class VoucherPrepareRequest{
+	serviceId: string;
+	documentId: string;
 }

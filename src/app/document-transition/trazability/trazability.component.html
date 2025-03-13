@@ -37,16 +37,20 @@
   <div class="overflow-x-hidden py-4 pr-4 pl-7">
 
     <div *ngFor="let item of vouchersTemplate"
-    class="sm:col-span-1 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
-    
+      class="sm:col-span-1 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+
       <div class="text-lg font-medium tracking-tight leading-6 truncate">
-          {{item.texto |uppercase}}</div>
-  
-          <button class="w-full " mat-flat-button [color]="'accent'" (click)="showVoucherAccount()">
-            <mat-icon>refresh</mat-icon>
-            <span>Consultar comprobante</span>
-        </button>
-  </div>
+        {{item.texto |uppercase}}</div>
+
+      <button class="w-full " mat-flat-button [color]="'accent'" (click)="showVoucherAccount()">
+        <mat-icon>refresh</mat-icon>
+        <span>Consultar comprobante</span>
+      </button>
+      <button class="w-full " mat-flat-button [color]="'accent'" (click)="generateVoucher(item.valor)">
+        <mat-icon>add</mat-icon>
+        <span>Crear comprobante</span>
+      </button>
+    </div>
 
     <ol>
       <!-- Activities -->
@@ -54,11 +58,11 @@
         <!-- Activity -->
         <li class="relative flex py-1">
           <div class="absolute left-5 w-0.5 h-full -ml-px bg-gray-300 dark:bg-gray-600"></div>
-  
+
           <div class="relative flex flex-auto">
             <!-- Image -->
             <ng-container>
-  
+
               <div class="flex shrink-0 items-center justify-center w-10 h-10 mr-4 rounded-full bg-gray-400"
                 *ngIf="!g.responsableImagen">
                 <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_outline:user">
@@ -66,13 +70,13 @@
               </div>
               <img class="shrink-0 w-10 h-10 mr-4 rounded-full overflow-hidden object-cover object-center"
                 [src]="g.responsableImagen" [alt]="'Activity image'" *ngIf="g.responsableImagen">
-  
-  
+
+
             </ng-container>
-  
+
             <!-- Content -->
             <div class="flex flex-col flex-auto items-start">
-  
+
               <!-- Description -->
               <ng-container>
                 <!-- Primera linea:quien y cuando -
@@ -107,9 +111,11 @@
                       inline="true">view_headline</mat-icon></a>
                   <span *ngIf="g.documentoModificador"> con el documento <a
                       class="cursor-pointer text-primary font-bold tracking-tight text-sm text-right"
-                      (click)="showTraceDocument(g.documentoModificador, g.plantilla)"><span>{{ g.plantillaNombre }} - {{
+                      (click)="showTraceDocument(g.documentoModificador, g.plantilla)"><span>{{ g.plantillaNombre }} -
+                        {{
                         g.modificadorNombre }}</span></a> </span>
-                  <span *ngIf="g.estadoInicial">, inicialmente estaba el documento en estado <b>{{ g.estadoInicial }}</b>
+                  <span *ngIf="g.estadoInicial">, inicialmente estaba el documento en estado <b>{{ g.estadoInicial
+                      }}</b>
                   </span><span *ngIf="g.estadoFinal">, finalizo en estado <b>{{ g.estadoFinal}}</b></span>
                   <span *ngIf="g.ubicacionNombre">, fue asignado al {{ g.ubicacionPlantilla }} <b>{{ g.ubicacionNombre
                       }}</b></span>
@@ -130,7 +136,8 @@
                 <!-- Sexta linea Adjuntos -->
                 <div *ngIf="g.adjunto" class="w-full">
                   <div *ngFor="let iUrl of g.adjunto.split(';;'); let i = index">
-                    <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1 }}</a>
+                    <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1
+                      }}</a>
                   </div>
                 </div>
                 <!-- Septima linea Campos nuevos -->
@@ -149,5 +156,5 @@
       <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Seguir consultando
     </button>
   </div>
-  
+
 </div>

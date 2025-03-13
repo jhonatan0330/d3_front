@@ -10,6 +10,7 @@ import { DocumentTransitionService } from "../document-transition.service";
 import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from "../document-transition.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
 import { IdResponse } from "app/modules/full/neuron/model/sw42.utils";
+import { VoucherPrepareRequest } from "app/accounting/accounting.domain";
 
 interface OptionTrace {
   value: string;
@@ -191,7 +192,6 @@ export class TrazabilityComponent implements OnInit {
   }
 
   showVoucherAccount(){
-    //this.hasVoucher && 
     if (this.data.document) {
       this.isLoading = true;
       this._traceService
@@ -203,6 +203,26 @@ export class TrazabilityComponent implements OnInit {
           } else {
             Swal.fire('Comprobante', 'No se encontro comprobante para este documento', 'info');
           }
+          this.isLoading = false;
+        },
+        error: () => {
+          this.isLoading = false;
+        },
+      });
+    }
+  }
+
+  generateVoucher(pServiceId: string){
+    if (this.data.document) {
+      const _prepare: VoucherPrepareRequest= new VoucherPrepareRequest();
+      _prepare.documentId = this.data.document;
+      _prepare.serviceId = pServiceId
+      this.isLoading = true;
+      this._traceService
+      .generateVoucher(_prepare)
+      .subscribe({
+        next: () => {
+          Swal.fire('Comprobante', 'Se envio a generar el comprobante por favor consulte de nuevo', 'info');
           this.isLoading = false;
         },
         error: () => {
