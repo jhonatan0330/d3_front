@@ -191,11 +191,14 @@ export class TrazabilityComponent implements OnInit {
     this.utilsService.modalWithParams(_doc);
   }
 
-  showVoucherAccount(){
+  showVoucherAccount(pServiceId: string){
     if (this.data.document) {
+      const _prepare: VoucherPrepareRequest= new VoucherPrepareRequest();
+      _prepare.documentId = this.data.document;
+      _prepare.serviceId = pServiceId;
       this.isLoading = true;
       this._traceService
-      .getVoucherOfDocument(this.data.document)
+      .getVoucherOfDocument(_prepare)
       .subscribe({
         next: (value: IdResponse) => {
           if(value && value.id){

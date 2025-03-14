@@ -40,8 +40,10 @@ export class DocumentTransitionService {
     );
   }
 
-  getVoucherOfDocument(key: string): Observable<IdResponse> {
-    return this.http.get<IdResponse>(this.ls.getUrlAccess('/acc/voucher/document/' + key));
+  getVoucherOfDocument(pPrepareVoucher: VoucherPrepareRequest): Observable<IdResponse> {
+    return this.http.post<IdResponse>(this.ls.getUrlAccess('/acc/voucher/document',null),
+      pPrepareVoucher
+    );
   }
 
   generateVoucher(pPrepareVoucher: VoucherPrepareRequest): Observable<IdResponse> {
