@@ -191,11 +191,11 @@ export class TrazabilityComponent implements OnInit {
     this.utilsService.modalWithParams(_doc);
   }
 
-  showVoucherAccount(pServiceId: string){
+  showVoucherAccount(pService: PropiedadDTO){
     if (this.data.document) {
       const _prepare: VoucherPrepareRequest= new VoucherPrepareRequest();
       _prepare.documentId = this.data.document;
-      _prepare.serviceId = pServiceId;
+      _prepare.serviceId = pService.valor;
       this.isLoading = true;
       this._traceService
       .getVoucherOfDocument(_prepare)
@@ -210,6 +210,11 @@ export class TrazabilityComponent implements OnInit {
         },
         error: () => {
           this.isLoading = false;
+          this.vouchersTemplate.forEach((item) => {
+            if(item.valor === pService.valor){
+              item.estado = 'CONSULTADO';
+            }
+          });
         },
       });
     }
@@ -226,7 +231,11 @@ export class TrazabilityComponent implements OnInit {
       .subscribe({
         next: () => {
           Swal.fire('Comprobante', 'Se envio a generar el comprobante por favor consulte de nuevo', 'info');
-          this.isLoading = false;
+          this.isLoading = false; this.vouchersTemplate.forEach((item) => {
+            if(item.valor === pServiceId){
+              item.estado = 'A';
+            }
+          });
         },
         error: () => {
           this.isLoading = false;
