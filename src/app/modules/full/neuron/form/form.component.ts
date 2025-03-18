@@ -288,6 +288,7 @@ export class FormComponent implements OnInit, AfterViewInit {
           this.dialogRef.close();
         } else {
           this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
+          this.showForm();
         }
       },
       error: () => {
