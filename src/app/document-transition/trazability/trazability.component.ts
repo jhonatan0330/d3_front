@@ -140,8 +140,8 @@ export class TrazabilityComponent implements OnInit {
     const asg: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[2].value) ? '1' : '0';
     const msj: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[3].value) ? '1' : '0';
     const inv: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[4].value) ? '1' : '0';
-    const rep: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[5].value) ? '1' : '0';
-    const aut: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[6].value) ? '1' : '0';
+    const aut: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[5].value) ? '1' : '0';
+    const rep: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[6].value) ? '1' : '0';
     const api: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[7].value) ? '1' : '0';
     entity.estado = docs + asg + msj + inv + rep + aut + api;
     if( this.selectedTrace.value.find((item)=> item === this.optionsTrace[0].value)) {entity.estado = '1111111';}
