@@ -10,6 +10,7 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { BaseComponent } from '../base/base.component';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({
   selector: 'app-configuracion',
@@ -151,5 +152,21 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
         (option.descripcion &&
           option.descripcion.toLowerCase().indexOf(filterValue) !== -1)
     );
+  }
+
+  send2Server(): boolean {
+    if (this.isLoading) {
+      return false;
+    }
+
+    this.errorMessage = null;
+    if (this.required		&& !this.data.valorOpcion == null) {
+			const visibleValueOK = this.obtenerValorMultiple(PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE);
+			if (!visibleValueOK == null || !this.data.dependientes == null) {
+        this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
+        return false;
+      } 
+    }
+    return true;
   }
 }

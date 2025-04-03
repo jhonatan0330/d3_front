@@ -58,6 +58,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   productForm: ProductComponent;
   form: FormComponent;
   urlServer: string;
+  errorMessage: string = null;
   formIsModified: BehaviorSubject<boolean | null> = new BehaviorSubject(null);
 
   _structure: DocumentoPlantillaCaracteristicaDTO;

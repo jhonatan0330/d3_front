@@ -19,6 +19,7 @@
   >
     <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
   </button>
+  <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
 </mat-form-field>
 
 <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>

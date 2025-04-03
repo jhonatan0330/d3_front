@@ -1525,6 +1525,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       );*/
       return false;
     }
+    // Valido obligatoriedad
+    this.errorMessage = null;
+    if (this.required && !this.multiple && !this.herencia && !this.data.valorOpcion){
+      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
+      return false;
+    }
     return true;
   }
 
