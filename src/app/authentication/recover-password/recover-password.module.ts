@@ -5,11 +5,9 @@ import { SharedModule } from 'app/shared/shared.module';
 import { RecoverPasswordComponent } from './recover-password.component';
 import { recoverPasswordRoutes } from './recover-password.routing';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
     declarations: [
@@ -19,11 +17,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         RouterModule.forChild(recoverPasswordRoutes),
         SharedModule,
         MatProgressBarModule,
-        MatCardModule,
         MatFormFieldModule,
         MatInputModule,
-        MatButtonModule,
-        MatCheckboxModule
+        MatButtonModule
     ]
 })
 export class RecoverPasswordModule

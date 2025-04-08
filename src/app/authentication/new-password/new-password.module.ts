@@ -5,11 +5,9 @@ import { SharedModule } from 'app/shared/shared.module';
 import { NewPasswordComponent } from './new-password.component';
 import { newPasswordRoutes } from './new-password.routing';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
     declarations: [
@@ -19,11 +17,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         RouterModule.forChild(newPasswordRoutes),
         SharedModule,
         MatProgressBarModule,
-        MatCardModule,
         MatFormFieldModule,
         MatInputModule,
-        MatButtonModule,
-        MatCheckboxModule
+        MatButtonModule
     ]
 })
 export class NewPasswordModule
