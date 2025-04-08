@@ -65,9 +65,9 @@ export function procesarXMLBase(
           pCampo.valorText = pCampo.valorFecha.toLocaleString('en-ZA');
         } else {
           if (fechaHora) {
-            formatoDate = '\\d{4}(\\-|\\/)(((0)[0-9])|((1)[0-2]))(\\-|\\/)([0-2]?[0-9]|(3)[0-1])\\s([0-1]?[0-9]|(2)[0-3])(:)([0-5]?[0-9])';
+            formatoDate = '\\d{4}(\\-|\\/)(((0)?[0-9])|((1)[0-2]))(\\-|\\/)([0-2]?[0-9]|(3)[0-1])\\s([0-1]?[0-9]|(2)[0-3])(:)([0-5]?[0-9])';
           } else {
-            formatoDate = "\\d{4}(\\-|\\/)(((0)[0-9])|((1)[0-2]))(\\-|\\/)([0-2]?[0-9]|(3)[0-1])";
+            formatoDate = "\\d{4}(\\-|\\/)(((0)?[0-9])|((1)[0-2]))(\\-|\\/)([0-2]?[0-9]|(3)[0-1])";
           }
           if (!pCampo.valorText.match(formatoDate)) {
             if (fechaHora) {

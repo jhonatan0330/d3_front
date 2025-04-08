@@ -29,12 +29,13 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private jwtAuth: LoginService
+    private loginService: LoginService
   ) {
     this._unsubscribeAll = new Subject();
   }
 
   ngOnInit() {
+    this.loginService.getUrlServices();
     this.recoverForm = new FormGroup({
       clave: new FormControl('', Validators.required),
       first: new FormControl('', Validators.required),
@@ -64,9 +65,9 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
     this.submitButton.disabled = true;
     this.progressBar.mode = 'indeterminate';
 
-    this.jwtAuth.changePwd(signinData.clave, signinData.first, this.autorizationId).subscribe({
+    this.loginService.changePwd(signinData.clave, signinData.first, this.autorizationId).subscribe({
       next: () => {
-        this.jwtAuth.signout();
+        this.loginService.signout();
         Swal.fire('Todo perfecto', 'Tu nueva clave se ha confirmado, agradecemos tu paciencia, mejoramos para cuidar tu seguridad.','info');
       },
       error: (err:string) => {

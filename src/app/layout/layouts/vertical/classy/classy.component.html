@@ -46,7 +46,8 @@
 <div class="flex flex-col flex-auto w-full min-w-0">
   <!-- Header -->
   <div
-    class="relative flex flex-0 items-center w-full h-16 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent print:hidden">
+    class="absolute flex flex-0 items-center w-full h-16 px-4 md:px-6 z-49 shadow bg-transparent print:hidden"
+    [ngClass]="{'relative':!_loginService.isPublicUser}">
     <!-- Navigation toggle button -->
     <button mat-icon-button (click)="toggleNavigation('mainNavigation')">
       <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>

@@ -27,7 +27,7 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
 
   constructor(
-    private jwtAuth: LoginService
+    private loginService: LoginService
   ) {
     this._unsubscribeAll = new Subject();
   }
@@ -51,9 +51,9 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
     this.submitButton.disabled = true;
     this.progressBar.mode = 'indeterminate';
 
-    this.jwtAuth.recoverPassword(signinData.identificacion, signinData.correo).subscribe({
+    this.loginService.recoverPassword(signinData.identificacion, signinData.correo).subscribe({
       next: () => {
-        this.jwtAuth.signout();
+        this.loginService.signout();
         Swal.fire('Revisa tu correo', 'Hemos enviado un mensaje a tu correo electronico, hay puedes obtener el link para crear una clave y tambien tendras el codigo de seguridad.','info');
       },
       error: () => {
