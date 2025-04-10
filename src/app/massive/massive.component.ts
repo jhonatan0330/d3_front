@@ -62,6 +62,8 @@ export class MassiveComponent implements OnInit {
   displayedColumns: string[] = [];
   titleColumns: string[] = [];
   fTiempoEspera: FormControl = new FormControl();
+  skipSelected: boolean = false;
+  pause: boolean = false;
 
   files: FileList;
 
@@ -747,8 +749,7 @@ export class MassiveComponent implements OnInit {
                         this.procesarDocumentos();
                         this.isProcessing = false;
                       },
-                      error: (err: any) => {
-                        console.log(err);
+                      error: () => {
                         this.isProcessing = false;
                       }
                     });
@@ -816,22 +817,28 @@ export class MassiveComponent implements OnInit {
                   this.failedDocuments.push(this.currentPedido);
                   this.documentosGenerados.splice(0, 1);
                   this.cantidadProcesada = this.cantidadProcesada - 1;
-                  Swal.fire({
-                    title: 'Se ha presentado un error, ' + err + ' continuamos?',
-                    text: err,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Si, quiero continuar!',
-                    cancelButtonText: 'No, Paremos',
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      this.procesarDocumentos();
-                    } else {
-                      this.isProcessing = false;
-                    }
-                  });
+                  if(this.skipSelected){
+                    this.procesarDocumentos();
+                  }else{
+                    Swal.fire({
+                      title: 'Se ha presentado un error, ' + err + ' continuamos?',
+                      text: err,
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Si, quiero continuar!',
+                      cancelButtonText: 'No, Paremos',
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        this.procesarDocumentos();
+                      } else {
+                        this.isProcessing = false;
+                      }
+                    });
+                  }
+                  
+                  
                 }
               },
             });

@@ -119,10 +119,10 @@
                         </div>
 
                         <!-- Filtro por Estados  -->
-                        <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por estados </div>
+                        <div class="py-2"> <input class="p-0.5" type="checkbox" [(ngModel)]="masterSelected" (change)="toggleAll()" /> <span class="text-primary text-xs uppercase font-bold px-2">Filtrar por estados</span></div>
                         <form [formGroup]="form">
                             <div *ngIf="plantilla?.estados ">
-                                <div *ngFor="let _estado of plantilla.estados" class="p-0.5 w-full rounded flex">
+                                <div *ngFor="let _estado of plantilla.estados" class="p-0.5 w-full flex">
                                     <mat-checkbox [formControlName]="_estado.llaveTabla" class="w-full">
                                         <span class="text-sm">{{ _estado.nombre }}</span>
                                     </mat-checkbox>

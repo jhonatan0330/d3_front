@@ -15,53 +15,31 @@
 
   <!-- Main -->
   <div class="flex flex-col flex-0 p-2 w-full">
-    <div class="flex w-full ">
-      <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading || isProcessing"
+    <div class="w-full">
+      <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading || isProcessing"
         onclick="simpleUploadXML.click();">
         <mat-icon class="mr-2">cloud_upload</mat-icon> 2. Cargar
         <input id="simpleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
           (click)="$event.target.value = ''" (change)="handleFileInput($event.target.files)" />
       </button>
-      <button mat-flat-button color="accent" class="m-4" onclick="multipleUploadXML.click();"
+      <button mat-flat-button color="accent" class="m-2" onclick="multipleUploadXML.click();"
         [disabled]="isLoading || isProcessing" *ngIf="fieldIdInTemplateSecondary && documentosGenerados">
         <mat-icon class="mr-2">cloud_upload</mat-icon> Cargar Multiple
         <input id="multipleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
           (click)="$event.target.value = ''" (change)="handleFileInputMultiple($event.target.files)" />
       </button>
-      <span></span>
-      <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading" (click)="downloadBase('xml')">
+
+      <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading" (click)="downloadBase('xml')">
         <mat-icon class="mr-2">cloud_download</mat-icon> base (xml)
       </button>
-      <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading" (click)="downloadBase('excel')">
+      <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading" (click)="downloadBase('excel')">
         <mat-icon class="mr-2">cloud_download</mat-icon> base (csv)
       </button>
-      <div class="flex flex-col gap-6 w-26 m-4">
-        <div class="relative w-full h-10">
-          <input class="peer w-full h-full bg-transparent disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border
-            focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-blue-500"
-            placeholder=" " [formControl]="fTiempoEspera" [disabled]="isLoading" type="number" /><label
-            class="flex w-full h-full select-none pointer-events-none absolute left-0 font-normal
-             !overflow-visible truncate peer-placeholder-shown:text-blue-gray-500
-             leading-tight peer-focus:leading-tight peer-disabled:text-transparent
-             peer-disabled:peer-placeholder-shown:text-blue-gray-500
-             transition-all -top-1.5 peer-placeholder-shown:text-sm
-             text-[11px] peer-focus:text-[11px] before:content[' ']
-             before:block before:box-border before:w-2.5 before:h-1.5
-             before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent
-             before:rounded-tl-md before:border-t peer-focus:before:border-t-2
-             before:border-l peer-focus:before:border-l-2 before:pointer-events-none
-             before:transition-all peer-disabled:before:border-transparent after:content[' ']
-             after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px]
-             after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md
-             after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2
-             after:pointer-events-none after:transition-all peer-disabled:after:border-transparent
-             peer-placeholder-shown:leading-[3.75] text-blue-gray-400 peer-focus:text-blue-500
-             before:border-blue-gray-200 peer-focus:before:!border-blue-500 after:border-blue-gray-200
-             peer-focus:after:!border-blue-500">
-            tiempo de espera
-          </label>
-        </div>
-      </div>
+      <span class="m-2"> Tiempo de espera
+          <input class="p-1 w-14 bg-white rounded"
+             [formControl]="fTiempoEspera" [disabled]="isLoading" type="number" />
+      </span>
+        <input class="m-2" type="checkbox" [(ngModel)]="skipSelected" />No detenerse cuando encuentre errores
     </div>
 
     <mat-progress-bar [mode]="isLoading ? 'indeterminate' : ''" class="w-full">Validando Datos</mat-progress-bar>
@@ -69,10 +47,14 @@
     {{ lblTipoProceso }}
     <mat-progress-bar [mode]="isLoading ? 'indeterminate' : ''" class="w-full"></mat-progress-bar>
     <div class="w-full">
-      <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading || !isValidate || isProcessing"
+      <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading || !isValidate || isProcessing "
         (click)="startLoad()">
         <mat-icon class="mr-2">fast_forward</mat-icon> 3. Procesar
       </button>
+      <!--button mat-flat-button color="accent" class="m-4" *ngIf="isProcessing"
+        (click)="pause ===!pause" >
+        <mat-icon class="mr-2">pause</mat-icon> 4. Pausar
+      </button-->
       <span></span>
       <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing" (click)="newMassiveLoad()">
         <mat-icon class="mr-2">autorenew</mat-icon> Nueva carga
@@ -80,7 +62,6 @@
 
       <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing" >
         <mat-icon class="mr-2">autorenew</mat-icon> Cargar archivos
-
       </button>
 
       <input [id]="'_file'" type="file" webkitdirectory directory multiple

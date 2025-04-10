@@ -64,6 +64,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     displayedColumns: string[] = [];
     selection = new SelectionModel<PedidoVentaDTO>(true, []);
     lastSelectedSegmentRow: PedidoVentaDTO; // this is the variable which holds the last selected row index
+    masterSelected: boolean = false;
 
 
     @ViewChild('drawer') drawer: MatDrawer;
@@ -678,5 +679,11 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
       }
     }
 
+    toggleAll() {
+        for (let i = 0; i < Object.keys(this.form.controls).length; i++) {
+            const element = Object.keys(this.form.controls)[i];
+            this.form.controls[element].setValue( this.masterSelected);
+        }
+      }
 
 }
