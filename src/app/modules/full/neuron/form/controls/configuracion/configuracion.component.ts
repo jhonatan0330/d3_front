@@ -41,10 +41,6 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     } else {
       this.procesarCampo(null);
     }
-    if (this.required) {
-      this.fControl.setValidators(Validators.required);
-      this.fControl.updateValueAndValidity();
-    }
     // PAra que no se envia a actualizar con los cambios de inicio
     this.fControl.valueChanges.subscribe((value) => {
       this.actualizar();
@@ -108,7 +104,6 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
   consultaExitosaDatosBase(pCampo: PedidoVentaCaracteristicaFilterDTO) {
     this.disponibles = pCampo.campoDTO.documentos;
     this.asignarValorInicial(); // Se hace antes del validar porque no aparecian la primera ve<
-    this.fControl.updateValueAndValidity();
     // Consulto la plantilla para actualizarla y no tener que volver a consultarla
     const plantillaBase: DocumentoPlantillaDTO =
       this.templateService.getTemplate(this.structure.plantilla, this.urlServer);
@@ -117,6 +112,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
       const iCampo = plantillaBase.caracteristicas[i];
       if (iCampo.llaveTabla === this.structure.llaveTabla) {
         iCampo.documentos = pCampo.campoDTO.documentos;
+        this.fControl.updateValueAndValidity();
         return;
       }
     }
