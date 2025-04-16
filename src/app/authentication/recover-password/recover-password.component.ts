@@ -11,6 +11,7 @@ import { Subject } from 'rxjs';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import Swal from 'sweetalert2';
 import { LoginService } from '../login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-recover-password',
@@ -27,7 +28,8 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
 
   constructor(
-    private loginService: LoginService
+    private loginService: LoginService,
+    private router: Router
   ) {
     this._unsubscribeAll = new Subject();
   }
@@ -55,6 +57,7 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
       next: () => {
         this.loginService.signout();
         Swal.fire('Revisa tu correo', 'Hemos enviado un mensaje a tu correo electronico, hay puedes obtener el link para crear una clave y tambien tendras el codigo de seguridad.','info');
+        this.router.navigateByUrl('main');
       },
       error: () => {
         this.submitButton.disabled = false;
