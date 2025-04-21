@@ -61,7 +61,7 @@ export class MassiveComponent implements OnInit {
   dataSource = new MatTableDataSource([]);
   displayedColumns: string[] = [];
   titleColumns: string[] = [];
-  fTiempoEspera: FormControl = new FormControl();
+  fTiempoEspera: number = 0;
   skipSelected: boolean = false;
   pause: boolean = false;
 
@@ -90,7 +90,7 @@ export class MassiveComponent implements OnInit {
       }
     });
     this.dialog.closeAll();
-    this.fTiempoEspera.setValue('0');
+    this.fTiempoEspera  = 0;
   }
 
   startForm() {
@@ -228,7 +228,9 @@ export class MassiveComponent implements OnInit {
         xmlBase = xmlBase + '<' + nombre + '>';
         for (let i = 0; i < this.plantilla.caracteristicas.length; i++) {
           const iCampo = this.plantilla.caracteristicas[i];
-          if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION){
+          if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION
+            && PlantillaHelper.isEmpty(iCampo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)
+          ){
             const campoNombre: string = this.formatStringXML(iCampo.nombre);
             xmlBase = xmlBase + '<' + campoNombre + '>';
             xmlBase = xmlBase + getXMLBase(iCampo);
@@ -253,8 +255,10 @@ export class MassiveComponent implements OnInit {
     try {
       let xmlBase = '';
       for (let iCampo of this.plantilla.caracteristicas) {
-        const campoNombre: string = this.formatStringXML(iCampo.nombre);
-        xmlBase = xmlBase + campoNombre + ';';
+        if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION && PlantillaHelper.isEmpty(iCampo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)){
+          const campoNombre: string = this.formatStringXML(iCampo.nombre);
+          xmlBase = xmlBase + campoNombre + ';';
+        }
       }
       this.isLoading = false;
       return xmlBase.toString();
@@ -273,6 +277,11 @@ export class MassiveComponent implements OnInit {
     texto = texto.replace(new RegExp(' ', 'g'), '_');
     texto = texto.replace('Ñ', 'N');
     texto = texto.trim();
+    let de = 'ÁÃÀÄÂÉËÈÊÍÏÌÎÓÖÒÔÚÜÙÛÑÇáãàäâéëèêíïìîóöòôúüùûñç',
+        a = 'AAAAAEEEEIIIIOOOOUUUUNCaaaaaeeeeiiiioooouuuunc',
+        re = new RegExp('['+de+']' , 'ug');
+  
+    texto = texto.replace( re, match => a.charAt(de.indexOf(match)));
     return texto;
   }
 
@@ -762,7 +771,7 @@ export class MassiveComponent implements OnInit {
         this.isProcessing = true;
 
         // Obtener el tiempo de espera del formulario, o usar el valor predeterminado si no está definido
-        const tiempoEspera = this.fTiempoEspera.value !== null ? this.fTiempoEspera.value : 0;
+        const tiempoEspera = this.fTiempoEspera !== null ? this.fTiempoEspera : 0;
 
         if(tiempoEspera > 2){
           let timerInterval;

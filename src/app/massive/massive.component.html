@@ -36,8 +36,7 @@
         <mat-icon class="mr-2">cloud_download</mat-icon> base (csv)
       </button>
       <span class="m-2"> Tiempo de espera
-          <input class="p-1 w-14 bg-white rounded"
-             [formControl]="fTiempoEspera" [disabled]="isLoading" type="number" />
+          <input class="p-1 w-14 bg-white rounded"  [(ngModel)]="fTiempoEspera" [disabled]="isLoading" type="number" />
       </span>
         <input class="m-2" type="checkbox" [(ngModel)]="skipSelected" />No detenerse cuando encuentre errores
     </div>
