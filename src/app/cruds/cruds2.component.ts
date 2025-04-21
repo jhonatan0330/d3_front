@@ -323,7 +323,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
         }
 
-        if (this.plantilla.estados) {
+        if (this.plantilla.estados && !this.fControlCheck.value) {
             entity.estadoExpediente = '';
 
             for (let i = 0; i < Object.keys(this.form.controls).length; i++) {
@@ -333,7 +333,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 }
             }
             if (!entity.estadoExpediente) {
-                alert('Seleccione un filtro.');
+                Swal.fire('Filtros', 'Estas enviando una consulta y no tienes seleccionado ningun estado del filtro, te agradecemos selecciones minimo uno y vuelvas a enviar la consulta. Otra opción es consultar por el nombre exacto', 'info');
                 return;
             } else {
                 if (entity.estadoExpediente === ';A') {

@@ -17,8 +17,6 @@ import { LoginService } from '../login.service';
   templateUrl: './new-password.component.html'
 })
 export class NewPasswordComponent implements OnInit, OnDestroy {
-  @ViewChild(MatProgressBar) progressBar: MatProgressBar;
-  @ViewChild(MatButton) submitButton: MatButton;
 
   recoverForm: FormGroup;
   errorMsg = '';
@@ -62,8 +60,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
       Swal.fire('Confirma el password', 'Tu nueva clave no concuerda con la segunda clave.','error');
       return;
     }
-    this.submitButton.disabled = true;
-    this.progressBar.mode = 'indeterminate';
+
 
     this.loginService.changePwd(signinData.clave, signinData.first, this.autorizationId).subscribe({
       next: () => {
@@ -72,8 +69,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('main');
       },
       error: (err:string) => {
-        this.submitButton.disabled = false;
-        this.progressBar.mode = 'determinate';
+
         if(err.indexOf('token vencido')!=-1){
           this.router.navigateByUrl('sessions/recover');
         }
