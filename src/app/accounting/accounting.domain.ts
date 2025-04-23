@@ -70,6 +70,13 @@ export class ManualDTO {
 	value: number;
 }
 
+
+
+export class Voucher{
+	header: ManualDTO;
+	records: VoucherLine[];
+}
+
 export class ManualAccountDTO {
 	key: string;
 	state: string;
@@ -80,14 +87,24 @@ export class ManualAccountDTO {
 	positive: number;
 	negative: number;
 	note: string;
-	third: string;
-	thirdName: string;
 }
 
-export class Voucher{
-	header: ManualDTO;
-	records: ManualAccountDTO[];
+export class ManualAccountAuxiliarDTO {
+	key: string;
+	state: string;
+	recordLine: string;
+	account: string;
+	auxiliarType: string;
+	auxiliarDocumentId: string;
+	auxiliarCode: string;
+	auxiliarName: string;
 }
+
+export class VoucherLine{
+	line: ManualAccountDTO;
+	references: ManualAccountAuxiliarDTO[];
+}
+
 
 export class VoucherPrepareRequest{
 	serviceId: string;
