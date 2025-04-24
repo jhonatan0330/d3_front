@@ -12,17 +12,14 @@ import { LoginService } from 'app/authentication/login.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
-// import { ScriptService } from './ScriptService';
-// const SCRIPT_PATH = 'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js';
-// const SCRIPT_PATH2 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/main.js';
-// const SCRIPT_PATH3 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/lenis.min.js';
-// const SCRIPT_PATH4 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/ScrollTrigger.min.js';
-// const SCRIPT_PATH5 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/gsap.min.js';
-// const SCRIPT_PATH6 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/swiper.min.js';
-// const SCRIPT_PATH7 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/waypoints.min.js';
-// const SCRIPT_PATH8 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/wow.min.js';
-// const SCRIPT_PATH9 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/jquery.nice-select.min.js';
-// const SCRIPT_PATH10 = 'https://fs6.softwareparati.com/roa/webpage/202501/temp/js/venobox.min.js';
+
+interface MenuNode {
+    section: string ;
+    sectionKey: string ;
+    children?: DocumentoPlantillaDTO[];
+    visible: boolean;
+    image: string;
+}
 
 @Component({
   selector: 'profile',
@@ -37,7 +34,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
   modules: DocumentoPlantillaDTO[] = [];
   filteredReports: DocumentoPlantillaDTO[] = [];
-  filteredModules: DocumentoPlantillaDTO[] = [];
+  filteredModules: MenuNode[] = [];
   filterControl: UntypedFormControl = new UntypedFormControl();
   isLoading = false;
 
@@ -177,10 +174,31 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     let value: string = this.filterControl.value;
     if (!value) { value = ''; }
     if (value.endsWith(' ')) { value = value.substring(0, value.length - 1); }
-    this.filteredModules = Object.assign([], this.modules).filter(
+    const _moduleFilter  = Object.assign([], this.modules).filter(
       (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
         && (item.estado && item.estado.indexOf('P') > -1))
     );
+    this.filteredModules = [];
+    _moduleFilter.forEach((_iFilterModule)=>{
+      let _flagFind = false;
+      this.filteredModules.forEach((_iFilterMenu)=>{
+        if(_iFilterMenu.sectionKey === _iFilterModule.proceso){
+          if(!_iFilterMenu.children) _iFilterMenu.children = [];
+          _iFilterMenu.children.push(_iFilterModule);
+          _flagFind = true;
+        }
+      });
+      if(!_flagFind){
+        this.filteredModules.push({
+          section: PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU).texto,
+          sectionKey: _iFilterModule.proceso,
+          children:[_iFilterModule],
+          visible: (value)?true:false,
+          image: _iFilterModule.imagen
+        });
+      }
+    });
+
     this.filteredReports = Object.assign([], this.modules).filter(
       (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
         && (item.estado && item.estado.indexOf('R') > -1))
@@ -226,11 +244,20 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectFirst() {
     if (this.filteredModules && this.filteredModules.length != 0) {
-      let newRoute = '/list/' + this.filteredModules[0].llaveTabla;
+      let newRoute = '/list/' + this.filteredModules[0].children[0].llaveTabla;
       this.router.navigate(['/list' + newRoute]);
       this.filterControl.setValue(null);
       this.filterItem();
     }
+  }
+
+  toogleSection(pMenu:MenuNode){
+    this.filteredModules.forEach((_iFilterMenu)=>{
+      if(_iFilterMenu.sectionKey === pMenu.sectionKey){
+        _iFilterMenu.visible = !_iFilterMenu.visible;
+        return;
+      }
+    });
   }
 
 }

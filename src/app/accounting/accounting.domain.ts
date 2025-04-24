@@ -7,6 +7,7 @@ export class CatalogDTO {
 	initialDate: Date;
 	finalDate: Date;
 	accounts: AccountDTO[];
+	template: string;
 }
 
 export class AccountDTO {
