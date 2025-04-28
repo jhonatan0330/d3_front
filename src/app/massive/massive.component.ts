@@ -276,6 +276,8 @@ export class MassiveComponent implements OnInit {
     }
     texto = texto.replace(new RegExp(' ', 'g'), '_');
     texto = texto.replace('Ñ', 'N');
+    texto = texto.replace('(', '');
+    texto = texto.replace(')', '');
     texto = texto.trim();
     let de = 'ÁÃÀÄÂÉËÈÊÍÏÌÎÓÖÒÔÚÜÙÛÑÇáãàäâéëèêíïìîóöòôúüùûñç',
         a = 'AAAAAEEEEIIIIOOOOUUUUNCaaaaaeeeeiiiioooouuuunc',

@@ -524,7 +524,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
       if (
         !this.data.dependientes ||
-        this.data.dependientes.length !== this.relatedFields.length
+        this.data.dependientes.length < this.relatedFields.length
       ) {
         if (campoFiltro.filtroParametro != null) {
           alert('Revisa los dependientes del campo ' + this.structure.nombre);
