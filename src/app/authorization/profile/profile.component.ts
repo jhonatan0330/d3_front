@@ -182,7 +182,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     _moduleFilter.forEach((_iFilterModule)=>{
       let _flagFind = false;
       this.filteredModules.forEach((_iFilterMenu)=>{
-        if(_iFilterMenu.sectionKey === _iFilterModule.proceso){
+        if(_iFilterMenu.sectionKey === PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU).valor){
           if(!_iFilterMenu.children) _iFilterMenu.children = [];
           _iFilterMenu.children.push(_iFilterModule);
           _flagFind = true;
@@ -191,9 +191,9 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       if(!_flagFind){
         this.filteredModules.push({
           section: PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU).texto,
-          sectionKey: _iFilterModule.proceso,
+          sectionKey: PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU).valor,
           children:[_iFilterModule],
-          visible: (value)?true:false,
+          visible: (value || this.filteredModules.length===0)?true:false,
           image: _iFilterModule.imagen
         });
       }
