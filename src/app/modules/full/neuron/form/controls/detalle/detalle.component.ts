@@ -320,6 +320,32 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     this.actualizarDetalles(null);
   }
 
+  /*Esto lo realice para corregir el error al modificar los valores de los productos que tenian funciones*/
+  updateDetail(item: DetallePedidoVentaDTO) {
+    if (this.isEnabled && !item.tarifas 
+      && !this.isEmpty(this.obtenerValor(PlantillaHelper.DETALLE_TARIFARIO_SQL))) {
+      const nFilter: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
+      nFilter.campo = this.structure.llaveTabla;
+      nFilter.dependientes = this.data.dependientes;
+      nFilter.llaveTabla=item.llaveTabla;
+      nFilter.filtroParametro = item.productoCodigo;
+      this.isLoading = true;
+      this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
+        next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
+          this.isLoading = false;
+          item.tarifas = _value.campoDTO.productos[0].detallePlantilla.tarifas;
+          this.modificarDetallePedido(item);
+        },
+        error: () => {
+          this.isLoading = false;
+        },
+      });
+    } else {
+      this.modificarDetallePedido(item);
+    }
+  }
+
+
   modificarDetallePedido(item: DetallePedidoVentaDTO) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
       width: '720px',
