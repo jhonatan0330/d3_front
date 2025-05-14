@@ -139,6 +139,8 @@ export class PlantillaHelper {
 	static FECHA_MINIMA_CAMPO = "FECHA_MINIMA_CAMPO";
 
   static TEMPLATE_VOUCHER = "TEMPLATE_VOUCHER";
+
+  static SECCION_FUNCION = 'SECCION_FUNCION_SQL';
   
   // Estos dos los quite porque genrarban muchos cilso infirnitos
   //PlantillaHelper.RELACIONAR_DOCUMENTOS, PlantillaHelper.RETIRAR_DOCUMENTOS,
