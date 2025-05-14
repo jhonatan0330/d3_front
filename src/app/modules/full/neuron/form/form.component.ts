@@ -641,27 +641,11 @@ export class FormComponent implements OnInit, AfterViewInit {
       if (!this.pedido.estadoExpediente) {
         // Solo se pueden anular los que estan en estado activo y que no son de un proceso
         if (this.pedido.estado === StatesEnum.ACTIVE) {
-          if (
-            !PlantillaHelper.isEmpty(
-              this.plantilla.propiedades,
-              PlantillaHelper.PERMISO_PLANTILLA_ELIMINAR
-            )
-          ) {
-            const plantillaEliminar = PlantillaHelper.buscarValor(
-              this.plantilla.propiedades,
-              PlantillaHelper.FORM_ANULAR
-            );
+          //if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_ELIMINAR)) {
+            const plantillaEliminar = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.FORM_ANULAR);
             if (plantillaEliminar) {
-              const tEliminar: DocumentoPlantillaDTO = this.templateService.getTemplate(
-                plantillaEliminar, this.plantilla.server
-              );
-              if (
-                tEliminar &&
-                !PlantillaHelper.isEmpty(
-                  tEliminar.propiedades,
-                  PlantillaHelper.PERMISO_PLANTILLA_CREAR
-                )
-              ) {
+              const tEliminar: DocumentoPlantillaDTO = this.templateService.getTemplate(plantillaEliminar, this.plantilla.server);
+              if (tEliminar &&!PlantillaHelper.isEmpty(tEliminar.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
                 const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
                 _newtransicion.imagen = tEliminar.imagen;
                 _newtransicion.plantilla = tEliminar.llaveTabla;
@@ -669,7 +653,19 @@ export class FormComponent implements OnInit, AfterViewInit {
                 this.transiciones.push(_newtransicion);
               }
             }
-          }
+          //}
+        } else {
+            const _templateAction = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.FORM_ACTIVATE);
+            if (_templateAction) {
+              const _tAction: DocumentoPlantillaDTO = this.templateService.getTemplate(_templateAction, this.plantilla.server);
+              if (_tAction &&!PlantillaHelper.isEmpty(_tAction.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+                const _newAction: ProcesoTransicionDTO = new ProcesoTransicionDTO();
+                _newAction.imagen = _tAction.imagen;
+                _newAction.plantilla = _tAction.llaveTabla;
+                _newAction.nombre = _tAction.nombre;
+                this.transiciones.push(_newAction);
+              }
+            }
         }
       } else {
         this.canTransfer = !PlantillaHelper.isEmpty(
