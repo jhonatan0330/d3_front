@@ -1,11 +1,11 @@
-<div class="flex flex-auto">
+<div class="flex flex-auto h-full">
 
     <form
-        class="flex flex-col flex-auto p-6 pt-10 sm:p-8 sm:pt-10 overflow-y-auto"
+        class="flex flex-col flex-auto p-6 pt-10 sm:p-8 sm:pt-10 overflow-y-auto h-full"
         [formGroup]="taskForm">
 
         <!-- Header -->
-        <div class="flex items-center justify-between -mt-3 -ml-4">
+        <div class="flex items-center justify-between -mt-3 -ml-4 h-full">
 
             <!-- Mark as ... button -->
             <button
@@ -37,7 +37,7 @@
                 <button
                     mat-icon-button
                     [matMenuTriggerFor]="moreMenu">
-                    <mat-icon [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
+                    <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
                 </button>
                 <mat-menu #moreMenu="matMenu">
                     <button
@@ -155,16 +155,10 @@
         </div>
 
         <!-- Notes -->
-        <div class="mt-8">
+        <div class="mt-8 h-full">
             <mat-form-field class="w-full">
                 <mat-label>Notes</mat-label>
-                <textarea
-                    matInput
-                    oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-                    onclick='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-                    [formControlName]="'notes'"
-                    [spellcheck]="false"
-                    matTextareaAutosize></textarea>
+                <textarea class="h-full max-h-60" matInput [formControlName]="'notes'" matTextareaAutosize></textarea>
                 <mat-error *ngIf="taskForm.invalid">Solo puedes colocar 4000 caracteres</mat-error>
             </mat-form-field>
         </div>
