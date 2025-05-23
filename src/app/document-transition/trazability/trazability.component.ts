@@ -231,7 +231,8 @@ export class TrazabilityComponent implements OnInit {
       .subscribe({
         next: () => {
           Swal.fire('Comprobante', 'Se envio a generar el comprobante por favor consulte de nuevo', 'info');
-          this.isLoading = false; this.vouchersTemplate.forEach((item) => {
+          this.isLoading = false; 
+          this.vouchersTemplate.forEach((item) => {
             if(item.valor === pServiceId){
               item.estado = 'A';
             }

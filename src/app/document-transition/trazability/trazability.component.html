@@ -42,11 +42,13 @@
       <div class="text-lg font-medium tracking-tight leading-6 truncate">
         {{item.texto |uppercase}}</div>
 
-      <button class="w-full m-1" mat-flat-button [color]="'accent'" (click)="showVoucherAccount(item)">
+      <button class="w-full m-1" mat-flat-button [color]="'accent'" (click)="showVoucherAccount(item)"
+       [disabled]="isLoading">
         <mat-icon>refresh</mat-icon>
         <span>Consultar comprobante</span>
       </button>
-      <button *ngIf="item.estado==='CONSULTADO'" class="w-full m-1" mat-flat-button [color]="'accent'" (click)="generateVoucher(item.valor)">
+      <button *ngIf="item.estado==='CONSULTADO'" class="w-full m-1" mat-flat-button [color]="'accent'" (click)="generateVoucher(item.valor)"
+        [disabled]="isLoading">
         <mat-icon>add</mat-icon>
         <span>Crear comprobante</span>
       </button>

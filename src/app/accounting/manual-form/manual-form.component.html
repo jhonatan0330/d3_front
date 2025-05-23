@@ -66,6 +66,13 @@
                                         [options]="{ precision: 0, allowNegative: false, decimal: ',', thousands: '.'}" />
                                 </mat-form-field>
                             </div>
+                            
+                        </div>
+                        <div class="w-full sm:w-1/2"  [style.display]="(referencesActive) ? 'block':'none'">
+                            <mat-form-field class="w-full">
+                                <mat-label>Notas</mat-label>
+                                <textarea matInput formControlName="note" id="{{'note'+i}}"></textarea>
+                            </mat-form-field>
                         </div>
                     </div>
                     <div formArrayName="references" class="w-full gap-1 justify-end"  [style.display]="(referencesActive) ? 'block':'none'">
