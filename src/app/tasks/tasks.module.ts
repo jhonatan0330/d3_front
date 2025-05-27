@@ -3,7 +3,6 @@ import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
@@ -45,7 +44,6 @@ import { CanDeactivateTasksDetails } from './tasks.guards';
         DragDropModule,
         MatAutocompleteModule,
         MatButtonModule,
-        MatCheckboxModule,
         MatDatepickerModule,
         MatDividerModule,
         MatFormFieldModule,

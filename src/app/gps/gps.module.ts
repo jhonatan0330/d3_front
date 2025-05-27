@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
@@ -32,7 +31,6 @@ import { MatSliderModule } from '@angular/material/slider';
     imports     : [
         RouterModule.forChild(gpsRoutes),
         MatButtonModule,
-        MatCheckboxModule,
         MatDatepickerModule,
         MatDividerModule,
         MatFormFieldModule,

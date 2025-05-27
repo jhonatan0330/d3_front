@@ -43,7 +43,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
@@ -95,7 +94,6 @@ import { FullMapComponent } from './form/controls/gps-map/full-map/full-map.comp
         MatButtonModule,
         MatButtonToggleModule,
         MatCardModule,
-        MatCheckboxModule,
         MatChipsModule,
         MatDialogModule,
         MatDividerModule,

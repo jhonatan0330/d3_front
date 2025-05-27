@@ -168,7 +168,7 @@
       </div>
       <!-- Texto de filtro -->
       <div class="pr-1 sm:flex">
-        <mat-checkbox class="mr-1" [formControl]="fControlCheck">Codigo Exacto</mat-checkbox>
+        <input class="px-2" type="checkbox" [formControl]="fControlCheck"/><span class="px-2">Codigo Exacto</span>
         <mat-form-field>
           <input matInput type="text" placeholder="Coloca un texto y presiona enter" name="fControlSearch"
             [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
@@ -208,9 +208,9 @@
       </div>
     </div>
     <div *ngIf="showFilterState">
-      <mat-checkbox class="mr-1" [formControl]="fCheckActivo">Activos</mat-checkbox>
-      <mat-checkbox class="mr-1" [formControl]="fCheckFinalizado">Finalizados</mat-checkbox>
-      <mat-checkbox class="mr-1" [formControl]="fCheckInactivo">Inactivo</mat-checkbox>
+      <input class="px-2" type="checkbox" [formControl]="fCheckActivo"/><span class="px-2">Activos</span>
+      <input class="px-2" type="checkbox" [formControl]="fCheckFinalizado"/><span class="px-2">Finalizados</span>
+      <input class="px-2" type="checkbox" [formControl]="fCheckInactivo"/><span class="px-2">Inactivo</span>
     </div>
     <div class="w-full text-center" *ngIf="labelSearch">
       <span class="text-28 font-weight-bold mat-color-primary ">{{ labelSearch }}</span>

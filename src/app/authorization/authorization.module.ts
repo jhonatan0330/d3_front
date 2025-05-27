@@ -10,7 +10,6 @@ import { MatInputModule } from "@angular/material/input";
 import { MatCardModule } from "@angular/material/card";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
-import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatMenuModule } from "@angular/material/menu";
@@ -48,7 +47,6 @@ import { LoginComponent } from "app/authorization/login/login.component";
             }
           ]),
 
-          MatCheckboxModule,
           MatDialogModule,
           MatDividerModule,
 

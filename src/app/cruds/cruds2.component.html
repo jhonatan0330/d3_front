@@ -64,7 +64,7 @@
                     </div>
                     <!-- Buscador de texto -->
                     <div class="text-primary text-xs uppercase font-bold py-2">Filtrar</div>
-                    <mat-checkbox class="py-2" [formControl]="fControlCheck">Filtrar por codigo Exacto</mat-checkbox>
+                    <input class="p-2" type="checkbox" [formControl]="fControlCheck"/><span class="px-2">Filtrar por codigo Exacto</span>
                     <div>
                         <mat-form-field>
                             <input matInput type="text" placeholder="Coloca un texto y presiona enter"
@@ -119,13 +119,15 @@
                         </div>
 
                         <!-- Filtro por Estados  -->
-                        <div class="py-2"> <input class="p-0.5" type="checkbox" [(ngModel)]="masterSelected" (change)="toggleAll()" /> <span class="text-primary text-xs uppercase font-bold px-2">Filtrar por estados</span></div>
+                        <div class="py-2">
+                            <input class="p-0.5" type="checkbox" [(ngModel)]="masterSelected" (change)="toggleAll()" />
+                            <span class="text-primary text-xs uppercase font-bold px-2">Filtrar por estados</span>
+                        </div>
                         <form [formGroup]="form">
                             <div *ngIf="plantilla?.estados ">
                                 <div *ngFor="let _estado of plantilla.estados" class="p-0.5 w-full flex">
-                                    <mat-checkbox [formControlName]="_estado.llaveTabla" class="w-full">
-                                        <span class="text-sm">{{ _estado.nombre }}</span>
-                                    </mat-checkbox>
+                                    <input class="px-1" type="checkbox" [formControlName]="_estado.llaveTabla" />
+                                    <span class="text-sm w-full px-2">{{ _estado.nombre }}</span>
                                     <div class="icon-size-4 border rounded"
                                         [style.backgroundColor]="getColor(_estado.llaveTabla)"
                                         [style.color]="getColorFont(_estado.llaveTabla)">
@@ -280,17 +282,15 @@
                         *ngIf="viewMode !== 'grid-view'">
                         <ng-container matColumnDef="select">
                             <th mat-header-cell *matHeaderCellDef>
-                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                <input type="checkbox" (change)="$event ? masterToggle() : null"
                                     [checked]="selection.hasValue() && isAllSelected()"
                                     [indeterminate]="selection.hasValue() && !isAllSelected()"
-                                    [aria-label]="checkboxLabel()">
-                                </mat-checkbox>
+                                    [aria-label]="checkboxLabel()"/>
                             </th>
                             <td mat-cell *matCellDef="let row">
-                                <mat-checkbox (click)="$event.stopPropagation();multipleSelect($event,row)"
+                                <input type="checkbox" (click)="$event.stopPropagation();multipleSelect($event,row)"
                                     (change)="$event ? selection.toggle(row) : null"
-                                    [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
-                                </mat-checkbox>
+                                    [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)"/>
                             </td>
                         </ng-container>
 

@@ -14,7 +14,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Cruds2Component } from './cruds2.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -39,7 +38,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
           ]),
         SharedModule,
         MatButtonModule,
-        MatCheckboxModule,
         MatDialogModule,
         MatDividerModule,
         MatFormFieldModule,

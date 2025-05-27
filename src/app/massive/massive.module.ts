@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
@@ -25,14 +24,12 @@ import { MatTableModule } from '@angular/material/table';
                 component: MassiveComponent
             }
         ]),
-        MatCheckboxModule,
         MatFormFieldModule,
         MatInputModule,
         MatProgressBarModule,
         MatIconModule,
         MatButtonModule,
         MatTableModule,
-        MatCheckboxModule,
         SharedModule
     ],
     exports : [

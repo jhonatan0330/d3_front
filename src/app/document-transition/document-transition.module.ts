@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
@@ -21,7 +20,6 @@ import { MatButtonModule } from '@angular/material/button';
                 component: TrazabilityComponent
             }
         ]),
-        MatCheckboxModule,
         MatFormFieldModule,
         MatSelectModule,
         MatInputModule,
