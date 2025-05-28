@@ -38,7 +38,7 @@
       <span class="m-2"> Tiempo de espera
           <input class="p-1 w-14 bg-white rounded"  [(ngModel)]="fTiempoEspera" [disabled]="isLoading" type="number" />
       </span>
-        <input class="m-2" type="checkbox" [(ngModel)]="skipSelected" />No detenerse cuando encuentre errores
+        <label><input class="m-2" type="checkbox" [(ngModel)]="skipSelected" />No detenerse cuando encuentre errores</label>
     </div>
 
     <mat-progress-bar [mode]="isLoading ? 'indeterminate' : ''" class="w-full">Validando Datos</mat-progress-bar>

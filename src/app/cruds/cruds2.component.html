@@ -64,7 +64,7 @@
                     </div>
                     <!-- Buscador de texto -->
                     <div class="text-primary text-xs uppercase font-bold py-2">Filtrar</div>
-                    <input class="p-2" type="checkbox" [formControl]="fControlCheck"/><span class="px-2">Filtrar por codigo Exacto</span>
+                    <label ><input id="chkCodeFull" class="mx-2" type="checkbox" [formControl]="fControlCheck"/>Filtrar por codigo Exacto</label>
                     <div>
                         <mat-form-field>
                             <input matInput type="text" placeholder="Coloca un texto y presiona enter"
@@ -120,14 +120,17 @@
 
                         <!-- Filtro por Estados  -->
                         <div class="py-2">
-                            <input class="p-0.5" type="checkbox" [(ngModel)]="masterSelected" (change)="toggleAll()" />
-                            <span class="text-primary text-xs uppercase font-bold px-2">Filtrar por estados</span>
+                            <label class="text-primary text-xs uppercase font-bold px-2">
+                                <input class="mx-2 py-1" type="checkbox" [(ngModel)]="masterSelected" (change)="toggleAll()" />Filtrar por estados
+                            </label>
                         </div>
                         <form [formGroup]="form">
                             <div *ngIf="plantilla?.estados ">
                                 <div *ngFor="let _estado of plantilla.estados" class="p-0.5 w-full flex">
-                                    <input class="px-1" type="checkbox" [formControlName]="_estado.llaveTabla" />
-                                    <span class="text-sm w-full px-2">{{ _estado.nombre }}</span>
+                                    <label class="text-sm w-full px-2">
+                                        <input class="mx-2 py-1" type="checkbox" [formControlName]="_estado.llaveTabla" />
+                                        {{ _estado.nombre }}
+                                    </label>
                                     <div class="icon-size-4 border rounded"
                                         [style.backgroundColor]="getColor(_estado.llaveTabla)"
                                         [style.color]="getColorFont(_estado.llaveTabla)">

@@ -38,7 +38,7 @@
 
         <div class="w-full flex text-primary text-xs uppercase font-bold px-2">
             <h2 class="w-full">Asientos contables</h2>
-            <div class="py-2 flex"><input class="p-0.5" type="checkbox" [(ngModel)]="referencesActive" [ngModelOptions]="{standalone: true}" /> Auxiliares</div>
+            <div class="py-2 flex"><label><input class="p-0.5 mx-1" type="checkbox" [(ngModel)]="referencesActive" [ngModelOptions]="{standalone: true}" /> Auxiliares</label></div>
         </div>
         <div class="w-full p-1  max-h-[35vh] overflow-scroll">
             <div formArrayName="records" >
