@@ -1290,7 +1290,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       // Valido Fechas
       if (this.fControlCheck.value) {
         if (!this.fControlSearch.value) {
-          alert('Coloca el codigo del documento');
+          Swal.fire('Campo requerido', 'Seleccionaste la opcion de buscar por codigo exacto, Por favor coloca el nombre del documento para ayudarte ', 'warning');
           return;
         }
         entity.nombre = this.fControlSearch.value;

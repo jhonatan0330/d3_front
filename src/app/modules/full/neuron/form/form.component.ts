@@ -922,7 +922,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   showTrace() {
-    this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre);
+    this.utilsService.modalTrace(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre, this.pedido.estado);
   }
 
   showChangeState() {

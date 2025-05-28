@@ -11,6 +11,7 @@ import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from "..
 import { PropiedadDTO } from "app/shared/shared.domain";
 import { IdResponse } from "app/modules/full/neuron/model/sw42.utils";
 import { VoucherPrepareRequest } from "app/accounting/accounting.domain";
+import { StatesEnum } from "app/modules/full/neuron/model/sw42.enum";
 
 interface OptionTrace {
   value: string;
@@ -32,14 +33,14 @@ export class TrazabilityComponent implements OnInit {
   dataProvider: DocumentoRelacionGestorDTO[]; // Conjunto de documentos a visualizar
 
   optionsTrace: OptionTrace[] = [
-    {value: '0', viewValue: 'Todos'},
-    {value: '1', viewValue: 'Documentos'} ,
-    {value: '2', viewValue: 'Asignaciones'} ,
-    {value: '3', viewValue: 'Mensajes'} ,
-    {value: '4', viewValue: 'Inventario'},
-    {value: '5', viewValue: 'Reportes'},
-    {value: '6', viewValue: 'Automaticas'},
-    {value: '7', viewValue: 'APIs'}];
+    { value: '0', viewValue: 'Todos' },
+    { value: '1', viewValue: 'Documentos' },
+    { value: '2', viewValue: 'Asignaciones' },
+    { value: '3', viewValue: 'Mensajes' },
+    { value: '4', viewValue: 'Inventario' },
+    { value: '5', viewValue: 'Reportes' },
+    { value: '6', viewValue: 'Automaticas' },
+    { value: '7', viewValue: 'APIs' }];
   selectedTrace = new FormControl(['1']);
 
   plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
@@ -48,7 +49,8 @@ export class TrazabilityComponent implements OnInit {
 
   documentName;
   documentState;
-  
+  state;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<TrazabilityComponent>,
@@ -65,6 +67,7 @@ export class TrazabilityComponent implements OnInit {
     );
     this.documentName = this.data.documentName;
     this.documentState = this.data.documentState;
+    this.state = this.data.state;
     if (
       !this.plantilla ||
       !this.data.document
@@ -73,7 +76,10 @@ export class TrazabilityComponent implements OnInit {
       this.dialogRef.close(false);
       return;
     }
+
     this.vouchersTemplate = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.TEMPLATE_VOUCHER);
+
+
 
     // Colocar los valores iniciales de la consulta historica
     const checksHistorial: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_HISTORIAL_ACTIVO);
@@ -127,24 +133,16 @@ export class TrazabilityComponent implements OnInit {
     }
     const entity: DocumentoRelacionGestorFilterDTO = new DocumentoRelacionGestorFilterDTO();
     entity.documentoPrincipal = this.data.document;
-   
-    /*const docs: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[1].value) ? '1' : '0';
-    const asg: string = this.fCheckAssignations.value ? '1' : '0';
-    const msj: string = this.fCheckMessage.value ? '1' : '0';
-    const inv: string = this.fCheckInventary.value ? '1' : '0';
-    const rep: string = this.fCheckReportes.value ? '1' : '0';
-    const aut: string = this.fCheckAutomaticas.value ? '1' : '0';
-    const api: string = this.fCheckApi.value ? '1' : '0';
-    entity.estado = docs + asg + msj + inv + rep + aut + api;*/
-    const docs: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[1].value) ? '1' : '0';
-    const asg: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[2].value) ? '1' : '0';
-    const msj: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[3].value) ? '1' : '0';
-    const inv: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[4].value) ? '1' : '0';
-    const rep: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[5].value) ? '1' : '0';
-    const aut: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[6].value) ? '1' : '0';
-    const api: string = this.selectedTrace.value.find((item)=> item === this.optionsTrace[7].value) ? '1' : '0';
+
+    const docs: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[1].value) ? '1' : '0';
+    const asg: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[2].value) ? '1' : '0';
+    const msj: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[3].value) ? '1' : '0';
+    const inv: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[4].value) ? '1' : '0';
+    const rep: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[5].value) ? '1' : '0';
+    const aut: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[6].value) ? '1' : '0';
+    const api: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[7].value) ? '1' : '0';
     entity.estado = docs + asg + msj + inv + rep + aut + api;
-    if( this.selectedTrace.value.find((item)=> item === this.optionsTrace[0].value)) {entity.estado = '1111111';}
+    if (this.selectedTrace.value.find((item) => item === this.optionsTrace[0].value)) { entity.estado = '1111111'; }
 
     if (_pagina === 1) {
       this.dataProvider = [];
@@ -191,57 +189,60 @@ export class TrazabilityComponent implements OnInit {
     this.utilsService.modalWithParams(_doc);
   }
 
-  showVoucherAccount(pService: PropiedadDTO){
+  showVoucherAccount(pService: PropiedadDTO) {
     if (this.data.document) {
-      const _prepare: VoucherPrepareRequest= new VoucherPrepareRequest();
+      const _prepare: VoucherPrepareRequest = new VoucherPrepareRequest();
       _prepare.documentId = this.data.document;
       _prepare.serviceId = pService.valor;
       this.isLoading = true;
       this._traceService
-      .getVoucherOfDocument(_prepare)
-      .subscribe({
-        next: (value: IdResponse) => {
-          if(value && value.id){
-            this.utilsService.modalVoucher(value.id, null).subscribe();
-          } else {
-            Swal.fire('Comprobante', 'No se encontro comprobante para este documento', 'info');
-          }
-          this.isLoading = false;
-        },
-        error: () => {
-          this.isLoading = false;
-          this.vouchersTemplate.forEach((item) => {
-            if(item.valor === pService.valor){
-              item.estado = 'CONSULTADO';
+        .getVoucherOfDocument(_prepare)
+        .subscribe({
+          next: (value: IdResponse) => {
+            if (value && value.id) {
+              this.utilsService.modalVoucher(value.id, null).subscribe();
+            } else {
+              Swal.fire('Comprobante', 'No se encontro comprobante para este documento', 'info');
             }
-          });
-        },
-      });
+            this.isLoading = false;
+          },
+          error: () => {
+            this.isLoading = false;
+            if (this.state && this.state !== StatesEnum.INACTIVE) {
+              this.vouchersTemplate.forEach((item) => {
+                if (item.valor === pService.valor) {
+                  item.estado = 'CONSULTADO';
+                }
+              });
+            }
+
+          },
+        });
     }
   }
 
-  generateVoucher(pServiceId: string){
+  generateVoucher(pServiceId: string) {
     if (this.data.document) {
-      const _prepare: VoucherPrepareRequest= new VoucherPrepareRequest();
+      const _prepare: VoucherPrepareRequest = new VoucherPrepareRequest();
       _prepare.documentId = this.data.document;
       _prepare.serviceId = pServiceId
       this.isLoading = true;
       this._traceService
-      .generateVoucher(_prepare)
-      .subscribe({
-        next: () => {
-          Swal.fire('Comprobante', 'Se envio a generar el comprobante por favor consulte de nuevo', 'info');
-          this.isLoading = false; 
-          this.vouchersTemplate.forEach((item) => {
-            if(item.valor === pServiceId){
-              item.estado = 'A';
-            }
-          });
-        },
-        error: () => {
-          this.isLoading = false;
-        },
-      });
+        .generateVoucher(_prepare)
+        .subscribe({
+          next: () => {
+            Swal.fire('Comprobante', 'Se envio a generar el comprobante por favor consulte de nuevo', 'info');
+            this.isLoading = false;
+            this.vouchersTemplate.forEach((item) => {
+              if (item.valor === pServiceId) {
+                item.estado = 'A';
+              }
+            });
+          },
+          error: () => {
+            this.isLoading = false;
+          },
+        });
     }
   }
 }

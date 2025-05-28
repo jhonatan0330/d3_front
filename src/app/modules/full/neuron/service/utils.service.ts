@@ -44,12 +44,12 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  modalTrace(document: string, template: string, server: string, documentName: string, documentState: string){
+  modalTrace(document: string, template: string, server: string, documentName: string, documentState: string, state: string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(TrazabilityComponent, {
       maxHeight: '90vh',
       maxWidth: '99vh',
       disableClose: false,
-      data: { document: document, template: template, server: server, documentName: documentName, documentState: documentState},
+      data: { document: document, template: template, server: server, documentName: documentName, documentState: documentState, state: state},
     });
     return dialogRef.afterClosed();
   }

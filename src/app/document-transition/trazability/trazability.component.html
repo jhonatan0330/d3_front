@@ -81,28 +81,7 @@
 
               <!-- Description -->
               <ng-container>
-                <!-- Primera linea:quien y cuando -
-                <div class="w-full flex justify-between">
-                  <small>{{ getDateFormat(g.fecha) }}</small>
-                  <small class="text-small">{{ g.responsable }}</small>
-                </div>
-                <!-- Segunda linea: Accion y datos del documento que lo modifico -
-                <div class="w-full flex justify-between">
-                  <div class="flex">
-                    <b class="text-small">{{ g.nombre }}</b>
-                    <a *ngIf="g.transaccion && !g.campos" (click)="showTraceField2Document(g)"><mat-icon
-                        inline="true">view_headline</mat-icon></a>
-                  </div>
-                  <a class="cursor-pointer text-primary font-bold tracking-tight text-sm text-right"
-                    *ngIf="g.documentoModificador" (click)="showTraceDocument(g.documentoModificador, g.plantilla)">
-                    <span>{{ g.plantillaNombre }} - {{ g.modificadorNombre }}</span>
-                  </a>
-                </div>
-                <!-- Tercera linea: Estados y ubicacion 
-                <div class="w-full flex justify-between" *ngIf="g.ubicacionNombre || g.estadoFinal">
-                  <small>{{ g.estadoInicial }} - {{ g.estadoFinal }}</small>
-                  <b *ngIf="g.ubicacionNombre">[ {{ g.ubicacionPlantilla }} ] {{ g.ubicacionNombre }}</b>
-                </div> -->
+                
                 <!-- Primera linea:quien y cuando -->
                 <div class="w-full">
                   <small>{{ getDateFormat(g.fecha) }}</small>
