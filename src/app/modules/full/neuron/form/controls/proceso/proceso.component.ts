@@ -298,10 +298,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         // valorOpcionAutoloadAyuda = tipo.campo.valorOpcion;
         const filtro: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
         filtro.campo = this.structure.llaveTabla;
-        if (this.obtenerValorMultiple(PlantillaHelper.BODEGA_FIJA) != null) {
-          this.procesarCampo(filtro);
-          return;
-        }
         if (!this.relatedFields) {
           this.procesarCampo(filtro);
           return;
@@ -484,7 +480,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
     }
     if (
-      this.obtenerPropiedad(PlantillaHelper.BODEGA_FIJA) ||
       this.obtenerPropiedad(PlantillaHelper.BODEGA_MOVIMIENTO)
     ) {
       return;
