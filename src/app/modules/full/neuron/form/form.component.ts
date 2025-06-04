@@ -41,8 +41,6 @@ import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { Router } from '@angular/router';
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { IdResponse } from '../model/sw42.utils';
 
 @Component({
   selector: 'app-form',

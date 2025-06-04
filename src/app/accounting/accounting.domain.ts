@@ -51,7 +51,6 @@ export class ResultMapDTO {
 	timeFrame: string;
 	timeFrameName: string;
 	quantity: number;
-	average: number;
 	lastBalance: number;
 	nextBalance: number;
 	positive: number;
