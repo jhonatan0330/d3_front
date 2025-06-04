@@ -184,7 +184,7 @@
         </button>
         <!-- Create copiado de arriba -->
         <button mat-raised-button matSuffix [matMenuTriggerFor]="clickHoverMenuMultiple"
-          *ngIf="acciones && !proceso && isEnabled" #clickHoverMenuTrigger="matMenuTrigger" (click)="sendCreate()">
+          *ngIf="acciones && !proceso && (isEnabled || herencia)" #clickHoverMenuTrigger="matMenuTrigger" (click)="sendCreate()">
           <mat-icon>add_circle</mat-icon>
         </button>
         <mat-menu #clickHoverMenuMultiple="matMenu">
