@@ -190,12 +190,16 @@ export class BaseComponent implements OnInit, IDynamicControl {
 
   validateVisibility(textSelected: String) {
     if (this.propVisibleDepende) {
+      this.isInvisible = true;
       for (let index = 0; index < this.propVisibleDepende.length; index++) {
         const propVisible = this.propVisibleDepende[index];
         if (propVisible.campo === this.structure.llaveTabla) {
-          this.isInvisible = !(textSelected === propVisible.valor);
-          this.form.reviewFieldsVisibility();
-          break;
+          if(textSelected === propVisible.valor) {
+            this.isInvisible = false;
+            this.form.reviewFieldsVisibility();
+            break;
+          }
+          
         }
       }
     }

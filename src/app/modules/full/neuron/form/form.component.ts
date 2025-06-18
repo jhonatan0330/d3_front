@@ -639,7 +639,6 @@ export class FormComponent implements OnInit, AfterViewInit {
       if (!this.pedido.estadoExpediente) {
         // Solo se pueden anular los que estan en estado activo y que no son de un proceso
         if (this.pedido.estado === StatesEnum.ACTIVE) {
-          //if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_ELIMINAR)) {
             const plantillaEliminar = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.FORM_ANULAR);
             if (plantillaEliminar) {
               const tEliminar: DocumentoPlantillaDTO = this.templateService.getTemplate(plantillaEliminar, this.plantilla.server);
@@ -651,7 +650,6 @@ export class FormComponent implements OnInit, AfterViewInit {
                 this.transiciones.push(_newtransicion);
               }
             }
-          //}
         } else {
             const _templateAction = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.FORM_ACTIVATE);
             if (_templateAction) {
