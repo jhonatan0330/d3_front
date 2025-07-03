@@ -564,6 +564,7 @@ export class FormComponent implements OnInit, AfterViewInit {
           const element = this.pedido.caracteristicas[j];
           if (element.campo === consecutivoEscrito.valor) {
             element.valorNumero = Number(this.identificadorInicial);
+            element.valorText = this.identificadorInicial;
             break;
           }
         }
