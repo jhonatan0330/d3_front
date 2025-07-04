@@ -22,11 +22,31 @@
 </div>
 <!-- Filtros de la trazabilidad -->
 <div class="w-full flex p-2">
-  <mat-form-field class="px-2">
-    <mat-select [formControl]="selectedTrace" multiple>
-      <mat-option *ngFor="let opt of optionsTrace" [value]="opt.value">{{opt.viewValue}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+
+
+<button  (click)="toggleDropdown()"
+  class="w-full  ring-1 focus:outline-none ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:ring-blue-800" type="button">
+  {{textDropDown}}
+</button>
+
+
+
+<!-- Dropdown menu -->
+<div *ngIf="dropdownOpen" id="dropdownBgHover" class="absolute z-10 w-48 -mt-18 bg-white rounded-lg shadow-sm dark:bg-gray-700">
+    <ul class="p-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
+      <li *ngFor="let opt of optionsTrace">
+        <div class="flex items-center p-1 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
+          <input [id]="'checkbox-item-'+opt.value" type="checkbox" class="w-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+            [value]="opt.value" (change)="onCheckboxChange($event)" [checked]="selectedTrace.value.includes(opt.value)">
+          <label [for]="'checkbox-item-'+opt.value" class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">{{ opt.viewValue }}</label>
+        </div>
+      </li>
+    </ul>
+</div>
+
+
+
+
   <button mat-raise-button class="px-2" (click)="listar(1)">
     <mat-icon svgIcon="heroicons_outline:clock"></mat-icon>
   </button>
@@ -37,19 +57,19 @@
   <div class="overflow-x-hidden py-4 pr-4 pl-7">
 
     <div *ngIf="state!=='I'">
-      <div *ngFor="let item of vouchersTemplate" 
+      <div *ngFor="let item of vouchersTemplate"
         class="sm:col-span-1 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
 
         <div class="text-lg font-medium tracking-tight leading-6 truncate">
           {{item.texto |uppercase}}</div>
 
         <button class="w-full m-1" mat-flat-button [color]="'accent'" (click)="showVoucherAccount(item)"
-        [disabled]="isLoading">
+          [disabled]="isLoading">
           <mat-icon>refresh</mat-icon>
           <span>Consultar comprobante</span>
         </button>
-        <button *ngIf="item.estado==='CONSULTADO'" class="w-full m-1" mat-flat-button [color]="'accent'" (click)="generateVoucher(item.valor)"
-          [disabled]="isLoading">
+        <button *ngIf="item.estado==='CONSULTADO'" class="w-full m-1" mat-flat-button [color]="'accent'"
+          (click)="generateVoucher(item.valor)" [disabled]="isLoading">
           <mat-icon>add</mat-icon>
           <span>Crear comprobante</span>
         </button>
@@ -83,7 +103,7 @@
 
               <!-- Description -->
               <ng-container>
-                
+
                 <!-- Primera linea:quien y cuando -->
                 <div class="w-full">
                   <small>{{ getDateFormat(g.fecha) }}</small>

@@ -41,7 +41,12 @@ export class TrazabilityComponent implements OnInit {
     { value: '5', viewValue: 'Reportes' },
     { value: '6', viewValue: 'Automaticas' },
     { value: '7', viewValue: 'APIs' }];
+
   selectedTrace = new FormControl(['1']);
+
+
+  textDropDown = 'Documentos';
+  dropdownOpen = false;
 
   plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
 
@@ -59,6 +64,32 @@ export class TrazabilityComponent implements OnInit {
     private utilsService: UtilsService
   ) {
 
+  }
+
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  onCheckboxChange(event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    const value = checkbox.value;
+    const selected = this.selectedTrace.value as string[];
+
+    if (checkbox.checked) {
+      this.selectedTrace.setValue([...selected, value]);
+    } else {
+      this.selectedTrace.setValue(selected.filter(v => v !== value));
+    }
+    if (this.selectedTrace.value.find((item) => item === '0')) {
+      this.textDropDown = 'Todos';
+    } else {
+      this.textDropDown = '';
+      for (const opt of this.optionsTrace) {
+        if (this.selectedTrace.value.find((item) => item === opt.value)) { this.textDropDown += (opt.viewValue + ','); };
+      }
+      this.textDropDown = this.textDropDown.slice(0, -1); // Eliminar la última coma
+    }
+    this.listar(1);
   }
 
   ngOnInit(): void {
@@ -131,6 +162,7 @@ export class TrazabilityComponent implements OnInit {
     if (this.isLoading) {
       return;
     }
+    this.dropdownOpen = false;
     const entity: DocumentoRelacionGestorFilterDTO = new DocumentoRelacionGestorFilterDTO();
     entity.documentoPrincipal = this.data.document;
 
@@ -148,6 +180,7 @@ export class TrazabilityComponent implements OnInit {
       this.dataProvider = [];
       this.isEnd = false;
     }
+    if(entity.estado === '0000000') {return;}
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;
     this.pagina = _pagina;
