@@ -8,6 +8,7 @@ import { NavigationService } from 'app/authorization/navigation/navigation.servi
 import { environment } from 'environments/environment';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'material-layout',
@@ -22,6 +23,8 @@ export class MaterialLayoutComponent implements OnInit, OnDestroy {
   time = new Date();
   currentApplicationVersion = environment.appVersion;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
+  headerSection: SafeHtml[];
+  landing: SafeHtml[];
 
   constructor(
     public _loginService: LoginService,
@@ -64,7 +67,17 @@ export class MaterialLayoutComponent implements OnInit, OnDestroy {
         }
         this.company = company;
       });
+        this._loginService.headerSection$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe((_header: []) => {
+                this.headerSection = _header;
+            });
 
+        this._loginService.landing$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe((_landing: []) => {
+                this.landing = _landing;
+            });
     // Subscribe to media changes
     this._fuseMediaWatcherService.onMediaChange$
       .pipe(takeUntil(this._unsubscribeAll))

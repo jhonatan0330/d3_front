@@ -23,26 +23,24 @@ import { MatTableModule } from "@angular/material/table";
 import { FuseNavigationModule } from "@fuse/components/navigation";
 import { FuseScrollbarModule } from "@fuse/directives/scrollbar";
 import { FuseScrollResetModule } from "@fuse/directives/scroll-reset";
-import { LoginComponent } from "app/authorization/login/login.component";
 
 @NgModule({
     declarations: [
         TemplateComponent,
-        ProfileComponent,
-        LoginComponent
+        ProfileComponent
     ],
     imports: [
         RouterModule.forChild([
             {
-              path: 'main',
+              path: '',
               component: ProfileComponent
             },
             {
-              path: 'main/:type',
+              path: ':type',
               component: ProfileComponent
             },
             {
-              path: 'main/:type/:id',
+              path: ':type/:id',
               component: ProfileComponent
             }
           ]),

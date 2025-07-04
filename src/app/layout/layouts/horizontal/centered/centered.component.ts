@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
+import { SafeHtml } from '@angular/platform-browser';
 import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
-import { Navigation } from 'app/authorization/navigation/navigation.types';
-import { NavigationService } from 'app/authorization/navigation/navigation.service';
-import { environment } from 'environments/environment';
-import { LoginService } from 'app/authentication/login.service';
+import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { LoginService } from 'app/authentication/login.service';
+import { NavigationService } from 'app/authorization/navigation/navigation.service';
+import { Navigation } from 'app/authorization/navigation/navigation.types';
+import { environment } from 'environments/environment';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'centered-layout',
@@ -21,6 +22,8 @@ export class CenteredLayoutComponent implements OnInit, OnDestroy {
     time = new Date();
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    headerSection: SafeHtml[];
+    landing: SafeHtml[];
 
     constructor(
         public _loginService: LoginService,
@@ -64,6 +67,17 @@ export class CenteredLayoutComponent implements OnInit, OnDestroy {
                 this.company = company;
             });
 
+        this._loginService.headerSection$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe((_header: []) => {
+                this.headerSection = _header;
+            });
+
+        this._loginService.landing$
+            .pipe((takeUntil(this._unsubscribeAll)))
+            .subscribe((_landing: []) => {
+                this.landing = _landing;
+            });
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))

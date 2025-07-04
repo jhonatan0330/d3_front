@@ -53,7 +53,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
                     // If the user is not authenticated...
                     if (!authenticated) {
                         // Redirect to the main page
-                        this._router.navigate(['main'], { queryParams: { redirectURL } });
+                        this._router.navigate(['sign-in'], { queryParams: { redirectURL } });
                         // Prevent the access
                         return of(false);
                     }

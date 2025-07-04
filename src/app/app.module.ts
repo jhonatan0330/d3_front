@@ -22,6 +22,7 @@ import { TokenInterceptor } from './shared/token.interceptor';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { IndicatorsModule } from './indicators/indicators.module';
+import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -33,7 +34,8 @@ const routerConfig: ExtraOptions = {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SignInSplitScreenReversedComponent
   ],
   imports: [
     CommonModule,

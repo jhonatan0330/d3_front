@@ -1,14 +1,10 @@
 <!-- Button -->
-<button mat-icon-button [matMenuTriggerFor]="userActions" *ngIf="!jwtAuth.isPublicUser"> 
+<button mat-icon-button [matMenuTriggerFor]="userActions"> 
     <span class="relative">
         <img class="w-7 h-7 rounded-full" *ngIf="user?.imagen" [src]="user?.imagen">
         <mat-icon *ngIf="!user?.imagen" [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
     </span>
 </button>
-
-<button *ngIf="jwtAuth.isPublicUser" mat-icon-button (click)="openLogin()">
-    <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-  </button>
   
 <mat-menu [xPosition]="'before'" #userActions="matMenu">
     <span class="flex flex-col items-center justify-center leading-none text-center">

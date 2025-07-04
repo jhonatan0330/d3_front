@@ -13,7 +13,6 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { LoginComponent } from 'app/authorization/login/login.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 
@@ -23,14 +22,13 @@ export class LoginService {
   token: string;
   urlService: string;
   private isAuthenticated = false;
-  private isOpenPopOfAuthenticate = false;
   user: UsuarioDTO = new UsuarioDTO();
   user$ = new BehaviorSubject<UsuarioDTO>(this.user);
   returnPath: string;
   company: OrganizacionDTO = new OrganizacionDTO();
   company$ = new BehaviorSubject<OrganizacionDTO>(this.company);
   isAdmin = false;
-  isPublicUser = true;
+  //isPublicUser = true;
 
   slides: string[] = [];
   slides$ = new BehaviorSubject<string[]>(this.slides);
@@ -58,17 +56,6 @@ export class LoginService {
     );
   }
 
-  openLoginDialog(): void {
-    if (!this.isOpenPopOfAuthenticate) {
-      this.isOpenPopOfAuthenticate = true;
-      this.dialog.open(LoginComponent, {
-        disableClose: true,
-        // panelClass: 'custom-login-dialog'
-      }).afterClosed().subscribe(() => {
-        this.isOpenPopOfAuthenticate = false;
-      });
-    }
-  }
 
   public signin(username: string, password: string, tokenAuto: string) {
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
@@ -138,10 +125,8 @@ export class LoginService {
                 this.slides$.next(this.slides);
               });
             }
-            this.checkAndShowLogin();
           },
           error: () => {
-            this.checkAndShowLogin();
           },
         });
       }
@@ -164,17 +149,10 @@ export class LoginService {
     this.slides$.next(this.slides);
     this.landing$.next(this.landing);
     this.headerSection$.next(this.headerSection);
-
-    this.checkAndShowLogin(); 
+ 
   }
 
-  checkAndShowLogin(): void {
-    const isEmptyHeadersAndLanding = this.headerSection.length === 0 && this.landing.length === 0;
-  
-    if (this.isPublicUser && isEmptyHeadersAndLanding) {
-      this.openLoginDialog();
-    }
-  }
+
 
   public checkTokenIsValid() {
     const tokenLocal = this.getJwtToken();
@@ -245,16 +223,15 @@ export class LoginService {
 
 
   signout() {
-    if (!this.isPublicUser) {
+    
       this.setUserAndToken(null, null);
       this.templateService.clear();
       this.notificationService.clear();
       this.dialog.closeAll();
-      this.router.navigate(['/main']);
-    }
-    this.isPublicUser = true;
+      this.router.navigate(['/sign-in']);
+    
+   
     this.getOrganization();
-    //this.openLoginDialog();
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
@@ -319,14 +296,7 @@ export class LoginService {
       this.user = null;
     }
 
-    // El usuario público comienza como true
-    this.isPublicUser = true;
-    if (this.user && this.user.llaveTabla && _company)  {
-      const companyUserPublic = PlantillaHelper.buscarPropiedad(_company.propiedades, PlantillaHelper.PUBLIC_USER);
-      if (!companyUserPublic || this.user.llaveTabla !== companyUserPublic.valor) {
-        this.isPublicUser = false;
-      }
-    }
+
 
     this.user$.next(this.user);
     this.ls.setItem(LocalConstants.JWT_TOKEN, this.token);
@@ -399,10 +369,11 @@ export class LoginService {
     if (organization && organization.publicToken) {
       this.token = organization.publicToken;
       this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
+      this.checkTokenIsValid().subscribe();
       //Si no coloco esto se va a crear un ciclo infintio solicitando el token
-      if (!this.isOpenPopOfAuthenticate) { 
-        this.checkTokenIsValid().subscribe();
-      }
+      //if (!this.isOpenPopOfAuthenticate) { 
+        
+      //}
     }
   }
 

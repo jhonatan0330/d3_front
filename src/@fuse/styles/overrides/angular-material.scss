@@ -304,29 +304,6 @@
     }
 }
 
-/* -------------------------------------------------------------------------- */
-/*  @ Checkbox
-/* -------------------------------------------------------------------------- */
-.mat-mdc-checkbox {
-    display: inline-flex !important;
-
-    .mdc-checkbox{
-        height: 0px;
-    }
-    
-    .mdc-form-field {
-        padding-right: 12px;
-    }
-
-    .mdc-checkbox__background {
-        top: 2px !important;
-        left: 2px !important;
-    }
-}
-
-.mdc-checkbox__native-control {
-    opacity: 0 !important;
-}
 
 /* -------------------------------------------------------------------------- */
 /*  @ Chip

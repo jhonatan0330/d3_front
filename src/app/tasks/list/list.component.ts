@@ -72,7 +72,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
                     // Get the component -> navigation data -> item
                     const mainNavigationComponent = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>('mainNavigation');
 
-                    // If the main navigation component exists...
                     if (mainNavigationComponent) {
                         const mainNavigation = mainNavigationComponent.navigation;
                         const menuItem = this._fuseNavigationService.getItem('apps.tasks', mainNavigation);

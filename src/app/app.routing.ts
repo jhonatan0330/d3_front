@@ -1,6 +1,7 @@
 import { Route } from '@angular/router';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { AuthGuard } from './authentication/authentication.guard';
+import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -13,8 +14,11 @@ export const appRoutes: Route[] = [
   {
     path: '',
     component: LayoutComponent,
+    data: {
+      layout: 'empty'
+    },
     children: [
-      { path: '', loadChildren: () => import('app/authorization/authorization.module').then(m => m.ProfileModule) },
+      { path: 'sign-in', component: SignInSplitScreenReversedComponent},
       { path: 'sessions/recover', loadChildren: () => import('app/authentication/recover-password/recover-password.module').then(m => m.RecoverPasswordModule) },
       { path: 'sessions/new/:id', loadChildren: () => import('app/authentication/new-password/new-password.module').then(m => m.NewPasswordModule) }
     ]
@@ -25,7 +29,7 @@ export const appRoutes: Route[] = [
     canActivate: [AuthGuard],
     component: LayoutComponent,
     children: [
-      
+      { path: 'main', loadChildren: () => import('app/authorization/authorization.module').then(m => m.ProfileModule) },
       { path: 'settings', loadChildren: () => import('app/authentication/settings/settings.module').then(m => m.SettingsModule) },
       { path: 'list', loadChildren: () => import('app/cruds/cruds.module').then(m => m.CrudsModule) },
       { path: 'maps', loadChildren: () => import('app/gps/gps.module').then(m => m.GPSModule) },

@@ -77,7 +77,4 @@ export class UserComponent implements OnInit, OnDestroy {
         window.open(url, '_blank');
     }
 
-    openLogin() {
-        this.jwtAuth.openLoginDialog();
-    }
 }

@@ -171,11 +171,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         });
     }
 
-    /**
-     * Calculate the unread count
-     *
-     * @private
-     */
+    
     private _calculateUnreadCount(): void {
         this.notificationCount = this.notifications.length;
         if (this.notifications && this.notifications.length) {
@@ -220,7 +216,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     }
 
     refresh() {
-        if (this._jwtAuth.user && this._jwtAuth.user.llaveTabla && !this._jwtAuth.isPublicUser) {
+        if (this._jwtAuth.user && this._jwtAuth.user.llaveTabla) {
             this._notificationsService.getAll().subscribe();
         }
     }

@@ -1,7 +1,7 @@
 <!-- Navigation -->
 <fuse-vertical-navigation class="dark bg-gray-900 print:hidden" [appearance]="'compact'"
   [mode]="isScreenSmall ? 'over' : 'side'" [name]="'mainNavigation'" [navigation]="navigation?.compact"
-  [opened]="!isScreenSmall && user && !_loginService.isPublicUser">
+  [opened]="!isScreenSmall && user">
   <!-- Navigation header hook -->
   <ng-container fuseVerticalNavigationContentHeader>
     <!-- Logo -->
@@ -26,11 +26,11 @@
     </button>
     <!-- Components -->
     <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
-      <app-home-button *ngIf="!_loginService.isPublicUser"></app-home-button>
+      <app-home-button ></app-home-button>
       <fuse-fullscreen class="hidden md:block"></fuse-fullscreen>
-      <search *ngIf="!_loginService.isPublicUser" [appearance]="'bar'"></search>
-      <shortcuts *ngIf="!_loginService.isPublicUser"></shortcuts>
-      <notifications *ngIf="!_loginService.isPublicUser"></notifications>
+      <search  [appearance]="'bar'"></search>
+      <shortcuts ></shortcuts>
+      <notifications ></notifications>
       <user></user>
     </div>
   </div>
@@ -40,6 +40,11 @@
     <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
              Otherwise, layout changes won't be registered and the view won't be updated! -->
     <router-outlet *ngIf="true"></router-outlet>
+  </div>
+
+  <!-- footer -->
+  <div *ngIf="landing && landing.length!==0" class="w-full">
+    <div *ngFor="let iFooter of landing" [innerHTML]="iFooter" class="w-full"></div>
   </div>
 </div>
 

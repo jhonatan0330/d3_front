@@ -66,7 +66,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
       next: () => {
         this.loginService.signout();
         Swal.fire('Todo perfecto', 'Tu nueva clave se ha confirmado, agradecemos tu paciencia, mejoramos para cuidar tu seguridad.','info');
-        this.router.navigateByUrl('main');
+        this.router.navigateByUrl('sign-in');
       },
       error: (err:string) => {
 
