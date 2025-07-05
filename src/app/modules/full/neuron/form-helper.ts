@@ -19,6 +19,7 @@ import { GpsComponent } from 'app/modules/full/neuron/form/controls/gps/gps.comp
 import { ArchivoComponent } from 'app/modules/full/neuron/form/controls/archivo/archivo.component';
 import { InformativeComponent } from './form/controls/informative/informative.component';
 import { GpsMapComponent } from './form/controls/gps-map/gps-map.component';
+import { VinculoComponent } from './form/controls/vinculo/vinculo.component';
 
 export function getComponent(
   pCampo: DocumentoPlantillaCaracteristicaDTO
@@ -69,6 +70,9 @@ export function getComponent(
       break;
     case DocumentoPlantillaCaracteristicaEnum.INFORMATIVE:
       componentDynamic = InformativeComponent;
+      break;
+    case DocumentoPlantillaCaracteristicaEnum.VINCULO:
+      componentDynamic = VinculoComponent;
       break;
     default:
       componentDynamic = TextoComponent;

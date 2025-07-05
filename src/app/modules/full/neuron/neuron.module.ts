@@ -60,6 +60,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { DocumentTransitionModule } from 'app/document-transition/document-transition.module';
 import { OlMapComponent } from './form/controls/gps/ol-map/ol-map.component';
 import { FullMapComponent } from './form/controls/gps-map/full-map/full-map.component';
+import { VinculoComponent } from './form/controls/vinculo/vinculo.component';
 
 
 @NgModule({
@@ -82,7 +83,8 @@ import { FullMapComponent } from './form/controls/gps-map/full-map/full-map.comp
         GpsComponent,
         FormComponent,
         ProductComponent,
-        InformativeComponent
+        InformativeComponent,
+        VinculoComponent
     ],
     imports: [
         RouterModule.forChild(neuronRoutes),

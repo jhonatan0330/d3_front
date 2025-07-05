@@ -1,0 +1,22 @@
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+
+<div *ngIf="!isLoading && proceso" class="rounded shadow-sm h-full border-b bg-card dark:bg-transparent my-1"
+  [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+  <a (click)="openDocument(proceso)">
+    <div class="p-1 rounded" [style.backgroundColor]="getColor(proceso.estadoExpediente)"
+      [style.color]="getColorFont(proceso.estadoExpediente)">
+      <div class="flex items-center ">
+        <div class="w-8 p-1">
+          <img src="{{ proceso.imagen | imageFormat }}" />
+        </div>
+        <div class="w-full p-1 rounded leading-tight font-semibold">
+          <div class=" w-full flex justify-between">
+            <div class="text-md">{{ proceso.nombre }}</div>
+            <div class="text-md font-semibold mx-1">{{ proceso.estadoNombre }}</div>
+          </div>
+          <div class="text-sm line-clamp-4">{{proceso.descripcion }}</div>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>

@@ -165,11 +165,10 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     if (this.isLoading) {
       return false;
     }
-
     this.errorMessage = null;
-    if (this.required		&& !this.data.valorOpcion == null) {
+    if (this.required	&& !(this.data.valorOpcion && this.data.valorText)) {
 			const visibleValueOK = this.obtenerValorMultiple(PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE);
-			if (!visibleValueOK == null || !this.data.dependientes == null) {
+			if (!visibleValueOK) {
         this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
         return false;
       } 

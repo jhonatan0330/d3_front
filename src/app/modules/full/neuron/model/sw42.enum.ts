@@ -13,7 +13,8 @@ export enum DocumentoPlantillaCaracteristicaEnum {
   SECCION = 'S',
   GPS = 'P',
   GPS_MAP = 'M',
-  INFORMATIVE = 'V'
+  INFORMATIVE = 'V',
+  VINCULO = 'C'
 }
 
 export enum StatesEnum {
