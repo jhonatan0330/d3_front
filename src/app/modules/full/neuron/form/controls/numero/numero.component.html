@@ -1,7 +1,8 @@
 <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+  <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-  <input
+  <input [id]="structure.llaveTabla"
     matInput
     currencyMask
     [name]="structure.llaveTabla"
@@ -12,5 +13,5 @@
     (focus)="getInitialFocus($event)"
     autocomplete="off"
   />
-  <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+  
 </mat-form-field>

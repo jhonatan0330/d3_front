@@ -1,6 +1,8 @@
 <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+  <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
   <mat-label>{{ structure.nombre | titlecase }}</mat-label>
   <input type="text" matInput [formControl]="fControl" [matAutocomplete]="auto"
+  [id]="structure.llaveTabla"
   [name]="structure.llaveTabla"
   [required]="required"
   [readonly]="!isEnabled">
@@ -19,7 +21,6 @@
   >
     <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
   </button>
-  <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
 </mat-form-field>
 
 <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>

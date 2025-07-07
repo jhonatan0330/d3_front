@@ -170,9 +170,15 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
 			const visibleValueOK = this.obtenerValorMultiple(PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE);
 			if (!visibleValueOK) {
         this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
-        return false;
       } 
     }
+
+    if (this.errorMessage) {
+      const input = document.getElementById(this.structure.llaveTabla) as HTMLInputElement;
+      if (input) { input.focus();  }
+      return false;
+    }
+
     return true;
   }
 }

@@ -7,7 +7,6 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormulaHelper } from 'app/modules/full/neuron/formula.helper';
 import { BaseComponent } from '../base/base.component';
 import { debounceTime } from 'rxjs';
-import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Component({
@@ -15,6 +14,7 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
   templateUrl: './numero.component.html'
 })
 export class NumeroComponent extends BaseComponent implements OnInit {
+  
   fControl = new UntypedFormControl(0);
 
   step = 1;
@@ -324,8 +324,15 @@ export class NumeroComponent extends BaseComponent implements OnInit {
 
   send2Server(): boolean {
     if (this.isLoading) { return false; }
+    
+    this.errorMessage = null;
+    if (this.required && !this.data.valorNumero && !this.isInvisible){
+      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
+    }
+
     if (this.errorMessage) {
-      Swal.fire('Valores no permitidos', this.errorMessage, 'info');
+      const input = document.getElementById(this.structure.llaveTabla) as HTMLInputElement;
+      if (input) { input.focus();  }
       return false;
     }
     return true;
