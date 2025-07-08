@@ -331,7 +331,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     }
 
     if (this.errorMessage) {
-      const input = document.getElementById(this.structure.llaveTabla) as HTMLInputElement;
+      const input = document.getElementById(this.idField) as HTMLInputElement;
       if (input) { input.focus();  }
       return false;
     }

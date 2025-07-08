@@ -2,7 +2,7 @@
 <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-  <input [id]="structure.llaveTabla"
+  <input [id]="idField"
     matInput
     currencyMask
     [name]="structure.llaveTabla"

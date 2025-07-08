@@ -1,6 +1,6 @@
 <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <mat-label>{{structure.nombre | titlecase }} </mat-label>
-  <input matInput [formControl]="fControl" [name]="structure.llaveTabla" [required]="required" [readonly]="!isEnabled"
+  <input matInput [id]="idField" [formControl]="fControl" [name]="structure.llaveTabla" [required]="required" [readonly]="!isEnabled"
     autocomplete="off" *ngIf="!textoLargo" />
   <textarea *ngIf="textoLargo" matInput class="textarea-form" [formControl]="fControl" [name]="structure.llaveTabla"
     [required]="required" [readonly]="!isEnabled"

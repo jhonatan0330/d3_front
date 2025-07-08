@@ -61,6 +61,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
   errorMessage: string = null;
   formIsModified: BehaviorSubject<boolean | null> = new BehaviorSubject(null);
 
+  idField: string = null;
+
   _structure: DocumentoPlantillaCaracteristicaDTO;
   get structure(): DocumentoPlantillaCaracteristicaDTO {
     return this._structure;
@@ -69,7 +71,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
     this._structure = value;
     this.required = PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL);
     this.isInvisible = !PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.INVISIBLE);
-    this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);    
+    this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);
+    this.idField = ((this.parent && this.parent.llaveTabla)?this.parent.llaveTabla: Date.now().toString())+value.llaveTabla ;
     /*
     this.relatedFields = PlantillaHelper.buscarValorMultipleFromManyKeys(this.structure.propiedades, PlantillaHelper.DEPENDENT_PROPERTIES);
     if(this.relatedFields){

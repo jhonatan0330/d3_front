@@ -1513,20 +1513,20 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   send2Server(): boolean {
     if (this.isLoading) {
-      /*Swal.fire(
-        'Consultando datos',
-        this.structure.nombre 'Todavia tienes imagenes pendientes por cargar, danos un minuto mas',
-        'info'
-      );*/
       return false;
     }
     // Valido obligatoriedad
     this.errorMessage = null;
     if (this.required && !this.multiple && !this.herencia && !this.data.valorOpcion && this.isEnabled && !this.isInvisible){
       this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
+    }
+    if (this.errorMessage) {
+      const input = document.getElementById(this.idField) as HTMLInputElement;
+      if (input) { input.focus();  }
       return false;
     }
     return true;
   }
+
 
 }
