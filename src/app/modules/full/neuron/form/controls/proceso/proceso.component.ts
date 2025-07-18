@@ -548,7 +548,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             bCampoRequerido = true;
           }
         }
-        if (bCampoRequerido) {
+        if (bCampoRequerido && this.isEnabled) {
           this.errorMessage = 'Selecciona una opcion del campo ' + iDepen.campoDTO.nombre;
           this.actualizarDataProvider(null);
           this.fControl.setValue(null);
@@ -1322,15 +1322,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (!this.herencia) {
       if (!valorFuncion) {
         if (this.relatedFields) {
-          if (
-            this.data.dependientes.length !== 1 ||
-            !this.data.dependientes[0].valorOpcion
-          ) {
-            alert(
-              'Por favor revisa que este seleccionado el campo ' +
-              this.relatedFields[0].texto
-            );
-            return;
+          if (this.data.dependientes.length !== 1) {
+            for (let i = 0; i < this.data.dependientes.length; i++) {
+              const iDepen = this.data.dependientes[i];
+              if (!iDepen.valorOpcion && !PlantillaHelper.buscarPropiedad(iDepen.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
+                alert('Por favor revisa que este seleccionado el campo ' +    iDepen.campoDTO.nombre );
+                return;
+              }
+            }
           } else {
             entity.llaveTabla = this.data.dependientes[0].valorOpcion; // Viaja el id del campo dependiente para el query
           }
