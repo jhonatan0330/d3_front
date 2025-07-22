@@ -1430,6 +1430,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       },
       error: () => {
         this.isLoadingList = false;
+        if (this.fControlCheck) {
+          this.fControlSearch.setValue(null);
+        }
       },
     });
   }
