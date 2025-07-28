@@ -1,4 +1,5 @@
 <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+ <div *ngIf="messageHTML" class="w-full" [innerHTML]="messageHTML"></div>
 <!-- Campos unicos -->
 <mat-form-field class="w-full" *ngIf="!herencia && !multiple" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>

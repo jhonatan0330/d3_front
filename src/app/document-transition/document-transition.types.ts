@@ -14,12 +14,7 @@ export class DocumentoRelacionGestorDTO extends BasicDTO {
   comentario: string;
   plantilla: string;
   plantillaNombre: string;
-  ubicacion: string;
-  ubicacionNombre: string;
-  ubicacionPlantilla: string;
   valores: string;
-  saldo: number;
-  total: number;
   transaccion: string;
   cierre: Date;
   nombre: string;

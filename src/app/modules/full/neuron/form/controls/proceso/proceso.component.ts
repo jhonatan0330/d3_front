@@ -22,6 +22,7 @@ import { BaseComponent } from '../base/base.component';
 import Swal from 'sweetalert2';
 import { BarcodeFormat } from '@zxing/library';
 import { PropiedadDTO } from 'app/shared/shared.domain';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-proceso',
@@ -85,11 +86,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   inputModeText = 'text';
   errorMessage: string = null;
+  messageHTML: SafeHtml;
 
   constructor(
     private templateService: TemplateService,
     private api: ApiService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private sanitizer: DomSanitizer
   ) {
     super();
   }
@@ -562,13 +565,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
     if (campoFiltro.campo !== this.structure.llaveTabla) {
       // 1 NOtificacion de un listener
-      filtro.detalles = this.data.detalles;
+      //filtro.detalles = this.data.detalles;
       filtro.expedientes = this.data.expedientes;
       filtro.llaveTabla = this.data.llaveTabla;
       filtro.valorAuxiliar = this.data.valorAuxiliar;
     } else {
       // 2 Consultar las opciones esto se maneja con el valor opcion
-      filtro.detalles = campoFiltro.detalles;
+      ///filtro.detalles = campoFiltro.detalles;
       filtro.expedientes = campoFiltro.expedientes;
       filtro.llaveTabla = campoFiltro.llaveTabla;
       filtro.valorOpcion = campoFiltro.valorOpcion; // 3 Consultar un dato seleccionado
@@ -603,6 +606,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.actualizar();
       }
     }
+    if(pCampo.mensaje) {this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(pCampo.mensaje);}
   }
 
   incluirOpcion() {

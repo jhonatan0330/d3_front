@@ -33,17 +33,18 @@ export class TrazabilityComponent implements OnInit {
   dataProvider: DocumentoRelacionGestorDTO[]; // Conjunto de documentos a visualizar
 
   optionsTrace: OptionTrace[] = [
-    { value: '0', viewValue: 'Todos' },
     { value: '1', viewValue: 'Documentos' },
     { value: '2', viewValue: 'Asignaciones' },
     { value: '3', viewValue: 'Mensajes' },
     { value: '4', viewValue: 'Inventario' },
-    { value: '5', viewValue: 'Reportes' },
-    { value: '6', viewValue: 'Automaticas' },
-    { value: '7', viewValue: 'APIs' }];
+    { value: '5', viewValue: 'Valores' },
+    { value: '6', viewValue: 'Reportes' },
+    { value: '7', viewValue: 'APIs' },
+    { value: '8', viewValue: 'Ubicacion' },
+    { value: '9', viewValue: 'Comprobantes' }
+  ];
 
   selectedTrace = new FormControl(['1']);
-
 
   textDropDown = 'Documentos';
   dropdownOpen = false;
@@ -118,33 +119,32 @@ export class TrazabilityComponent implements OnInit {
       const initialOptions = ['1'];
       for (let i = 0; i < checksHistorial.length; i++) {
         switch (checksHistorial[i].valor) {
-          case "1":
+          case "1"://Documentos
+            initialOptions.push(this.optionsTrace[0].value);
+            break;
+          case "2"://Asignaciones
             initialOptions.push(this.optionsTrace[1].value);
-            //initialOptions + "," + this.optionsTrace[2].value;
             break;
-          case "2":
+          case "3"://Mensajes
             initialOptions.push(this.optionsTrace[2].value);
-            //initialOptions + "," + this.optionsTrace[2].value;
             break;
-          case "3":
-            //initialOptions + "," + this.optionsTrace[3].value;
+          case "4"://Inventario
             initialOptions.push(this.optionsTrace[3].value);
             break;
-          case "4":
-            //initialOptions + "," + this.optionsTrace[4].value;
+          case "5"://Valores
             initialOptions.push(this.optionsTrace[4].value);
             break;
-          case "5":
-            //initialOptions + "," + this.optionsTrace[5].value;
+          case "6"://Reportes
             initialOptions.push(this.optionsTrace[5].value);
             break;
-          case "6":
-            //initialOptions + "," + this.optionsTrace[6].value;
+          case "7"://API
             initialOptions.push(this.optionsTrace[6].value);
             break;
-          case "7":
-            //initialOptions + "," + this.optionsTrace[7].value;
+          case "8"://Ubicacion
             initialOptions.push(this.optionsTrace[7].value);
+            break;
+          case "9"://comprobantes
+            initialOptions.push(this.optionsTrace[8].value);
             break;
         }
       }
@@ -166,21 +166,23 @@ export class TrazabilityComponent implements OnInit {
     const entity: DocumentoRelacionGestorFilterDTO = new DocumentoRelacionGestorFilterDTO();
     entity.documentoPrincipal = this.data.document;
 
-    const docs: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[1].value) ? '1' : '0';
-    const asg: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[2].value) ? '1' : '0';
-    const msj: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[3].value) ? '1' : '0';
-    const inv: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[4].value) ? '1' : '0';
+    const doc: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[0].value) ? '1' : '0';
+    const asg: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[1].value) ? '1' : '0';
+    const msj: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[2].value) ? '1' : '0';
+    const inv: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[3].value) ? '1' : '0';
+    const val: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[4].value) ? '1' : '0';
     const rep: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[5].value) ? '1' : '0';
-    const aut: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[6].value) ? '1' : '0';
-    const api: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[7].value) ? '1' : '0';
-    entity.estado = docs + asg + msj + inv + rep + aut + api;
-    if (this.selectedTrace.value.find((item) => item === this.optionsTrace[0].value)) { entity.estado = '1111111'; }
+    const api: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[6].value) ? '1' : '0';
+    const loc: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[7].value) ? '1' : '0';
+    const cct: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[8].value) ? '1' : '0';
+    entity.estado = doc + asg + msj + inv + val + rep + api + loc + cct;
+   // if (this.selectedTrace.value.find((item) => item === this.optionsTrace[0].value)) { entity.estado = '1111111111'; }
 
     if (_pagina === 1) {
       this.dataProvider = [];
       this.isEnd = false;
     }
-    if(entity.estado === '0000000') {return;}
+    if (entity.estado === '000000000') { return; }
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;
     this.pagina = _pagina;
@@ -278,4 +280,42 @@ export class TrazabilityComponent implements OnInit {
         });
     }
   }
+
+  isSameDay(current: string, pIndex: number): boolean {
+
+    if( pIndex === 0 || !this.dataProvider || this.dataProvider.length === 0) {
+      return false;
+    }
+    const fecha1 = new Date(current);
+    const fecha2 = new Date(this.dataProvider[pIndex - 1].fecha);
+
+    return fecha1.getFullYear() === fecha2.getFullYear() &&
+      fecha1.getMonth() === fecha2.getMonth() &&
+      fecha1.getDate() === fecha2.getDate();
+  }
+
+
+  getRelativeFormat(date: string): string {
+    const fecha = new Date(date);
+    const hoy = new Date();
+
+    // Normalizamos ambas fechas a medianoche
+    const fechaUTC = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
+    const hoyUTC = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+
+    const diffTiempo = hoyUTC.getTime() - fechaUTC.getTime();
+    const diffDias = Math.floor(diffTiempo / (1000 * 60 * 60 * 24));
+
+    if (diffDias === 0) return 'hoy';
+    if (diffDias === 1) return 'ayer';
+    if (diffDias < 30) return `hace ${diffDias} días`;
+    if (diffDias < 60) return 'hace un mes';
+    const meses = Math.floor(diffDias / 30);
+    return `hace ${meses} meses`;
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item.llaveTabla || index;
+  }
+
 }

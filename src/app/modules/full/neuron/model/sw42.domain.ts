@@ -271,11 +271,9 @@ export class PedidoVentaCaracteristicaFilterDTO extends BasicFilterDTO {
   valorAuxiliar: string;
   valorNumeroMin: number;
   valorNumeroMax: number;
-  detalles: DetallePedidoVentaDTO[];
   dependientes: PedidoVentaCaracteristicaDTO[];
   expedientes: PedidoVentaDTO[];
-  transaccionRegistro: string;
-  transaccionInactivo: string;
+  mensaje: string;
 }
 			
 export class ProcesoTransicionFilterDTO extends BasicFilterDTO {
