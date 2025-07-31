@@ -97,14 +97,10 @@
             <!-- Image -->
             <ng-container>
 
-              <div class="flex shrink-0 items-center justify-center w-10 h-10 mr-4 rounded-full bg-gray-400"
-                *ngIf="!g.responsableImagen">
-                <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_outline:user">
-                </mat-icon>
+              <div class=" w-10 h-10 mr-4 "               *ngIf="!g.responsableImagen">
               </div>
               <img class="shrink-0 w-10 h-10 mr-4 rounded-full overflow-hidden object-cover object-center"
                 [src]="g.responsableImagen" [alt]="'Activity image'" *ngIf="g.responsableImagen">
-
 
             </ng-container>
 
@@ -126,18 +122,46 @@
                   <!-- Información del documento -->
                   <div class="flex-1">
                     <div class="flex justify-between items-center">
-                      <h4 class="text-gray-800 font-semibold">{{g.estadoFinal}}</h4>
+                      <h4 class="text-gray-800 font-semibold">{{g.estadoFinal | currency}}</h4>
                       <!--span
                         class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">Aqui depronto va el usuario</span-->
                     </div>
                     <p class="text-sm text-gray-600 mt-1">Saldo: <span
-                        class="font-bold text-green-700">{{g.estadoFinal}}</span>
+                        class="font-bold text-green-700">{{g.estadoInicial | currency}}</span>
                     </p>
                     <p class="text-xs text-gray-400 mt-0.5">{{ getDateFormat(g.fecha) }}</p>
                   </div>
                 </div>
               </div>
+              <div *ngSwitchCase="'UBICACION'" class="flex flex-col flex-auto items-start">
+                <div
+                  class="flex items-start space-x-3 bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm shadow-sm max-w-md w-full">
+                  <!-- Ícono de ubicación -->
+                  <div class="text-emerald-600 mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
+                    </svg>
+                  </div>
+                  <!-- Contenido -->
+                  <div class="flex-1 space-y-1">
+                    <!-- Fecha -->
+                    <div class="text-xs text-gray-500">
+                      🗓️ Fecha: <span class="text-gray-700">{{ getDateFormat(g.fecha) }}</span>
+                    </div>
+                    <!-- Enlace a la ubicación -->
+                    <div class="text-xs">
+                      {{g.plantillaNombre}} - <a class="cursor-pointer text-primary"
+                        (click)="showTraceDocument(g.documentoModificador, g.plantilla)">{{
+                        g.comentario }}</a>
+                    </div>
+                  </div>
+                </div>
 
+              </div>
               <div *ngSwitchCase="'REPORTES'" class="flex flex-col flex-auto items-start">
                 <div
                   class="flex items-start space-x-3 bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm shadow-sm max-w-md w-full">
@@ -156,7 +180,8 @@
                     <div class="font-semibold text-gray-800"><span class="text-gray-900">{{ g.nombre }}</span></div>
 
                     <div class="text-xs text-gray-500">
-                       👤  <span class="text-gray-700">{{ g.responsable }}</span> ·🕓 {{getDateFormat(g.fecha)}} · ⏱ {{ g.estadoFinal }}
+                      👤 <span class="text-gray-700">{{ g.responsable }}</span> ·🕓 {{getDateFormat(g.fecha)}} · ⏱ {{
+                      g.estadoFinal }}
                     </div>
 
                     <!-- Error si aplica -->
@@ -170,7 +195,7 @@
                       🔗 <a [href]="g.adjunto" target="_blank" class="text-indigo-600 hover:underline">Ver reporte</a>
                     </div>
                   </div>
-                </div>                
+                </div>
               </div>
               <div *ngSwitchCase="'API'" class="flex flex-col flex-auto items-start">
                 <div
@@ -256,20 +281,18 @@
 
                   <div *ngIf="(g.estadoInicial || g.estadoFinal) && g.estadoInicial !== g.estadoFinal"
                     class="flex items-center w-full  mx-auto">
-                    <div class="flex-1 flex items-center p-3">
+                    <div class="flex-1 flex p-3">
                       <!-- Punto e ícono -->
                       <div>
-                        <div
-                          class="w-6 h-6 rounded-full z-10 border-1 border-white shadow-md transition-colors duration-500 ease-in-out bg-green-100">
+                        <div class="w-6 h-6 rounded-full z-10 border-1 border-white shadow-md bg-green-100">
                         </div>
                         <div class="text-xs text-center w-24">
                           {{ g.estadoInicial }}
                         </div>
                       </div>
-                      <div class="w-26 h-1 bg-gray-300 -mt-3 -ml-18"></div>
+                      <div class="w-26 h-1 bg-gray-300 mt-3 -ml-18"></div>
                       <div>
-                        <div
-                          class="w-6 h-6 rounded-full z-10 border-1 border-white shadow-md transition-colors duration-500 ease-in-out bg-green-100">
+                        <div class="w-6 h-6 rounded-full z-10 border-1 border-white shadow-md bg-green-100">
                         </div>
                         <div class="text-xs text-center w-24">
                           {{ g.estadoFinal }}

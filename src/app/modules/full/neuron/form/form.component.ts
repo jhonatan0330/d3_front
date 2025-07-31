@@ -127,7 +127,7 @@ export class FormComponent implements OnInit, AfterViewInit {
       // Camino Update
       this.consultarDocumento(this.pedidoBase.llaveTabla);
     } else {
-      if (!PlantillaHelper.isEmpty(this.plantilla.propiedades,  PlantillaHelper.FUNCION_SQL_NEW_ANTES)){
+      if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FUNCION_SQL_NEW_ANTES)) {
         this.validacionPrevia();
       } else {
         this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
@@ -233,15 +233,15 @@ export class FormComponent implements OnInit, AfterViewInit {
       });
     }
     this.pedido.llaveTabla = value.llaveTabla;
-      for (let r = 0; r < this.reportes.length; r++) {
-        const _report = this.reportes[r];
-        if (PlantillaHelper.buscarValor(_report.propiedades, PlantillaHelper.REP_AUTOPRINT)) {
-          this.showReport(_report);
-        }
+    for (let r = 0; r < this.reportes.length; r++) {
+      const _report = this.reportes[r];
+      if (PlantillaHelper.buscarValor(_report.propiedades, PlantillaHelper.REP_AUTOPRINT)) {
+        this.showReport(_report);
       }
+    }
     this.submitted = false;
-   
-    if(successFullText){
+
+    if (successFullText) {
       // Aqui va los cambios de variables
       this.utilsService.modalSuccess(successFullText);
     }
@@ -271,12 +271,12 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   validacionPrevia() {
-    if(!this.plantilla || !this.plantilla.llaveTabla) return;
+    if (!this.plantilla || !this.plantilla.llaveTabla) return;
     const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
     entity.plantilla = this.plantilla.llaveTabla;
     this.api.validateBeforeNew(entity, this.plantilla.server).subscribe({
       next: (_value: PedidoVentaDTO) => {
-        if(_value && _value.messages && _value.messages.length > 0){
+        if (_value && _value.messages && _value.messages.length > 0) {
           let mensajeToShow = '';
           for (let i = 0; i < _value.messages.length; i++) {
             const element = _value.messages[i];
@@ -633,36 +633,36 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   // Resuelve las propiedades de la plantilla
   resolvePropiertiesForm() {
-    
+
     this.canMassive = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA);
     if (this.pedido.llaveTabla) {
       this.hasVoucher = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.TEMPLATE_VOUCHER);
       if (!this.pedido.estadoExpediente) {
         // Solo se pueden anular los que estan en estado activo y que no son de un proceso
         if (this.pedido.estado === StatesEnum.ACTIVE) {
-            const plantillaEliminar = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.FORM_ANULAR);
-            if (plantillaEliminar) {
-              const tEliminar: DocumentoPlantillaDTO = this.templateService.getTemplate(plantillaEliminar, this.plantilla.server);
-              if (tEliminar &&!PlantillaHelper.isEmpty(tEliminar.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-                const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
-                _newtransicion.imagen = tEliminar.imagen;
-                _newtransicion.plantilla = tEliminar.llaveTabla;
-                _newtransicion.nombre = tEliminar.nombre;
-                this.transiciones.push(_newtransicion);
-              }
+          const plantillaEliminar = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.FORM_ANULAR);
+          if (plantillaEliminar) {
+            const tEliminar: DocumentoPlantillaDTO = this.templateService.getTemplate(plantillaEliminar, this.plantilla.server);
+            if (tEliminar && !PlantillaHelper.isEmpty(tEliminar.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+              const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
+              _newtransicion.imagen = tEliminar.imagen;
+              _newtransicion.plantilla = tEliminar.llaveTabla;
+              _newtransicion.nombre = tEliminar.nombre;
+              this.transiciones.push(_newtransicion);
             }
+          }
         } else {
-            const _templateAction = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.FORM_ACTIVATE);
-            if (_templateAction) {
-              const _tAction: DocumentoPlantillaDTO = this.templateService.getTemplate(_templateAction, this.plantilla.server);
-              if (_tAction &&!PlantillaHelper.isEmpty(_tAction.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-                const _newAction: ProcesoTransicionDTO = new ProcesoTransicionDTO();
-                _newAction.imagen = _tAction.imagen;
-                _newAction.plantilla = _tAction.llaveTabla;
-                _newAction.nombre = _tAction.nombre;
-                this.transiciones.push(_newAction);
-              }
+          const _templateAction = PlantillaHelper.buscarValor(this.plantilla.propiedades, PlantillaHelper.FORM_ACTIVATE);
+          if (_templateAction) {
+            const _tAction: DocumentoPlantillaDTO = this.templateService.getTemplate(_templateAction, this.plantilla.server);
+            if (_tAction && !PlantillaHelper.isEmpty(_tAction.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+              const _newAction: ProcesoTransicionDTO = new ProcesoTransicionDTO();
+              _newAction.imagen = _tAction.imagen;
+              _newAction.plantilla = _tAction.llaveTabla;
+              _newAction.nombre = _tAction.nombre;
+              this.transiciones.push(_newAction);
             }
+          }
         }
       } else {
         this.canTransfer = !PlantillaHelper.isEmpty(
@@ -811,11 +811,18 @@ export class FormComponent implements OnInit, AfterViewInit {
 
       const campoBase: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
       campoBase.campoDTO = campoTransicion;
-      campoBase.valorText = this.pedido.nombre;
+
       if (this.pedido.dinero) {
         campoBase.valorNumero = this.pedido.dinero.saldo;
       }
-      campoBase.valorOpcion = this.pedido.llaveTabla; // Coloco el valor opcion para que el tipo proceso identifique la opcion
+
+      if (PlantillaHelper.isEmpty(campoTransicion.propiedades, PlantillaHelper.MULTIPLE)) {
+        campoBase.valorText = this.pedido.nombre;
+        campoBase.valorOpcion = this.pedido.llaveTabla; // Coloco el valor opcion para que el tipo proceso identifique la opcion
+      } else {
+        campoBase.expedientes = [];
+        campoBase.expedientes.push(this.pedido);
+      }
       _doc.caracteristicas.push(campoBase);
     }
     _doc.server = this.plantilla.server;
@@ -1060,14 +1067,14 @@ export class FormComponent implements OnInit, AfterViewInit {
         campoDocumento.campoDTO.propiedades,
         PlantillaHelper.PERMISO_CAMPO_BLOQUEAR
       );
-      if (campoDocumento.campoDTO 
+      if (campoDocumento.campoDTO
         && !block
         && (campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.FECHA
-            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.NUMERO
-            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
-            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.TEXTO
-            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PRODUCTO
-            || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.CONFIGURACION
+          || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.NUMERO
+          || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
+          || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.TEXTO
+          || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PRODUCTO
+          || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.CONFIGURACION
         )
       ) {
         const campoBase: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
@@ -1085,16 +1092,16 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.utilsService.modalWithParams(_doc, false).subscribe();
   }
 
-  public reviewFieldsVisibility(){
-    let sectionIsInvisible = false; 
+  public reviewFieldsVisibility() {
+    let sectionIsInvisible = false;
     for (let i = 0; i < this.dynamicControls.length; i++) {
       const element = this.dynamicControls[i];
-      if( element.structure.formato === DocumentoPlantillaCaracteristicaEnum.SECCION){  
-        sectionIsInvisible = element.isInvisible; 
-      } else{
-        element.isSectionInvisible = sectionIsInvisible; 
+      if (element.structure.formato === DocumentoPlantillaCaracteristicaEnum.SECCION) {
+        sectionIsInvisible = element.isInvisible;
+      } else {
+        element.isSectionInvisible = sectionIsInvisible;
       }
-      
+
     }
   }
 
