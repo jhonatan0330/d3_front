@@ -514,7 +514,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
     if (this.relatedFields) {
       if (this.multiple && !this.data.documento) {
-        this.data.expedientes = [];
+        if(!this.data.expedientes) this.data.expedientes = [];
         return; // Sucede que en un campo multiple nuevo no hay necesidad de ir a buscar
       }
       if (this.tipoTexto && !campoFiltro.filtroParametro) {
