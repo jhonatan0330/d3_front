@@ -14,13 +14,13 @@ export class UtilsService {
   
   constructor(public dialog: MatDialog) {}
 
-  modalWithParams( pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null ) {
+  modalWithParams( pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null, pSaveInField = false ) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(FormComponent, {
       // width: '720px',
       maxHeight: '100vh',
       maxWidth: '98vw',
       disableClose: true,
-      data: { data: pDataModal , close2Save: pClose2Save, identificador:  pIdentificador},
+      data: { data: pDataModal , close2Save: pClose2Save, identificador:  pIdentificador, saveInField: pSaveInField},
     });
     return dialogRef.afterClosed();
   }

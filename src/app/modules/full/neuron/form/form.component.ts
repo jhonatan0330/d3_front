@@ -66,7 +66,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   // Variables de comportamiento
   identificadorInicial: string; // La use para llenar el campo inicial
   close2Save = false;
-
+  saveInField = false;
 
   // ACTIONS
 
@@ -113,6 +113,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
     this.pedidoBase = this.data.data;
     this.identificadorInicial = this.data.identificador;
+    this.saveInField = this.data.saveInField;
     if (this.data.close2Save) {
       this.close2Save = this.data.close2Save;
     }
@@ -180,16 +181,27 @@ export class FormComponent implements OnInit, AfterViewInit {
       return;
     }
     this.pedidoBase.messages = null;
-    this.api
-      .guardarDocumento(this.copiarPedidoBase(this.pedido, true), this.plantilla.server, this.uidOpenToNotDuplicate)
-      .subscribe({
-        next: (dataResult: PedidoVentaDTO) => {
-          this.openManager(dataResult);
-        },
-        error: () => {
-          this.submitted = false;
-        },
-      });
+
+    if (this.saveInField) {
+      if (this.dialogRef) {
+        this.dialogRef.close({ data: this.pedido });
+      }
+    } else {
+      this.api
+        .guardarDocumento(this.copiarPedidoBase(this.pedido, true), this.plantilla.server, this.uidOpenToNotDuplicate)
+        .subscribe({
+          next: (dataResult: PedidoVentaDTO) => {
+            this.openManager(dataResult);
+          },
+          error: () => {
+            this.submitted = false;
+          },
+        });
+    }
+
+
+
+
   }
 
   openManager(value: PedidoVentaDTO) {
@@ -1036,6 +1048,12 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.fullScreen = !this.fullScreen;
     this.getSizePop();
   }
+
+  reloadScreen() {
+    this.dialogRef.close();
+    this.utilsService.modalWithParams(this.pedido, false).subscribe();
+  }
+  
 
   getSizePop() {
     if (this.fullScreen) {

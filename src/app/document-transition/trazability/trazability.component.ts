@@ -30,6 +30,8 @@ export class TrazabilityComponent implements OnInit {
   cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
   isLoading = false;
   isEnd = false;
+  fullScreen = false;
+  styleSizePop = '';
   dataProvider: DocumentoRelacionGestorDTO[]; // Conjunto de documentos a visualizar
 
   optionsTrace: OptionTrace[] = [
@@ -317,5 +319,20 @@ export class TrazabilityComponent implements OnInit {
   trackByFn(index: number, item: any): any {
     return item.llaveTabla || index;
   }
+
+    toogleScreen() {
+    this.fullScreen = !this.fullScreen;
+    this.getSizePop();
+  }
+
+  getSizePop() {
+    if (this.fullScreen) {
+      this.styleSizePop = 'width: 98vw;';
+    } else {
+      this.styleSizePop = '';
+    }
+    //if(this.drawerOpened) {this.styleSizePop = this.styleSizePop + 'height:90vh;';}
+  }
+
 
 }

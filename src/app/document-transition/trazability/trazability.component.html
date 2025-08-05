@@ -1,6 +1,6 @@
 <!-- Titulo -->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle *ngIf="plantilla"
-  class="p-4 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent flex">
+  [style]="styleSizePop" class="p-4 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent flex">
   <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
   <!-- Texto del titulo -->
   <div class="w-full">
@@ -14,6 +14,8 @@
   </div>
   <!-- Botones de accion -->
   <div class="flex">
+    <mat-icon *ngIf="!fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen</mat-icon>
+    <mat-icon *ngIf="fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen_exit</mat-icon>
     <!-- Boton Cerrar -->
     <a class="cursor-pointer px-1" (click)="dialogRef.close(false)">
       <mat-icon class="h-6">exit_to_app</mat-icon>

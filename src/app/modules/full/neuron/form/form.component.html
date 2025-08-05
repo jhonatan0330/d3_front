@@ -20,6 +20,9 @@
         [style.color]="getColorFont()">fullscreen</mat-icon>
       <mat-icon *ngIf="fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()"
         [style.color]="getColorFont()">fullscreen_exit</mat-icon>
+      <mat-icon  class="h-6 cursor-pointer" (click)="reloadScreen()"
+        svgIcon="heroicons_outline:arrow-path-rounded-square"
+        [style.color]="getColorFont()"></mat-icon>
     </div>
     <div *ngIf="pedido && pedido.llaveTabla" class="w-full sm:flex justify-between">
       <div *ngIf="pedido && pedido.llaveTabla" class="font-semibold px-1 text-center text-md">{{pedido.estadoNombre }}

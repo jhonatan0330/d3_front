@@ -16,6 +16,7 @@ import { BaseComponent } from '../base/base.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
 import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
+import { UtilsService } from '../../../service/utils.service';
 
 @Component({
   selector: 'app-detalle',
@@ -49,6 +50,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     private templateService: TemplateService,
     private api: ApiService,
     private cd: ChangeDetectorRef,
+    private utilsService: UtilsService,
     private dialog: MatDialog
   ) {
     super();
@@ -147,9 +149,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       if (this.productosDisponibles && this.productosDisponibles.length !== 0) {
         this.productosFiltrados = this.productosDisponibles.filter(
           (item) =>
-          (item.codigo.indexOf(valorFiltro) !== -1
-            || item.nombre.indexOf(valorFiltro) !== -1
-            || item.filtros.indexOf(valorFiltro) !== -1)
+          (item && ((item.codigo && item.codigo.indexOf(valorFiltro) !== -1)
+            || (item.nombre && item.nombre.indexOf(valorFiltro) !== -1)
+            || (item.filtros && item.filtros.indexOf(valorFiltro) !== -1)))
         );
       } else {
         this.productosFiltrados = [];
@@ -262,7 +264,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       copyDetalle.valorMaximo = producto.detallePlantilla.valorMaximo;
       copyDetalle.tarifas = producto.detallePlantilla.tarifas;
       copyDetalle.plantillaDetalle = producto.detallePlantilla.plantillaDetalle;
-      if (producto.detallePlantilla.documentoDetalle.caracteristicas) {
+      if (producto.detallePlantilla.documentoDetalle && producto.detallePlantilla.documentoDetalle.caracteristicas) {
         copyDetalle.documentoDetalle = new PedidoVentaDTO();
         copyDetalle.documentoDetalle.caracteristicas = [];
         for (
@@ -298,9 +300,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         this.fControl.setValue(producto.codigo + ' - ' + producto.nombre);
       } else {
         if (
-          copyDetalle.valorMinimo !== copyDetalle.valorMaximo ||
-          (copyDetalle.documentoDetalle.caracteristicas &&
-            copyDetalle.documentoDetalle.caracteristicas.length !== 0)
+          copyDetalle.valorMinimo !== copyDetalle.valorMaximo
+          // || (copyDetalle.documentoDetalle.caracteristicas &&
+          //  copyDetalle.documentoDetalle.caracteristicas.length !== 0)
         ) {
           this.modificarDetallePedido(copyDetalle);
         }
@@ -322,12 +324,12 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   /*Esto lo realice para corregir el error al modificar los valores de los productos que tenian funciones*/
   updateDetail(item: DetallePedidoVentaDTO) {
-    if (this.isEnabled && !item.tarifas 
+    if (this.isEnabled && !item.tarifas
       && !this.isEmpty(this.obtenerValor(PlantillaHelper.DETALLE_TARIFARIO_SQL))) {
       const nFilter: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
       nFilter.campo = this.structure.llaveTabla;
       nFilter.dependientes = this.data.dependientes;
-      nFilter.llaveTabla=item.llaveTabla;
+      nFilter.llaveTabla = item.llaveTabla;
       nFilter.filtroParametro = item.productoCodigo;
       this.isLoading = true;
       this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
@@ -347,19 +349,36 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
 
   modificarDetallePedido(item: DetallePedidoVentaDTO) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
-      width: '720px',
-      maxHeight: '90vh',
-      disableClose: true,
-      data: { data: item, allowEdit: this.isEnabled },
-    });
-    dialogRef.afterClosed().subscribe((resp) => {
-      if (!resp) {
-        this.data.detalles.splice(0, 1);
-        this.data.detalles = Object.assign([], this.data.detalles); // Para que se refresque la lista
+
+    if (!this.isEmpty(this.obtenerValor(PlantillaHelper.ITEM_DETAIL_FORM_VISIBLE))) {
+      if (item.documentoDetalle == null) {
+        item.documentoDetalle = new PedidoVentaDTO();
+        item.documentoDetalle.plantilla = item.plantillaDetalle;
+
       }
-      this.actualizarDetalles(null);
-    });
+
+      this.utilsService.modalWithParams(item.documentoDetalle,  false, null, true).subscribe((res) => {
+        if (res) {
+          item.documentoDetalle = res.data;
+        }
+      });
+    } else {
+      const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
+        width: '720px',
+        maxHeight: '90vh',
+        disableClose: true,
+        data: { data: item, allowEdit: this.isEnabled },
+      });
+      dialogRef.afterClosed().subscribe((resp) => {
+        if (!resp) {
+          this.data.detalles.splice(0, 1);
+          this.data.detalles = Object.assign([], this.data.detalles); // Para que se refresque la lista
+        }
+        this.actualizarDetalles(null);
+      });
+    }
+
+
   }
 
 
