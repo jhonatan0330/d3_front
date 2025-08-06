@@ -299,10 +299,11 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         // Por el momento los unicos no cargan valores esto lo tendre que revisar despues
         this.fControl.setValue(producto.codigo + ' - ' + producto.nombre);
       } else {
+        // Lsa caracteristicas me sirven en roa, comentarie esa parte y no se abria de una vez el pop
         if (
           copyDetalle.valorMinimo !== copyDetalle.valorMaximo
-          // || (copyDetalle.documentoDetalle.caracteristicas &&
-          //  copyDetalle.documentoDetalle.caracteristicas.length !== 0)
+           || (copyDetalle.documentoDetalle.caracteristicas &&
+            copyDetalle.documentoDetalle.caracteristicas.length !== 0)
         ) {
           this.modificarDetallePedido(copyDetalle);
         }

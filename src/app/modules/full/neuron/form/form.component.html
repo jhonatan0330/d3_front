@@ -20,7 +20,7 @@
         [style.color]="getColorFont()">fullscreen</mat-icon>
       <mat-icon *ngIf="fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()"
         [style.color]="getColorFont()">fullscreen_exit</mat-icon>
-      <mat-icon  class="h-6 cursor-pointer" (click)="reloadScreen()"
+      <mat-icon  class="h-6 cursor-pointer" (click)="reloadScreen()" *ngIf="pedido && pedido.llaveTabla"
         svgIcon="heroicons_outline:arrow-path-rounded-square"
         [style.color]="getColorFont()"></mat-icon>
     </div>

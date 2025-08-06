@@ -1388,9 +1388,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       entity.estado = StatesEnum.ACTIVE;
     } else {
       entity.estado = '';
-      if (this.fCheckActivo.value) { entity.estado = entity.estado + ";" + StatesEnum.ACTIVE; }
-      if (this.fCheckInactivo.value) { entity.estado = entity.estado + ";" + StatesEnum.INACTIVE; }
-      if (this.fCheckFinalizado.value) { entity.estado = entity.estado + ";" + StatesEnum.FINALIZADO; }
+      if (this.fCheckActivo && this.fCheckActivo.value) { entity.estado = entity.estado + ";" + StatesEnum.ACTIVE; }
+      if (this.fCheckInactivo && this.fCheckInactivo.value) { entity.estado = entity.estado + ";" + StatesEnum.INACTIVE; }
+      if (this.fCheckFinalizado && this.fCheckFinalizado.value) { entity.estado = entity.estado + ";" + StatesEnum.FINALIZADO; }
       if (entity.estado === '') { entity.estado = entity.estado + ";" + StatesEnum.ACTIVE; }
     }
     entity.estadoExpediente = null;
