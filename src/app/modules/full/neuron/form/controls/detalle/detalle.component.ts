@@ -266,6 +266,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       copyDetalle.plantillaDetalle = producto.detallePlantilla.plantillaDetalle;
       if (producto.detallePlantilla.documentoDetalle && producto.detallePlantilla.documentoDetalle.caracteristicas) {
         copyDetalle.documentoDetalle = new PedidoVentaDTO();
+        copyDetalle.documentoDetalle.plantilla = producto.detallePlantilla.documentoDetalle.plantilla;
         copyDetalle.documentoDetalle.caracteristicas = [];
         for (
           let i = 0;
@@ -276,10 +277,24 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
           const uc: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
           uc.campo = campoDetalle.campo;
           uc.campoDTO = campoDetalle.campoDTO;
+
           uc.valorOpcion = campoDetalle.valorOpcion; // sin esto carga el producto del formulario
           uc.principal = campoDetalle.principal;
           uc.valorNumero = campoDetalle.valorNumero;
           uc.valorText = campoDetalle.valorText;
+
+          if(this.data.dependientes){
+            for (let index = 0; index < this.data.dependientes.length; index++) {
+              const element = this.data.dependientes[index];
+              if(element.campoDTO.codigo === uc.campoDTO.codigo){
+                uc.valorOpcion = element.valorOpcion;
+                uc.valorNumero = element.valorNumero;
+                uc.valorText = element.valorText;
+                uc.principal = element.principal;
+                break;
+              }
+            }
+          }
           copyDetalle.documentoDetalle.caracteristicas.push(uc);
         }
       }
@@ -302,7 +317,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         // Lsa caracteristicas me sirven en roa, comentarie esa parte y no se abria de una vez el pop
         if (
           copyDetalle.valorMinimo !== copyDetalle.valorMaximo
-           || (copyDetalle.documentoDetalle.caracteristicas &&
+           || !this.isEmpty(this.obtenerValor(PlantillaHelper.ITEM_DETAIL_FORM_VISIBLE))
+           || (copyDetalle.documentoDetalle && copyDetalle.documentoDetalle.caracteristicas &&
             copyDetalle.documentoDetalle.caracteristicas.length !== 0)
         ) {
           this.modificarDetallePedido(copyDetalle);
@@ -362,6 +378,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         if (res) {
           item.documentoDetalle = res.data;
         }
+        this.actualizarDetalles(null);
       });
     } else {
       const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
@@ -378,8 +395,6 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         this.actualizarDetalles(null);
       });
     }
-
-
   }
 
 
