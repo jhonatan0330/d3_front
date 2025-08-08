@@ -20,9 +20,6 @@
         [style.color]="getColorFont()">fullscreen</mat-icon>
       <mat-icon *ngIf="fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()"
         [style.color]="getColorFont()">fullscreen_exit</mat-icon>
-      <mat-icon  class="h-6 cursor-pointer" (click)="reloadScreen()" *ngIf="pedido && pedido.llaveTabla"
-        svgIcon="heroicons_outline:arrow-path-rounded-square"
-        [style.color]="getColorFont()"></mat-icon>
     </div>
     <div *ngIf="pedido && pedido.llaveTabla" class="w-full sm:flex justify-between">
       <div *ngIf="pedido && pedido.llaveTabla" class="font-semibold px-1 text-center text-md">{{pedido.estadoNombre }}
@@ -63,6 +60,9 @@
         <!-- Boton Duplicar -->
         <button mat-menu-item (click)="duplicate()" tabindex="-1">
           <mat-icon>file_copy</mat-icon>Duplicar
+        </button>
+        <button mat-menu-item (click)="reloadScreen()" tabindex="-1" *ngIf="pedido && pedido.llaveTabla">
+          <mat-icon svgIcon="heroicons_outline:arrow-path-rounded-square"></mat-icon>Recargar
         </button>
         <!-- Boton Compartir -->
         <button *ngIf="pedido && pedido.llaveTabla" mat-menu-item (click)="copyUrl()">
