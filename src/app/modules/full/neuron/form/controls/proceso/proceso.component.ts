@@ -393,7 +393,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
       }
     }
-    if (this.required) {
+    if (this.required || !this.isEnabled) {
       if (this.disponibles && this.disponibles.length === 1) {
         // Si es obligatorio, seelcciona el primero y unico
         this.fControl.setValue(this.disponibles[0]);
