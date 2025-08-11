@@ -20,6 +20,7 @@ export class DocumentoRelacionGestorDTO extends BasicDTO {
   nombre: string;
   adjunto: string;
   campos: PedidoVentaCaracteristicaDTO[];
+  estados: string[];
 }
 
 export class DocumentoRelacionGestorFilterDTO extends BasicFilterDTO {

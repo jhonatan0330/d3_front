@@ -191,16 +191,45 @@ export class TrazabilityComponent implements OnInit {
     this.isLoading = true;
     this._traceService.getTrace(entity, this.plantilla.server).subscribe({
       next: (dataResult: DocumentoRelacionGestorDTO[]) => {
-        if (this.pagina === 1) {
-          this.dataProvider = dataResult;
-        } else {
-          this.dataProvider = this.dataProvider.concat(dataResult);
-        }
-        if (dataResult.length === this.cantidadPagina) {
-          this.pagina++;
-        } else {
-          this.isEnd = true;
-          this.pagina = 1;
+        if (dataResult) {
+          const _fullQuantity = dataResult.length;
+          for (let index = dataResult.length -1; index >=0 ; index--) {
+            const element = dataResult[index];
+            if((element.estadoInicial || element.estadoFinal) && element.estadoInicial !== element.estadoFinal) {
+
+              if(index !== (dataResult.length - 1) 
+                && dataResult[index + 1].documentoModificador === element.documentoModificador
+                && dataResult[index + 1].estadoFinal === element.estadoInicial) {
+                
+                dataResult[index + 1].nombre = element.nombre;
+                
+                if (!dataResult[index + 1].estados) {
+                  dataResult[index + 1].estados = [];
+                  dataResult[index + 1].estados.push(element.estadoInicial);
+                }
+                dataResult[index + 1].estados.push(element.estadoFinal);
+                dataResult.splice(index , 1);
+
+              } else{
+                if (!element.estados) {
+                  element.estados = [];
+                }                
+                element.estados.push(element.estadoInicial);
+                element.estados.push(element.estadoFinal);
+              }
+            }
+          }
+          if (this.pagina === 1) {
+            this.dataProvider = dataResult;
+          } else {
+            this.dataProvider = this.dataProvider.concat(dataResult);
+          }
+          if (_fullQuantity === this.cantidadPagina) {
+            this.pagina++;
+          } else {
+            this.isEnd = true;
+            this.pagina = 1;
+          }
         }
         this.isLoading = false;
       },
