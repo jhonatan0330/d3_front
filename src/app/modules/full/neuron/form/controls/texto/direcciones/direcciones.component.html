@@ -1,0 +1,63 @@
+<form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-4 gap-4 py-2">
+  <!-- Tipo de vía -->
+  <div class="p-2 border rounded">
+    <label  class="font-semibold block">Tipo de vía</label>
+    <select formControlName="tipoVia" required class="w-full border rounded p-2">
+      <option value="Calle">Calle</option>
+      <option value="Carrera">Carrera</option>
+      <option value="Avenida">Avenida</option>
+      <option value="Transversal">Transversal</option>
+      <option value="Diagonal">Diagonal</option>
+      <option value="Autopista">Autopista</option>
+      <option value="Circular">Circular</option>
+    </select>
+  </div>
+
+  <!-- Número principal -->
+  <div class="p-2 border rounded md:col-span-1">
+    <label for="numPrincipal" class="font-semibold block">Número Principal</label>
+    <div class="grid grid-cols-4 gap-2">
+      <input formControlName="numPrincipal" type="text" maxlength="3" placeholder="26" class="border rounded p-2" />
+      <input formControlName="letraPrincipal" type="text" maxlength="2" placeholder="A" class="border rounded p-2" />
+      <select formControlName="bis" class="border rounded p-2">
+        <option value="">—</option>
+        <option value="Bis">Bis</option>
+      </select>
+      <select formControlName="orientacion1" class="border rounded p-2">
+        <option value="">—</option>
+        <option>Este</option>
+        <option>Oeste</option>
+        <option>Norte</option>
+        <option>Sur</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Número secundario -->
+  <div class="p-2 border rounded md:col-span-1">
+    <label  class="font-semibold block">Número Secundario</label>
+    <div class="grid grid-cols-4 gap-2">
+      <input formControlName="numSecundario" type="text" maxlength="3" placeholder="15" class="border rounded p-2" />
+      <input formControlName="letraSecundaria" type="text" maxlength="2" placeholder="B" class="border rounded p-2" />
+      <select formControlName="bis2" class="border rounded p-2">
+        <option value="">—</option>
+        <option value="Bis">Bis</option>
+      </select>
+      <select formControlName="orientacion2" class="border rounded p-2">
+        <option value="">—</option>
+        <option>Este</option>
+        <option>Oeste</option>
+        <option>Norte</option>
+        <option>Sur</option>
+      </select>
+    </div>
+  </div>
+  <!-- Complemento -->
+  <div class="p-2 border rounded">
+    <label for="complemento" class="font-semibold block">Complemento</label>
+    <div class="grid grid-cols-4 gap-2">
+      <input formControlName="numT" type="text" maxlength="3" placeholder="45" class="border rounded p-2 " />
+      <input formControlName="complemento" type="text" placeholder="Apto 302, Torre 1" class="border rounded p-2 col-span-3" />
+    </div>
+  </div>
+</form>

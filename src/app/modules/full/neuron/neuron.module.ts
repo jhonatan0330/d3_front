@@ -61,11 +61,13 @@ import { DocumentTransitionModule } from 'app/document-transition/document-trans
 import { OlMapComponent } from './form/controls/gps/ol-map/ol-map.component';
 import { FullMapComponent } from './form/controls/gps-map/full-map/full-map.component';
 import { VinculoComponent } from './form/controls/vinculo/vinculo.component';
+import { DireccionesComponent } from './form/controls/texto/direcciones/direcciones.component';
 
 
 @NgModule({
     declarations: [
         TextoComponent,
+        DireccionesComponent,
         ArchivoComponent,
         BinarioComponent,
         ConfiguracionComponent,
