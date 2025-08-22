@@ -31,11 +31,36 @@ export class DireccionesComponent {
     this.form.valueChanges.subscribe(() => {
       this.emitirDireccion();
     });
+
+    this.form.get('tipoVia')?.valueChanges.subscribe((valor) => {
+      this.actualizarOrientaciones(valor);
+    });
+  }
+
+  orientaciones: string[] = ['Este', 'Sur'];
+  orientaciones1: string[] = [];
+  orientaciones2: string[] = [];
+
+  actualizarOrientaciones(valor) {
+    const tipoVia = valor;
+
+
+    if (tipoVia == 'Calle' || tipoVia == 'Diagonal') {
+      this.orientaciones1 = ['Sur'];
+      this.orientaciones2 = ['Este'];
+    } else if (tipoVia == 'Carrera' || tipoVia == 'Transversal') {
+      this.orientaciones1 = ['Este'];
+      this.orientaciones2 = ['Sur'];
+    } else {
+      // por defecto, sin opciones
+      this.orientaciones1 = [...this.orientaciones];
+      this.orientaciones2 = [...this.orientaciones];
+    }
   }
 
   emitirDireccion() {
     const v = this.form.value;
-    const direccion = `${v.tipoVia || ''} ${v.numPrincipal || ''}${v.letraPrincipal || ''} ${v.bis || ''} ${v.orientacion1 || ''} # ${v.numSecundario || ''}${v.letraSecundaria || ''} ${v.bis2 || ''} ${v.orientacion2 || ''} - ${v.numT || ''} ${v.complemento || ''}`
+    const direccion = `${v.tipoVia || ''} ${v.numPrincipal || ''}${v.letraPrincipal || ''} ${v.bis || ''} ${v.orientacion1 || ''} ${v.numSecundario || ''}${v.letraSecundaria || ''} ${v.bis2 || ''} ${v.orientacion2 || ''} ${v.numT || ''} ${v.complemento || ''}`
       .replace(/\s+/g, ' ')
       .trim();
 

@@ -25,10 +25,7 @@
       </select>
       <select formControlName="orientacion1" class="border rounded p-2">
         <option value="">—</option>
-        <option>Este</option>
-        <option>Oeste</option>
-        <option>Norte</option>
-        <option>Sur</option>
+        <option *ngFor="let o of orientaciones1">{{ o }}</option>
       </select>
     </div>
   </div>
@@ -45,10 +42,7 @@
       </select>
       <select formControlName="orientacion2" class="border rounded p-2">
         <option value="">—</option>
-        <option>Este</option>
-        <option>Oeste</option>
-        <option>Norte</option>
-        <option>Sur</option>
+        <option *ngFor="let o of orientaciones2" >{{ o }}</option>
       </select>
     </div>
   </div>
