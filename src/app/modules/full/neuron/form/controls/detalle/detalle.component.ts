@@ -295,6 +295,16 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
               }
             }
           }
+
+          if (campoDetalle.campoDTO.codigo ==='PRODUCTO'){
+            uc.valorOpcion = producto.documento; 
+            uc.valorText = producto.nombre
+          }
+          /*if (campoDetalle.campoDTO.codigo ==='DOCUMENTO'){
+            uc.valorOpcion = this.data.campoDTO.plantilla;
+            uc.valorText = this.data.campoDTO.plantillaNombre;
+            uc.principal = this.parent;
+          }*/
           copyDetalle.documentoDetalle.caracteristicas.push(uc);
         }
       }
@@ -367,7 +377,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   modificarDetallePedido(item: DetallePedidoVentaDTO) {
 
-    if (!this.isEmpty(this.obtenerValor(PlantillaHelper.ITEM_DETAIL_FORM_VISIBLE))) {
+    const _propForm = this.obtenerValor(PlantillaHelper.ITEM_DETAIL_FORM_VISIBLE);
+    if (!this.isEmpty(_propForm)) {
       if (item.documentoDetalle == null) {
         item.documentoDetalle = new PedidoVentaDTO();
         item.documentoDetalle.plantilla = item.plantillaDetalle;
@@ -429,5 +440,15 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   getTotalCost() {
     if (!this.data.detalles) return 0;
     return this.data.detalles.map(t => t.valorTotal).reduce((acc, value) => acc + value, 0);
+  }
+
+  getColor(pState: string) {
+    if (!pState) { return null; }
+    return this.templateService.getColor(pState);
+  }
+
+  getColorFont(pState: string) {
+    if (!pState) { return null; }
+    return this.templateService.getColorFont(pState);
   }
 }
