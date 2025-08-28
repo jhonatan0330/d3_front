@@ -4,7 +4,6 @@ import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { BarcodeFormat } from '@zxing/library';
-import { timer } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -15,6 +14,7 @@ import Swal from 'sweetalert2';
 export class TextoComponent extends BaseComponent implements OnInit {
   textoLargo = false;
   scannerEnabled = false;
+  formatText = '';
   allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX];
   readingQR = false;
 
@@ -29,6 +29,7 @@ export class TextoComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     super.ngOnInit();
     this.valorDefecto = this.obtenerValor(PlantillaHelper.DEFAULT);
+    this.formatText = this.obtenerValor(PlantillaHelper.FORMATO);
     this.textoLargo = !this.isEmpty(
       this.obtenerValor(PlantillaHelper.TEXTO_LARGO)
     );
@@ -114,5 +115,9 @@ export class TextoComponent extends BaseComponent implements OnInit {
       this.readingQR = false;
     });
 
+  }
+
+  onDireccionChange(direccion: string) {
+    this.fControl.setValue(direccion);
   }
 }

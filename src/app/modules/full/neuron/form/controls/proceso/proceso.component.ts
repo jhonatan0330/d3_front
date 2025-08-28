@@ -551,7 +551,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             bCampoRequerido = true;
           }
         }
-        if (bCampoRequerido && this.isEnabled) {
+        // en fseta me dicuenta que al retirar un turno del RC se calculaba la caja vacia, entonces decidi bloquearlo
+        if (bCampoRequerido && (this.isEnabled|| this.required)) {
           this.errorMessage = 'Selecciona una opcion del campo ' + iDepen.campoDTO.nombre;
           this.actualizarDataProvider(null);
           this.fControl.setValue(null);
