@@ -23,10 +23,6 @@ export enum StatesEnum {
   FINALIZADO = 'C'
 }
 
-export enum EncuestaPreguntaEnum {
-  TIPO_OPCION_MULTIPLE = 'O',
-  TIPO_BOOLEAN = 'B',
-}
 
 export enum PropiedadEnum {
   ORGANIZACION = "O",
