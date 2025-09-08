@@ -23,7 +23,6 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadLineDTO } from './massive.domain';
-import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-massive',
@@ -255,8 +254,10 @@ export class MassiveComponent implements OnInit {
     try {
       let xmlBase = '';
       for (let iCampo of this.plantilla.caracteristicas) {
-        if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION && PlantillaHelper.isEmpty(iCampo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)){
+        if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION 
+          && PlantillaHelper.isEmpty(iCampo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)){
           const campoNombre: string = this.formatStringXML(iCampo.nombre);
+          
           xmlBase = xmlBase + campoNombre + ';';
         }
       }
@@ -277,6 +278,7 @@ export class MassiveComponent implements OnInit {
     texto = texto.replace(new RegExp(' ', 'g'), '_');
     texto = texto.replace('Ñ', 'N');
     texto = texto.replace('(', '');
+    texto = texto.replace(':', '');
     texto = texto.replace(')', '');
     texto = texto.trim();
     let de = 'ÁÃÀÄÂÉËÈÊÍÏÌÎÓÖÒÔÚÜÙÛÑÇáãàäâéëèêíïìîóöòôúüùûñç',

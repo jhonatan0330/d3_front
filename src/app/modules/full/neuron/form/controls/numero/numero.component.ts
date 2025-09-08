@@ -274,16 +274,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     }
   }
 
-  getXMLBase(): string {
-    return '0';
-  }
 
-  procesarXMLBase(
-    pCampo: PedidoVentaCaracteristicaDTO
-  ): PedidoVentaCaracteristicaDTO {
-    pCampo.valorNumero = Number(pCampo.valorText);
-    return pCampo;
-  }
 
   getInitialFocus(event) {
     event.target.select();

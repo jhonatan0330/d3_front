@@ -201,9 +201,6 @@ export class FechaComponent extends BaseComponent implements OnInit {
     }
   }
 
-  getXMLBase(): string {
-    return new Date().toString();
-  }
 
   updateTimer() {
     let horas = 0;

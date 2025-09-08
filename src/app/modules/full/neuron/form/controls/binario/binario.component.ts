@@ -62,7 +62,4 @@ export class BinarioComponent extends BaseComponent implements OnInit {
     }
   }
 
-  getXMLBase(): string {
-    return '0-1';
-  }
 }

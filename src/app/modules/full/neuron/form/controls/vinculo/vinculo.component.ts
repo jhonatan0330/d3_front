@@ -41,9 +41,6 @@ export class VinculoComponent extends BaseComponent implements OnInit {
     this.utilsService.modalWithParams(pedidoVenta, false);
   }
 
-  getXMLBase(): string {
-    return '';
-  }
 
   getColor(pEstado: string) {
     return this.templateService.getColor(pEstado);

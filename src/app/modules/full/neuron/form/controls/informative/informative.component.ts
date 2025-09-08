@@ -75,16 +75,6 @@ export class InformativeComponent extends BaseComponent implements OnInit {
 
   }
 
-  getXMLBase(): string {
-    return 'INFORMATIVO';
-  }
-
-  procesarXMLBase(
-    pCampo: PedidoVentaCaracteristicaDTO
-  ): PedidoVentaCaracteristicaDTO {
-    return pCampo;
-  }
-
   openDialog(p: PedidoVentaDTO) {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = p.plantilla;

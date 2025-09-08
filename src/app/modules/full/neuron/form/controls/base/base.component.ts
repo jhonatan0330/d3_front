@@ -51,10 +51,10 @@ export class BaseComponent implements OnInit, IDynamicControl {
   required = true;
   isEnabled = true;
   formIsEnabled = true;
-  isLoading = false; // ayuda a mostrar la barra de progreso en las busqueas
+  isLoading = false; 
   help = 'x';
   isInvisible = false;
-  isSectionInvisible = false;// Por el momento toca asi mientras me imagino otra forma de agrupar
+  isSectionInvisible = false;
   productForm: ProductComponent;
   form: FormComponent;
   urlServer: string;
@@ -73,23 +73,6 @@ export class BaseComponent implements OnInit, IDynamicControl {
     this.isInvisible = !PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.INVISIBLE);
     this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);
     this.idField = ((this.parent && this.parent.llaveTabla)?this.parent.llaveTabla: Date.now().toString())+value.llaveTabla ;
-    /*
-    this.relatedFields = PlantillaHelper.buscarValorMultipleFromManyKeys(this.structure.propiedades, PlantillaHelper.DEPENDENT_PROPERTIES);
-    if(this.relatedFields){
-      this.relatedFieldsCount= 0;
-      for (let i = 0; i < this.relatedFields.length; i++) {
-        const elementUp = this.relatedFields[i];
-        let flagDouble = false;
-        for (let j = i+1; j < this.relatedFields.length; j++) {
-          const elementDown = this.relatedFields[j];
-          if(elementUp.valor ===elementDown.valor){
-            flagDouble = true;
-            break;
-          }
-        }
-        if(!flagDouble) this.relatedFieldsCount++;
-      }
-    }*/
     this.propVisibleDepende = this.obtenerValorMultiple(PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE);
   }
   constructor() { }
@@ -215,16 +198,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
     if (!pField.data.dependientes) {
       pField.data.dependientes = [];
     }
-    /*let flag=false;
-    for (let index = 0; index < this.listeners.length; index++) {
-      const element = this.listeners[index];
-      if(element.structure.codigo === pField.structure.codigo){
-        flag = true;
-        break;
-      }
-    }
-    if (!flag)
-      */
+   
      pField.data.dependientes.push(this.data);
     this.listeners.push(pField);
     pField.validateVisibility(this.getValorTexto())
@@ -266,14 +240,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
     nFilter.estado = campoFiltro.estado;
     nFilter.expedientes = campoFiltro.expedientes;
     nFilter.llaveTabla = campoFiltro.llaveTabla;
-    // nFilter.m = campoFiltro.modificado;
-    // nFilter. = campoFiltro.principal;
-    // nFilter.productosExclusivos = campoFiltro.productosExclusivos;
-    //nFilter.transaccionInactivo = campoFiltro.transaccionInactivo;
-    //nFilter.transaccionRegistro = campoFiltro.transaccionRegistro;
     nFilter.valorAuxiliar = campoFiltro.valorAuxiliar;
-    // nFilter.val = campoFiltro.valorFecha;
-    // nFilter.valo = campoFiltro.valorNumero;
+  
     nFilter.valorOpcion = campoFiltro.valorOpcion;
     nFilter.valorText = campoFiltro.valorText;
     return nFilter;
@@ -287,12 +255,6 @@ export class BaseComponent implements OnInit, IDynamicControl {
 
   send2Server(): boolean {
     return true;
-  }
-
-  procesarXMLBase(
-    pCampo: PedidoVentaCaracteristicaDTO
-  ): PedidoVentaCaracteristicaDTO {
-    return null;
   }
 
   submit: Function;

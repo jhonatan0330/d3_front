@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import {  PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { BarcodeFormat } from '@zxing/library';
@@ -87,16 +87,6 @@ export class TextoComponent extends BaseComponent implements OnInit {
     }
   }
 
-  getXMLBase(): string {
-    return 'TEXTO';
-  }
-
-  procesarXMLBase(
-    pCampo: PedidoVentaCaracteristicaDTO
-  ): PedidoVentaCaracteristicaDTO {
-    return pCampo;
-  }
-
   onCodeResult(resultString: string) {
     if(this.readingQR) {return;}
     this.readingQR = true;
@@ -119,5 +109,21 @@ export class TextoComponent extends BaseComponent implements OnInit {
 
   onDireccionChange(direccion: string) {
     this.fControl.setValue(direccion);
+  }
+
+  send2Server(): boolean {
+    if (this.isLoading) { return false; }
+    
+    this.errorMessage = null;
+    if (this.required && !this.data.valorText && !this.isInvisible){
+      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")";
+    }
+
+    if (this.errorMessage) {
+      const input = document.getElementById(this.idField) as HTMLInputElement;
+      if (input) { input.focus();  }
+      return false;
+    }
+    return true;
   }
 }
