@@ -172,4 +172,10 @@ export class ApiService {
       this.ls.getUrlAccess('/document/getInventory/' + productoId, _server)
     );
   }
+
+  getMessageInFiledProccess(property: String, value: String, _server: string=null): Observable<string> {
+    const endpoint = this.ls.getUrlAccess('/rest/getMessageToProcessField/' + property + '/'+value, _server);
+    return this.http.get( endpoint, { responseType: 'text' }
+    );
+  }
 }

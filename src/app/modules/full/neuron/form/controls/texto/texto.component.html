@@ -16,4 +16,4 @@
 <div *ngIf="scannerEnabled" class="w-full">
   <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
 </div>
-<app-direccion-form *ngIf="isEnabled && formatText==='D'" (direccionChange)="onDireccionChange($event)"></app-direccion-form>
+<app-direccion-form *ngIf="isEnabled && formatText==='D'" [direccionInicial]="fControl.value" (direccionChange)="onDireccionChange($event)"></app-direccion-form>

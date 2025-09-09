@@ -175,6 +175,16 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.proceso = value;
           this.filteredDocuments = null;
           this.showAlertSelectedProcess();
+          const _pHTML =this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL)
+          if( _pHTML) {
+              this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla).subscribe({
+                next: (res: string) => {
+    this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(res);
+                },
+                error: () => {
+                }
+              });
+          }
         } else {
           this.proceso = null;
           let filterValue: string = value.toLowerCase();
@@ -607,7 +617,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.actualizar();
       }
     }
-    if(pCampo.mensaje) {this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(pCampo.mensaje);}
   }
 
   incluirOpcion() {

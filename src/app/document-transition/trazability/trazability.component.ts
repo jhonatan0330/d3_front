@@ -363,5 +363,9 @@ export class TrazabilityComponent implements OnInit {
     //if(this.drawerOpened) {this.styleSizePop = this.styleSizePop + 'height:90vh;';}
   }
 
+    onUsuarioClick(pUsuario): void {
+      this.utilsService.modalUser(pUsuario).subscribe();
+  }
+
 
 }

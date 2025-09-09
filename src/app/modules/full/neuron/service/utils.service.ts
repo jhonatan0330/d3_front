@@ -6,6 +6,8 @@ import { TransferFormComponent } from 'app/notification/transfer-form/transfer-f
 import { TrazabilityComponent } from 'app/document-transition/trazability/trazability.component';
 import { SuccessComponent } from '../form/success/success.component';
 import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.component';
+import { ContactsDetailsComponent } from 'app/persons/detail_persons/detail_persons';
+import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +17,7 @@ export class UtilsService {
   constructor(public dialog: MatDialog) {}
 
   modalWithParams( pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null, pSaveInField = false ) {
+
     const dialogRef: MatDialogRef<any> = this.dialog.open(FormComponent, {
       // width: '720px',
       maxHeight: '100vh',
@@ -59,6 +62,22 @@ export class UtilsService {
       disableClose: true,
       maxHeight: '90vh',
       data: { key:_key, catalogId: _catalog }
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalUser(_key: string){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(ContactsDetailsComponent, {
+      maxHeight: '90vh',
+      data: { key:_key }
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalUserChangePass(_key: string){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(SettingsSecurityComponent, {
+      maxHeight: '90vh',
+      data: { key:_key }
     });
     return dialogRef.afterClosed();
   }

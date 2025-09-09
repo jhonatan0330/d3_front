@@ -1,33 +1,36 @@
-<div class="w-full max-w-3xl">
+<div class="flex items-center justify-center px-4 sm:px-6 lg:px-8 py-2">
     <!-- Form -->
     <form [formGroup]="securityForm" (ngSubmit)="changePwd()">
 
         <!-- Section -->
-        <div class="w-full">
-            <div class="text-xl">Cambie su clave</div>
-            <div class="text-secondary">Recuerda cambiar tu clave constantemente!</div>
+        <div class="w-full text-center sm:text-left">
+            <div class="text-xl font-semibold">Cambie su clave</div>
+            <div class="text-secondary text-sm sm:text-base">
+                Recuerda cambiar tu clave constantemente!
+            </div>
         </div>
-        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+
+        <div class="grid grid-cols-1 gap-6 w-full mt-8">
             <!-- Current password -->
-            <div class="sm:col-span-4">
+            <div>
                 <mat-form-field class="w-full">
-                    <mat-label>Current password</mat-label>
+                    <mat-label>Contraseña actual</mat-label>
                     <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
                     <input [formControl]="securityForm.controls['oldPwd']" type="password" matInput>
                 </mat-form-field>
             </div>
             <!-- New password -->
-            <div class="sm:col-span-4">
+            <div>
                 <mat-form-field class="w-full">
-                    <mat-label>New password</mat-label>
+                    <mat-label>Nueva contraseña</mat-label>
                     <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
                     <input [formControl]="securityForm.controls['newPwd']" type="password" matInput>
                 </mat-form-field>
             </div>
             <!-- Repeat password -->
-            <div class="sm:col-span-4">
+            <div>
                 <mat-form-field class="w-full">
-                    <mat-label>Repeat password</mat-label>
+                    <mat-label>Repetir contraseña</mat-label>
                     <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
                     <input [formControl]="securityForm.controls['repeatPwd']" type="password" matInput>
                 </mat-form-field>
@@ -35,15 +38,15 @@
         </div>
 
         <!-- Divider -->
-        <div class="my-10 border-t"></div>
+        <div class="my-8 border-t"></div>
 
         <!-- Actions -->
-        <div class="flex items-center justify-end">
+        <div class="flex items-center justify-end gap-4">
             <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-            <button mat-flat-button [color]="'primary'" [disabled]="securityForm.invalid"
-                *ngIf="!isLoading">Save
+            <button mat-flat-button color="primary"
+                [disabled]="securityForm.invalid || isLoading">
+                Guardar
             </button>
         </div>
     </form>
-
 </div>

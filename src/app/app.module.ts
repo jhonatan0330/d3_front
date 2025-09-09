@@ -16,13 +16,23 @@ import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { SharedModule } from './shared/shared.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { ErrorHandlerService } from './shared/error-handler.service';
 import { TokenInterceptor } from './shared/token.interceptor';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { IndicatorsModule } from './indicators/indicators.module';
 import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
+
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { PersonsComponent } from './persons/persons';
+import { ContactsDetailsComponent } from './persons/detail_persons/detail_persons';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { ChangePictureComponent } from './authentication/settings/change-picture/change-picture.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { SettingsSecurityComponent } from './authentication/settings/security/security.component';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -35,7 +45,11 @@ const routerConfig: ExtraOptions = {
 @NgModule({
   declarations: [
     AppComponent,
-    SignInSplitScreenReversedComponent
+    SignInSplitScreenReversedComponent,
+    PersonsComponent,            
+    ContactsDetailsComponent,
+    SettingsSecurityComponent,
+    ChangePictureComponent
   ],
   imports: [
     CommonModule,
@@ -64,8 +78,14 @@ const routerConfig: ExtraOptions = {
 
     MatDatepickerModule,
     MatNativeDateModule,
-    MatDialogModule
+    MatDialogModule,
 
+    MatSidenavModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatButtonModule,
   ],
   providers: [
     { provide: ErrorHandler, useClass: ErrorHandlerService },

@@ -15,10 +15,10 @@
     </span>  
    
     <mat-divider class="my-2"></mat-divider>
-    <button mat-menu-item (click)="goToMyAccount()">
+    <button mat-menu-item (click)="goToMyAccount(user)">
         <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
         <span>Mi cuenta</span>
-    </button>
+    </button>    
     <button mat-menu-item (click)="getRefreshTemplates()">
         <mat-icon [svgIcon]="'heroicons_outline:arrow-path'"></mat-icon>
         <span>Cargar de nuevo</span>
@@ -30,6 +30,10 @@
     <button mat-menu-item (click)="downloadApk()">
         <mat-icon [svgIcon]="'heroicons_outline:device-phone-mobile'"></mat-icon>
         <span>Version Android</span>
+    </button>
+    <button mat-menu-item (click)="cambiarClave(user)">
+        <mat-icon [svgIcon]="'heroicons_outline:key'"></mat-icon>
+        <span>Cambiar contrasela</span>
     </button>
     <mat-divider class="my-2"></mat-divider>
     <button mat-menu-item (click)="signOut()">
