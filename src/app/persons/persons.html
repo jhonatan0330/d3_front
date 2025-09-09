@@ -1,0 +1,135 @@
+<div class="absolute inset-0 flex min-w-0 flex-col overflow-hidden">
+    <mat-drawer-container class="bg-card h-full flex-auto dark:bg-transparent" (backdropClick)="onBackdropClicked()">
+        <!-- Drawer -->
+        <mat-drawer class="w-full dark:bg-gray-900 md:w-160" [mode]="drawerMode" [opened]="false" [position]="'end'"
+            [disableClose]="true" #matDrawer>
+            <router-outlet></router-outlet>
+        </mat-drawer>
+        <mat-drawer-content class="flex flex-col">
+            <!-- Main -->
+            <div class="flex-auto h-screen overflow-y-auto">
+                <!-- Header -->
+                <div
+                    class="flex flex-auto flex-col justify-between border-b px-6 py-8 sm:flex-row md:flex-col md:px-8 sticky top-0 z-50 bg-white p-4 shadow">
+                    <!-- Title -->
+                    <div>
+                        <div class="text-4xl font-extrabold leading-none tracking-tight">
+                            Usuarios
+                        </div>
+                        <div class="text-secondary ml-0.5 font-medium">
+                            <span *ngIf="contactsCount > 0">
+                                {{ contactsCount }}
+                            </span>
+                            {{
+                            contactsCount
+                            | i18nPlural
+                            : {
+                            '=0': 'No hay',
+                            '=1': 'persona',
+                            other: 'personas'
+                            }
+                            }}
+                        </div>
+                    </div>
+                    <!-- Main actions -->
+                    <div class="mt-4 flex items-center sm:mt-0 md:mt-4">
+                        <!-- Search -->
+                        <div class="flex-auto">
+                            <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50"
+                                subscriptSizing="dynamic">
+                                <mat-icon class="icon-size-5" matPrefix
+                                    [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
+                                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                                    [placeholder]="'Search contacts'" />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center sm:mt-0 md:mt-4">
+                        <ng-container *ngIf="tags$ | async as tags">
+                            <div class="overflow-x-auto whitespace-nowrap">
+                                <div class="flex pr-[10px] gap-2">
+                                    <div *ngFor="let tag of tags">
+                                        <button (click)="filtrarPorTag(tag)" class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 
+               dark:bg-green-500 dark:text-green-50 ng-star-inserted 
+               overflow-hidden max-w-[200px] flex items-center gap-2">
+
+                                            <img *ngIf="tag.imagen" class="h-[50px] w-[50px] object-cover rounded-full"
+                                                [src]="tag.imagen" alt="tag.nombre" />
+
+                                            {{ limpiarNombre(tag.nombre) }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <!-- Contacts list -->
+                <div class="relative">
+                    <ng-container *ngIf="contacts$ | async as contacts; else noContacts">
+                        <ng-container *ngIf="contacts.length > 0; else emptyContacts">
+                            <ng-container *ngFor="let contact of contacts; let i = index; trackBy: trackByFn">
+                                <!-- Group -->
+                                <div *ngIf="i === 0 || contact.nombre.charAt(0) !== contacts[i - 1].nombre.charAt(0)"
+                                    class="text-secondary sticky top-0 z-10 -mt-px border-b border-t bg-gray-50 px-6 py-1 font-medium uppercase dark:bg-gray-900 md:px-8">
+                                    {{ contact.nombre.charAt(0) }}
+                                </div>
+                                <!-- Contact -->
+                                <a class="z-20 flex cursor-pointer items-center border-b px-6 py-4 md:px-8" [ngClass]="{'dark:hover:bg-hover hover:bg-gray-100':
+                                            !selectedContact || selectedContact.identificador !== contact.identificador,
+                                        'bg-primary-50 dark:bg-hover':
+                                            selectedContact && selectedContact.identificador === contact.identificador
+                                    }" >
+                                    <div
+                                        class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full">
+                                        <img *ngIf="contact.imagen" class="h-full w-full object-cover"
+                                            [src]="contact.imagen" alt="Contact imagen" />
+                                        <div *ngIf="!contact.imagen"
+                                            class="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                            {{ contact.nombre.charAt(0) }}
+                                        </div>
+                                    </div>
+                                    <div class="ml-4 min-w-0" (click)="onUsuarioClick(contact)">
+                                        <div class="truncate font-medium leading-5">
+                                            {{ contact.nombre }}
+                                        </div>
+                                        <div class="text-secondary truncate leading-5">
+                                            {{ contact.telefono }}
+                                        </div>
+                                    </div>
+                                    <!-- Clave -->
+                                    <div class="ml-auto leading-6">
+                                        <!-- Botón del menú (los 3 punticos) -->
+                                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                                            <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
+                                        </button>
+
+                                        <!-- Menú desplegable -->
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item (click)="cambiar_clave(contact)">
+                                                <mat-icon [svgIcon]="'heroicons_outline:key'"></mat-icon>
+                                                Cambiar Clave
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+                                </a>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                    <!-- Empty list -->
+                    <ng-template #emptyContacts>
+                        <div class="border-t p-8 text-center text-4xl font-semibold tracking-tight sm:p-16">
+                            No hay!
+                        </div>
+                    </ng-template>
+                    <!-- No contacts -->
+                    <ng-template #noContacts>
+                        <div class="border-t p-8 text-center text-4xl font-semibold tracking-tight sm:p-16">
+                            Por favor filtre por rol o nombre...
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </mat-drawer-content>
+    </mat-drawer-container>
+</div>

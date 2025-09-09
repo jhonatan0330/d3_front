@@ -269,7 +269,7 @@
                 <ng-container>
                   <!-- Primera linea:quien y cuando -->
                   <div class="w-full text-sm">
-                    <b>{{ g.responsable }}</b> realizo la accion de <b>{{ g.nombre }}</b> <a
+                    <a (click)="onUsuarioClick(g.usuario)" class="cursor-pointer text-primary" >{{ g.responsable }}</a> realizo la accion de <b>{{ g.nombre }}</b> <a
                       *ngIf="g.transaccion && !g.campos" (click)="showTraceField2Document(g)"><mat-icon
                         inline="true">view_headline</mat-icon></a>
                   </div>

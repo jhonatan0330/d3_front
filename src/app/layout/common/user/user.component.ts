@@ -6,6 +6,7 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { LoginService } from 'app/authentication/login.service';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { environment } from 'environments/environment';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 
 @Component({
     selector: 'user',
@@ -26,7 +27,8 @@ export class UserComponent implements OnInit, OnDestroy {
         private _router: Router,
         public jwtAuth: LoginService,
         private apiService: ApiService,
-        private templateService: TemplateService
+        private templateService: TemplateService,
+        private utilService:UtilsService
     ) {
     }
 
@@ -68,8 +70,12 @@ export class UserComponent implements OnInit, OnDestroy {
         });
     }
 
-    goToMyAccount() {
-        this._router.navigate(['/settings']);
+    cambiarClave(pUsuario) {
+        this.utilService.modalUserChangePass(pUsuario.llaveTabla).subscribe();
+    }
+
+    goToMyAccount(pUsuario) {
+        this.utilService.modalUser(pUsuario.llaveTabla).subscribe();    
     }
 
     downloadApk() {

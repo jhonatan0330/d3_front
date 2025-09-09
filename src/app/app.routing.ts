@@ -2,6 +2,7 @@ import { Route } from '@angular/router';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { AuthGuard } from './authentication/authentication.guard';
 import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
+import { PersonsComponent } from './persons/persons';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -30,14 +31,14 @@ export const appRoutes: Route[] = [
     component: LayoutComponent,
     children: [
       { path: 'main', loadChildren: () => import('app/authorization/authorization.module').then(m => m.ProfileModule) },
-      { path: 'settings', loadChildren: () => import('app/authentication/settings/settings.module').then(m => m.SettingsModule) },
       { path: 'list', loadChildren: () => import('app/cruds/cruds.module').then(m => m.CrudsModule) },
       { path: 'maps', loadChildren: () => import('app/gps/gps.module').then(m => m.GPSModule) },
       { path: 'tasks', loadChildren: () => import('app/tasks/tasks.module').then(m => m.TasksModule) },
       { path: 'noseperolodejopormodule', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
       { path: 'massive', loadChildren: () => import('app/massive/massive.module').then(m => m.MassiveModule) },
       { path: 'account', loadChildren: () => import('app/accounting/accounting.module').then(m => m.AccountingModule) },
-      { path: '**', redirectTo: 'main' }
+      { path: 'persons', component: PersonsComponent },
+      { path: '**', redirectTo: 'main' },
     ]
 
 

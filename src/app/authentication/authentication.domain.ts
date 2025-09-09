@@ -15,6 +15,16 @@ export class UsuarioDTO extends BasicDTO {
   telefono: string;
 }
 
+export class RolAccesoFilterDTO extends BasicFilterDTO {
+  id:string;
+  plantilla: string;
+  nombre: string;
+  codigo: string;
+  imagen: string;
+  permisosCompletosFilter: boolean;
+  minutosSesion: number;
+}
+
 export class OrganizacionDTO extends BasicParamDTO {
   nombre: string;
   principal: string;
