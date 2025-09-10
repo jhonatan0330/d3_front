@@ -24,7 +24,7 @@
   <mat-progress-bar *ngIf="isLoading" color="primary" class="full-width" mode="indeterminate"></mat-progress-bar>
   <!-- Firma -->
   <div *ngIf="firma && isEnabled && !isEnd" class="p-1 text-center">
-    <signature-pad></signature-pad>
+    <canvas #signatureCanvas class="w-full h-64 border"></canvas>
     <button mat-raised-button (click)="takeSignature()" tabindex="-1">
       <mat-icon svgIcon="heroicons_outline:camera"></mat-icon>
     </button>

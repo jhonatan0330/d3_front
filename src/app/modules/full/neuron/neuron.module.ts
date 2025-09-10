@@ -17,7 +17,6 @@ import { SeccionComponent } from './form/controls/seccion/seccion.component';
 import { BaseComponent } from './form/controls/base/base.component';
 import { GpsComponent } from './form/controls/gps/gps.component';
 import { neuronRoutes } from './neuron.routing';
-import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ProductComponent } from './form/controls/product/product.component';
@@ -91,7 +90,6 @@ import { DireccionesComponent } from './form/controls/texto/direcciones/direccio
     imports: [
         RouterModule.forChild(neuronRoutes),
         DragDropModule,
-        AngularSignaturePadModule,
         MatAutocompleteModule,
         MatBadgeModule,
         MatBottomSheetModule,
@@ -128,7 +126,6 @@ import { DireccionesComponent } from './form/controls/texto/direcciones/direccio
         CurrencyMaskModule,
         SharedModule,
         ZXingScannerModule,
-
         MatDatepickerModule,
         MatNativeDateModule,
         DocumentTransitionModule

@@ -14,7 +14,6 @@
     "lint": "ng lint"
   },
   "dependencies": {
-    "@almothafar/angular-signature-pad": "^6.0.0",
     "@angular/animations": "^17.3.12",
     "@angular/cdk": "17.3.10",
     "@angular/common": "17.3.12",
@@ -38,6 +37,7 @@
     "ol": "10.6.1",
     "perfect-scrollbar": "1.5.5",
     "rxjs": "7.8.0",
+    "signature_pad": "^5.1.0",
     "sweetalert2": "^11.14.4",
     "tslib": "2.4.1",
     "webpack-bundle-analyzer": "^4.10.2",

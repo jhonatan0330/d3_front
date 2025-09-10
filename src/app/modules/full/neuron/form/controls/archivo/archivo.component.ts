@@ -1,17 +1,23 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { SignaturePadComponent } from '@almothafar/angular-signature-pad';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { NgxImageCompressService } from 'ngx-image-compress';
+import SignaturePad from 'signature_pad';
 
 @Component({
   selector: 'app-archivo',
-  templateUrl: './archivo.component.html'
+  templateUrl: './archivo.component.html',
+  styles: [`
+    canvas {
+      touch-action: none; /* evita scroll en móviles */
+    }
+  `]
 })
-export class ArchivoComponent extends BaseComponent implements OnInit {
-  @ViewChild(SignaturePadComponent) signaturePad: SignaturePadComponent;
+export class ArchivoComponent extends BaseComponent implements OnInit, AfterViewInit  {
+  @ViewChild('signatureCanvas') signatureCanvas!: ElementRef<HTMLCanvasElement>;
+  signaturePad!: SignaturePad;
 
   static SEPARADOR = ';;';
 
@@ -40,6 +46,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
+    
     if (this.isEnabled && !this.formIsEnabled) {
       this.isEnabled = false;
     }
@@ -78,6 +85,24 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
     }
     this.source = this.data.valorText;
     this.actualizarVista();
+  }
+
+  ngAfterViewInit(): void {
+    this.resizeCanvas();
+    this.signaturePad = new SignaturePad(this.signatureCanvas.nativeElement);
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.resizeCanvas();
+  }
+
+  resizeCanvas() {
+    const canvas = this.signatureCanvas.nativeElement;
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    canvas.getContext('2d')!.scale(ratio, ratio);
   }
 
   handleFileInput(files: FileList) {
