@@ -269,7 +269,8 @@
                 <ng-container>
                   <!-- Primera linea:quien y cuando -->
                   <div class="w-full text-sm">
-                    <a (click)="onUsuarioClick(g.usuario)" class="cursor-pointer text-primary" >{{ g.responsable }}</a> realizo la accion de <b>{{ g.nombre }}</b> <a
+                    <mat-icon (click)="onUsuarioClick(g.usuario)" class="cursor-pointer text-primary !w-2 !h-2 py-1.5" svgIcon="heroicons_outline:user" style="min-width: 18px;"></mat-icon>
+                    <b >{{ g.responsable }}</b> realizo la accion de <b>{{ g.nombre }}</b><a
                       *ngIf="g.transaccion && !g.campos" (click)="showTraceField2Document(g)"><mat-icon
                         inline="true">view_headline</mat-icon></a>
                   </div>
