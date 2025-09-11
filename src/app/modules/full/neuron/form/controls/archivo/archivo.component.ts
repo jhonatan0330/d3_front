@@ -88,8 +88,10 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   }
 
   ngAfterViewInit(): void {
-    this.signaturePad = new SignaturePad(this.signatureCanvas.nativeElement);
-    this.resizeCanvas();
+    if(this.signatureCanvas){
+      this.signaturePad = new SignaturePad(this.signatureCanvas.nativeElement);
+      this.resizeCanvas();
+    }
   }
 
   @HostListener('window:resize')
@@ -98,6 +100,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   }
 
   resizeCanvas() {
+    if(!this.signatureCanvas) return;
     const canvas = this.signatureCanvas.nativeElement;
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
     canvas.width = canvas.offsetWidth * ratio;
