@@ -88,8 +88,8 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   }
 
   ngAfterViewInit(): void {
-    this.resizeCanvas();
     this.signaturePad = new SignaturePad(this.signatureCanvas.nativeElement);
+    this.resizeCanvas();
   }
 
   @HostListener('window:resize')

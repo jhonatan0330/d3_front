@@ -227,9 +227,7 @@ export class MassiveComponent implements OnInit {
         xmlBase = xmlBase + '<' + nombre + '>';
         for (let i = 0; i < this.plantilla.caracteristicas.length; i++) {
           const iCampo = this.plantilla.caracteristicas[i];
-          if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION
-            && PlantillaHelper.isEmpty(iCampo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)
-          ){
+          if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION){
             const campoNombre: string = this.formatStringXML(iCampo.nombre);
             xmlBase = xmlBase + '<' + campoNombre + '>';
             xmlBase = xmlBase + getXMLBase(iCampo);
@@ -254,10 +252,8 @@ export class MassiveComponent implements OnInit {
     try {
       let xmlBase = '';
       for (let iCampo of this.plantilla.caracteristicas) {
-        if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION 
-          && PlantillaHelper.isEmpty(iCampo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)){
+        if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION){
           const campoNombre: string = this.formatStringXML(iCampo.nombre);
-          
           xmlBase = xmlBase + campoNombre + ';';
         }
       }
