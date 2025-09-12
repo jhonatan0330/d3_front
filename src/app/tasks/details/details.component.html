@@ -1,4 +1,4 @@
-<div class="flex flex-auto h-full">
+<div class="flex flex-auto h-full w-4/5">
 
     <form
         class="flex flex-col flex-auto p-6 pt-10 sm:p-8 sm:pt-10 overflow-y-auto h-full"
@@ -64,20 +64,20 @@
         <div>
             <mat-form-field class="w-full">
                 <mat-label>Titulo</mat-label>
-                <textarea
+                <input
                     matInput
                     [formControlName]="'title'"
                     [spellcheck]="false"
                     matTextareaAutosize
-                    #titleField></textarea>
+                    #titleField>
             </mat-form-field>
         </div>
 
         <!-- Priority and Due date -->
-        <div class="flex flex-wrap items-center mt-8" *ngIf="task" >
+        <div class="flex flex-wrap items-center" *ngIf="task" >
 
             <!-- Priority -->
-            <div>
+             <!-- <div>
                 <div class="font-medium">Priority</div>
                 <div
                     class="flex items-center mt-1.5 px-4 leading-9 rounded-full cursor-pointer"
@@ -86,7 +86,7 @@
                                 'text-red-800 bg-red-200 dark:text-red-100 dark:bg-red-500': task.priority === 2}"
                     [matMenuTriggerFor]="priorityMenu">
 
-                    <!-- Low -->
+                    
                     <ng-container *ngIf="task.priority === 0">
                         <mat-icon
                             class="icon-size-5 text-current"
@@ -94,7 +94,7 @@
                         <span class="ml-2 mr-1 text-md font-medium">Low</span>
                     </ng-container>
 
-                    <!-- Normal -->
+                    
                     <ng-container *ngIf="task.priority === 1">
                         <mat-icon
                             class="icon-size-4 text-current"
@@ -102,7 +102,7 @@
                         <span class="ml-2 mr-1 text-md font-medium">Normal</span>
                     </ng-container>
 
-                    <!-- High -->
+                    
                     <ng-container *ngIf="task.priority === 2">
                         <mat-icon
                             class="icon-size-4 text-current"
@@ -111,7 +111,7 @@
                     </ng-container>
                 </div>
                 <mat-menu #priorityMenu="matMenu">
-                    <!-- Low -->
+                    
                     <button
                         [ngClass]="{'bg-hover': task.priority === 0}"
                         mat-menu-item
@@ -124,7 +124,7 @@
                         </span>
                     </button>
 
-                    <!-- Normal -->
+                    
                     <button
                         [ngClass]="{'bg-hover': task.priority === 1}"
                         mat-menu-item
@@ -137,7 +137,7 @@
                         </span>
                     </button>
 
-                    <!-- High -->
+                    
                     <button
                         [ngClass]="{'bg-hover': task.priority === 2}"
                         mat-menu-item
@@ -150,12 +150,12 @@
                         </span>
                     </button>
                 </mat-menu>
-            </div>
+            </div> -->
 
         </div>
 
         <!-- Notes -->
-        <div class="mt-8 h-full">
+        <div class="h-full">
             <mat-form-field class="w-full">
                 <mat-label>Notes</mat-label>
                 <textarea
