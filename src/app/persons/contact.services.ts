@@ -11,7 +11,7 @@ import {
     tap,
 } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
@@ -44,7 +44,12 @@ export class ContactsService {
 
     searchTagsById(query: string): Observable<RolAccesoFilterDTO[]> {
         return this._httpClient
-            .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/roles/' + query))
+            .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/roles/'+query))
+            ;
+    }
+    searchPermisosById(query: string): Observable<PermisosDTO[]> {
+        return this._httpClient
+            .get<PermisosDTO[]>(this.ls.getUrlAccess('/user/properties/' + query))
             ;
     }
 
@@ -61,7 +66,6 @@ export class ContactsService {
 
 
     searchContacts(query: string): Observable<UsuarioDTO[]> {
-        // Primero, intenta buscar por identificación en el servidor
         return this._httpClient.post<UsuarioDTO[]>(
             this.ls.getUrlAccess('/user/getUsers'),
             { estado: 'A', identificacion: query } // Búsqueda directa por identificación
@@ -79,10 +83,10 @@ export class ContactsService {
                     ).pipe(
                         map((allContacts) =>
                             allContacts.filter(c =>
-                                c.identificacion?.includes(query) ||
-                                c.nombre?.toLowerCase().includes(query.toLowerCase())
-                            )
-                        ),
+                    c.identificacion?.includes(query) ||
+                    c.nombre?.toLowerCase().includes(query.toLowerCase())
+                )
+            ),
                         tap((filtered) => this._contacts.next(filtered)) // Actualiza el Subject con los filtrados
                     );
                 }
@@ -94,26 +98,25 @@ export class ContactsService {
         );
     }
 
-
     getContactByTag(query: string): Observable<UsuarioDTO[]> {
         return this._httpClient.post<UsuarioDTO[]>(
             this.ls.getUrlAccess('/user/getUsers'),
             {
                 estado: 'A',
                 rol: query,
-                filtroParametro: 'A'
+                filtroParametro : 'A'
             }
-        ).pipe(
-            tap((contacts) => this._contacts.next(contacts))
-        );
+            ).pipe(
+                tap((contacts) => this._contacts.next(contacts))
+            );
     }
 
     getContactById(query: string): Observable<UsuarioDTO> {
         return this._httpClient.get<UsuarioDTO>(
-            this.ls.getUrlAccess('/user/' + query)
-        ).pipe(
-            tap((contacts) => this._contact.next(contacts))
-        );
+            this.ls.getUrlAccess('/user/'+query)
+            ).pipe(
+                tap((contacts) => this._contact.next(contacts))
+            );
     }
 
 }

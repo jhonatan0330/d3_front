@@ -25,6 +25,22 @@ export class RolAccesoFilterDTO extends BasicFilterDTO {
   minutosSesion: number;
 }
 
+export class PermisosDTO extends BasicFilterDTO {
+  id:string;
+  estado: string;
+  propiedadValor: string;
+  tipo: string;
+  nombre: string;
+  key:string;
+  campo: string;
+  valor:string;
+  texto: string;
+  motivo: string;
+  rol:string;
+  rolNombre: string;
+  fechaInicial: string;
+}
+
 export class OrganizacionDTO extends BasicParamDTO {
   nombre: string;
   principal: string;
