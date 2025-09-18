@@ -33,6 +33,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   titleCantity = 'Cantidad';
   busquedaSinTexto = false;
   errorToFilter = null;
+  renderVisible = false;
 
   productosDisponibles: ProductoDTO[];
   productosFiltrados: ProductoDTO[];
@@ -62,6 +63,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       this.obtenerValor(PlantillaHelper.UNICO_PRODUCTO)
     );
     this.autoload = !this.isEmpty(this.obtenerValor(PlantillaHelper.AUTOLOAD));
+    this.renderVisible = !this.isEmpty(this.obtenerValor(PlantillaHelper.PERMISO_CAMPO_RENDER));
     this.busquedaSinTexto = !this.isEmpty(this.obtenerValor(PlantillaHelper.BUSQUEDA_SIN_TEXTO));
     if (!this.isEnabled) {
       const index = this.displayedColumns.indexOf('retirar', 0);

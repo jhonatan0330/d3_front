@@ -71,7 +71,7 @@
           [style.color]="getColorFont(element.documentoDetalle.estadoExpediente)" [style.backgroundColor]="getColor(element.documentoDetalle.estadoExpediente)">
           {{element.documentoDetalle.estadoNombre}}
       </div>
-        <div *ngIf="element.documentoDetalle && element.documentoDetalle.caracteristicas">
+        <div *ngIf="renderVisible && element.documentoDetalle && element.documentoDetalle.caracteristicas">
           <div *ngFor="let charac of element.documentoDetalle.caracteristicas">
             <div *ngIf="charac.campoDTO && charac.valorText" class="px-1 text-sm">{{ charac.campoDTO.nombre }} : {{ charac.valorText }}</div>
           </div>

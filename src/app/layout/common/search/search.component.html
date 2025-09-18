@@ -12,7 +12,7 @@
             [disableRipple]="true" #matAutocomplete="matAutocomplete" [displayWith]="autoCompleteDisplay">
             <mat-option *ngFor="let document of resultSets" [value]="document">
                 <div class="flex flex-row">
-                    <img class="h-6" aria-hidden [src]="document.imagen" />
+                    <img class="h-6" [src]="document.imagen" />
                     <span>{{ document.nombre }}</span> |
                     <small>{{ document.descripcion }}</small>
                 </div>

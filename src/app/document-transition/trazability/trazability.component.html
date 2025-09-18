@@ -193,7 +193,7 @@
 
                     <!-- Enlace al adjunto -->
                     <div *ngIf="g.adjunto" class="text-xs">
-                      🔗 <a [href]="g.adjunto" target="_blank" class="text-indigo-600 hover:underline">Ver reporte</a>
+                      🔗 <a href="{{g.adjunto | imageFormat}}" target="_blank" class="text-indigo-600 hover:underline">Ver reporte</a>
                     </div>
                   </div>
                 </div>
