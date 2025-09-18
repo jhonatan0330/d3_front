@@ -3,7 +3,7 @@ import {
     OnInit
 } from '@angular/core';
 import { ContactsService } from '../contact.services';
-import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Inject } from '@angular/core';
@@ -22,6 +22,7 @@ export class ContactsDetailsComponent implements OnInit {
     isSameUser: boolean;
 
     tags: RolAccesoFilterDTO[];
+    permisos: PermisosDTO[];
 
 
     constructor(
@@ -63,6 +64,22 @@ export class ContactsDetailsComponent implements OnInit {
         this._contactsService.searchTagsById(this.data.key).subscribe({
                 next: (_value: RolAccesoFilterDTO[]) => {
                            this.tags = _value; 
+                            //this.isLoading = false;
+                           
+                        },
+                        error: () => {
+                           // this.isLoading = false;
+                        }
+                    }
+           
+        );
+
+    }
+
+    buscarPermisos(){
+        this._contactsService.searchPermisosById(this.data.key).subscribe({
+                next: (_value: PermisosDTO[]) => {
+                           this.permisos = _value; 
                             //this.isLoading = false;
                            
                         },

@@ -51,7 +51,7 @@
                                     <div *ngFor="let tag of tags">
                                         <button (click)="filtrarPorTag(tag)" class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 
                dark:bg-green-500 dark:text-green-50 ng-star-inserted 
-               overflow-hidden max-w-[200px] flex items-center gap-2">
+               overflow-hidden w-[200px] flex items-center gap-2">
 
                                             <img *ngIf="tag.imagen" class="h-[50px] w-[50px] object-cover rounded-full"
                                                 [src]="tag.imagen" alt="tag.nombre" />

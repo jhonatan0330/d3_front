@@ -2,13 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
     BehaviorSubject,
+    catchError,
     debounceTime,
     map,
     Observable,
+    of,
+    switchMap,
     tap,
 } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
@@ -36,14 +39,17 @@ export class ContactsService {
     searchTags(): Observable<RolAccesoFilterDTO[]> {
         return this._httpClient
             .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/getRole'))
-            .pipe(
-                debounceTime(100)
-            );
+            ;
     }
 
     searchTagsById(query: string): Observable<RolAccesoFilterDTO[]> {
         return this._httpClient
             .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/roles/'+query))
+            ;
+    }
+    searchPermisosById(query: string): Observable<PermisosDTO[]> {
+        return this._httpClient
+            .get<PermisosDTO[]>(this.ls.getUrlAccess('/user/properties/' + query))
             ;
     }
 
@@ -52,7 +58,6 @@ export class ContactsService {
             this.ls.getUrlAccess('/user/getUsers'),
             { estado: 'A' }
         ).pipe(
-            debounceTime(100),
             tap((contacts) => {
                 this._contacts.next(contacts);
             })
@@ -63,16 +68,33 @@ export class ContactsService {
     searchContacts(query: string): Observable<UsuarioDTO[]> {
         return this._httpClient.post<UsuarioDTO[]>(
             this.ls.getUrlAccess('/user/getUsers'),
-            { estado: 'A' }
+            { estado: 'A', identificacion: query } // Búsqueda directa por identificación
         ).pipe(
-            debounceTime(100),
-            map((contacts) =>
-                contacts.filter(c =>
+            switchMap((contacts) => {
+                // Si se encontraron contactos con la identificación, los retorna
+                if (contacts.length > 0) {
+                    this._contacts.next(contacts); // Actualiza el Subject
+                    return of(contacts); // Devuelve los contactos encontrados
+                } else {
+                    // Si no hay resultados, se realiza la búsqueda general
+                    return this._httpClient.post<UsuarioDTO[]>(
+                        this.ls.getUrlAccess('/user/getUsers'),
+                        { estado: 'A' } // Filtrado por estado solo
+                    ).pipe(
+                        map((allContacts) =>
+                            allContacts.filter(c =>
                     c.identificacion?.includes(query) ||
                     c.nombre?.toLowerCase().includes(query.toLowerCase())
                 )
             ),
-            tap((filtered) => this._contacts.next(filtered))
+                        tap((filtered) => this._contacts.next(filtered)) // Actualiza el Subject con los filtrados
+                    );
+                }
+            }),
+            catchError(error => {
+                console.error('Error en la búsqueda de contactos:', error);
+                return of([]); // Devuelve un array vacío en caso de error
+            })
         );
     }
 
@@ -85,7 +107,6 @@ export class ContactsService {
                 filtroParametro : 'A'
             }
             ).pipe(
-                debounceTime(100),
                 tap((contacts) => this._contacts.next(contacts))
             );
     }
