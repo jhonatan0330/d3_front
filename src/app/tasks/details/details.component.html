@@ -1,173 +1,31 @@
 <div class="flex flex-auto h-full w-4/5">
 
-    <form
-        class="flex flex-col flex-auto p-6 pt-10 sm:p-8 sm:pt-10 overflow-y-auto h-full"
-        [formGroup]="taskForm">
+    <form class="flex flex-col flex-auto p-6 pt-10 sm:p-8 sm:pt-10  overflow-y-auto h-full" [formGroup]="taskForm">
 
         <!-- Header -->
         <div class="flex items-center justify-between -mt-3 -ml-4 h-full">
 
-            <!-- Mark as ... button -->
-            <button
-                class="pr-4 pl-3.5"
-                mat-button
-                (click)="toggleCompleted()">
-
-                <!-- Mark as complete -->
-                <ng-container *ngIf=" task && !task.completed">
-                    <div class="flex items-center justify-center">
-                        <mat-icon [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
-                        <span class="ml-2 font-semibold">MARCAR COMO COMPLETO</span>
-                    </div>
-                </ng-container>
-
-                <!-- Mark as incomplete -->
-                <ng-container *ngIf="task && task.completed">
-                    <div class="flex items-center justify-center">
-                        <mat-icon
-                            class="text-primary"
-                            [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
-                        <span class="ml-2 font-semibold">MARCAR COMO INCOMPLETO</span>
-                    </div>
-                </ng-container>
-            </button>
+            <!-- Title -->
+            <div class="px-5 flex flex-auto ">
+                <mat-form-field class="w-full">
+                    <mat-label>Titulo</mat-label>
+                    <input matInput [formControlName]="'title'" [spellcheck]="false" matTextareaAutosize #titleField>
+                </mat-form-field>
+            </div>
 
             <div class="flex items-center">
-                <!-- More menu -->
-                <button
-                    mat-icon-button
-                    [matMenuTriggerFor]="moreMenu">
-                    <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
-                </button>
-                <mat-menu #moreMenu="matMenu">
-                    <button
-                        mat-menu-item
-                        (click)="deleteTask()">
-                        <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                        <span>Delete </span>
-                    </button>
-                </mat-menu>
-
                 <!-- Close button -->
-                <a
-                    mat-icon-button
-                    [routerLink]="['../']">
+                <a mat-icon-button [routerLink]="['../']">
                     <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
                 </a>
             </div>
 
         </div>
 
-        <mat-divider class="mt-6 mb-8"></mat-divider>
 
-        <!-- Title -->
-        <div>
-            <mat-form-field class="w-full">
-                <mat-label>Titulo</mat-label>
-                <input
-                    matInput
-                    [formControlName]="'title'"
-                    [spellcheck]="false"
-                    matTextareaAutosize
-                    #titleField>
-            </mat-form-field>
-        </div>
-
-        <!-- Priority and Due date -->
-        <div class="flex flex-wrap items-center" *ngIf="task" >
-
-            <!-- Priority -->
-             <!-- <div>
-                <div class="font-medium">Priority</div>
-                <div
-                    class="flex items-center mt-1.5 px-4 leading-9 rounded-full cursor-pointer"
-                    [ngClass]="{'text-green-800 bg-green-200 dark:text-green-100 dark:bg-green-500': task.priority === 0,
-                                'text-gray-800 bg-gray-200 dark:text-gray-100 dark:bg-gray-500': task.priority === 1,
-                                'text-red-800 bg-red-200 dark:text-red-100 dark:bg-red-500': task.priority === 2}"
-                    [matMenuTriggerFor]="priorityMenu">
-
-                    
-                    <ng-container *ngIf="task.priority === 0">
-                        <mat-icon
-                            class="icon-size-5 text-current"
-                            [svgIcon]="'heroicons_outline:arrow-narrow-down'"></mat-icon>
-                        <span class="ml-2 mr-1 text-md font-medium">Low</span>
-                    </ng-container>
-
-                    
-                    <ng-container *ngIf="task.priority === 1">
-                        <mat-icon
-                            class="icon-size-4 text-current"
-                            [svgIcon]="'heroicons_outline:minus'"></mat-icon>
-                        <span class="ml-2 mr-1 text-md font-medium">Normal</span>
-                    </ng-container>
-
-                    
-                    <ng-container *ngIf="task.priority === 2">
-                        <mat-icon
-                            class="icon-size-4 text-current"
-                            [svgIcon]="'heroicons_outline:arrow-narrow-up'"></mat-icon>
-                        <span class="ml-2 mr-1 text-md font-medium">High</span>
-                    </ng-container>
-                </div>
-                <mat-menu #priorityMenu="matMenu">
-                    
-                    <button
-                        [ngClass]="{'bg-hover': task.priority === 0}"
-                        mat-menu-item
-                        (click)="setTaskPriority(0)">
-                        <span class="inline-flex items-center justify-between w-full min-w-30 leading-5">
-                            <span class="font-medium">Low</span>
-                            <mat-icon
-                                class="mr-0 icon-size-4 text-green-600 dark:text-green-500"
-                                [svgIcon]="'heroicons_outline:arrow-narrow-down'"></mat-icon>
-                        </span>
-                    </button>
-
-                    
-                    <button
-                        [ngClass]="{'bg-hover': task.priority === 1}"
-                        mat-menu-item
-                        (click)="setTaskPriority(1)">
-                        <span class="inline-flex items-center justify-between w-full min-w-30 leading-5">
-                            <span class="font-medium">Normal</span>
-                            <mat-icon
-                                class="mr-0 icon-size-4 text-gray-600 dark:text-gray-500"
-                                [svgIcon]="'heroicons_outline:minus'"></mat-icon>
-                        </span>
-                    </button>
-
-                    
-                    <button
-                        [ngClass]="{'bg-hover': task.priority === 2}"
-                        mat-menu-item
-                        (click)="setTaskPriority(2)">
-                        <span class="inline-flex items-center justify-between w-full min-w-30 leading-5">
-                            <span class="font-medium">High</span>
-                            <mat-icon
-                                class="mr-0 icon-size-4 text-red-600 dark:text-red-500"
-                                [svgIcon]="'heroicons_outline:arrow-narrow-up'"></mat-icon>
-                        </span>
-                    </button>
-                </mat-menu>
-            </div> -->
-
-        </div>
-
-        <!-- Notes -->
-        <div class="h-full">
-            <mat-form-field class="w-full">
-                <mat-label>Notes</mat-label>
-                <textarea
-                    matInput
-                    oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-                    onclick='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-                    [formControlName]="'notes'"
-                    [spellcheck]="false"
-                    matTextareaAutosize></textarea>
-                <mat-error *ngIf="taskForm.invalid">Solo puedes colocar 4000 caracteres</mat-error>
-            </mat-form-field>
-        </div>
+        <ngx-editor-menu [editor]="editor" class="py-8" > </ngx-editor-menu>
+        <ngx-editor [editor]="editor" formControlName="notes" > </ngx-editor>
+        
 
     </form>
 
