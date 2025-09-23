@@ -1,28 +1,35 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { debounceTime, filter, Subject, takeUntil, tap } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksListComponent } from 'app/tasks/list/list.component';
 import { TasksService } from 'app/tasks/tasks.service';
+import { Editor, NgxEditorModule } from 'ngx-editor';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { CommonModule } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'tasks-details',
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatMenuModule, CommonModule, MatInputModule],
 })
 export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('titleField') private _titleField: ElementRef;
 
     task: Task;
     taskForm: UntypedFormGroup;
+    public editor: Editor;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    /**
-     * Constructor
-     */
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _formBuilder: UntypedFormBuilder,
@@ -32,16 +39,11 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     ) {
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void {
         // Open the drawer
         this._tasksListComponent.matDrawer.open();
+
+        this.editor = new Editor();
 
         // Create the task form
         this.taskForm = this._formBuilder.group({
@@ -78,8 +80,12 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
                 tap((value) => {
                     // Update the task object
                     this.task.title = value.title;
+                    if(value.title != ""){
                     this.task.notes = value.notes;
                     this.task.completed = value.completed;
+                    }else{
+                        Swal.fire("Atencion", "Primero escribe el titulo, para poder editar la nota. ", "warning");
+                    }
                 }),
                 debounceTime(500),
                 takeUntil(this._unsubscribeAll)
@@ -104,9 +110,6 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             });
     }
 
-    /**
-     * After view init
-     */
     ngAfterViewInit(): void {
         // Listen for matDrawer opened change
         this._tasksListComponent.matDrawer.openedChange
@@ -120,31 +123,21 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             });
     }
 
-    /**
-     * On destroy
-     */
+
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
+        this.editor.destroy();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Close the drawer
-     */
     closeDrawer(): Promise<MatDrawerToggleResult> {
         return this._tasksListComponent.matDrawer.close();
     }
 
-    /**
-     * Toggle the completed status
-     */
+
     toggleCompleted(): void {
-        // Toggle the completed status
+
         if (this.task.completed) { this.task.completed = null }
         else { this.task.completed = new Date() }
 
@@ -155,27 +148,16 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
         this._changeDetectorRef.markForCheck();
     }
 
-    /**
-     * Set the task priority
-     *
-     * @param priority
-     */
     setTaskPriority(priority): void {
         // Set the value
         this.taskForm.get('priority').setValue(priority);
     }
 
-    /**
-     * Check if the task is overdue or not
-     */
     isOverdue(): boolean {
         if (!this.task.dueDate) return false;
         return new Date(this.task.dueDate).getTime() > new Date().getTime();
     }
 
-    /**
-     * Delete the task
-     */
     deleteTask(): void {
         this._tasksService.deleteTask(this.task.key).subscribe(() => {
             this.closeDrawer();
@@ -183,12 +165,6 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
     trackByFn(index: number, item: any): any {
         return item.id || index;
     }
