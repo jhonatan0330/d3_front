@@ -14,8 +14,10 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
   templateUrl: './numero.component.html'
 })
 export class NumeroComponent extends BaseComponent implements OnInit {
-  
-  fControl = new UntypedFormControl(0);
+
+  fControl = new UntypedFormControl(0, {
+    updateOn: 'blur'
+  });
 
   step = 1;
   formula: string;
@@ -127,11 +129,27 @@ export class NumeroComponent extends BaseComponent implements OnInit {
 
 
   actualizar() {
+
     let controlValue = this.fControl.value;
+
+    if (/^[0-9+\-*/().\s]+$/.test(String(controlValue))) {
+      try {
+        let resultado = Function('"use strict";return (' + controlValue + ')')();
+        controlValue = resultado;
+
+      } catch (e) {
+        console.error('Expresión inválida', e);
+        controlValue = ('');
+      }
+    } else {
+      console.warn('Entrada no válida');
+      controlValue = ('');
+    }
     if (!controlValue) {
       controlValue = '0';
     }
     if (this.data.valorNumero !== controlValue) {
+      this.fControl.setValue(controlValue, { emitEvent: false });
       this.data.valorNumero = Number(controlValue);
       this.data.valorText = controlValue;
       this.avisarModificacion();
@@ -252,15 +270,15 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         filtro.campoDTO = this.structure;
         filtro.campo = this.structure.llaveTabla;
         filtro.documento = campoFiltro.documento;
-        this. isLoading = true;
+        this.isLoading = true;
         this.api
           .consultarDatosBase(filtro, this.urlServer)
           .subscribe({
-            next:(_value: PedidoVentaCaracteristicaFilterDTO) => {
+            next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
               this.fControl.setValue(_value.valorNumeroMax);
               this.isLoading = false;
             },
-            error:()=>{
+            error: () => {
               this.isLoading = false;
             }
           });
@@ -315,15 +333,15 @@ export class NumeroComponent extends BaseComponent implements OnInit {
 
   send2Server(): boolean {
     if (this.isLoading) { return false; }
-    
+
     this.errorMessage = null;
-    if (this.required && !this.data.valorNumero && !this.isInvisible){
-      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
+    if (this.required && !this.data.valorNumero && !this.isInvisible) {
+      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre + " es obligatorio registrar el campo " + this._structure.nombre + ")"
     }
 
     if (this.errorMessage) {
       const input = document.getElementById(this.idField) as HTMLInputElement;
-      if (input) { input.focus();  }
+      if (input) { input.focus(); }
       return false;
     }
     return true;
