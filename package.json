@@ -32,6 +32,7 @@
     "file-saver": "^2.0.5",
     "ng-apexcharts": "1.8.0",
     "ng2-currency-mask": "~13.0.0",
+    "ngx-editor": "^17.0.0",
     "ngx-image-compress": "^18.1.5",
     "node-xlsx": "^0.24.0",
     "ol": "10.6.1",
