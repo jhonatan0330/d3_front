@@ -8,4 +8,5 @@ export class ApiErrorResponse {
 export class IdResponse {
   id: string;
   code: string;
+  comment: string;
 }
