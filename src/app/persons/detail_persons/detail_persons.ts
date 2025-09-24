@@ -17,7 +17,7 @@ import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 })
 export class ContactsDetailsComponent implements OnInit {
 
-   
+
     public contact: UsuarioDTO = new UsuarioDTO();
     isSameUser: boolean;
 
@@ -27,15 +27,15 @@ export class ContactsDetailsComponent implements OnInit {
 
     constructor(
         private _contactsService: ContactsService,
-        @Inject(MAT_DIALOG_DATA) public data: { key: string;},
+        @Inject(MAT_DIALOG_DATA) public data: { key: string; },
         private dialogRef: MatDialogRef<ContactsDetailsComponent>,
         public jwtAuth: LoginService,
-        private utilService:UtilsService,
-        
-    ) {}
+        private utilService: UtilsService,
+
+    ) { }
 
     ngOnInit(): void {
-        
+
 
         this._contactsService.getContactById(this.data.key).subscribe((contact: UsuarioDTO) => {
             this.contact = contact;
@@ -52,45 +52,76 @@ export class ContactsDetailsComponent implements OnInit {
         this.dialogRef.close();
     }
 
-    abrirRol(tag:RolAccesoFilterDTO){
-        const componente = new PedidoVentaDTO; 
+    abrirRol(tag: RolAccesoFilterDTO) {
+        const componente = new PedidoVentaDTO;
         componente.llaveTabla = tag.codigo;
         componente.plantilla = tag.plantilla;
         componente.server = undefined;
-        this.utilService.modalWithParams(componente );
+        this.utilService.modalWithParams(componente);
     }
 
-    buscartags(){
+    buscartags() {
         this._contactsService.searchTagsById(this.data.key).subscribe({
-                next: (_value: RolAccesoFilterDTO[]) => {
-                           this.tags = _value; 
-                            //this.isLoading = false;
-                           
-                        },
-                        error: () => {
-                           // this.isLoading = false;
-                        }
-                    }
-           
+            next: (_value: RolAccesoFilterDTO[]) => {
+                this.tags = _value;
+                //this.isLoading = false;
+
+            },
+            error: () => {
+                // this.isLoading = false;
+            }
+        }
+
         );
 
     }
 
-    buscarPermisos(){
+    buscarPermisos() {
         this._contactsService.searchPermisosById(this.data.key).subscribe({
-                next: (_value: PermisosDTO[]) => {
-                           this.permisos = _value; 
-                            //this.isLoading = false;
-                           
-                        },
-                        error: () => {
-                           // this.isLoading = false;
-                        }
-                    }
-           
+            next: (_value: PermisosDTO[]) => {
+                this.permisos = _value;
+                //this.isLoading = false;
+
+            },
+            error: () => {
+                // this.isLoading = false;
+            }
+        }
+
         );
 
     }
+
+    permisoColors: { [key: string]: string } = {
+        'P': 'bg-blue-500 text-white',     // Proceso
+        'A': 'bg-green-500 text-white',    // Estado
+        'T': 'bg-yellow-500 text-black',   // Transición
+        'L': 'bg-purple-500 text-white',   // Plantilla
+        'C': 'bg-pink-500 text-white',     // Campo
+        'E': 'bg-orange-500 text-white',   // Reporte
+        'R': 'bg-teal-500 text-white',     // Rol
+        'O': 'bg-red-500 text-white',      // Organización
+        'W': 'bg-gray-700 text-white',     // API Service
+        'S': 'bg-gray-500 text-white',     // Servidor
+        'G': 'bg-indigo-500 text-white',   // Catalog
+        'K': 'bg-lime-500 text-black'      // Account
+    };
+
+    permisoNames: { [key: string]: string } = {
+        'P': 'Proceso',
+        'A': 'Estado',
+        'T': 'Transición',
+        'L': 'Plantilla',
+        'C': 'Campo',
+        'E': 'Reporte',
+        'R': 'Rol',
+        'O': 'Organización',
+        'W': 'API Service',
+        'S': 'Servidor',
+        'G': 'Catálogo',
+        'K': 'Account'
+    };
+
 }
 
 
