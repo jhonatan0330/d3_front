@@ -8,6 +8,7 @@ import { FormulaHelper } from 'app/modules/full/neuron/formula.helper';
 import { BaseComponent } from '../base/base.component';
 import { debounceTime } from 'rxjs';
 import { PropiedadDTO } from 'app/shared/shared.domain';
+import { formatNumber } from '@angular/common';
 
 @Component({
   selector: 'app-numero',
@@ -129,31 +130,33 @@ export class NumeroComponent extends BaseComponent implements OnInit {
 
 
   actualizar() {
+    let rawValue = String(this.fControl.value ?? '');
 
-    let controlValue = this.fControl.value;
+    rawValue = rawValue.replace(/,/g, '').replace(/\s/g, '');
 
-    if (/^[0-9+\-*/().\s]+$/.test(String(controlValue))) {
+    let numericValue = 0;
+
+    if (/^[0-9+\-*/().]+$/.test(rawValue)) {
       try {
-        let resultado = Function('"use strict";return (' + controlValue + ')')();
-        controlValue = resultado;
-
+        // Evaluamos expresión matemática si es válida
+        numericValue = Function('"use strict";return (' + rawValue + ')')();
       } catch (e) {
         console.error('Expresión inválida', e);
-        controlValue = ('');
+        numericValue = 0;
       }
-    } else {
+    } else if (rawValue) {
       console.warn('Entrada no válida');
-      controlValue = ('');
+      numericValue = 0;
     }
-    if (!controlValue) {
-      controlValue = '0';
-    }
-    if (this.data.valorNumero !== controlValue) {
-      this.fControl.setValue(controlValue, { emitEvent: false });
-      this.data.valorNumero = Number(controlValue);
-      this.data.valorText = controlValue;
-      this.avisarModificacion();
-    }
+
+    const formattedValue = formatNumber(numericValue, 'en-US', '1.0-2');
+
+    this.fControl.setValue(formattedValue, { emitEvent: false });
+
+    this.data.valorNumero = numericValue;
+    this.data.valorText = formattedValue;
+
+    this.avisarModificacion();
   }
 
   private formulaReplaceDependents(textoCalculado: string): string {
