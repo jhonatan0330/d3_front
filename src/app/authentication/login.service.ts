@@ -91,9 +91,13 @@ export class LoginService {
   private setCompany(_company: OrganizacionDTO) {
     if (_company) {
       this.getCarrousel(_company);
+      if (_company.propiedades) {
+        this.isAdmin = !PlantillaHelper.isEmpty(_company.propiedades, PlantillaHelper.APP_ADMIN);
+        this.templateService.setModules(PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.APP_MODULES));
+      }
     }
-    if (this.company && this.company.llaveTabla === _company.llaveTabla) {
 
+    if (this.company && this.company.llaveTabla === _company.llaveTabla) {
       //Evito que se vuelva a consultar los template coverad
       return;
     }
@@ -205,19 +209,11 @@ export class LoginService {
         timerProgressBar: true
       })
     }
-    if (response.modulos && response.modulos.find((modulo) => modulo.llaveTabla === 'AdministracionLogisticpymes')) {
-      this.isAdmin = true;
-    } else {
-      this.isAdmin = false;
-    }
-    this.templateService.modulos = response.modulos;
-    //if (!this.templateService.template || this.templateService.template.length === 0) {
     if (!this.user) { return; }
     this.apiService.listarPlantillas(null)
       .subscribe((templates) => {
         this.templateService.setTemplates(templates);
       });
-    //}
   }
 
 

@@ -4,7 +4,7 @@ import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { FuseNavigationItem, FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
 import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { ModuloDTO } from '../authorization.domain';
+import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Injectable({
     providedIn: 'root'
@@ -12,29 +12,15 @@ import { ModuloDTO } from '../authorization.domain';
 export class NavigationService {
     private _navigation: ReplaySubject<Navigation> = new ReplaySubject<Navigation>(1);
 
-    /**
-     * Constructor
-     */
     constructor(private _fuseNavigationService: FuseNavigationService) {
         this.generate(null, null, null);
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Getter for navigation
-     */
     get navigation$(): Observable<Navigation> {
         return this._navigation.asObservable();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    generate(process: DocumentoPlantillaDTO[], modules: ModuloDTO[], templates: DocumentoPlantillaDTO[]) {
+    generate(process: DocumentoPlantillaDTO[], modules: PropiedadDTO[], templates: DocumentoPlantillaDTO[]) {
 
 
         const localNavigation: FuseNavigationItem[] = [
@@ -134,21 +120,21 @@ export class NavigationService {
         // APPS
         const moduleNavItem: FuseNavigationItem[] = [];
         if (modules) {
-            modules.forEach((module: ModuloDTO) => {
-                if (module.moduloUrl && module.moduloUrl.startsWith("/")) {
+            modules.forEach((module: PropiedadDTO) => {
+                
                     const newItem: FuseNavigationItem = {
                         id: module.llaveTabla,
-                        title: module.nombre[0].toUpperCase() + module.nombre.substring(1).toLowerCase(),
+                        title: module.texto[0].toUpperCase() + module.texto.substring(1).toLowerCase(),
                         type: 'basic',
-                        link: module.moduloUrl,
+                        link: "/" + module.valor,
                     };
-                    if (module.imagen) {
-                        newItem.image = module.imagen;
+                    if (module.motivo) {
+                        newItem.image = module.motivo;
                     } else {
                         newItem.icon = 'heroicons_outline:check-circle';
                     }
                     moduleNavItem.push(newItem);
-                }
+                
             });
             if(moduleNavItem && moduleNavItem.length!==0){
                 const moduleItemLocal:FuseNavigationItem = {
@@ -238,36 +224,6 @@ export class NavigationService {
                 compactNavigation.push(moduleItemCompact);
             }
         }
-
-        // // Fill compact navigation children using the default navigation
-        // this._compactNavigation.forEach((compactNavItem) => {
-        //     this._defaultNavigation.forEach((defaultNavItem) => {
-        //         if (defaultNavItem.id === compactNavItem.id) {
-        //             //compactNavItem.children = cloneDeep(defaultNavItem.children);
-        //             compactNavItem.children = defaultNavItem.children;
-        //         }
-        //     });
-        // });
-
-        // // Fill futuristic navigation children using the default navigation
-        // this._futuristicNavigation.forEach((futuristicNavItem) => {
-        //     this._defaultNavigation.forEach((defaultNavItem) => {
-        //         if (defaultNavItem.id === futuristicNavItem.id) {
-        //             //futuristicNavItem.children = cloneDeep(defaultNavItem.children);
-        //             futuristicNavItem.children = defaultNavItem.children;
-        //         }
-        //     });
-        // });
-
-        // Fill horizontal navigation children using the default navigation
-        // this._horizontalNavigation.forEach((horizontalNavItem) => {
-        //     this._defaultNavigation.forEach((defaultNavItem) => {
-        //         if (defaultNavItem.id === horizontalNavItem.id) {
-        //             //horizontalNavItem.children = cloneDeep(defaultNavItem.children);
-        //             horizontalNavItem.children = defaultNavItem.children;
-        //         }
-        //     });
-        // });
         const navigation = {
             default: [...localNavigation],
 
@@ -275,10 +231,6 @@ export class NavigationService {
             futuristic: [...localNavigation],
 
             horizontal: [...localNavigation],
-            //compact   : this._compactNavigation,
-            //default   : this._defaultNavigation,
-            //futuristic: this._futuristicNavigation,
-            //horizontal: this._horizontalNavigation
         }
         this._navigation.next(navigation);
 

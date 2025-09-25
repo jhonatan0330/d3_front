@@ -9,7 +9,6 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { NavigationService } from 'app/authorization/navigation/navigation.service';
-import { ModuloDTO } from 'app/authorization/authorization.domain';
 
 @Injectable({
   providedIn: 'root',
@@ -23,9 +22,8 @@ export class TemplateService {
 
   conectionTemplates: OrganizacionDTO[];
 
-  modulos: ModuloDTO[];
-  private tableros: PropiedadDTO[];
   private propiedadesConRelaciones: RelacionInternaDTO[];
+  private _modules:PropiedadDTO[];
 
   constructor(
     private ls: LocalStoreService,
@@ -73,7 +71,7 @@ export class TemplateService {
         processToMenu.push(element);
       }
     });
-    this._navigationService.generate(processToMenu, this.modulos, value);
+    this._navigationService.generate(processToMenu, this._modules, value);
     this.templates$.next(value);
   }
 
@@ -201,19 +199,11 @@ export class TemplateService {
 
   clear() {
     this.colores = null;
-    this.tableros = null;
-    this.modulos = null;
     this.setTemplates([]);
+    this._modules = null;
   }
-
-  setTableros(value: PropiedadDTO[]) {
-    this.tableros = value;
-  }
-
-  getTablero(id: string): PropiedadDTO {
-    if (this.tableros && this.tableros.length !== 0) {
-      return this.tableros.find(x => x.llaveTabla === id);
-    }
+  setModules(value: PropiedadDTO[]) {
+    this._modules = value;
   }
 
   getProceso(id: string): DocumentoPlantillaDTO {

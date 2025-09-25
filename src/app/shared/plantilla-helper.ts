@@ -133,6 +133,8 @@ export class PlantillaHelper {
   static PLANTILLA_ACCESO_RAPIDO = 'PLANTILLA_ACCESO_RAPIDO';
   static PLANTILLA_NUEVO_USUARIO = 'PLANTILLA_NUEVO_USUARIO';
   static LOGIN_HTML = 'LOGIN_HTML';
+  static APP_ADMIN = 'APP_ADMIN';
+  static APP_MODULES = 'APP_MODULES';
 
   static MODIFICAR_CAMPO = "MODIFICAR_CAMPO";
   static RELACIONAR_DOCUMENTOS = "RELACIONAR_DOCUMENTOS";
@@ -149,6 +151,7 @@ export class PlantillaHelper {
   static DEPENDENT_PROPERTIES = [
     PlantillaHelper.DEPENDE, PlantillaHelper.MODIFICAR_CAMPO, PlantillaHelper.INFORMATIVE_DATA,
     PlantillaHelper.UPDATE_INFORMATIVE_FIELD, PlantillaHelper.FECHA_MAXIMA_CAMPO, PlantillaHelper.FECHA_MINIMA_CAMPO];
+
 
   static buscarPropiedad(
     propiedades: PropiedadDTO[],
