@@ -8,14 +8,17 @@ import { FormulaHelper } from 'app/modules/full/neuron/formula.helper';
 import { BaseComponent } from '../base/base.component';
 import { debounceTime } from 'rxjs';
 import { PropiedadDTO } from 'app/shared/shared.domain';
+import { formatNumber } from '@angular/common';
 
 @Component({
   selector: 'app-numero',
   templateUrl: './numero.component.html'
 })
 export class NumeroComponent extends BaseComponent implements OnInit {
-  
-  fControl = new UntypedFormControl(0);
+
+  fControl = new UntypedFormControl(0, {
+    updateOn: 'blur'
+  });
 
   step = 1;
   formula: string;
@@ -127,15 +130,33 @@ export class NumeroComponent extends BaseComponent implements OnInit {
 
 
   actualizar() {
-    let controlValue = this.fControl.value;
-    if (!controlValue) {
-      controlValue = '0';
+    let rawValue = String(this.fControl.value ?? '');
+
+    rawValue = rawValue.replace(/,/g, '').replace(/\s/g, '');
+
+    let numericValue = 0;
+
+    if (/^[0-9+\-*/().]+$/.test(rawValue)) {
+      try {
+        // Evaluamos expresión matemática si es válida
+        numericValue = Function('"use strict";return (' + rawValue + ')')();
+      } catch (e) {
+        console.error('Expresión inválida', e);
+        numericValue = 0;
+      }
+    } else if (rawValue) {
+      console.warn('Entrada no válida');
+      numericValue = 0;
     }
-    if (this.data.valorNumero !== controlValue) {
-      this.data.valorNumero = Number(controlValue);
-      this.data.valorText = controlValue;
-      this.avisarModificacion();
-    }
+
+    const formattedValue = formatNumber(numericValue, 'en-US', '1.0-2');
+
+    this.fControl.setValue(formattedValue, { emitEvent: false });
+
+    this.data.valorNumero = numericValue;
+    this.data.valorText = formattedValue;
+
+    this.avisarModificacion();
   }
 
   private formulaReplaceDependents(textoCalculado: string): string {
@@ -252,15 +273,15 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         filtro.campoDTO = this.structure;
         filtro.campo = this.structure.llaveTabla;
         filtro.documento = campoFiltro.documento;
-        this. isLoading = true;
+        this.isLoading = true;
         this.api
           .consultarDatosBase(filtro, this.urlServer)
           .subscribe({
-            next:(_value: PedidoVentaCaracteristicaFilterDTO) => {
+            next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
               this.fControl.setValue(_value.valorNumeroMax);
               this.isLoading = false;
             },
-            error:()=>{
+            error: () => {
               this.isLoading = false;
             }
           });
@@ -315,15 +336,15 @@ export class NumeroComponent extends BaseComponent implements OnInit {
 
   send2Server(): boolean {
     if (this.isLoading) { return false; }
-    
+
     this.errorMessage = null;
-    if (this.required && !this.data.valorNumero && !this.isInvisible){
-      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
+    if (this.required && !this.data.valorNumero && !this.isInvisible) {
+      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre + " es obligatorio registrar el campo " + this._structure.nombre + ")"
     }
 
     if (this.errorMessage) {
       const input = document.getElementById(this.idField) as HTMLInputElement;
-      if (input) { input.focus();  }
+      if (input) { input.focus(); }
       return false;
     }
     return true;

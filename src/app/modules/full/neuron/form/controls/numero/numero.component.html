@@ -4,12 +4,11 @@
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
   <input [id]="idField"
     matInput
-    currencyMask
+    class="text-right"
     [name]="structure.llaveTabla"
     [formControl]="fControl"
     [required]="required"
     [readonly]="!isEnabled || !formIsEnabled"
-    [options]="optionsMask"
     (focus)="getInitialFocus($event)"
     autocomplete="off"
   />
