@@ -20,7 +20,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ManualFormComponent } from './manual-form/manual-form.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 @NgModule({
     declarations: [
@@ -53,7 +52,6 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
         MatFormFieldModule, 
         MatInputModule,
         MatSidenavModule,
-        CurrencyMaskModule,
         MatProgressSpinnerModule
        ]
 })

@@ -55,7 +55,6 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { InformativeComponent } from './form/controls/informative/informative.component';
-import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { DocumentTransitionModule } from 'app/document-transition/document-transition.module';
 import { OlMapComponent } from './form/controls/gps/ol-map/ol-map.component';
 import { FullMapComponent } from './form/controls/gps-map/full-map/full-map.component';
@@ -123,7 +122,6 @@ import { DireccionesComponent } from './form/controls/texto/direcciones/direccio
         MatToolbarModule,
         MatTooltipModule,
         MatTreeModule,
-        CurrencyMaskModule,
         SharedModule,
         ZXingScannerModule,
         MatDatepickerModule,
