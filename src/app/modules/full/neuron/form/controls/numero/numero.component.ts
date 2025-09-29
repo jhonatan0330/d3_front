@@ -78,6 +78,11 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     }
   }
 
+  onEnter(event: KeyboardEvent) {
+    event.preventDefault(); // evita submit
+    (event.target as HTMLInputElement).blur(); // fuerza el blur -> dispara valueChanges
+  }
+
   startControl() {
     /*const steps: string = this.obtenerValor(PlantillaHelper.NUMERO_STEP);
     if (steps) { this.step = steps; }*/
