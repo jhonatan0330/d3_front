@@ -10,6 +10,7 @@
     [required]="required"
     [readonly]="!isEnabled || !formIsEnabled"
     (focus)="getInitialFocus($event)"
+    (keydown.enter)="onEnter($event)"
     autocomplete="off"
   />
   
