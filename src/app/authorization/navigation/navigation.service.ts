@@ -121,10 +121,10 @@ export class NavigationService {
         const moduleNavItem: FuseNavigationItem[] = [];
         if (modules) {
             modules.forEach((module: PropiedadDTO) => {
-                
+                    const _nameModule = (module.texto)?module.texto[0].toUpperCase() + module.texto.substring(1).toLowerCase():module.valor;
                     const newItem: FuseNavigationItem = {
                         id: module.llaveTabla,
-                        title: module.texto[0].toUpperCase() + module.texto.substring(1).toLowerCase(),
+                        title: _nameModule,
                         type: 'basic',
                         link: "/" + module.valor,
                     };

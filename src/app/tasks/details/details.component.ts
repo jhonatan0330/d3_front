@@ -6,7 +6,7 @@ import { debounceTime, filter, Subject, takeUntil, tap } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksListComponent } from 'app/tasks/list/list.component';
 import { TasksService } from 'app/tasks/tasks.service';
-import { Editor, NgxEditorModule } from 'ngx-editor';
+import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -28,6 +28,16 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     task: Task;
     taskForm: UntypedFormGroup;
     public editor: Editor;
+    toolbar: Toolbar = [
+    ['bold', 'italic'],
+    ['underline', 'strike'],
+    ['code', 'blockquote'],
+    ['ordered_list', 'bullet_list'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+    ['link', 'image'],
+    ['text_color', 'background_color'],
+    ['align_left', 'align_center', 'align_right', 'align_justify'],
+  ];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     constructor(
