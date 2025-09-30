@@ -112,23 +112,16 @@ export class FormComponent implements OnInit, AfterViewInit {
     ) { }
 
     actualizar() {
-        let rolPropiedad: PropiedadDTO;
-        for (let i = 0; i < this.plantilla.estados.length; i++) {
-            const estadoModificable = this.plantilla.estados[i];
-            rolPropiedad = PlantillaHelper.buscarPropiedad(
-                estadoModificable.propiedades,
-                PlantillaHelper.ROL
-            );
-            if (rolPropiedad) {
+
+        for (let i = 0; i < this.plantilla.propiedades.length; i++) {
+            if (this.plantilla.propiedades[i].nombre == "TIPO ROL") {
                 this.esRol = true;
                 return;
             }
-            break;
         }
     }
 
     ngOnInit(): void {
-        //this.actualizar();
 
         // Validaciones para evitar null
         if (this.pedidoBase && this.pedidoBase === this.data.data) {

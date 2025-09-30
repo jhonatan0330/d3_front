@@ -75,7 +75,7 @@
           <span>Whatsapp</span>
         </button>
         <!-- Boton Usuario -->
-        <button mat-menu-item *ngIf="!esRol" (click)="abrirUsuario(pedido.llaveTabla)">
+        <button mat-menu-item *ngIf="esRol" (click)="abrirUsuario(pedido.llaveTabla)">
           <mat-icon>person</mat-icon>
           <span>Usuario Rol</span>
         </button>
