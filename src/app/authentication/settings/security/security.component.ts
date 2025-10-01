@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LoginService } from 'app/authentication/login.service';
 
 import Swal from 'sweetalert2';
@@ -18,6 +19,8 @@ export class SettingsSecurityComponent implements OnInit {
      * Constructor
      */
     constructor(
+
+        @Inject(MAT_DIALOG_DATA) public data: { key: string },
         private _formBuilder: UntypedFormBuilder,
         private jwtAuth: LoginService
     ) {
@@ -51,18 +54,37 @@ export class SettingsSecurityComponent implements OnInit {
             return;
         }
         this.isLoading = true;
-        this.jwtAuth.changePwd(signinData.oldPwd, signinData.newPwd, null).subscribe({
-            next: () => {
-                this.isLoading = false;
-                Swal.fire(
-                    'Cambio Exitoso',
-                    'La nueva clave se cambio de forma exitosa',
-                    'success'
-                );
-            },
-            error: () => {
-                this.isLoading = false;
-            },
-        });
+
+        if (this.data.key) {
+
+            this.jwtAuth.changePwdOther(this.data.key, signinData.oldPwd, signinData.newPwd, null).subscribe({
+                next: () => {
+                    this.isLoading = false;
+                    Swal.fire(
+                        'Cambio Exitoso',
+                        'La nueva clave se cambio de forma exitosa',
+                        'success'
+                    );
+                },
+                error: () => {
+                    this.isLoading = false;
+                },
+            });
+        } else {
+            this.jwtAuth.changePwd(signinData.oldPwd, signinData.newPwd, null).subscribe({
+                next: () => {
+                    this.isLoading = false;
+                    Swal.fire(
+                        'Cambio Exitoso',
+                        'La nueva clave se cambio de forma exitosa',
+                        'success'
+                    );
+                },
+                error: () => {
+                    this.isLoading = false;
+                },
+            });
+        }
+
     }
 }

@@ -80,16 +80,12 @@ export class ContactsDetailsComponent implements OnInit {
         this._contactsService.searchPermisosById(this.data.key).subscribe({
             next: (_value: PermisosDTO[]) => {
                 this.permisos = _value;
-                //this.isLoading = false;
-
+                this.filtroActivo = null; // limpia el filtro al cargar nuevos permisos
             },
             error: () => {
-                // this.isLoading = false;
-            }
-        }
-
-        );
-
+                // Manejo de errores si es necesario
+            },
+        });
     }
 
     permisoColors: { [key: string]: string } = {
@@ -121,6 +117,30 @@ export class ContactsDetailsComponent implements OnInit {
         'G': 'Catálogo',
         'K': 'Account'
     };
+    // Filtro activo para mostrar solo ciertos permisos
+    filtroActivo: string | null = null;
+
+    // Devuelve los tipos de permisos únicos
+    get tiposFiltrados(): string[] {
+        return [...new Set((this.permisos || []).map((p) => p.tipo))];
+    }
+
+    // Devuelve los permisos según el filtro activo
+    get permisosFiltrados(): PermisosDTO[] {
+        if (!this.filtroActivo) return this.permisos || [];
+        return this.permisos.filter((p) => p.tipo === this.filtroActivo);
+    }
+
+    // Cambia el filtro al hacer click en una etiqueta
+    toggleFiltro(tipo: string): void {
+        this.filtroActivo = this.filtroActivo === tipo ? null : tipo;
+    }
+
+    // Devuelve cuántos permisos hay por tipo
+    contarPermisosPorTipo(tipo: string): number {
+        return this.permisos.filter((p) => p.tipo === tipo).length;
+    }
+
 
 }
 

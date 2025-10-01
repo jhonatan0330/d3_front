@@ -247,6 +247,19 @@ export class LoginService {
       );
   }
 
+  changePwdOther(user: string,oldPwd: string, newPwd: string, autorizacion: string) {
+    const autenticacion: UsuarioAutenticacionDTO = new UsuarioAutenticacionDTO();
+    autenticacion.llaveTabla = autorizacion;
+    autenticacion.usuario = user;
+    autenticacion.claveAnterior = oldPwd;
+    autenticacion.clave = newPwd;
+    return this.http
+      .post<UsuarioAutenticacionDTO>(
+        this.ls.getUrlAccess('/main/cambiarClave'),
+        autenticacion
+      );
+  }
+
 
   changePwdOtherSystem(autenticacion: UsuarioOrganizacionDTO) {
     return this.http
