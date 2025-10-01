@@ -98,13 +98,41 @@
                     </mat-icon>
                 </div>
 
+                <!-- Etiquetas dinámicas -->
+                <div class="flex flex-wrap gap-2 mb-4" *ngIf="permisos?.length">
+                    <ng-container *ngFor="let tipo of tiposFiltrados">
+                        <button
+                            class="px-3 py-1 rounded-full text-sm font-semibold shadow-md transition hover:opacity-80"
+                            [ngClass]="[
+        permisoColors[tipo],
+        tipo === filtroActivo ? 'ring-2 ring-offset-2 ring-black dark:ring-white' : ''
+      ]" (click)="toggleFiltro(tipo)">
+                            {{ permisoNames[tipo] }}
+                            <span class="ml-1 text-xs bg-white bg-opacity-20 rounded-full px-2 py-0.5">
+                                {{ contarPermisosPorTipo(tipo) }}
+                            </span>
+                        </button>
+                    </ng-container>
+
+                    <!-- Botón para quitar el filtro si está activo -->
+                    <button *ngIf="filtroActivo"
+                        class="text-sm px-2 py-1 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400"
+                        (click)="filtroActivo = null">
+                        Quitar filtro ✖
+                    </button>
+                </div>
+
+                <!-- Lista de permisos filtrados -->
                 <div class="overflow-x-auto">
                     <div class="grid grid-cols-2 gap-3 pr-[10px]">
-                        <div *ngFor="let permiso of permisos">
-                            <button class="w-full px-3 py-2 rounded-md shadow-md text-left"
+                        <div *ngFor="let permiso of permisosFiltrados">
+                            <button
+                                class="w-full px-3 py-2 rounded-md shadow-md text-left transition hover:scale-[1.02]"
                                 [ngClass]="permisoColors[permiso.tipo]">
-                                 {{ permisoNames[permiso.tipo] }} : {{ permiso.nombre  }}
-                                <div>{{ permiso.key }} : {{ permiso.valor }}</div>
+                                {{ permisoNames[permiso.tipo] }}: {{ permiso.nombre }}
+                                <div class="text-xs opacity-80">
+                                    {{ permiso.key }}: {{ permiso.valor }}
+                                </div>
                             </button>
                         </div>
                     </div>
