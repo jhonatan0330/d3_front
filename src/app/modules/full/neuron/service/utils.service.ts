@@ -8,6 +8,7 @@ import { SuccessComponent } from '../form/success/success.component';
 import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.component';
 import { ContactsDetailsComponent } from 'app/persons/detail_persons/detail_persons';
 import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
+import { UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
   providedIn: 'root',
@@ -74,10 +75,17 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  modalUserChangePass(_key: string){
+  modalUserChangePassOther(_key: UsuarioDTO){
     const dialogRef: MatDialogRef<any> = this.dialog.open(SettingsSecurityComponent, {
       maxHeight: '90vh',
       data: { key:_key }
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalUserChangePass(){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(SettingsSecurityComponent, {
+      maxHeight: '90vh',
     });
     return dialogRef.afterClosed();
   }

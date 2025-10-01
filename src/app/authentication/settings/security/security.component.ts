@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 
 import Swal from 'sweetalert2';
@@ -20,7 +21,7 @@ export class SettingsSecurityComponent implements OnInit {
      */
     constructor(
 
-        @Inject(MAT_DIALOG_DATA) public data: { key: string },
+        @Inject(MAT_DIALOG_DATA) public data: { key: UsuarioDTO },
         private _formBuilder: UntypedFormBuilder,
         private jwtAuth: LoginService
     ) {
@@ -55,14 +56,14 @@ export class SettingsSecurityComponent implements OnInit {
         }
         this.isLoading = true;
 
-        if (this.data.key) {
+        if (this.data?.key) {
 
-            this.jwtAuth.changePwdOther(this.data.key, signinData.oldPwd, signinData.newPwd, null).subscribe({
+            this.jwtAuth.changePwdOther(this.data.key.llaveTabla, signinData.oldPwd, signinData.newPwd, null).subscribe({
                 next: () => {
                     this.isLoading = false;
                     Swal.fire(
                         'Cambio Exitoso',
-                        'La nueva clave se cambio de forma exitosa',
+                        'La nueva clave del usuario '+this.data.key.nombre+' se cambio de forma exitosa',
                         'success'
                     );
                 },
