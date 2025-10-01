@@ -13,7 +13,7 @@ import {
   PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaCaracteristicaDTO,
 } from '../model/sw42.domain';
-import { ApiErrorResponse } from '../model/sw42.utils';
+import { ApiErrorResponse, IdResponse } from '../model/sw42.utils';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({
@@ -173,9 +173,8 @@ export class ApiService {
     );
   }
 
-  getMessageInFiledProccess(property: String, value: String, _server: string=null): Observable<string> {
+  getMessageInFiledProccess(property: String, value: String, _server: string=null): Observable<IdResponse> {
     const endpoint = this.ls.getUrlAccess('/rest/getMessageToProcessField/' + property + '/'+value, _server);
-    return this.http.get( endpoint, { responseType: 'text' }
-    );
+    return this.http.get<IdResponse>( endpoint);
   }
 }

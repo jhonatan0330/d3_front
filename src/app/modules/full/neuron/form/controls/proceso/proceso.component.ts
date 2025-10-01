@@ -23,6 +23,7 @@ import Swal from 'sweetalert2';
 import { BarcodeFormat } from '@zxing/library';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { IdResponse } from '../../../model/sw42.utils';
 
 @Component({
   selector: 'app-proceso',
@@ -178,8 +179,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           const _pHTML =this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL)
           if( _pHTML) {
               this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla).subscribe({
-                next: (res: string) => {
-    this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(res);
+                next: (res: IdResponse) => {
+    this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(res.comment);
                 },
                 error: () => {
                 }
