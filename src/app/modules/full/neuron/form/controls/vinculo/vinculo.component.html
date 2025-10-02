@@ -5,6 +5,7 @@
   <a (click)="openDocument(proceso)">
     <div class="p-1 rounded" [style.backgroundColor]="getColor(proceso.estadoExpediente)"
       [style.color]="getColorFont(proceso.estadoExpediente)">
+      <div class="text-md font-semibold mx-1">{{ structure.nombre | titlecase }}</div>
       <div class="flex items-center ">
         <div class="w-8 p-1">
           <img src="{{ proceso.imagen | imageFormat }}" />

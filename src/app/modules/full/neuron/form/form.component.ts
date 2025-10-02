@@ -43,6 +43,7 @@ import { LocalConstants, LocalStoreService } from 'app/shared/local-store.servic
 import { Router } from '@angular/router';
 import { ContactsService } from 'app/persons/contact.services';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
+import { LoginService } from 'app/authentication/login.service';
 
 @Component({
     selector: 'app-form',
@@ -101,25 +102,15 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private _contactsService: ContactsService,
         public dialogRef: MatDialogRef<FormComponent>,
         private templateService: TemplateService,
         private api: ApiService,
+        private _jwt: LoginService,
         private ls: LocalStoreService,
         private compiler: ComponentFactoryResolver,
         private utilsService: UtilsService,
         private _router: Router
     ) { }
-
-    actualizar() {
-
-        for (let i = 0; i < this.plantilla.propiedades.length; i++) {
-            if (this.plantilla.propiedades[i].nombre == "TIPO ROL") {
-                this.esRol = true;
-                return;
-            }
-        }
-    }
 
     ngOnInit(): void {
 
@@ -144,13 +135,13 @@ export class FormComponent implements OnInit, AfterViewInit {
             // Camino Update
             this.consultarDocumento(this.pedidoBase.llaveTabla);
         } else {
+            
             if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FUNCION_SQL_NEW_ANTES)) {
                 this.validacionPrevia();
             } else {
                 this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
             }
         }
-        this.actualizar();
     }
 
     ngAfterViewInit(): void {
@@ -664,6 +655,9 @@ export class FormComponent implements OnInit, AfterViewInit {
     // Resuelve las propiedades de la plantilla
     resolvePropiertiesForm() {
 
+        if(this._jwt.isAdmin){
+            this.esRol = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_TIPO_ROL);
+        }
         this.canMassive = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA);
         if (this.pedido.llaveTabla) {
             this.hasVoucher = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.TEMPLATE_VOUCHER);
@@ -1092,7 +1086,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     abrirUsuario(pUsuario) {
-        this._contactsService.searchUserByRol(pUsuario).subscribe((contact: UsuarioDTO) => {
+        this.api.searchUserByRol(pUsuario).subscribe((contact: UsuarioDTO) => {
             this.utilsService.modalUser(contact.llaveTabla).subscribe();
         });
     }

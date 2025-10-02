@@ -15,6 +15,7 @@ import {
 } from '../model/sw42.domain';
 import { ApiErrorResponse, IdResponse } from '../model/sw42.utils';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+import { UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
   providedIn: 'root',
@@ -176,5 +177,11 @@ export class ApiService {
   getMessageInFiledProccess(property: String, value: String, _server: string=null): Observable<IdResponse> {
     const endpoint = this.ls.getUrlAccess('/rest/getMessageToProcessField/' + property + '/'+value, _server);
     return this.http.get<IdResponse>( endpoint);
+  }
+
+  
+  searchUserByRol(query: string): Observable<UsuarioDTO> {
+    return this.http
+              .get<UsuarioDTO>(this.ls.getUrlAccess('/user/document/' + query));
   }
 }

@@ -34,13 +34,6 @@ export class ContactsService {
         return this._contacts.asObservable();
     }
 
-    searchUserByRol(query: string): Observable<UsuarioDTO> {
-        return this._httpClient
-            .get<UsuarioDTO>(this.ls.getUrlAccess('/user/document/' + query)).pipe(
-                tap((contacts) => this._contact.next(contacts))
-            );;
-    }
-
     searchTags(): Observable<RolAccesoFilterDTO[]> {
         return this._httpClient
             .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/getRole'))
