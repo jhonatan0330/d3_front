@@ -34,8 +34,6 @@ export class ContactsService {
         return this._contacts.asObservable();
     }
 
-
-
     searchTags(): Observable<RolAccesoFilterDTO[]> {
         return this._httpClient
             .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/getRole'))
@@ -44,7 +42,7 @@ export class ContactsService {
 
     searchTagsById(query: string): Observable<RolAccesoFilterDTO[]> {
         return this._httpClient
-            .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/roles/'+query))
+            .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/roles/' + query))
             ;
     }
     searchPermisosById(query: string): Observable<PermisosDTO[]> {
@@ -83,10 +81,10 @@ export class ContactsService {
                     ).pipe(
                         map((allContacts) =>
                             allContacts.filter(c =>
-                    c.identificacion?.includes(query) ||
-                    c.nombre?.toLowerCase().includes(query.toLowerCase())
-                )
-            ),
+                                c.identificacion?.includes(query) ||
+                                c.nombre?.toLowerCase().includes(query.toLowerCase())
+                            )
+                        ),
                         tap((filtered) => this._contacts.next(filtered)) // Actualiza el Subject con los filtrados
                     );
                 }
@@ -104,19 +102,19 @@ export class ContactsService {
             {
                 estado: 'A',
                 rol: query,
-                filtroParametro : 'A'
+                filtroParametro: 'A'
             }
-            ).pipe(
-                tap((contacts) => this._contacts.next(contacts))
-            );
+        ).pipe(
+            tap((contacts) => this._contacts.next(contacts))
+        );
     }
 
     getContactById(query: string): Observable<UsuarioDTO> {
         return this._httpClient.get<UsuarioDTO>(
-            this.ls.getUrlAccess('/user/'+query)
-            ).pipe(
-                tap((contacts) => this._contact.next(contacts))
-            );
+            this.ls.getUrlAccess('/user/' + query)
+        ).pipe(
+            tap((contacts) => this._contact.next(contacts))
+        );
     }
 
 }

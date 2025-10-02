@@ -1,5 +1,6 @@
 import {
     Component,
+    ModuleWithComponentFactories,
 } from '@angular/core';
 import {
     ChangeDetectorRef,
@@ -23,6 +24,8 @@ import {
 
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { LoginService } from 'app/authentication/login.service';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 
 @Component({
@@ -46,6 +49,7 @@ export class PersonsComponent implements OnInit, OnDestroy {
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _changeDetectorRef: ChangeDetectorRef,
+        private _jwt: LoginService,
         private _contactsService: ContactsService,
         private _router: Router,
         private utilService: UtilsService
@@ -53,6 +57,25 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
 
     ngOnInit(): void {
+
+        let _notPermission = true; 
+        if(this._jwt.company){ 
+            const _modules = PlantillaHelper.buscarValorMultiple(this._jwt.company.propiedades, PlantillaHelper.APP_MODULES);
+            if(_modules){
+                for (let index = 0; index < _modules.length; index++) {
+                    const element = _modules[index];
+                    if(element.valor ==='persons'){
+                        _notPermission = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(_notPermission){
+             this._router.navigate(['/main']);
+                return;
+        }
         // Get the contacts
         this._contactsService.contacts$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -88,10 +111,6 @@ export class PersonsComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
     }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
 
 
     onBackdropClicked(): void {
