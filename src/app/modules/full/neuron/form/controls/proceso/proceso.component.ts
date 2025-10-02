@@ -1205,25 +1205,34 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   actualizarTexto(): void {
     if (this.proceso) {
+      let _updated = false;
+      if (this.proceso.dinero && !this.data.valorNumero ) {
+        if (!this.isEmpty(this.procesoValor) && this.procesoValor === '2') {
+          if(this.data.valorNumero !== this.proceso.dinero.saldo){
+            this.data.valorNumero = this.proceso.dinero.saldo;
+            _updated = true;
+          }
+        } else {
+          if(this.data.valorNumero !== this.proceso.dinero.valorTotal){
+            this.data.valorNumero = this.proceso.dinero.valorTotal;
+            _updated = true;
+          }
+        }
+      }
       if (
         (!this.data.valorOpcion && this.proceso.llaveTabla) ||
-        (this.data.valorOpcion !== this.proceso.llaveTabla) ||
-        (this.proceso.dinero && !this.data.valorNumero)
+        (this.data.valorOpcion !== this.proceso.llaveTabla) 
       ) {
         this.data.valorOpcion = this.proceso.llaveTabla;
         this.data.principal = this.proceso;
-        if (this.proceso.dinero) {
-          // No se si meterlo en actualizar
-          if (!this.isEmpty(this.procesoValor) && this.procesoValor === '2') {
-            this.data.valorNumero = this.proceso.dinero.saldo;
-          } else {
-            this.data.valorNumero = this.proceso.dinero.valorTotal;
-          }
-        }
         this.fControl.setValue(this.proceso);
         if (!this.data.valorText) { this.data.valorText = this.proceso.descripcion; }
+        _updated = true;
+      }
+      if(_updated){
         this.avisarModificacion();
       }
+
     } else {
       if (this.data.valorOpcion) {
         this.data.valorOpcion = null;
