@@ -72,10 +72,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         });
     }
 
-    // Tenia un error en Factura de SW apenas abria no tomaba el valor
-    if (this.data.valorNumero !== this.fControl.value) {
-      this.actualizar();
-    }
+    this.actualizar();
   }
 
   onEnter(event: KeyboardEvent) {

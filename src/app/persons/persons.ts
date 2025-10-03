@@ -136,6 +136,6 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
 
     cambiar_clave(pUsuario) {
-        this.utilService.modalUserChangePass(pUsuario.llaveTabla).subscribe();
+        this.utilService.modalUserChangePassOther(pUsuario).subscribe();
     }
 }

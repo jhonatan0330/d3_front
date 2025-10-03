@@ -67,8 +67,12 @@ export class UserComponent implements OnInit, OnDestroy {
         });
     }
 
-    cambiarClave(pUsuario) {
-        this.utilService.modalUserChangePass(pUsuario.llaveTabla).subscribe();
+    cambiarClave() {
+        this.utilService.modalUserChangePass().subscribe();
+    }
+    
+    cambiarClaveOther(pUsuario) {
+        this.utilService.modalUserChangePassOther(pUsuario).subscribe();
     }
 
     goToMyAccount(pUsuario) {

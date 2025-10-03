@@ -5,8 +5,11 @@
         <!-- Section -->
         <div class="w-full text-center sm:text-left">
             <div class="text-xl font-semibold">Cambie su clave</div>
-            <div class="text-secondary text-sm sm:text-base">
+            <div *ngIf="!data?.key" class="text-secondary text-sm sm:text-base">
                 Recuerda cambiar tu clave constantemente!
+            </div>
+            <div *ngIf="data?.key" class="text-secondary text-sm sm:text-base">
+                Recuerda comentarle al usuario sobre el cambio!
             </div>
         </div>
 
