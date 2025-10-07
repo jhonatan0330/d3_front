@@ -3,6 +3,8 @@ import { LayoutComponent } from 'app/layout/layout.component';
 import { AuthGuard } from './authentication/authentication.guard';
 import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
 import { PersonsComponent } from './persons/persons';
+import { IndicatorsComponent } from './indicators/indicatorsPag/indicators.component';
+import { FlexComponent } from './flex/flex';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -21,7 +23,7 @@ export const appRoutes: Route[] = [
     children: [
       { path: 'sign-in', component: SignInSplitScreenReversedComponent},
       { path: 'sessions/recover', loadChildren: () => import('app/authentication/recover-password/recover-password.module').then(m => m.RecoverPasswordModule) },
-      { path: 'sessions/new/:id', loadChildren: () => import('app/authentication/new-password/new-password.module').then(m => m.NewPasswordModule) }
+      { path: 'sessions/new/:id', loadChildren: () => import('app/authentication/new-password/new-password.module').then(m => m.NewPasswordModule) },
     ]
   },
    // Admin routes
@@ -38,6 +40,8 @@ export const appRoutes: Route[] = [
       { path: 'massive', loadChildren: () => import('app/massive/massive.module').then(m => m.MassiveModule) },
       { path: 'account', loadChildren: () => import('app/accounting/accounting.module').then(m => m.AccountingModule) },
       { path: 'persons', component: PersonsComponent },
+      { path: 'indicadores', component: IndicatorsComponent },
+      { path: 'flex', component: FlexComponent },
       { path: '**', redirectTo: 'main' },
     ]
 
