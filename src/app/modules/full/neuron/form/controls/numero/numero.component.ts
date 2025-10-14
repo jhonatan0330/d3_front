@@ -6,7 +6,7 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormulaHelper } from 'app/modules/full/neuron/formula.helper';
 import { BaseComponent } from '../base/base.component';
-import { debounceTime } from 'rxjs';
+import { debounceTime, distinctUntilChanged,  map, tap } from 'rxjs';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { formatNumber } from '@angular/common';
 
@@ -25,7 +25,6 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   formulaMaximum: PropiedadDTO;
   formulaMinimum: PropiedadDTO;
   funcion: string;
-  isMoneda = false;
   numeroDecimales = 0;
   optionsMask = {
     precision: 0,
@@ -41,19 +40,12 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     if (!this.data.valorNumero) {
       this.data.valorNumero = 0;
     }
-    this.fControl.setValue(this.data.valorNumero);
+    this.fControl.setValue(this.numberToInput(this.data.valorNumero));
     if (this.required) {
       this.fControl.setValidators(Validators.required);
       this.fControl.updateValueAndValidity();
     }
     this.startControl();
-    /*
-    if (this.isEnabled) {
-      this.fControl.enable();
-    } else {
-      this.fControl.disable();
-    }
-      */
     // Al finalzar se subscriben los cambios
     if (this.funcion) {
       // Solo tomo unos segundos en los casos que el campo tenga funcion asi evito tantas consultas al server
@@ -66,18 +58,27 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         });
     } else {
       this.fControl.valueChanges
-        .subscribe(() => {
+      .pipe(
+        distinctUntilChanged(),
+        map(value=>{ 
+          this.fControl.setValue(this.numberToInput(value), { emitEvent: false });
+          return value;
+        }),
+        tap(()=> {
           this.actualizar();
           this.validateErrorMessage();
-        });
+        })
+      ).subscribe();
     }
 
-    this.actualizar();
+    if (this.data.valorNumero !== Number(this.fControl.value.replace(/,/g, '').replace(/\s/g, ''))) {
+      this.actualizar();
+    }
   }
 
   onEnter(event: KeyboardEvent) {
-    event.preventDefault(); // evita submit
-    (event.target as HTMLInputElement).blur(); // fuerza el blur -> dispara valueChanges
+    const input = event.target as HTMLInputElement;
+    this.fControl.setValue(this.numberToInput(Number(input.value)));
   }
 
   startControl() {
@@ -87,9 +88,6 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     this.formulaMaximum = this.obtenerPropiedad(PlantillaHelper.NUMERO_MAXIMO);
     this.formulaMinimum = this.obtenerPropiedad(PlantillaHelper.NUMERO_MINIMO);
     this.funcion = this.obtenerValor(PlantillaHelper.NUMERO_FUNCION);
-    if (this.obtenerPropiedad(PlantillaHelper.NUMERO_MONEDA)) {
-      this.isMoneda = true;
-    }
     const decimales: string = this.obtenerValor(
       PlantillaHelper.NUMERO_REDONDEO
     );
@@ -100,11 +98,9 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     if (this.data.valorText) {
       if (this.data.valorNumero === 0) {
         // Esto aplica para los formularios de clientes para llenar el id
-        this.fControl.setValue(this.data.valorText);
         this.data.valorNumero = Number(this.data.valorText);
-      } else {
-        this.fControl.setValue(this.data.valorNumero);
       }
+      this.fControl.setValue(this.numberToInput(this.data.valorNumero));
     } else {
       if (!this.data.documento) {
         // Coloco para que se realice a los nuevos el calculo
@@ -130,35 +126,40 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     return texto;
   }
 
-
-  actualizar() {
-    let rawValue = String(this.fControl.value ?? '');
-
-    rawValue = rawValue.replace(/,/g, '').replace(/\s/g, '');
+  numberToInput(_valueNumber:number): string{
+    let _value = String(_valueNumber);
+    _value = _value.replace(/,/g, '').replace(/\s/g, '');
 
     let numericValue = 0;
 
-    if (/^[0-9+\-*/().]+$/.test(rawValue)) {
+    if (/^[0-9+\-*/().]+$/.test(_value)) {
       try {
         // Evaluamos expresión matemática si es válida
-        numericValue = Function('"use strict";return (' + rawValue + ')')();
+        numericValue = Function('"use strict";return (' + _value + ')')();
       } catch (e) {
-        console.error('Expresión inválida', e);
         numericValue = 0;
       }
-    } else if (rawValue) {
-      console.warn('Entrada no válida');
+    } else if (_value) {
       numericValue = 0;
     }
 
-    const formattedValue = formatNumber(numericValue, 'en-US', '1.0-2');
+    return formatNumber(numericValue, 'en-US', '1.0-2');
+  }
 
-    this.fControl.setValue(formattedValue, { emitEvent: false });
 
-    this.data.valorNumero = numericValue;
-    this.data.valorText = formattedValue;
-
-    this.avisarModificacion();
+  actualizar() {
+    let controlValue = this.fControl.value;
+    if (!controlValue) {
+      controlValue = '0';
+    }else{
+      controlValue = controlValue.replace(/,/g, '').replace(/\s/g, '');
+    }
+    if (this.data.valorNumero !== Number(controlValue)) {
+      this.data.valorNumero = Number(controlValue);
+      this.data.valorText = controlValue;
+      this.avisarModificacion();
+    }
+    
   }
 
   private formulaReplaceDependents(textoCalculado: string): string {
@@ -231,7 +232,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       let resultado = FormulaHelper.calcular(textoCalculado); // Lo puse por fuera de dependientes porque asi tambien se puede calcular
       resultado = Number(resultado.toFixed(this.numeroDecimales));
       if (this.data.valorNumero !== resultado) {
-        this.fControl.setValue(resultado);
+        this.fControl.setValue(this.numberToInput(resultado));
         // Debido a que No se a colocado el listener de actualizar toca adecuar bien el campo
         // Esto generaba un error en los campos que no se modificaban en el servidor
         // Fallo en bbx calculando formuls iterativas, ver donde falla de  nuevo
@@ -280,7 +281,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
           .consultarDatosBase(filtro, this.urlServer)
           .subscribe({
             next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
-              this.fControl.setValue(_value.valorNumeroMax);
+              this.fControl.setValue(this.numberToInput(_value.valorNumeroMax));
               this.isLoading = false;
             },
             error: () => {
@@ -292,9 +293,9 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   }
 
   setValorNumero(valor: number) {
-    if (this.fControl.value !== valor) {
-      this.fControl.setValue(valor);
-    }
+    //if (this.fControl.value !== valor) {
+      this.fControl.setValue(this.numberToInput(valor));
+    //}
   }
 
 
