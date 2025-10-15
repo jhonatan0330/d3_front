@@ -65,6 +65,8 @@ export class LoginService {
     //Esto lo hice porque me estoy autenticando 2 veces, tengo que mejorar esta parte
     if (username === null && password === null) {
       if (!tokenAuto) { return null; };
+      const _user = this.getUser()
+      if(_user)autenticacion.usuario = _user.llaveTabla;
       autenticacion.securityToken = tokenAuto;
     }
     return this.http
