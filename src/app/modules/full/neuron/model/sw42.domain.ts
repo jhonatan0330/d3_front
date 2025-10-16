@@ -212,8 +212,6 @@ export class ProductoInventarioDTO extends BasicDTO {
   bodega: string;
   nombreBodega: string;
   cantidadActual: number;
-  cantidadMinima: number;
-  cantidadMaxima: number;
 }
 
 
