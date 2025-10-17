@@ -9,81 +9,84 @@ import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.comp
 import { ContactsDetailsComponent } from 'app/persons/detail_persons/detail_persons';
 import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
+import { dfaComponent } from 'app/authentication/DFA/dfa';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UtilsService {
-  
-  constructor(public dialog: MatDialog) {}
 
-  modalWithParams( pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null, pSaveInField = false ) {
+  constructor(public dialog: MatDialog) { }
+
+  modalWithParams(pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null, pSaveInField = false) {
 
     const dialogRef: MatDialogRef<any> = this.dialog.open(FormComponent, {
       // width: '720px',
       maxHeight: '100vh',
       maxWidth: '98vw',
       disableClose: true,
-      data: { data: pDataModal , close2Save: pClose2Save, identificador:  pIdentificador, saveInField: pSaveInField},
+      data: { data: pDataModal, close2Save: pClose2Save, identificador: pIdentificador, saveInField: pSaveInField },
     });
     return dialogRef.afterClosed();
   }
 
-  modalSuccess( pHtmlToPrint : string) {
+  modalSuccess(pHtmlToPrint: string) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(SuccessComponent, {
       maxHeight: '100vh',
       maxWidth: '98vw',
-      data: { data: pHtmlToPrint},
+      data: { data: pHtmlToPrint },
     });
     return dialogRef.afterClosed();
   }
 
-  modalTransfer(document: string, state: string, template: string, server: string){
+  modalTransfer(document: string, state: string, template: string, server: string) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(TransferFormComponent, {
       maxHeight: '90vh',
       maxWidth: '90vh',
       disableClose: false,
-      data: { document: document, state: state, template: template, server: server},
+      data: { document: document, state: state, template: template, server: server },
     });
     return dialogRef.afterClosed();
   }
 
-  modalTrace(document: string, template: string, server: string, documentName: string, documentState: string, state: string){
+  modalTrace(document: string, template: string, server: string, documentName: string, documentState: string, state: string) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(TrazabilityComponent, {
       maxHeight: '90vh',
       maxWidth: '99vh',
       disableClose: false,
-      data: { document: document, template: template, server: server, documentName: documentName, documentState: documentState, state: state},
+      data: { document: document, template: template, server: server, documentName: documentName, documentState: documentState, state: state },
     });
     return dialogRef.afterClosed();
   }
 
-  modalVoucher(_key: string, _catalog:string){
+  modalVoucher(_key: string, _catalog: string) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(ManualFormComponent, {
       disableClose: true,
       maxHeight: '90vh',
-      data: { key:_key, catalogId: _catalog }
+      data: { key: _key, catalogId: _catalog }
     });
     return dialogRef.afterClosed();
   }
 
-  modalUser(_key: string){
+  modalUser(_key: string) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(ContactsDetailsComponent, {
       maxHeight: '90vh',
-      data: { key:_key }
+      data: { key: _key }
     });
     return dialogRef.afterClosed();
   }
 
-  modalUserChangePassOther(_key: UsuarioDTO){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(SettingsSecurityComponent, {
+  modalUserChangePassOther(_key: UsuarioDTO) {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(dfaComponent, {
       maxHeight: '90vh',
-      data: { key:_key }
+      disableClose: false, // permite cerrar haciendo clic fuera
+      data: { key: _key }
     });
     return dialogRef.afterClosed();
   }
 
-  modalUserChangePass(){
+
+  modalUserChangePass() {
     const dialogRef: MatDialogRef<any> = this.dialog.open(SettingsSecurityComponent, {
       maxHeight: '90vh',
     });

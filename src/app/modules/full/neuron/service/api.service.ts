@@ -15,7 +15,7 @@ import {
 } from '../model/sw42.domain';
 import { ApiErrorResponse, IdResponse } from '../model/sw42.utils';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
-import { UsuarioDTO } from 'app/authentication/authentication.domain';
+import { UsuarioAutenticacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
   providedIn: 'root',
@@ -97,6 +97,12 @@ export class ApiService {
       this.ls.getUrlAccess('/rest/guardarDocumento', _server),
       documento, {headers}
     );
+  }
+
+  verificarToken(usuario: UsuarioAutenticacionDTO):Observable<UsuarioAutenticacionDTO>{
+    return this.http.post<UsuarioAutenticacionDTO>(
+      this.ls.getUrlAccess('/user/dfa', null),usuario);
+    
   }
 
   consultarDatosBase(

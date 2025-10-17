@@ -1,12 +1,9 @@
 import {
   Component,
   OnInit,
-  ViewChild,
   OnDestroy,
 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { MatButton } from '@angular/material/button';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { Validators, FormGroup, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import Swal from 'sweetalert2';
