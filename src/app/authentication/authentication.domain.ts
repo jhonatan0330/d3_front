@@ -73,6 +73,7 @@ export class UsuarioAutenticacionDTO extends BasicDTO {
   mensaje: string;
   token: string;
   fechaCreacion: Date;
+  fechaMaxima: Date;
 }
 
 			

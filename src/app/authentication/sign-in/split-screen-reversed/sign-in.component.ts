@@ -7,7 +7,7 @@ import {
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { OrganizacionDTO } from 'app/authentication/authentication.domain';
+import { OrganizacionDTO, UsuarioAutenticacionDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
@@ -89,13 +89,29 @@ export class SignInSplitScreenReversedComponent implements OnInit {
         // Sign in
         this.loginservice.signin(this.signInForm.value.username, this.signInForm.value.password, null)
             .subscribe({
-                next: () => {
+                next: (_val: UsuarioAutenticacionDTO) => {
                     this.isLoading = false;
                     this.signInForm.enable();
                     this.signInForm.controls['password'].setValue('');
-                    const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL') || '/main';
-                    // Navigate to the redirect url
-                    this.router.navigateByUrl(redirectURL);
+                    const APP_DFA = PlantillaHelper.buscarValor(_val.organizacion.propiedades, PlantillaHelper.APP_DFA);
+                    if (APP_DFA) {
+                        this.utilsService.modalUserChangePassOther(_val.usuarioDTO).subscribe((result) => {
+                            if (result) {
+                                this.loginservice.authenticationOK(_val);
+                                const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL') || '/main';
+                                this.router.navigateByUrl(redirectURL);
+                            } else {
+                                console.warn('Autenticación cancelada o código incorrecto');
+                            }
+                        }
+                        );
+                    } else {
+                        this.loginservice.authenticationOK(_val);
+                        const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL') || '/main';
+                        // Navigate to the redirect url
+                        this.router.navigateByUrl(redirectURL);
+                    }
+
                 },
                 error: (response) => {
                     // Re-enable the form

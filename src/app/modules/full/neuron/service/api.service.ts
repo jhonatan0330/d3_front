@@ -15,7 +15,7 @@ import {
 } from '../model/sw42.domain';
 import { ApiErrorResponse, IdResponse } from '../model/sw42.utils';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
-import { UsuarioDTO } from 'app/authentication/authentication.domain';
+import { UsuarioAutenticacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
     providedIn: 'root',
@@ -31,7 +31,7 @@ export class ApiService {
         return this.http.get<DocumentoPlantillaDTO[]>(
             this.ls.getUrlAccess('/template/getTemplates', _server)
         );
-    }
+    };
 
     relacionesPropiedad(
         filter: RelacionInternaFilterDTO, _server: string
@@ -99,6 +99,12 @@ export class ApiService {
         );
     }
 
+    verificarToken(usuario: UsuarioAutenticacionDTO): Observable<UsuarioAutenticacionDTO> {
+        return this.http.post<UsuarioAutenticacionDTO>(
+            this.ls.getUrlAccess('/user/dfa', null), usuario);
+
+    }
+
     listarConsultaPropiedad(llaveTabla: string, _server: string): Observable<any[]> {
         const payload = {
             estado: 'A',
@@ -109,8 +115,6 @@ export class ApiService {
             payload
         );
     }
-
-
 
     consultarDatosBase(
         campo: PedidoVentaCaracteristicaFilterDTO, _server: string
@@ -147,6 +151,7 @@ export class ApiService {
 
                 filter.dependientes.push(newElement)
             }
+
         }
 
 

@@ -33,6 +33,8 @@ import { ChangePictureComponent } from './authentication/settings/change-picture
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { SettingsSecurityComponent } from './authentication/settings/security/security.component';
+import { IndicatorsComponent } from './indicators/indicatorsPag/indicators.component';
+import { dfaComponent } from './authentication/DFA/dfa';
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -44,6 +46,7 @@ const routerConfig: ExtraOptions = {
 
 @NgModule({
   declarations: [
+    dfaComponent,
     AppComponent,
     SignInSplitScreenReversedComponent,
     PersonsComponent,            
@@ -86,6 +89,7 @@ const routerConfig: ExtraOptions = {
     MatInputModule,
     MatMenuModule,
     MatButtonModule,
+    IndicatorsComponent   
   ],
   providers: [
     { provide: ErrorHandler, useClass: ErrorHandlerService },
