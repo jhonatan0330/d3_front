@@ -46,17 +46,16 @@ export class dfaComponent {
             return;
         }
 
-        const code = this.recoverForm.value;
-        const _user = new UsuarioAutenticacionDTO();
+        const _user: UsuarioAutenticacionDTO = new UsuarioAutenticacionDTO();
         _user.usuario = this.data.key.llaveTabla;
-        _user.token = code;
+        _user.token = this.recoverForm.value.code;
 
         this.apiService.verificarToken(_user).subscribe({
-            next: (data) => {
-                this.dialogRef.close(true); 
+            next: () => {
+                this.dialogRef.close(true);
             },
             error: () => {
-                this.dialogRef.close(false); 
+                //this.dialogRef.close(false);
             }
         });
     }
