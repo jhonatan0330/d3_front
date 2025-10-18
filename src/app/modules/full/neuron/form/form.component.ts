@@ -135,7 +135,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             // Camino Update
             this.consultarDocumento(this.pedidoBase.llaveTabla);
         } else {
-            
+
             if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FUNCION_SQL_NEW_ANTES)) {
                 this.validacionPrevia();
             } else {
@@ -1089,6 +1089,10 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.api.searchUserByRol(pUsuario).subscribe((contact: UsuarioDTO) => {
             this.utilsService.modalUser(contact.llaveTabla).subscribe();
         });
+    }
+
+    flex() {
+        this.utilsService.modalFlex(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre, this.pedido.estado);
     }
 
     duplicate() {

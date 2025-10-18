@@ -9,12 +9,13 @@ import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.comp
 import { ContactsDetailsComponent } from 'app/persons/detail_persons/detail_persons';
 import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
+import { FlexComponent } from 'app/flex/flex';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UtilsService {
-  
+
   constructor(public dialog: MatDialog) {}
 
   modalWithParams( pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null, pSaveInField = false ) {
@@ -86,6 +87,14 @@ export class UtilsService {
   modalUserChangePass(){
     const dialogRef: MatDialogRef<any> = this.dialog.open(SettingsSecurityComponent, {
       maxHeight: '90vh',
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalFlex(document: string, template: string, server: string, documentName: string, documentState: string, state: string){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(FlexComponent, {
+      maxHeight: '90vh',
+      data: { document: document, template: template, server: server, documentName: documentName, documentState: documentState, state: state},
     });
     return dialogRef.afterClosed();
   }
