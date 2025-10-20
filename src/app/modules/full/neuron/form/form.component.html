@@ -79,9 +79,9 @@
           <mat-icon>person</mat-icon>
           <span>Usuario Rol</span>
         </button>
-        <button mat-menu-item *ngIf="pedido && pedido.llaveTabla " (click)="flex(pedido.llaveTabla)">
+        <button mat-menu-item *ngIf="_jwt.isAdmin" (click)="flex()">
           <mat-icon>person</mat-icon>
-          <span>administrar plantilla</span>
+          <span>Administrar plantilla</span>
         </button>
       </mat-menu>
     </div>

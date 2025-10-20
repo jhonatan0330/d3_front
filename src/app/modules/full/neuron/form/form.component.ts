@@ -105,7 +105,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         public dialogRef: MatDialogRef<FormComponent>,
         private templateService: TemplateService,
         private api: ApiService,
-        private _jwt: LoginService,
+        public _jwt: LoginService,
         private ls: LocalStoreService,
         private compiler: ComponentFactoryResolver,
         private utilsService: UtilsService,
@@ -1092,7 +1092,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     flex() {
-        this.utilsService.modalFlex(this.pedido.llaveTabla, this.pedido.plantilla, this.plantilla.server, this.pedido.nombre, this.pedido.estadoNombre, this.pedido.estado);
+        this.utilsService.modalFlex(this.plantilla.llaveTabla);
     }
 
     duplicate() {

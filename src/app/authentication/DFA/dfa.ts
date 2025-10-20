@@ -2,17 +2,19 @@ import {
     Component,
     Inject,
 } from '@angular/core';
-import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UsuarioAutenticacionDTO } from '../authentication.domain';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 
-
-
 @Component({
     selector: 'app-new-password',
-    templateUrl: './dfa.html'
+    templateUrl: './dfa.html',
+    standalone: true,
+    imports:[
+        ReactiveFormsModule
+    ]
 })
 export class dfaComponent {
 

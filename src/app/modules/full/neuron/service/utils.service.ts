@@ -94,23 +94,12 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  modalFlex(document: string, template: string, server: string, documentName: string, documentState: string, state: string){
+  modalFlex(pTemplate: string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(FlexComponent, {
       maxHeight: '90vh',
-      data: { document: document, template: template, server: server, documentName: documentName, documentState: documentState, state: state},
+      data: { template: pTemplate},
     });
     return dialogRef.afterClosed();
   }
-
-  /*
-  public modalProduct( pDataModal: DetallePedidoVentaDTO, allowEdit) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(ProductComponent, {
-      width: '720px',
-      maxHeight: '90vh',
-      disableClose: true,
-      data: { data: pDataModal, allowEdit: allowEdit},
-    });
-    return dialogRef.afterClosed();
-  }*/
 
 }

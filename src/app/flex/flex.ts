@@ -54,7 +54,7 @@ export class FlexComponent implements OnInit {
         if (this.isDarkMode) document.documentElement.classList.add('dark');
 
         // Cargar plantilla inicial
-        this.cargarPlantilla(this.data.template, this.data.server);
+        this.cargarPlantilla(this.data.template, null);
     }
 
     toggleDarkMode(): void {
@@ -75,7 +75,7 @@ export class FlexComponent implements OnInit {
             Swal.fire('Autorización', 'No tienes permisos para crear registros de este tipo de documento: ' + dp.nombre, 'info');
             return;
         }
-
+/*
         if (!dp.caracteristicas) {
             this.isLoading = true;
             this.api.obtenerCampos(plantillaId, dp.server).subscribe({
@@ -103,7 +103,7 @@ export class FlexComponent implements OnInit {
 
             // Propiedades de plantilla
             this.listarConsultaPropiedadPlantilla();
-        }
+        }*/
     }
 
     // 🔹 Mapear campos desde las caracteristicas de la plantilla
@@ -142,7 +142,7 @@ export class FlexComponent implements OnInit {
     // 🔹 Consultar propiedades de plantilla al iniciar
     listarConsultaPropiedadPlantilla(): void {
         if (!this.plantilla) return;
-        this.api.listarConsultaPropiedad(this.plantilla.llaveTabla, this.data.server)
+        this.api.listarConsultaPropiedad(this.plantilla.llaveTabla, null)
             .subscribe(props => {
                 this.propiedadesPlantilla = props.map(p => ({
                     code: p.propiedadValor,

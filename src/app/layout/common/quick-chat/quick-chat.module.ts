@@ -8,7 +8,6 @@ import { FuseDrawerModule } from '@fuse/components/drawer';
 import { FuseScrollbarModule } from '@fuse/directives/scrollbar';
 import { SharedModule } from 'app/shared/shared.module';
 import { QuickChatComponent } from 'app/layout/common/quick-chat/quick-chat.component';
-import { IndicatorsModule } from 'app/indicators/indicators.module';
 
 @NgModule({
     declarations: [
@@ -22,8 +21,7 @@ import { IndicatorsModule } from 'app/indicators/indicators.module';
         MatInputModule,
         FuseDrawerModule,
         FuseScrollbarModule,
-        SharedModule,
-        IndicatorsModule
+        SharedModule
     ],
     exports: [
         QuickChatComponent

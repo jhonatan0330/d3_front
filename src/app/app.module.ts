@@ -21,7 +21,6 @@ import { ErrorHandlerService } from './shared/error-handler.service';
 import { TokenInterceptor } from './shared/token.interceptor';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
-import { IndicatorsModule } from './indicators/indicators.module';
 import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -34,7 +33,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { SettingsSecurityComponent } from './authentication/settings/security/security.component';
 import { IndicatorsComponent } from './indicators/indicatorsPag/indicators.component';
-import { dfaComponent } from './authentication/DFA/dfa';
+
 
 const routerConfig: ExtraOptions = {
   preloadingStrategy: PreloadAllModules,
@@ -46,7 +45,6 @@ const routerConfig: ExtraOptions = {
 
 @NgModule({
   declarations: [
-    dfaComponent,
     AppComponent,
     SignInSplitScreenReversedComponent,
     PersonsComponent,            
@@ -68,7 +66,6 @@ const routerConfig: ExtraOptions = {
     CoreModule,
     // Layout module of your application
     LayoutModule,
-    IndicatorsModule,
 
     // 3rd party modules that require global configuration via forRoot
     SharedModule,
