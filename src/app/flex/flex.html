@@ -1,17 +1,12 @@
-<div class="min-h-screen w-full bg-gray-100 dark:bg-gray-900 p-6 h-full flex flex-col text-gray-900 dark:text-gray-100">
+<div class="min-h-screen w-full bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col text-gray-900 dark:text-gray-100">
   <!-- Encabezado superior -->
-  <div class="flex justify-between items-center mb-6">
-    <div class="flex items-center gap-4">
+  <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
+    <div class="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
       <div class="text-xl font-bold">Nombre Plantilla</div>
 
       <!-- Switch dark mode -->
       <label class="inline-flex items-center cursor-pointer" aria-label="Cambiar tema">
-        <input
-          type="checkbox"
-          class="sr-only peer"
-          [checked]="isDarkMode"
-          (change)="toggleDarkMode()"
-        />
+        <input type="checkbox" class="sr-only peer" [checked]="isDarkMode" (change)="toggleDarkMode()" />
         <div
           class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-600 relative
                  after:content-[''] after:absolute after:top-[2px] after:left-[2px]
@@ -21,27 +16,28 @@
       </label>
     </div>
 
-    <img src="https://via.placeholder.com/150" alt="Imagen 1" class="h-10 object-cover rounded-lg" />
+    <img src="https://via.placeholder.com/150" alt="Imagen 1"
+         class="h-10 object-cover rounded-lg mt-2 sm:mt-0" />
   </div>
 
   <!-- Grid principal -->
-  <div class="grid grid-cols-3 gap-6 flex-1 h-full">
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 flex-1 h-full">
     <!-- Columna 1 -->
     <div class="flex flex-col gap-6 h-full">
       <!-- Panel 1: Campos -->
-      <div class="flex flex-col flex-1">
-        <div class="flex justify-between items-center mb-2">
+      <div class="flex flex-col flex-1 min-h-[300px]">
+        <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
           <h2 class="text-lg font-bold">Campos</h2>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">➕</button>
             <button class="bg-gray-200 dark:bg-gray-600 dark:text-gray-100 px-3 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-500">↺</button>
           </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-4 overflow-y-auto">
-          <div class="grid grid-cols-2 gap-3">
-            <div *ngFor="let item of campos"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div (click)="onClickCampo(item.llaveTabla)" *ngFor="let item of campos"
                  class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition">
-              <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.code }}</span>
+              <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.llaveTabla }}</span>
               <h4 class="text-base font-semibold">{{ item.title }}</h4>
               <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle }}</p>
             </div>
@@ -50,16 +46,16 @@
       </div>
 
       <!-- Panel 2: Propiedades Campo -->
-      <div class="flex flex-col flex-1">
-        <div class="flex justify-between items-center mb-2">
+      <div class="flex flex-col flex-1 min-h-[300px]">
+        <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
           <h2 class="text-lg font-bold">Propiedades Campo</h2>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">➕</button>
             <button class="bg-gray-200 dark:bg-gray-600 dark:text-gray-100 px-3 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-500">↺</button>
           </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-4 overflow-y-auto">
-          <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div *ngFor="let item of propiedadesCampo"
                  class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition">
               <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.code }}</span>
@@ -72,15 +68,15 @@
     </div>
 
     <!-- Columna 2: Propiedades Plantilla -->
-    <div class="flex flex-col h-full">
-      <div class="flex justify-between items-center mb-2">
+    <div class="flex flex-col h-full min-h-[300px]">
+      <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
         <h2 class="text-lg font-bold">Propiedades Plantilla</h2>
-        <div class="flex gap-2">
+        <div class="flex gap-2 flex-wrap">
           <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Acción</button>
           <button class="bg-gray-200 dark:bg-gray-600 dark:text-gray-100 px-3 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-500">Detalle</button>
         </div>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-4 overflow-y-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div *ngFor="let item of propiedadesPlantilla"
                class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition">
@@ -95,10 +91,10 @@
     <!-- Columna 3 -->
     <div class="flex flex-col gap-6 h-full">
       <!-- Cuadro 1: Reportes -->
-      <div class="flex flex-col flex-1">
-        <div class="flex justify-between items-center mb-2">
+      <div class="flex flex-col flex-1 min-h-[300px]">
+        <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
           <h3 class="text-md font-bold">Reportes</h3>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button class="bg-blue-500 text-white rounded px-3 py-1">➕</button>
             <button class="bg-blue-500 text-white rounded px-3 py-1">✏</button>
             <button class="bg-blue-500 text-white rounded px-3 py-1">↺</button>
@@ -106,7 +102,7 @@
             <button class="bg-blue-500 text-white rounded px-3 py-1">🔍</button>
           </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
           <div class="grid grid-cols-1 gap-3">
             <div *ngFor="let item of reportes"
                  class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition">
@@ -119,10 +115,10 @@
       </div>
 
       <!-- Cuadro 2: Transiciones -->
-      <div class="flex flex-col flex-1">
-        <div class="flex justify-between items-center mb-2">
+      <div class="flex flex-col flex-1 min-h-[300px]">
+        <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
           <h3 class="text-md font-bold">Transiciones</h3>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button class="bg-green-500 text-white rounded px-3 py-1">➕</button>
             <button class="bg-green-500 text-white rounded px-3 py-1">✏</button>
             <button class="bg-green-500 text-white rounded px-3 py-1">↺</button>
@@ -130,8 +126,8 @@
             <button class="bg-green-500 text-white rounded px-3 py-1">🔍</button>
           </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-4 overflow-y-auto">
-          <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div *ngFor="let item of transiciones"
                  class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition">
               <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.code }}</span>
@@ -143,10 +139,10 @@
       </div>
 
       <!-- Cuadro 3: Relaciones -->
-      <div class="flex flex-col flex-1">
-        <div class="flex justify-between items-center mb-2">
+      <div class="flex flex-col flex-1 min-h-[300px]">
+        <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
           <h3 class="text-md font-bold">Relaciones</h3>
-          <div class="flex gap-2">
+          <div class="flex gap-2 flex-wrap">
             <button class="bg-purple-500 text-white rounded px-3 py-1">➕</button>
             <button class="bg-purple-500 text-white rounded px-3 py-1">✏</button>
             <button class="bg-purple-500 text-white rounded px-3 py-1">↺</button>
@@ -154,7 +150,7 @@
             <button class="bg-purple-500 text-white rounded px-3 py-1">🔍</button>
           </div>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
           <div class="grid grid-cols-1 gap-3">
             <div *ngFor="let item of relaciones"
                  class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition">
@@ -165,6 +161,6 @@
           </div>
         </div>
       </div>
-    </div><!-- /Columna 3 -->
+    </div>
   </div>
 </div>

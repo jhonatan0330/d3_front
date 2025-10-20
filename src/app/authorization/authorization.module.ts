@@ -23,6 +23,7 @@ import { MatTableModule } from "@angular/material/table";
 import { FuseNavigationModule } from "@fuse/components/navigation";
 import { FuseScrollbarModule } from "@fuse/directives/scrollbar";
 import { FuseScrollResetModule } from "@fuse/directives/scroll-reset";
+import { IndicatorsComponent } from "app/indicators/indicatorsPag/indicators.component";
 
 @NgModule({
     declarations: [
@@ -67,6 +68,7 @@ import { FuseScrollResetModule } from "@fuse/directives/scroll-reset";
         MatButtonModule,
         MatCardModule,
         MatCarouselModule.forRoot(),
+        IndicatorsComponent
     ]
 })
 export class ProfileModule {

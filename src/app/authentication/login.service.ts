@@ -32,8 +32,8 @@ export class LoginService {
 
   slides: string[] = [];
   slides$ = new BehaviorSubject<string[]>(this.slides);
-  
-  
+
+
   landing: SafeHtml[] = [];
   landing$ = new BehaviorSubject<SafeHtml[]>(this.landing);
 
@@ -76,11 +76,9 @@ export class LoginService {
       )
       .pipe(
         map((res: UsuarioAutenticacionDTO) => {
-          this.isAuthenticated = true;
-          //Coloque primero la autenticacion ya que la company trae el carrousel y este carrousel necesita el token
-          this.setUserAndToken(res, res.organizacion);
-          this.setCompany(res.organizacion)
-          this.getUserDataFull(res);
+
+
+
           return res;
         }),
         catchError((error) => {
@@ -88,6 +86,14 @@ export class LoginService {
           return throwError(error);
         })
       );
+  }
+
+  public authenticationOK(res: UsuarioAutenticacionDTO) {
+    this.isAuthenticated = true;
+    //Coloque primero la autenticacion ya que la company trae el carrousel y este carrousel necesita el token
+    this.setUserAndToken(res, res.organizacion);
+    this.setCompany(res.organizacion)
+    this.getUserDataFull(res);
   }
 
   private setCompany(_company: OrganizacionDTO) {
@@ -99,7 +105,7 @@ export class LoginService {
       }
     }
 
-    if (this.company && this.company.llaveTabla === _company.llaveTabla) {
+    if (this.company && this.company.llaveTabla === _company?.llaveTabla) {
       //Evito que se vuelva a consultar los template coverad
       return;
     }
@@ -155,7 +161,7 @@ export class LoginService {
     this.slides$.next(this.slides);
     this.landing$.next(this.landing);
     this.headerSection$.next(this.headerSection);
- 
+
   }
 
 
@@ -185,8 +191,12 @@ export class LoginService {
         map((profile: UsuarioAutenticacionDTO) => {
           // Cuando ingreso todavia no tengo organizacion
           //if (!this.company) { 
-          this.signin(null, null, tokenLocal).subscribe();
-          //}
+          this.signin(null, null, tokenLocal).subscribe({
+            next: () => {
+              this.authenticationOK(profile);
+            }
+          }
+          );
           return profile;
         }),
         catchError((error) => {
@@ -203,6 +213,7 @@ export class LoginService {
     this.isAuthenticated = true;
 
     if (response && response.mensaje) {
+
       Swal.fire({
         position: 'top-end',
         title: response.mensaje,
@@ -221,14 +232,14 @@ export class LoginService {
 
 
   signout() {
-    
-      this.setUserAndToken(null, null);
-      this.templateService.clear();
-      this.notificationService.clear();
-      this.dialog.closeAll();
-      this.router.navigate(['/sign-in']);
-    
-   
+
+    this.setUserAndToken(null, null);
+    this.templateService.clear();
+    this.notificationService.clear();
+    this.dialog.closeAll();
+    this.router.navigate(['/sign-in']);
+
+
     this.getOrganization();
   }
 
@@ -245,7 +256,7 @@ export class LoginService {
       );
   }
 
-  changePwdOther(user: string,oldPwd: string, newPwd: string, autorizacion: string) {
+  changePwdOther(user: string, oldPwd: string, newPwd: string, autorizacion: string) {
     const autenticacion: UsuarioAutenticacionDTO = new UsuarioAutenticacionDTO();
     autenticacion.llaveTabla = autorizacion;
     autenticacion.usuario = user;
@@ -383,7 +394,7 @@ export class LoginService {
       this.checkTokenIsValid().subscribe();
       //Si no coloco esto se va a crear un ciclo infintio solicitando el token
       //if (!this.isOpenPopOfAuthenticate) { 
-        
+
       //}
     }
   }
