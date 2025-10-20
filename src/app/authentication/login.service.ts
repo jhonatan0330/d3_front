@@ -190,8 +190,8 @@ export class LoginService {
           // Cuando ingreso todavia no tengo organizacion
           //if (!this.company) { 
           this.signin(null, null, tokenLocal).subscribe({
-            next: () => {
-              this.authenticationOK(profile);
+            next: (data:UsuarioAutenticacionDTO) => {
+              this.authenticationOK(data);
             }
           }
           );
