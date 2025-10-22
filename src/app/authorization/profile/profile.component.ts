@@ -99,10 +99,11 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
 
-    this.loginservice.checkTokenIsValid()
+      // Se esta duiplicando el llamado del check
+   /* this.loginservice.checkTokenIsValid()
       .subscribe((result: boolean) => {
         if (!result) { this.loginservice.getUrlServices(); }
-      });
+      });*/
 
     this.loginservice.slides$
       .pipe((takeUntil(this._unsubscribeAll)))
