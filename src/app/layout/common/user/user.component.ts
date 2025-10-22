@@ -49,18 +49,9 @@ export class UserComponent implements OnInit, OnDestroy {
         this.jwtAuth.signout();
     }
 
-    getFullTemplates() {
+    getRefreshTemplates(pProfile:string) {
         this.templateService.setTemplates([]);
-        this.apiService.listarDocumentosFull().subscribe({
-            next: (value) => {
-                this.templateService.setTemplates(value);
-            }
-        });
-    }
-
-    getRefreshTemplates() {
-        this.templateService.setTemplates([]);
-        this.apiService.listarPlantillas(null).subscribe({
+        this.apiService.listarPlantillas(pProfile).subscribe({
             next: (value) => {
                 this.templateService.setTemplates(value);
             }

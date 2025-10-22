@@ -27,9 +27,9 @@ export class ApiService {
         private ls: LocalStoreService
     ) { }
 
-    listarPlantillas(_server: string): Observable<DocumentoPlantillaDTO[]> {
+    listarPlantillas(pProfile: string, pServer: string = null): Observable<DocumentoPlantillaDTO[]> {
         return this.http.get<DocumentoPlantillaDTO[]>(
-            this.ls.getUrlAccess('/template/getTemplates', _server)
+            this.ls.getUrlAccess('/template/getTemplates/'+ pProfile, pServer)
         );
     };
 
@@ -55,12 +55,6 @@ export class ApiService {
         return this.http.post<PedidoVentaDTO[]>(
             this.ls.getUrlAccess('/document/getDocuments', _server),
             filtro
-        );
-    }
-
-    listarDocumentosFull(): Observable<DocumentoPlantillaDTO[]> {
-        return this.http.get<DocumentoPlantillaDTO[]>(
-            this.ls.getUrlAccess('/main/getAdministratorTemplates')
         );
     }
 

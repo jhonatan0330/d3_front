@@ -135,6 +135,7 @@ export class PlantillaHelper {
   static PLANTILLA_NUEVO_USUARIO = 'PLANTILLA_NUEVO_USUARIO';
   static LOGIN_HTML = 'LOGIN_HTML';
   static APP_ADMIN = 'APP_ADMIN';
+  static APP_READER = 'APP_READER';
   static APP_MODULES = 'APP_MODULES';
 
   static MODIFICAR_CAMPO = "MODIFICAR_CAMPO";

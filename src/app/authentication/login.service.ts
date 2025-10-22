@@ -28,6 +28,7 @@ export class LoginService {
   company: OrganizacionDTO = new OrganizacionDTO();
   company$ = new BehaviorSubject<OrganizacionDTO>(this.company);
   isAdmin = false;
+  isReader = false;
   //isPublicUser = true;
 
   slides: string[] = [];
@@ -101,6 +102,7 @@ export class LoginService {
       this.getCarrousel(_company);
       if (_company.propiedades) {
         this.isAdmin = !PlantillaHelper.isEmpty(_company.propiedades, PlantillaHelper.APP_ADMIN);
+        this.isReader = !PlantillaHelper.isEmpty(_company.propiedades, PlantillaHelper.APP_READER);
         this.templateService.setModules(PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.APP_MODULES));
       }
     }
@@ -223,13 +225,11 @@ export class LoginService {
       })
     }
     if (!this.user) { return; }
-    this.apiService.listarPlantillas(null)
+    this.apiService.listarPlantillas("USER")
       .subscribe((templates) => {
         this.templateService.setTemplates(templates);
       });
   }
-
-
 
   signout() {
 

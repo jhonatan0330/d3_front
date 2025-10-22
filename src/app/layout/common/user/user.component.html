@@ -19,13 +19,17 @@
         <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
         <span>Mi cuenta</span>
     </button>    
-    <button mat-menu-item (click)="getRefreshTemplates()">
+    <button mat-menu-item (click)="getRefreshTemplates('USER')">
         <mat-icon [svgIcon]="'heroicons_outline:arrow-path'"></mat-icon>
         <span>Cargar de nuevo</span>
     </button>
-    <button mat-menu-item *ngIf="jwtAuth.isAdmin" (click)="getFullTemplates()">
+    <button mat-menu-item *ngIf="jwtAuth.isAdmin" (click)="getRefreshTemplates('ADMIN')">
         <mat-icon [svgIcon]="'heroicons_outline:shield-check'"></mat-icon>
         <span>Administrador</span>
+    </button>
+    <button mat-menu-item *ngIf="jwtAuth.isReader" (click)="getRefreshTemplates('READER')">
+        <mat-icon [svgIcon]="'heroicons_outline:shield-check'"></mat-icon>
+        <span>Auditor</span>
     </button>
     <button mat-menu-item (click)="downloadApk()">
         <mat-icon [svgIcon]="'heroicons_outline:device-phone-mobile'"></mat-icon>
