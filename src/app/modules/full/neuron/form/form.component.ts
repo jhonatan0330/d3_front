@@ -654,6 +654,9 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     // Resuelve las propiedades de la plantilla
     resolvePropiertiesForm() {
+        if(this._jwt.token != this._jwt.getJwtToken()){
+            location.reload();
+        }
 
         if(this._jwt.isAdmin){
             this.esRol = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_TIPO_ROL);
