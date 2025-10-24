@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { NotificationsService } from 'app/notification/notification.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { OrganizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
+import { OrganizacionDTO, UsuarioAutenticacionAutorizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -278,12 +278,12 @@ export class LoginService {
       );
   }
 
-  recoverPassword(identificacion: string, correo: string) {
+  recoverPassword(identificacion: string, correo: string): Observable<UsuarioAutenticacionAutorizacionDTO> {
     const autenticacion = new UsuarioAutenticacionDTO();
     autenticacion.usuarioDTO = new UsuarioDTO();
     autenticacion.usuarioDTO.identificacion = identificacion;
     autenticacion.usuarioDTO.correo = correo;
-    return this.http.post<UsuarioOrganizacionDTO>(this.ls.getUrlAccess('/main/solicitarNuevaClave'), autenticacion);
+    return this.http.post<UsuarioAutenticacionAutorizacionDTO>(this.ls.getUrlAccess('/main/solicitarNuevaClave'), autenticacion);
   }
 
   isLoggedIn(): Boolean {

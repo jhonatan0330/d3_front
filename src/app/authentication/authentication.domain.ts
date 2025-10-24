@@ -62,6 +62,11 @@ export class UsuarioOrganizacionDTO extends BasicDTO {
   usuarioNombre: string;
 }
 
+export class UsuarioAutenticacionAutorizacionDTO extends BasicDTO {
+  usuario: string;
+  correo: string;
+}
+
 export class UsuarioAutenticacionDTO extends BasicDTO {
   usuario: string;
   sesion: string;

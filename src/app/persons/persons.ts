@@ -137,6 +137,6 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
     cambiar_clave(pUsuario: UsuarioDTO) {
         //this.utilService.modalUserChangePassOther(pUsuario).subscribe();
-        this._jwt.recoverPassword(pUsuario.identificacion,pUsuario.correo);
+        this._jwt.recoverPassword(pUsuario.identificacion,pUsuario.correo).subscribe();
     }
 }
