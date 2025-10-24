@@ -3,7 +3,6 @@ import { LayoutComponent } from 'app/layout/layout.component';
 import { AuthGuard } from './authentication/authentication.guard';
 import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
 import { PersonsComponent } from './persons/persons';
-import { FlexComponent } from './flex/flex';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -39,7 +38,6 @@ export const appRoutes: Route[] = [
       { path: 'massive', loadChildren: () => import('app/massive/massive.module').then(m => m.MassiveModule) },
       { path: 'account', loadChildren: () => import('app/accounting/accounting.module').then(m => m.AccountingModule) },
       { path: 'persons', component: PersonsComponent },
-      { path: 'flex', component: FlexComponent },
       { path: '**', redirectTo: 'main' },
     ]
 

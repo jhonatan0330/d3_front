@@ -9,7 +9,7 @@ import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.comp
 import { ContactsDetailsComponent } from 'app/persons/detail_persons/detail_persons';
 import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
-import { FlexComponent } from 'app/flex/flex';
+import { FlexComponent } from 'app/configuration-forms/flex/flex';
 import { dfaComponent } from 'app/authentication/DFA/dfa';
 
 @Injectable({

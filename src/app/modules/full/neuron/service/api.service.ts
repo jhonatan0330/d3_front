@@ -99,17 +99,6 @@ export class ApiService {
 
     }
 
-    listarConsultaPropiedad(llaveTabla: string, _server: string): Observable<any[]> {
-        const payload = {
-            estado: 'A',
-            campo: llaveTabla
-        };
-        return this.http.post<any[]>(
-            this.ls.getUrlAccess('/flex/listarConsultaPropiedad', _server),
-            payload
-        );
-    }
-
     consultarDatosBase(
         campo: PedidoVentaCaracteristicaFilterDTO, _server: string
     ): Observable<PedidoVentaCaracteristicaFilterDTO> {
