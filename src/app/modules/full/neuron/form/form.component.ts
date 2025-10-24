@@ -118,6 +118,13 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (this.pedidoBase && this.pedidoBase === this.data.data) {
             return;
         }
+
+        if(this._jwt.token != this._jwt.getJwtToken()){
+            location.reload();
+            this.dialogRef.close(false);
+            return;
+        }
+
         this.pedidoBase = this.data.data;
         this.identificadorInicial = this.data.identificador;
         this.saveInField = this.data.saveInField;
@@ -653,10 +660,8 @@ export class FormComponent implements OnInit, AfterViewInit {
     /*******************************  ACTIONS *********************/
 
     // Resuelve las propiedades de la plantilla
-    resolvePropiertiesForm() {
-        if(this._jwt.token != this._jwt.getJwtToken()){
-            location.reload();
-        }
+    resolvePropiertiesForm() { 
+        
 
         if(this._jwt.isAdmin){
             this.esRol = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_TIPO_ROL);

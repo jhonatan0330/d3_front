@@ -223,9 +223,6 @@ export class LoginService {
     if (!this.user) { return; }
     this.apiService.listarPlantillas(null)
       .subscribe((templates) => {
-        if(this.templateService.getTokenConnection(this.urlService) != this.getJwtToken()){
-            location.reload();
-        }
         this.templateService.setTemplates(templates);
       });
   }
