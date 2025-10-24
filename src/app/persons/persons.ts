@@ -26,6 +26,7 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -58,13 +59,13 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
-        let _notPermission = true; 
-        if(this._jwt.company){ 
+        let _notPermission = true;
+        if (this._jwt.company) {
             const _modules = PlantillaHelper.buscarValorMultiple(this._jwt.company.propiedades, PlantillaHelper.APP_MODULES);
-            if(_modules){
+            if (_modules) {
                 for (let index = 0; index < _modules.length; index++) {
                     const element = _modules[index];
-                    if(element.valor ==='persons'){
+                    if (element.valor === 'persons') {
                         _notPermission = false;
                         break;
                     }
@@ -72,9 +73,9 @@ export class PersonsComponent implements OnInit, OnDestroy {
             }
         }
 
-        if(_notPermission){
-             this._router.navigate(['/main']);
-                return;
+        if (_notPermission) {
+            this._router.navigate(['/main']);
+            return;
         }
         // Get the contacts
         this._contactsService.contacts$
@@ -137,6 +138,9 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
     cambiar_clave(pUsuario: UsuarioDTO) {
         //this.utilService.modalUserChangePassOther(pUsuario).subscribe();
-        this._jwt.recoverPassword(pUsuario.identificacion,pUsuario.correo).subscribe();
+        this._jwt.recoverPassword(pUsuario.identificacion, pUsuario.correo).subscribe(() => {
+            Swal.fire('Correo Enviado', 'Revisa el correo ' + pUsuario.correo + '.');
+        });
+
     }
 }
