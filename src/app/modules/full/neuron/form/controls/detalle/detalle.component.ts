@@ -111,9 +111,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       this.categories = [];
       const map = new Map();
       for (const item of this.productosDisponibles) {
-        if (!map.has(item.categoriaPlantilla)) {
-          map.set(item.categoriaPlantilla, true);    // set any value to Map
-          const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(item.categoriaPlantilla, null);
+        if (!map.has(item.categoria)) {
+          map.set(item.categoria, true);    // set any value to Map
+          const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(item.categoria, null);
           if (dp) { this.categories.push(dp); }
         }
       }
@@ -130,7 +130,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     if (pCategory) {
       this.productosFiltrados = this.productosDisponibles.filter(
         (doc) =>
-          doc.categoriaPlantilla === pCategory.llaveTabla
+          doc.categoria === pCategory.llaveTabla
       );
     } else {
       this.productosFiltrados = this.productosDisponibles;

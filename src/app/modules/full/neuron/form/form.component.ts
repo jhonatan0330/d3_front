@@ -119,7 +119,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             return;
         }
 
-        if(this._jwt.token != this._jwt.getJwtToken()){
+        if(this._jwt.token !== this._jwt.getJwtToken()){
             location.reload();
             this.dialogRef.close(false);
             return;
@@ -135,7 +135,6 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.plantilla = this.cargarPlantilla(this.pedidoBase.plantilla, this.pedidoBase.server);
         // Si la plantilla se consulta por primera vez se va asincrona asi que finaliza este metodo
         if (!this.plantilla) {
-            this.dialogRef.close(false);
             return;
         }
         // Si la plantilla no se carga asincronamente
