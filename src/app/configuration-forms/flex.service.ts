@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, propiedadCampo, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 
 @Injectable({
     providedIn: 'root',
@@ -21,6 +21,13 @@ export class FlexService {
         );
     }
 
+    getField(pKey: string, _server: string): Observable<DocumentoPlantillaCaracteristicaDTO> {
+        return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
+            this.ls.getUrlAccess('/flex/consultaXIdDocumentoPlantillaCaracteristica', _server),
+            pKey
+        );
+    }
+
     getFields(pTemplateKey: string, _server: string = null): Observable<DocumentoPlantillaCaracteristicaDTO[]> {
         const _payload = {
             estado: 'A',
@@ -32,12 +39,12 @@ export class FlexService {
         );
     }
 
-    listarConsultaPropiedad(llaveTabla: string, _server: string): Observable<any[]> {
+    listarConsultaPropiedad(llaveTabla: string, _server: string): Observable<propiedadCampo[]> {
         const payload = {
             estado: 'A',
             campo: llaveTabla
         };
-        return this.http.post<any[]>(
+        return this.http.post<propiedadCampo[]>(
             this.ls.getUrlAccess('/flex/listarConsultaPropiedad', _server),
             payload
         );

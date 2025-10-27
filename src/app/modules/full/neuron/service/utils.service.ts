@@ -11,6 +11,8 @@ import { SettingsSecurityComponent } from 'app/authentication/settings/security/
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { FlexComponent } from 'app/configuration-forms/flex/flex';
 import { dfaComponent } from 'app/authentication/DFA/dfa';
+import { FieldComponent } from 'app/configuration-forms/flex/fieldComponent';
+import { FieldComponent2 } from 'app/configuration-forms/flex/fieldComponent2';
 
 @Injectable({
   providedIn: 'root',
@@ -96,6 +98,21 @@ export class UtilsService {
 
   modalFlex(pTemplate: string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(FlexComponent, {
+      maxHeight: '90vh',
+      data: { template: pTemplate},
+    });
+    return dialogRef.afterClosed();
+  }
+  fieldModalFlex(pTemplate: string){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(FieldComponent, {
+      maxHeight: '90vh',
+      data: { template: pTemplate},
+    });
+    return dialogRef.afterClosed();
+  }
+
+  fieldEditModalFlex(pTemplate: string){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(FieldComponent2, {
       maxHeight: '90vh',
       data: { template: pTemplate},
     });
