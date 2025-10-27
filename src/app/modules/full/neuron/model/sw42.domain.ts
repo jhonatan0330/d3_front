@@ -13,6 +13,7 @@ export class UsuarioRolProductoDTO extends BasicDTO {
     cantidadPromocionBase: number;
 }
 export class ProductoDTO extends BasicParamDTO {
+
     nombre: string;
     codigo: string;
     filtros: string;
