@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, propiedadCampo, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 
 @Injectable({
     providedIn: 'root',
@@ -46,6 +47,23 @@ export class FlexService {
         };
         return this.http.post<propiedadCampo[]>(
             this.ls.getUrlAccess('/flex/listarConsultaPropiedad', _server),
+            payload
+        );
+    }
+    addProperty(pTemplate: propiedadCampo){
+        return this.http.post(
+            this.ls.getUrlAccess('/flex/guardarPropiedad', null),
+            pTemplate
+        );
+    }
+
+    listarPorOrigenPropiedadValorDefinido(template: PropiedadValorDefinidoDTO, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
+        const payload = {
+            estado: 'A',
+            campo: template
+        };
+        return this.http.post<PropiedadValorDefinidoDTO[]>(
+            this.ls.getUrlAccess('/flex/listarPorOrigenPropiedadValorDefinido', _server),
             payload
         );
     }

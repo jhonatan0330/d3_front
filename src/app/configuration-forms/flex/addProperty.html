@@ -1,0 +1,67 @@
+<div class="max-w-md mx-auto bg-white text-black rounded-xl shadow-lg p-6 space-y-4">
+  <h2 class="text-center text-lg font-bold border-b border-gray-300 pb-2">
+    PROPIEDAD
+  </h2>
+
+  <div>
+    <label class="block text-sm font-semibold mb-1">Propiedad Valor</label>
+    <select
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      [(ngModel)]="propiedad.propiedadValor">
+      <option *ngFor="let propiedadValor of propiedadValores" [value]="propiedadValor.llaveTabla">
+        {{ propiedadValor.codigo }}
+        <label class="block text-sm font-semibold mb-1">{{propiedadValor.nombre}}</label>
+      </option>
+    </select>
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold mb-1">Rol</label>
+    <input
+      type="text"
+      [(ngModel)]="propiedad.rol"
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold mb-1">Rol Excluyente</label>
+    <input
+      type="text"
+      [(ngModel)]="propiedad.rolExcluyente"
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold mb-1">Usuario</label>
+    <input
+      type="text"
+      [(ngModel)]="propiedad.usuario"
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold mb-1">Usuario Excluyente</label>
+    <input
+      type="text"
+      [(ngModel)]="propiedad.usuarioExcluyente"
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+  </div>
+
+  <div>
+    <label class="block text-sm font-semibold mb-1">Motivo</label>
+    <textarea
+      rows="3"
+      [(ngModel)]="propiedad.motivo"
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+  </div>
+
+  <div class="pt-2">
+    <button
+      type="button"
+      (click)="guardarPropiedad()"
+      [disabled]="cargando"
+      class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold py-2 rounded">
+      {{ cargando ? 'Guardando...' : 'Guardar' }}
+    </button>
+  </div>
+</div>

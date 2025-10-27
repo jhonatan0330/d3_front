@@ -1,5 +1,4 @@
 <div class="min-h-screen w-full bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col text-gray-900 dark:text-gray-100">
-    <!-- Encabezado superior -->
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
         <div class="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
             <div class="text-xl font-bold">{{ campo?.nombre || 'Detalle de Campo' }}</div>
@@ -16,17 +15,18 @@
         <div class="flex flex-col h-full">
             <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
                 <h2 class="text-lg font-bold">Propiedades de Campo</h2>
+                <button (click)="agregarPropiedadCampo()" class="bg-blue-500 text-white rounded px-3 py-1">➕</button>
                 <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
             </div>
 
             <div class="bg-white rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
                 <div *ngIf="propiedadesCampo?.length > 0; else noProps"
                     class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div *ngFor="let prop of propiedadesCampo"
+                    <div *ngFor="let prop of propiedadesCampo" (click)="listarRelacionesPropiedad(prop)"
                         class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:shadow-md transition">
-                        <span class="text-xs text-gray-500 font-mono block">{{ prop.codigo }}</span>
+                        <span class="text-xs text-gray-500 font-mono block">{{ prop.propiedadValor }}</span>
                         <h4 class="text-base font-semibold">{{ prop.nombre }}</h4>
-                        <p class="text-sm text-gray-600">{{ prop.objetivo }}</p>
+                        <p class="text-sm text-gray-600">{{ prop.texto }}</p>
                     </div>
                 </div>
                 <ng-template #noProps>
@@ -44,11 +44,11 @@
             <div class="bg-white rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
                 <div *ngIf="propiedadesRelacion?.length > 0; else noProps"
                     class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div *ngFor="let prop of propiedadesRelacion"
+                    <div *ngFor="let prop of propiedadesRelacion" 
                         class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:shadow-md transition">
-                        <span class="text-xs text-gray-500 font-mono block">{{ prop.codigo }}</span>
-                        <h4 class="text-base font-semibold">{{ prop.nombre }}</h4>
-                        <p class="text-sm text-gray-600">{{ prop.descripcion }}</p>
+                        <span class="text-xs text-gray-500 font-mono block">{{ prop.campo }}</span>
+                        <h4 class="text-base font-semibold">{{ prop.campoNombre }}</h4>
+                        <p class="text-sm text-gray-600">{{ prop.plantillaNombre }}</p>
                     </div>
                 </div>
                 <ng-template #noProps>

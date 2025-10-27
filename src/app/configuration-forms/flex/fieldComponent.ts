@@ -4,18 +4,12 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
     DocumentoPlantillaCaracteristicaDTO,
     propiedadCampo,
+    RelacionInternaDTO,
     RelacionInternaFilterDTO
 } from 'app/modules/full/neuron/model/sw42.domain';
 import Swal from 'sweetalert2';
 import { FlexService } from '../flex.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-
-interface Item {
-    code: string;
-    title: string;
-    subtitle: string;
-    llaveTabla: string;
-}
 
 @Component({
     selector: 'FieldComponent',
@@ -25,9 +19,10 @@ interface Item {
 })
 export class FieldComponent implements OnInit {
 
+
     campo: DocumentoPlantillaCaracteristicaDTO;
     propiedadesCampo: propiedadCampo[] = [];
-    propiedadesRelacion: Item[] = [];
+    propiedadesRelacion: RelacionInternaDTO[] = [];
 
     isLoading = false;
     cargandoCampo = false;
@@ -79,26 +74,16 @@ export class FieldComponent implements OnInit {
         });
     }
 
-    listarRelacionesPropiedad(prop: Item): void {
+    listarRelacionesPropiedad(prop: propiedadCampo): void {
         if (!this.campo) return;
 
         const filtro = new RelacionInternaFilterDTO();
-        filtro.propiedad = prop.code;
-        filtro.propiedadNombre = prop.title;
-        filtro.plantilla = this.campo.plantilla;
-        filtro.plantillaNombre = this.campo.plantillaNombre;
-        filtro.campo = this.campo.llaveTabla;
-        filtro.campoNombre = this.campo.nombre;
-        filtro.auxiliar = '';
+        filtro.propiedad = prop.llaveTabla;
+        filtro.estado = prop.estado;
 
         this.flexService.relacionesPropiedad(filtro, null).subscribe({
             next: (rels) => {
-                this.propiedadesRelacion = rels.map(r => ({
-                    code: r.llaveTabla,
-                    title: r.propiedadNombre || '',
-                    subtitle: r.auxiliar || '',
-                    llaveTabla: r.llaveTabla
-                }));
+                this.propiedadesRelacion = rels;
             },
             error: () => {
                 this.propiedadesRelacion = [];
@@ -107,11 +92,12 @@ export class FieldComponent implements OnInit {
         });
     }
 
-    /**
-     * Abre un modal de edición o detalle del campo (si aplica)
-     */
     editarCampo(): void {
         this.utilsService.fieldEditModalFlex(this.campo.llaveTabla);
+    }
+
+    agregarPropiedadCampo() {
+        this.utilsService.fieldAddModalFlex(this.campo.llaveTabla);
     }
 
     /**

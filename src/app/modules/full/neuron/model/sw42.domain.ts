@@ -13,7 +13,6 @@ export class UsuarioRolProductoDTO extends BasicDTO {
     cantidadPromocionBase: number;
 }
 export class ProductoDTO extends BasicParamDTO {
-
     nombre: string;
     codigo: string;
     filtros: string;
@@ -67,6 +66,21 @@ export class propiedadCampo extends BasicDTO {
     propiedadValor:string;
     tipo:string;
     valor:number;
+}
+
+export class PropiedadCampoDTO extends propiedadCampo {
+    texto: string;
+    bloqueo: string;
+    fechaFinal: string;
+    fechaInicial: string;
+    rol: string;
+    rolNombre: string;
+    rolExcluyente: string;
+    rolExcluyenteNombre: string;
+    usuario: string;
+    usuarioNombre: string;
+    usuarioExcluyente: string;
+    usuarioExcluyenteNombre: string;
 }
 
 export class PedidoVentaDTO extends BasicDTO {
@@ -391,3 +405,5 @@ export class ReporteBaseFilterDTO extends BasicFilterDTO {
     servidorUrl: string;
     publicoFilter: boolean;
 }
+
+

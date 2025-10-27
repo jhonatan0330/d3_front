@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { FlexService } from '../flex.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DocumentoPlantillaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 
 @Component({
     selector: 'app-campo-form',
@@ -16,6 +17,11 @@ export class FieldComponent2 {
 
     imagenPreview: string | null = null;
     cargando = false;
+
+    opciones = Object.entries(DocumentoPlantillaCaracteristicaEnum).map(([nombre, valor]) => ({
+        nombre,
+        valor
+    }));
 
     constructor(
         private flexService: FlexService,
@@ -74,5 +80,5 @@ export class FieldComponent2 {
     /**
      * Limpia el formulario
      */
-    limpiarFormulario(): void {}
+    limpiarFormulario(): void { }
 }
