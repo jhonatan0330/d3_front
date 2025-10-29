@@ -153,7 +153,7 @@
       <!-- Acciones -->
       <div *ngIf="!isLoading" class="p-1 w-full justify-between flex flex-wrap">
         <!-- Botones de transiciones -->
-        <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla)" class="cursor-pointer flex-auto">
+        <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla, t.documentToTransition)" class="cursor-pointer flex-auto">
           <div class="p-1 w-full h-full items-center flex justify-center">
             <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
             <div class="pl-2 text-sm font-bold">{{ t.nombre }}</div>

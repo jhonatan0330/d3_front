@@ -19,11 +19,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     @ViewChild('shortcutsOrigin') private _shortcutsOrigin: MatButton;
     @ViewChild('shortcutsPanel') private _shortcutsPanel: TemplateRef<any>;
 
-    /**
- * Setter for bar search input
- *
- * @param value
- */
+
     @ViewChild('barSearchInput')
     set barSearchInput(value: ElementRef) {
         // If the value exists, it means that the search input
@@ -56,14 +52,8 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     ) {
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On init
-     */
     ngOnInit(): void {
+
         // Get the shortcuts
         this._templateService.templates$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -72,7 +62,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
                 if (templates && templates.length) {
                     for (let i = 0; i < templates.length; i++) {
                         const iTemplate = templates[i];
-                        if (PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
+                        if (PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PLANTILLA_ACCESO_RAPIDO)
                             && PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
                             this.shortcuts.push(iTemplate);
                         }
@@ -81,13 +71,8 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
                 this.shortcutsFiltered = Object.assign([], this.shortcuts);
                 this._changeDetectorRef.markForCheck();
             });
-
-
     }
 
-    /**
-     * On destroy
-     */
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
