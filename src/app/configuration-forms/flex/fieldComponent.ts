@@ -100,9 +100,6 @@ export class FieldComponent implements OnInit {
         this.utilsService.fieldAddModalFlex(this.campo.llaveTabla);
     }
 
-    /**
-     * Controla la expansión o contracción del formulario
-     */
     toggleExpandido(): void {
         this.expandido = !this.expandido;
     }
