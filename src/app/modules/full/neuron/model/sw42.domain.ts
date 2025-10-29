@@ -119,6 +119,7 @@ export class ProcesoTransicionDTO extends BasicParamDTO {
   estadoLLegada: string;
   estadoLlegadaNombre: string;
   estadoLlegadaTipo: string;
+  documentToTransition: PedidoVentaDTO;
 }
 export class PedidoVentaAjusteDTO extends BasicDTO {
   documento: string;

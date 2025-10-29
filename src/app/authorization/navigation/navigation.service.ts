@@ -46,7 +46,7 @@ export class NavigationService {
         }
 
         // ACCESOS RAPIDOS
-        if (templates) {
+       /* if (templates) {
              const items: FuseNavigationItem[] = [];
             templates.forEach((element: DocumentoPlantillaDTO) => {
                 if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_ACCESO_RAPIDO) && PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
@@ -78,7 +78,7 @@ export class NavigationService {
                 localNavigation.push(moduleItemLocal);
                 compactNavigation.push(moduleItemCompact);
             }
-        }
+        }*/
 
         // PROCESOS
         const processNavItem: FuseNavigationItem[] = [];
