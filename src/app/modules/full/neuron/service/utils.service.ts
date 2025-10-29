@@ -13,7 +13,7 @@ import { FlexComponent } from 'app/configuration-forms/flex/flex';
 import { dfaComponent } from 'app/authentication/DFA/dfa';
 import { FieldComponent } from 'app/configuration-forms/flex/fieldComponent';
 import { FieldComponent2 } from 'app/configuration-forms/flex/fieldComponent2';
-import { addPropertyComponent } from 'app/configuration-forms/flex/addProperty';
+import { AddPropertyComponent } from 'app/configuration-forms/flex/addProperty';
 
 @Injectable({
   providedIn: 'root',
@@ -121,7 +121,7 @@ export class UtilsService {
   }
 
   fieldAddModalFlex(pTemplate: string){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(addPropertyComponent, {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(AddPropertyComponent, {
       maxHeight: '90vh',
       data: { template: pTemplate},
     });
