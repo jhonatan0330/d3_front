@@ -111,9 +111,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       this.categories = [];
       const map = new Map();
       for (const item of this.productosDisponibles) {
-        if (!map.has(item.categoriaPlantilla)) {
-          map.set(item.categoriaPlantilla, true);    // set any value to Map
-          const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(item.categoriaPlantilla, null);
+        if (!map.has(item.categoria)) {
+          map.set(item.categoria, true);    // set any value to Map
+          const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(item.categoria, null);
           if (dp) { this.categories.push(dp); }
         }
       }
@@ -130,7 +130,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     if (pCategory) {
       this.productosFiltrados = this.productosDisponibles.filter(
         (doc) =>
-          doc.categoriaPlantilla === pCategory.llaveTabla
+          doc.categoria === pCategory.llaveTabla
       );
     } else {
       this.productosFiltrados = this.productosDisponibles;
@@ -285,10 +285,10 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
           uc.valorNumero = campoDetalle.valorNumero;
           uc.valorText = campoDetalle.valorText;
 
-          if(this.data.dependientes){
+          if (this.data.dependientes) {
             for (let index = 0; index < this.data.dependientes.length; index++) {
               const element = this.data.dependientes[index];
-              if(element.campoDTO.codigo === uc.campoDTO.codigo){
+              if (element.campoDTO.codigo === uc.campoDTO.codigo) {
                 uc.valorOpcion = element.valorOpcion;
                 uc.valorNumero = element.valorNumero;
                 uc.valorText = element.valorText;
@@ -298,8 +298,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
             }
           }
 
-          if (campoDetalle.campoDTO.codigo ==='PRODUCTO'){
-            uc.valorOpcion = producto.documento; 
+          if (campoDetalle.campoDTO.codigo === 'PRODUCTO') {
+            uc.valorOpcion = producto.documento;
             uc.valorText = producto.nombre
           }
           /*if (campoDetalle.campoDTO.codigo ==='DOCUMENTO'){
@@ -329,8 +329,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         // Lsa caracteristicas me sirven en roa, comentarie esa parte y no se abria de una vez el pop
         if (
           copyDetalle.valorMinimo !== copyDetalle.valorMaximo
-           || !this.isEmpty(this.obtenerValor(PlantillaHelper.ITEM_DETAIL_FORM_VISIBLE))
-           || (copyDetalle.documentoDetalle && copyDetalle.documentoDetalle.caracteristicas &&
+          || !this.isEmpty(this.obtenerValor(PlantillaHelper.ITEM_DETAIL_FORM_VISIBLE))
+          || (copyDetalle.documentoDetalle && copyDetalle.documentoDetalle.caracteristicas &&
             copyDetalle.documentoDetalle.caracteristicas.length !== 0)
         ) {
           this.modificarDetallePedido(copyDetalle);
@@ -387,9 +387,10 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
       }
 
-      this.utilsService.modalWithParams(item.documentoDetalle,  false, null, true).subscribe((res) => {
+      this.utilsService.modalWithParams(item.documentoDetalle, false, null, true).subscribe((res) => {
         if (res) {
           item.documentoDetalle = res.data;
+          this.updateDetailNumbersAfterFormWindow(item);
         }
         this.actualizarDetalles(null);
       });
@@ -410,6 +411,31 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     }
   }
 
+  cantidadTarifario(pItem: DetallePedidoVentaDTO, pProperty: string): number {
+    const _campoCantidad2Tarifario = PlantillaHelper.buscarValor(
+      pItem.propiedades,
+      pProperty
+    );
+    if (_campoCantidad2Tarifario) {
+      for (let l = 0; l < pItem.documentoDetalle.caracteristicas.length; l++) {
+        const formItemRecurso = pItem.documentoDetalle.caracteristicas[l];
+        if (
+          formItemRecurso.campo === _campoCantidad2Tarifario
+        ) {
+          return formItemRecurso.valorNumero;
+        }
+      }
+    }
+    return 0;
+  }
+
+  updateDetailNumbersAfterFormWindow(pItem: DetallePedidoVentaDTO) {
+    pItem.cantidad = this.cantidadTarifario(pItem, PlantillaHelper.PRODUCTO_CAMPO_CANTIDAD);
+    if(pItem.cantidad === 0) pItem.cantidad = 1;
+    pItem.valorUnitario = this.cantidadTarifario(pItem, PlantillaHelper.PRODUCTO_CAMPO_VALOR_UNITARIO);
+    pItem.valorTotal = this.cantidadTarifario(pItem, PlantillaHelper.PRODUCTO_CAMPO_TOTAL);
+    pItem.valorSubtotal = undefined;
+  }
 
   actualizarDetalles(producto: ProductoDTO) {
     let valorNumero = 0;

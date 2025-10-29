@@ -76,6 +76,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     // ACTIONS
 
     auxPlantillaProxima: string; // LAs transiciones aveces no tienen cargados los campos y se encesitan
+    documentToTransition: PedidoVentaDTO;
     transiciones: ProcesoTransicionDTO[] = []; // Lista de botones
     uidOpenToNotDuplicate: string;
 
@@ -119,7 +120,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             return;
         }
 
-        if(this._jwt.token != this._jwt.getJwtToken()){
+        if (this._jwt.token !== this._jwt.getJwtToken()) {
             location.reload();
             this.dialogRef.close(false);
             return;
@@ -135,7 +136,6 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.plantilla = this.cargarPlantilla(this.pedidoBase.plantilla, this.pedidoBase.server);
         // Si la plantilla se consulta por primera vez se va asincrona asi que finaliza este metodo
         if (!this.plantilla) {
-            this.dialogRef.close(false);
             return;
         }
         // Si la plantilla no se carga asincronamente
@@ -390,8 +390,9 @@ export class FormComponent implements OnInit, AfterViewInit {
                 }
             } else {
                 if (this.auxPlantillaProxima) {
-                    this.crearPlantilla(this.auxPlantillaProxima);
+                    this.crearPlantilla(this.auxPlantillaProxima, this.documentToTransition);
                     this.auxPlantillaProxima = null;
+                    this.documentToTransition = null;
                 }
                 // asumo que es una transicion
             }
@@ -661,10 +662,10 @@ export class FormComponent implements OnInit, AfterViewInit {
     /*******************************  ACTIONS *********************/
 
     // Resuelve las propiedades de la plantilla
-    resolvePropiertiesForm() { 
-        
+    resolvePropiertiesForm() {
 
-        if(this._jwt.isAdmin){
+
+        if (this._jwt.isAdmin) {
             this.esRol = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_TIPO_ROL);
         }
         this.canMassive = !PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA);
@@ -724,97 +725,89 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     showActions() {
-        // Botones de estados
-        if (this.plantilla.estados && this.plantilla.estados.length !== 0) {
-            let estadollave = this.pedido.estadoExpediente;
-            if (!estadollave) {
-                estadollave = this.pedido.estado;
-            }
 
-            for (let i = 0; i < this.plantilla.estados.length; i++) {
-                const estadoIterador = this.plantilla.estados[i];
-                if (!this.pedido.llaveTabla && !estadollave) {
-                    estadollave = estadoIterador.llaveTabla;
-                }
-                if (estadoIterador.llaveTabla === estadollave) {
-                    const estado = estadoIterador;
-                    if (estado.transiciones && estado.transiciones.length !== 0) {
-                        for (let j = 0; j < estado.transiciones.length; j++) {
-                            const transicion = estado.transiciones[j];
-                            if (transicion.plantilla) {
-                                const _t: DocumentoPlantillaDTO = this.templateService.getTemplate(
-                                    transicion.plantilla, this.plantilla.server
-                                );
-                                if (
-                                    _t &&
-                                    !PlantillaHelper.isEmpty(
-                                        _t.propiedades,
-                                        PlantillaHelper.PERMISO_PLANTILLA_CREAR
-                                    )
-                                ) {
-                                    this.transiciones.push(transicion);
-                                }
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-        }
+        let _estadollave = this.pedido.estadoExpediente;
+        if (!_estadollave) _estadollave = this.pedido.estado;
+
+        this.getTransitionsOfTemplate(this.plantilla, _estadollave, this.pedido);
 
         if (this.pedido.llaveTabla) {
-            /* if (this.modificable) {
-                this.acciones.push({
-                  nombre: 'MODIFICAR ' + this.plantilla.nombre,
-                  plantilla: null,
-                  icon: 'edit',
-                });
-                // btnProductos.visible = btnProductos.includeInLayout =
-                // !PlantillaHelper.isEmpty(manager.plantilla, PlantillaHelper.PLANTILLA_TIPO_PRODUCTO);
-              }*/
+            for (let _f = 0; _f < this.pedido.caracteristicas.length; _f++) {
+                const _element = this.pedido.caracteristicas[_f];
+                if (_element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.VINCULO && _element.expedientes) {
+                    this.getTransitionsOfTemplate(
+                        this.templateService.getTemplate(_element.expedientes[0].plantilla, null),
+                        _element.expedientes[0].estadoExpediente, _element.expedientes[0])
+                }
+            }
         }
     }
 
-    // Se encarga de abrir el formulario de la transicion
-    crearPlantilla(plantillaProxima: string) {
-        if (!plantillaProxima) {
-            return;
+    getTransitionsOfTemplate(pTemplate: DocumentoPlantillaDTO, pState: string, pDocumentTransition: PedidoVentaDTO) {
+        if (!pTemplate.estados || pTemplate.estados.length === 0) return;
+
+        for (let _iField = 0; _iField < pTemplate.estados.length; _iField++) {
+            const _stateElement = pTemplate.estados[_iField];
+            /*if (!this.pedido.llaveTabla && !estadollave) {
+                estadollave = estadoIterador.llaveTabla;
+            }*/
+            if (_stateElement.llaveTabla === pState) {
+                if (_stateElement.transiciones && _stateElement.transiciones.length === 0) return;
+                for (let j = 0; j < _stateElement.transiciones.length; j++) {
+                    const _transition = _stateElement.transiciones[j];
+                    if (_transition.plantilla) {
+                        const _templateTransition: DocumentoPlantillaDTO = this.templateService.getTemplate(_transition.plantilla, pTemplate.server);
+                        if (_templateTransition && !PlantillaHelper.isEmpty(_templateTransition.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+                            const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
+                            _newtransicion.imagen = _templateTransition.imagen;
+                            _newtransicion.plantilla = _templateTransition.llaveTabla;
+                            _newtransicion.nombre = _templateTransition.nombre;
+                            _newtransicion.documentToTransition = pDocumentTransition;
+                            this.transiciones.push(_newtransicion);
+                        }
+                    }
+                }
+                return;
+            }
         }
+
+    }
+
+    // Se encarga de abrir el formulario de la transicion
+    crearPlantilla(pNextTemplate: string, pDocument: PedidoVentaDTO) {
+        if (!pNextTemplate) return;
         if (this.formIsModified) {
             Swal.fire('Guarda documento', 'Por favor guarda los cambios del documento antes de crear una nueva accion', 'info');
             return;
         }
-        this.auxPlantillaProxima = plantillaProxima;
-        const _transition: DocumentoPlantillaDTO = this.cargarPlantilla(
-            plantillaProxima, this.plantilla.server
-        );
-        if (!_transition) {
-            return;
-        } // Se supone que la carga asincrona
+        this.auxPlantillaProxima = pNextTemplate;
+        this.documentToTransition = pDocument;
+        const _nextTemplate: DocumentoPlantillaDTO = this.cargarPlantilla(pNextTemplate, this.plantilla.server);
+        if (!_nextTemplate) return;
+        // Se supone que la carga asincrona
         const _doc: PedidoVentaDTO = new PedidoVentaDTO();
-        _doc.plantilla = plantillaProxima;
+        _doc.plantilla = pNextTemplate;
         const camposPosibles: DocumentoPlantillaCaracteristicaDTO[] = [];
         let textoCampoPosible: string;
         // Valido que existan caracteristicas con el mismo codigo y lo modifico
-        for (let i = 0; i < _transition.caracteristicas.length; i++) {
-            const campo = _transition.caracteristicas[i];
+        for (let i = 0; i < _nextTemplate.caracteristicas.length; i++) {
+            const campo = _nextTemplate.caracteristicas[i];
             // Itero por los campos del pedido para ver que tengan el mismo codigo
-            for (let j = 0; j < this.pedido.caracteristicas.length; j++) {
-                const campoDoc = this.pedido.caracteristicas[j];
-                if (campo.codigo === campoDoc.campoDTO.codigo) {
-                    if (!_doc.caracteristicas) {
-                        _doc.caracteristicas = [];
+            if (pDocument.caracteristicas) {
+                for (let j = 0; j < pDocument.caracteristicas.length; j++) {
+                    const campoDoc = pDocument.caracteristicas[j];
+                    if (campo.codigo === campoDoc.campoDTO.codigo) {
+                        if (!_doc.caracteristicas) {
+                            _doc.caracteristicas = [];
+                        }
+                        campoDoc.principal = null;
+                        _doc.caracteristicas.push(campoDoc);
+                        break;
                     }
-                    campoDoc.principal = null;
-                    _doc.caracteristicas.push(campoDoc);
-                    break;
                 }
             }
 
-            textoCampoPosible = this.validateIsPossibleField(
-                campo,
-                this.pedido.plantilla
-            );
+            textoCampoPosible = this.validateIsPossibleField(campo, pDocument.plantilla);
             if (textoCampoPosible) {
                 if (textoCampoPosible === this.CAMPO_POSIBLE_MENOR_PRIORIDAD) {
                     camposPosibles.push(campo);
@@ -825,11 +818,8 @@ export class FormComponent implements OnInit, AfterViewInit {
         }
 
         if (camposPosibles.length !== 0) {
-            const campoTransicion: DocumentoPlantillaCaracteristicaDTO =
-                camposPosibles[0];
-            if (!_doc.caracteristicas) {
-                _doc.caracteristicas = [];
-            }
+            const campoTransicion: DocumentoPlantillaCaracteristicaDTO = camposPosibles[0];
+            if (!_doc.caracteristicas) _doc.caracteristicas = [];
 
             for (let k = 0; k < _doc.caracteristicas.length; k++) {
                 const campoDocumento = _doc.caracteristicas[k];
@@ -845,16 +835,15 @@ export class FormComponent implements OnInit, AfterViewInit {
             const campoBase: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
             campoBase.campoDTO = campoTransicion;
 
-            if (this.pedido.dinero) {
-                campoBase.valorNumero = this.pedido.dinero.saldo;
-            }
+            if (pDocument.dinero) campoBase.valorNumero = pDocument.dinero.saldo;
 
             if (PlantillaHelper.isEmpty(campoTransicion.propiedades, PlantillaHelper.MULTIPLE)) {
-                campoBase.valorText = this.pedido.nombre;
-                campoBase.valorOpcion = this.pedido.llaveTabla; // Coloco el valor opcion para que el tipo proceso identifique la opcion
+                campoBase.valorText = pDocument.nombre;
+                // Coloco el valor opcion para que el tipo proceso identifique la opcion
+                campoBase.valorOpcion = pDocument.llaveTabla;
             } else {
                 campoBase.expedientes = [];
-                campoBase.expedientes.push(this.pedido);
+                campoBase.expedientes.push(pDocument);
             }
             _doc.caracteristicas.push(campoBase);
         }
@@ -872,16 +861,9 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     // Solo lo uso en crear plantilla siguiente asi que puedo ver como optimizar despues
-    validateIsPossibleField(
-        campo: DocumentoPlantillaCaracteristicaDTO,
-        plantilla: string
-    ): string {
-        if (
-            !campo ||
-            campo.formato !== DocumentoPlantillaCaracteristicaEnum.PROCESO
-        ) {
-            return null;
-        }
+    validateIsPossibleField(campo: DocumentoPlantillaCaracteristicaDTO, plantilla: string): string {
+        if (!campo || campo.formato !== DocumentoPlantillaCaracteristicaEnum.PROCESO) return null;
+
         const propAuxiliarTemplates: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(campo.propiedades, PlantillaHelper.PLANTILLA_AUXILIAR);
         if (!propAuxiliarTemplates || propAuxiliarTemplates.length === 0) {
             return this.CAMPO_POSIBLE_MENOR_PRIORIDAD; // necesito identificarle cual es el codigo y avece era un vacio

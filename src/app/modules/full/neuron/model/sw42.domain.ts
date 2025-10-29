@@ -20,7 +20,6 @@ export class ProductoDTO extends BasicParamDTO {
   descripcion: string;
   categoria: string;
   categoriaNombre: string;
-  categoriaPlantilla: string;
   usuarioRol: string;
   valorMinimoPromocion: number;
   cantidadPromocion: number;
@@ -120,6 +119,7 @@ export class ProcesoTransicionDTO extends BasicParamDTO {
   estadoLLegada: string;
   estadoLlegadaNombre: string;
   estadoLlegadaTipo: string;
+  documentToTransition: PedidoVentaDTO;
 }
 export class PedidoVentaAjusteDTO extends BasicDTO {
   documento: string;

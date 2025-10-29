@@ -9,7 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
-import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';

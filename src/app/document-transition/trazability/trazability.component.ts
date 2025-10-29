@@ -259,7 +259,7 @@ export class TrazabilityComponent implements OnInit {
     if (this.data.document) {
       const _prepare: VoucherPrepareRequest = new VoucherPrepareRequest();
       _prepare.documentId = this.data.document;
-      _prepare.serviceId = pService.valor;
+      _prepare.serviceId = pService.campo;
       this.isLoading = true;
       this._traceService
         .getVoucherOfDocument(_prepare)
@@ -300,7 +300,7 @@ export class TrazabilityComponent implements OnInit {
             Swal.fire('Comprobante', 'Se envio a generar el comprobante por favor consulte de nuevo', 'info');
             this.isLoading = false;
             this.vouchersTemplate.forEach((item) => {
-              if (item.valor === pServiceId) {
+              if (item.campo === pServiceId) {
                 item.estado = 'A';
               }
             });
