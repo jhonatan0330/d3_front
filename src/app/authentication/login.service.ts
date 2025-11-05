@@ -34,6 +34,11 @@ export class LoginService {
   slides: string[] = [];
   slides$ = new BehaviorSubject<string[]>(this.slides);
 
+  // Fecha observable: notifica cambios de fecha a otros componentes
+  private _date: Date = null;
+  private _date$ = new BehaviorSubject<Date | null>(this._date);
+
+
 
   landing: SafeHtml[] = [];
   landing$ = new BehaviorSubject<SafeHtml[]>(this.landing);
@@ -55,6 +60,28 @@ export class LoginService {
     this.route.queryParams.subscribe(
       (params) => (this.returnPath = params['return'] || '/')
     );
+  }
+
+  // Public API for date notifications
+  setDate(date: Date | string | null) {
+    if (!date) {
+      this._date = null;
+      this._date$.next(null);
+      return;
+    }
+    const newDate = (date instanceof Date) ? date : new Date(date);
+    this._date = newDate;
+    this._date$.next(this._date);
+  }
+
+  clearDate() {
+    this._date = null;
+    this._date$.next(null);
+  }
+
+  // Observable to subscribe from components
+  getDate$(): Observable<Date | null> {
+    return this._date$.asObservable();
   }
 
 
@@ -95,6 +122,7 @@ export class LoginService {
     this.setUserAndToken(res, res.organizacion);
     this.setCompany(res.organizacion)
     this.getUserDataFull(res);
+    if(res) {this.setDate(res.fechaMaxima); } else{ this.clearDate(); }
   }
 
   private setCompany(_company: OrganizacionDTO) {

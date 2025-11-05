@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { BaseComponent } from '../base/base.component';
 import { OlMapComponent } from './ol-map/ol-map.component';
 
@@ -13,7 +13,7 @@ export class GpsComponent extends BaseComponent implements OnInit {
 
   fControl = new FormControl('');
 
-  constructor(public dialog: MatDialog) {
+  constructor(public dialog: MatDialog, private notificationCenter: NotificationCenterService) {
     super();
   }
 
@@ -53,21 +53,21 @@ export class GpsComponent extends BaseComponent implements OnInit {
         maximumAge: 0
       });
     } else {
-      Swal.fire("Change Browser", "Geolocation is not supported by this browser.", 'warning');
+        this.notificationCenter.warn("Change Browser", "Geolocation is not supported by this browser.");
     }
   }
 
   error(err) {
-    Swal.fire(`ERROR(${err.code})`, err.message, "error");
+     this.notificationCenter.error(`ERROR(${err.code})`, err.message);
   }
 
   showMap() {
     if (!this.data || !this.data.valorText) {
-      Swal.fire("Sin coordenadas", "No se reconocen las coordenadas.", 'warning');
+      this.notificationCenter.warn("Sin coordenadas", "No se reconocen las coordenadas.");
     }
     const coma = this.data.valorText.indexOf(",");
     if (coma <= 0) {
-      Swal.fire("Sin coordenadas", "No reconocemos el separador de las coordenadas.", 'warning');
+      this.notificationCenter.warn("Sin coordenadas", "No reconocemos el separador de las coordenadas.");
     }
     const dialogRef: MatDialogRef<any> = this.dialog.open(OlMapComponent, {
       width: '90vw',

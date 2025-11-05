@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountingService } from '../accounting.service';
 import { Observable, Subscription, debounceTime, pairwise, startWith, map } from 'rxjs';
 import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, VoucherLine } from '../accounting.domain';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ReporteBaseDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
@@ -42,6 +42,8 @@ export class ManualFormComponent implements OnInit {
         private ls: LocalStoreService,
         private templateService: TemplateService
         
+        ,
+        private notificationCenter: NotificationCenterService
     ) {
     }
 
@@ -143,27 +145,27 @@ export class ManualFormComponent implements OnInit {
 
     send(): void {
         if (this.creditValue !== this.debitValue) {
-            Swal.fire('', 'El valor crédito (' + this.creditValue + ') no es igual al valor debito (' + this.debitValue + ')');
+            this.notificationCenter.info('', 'El valor cr\u00e9dito (' + this.creditValue + ') no es igual al valor debito (' + this.debitValue + ')');
             return;
         }
 
         if (this.creditValue === 0) {
-            Swal.fire('Completa el comprobante', 'Debes colocar valores en los asientos contables');
+            this.notificationCenter.info('Completa el comprobante', 'Debes colocar valores en los asientos contables');
             return;
         }
 
         if (this.creditValue === 0) {
-            Swal.fire('Completa el comprobante', 'Debes colocar valores en los asientos contables');
+            this.notificationCenter.info('Completa el comprobante', 'Debes colocar El concepto');
             return;
         }
 
         if (!this.form.get('header').get('concept').value) {
-            Swal.fire('Completa el comprobante', 'Debes colocar El concepto');
+            this.notificationCenter.info('Completa el comprobante', 'Que no se te olvide la fecha');
             return;
         }
 
         if (!this.form.get('header').get('factDate').value) {
-            Swal.fire('Completa el comprobante', 'Que no se te olvide la fecha');
+            this.notificationCenter.info('Completa el comprobante', 'Que no se te olvide la fecha');
             return;
         }
 

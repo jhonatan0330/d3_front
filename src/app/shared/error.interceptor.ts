@@ -5,7 +5,7 @@ import {
   HttpInterceptor,
 } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { LoginService } from '../authentication/login.service';
 
 @Injectable({
@@ -13,7 +13,8 @@ import { LoginService } from '../authentication/login.service';
 })
 export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(
-    private jwtAuth: LoginService
+    private jwtAuth: LoginService,
+    private notificationCenter: NotificationCenterService
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
@@ -38,12 +39,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 audio.load();
                 audio.play();
               }
-              Swal.fire({
-                icon: 'error',
-                title: errorMessage,
-                showConfirmButton: showButton,
-                text: error.error.detail
-              });
+              this.notificationCenter.error(errorMessage, error.error.detail);
             }
           }
         } else { // backend error
@@ -51,11 +47,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           if (error.status === 404 && error.message.indexOf('assets/conf.xml') !== -1) {
 
           } else {
-            Swal.fire({
-              icon: 'info',
-              title: 'Error de conexión',
-              text: errorMessage
-            });
+            this.notificationCenter.info('Error de conexion', errorMessage);
           }
         }
         return throwError(errorMessage);

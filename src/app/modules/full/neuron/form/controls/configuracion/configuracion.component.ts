@@ -41,7 +41,6 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     } else {
       this.procesarCampo(null);
     }
-    // PAra que no se envia a actualizar con los cambios de inicio
     this.fControl.valueChanges.subscribe((value) => {
       this.actualizar();
     });

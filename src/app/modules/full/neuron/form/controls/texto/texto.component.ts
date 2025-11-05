@@ -51,7 +51,6 @@ export class TextoComponent extends BaseComponent implements OnInit {
     } else {
       this.fControl.disable();
     }*/
-    // Al finalzar se subscriben los cambios
     this.fControl.valueChanges.subscribe((value) => {
       this.actualizar();
     });

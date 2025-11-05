@@ -46,7 +46,6 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       this.fControl.updateValueAndValidity();
     }
     this.startControl();
-    // Al finalzar se subscriben los cambios
     if (this.funcion) {
       // Solo tomo unos segundos en los casos que el campo tenga funcion asi evito tantas consultas al server
       this.fControl.valueChanges

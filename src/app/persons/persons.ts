@@ -26,7 +26,7 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/notification-center.service';
 
 
 @Component({
@@ -139,7 +139,8 @@ export class PersonsComponent implements OnInit, OnDestroy {
     cambiar_clave(pUsuario: UsuarioDTO) {
         //this.utilService.modalUserChangePassOther(pUsuario).subscribe();
         this._jwt.recoverPassword(pUsuario.identificacion, pUsuario.correo).subscribe(() => {
-            Swal.fire('Correo Enviado', 'Revisa el correo ' + pUsuario.correo + '.');
+            const notificationCenter = new NotificationCenterService();
+            notificationCenter.success('Correo Enviado', 'Revisa el correo ' + pUsuario.correo + '.');
         });
 
     }

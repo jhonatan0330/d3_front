@@ -31,7 +31,6 @@ export class InformativeComponent extends BaseComponent implements OnInit {
         }
       }
     }
-    // Al finalzar se subscriben los cambios
     this.fControl.valueChanges.subscribe((value) => {
       this.actualizar();
     });

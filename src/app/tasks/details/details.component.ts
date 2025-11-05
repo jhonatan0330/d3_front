@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/notification-center.service';
 
 @Component({
     selector: 'tasks-details',
@@ -46,6 +46,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
         private _router: Router,
         private _tasksListComponent: TasksListComponent,
         private _tasksService: TasksService,
+        private notificationCenter: NotificationCenterService,
     ) {
     }
 
@@ -94,7 +95,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.task.notes = value.notes;
                     this.task.completed = value.completed;
                     }else{
-                        Swal.fire("Atencion", "Primero escribe el titulo, para poder editar la nota. ", "warning");
+                        this.notificationCenter.warn("Atencion", "Primero escribe el titulo, para poder editar la nota.");
                     }
                 }),
                 debounceTime(500),

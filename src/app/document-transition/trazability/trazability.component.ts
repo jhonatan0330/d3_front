@@ -5,7 +5,7 @@ import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } f
 import { TemplateService } from "app/modules/full/neuron/service/template.service";
 import { UtilsService } from "app/modules/full/neuron/service/utils.service";
 import { PlantillaHelper } from "app/shared/plantilla-helper";
-import Swal from "sweetalert2";
+import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { DocumentTransitionService } from "../document-transition.service";
 import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from "../document-transition.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
@@ -64,7 +64,8 @@ export class TrazabilityComponent implements OnInit {
     public dialogRef: MatDialogRef<TrazabilityComponent>,
     private _traceService: DocumentTransitionService,
     private templateService: TemplateService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private notificationCenter: NotificationCenterService
   ) {
 
   }
@@ -106,7 +107,7 @@ export class TrazabilityComponent implements OnInit {
       !this.plantilla ||
       !this.data.document
     ) {
-      Swal.fire('No estados', 'Esta plantilla no tiene existe', 'warning');
+      this.notificationCenter.warn('No estados', 'Esta plantilla no tiene existe');
       this.dialogRef.close(false);
       return;
     }
@@ -268,7 +269,7 @@ export class TrazabilityComponent implements OnInit {
             if (value && value.id) {
               this.utilsService.modalVoucher(value.id, null).subscribe();
             } else {
-              Swal.fire('Comprobante', 'No se encontro comprobante para este documento', 'info');
+              this.notificationCenter.info('Comprobante', 'No se encontro comprobante para este documento');
             }
             this.isLoading = false;
           },
@@ -297,7 +298,7 @@ export class TrazabilityComponent implements OnInit {
         .generateVoucher(_prepare)
         .subscribe({
           next: () => {
-            Swal.fire('Comprobante', 'Se envio a generar el comprobante por favor consulte de nuevo', 'info');
+            this.notificationCenter.info('Comprobante', 'Se envio a generar el comprobante por favor consulte de nuevo');
             this.isLoading = false;
             this.vouchersTemplate.forEach((item) => {
               if (item.campo === pServiceId) {

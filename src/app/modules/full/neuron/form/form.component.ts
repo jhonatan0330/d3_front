@@ -41,7 +41,6 @@ import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { Router } from '@angular/router';
-import { ContactsService } from 'app/persons/contact.services';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 
@@ -126,7 +125,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             return;
         }
 
-        this.pedidoBase = this.data.data;
+    this.pedidoBase = this.data.data;
         this.identificadorInicial = this.data.identificador;
         this.saveInField = this.data.saveInField;
         if (this.data.close2Save) {

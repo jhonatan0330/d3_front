@@ -6,11 +6,11 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { AuthenticationService } from 'app/authentication/authentication.service';
-import { SafeHtml } from '@angular/platform-browser';
 import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { NotificationCenterService } from 'app/notification/notification-center.service';
 
 
 interface MenuNode {
@@ -53,7 +53,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private _utilsService: UtilsService,
     private _formBuilder: UntypedFormBuilder,
-    public loginservice: LoginService,
+  public loginservice: LoginService
 
   ) {
   }
@@ -84,6 +84,19 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         this.user = user;
+      });
+
+    // Subscribe to date changes from LoginService
+    this.loginservice.getDate$()
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((date: Date | null) => {
+        if (!date) { return; }
+        const now = new Date();
+        const received = (date instanceof Date) ? date : new Date(date);
+        // If the received date is greater than now, show a pop-up
+        if (received < now) {
+          this._utilsService.modalUserChangePass().subscribe();
+        }
       });
 
     this.templateService.templates$
@@ -123,8 +136,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit(): void {
-    //this._searchText.nativeElement.focus();
-    // this.autoSignIn();
     this.openFormLink();
   }
 

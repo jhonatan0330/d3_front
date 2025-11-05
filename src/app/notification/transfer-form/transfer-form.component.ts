@@ -5,7 +5,7 @@ import { DocumentoPlantillaDTO } from "app/modules/full/neuron/model/sw42.domain
 import { TemplateService } from "app/modules/full/neuron/service/template.service";
 import { NotificationsService } from 'app/notification/notification.service';
 import { PlantillaHelper } from "app/shared/plantilla-helper";
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { ActividadDTO } from "../notification.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
 import { UsuarioDTO } from "app/authentication/authentication.domain";
@@ -40,7 +40,8 @@ export class TransferFormComponent implements OnInit {
       this.data.template, this.data.server
     );
     if (!this.plantilla || !this.plantilla.estados || this.plantilla.estados.length === 0) {
-      Swal.fire('No estados', 'Esta plantilla no tiene estados y no permite gestionar la transferencia', 'warning');
+      const notificationCenter = new NotificationCenterService();
+      notificationCenter.warn('No estados', 'Esta plantilla no tiene estados y no permite gestionar la transferencia');
       this.dialogRef.close(false);
       return;
     }
@@ -54,7 +55,8 @@ export class TransferFormComponent implements OnInit {
           PlantillaHelper.ROL
         );
         if (!rolPropiedad) {
-          Swal.fire('No roles', 'El estado ' + estadoModificable.nombre + ' no tiene configurada la propiedad ROL', 'warning');
+          const notificationCenter = new NotificationCenterService();
+          notificationCenter.warn('No roles', 'El estado ' + estadoModificable.nombre + ' no tiene configurada la propiedad ROL');
           this.dialogRef.close(false);
           return;
         }
@@ -70,7 +72,8 @@ export class TransferFormComponent implements OnInit {
         this.isTransfering = false;
         this.users = value;
         if (!value || value.length ===0) {
-          Swal.fire('No users', 'No tenemos usuarios en el rol ' + rolPropiedad.texto + ' al cual puedas realizar la transferencia del documento', 'warning');
+          const notificationCenter = new NotificationCenterService();
+          notificationCenter.warn('No users', 'No tenemos usuarios en el rol ' + rolPropiedad.texto + ' al cual puedas realizar la transferencia del documento');
           this.dialogRef.close(false);
           return;
         }       
@@ -84,7 +87,8 @@ export class TransferFormComponent implements OnInit {
   transfer() {
     const transferData = this.transferForm.value;
     if (!transferData.responsable || !transferData.responsable.llaveTabla) {
-      Swal.fire('Responsable', 'Selecciona el nuevo responsable', 'info');
+      const notificationCenter = new NotificationCenterService();
+      notificationCenter.info('Responsable', 'Selecciona el nuevo responsable');
     } else {
       const reasignacion: ActividadDTO = new ActividadDTO();
       reasignacion.documento = this.data.document;
