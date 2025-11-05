@@ -3,12 +3,15 @@ import { PropiedadCampoDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { FlexService } from '../flex.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { NgModule } from '@angular/core';
 
 @Component({
     selector: 'app-property-form',
     templateUrl: './addProperty.html',
+    standalone: true,
+    imports: [CommonModule],
 })
 export class addPropertyComponent {
     cargando = false;
@@ -25,6 +28,8 @@ export class addPropertyComponent {
     ) { }
 
     ngOnInit(): void {
+
+        this.propiedad = new PropiedadCampoDTO();
 
         const _a = new PropiedadValorDefinidoDTO();
         _a.origenCategoria = 'C';
