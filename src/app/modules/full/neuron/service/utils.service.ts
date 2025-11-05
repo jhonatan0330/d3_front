@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaDTO, PropiedadCampoDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { FormComponent } from 'app/modules/full/neuron/form/form.component';
 import { TransferFormComponent } from 'app/notification/transfer-form/transfer-form.component';
 import { TrazabilityComponent } from 'app/document-transition/trazability/trazability.component';
@@ -14,6 +14,7 @@ import { dfaComponent } from 'app/authentication/DFA/dfa';
 import { FieldComponent } from 'app/configuration-forms/flex/fieldComponent';
 import { FieldComponent2 } from 'app/configuration-forms/flex/fieldComponent2';
 import { AddPropertyComponent } from 'app/configuration-forms/flex/addProperty';
+import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Injectable({
   providedIn: 'root',
@@ -120,10 +121,10 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  fieldAddModalFlex(pTemplate: string){
+  fieldAddModalFlex(pTemplate?: string, pPropiedad?:PropiedadCampoDTO){
     const dialogRef: MatDialogRef<any> = this.dialog.open(AddPropertyComponent, {
       maxHeight: '90vh',
-      data: { template: pTemplate},
+      data: { template: pTemplate , propiedad: pPropiedad },
     });
     return dialogRef.afterClosed();
   }
