@@ -133,22 +133,23 @@ export class PedidoVentaCaracteristicaDTO extends BasicDTO {
     //transaccionInactivo: string;
 }
 export class ProcesoTransicionDTO extends BasicParamDTO {
-    procesoNombre: string;
-    estadoPartidaOrden: number;
-    estadoLlegadaOrden: number;
-    nombre: string;
-    proceso: string;
-    estadoPartida: string;
-    estadoPartidaNombre: string;
-    plantilla: string;
-    plantillaNombre: string;
-    documentador: boolean;
-    afectaSaldo: string;
-    imagen: string;
-    rapida: boolean;
-    estadoLLegada: string;
-    estadoLlegadaNombre: string;
-    estadoLlegadaTipo: string;
+  procesoNombre: string;
+  estadoPartidaOrden: number;
+  estadoLlegadaOrden: number;
+  nombre: string;
+  proceso: string;
+  estadoPartida: string;
+  estadoPartidaNombre: string;
+  plantilla: string;
+  plantillaNombre: string;
+  documentador: boolean;
+  afectaSaldo: string;
+  imagen: string;
+  rapida: boolean;
+  estadoLLegada: string;
+  estadoLlegadaNombre: string;
+  estadoLlegadaTipo: string;
+  documentToTransition: PedidoVentaDTO;
 }
 export class PedidoVentaAjusteDTO extends BasicDTO {
     documento: string;

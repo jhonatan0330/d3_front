@@ -51,16 +51,12 @@ export class FieldComponent2 {
         }*/
     }
 
-    /**
-     * Simula la acción de abrir cámara o cargar imagen
-     */
+
     cargarImagenDesdeCamara(): void {
         alert('📷 Función de cámara aún no implementada');
     }
 
-    /**
-     * Envía los datos del formulario
-     */
+
     actualizarCampo(): void {
         if (!this.campo.nombre || !this.campo.codigo) {
             alert('⚠️ Los campos nombre y código son obligatorios.');
@@ -68,17 +64,7 @@ export class FieldComponent2 {
         }
 
         this.cargando = true;
-
-        // Simular envío al servidor (puedes reemplazar con tu servicio)
-        setTimeout(() => {
-            console.log('✅ Campo actualizado:', this.campo);
-            this.cargando = false;
-            alert('✅ Campo actualizado correctamente.');
-        }, 1000);
     }
 
-    /**
-     * Limpia el formulario
-     */
     limpiarFormulario(): void { }
 }
