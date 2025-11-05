@@ -14,6 +14,7 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { environment } from 'environments/environment';
 import { Subject, takeUntil } from 'rxjs';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -93,6 +94,13 @@ export class SignInSplitScreenReversedComponent implements OnInit {
                     this.isLoading = false;
                     this.signInForm.enable();
                     this.signInForm.controls['password'].setValue('');
+                    const _today = new Date().getTime(); //fecha de hoy
+                    const _fechaMaxima = _val.fechaMaxima?.getTime(); //fecha de vencimiento de la clave
+                    if (( _today - (_fechaMaxima + 60*60*24*3000))>= 0) {  //  60 segundos * 60 minutos * 24 horas * 3 dias * 1000 milisegundos es el tiempo de 3 dias para que muestre el popo up faltando 3 dias en adelante.
+                        //Swal.fire('Cambia tu contraseña', 'Te quedan ' + Math.trunc((_fechaMaxima - _today)/(3600*24*1000)) + ' dias para cambiar tu contraseña.');
+                        this.utilsService.modalUserChangePass().subscribe();
+                        /*this.loginservice.recoverPassword(_val.usuarioDTO.identificacion, _val.usuarioDTO.correo).subscribe(() => {});*/
+                    }
                     const APP_DFA = PlantillaHelper.buscarValor(_val.organizacion.propiedades, PlantillaHelper.APP_DFA);
                     if (APP_DFA) {
                         this.utilsService.modalUserChangePassOther(_val.usuarioDTO).subscribe((result) => {
