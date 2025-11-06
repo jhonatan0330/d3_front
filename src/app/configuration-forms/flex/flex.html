@@ -5,10 +5,8 @@
     </div>
 
     <!-- Imagen de la plantilla (si existe) -->
-    <img *ngIf="plantilla?.imagen"
-         [src]="plantilla.imagen"
-         alt="Imagen de la plantilla"
-         class="h-10 object-cover rounded-lg mt-2 sm:mt-0" />
+    <img *ngIf="plantilla?.imagen" [src]="plantilla.imagen" alt="Imagen de la plantilla"
+      class="h-10 object-cover rounded-lg mt-2 sm:mt-0" />
   </div>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 h-full">
     <div class="flex flex-col gap-6 h-full">
@@ -16,21 +14,23 @@
         <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
           <h2 class="text-lg font-bold">Campos</h2>
           <div class="flex gap-2 flex-wrap">
-            <button (click)="getFields()"
-                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
+            <button (click)="getFields()" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
           </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
           <ng-container *ngIf="!isLoading; else loadingCampos">
-            <div *ngIf="campos.length > 0; else noCampos"
-                 class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div (click)="onClickCampo(item.llaveTabla)"
-                   *ngFor="let item of campos"
-                   class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition cursor-pointer">
+            <div *ngIf="campos.length > 0; else noCampos" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div (click)="onClickCampo(item.llaveTabla)" *ngFor="let item of campos"
+                class="group border border-gray-200 rounded-lg p-3 bg-gray-50 hover:shadow-md transition relative cursor-pointer">
                 <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.llaveTabla }}</span>
                 <h4 class="text-base font-semibold">{{ item.title }}</h4>
                 <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle }}</p>
+                <button (click)="editarPropiedad(prop); $event.stopPropagation()"
+                  class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-blue-600 focus:outline-none"
+                  title="Editar">
+                  ✏
+                </button>
               </div>
             </div>
             <ng-template #noCampos>
@@ -52,19 +52,18 @@
         <h2 class="text-lg font-bold">Propiedades de Plantilla</h2>
         <div class="flex gap-2 flex-wrap">
           <button (click)="listarConsultaPropiedadPlantilla()"
-                  class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
+            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
         </div>
       </div>
 
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
         <ng-container *ngIf="!isLoading; else loadingPropiedades">
           <div *ngIf="propiedadesPlantilla.length > 0; else noPropiedades"
-               class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div (click)="onPropiedadPlantillaClick(item)"
-                 *ngFor="let item of propiedadesPlantilla"
-                 [class.ring-2]="propiedadPlantillaSeleccionada?.code === item.code"
-                 [class.ring-blue-500]="propiedadPlantillaSeleccionada?.code === item.code"
-                 class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition cursor-pointer">
+            class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div (click)="onPropiedadPlantillaClick(item)" *ngFor="let item of propiedadesPlantilla"
+              [class.ring-2]="propiedadPlantillaSeleccionada?.code === item.code"
+              [class.ring-blue-500]="propiedadPlantillaSeleccionada?.code === item.code"
+              class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition cursor-pointer">
               <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.code }}</span>
               <h4 class="text-base font-semibold">{{ item.title }}</h4>
               <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle }}</p>
