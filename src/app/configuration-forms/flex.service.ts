@@ -58,10 +58,25 @@ export class FlexService {
         );
     }
 
-    listarPorOrigenPropiedadValorDefinido(template: PropiedadValorDefinidoDTO, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
+    consultaXIdPropiedadValorDefinido(pTemplate: String, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
+        return this.http.post<PropiedadValorDefinidoDTO[]>(
+            this.ls.getUrlAccess('/flex/consultaXIdPropiedadValorDefinido', _server),
+            pTemplate
+        );
+    }
+
+    
+    consultaXIdCambio(pTemplate: String, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
+        return this.http.post<PropiedadValorDefinidoDTO[]>(
+            this.ls.getUrlAccess('/flex/consultaXIdCambio', _server),
+            pTemplate
+        );
+    }
+
+    listarPorOrigenPropiedadValorDefinido(pTemplate: PropiedadValorDefinidoDTO, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
         return this.http.post<PropiedadValorDefinidoDTO[]>(
             this.ls.getUrlAccess('/flex/listarPorOrigenPropiedadValorDefinido', _server),
-            template
+            pTemplate
         );
     }
 

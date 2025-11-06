@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
     DocumentoPlantillaCaracteristicaDTO,
     propiedadCampo,
+    PropiedadCampoDTO,
     RelacionInternaDTO,
     RelacionInternaFilterDTO
 } from 'app/modules/full/neuron/model/sw42.domain';
@@ -94,6 +95,10 @@ export class FieldComponent implements OnInit {
 
     editarCampo(): void {
         this.utilsService.fieldEditModalFlex(this.campo.llaveTabla);
+    }
+
+    editarPropiedad(pPropiedad?:PropiedadCampoDTO): void {
+        this.utilsService.fieldAddModalFlex(null,pPropiedad);
     }
 
     agregarPropiedadCampo() {

@@ -56,17 +56,20 @@ export class AddPropertyComponent {
     }
     ngOnInit(): void {
 
-        this.propiedad = new PropiedadCampoDTO();
+        if(this.data.propiedad){
+            this.propiedad = this.data.propiedad;
+        }else{
+            this.propiedad = new PropiedadCampoDTO;
+        }
 
         const _a = new PropiedadValorDefinidoDTO();
-        _a.origenCategoria = 'C';
-        _a.origen = 'C';
+            _a.origenCategoria = 'C';
+            _a.origen = 'C';
         this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null)
             .subscribe(p => {
                 this.propiedadValores = p;
             });
-        this.propiedad = new PropiedadCampoDTO;
-        this.flexService.listarConsultaRolAcceso().subscribe(p => {
+            this.flexService.listarConsultaRolAcceso().subscribe(p => {
             this.roles = p;
         })
         //this.flexService.listarRolUsuario(this.filtroUsuario).subscribe(p => { this.usuarios = p; })
