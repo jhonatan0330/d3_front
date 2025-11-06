@@ -2,7 +2,8 @@
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
         <div class="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
             <div class="text-xl font-bold">{{ campo?.nombre || 'Detalle de Campo' }}</div>
-            <button (click)="editarCampo()" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">✏</button>
+            <button (click)="editarCampo()"
+                class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">✏</button>
         </div>
 
         <!-- Imagen del campo si existe -->
@@ -20,15 +21,32 @@
             </div>
 
             <div class="bg-white rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
-                <div *ngIf="propiedadesCampo?.length > 0; else noProps"
-                    class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div *ngFor="let prop of propiedadesCampo" (click)="listarRelacionesPropiedad(prop)"
-                        class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:shadow-md transition">
-                        <span class="text-xs text-gray-500 font-mono block">{{ prop.propiedadValor }}</span>
-                        <h4 class="text-base font-semibold">{{ prop.nombre }}</h4>
-                        <p class="text-sm text-gray-600">{{ prop.texto }}</p>
+                <div class="bg-white rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
+                    <div *ngIf="propiedadesCampo?.length > 0; else noProps"
+                        class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                        <div *ngFor="let prop of propiedadesCampo" (click)="listarRelacionesPropiedad(prop)"
+                            class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:shadow-md transition">
+
+                            <span class="text-xs text-gray-500 font-mono block">{{ prop.propiedadValor }}</span>
+                            <h4 class="text-base font-semibold">{{ prop.nombre }}</h4>
+                            <p class="text-sm text-gray-600">{{ prop.texto }}</p>
+
+                            <!-- contenedor para los botones alineados a la derecha -->
+                            <div class="flex justify-end space-x-2 mt-2">
+                                <button (click)="editarCampo()"
+                                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                                    ✏
+                                </button>
+                                <button (click)="eliminarCampo()"
+                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                                    ❌
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
                 <ng-template #noProps>
                     <div class="text-center text-sm text-gray-500 py-4">Sin relaciones de propiedad</div>
                 </ng-template>
@@ -44,7 +62,7 @@
             <div class="bg-white rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
                 <div *ngIf="propiedadesRelacion?.length > 0; else noProps"
                     class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div *ngFor="let prop of propiedadesRelacion" 
+                    <div *ngFor="let prop of propiedadesRelacion"
                         class="border border-gray-200 rounded-lg p-3 bg-gray-50 hover:shadow-md transition">
                         <span class="text-xs text-gray-500 font-mono block">{{ prop.campo }}</span>
                         <h4 class="text-base font-semibold">{{ prop.campoNombre }}</h4>
