@@ -387,6 +387,28 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
       }
 
+      if (this.data.dependientes) {
+        for (let index = 0; index < this.data.dependientes.length; index++) {
+          const element = this.data.dependientes[index];
+          for (
+            let i = 0;
+            i < item.documentoDetalle.caracteristicas.length;
+            i++
+          ) {
+            const uc = item.documentoDetalle.caracteristicas[i];
+            if (element.campoDTO.codigo === uc.campoDTO.codigo) {
+              uc.valorOpcion = element.valorOpcion;
+              uc.valorNumero = element.valorNumero;
+              uc.valorText = element.valorText;
+              uc.principal = element.principal;
+              break;
+            }
+          }
+        }
+      }
+
+
+
       this.utilsService.modalWithParams(item.documentoDetalle, false, null, true).subscribe((res) => {
         if (res) {
           item.documentoDetalle = res.data;
@@ -431,7 +453,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   updateDetailNumbersAfterFormWindow(pItem: DetallePedidoVentaDTO) {
     pItem.cantidad = this.cantidadTarifario(pItem, PlantillaHelper.PRODUCTO_CAMPO_CANTIDAD);
-    if(pItem.cantidad === 0) pItem.cantidad = 1;
+    if (pItem.cantidad === 0) pItem.cantidad = 1;
     pItem.valorUnitario = this.cantidadTarifario(pItem, PlantillaHelper.PRODUCTO_CAMPO_VALOR_UNITARIO);
     pItem.valorTotal = this.cantidadTarifario(pItem, PlantillaHelper.PRODUCTO_CAMPO_TOTAL);
     pItem.valorSubtotal = undefined;
