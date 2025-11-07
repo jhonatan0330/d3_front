@@ -216,9 +216,9 @@
                     <div class="font-semibold text-gray-700"><span class="text-gray-900">{{g.nombre}}</span>
                     </div>
                     <div class="text-xs text-gray-500">
-                      <span class="mr-2"><a [href]="g.estadoInicial" target="_blank"
+                      <span *ngIf="g.estadoInicial" class="mr-2"><a href="{{ g.estadoInicial | imageFormat }}" target="_blank"
                           class="cursor-pointer text-primary text-sm">📥 Input</a></span>
-                      <span><a [href]="g.estadoFinal" target="_blank" class="cursor-pointer text-primary text-sm">📤
+                      <span *ngIf="g.estadoInicial" ><a href="{{ g.estadoFinal | imageFormat }}" target="_blank" class="cursor-pointer text-primary text-sm">📤
                           Output: </a></span>
                     </div>
                     <div class="mt-1 text-xs text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded"
@@ -253,7 +253,7 @@
                     <p class="text-xs text-gray-400 mt-0.5">{{ getDateFormat(g.fecha) }}</p>
                     <div *ngIf="g.adjunto" class="w-full">
                       <div *ngFor="let iUrl of g.adjunto.split(';;'); let i = index">
-                        <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1
+                        <a href="{{ iUrl | imageFormat }}" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1
                           }}</a>
                       </div>
                     </div>

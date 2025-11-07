@@ -38,7 +38,7 @@
     <div class="m-4 flex justify-center">
       <img *ngIf="item.blob" [src]="item.blob" class="middle-width"
         (load)="validateOrientationHandler($event.target, item)" [name]="item.url" />
-      <img *ngIf="!item.blob && item.url && isImage(item.url)" [src]="item.url" class="middle-width"
+      <img *ngIf="!item.blob && item.url && isImage(item.url)" src="{{ item.url | imageFormat }}" class="middle-width"
         [name]="item.url" />
     </div>
     <div class="flex">

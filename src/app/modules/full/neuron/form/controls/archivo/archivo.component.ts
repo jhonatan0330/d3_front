@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import SignaturePad from 'signature_pad';
+import { LocalStoreService } from 'app/shared/local-store.service';
+import { formatImageUrl } from 'app/shared/local-image';
 
 @Component({
   selector: 'app-archivo',
@@ -40,7 +42,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   isLoadingUrl = false;
   urlText = '';
 
-  constructor(private api: ApiService, private imageCompress: NgxImageCompressService) {
+  constructor(private api: ApiService, private imageCompress: NgxImageCompressService, private ls:LocalStoreService) {
     super();
   }
 
@@ -362,7 +364,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
     if (item.blob) {
       return;
     }
-    window.open(item.url, '_blank');
+    window.open(formatImageUrl(this.ls, item.url), '_blank');
   }
 
   deleteFile(item: any) {
