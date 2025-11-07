@@ -1,1 +1,9 @@
-<div class="border-b font-bold text-center mb-1 pb-1" [style.display]="isInvisible ? 'none': 'block'">{{structure.nombre}} </div>
+<div
+  class="border-b font-bold text-center mb-1 pb-1 cursor-pointer select-none flex items-center justify-between"
+  (click)="isCollapsed = !isCollapsed"
+>
+  <span>{{ structure.nombre }}</span>
+  <span class="text-gray-500 text-sm">
+    {{ isCollapsed ? '▸' : '▾' }}
+  </span>
+</div>
