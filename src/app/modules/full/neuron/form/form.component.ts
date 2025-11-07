@@ -760,7 +760,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                             const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
                             _newtransicion.imagen = _templateTransition.imagen;
                             _newtransicion.plantilla = _templateTransition.llaveTabla;
-                            _newtransicion.nombre = _templateTransition.nombre;
+                            _newtransicion.nombre = _transition.nombre;
                             _newtransicion.documentToTransition = pDocumentTransition;
                             this.transiciones.push(_newtransicion);
                         }
