@@ -2,7 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, propiedadCampo, PropiedadCampoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
+import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
     providedIn: 'root',
@@ -21,6 +23,13 @@ export class FlexService {
         );
     }
 
+    getField(pKey: string, _server: string): Observable<DocumentoPlantillaCaracteristicaDTO> {
+        return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
+            this.ls.getUrlAccess('/flex/consultaXIdDocumentoPlantillaCaracteristica', _server),
+            pKey
+        );
+    }
+
     getFields(pTemplateKey: string, _server: string = null): Observable<DocumentoPlantillaCaracteristicaDTO[]> {
         const _payload = {
             estado: 'A',
@@ -32,14 +41,70 @@ export class FlexService {
         );
     }
 
-    listarConsultaPropiedad(llaveTabla: string, _server: string): Observable<any[]> {
+    listarConsultaPropiedad(llaveTabla: string, _server: string): Observable<propiedadCampo[]> {
         const payload = {
             estado: 'A',
             campo: llaveTabla
         };
-        return this.http.post<any[]>(
+        return this.http.post<propiedadCampo[]>(
             this.ls.getUrlAccess('/flex/listarConsultaPropiedad', _server),
             payload
+        );
+    }
+    addProperty(pTemplate: PropiedadCampoDTO){
+        return this.http.post(
+            this.ls.getUrlAccess('/flex/guardarPropiedad', null),
+            pTemplate
+        );
+    }
+
+    consultaXIdPropiedadValorDefinido(pTemplate: String, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
+        return this.http.post<PropiedadValorDefinidoDTO[]>(
+            this.ls.getUrlAccess('/flex/consultaXIdPropiedadValorDefinido', _server),
+            pTemplate
+        );
+    }
+
+    
+    consultaXIdCambio(pTemplate: String, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
+        return this.http.post<PropiedadValorDefinidoDTO[]>(
+            this.ls.getUrlAccess('/flex/consultaXIdCambio', _server),
+            pTemplate
+        );
+    }
+
+    listarPorOrigenPropiedadValorDefinido(pTemplate: PropiedadValorDefinidoDTO, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
+        return this.http.post<PropiedadValorDefinidoDTO[]>(
+            this.ls.getUrlAccess('/flex/listarPorOrigenPropiedadValorDefinido', _server),
+            pTemplate
+        );
+    }
+
+    listarConsultaRolAcceso(): Observable<RolAccesoFilterDTO[]> {
+        const payload = {
+            estado: 'A'
+        };
+        return this.http.post<RolAccesoFilterDTO[]>(
+            this.ls.getUrlAccess('/flex/listarConsultaRolAcceso', null),
+            payload
+        );
+    }
+
+    listarRolUsuario(pFiltro: string,): Observable<UsuarioDTO[]> {
+        const payload = {
+            estado: 'A',
+            filtroParametro: pFiltro
+        };
+        return this.http.post<UsuarioDTO[]>(
+            this.ls.getUrlAccess('/flex/listarRolUsuario', null),
+            payload
+        );
+    }
+
+    inactivarPropiedad(pPropiedad: PropiedadCampoDTO,): Observable<PropiedadCampoDTO[]> {
+        return this.http.post<PropiedadCampoDTO[]>(
+            this.ls.getUrlAccess('/flex/inactivarPropiedad', null),
+            pPropiedad
         );
     }
 
