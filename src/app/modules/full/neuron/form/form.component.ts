@@ -1127,10 +1127,14 @@ export class FormComponent implements OnInit, AfterViewInit {
         let sectionIsInvisible = false;
         for (let i = 0; i < this.dynamicControls.length; i++) {
             const element = this.dynamicControls[i];
-            if (element.structure.formato === DocumentoPlantillaCaracteristicaEnum.SECCION) {
-                sectionIsInvisible = element.isInvisible;
+            if (element.structure.formato === DocumentoPlantillaCaracteristicaEnum.SECCION) { //verifica que sea seccion   
+                if (element.isInvisible) {
+                    sectionIsInvisible = element.isInvisible;  //si la seccion es inivisible invisibiliza toda la seccion
+                } else {
+                    sectionIsInvisible = element.isSectionInvisible; //si la seccion no es inivisible invisibiliza toda la seccion solo al colapsar
+                }
             } else {
-                element.isSectionInvisible = sectionIsInvisible;
+                element.isSectionInvisible = sectionIsInvisible; //solo si no es seccion se invisibiliza 
             }
 
         }
