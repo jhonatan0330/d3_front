@@ -1,7 +1,7 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // Usa IntelliSense para conocer los atributos posibles.
+    // Pasa el cursor para ver las descripciones de los atributos existentes.
+    // Más información: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
@@ -25,6 +25,5 @@
             "url": "http://localhost:4200",
             "webRoot": "${workspaceFolder}"
         }
-    ]
     ]
 }

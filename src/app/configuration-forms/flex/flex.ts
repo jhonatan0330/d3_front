@@ -8,6 +8,7 @@ import {
 } from 'app/modules/full/neuron/model/sw42.domain';
 import Swal from 'sweetalert2';
 import { FlexService } from '../flex.service';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 
 interface Item {
     code: string;
@@ -24,8 +25,8 @@ interface Item {
 })
 export class FlexComponent implements OnInit {
 
-    private plantilla: DocumentoPlantillaDTO;
-    private fields: DocumentoPlantillaCaracteristicaDTO[];
+    plantilla: DocumentoPlantillaDTO;
+    fields: DocumentoPlantillaCaracteristicaDTO[];
     isLoading: boolean = false;
 
     campos: Item[] = [];
@@ -38,7 +39,8 @@ export class FlexComponent implements OnInit {
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private flexService: FlexService
+        private flexService: FlexService,
+        private utilsService: UtilsService
     ) { }
 
     ngOnInit(): void {
@@ -55,12 +57,18 @@ export class FlexComponent implements OnInit {
         this.isLoading = true;
         this.flexService.getFields(this.plantilla.llaveTabla).subscribe((_returnedFields) => {
             this.fields = _returnedFields;
+            this.campos = this.fields.map(f => ({
+                code: f.codigo,
+                title: f.nombre,
+                subtitle: f.objetivo,
+                llaveTabla: f.llaveTabla
+            }));
             this.isLoading = false;
         });
     }
 
 
-    // 🔹 Consultar propiedades de plantilla al iniciar
+
     listarConsultaPropiedadPlantilla(): void {
         if (!this.plantilla) return;
         this.flexService.listarConsultaPropiedad(this.plantilla.llaveTabla, null)
@@ -68,27 +76,14 @@ export class FlexComponent implements OnInit {
                 this.propiedadesPlantilla = props.map(p => ({
                     code: p.propiedadValor,
                     title: p.nombre,
-                    subtitle: p.texto,
+                    subtitle: p.motivo,
                     llaveTabla: p.llaveTabla
                 }));
             });
     }
 
-    // 🔹 Click en un campo: extraemos propiedades de las caracteristicas
     onClickCampo(campoId: string) {
-        const campo = this.plantilla.caracteristicas.find(c => c.llaveTabla === campoId);
-        if (!campo) return;
-
-        this.propiedadesCampo = (campo.propiedades || []).map(p => ({
-            code: p.propiedadValor,
-            title: p.nombre,
-            subtitle: p.motivo || p.texto || '',
-            llaveTabla: p.llaveTabla?.toString()
-        }));
-
-        // Limpiar selección de propiedad de plantilla y relaciones
-        this.propiedadPlantillaSeleccionada = null;
-        this.relaciones = [];
+        this.utilsService.fieldModalFlex(campoId);
     }
 
     onPropiedadPlantillaClick(prop: Item) {
