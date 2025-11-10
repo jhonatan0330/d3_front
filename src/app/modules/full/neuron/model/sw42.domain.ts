@@ -20,7 +20,6 @@ export class ProductoDTO extends BasicParamDTO {
     descripcion: string;
     categoria: string;
     categoriaNombre: string;
-    categoriaPlantilla: string;
     usuarioRol: string;
     valorMinimoPromocion: number;
     cantidadPromocion: number;
