@@ -1,12 +1,13 @@
 import { Component, Inject } from '@angular/core';
-import { PropiedadCampoDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { propiedadCampo, PropiedadCampoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { FlexService } from '../flex.service';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { ApiErrorResponse } from 'app/modules/full/neuron/model/sw42.utils';
 
 
 @Component({
@@ -24,6 +25,8 @@ export class AddPropertyComponent {
     propiedadValores: PropiedadValorDefinidoDTO[];
     roles: RolAccesoFilterDTO[];
     usuarios: UsuarioDTO[];
+
+    propiedadesRelacion: RelacionInternaDTO[] = [];
 
     filtroUsuario = '';
     filtroUsuarioExcluyente = '';
@@ -56,20 +59,20 @@ export class AddPropertyComponent {
     }
     ngOnInit(): void {
 
-        if(this.data.propiedad){
+        if (this.data.propiedad) {
             this.propiedad = this.data.propiedad;
-        }else{
+        } else {
             this.propiedad = new PropiedadCampoDTO;
         }
 
         const _a = new PropiedadValorDefinidoDTO();
-            _a.origenCategoria = 'C';
-            _a.origen = 'C';
+        _a.origenCategoria = 'C';
+        _a.origen = 'C';
         this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null)
             .subscribe(p => {
                 this.propiedadValores = p;
             });
-            this.flexService.listarConsultaRolAcceso().subscribe(p => {
+        this.flexService.listarConsultaRolAcceso().subscribe(p => {
             this.roles = p;
         })
         //this.flexService.listarRolUsuario(this.filtroUsuario).subscribe(p => { this.usuarios = p; })
@@ -77,10 +80,18 @@ export class AddPropertyComponent {
 
     guardarPropiedad() {
         this.cargando = true;
+        this.propiedad.campo = this.data.template;
+        this.propiedad.tipo = "C";
+        this.propiedad.valor = 1;
         this.flexService.addProperty(this.propiedad).subscribe({
-            next: () => {
+            next: (result: ApiErrorResponse) => {
+                if (result?.message) {
+                    Swal.fire('Error', 'No se pudo crear la propiedad ' + result.message, 'error');
+                    return;
+                }
                 this.cargando = false;
                 Swal.fire('Exito', 'Propiedad cargada con exito');
+                dialogRef: MatDialogRef;
             },
             error: error => {
                 Swal.fire('Error', 'No se pudo crear la propiedad ' + error, 'error');

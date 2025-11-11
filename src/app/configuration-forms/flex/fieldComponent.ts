@@ -5,8 +5,6 @@ import {
     DocumentoPlantillaCaracteristicaDTO,
     propiedadCampo,
     PropiedadCampoDTO,
-    RelacionInternaDTO,
-    RelacionInternaFilterDTO
 } from 'app/modules/full/neuron/model/sw42.domain';
 import Swal from 'sweetalert2';
 import { FlexService } from '../flex.service';
@@ -23,7 +21,6 @@ export class FieldComponent implements OnInit {
 
     campo: DocumentoPlantillaCaracteristicaDTO;
     propiedadesCampo: propiedadCampo[] = [];
-    propiedadesRelacion: RelacionInternaDTO[] = [];
 
     isLoading = false;
     cargandoCampo = false;
@@ -75,37 +72,55 @@ export class FieldComponent implements OnInit {
         });
     }
 
-    listarRelacionesPropiedad(prop: propiedadCampo): void {
-        if (!this.campo) return;
-
-        const filtro = new RelacionInternaFilterDTO();
-        filtro.propiedad = prop.llaveTabla;
-        filtro.estado = prop.estado;
-
-        this.flexService.relacionesPropiedad(filtro, null).subscribe({
-            next: (rels) => {
-                this.propiedadesRelacion = rels;
-            },
-            error: () => {
-                this.propiedadesRelacion = [];
-                Swal.fire('Error', 'No se pudieron cargar las relaciones de la propiedad.', 'error');
-            }
-        });
-    }
-
     editarCampo(): void {
         this.utilsService.fieldEditModalFlex(this.campo.llaveTabla);
     }
 
-    editarPropiedad(pPropiedad?:PropiedadCampoDTO): void {
-        this.utilsService.fieldAddModalFlex(null,pPropiedad);
+    editarPropiedad(pPropiedad?: PropiedadCampoDTO): void {
+        this.utilsService.propertyAddModalFlex(this.campo.llaveTabla, pPropiedad);
     }
 
     agregarPropiedadCampo() {
-        this.utilsService.fieldAddModalFlex(this.campo.llaveTabla);
+        this.utilsService.propertyAddModalFlex(this.campo.llaveTabla);
     }
 
     toggleExpandido(): void {
         this.expandido = !this.expandido;
     }
+
+    eliminarPropiedad(pPropiedad: any): void {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción eliminará la propiedad seleccionada.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Eliminando...',
+                    text: 'Por favor espera',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                this.flexService.inactivarPropiedad(pPropiedad).subscribe({
+                    next: () => {
+                        Swal.fire('Eliminado', 'La propiedad fue eliminada correctamente.', 'success');
+                        this.cargarCampo();
+                    },
+                    error: (err) => {
+                        console.error('Error al eliminar la propiedad de campo:', err);
+                        Swal.fire('Error', 'No se pudo eliminar la propiedad.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
 }

@@ -1,146 +1,105 @@
 <div class="min-h-screen w-full bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col text-gray-900 dark:text-gray-100">
-    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 sm:gap-0">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <div class="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
             <div class="text-xl font-bold">{{ plantilla?.nombre || 'Plantilla' }}</div>
         </div>
-
-        <!-- Imagen de la plantilla (si existe) -->
         <img *ngIf="plantilla?.imagen" [src]="plantilla.imagen" alt="Imagen de la plantilla"
-            class="h-10 object-cover rounded-lg mt-2 sm:mt-0" />
+            class="h-10 object-cover rounded-lg" />
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 h-full">
-        <div class="flex flex-col gap-6 h-full">
-            <div class="flex flex-col flex-1 min-h-[300px]">
-                <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
-                    <h2 class="text-lg font-bold">Campos</h2>
-                    <div class="flex gap-2 flex-wrap">
-                        <button (click)="getFields()"
-                            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
-                    </div>
-                </div>
 
-                <div class="bg-white rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
-                    <ng-container *ngIf="!isLoading; else loadingCampos">
-                        <div *ngIf="campos.length > 0; else noCampos" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div (click)="onClickCampo(item.llaveTabla)" *ngFor="let item of campos"
-                                class="group border border-gray-200 rounded-lg p-3 bg-gray-50 hover:shadow-md transition relative cursor-pointer">
-                                <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{
-                                    item.llaveTabla }}</span>
-                                <h4 class="text-base font-semibold">{{ item.title }}</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle }}</p>
-                                <button (click)="editarPropiedad(prop); $event.stopPropagation()"
-                                    class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-blue-600 focus:outline-none"
+    <ng-template #loadingTpl let-msg>
+        <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4 animate-pulse">{{ msg }}</div>
+    </ng-template>
+
+    <ng-template #emptyTpl let-msg>
+        <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4">{{ msg }}</div>
+    </ng-template>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 h-full">
+        <div class="flex flex-col h-full min-h-[300px]">
+            <div class="flex justify-between items-center mb-2 gap-2 flex-wrap">
+                <h2 class="text-lg font-bold">Campos</h2>
+                <button (click)="getFields()"
+                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
+                <ng-container *ngIf="!isLoading; else loadingCampos">
+                    <div *ngIf="campos.length > 0; else noCampos" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div *ngFor="let item of campos" (click)="onClickCampo(item.llaveTabla)"
+                            class="group border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition relative cursor-pointer">
+                            <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.llaveTabla
+                                }}</span>
+                            <h4 class="text-base font-semibold">{{ item.title }}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle }}</p>
+
+                            <button (click)="editarPropiedad(item); $event.stopPropagation()"
+                                class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-blue-600 focus:outline-none"
+                                title="Editar">
+                                ✏
+                            </button>
+                        </div>
+                    </div>
+
+                    <ng-template #noCampos>
+                        <ng-container
+                            *ngTemplateOutlet="emptyTpl; context: { $implicit: 'No hay campos disponibles' }"></ng-container>
+                    </ng-template>
+                </ng-container>
+
+                <ng-template #loadingCampos>
+                    <ng-container
+                        *ngTemplateOutlet="loadingTpl; context: { $implicit: 'Cargando campos...' }"></ng-container>
+                </ng-template>
+            </div>
+        </div>
+
+        <div class="flex flex-col h-full min-h-[300px]">
+            <div class="flex justify-between items-center mb-2 gap-2 flex-wrap">
+                <h2 class="text-lg font-bold">Propiedades de Plantilla</h2>
+                <button (click)="listarConsultaPropiedadPlantilla()"
+                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
+                <ng-container *ngIf="!isLoading; else loadingPropiedades">
+                    <div *ngIf="propiedadesPlantilla.length > 0; else noPropiedades"
+                        class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div *ngFor="let item of propiedadesPlantilla" (click)="onPropiedadPlantillaClick(item)"
+                            [ngClass]="{ 'ring-2 ring-blue-500': propiedadPlantillaSeleccionada?.code === item.code }"
+                            class="group border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition relative cursor-pointer">
+                            <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.code
+                                }}</span>
+                            <h4 class="text-base font-semibold">{{ item.title }}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle }}</p>
+
+                            <!-- Botones visibles solo al hover -->
+                            <div
+                                class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <button (click)="editarCampo(); $event.stopPropagation()"
+                                    class="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600"
                                     title="Editar">
                                     ✏
                                 </button>
+                                <button (click)="eliminarCampo(); $event.stopPropagation()"
+                                    class="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
+                                    title="Eliminar">
+                                    ❌
+                                </button>
                             </div>
                         </div>
-                        <ng-template #noCampos>
-                            <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4">No hay campos
-                                disponibles</div>
-                        </ng-template>
-                    </ng-container>
+                    </div>
 
-                    <ng-template #loadingCampos>
-                        <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4 animate-pulse">
-                            Cargando campos...
-                        </div>
+                    <ng-template #noPropiedades>
+                        <ng-container
+                            *ngTemplateOutlet="emptyTpl; context: { $implicit: 'No hay propiedades disponibles' }"></ng-container>
                     </ng-template>
-                </div>
-            </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 h-full">
-            <div class="flex flex-col gap-6 h-full">
-                <div class="flex flex-col flex-1 min-h-[300px]">
-                    <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
-                        <h2 class="text-lg font-bold">Campos</h2>
-                        <div class="flex gap-2 flex-wrap">
-                            <button (click)="getFields()"
-                                class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
-                        </div>
-                    </div>
+                </ng-container>
 
-                    <div class="flex flex-col h-full min-h-[300px]">
-                        <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
-                            <h2 class="text-lg font-bold">Propiedades de Plantilla</h2>
-                            <div class="flex gap-2 flex-wrap">
-                                <button (click)="listarConsultaPropiedadPlantilla()"
-                                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
-                            </div>
-                        </div>
-
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
-                            <ng-container *ngIf="!isLoading;">
-                                <div *ngIf="propiedadesPlantilla.length > 0; else noPropiedades"
-                                    class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    <div (click)="onPropiedadPlantillaClick(item)"
-                                        *ngFor="let item of propiedadesPlantilla"
-                                        [class.ring-2]="propiedadPlantillaSeleccionada?.code === item.code"
-                                        [class.ring-blue-500]="propiedadPlantillaSeleccionada?.code === item.code"
-                                        class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition cursor-pointer">
-                                        <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{
-                                            item.code }}</span>
-                                        <h4 class="text-base font-semibold">{{ item.title }}</h4>
-                                        <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle }}</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-col h-full min-h-[300px]">
-                                    <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
-                                        <h2 class="text-lg font-bold">Propiedades de Plantilla</h2>
-                                        <div class="flex gap-2 flex-wrap">
-                                            <button (click)="listarConsultaPropiedadPlantilla()"
-                                                class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
-                                        <ng-container *ngIf="!isLoading; else loadingPropiedades">
-                                            <div *ngIf="propiedadesPlantilla.length > 0; else noPropiedades"
-                                                class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <div (click)="onPropiedadPlantillaClick(item)"
-                                                    *ngFor="let item of propiedadesPlantilla"
-                                                    [class.ring-2]="propiedadPlantillaSeleccionada?.code === item.code"
-                                                    [class.ring-blue-500]="propiedadPlantillaSeleccionada?.code === item.code"
-                                                    class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition cursor-pointer">
-                                                    <span
-                                                        class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{
-                                                        item.code
-                                                        }}</span>
-                                                    <h4 class="text-base font-semibold">{{ item.title }}</h4>
-                                                    <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle
-                                                        }}</p>
-                                                    <button (click)="editarCampo()"
-                                                        class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-                                                        ✏
-                                                    </button>
-                                                    <button (click)="eliminarCampo()"
-                                                        class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                                                        ❌
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <ng-template #noPropiedades>
-                                                <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4">
-                                                    No hay propiedades
-                                                    disponibles</div>
-                                            </ng-template>
-                                        </ng-container>
-
-                                        <ng-template #loadingPropiedades>
-                                            <div
-                                                class="text-center text-sm text-gray-500 dark:text-gray-400 py-4 animate-pulse">
-                                                Cargando propiedades...
-                                            </div>
-                                        </ng-template>
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
+                <ng-template #loadingPropiedades>
+                    <ng-container
+                        *ngTemplateOutlet="loadingTpl; context: { $implicit: 'Cargando propiedades...' }"></ng-container>
+                </ng-template>
             </div>
         </div>
     </div>

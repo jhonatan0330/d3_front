@@ -12,7 +12,7 @@ import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { FlexComponent } from 'app/configuration-forms/flex/flex';
 import { dfaComponent } from 'app/authentication/DFA/dfa';
 import { FieldComponent } from 'app/configuration-forms/flex/fieldComponent';
-import { FieldComponent2 } from 'app/configuration-forms/flex/fieldComponent2';
+import { AddFieldComponent } from 'app/configuration-forms/flex/addField';
 import { AddPropertyComponent } from 'app/configuration-forms/flex/addProperty';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 
@@ -105,6 +105,7 @@ export class UtilsService {
     });
     return dialogRef.afterClosed();
   }
+
   fieldModalFlex(pTemplate: string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(FieldComponent, {
       maxHeight: '90vh',
@@ -114,17 +115,25 @@ export class UtilsService {
   }
 
   fieldEditModalFlex(pTemplate: string){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(FieldComponent2, {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(AddFieldComponent, {
       maxHeight: '90vh',
       data: { template: pTemplate},
+    });
+    return dialogRef.afterClosed(); 
+  }
+
+  fieldAddModalFlex(pCampo: string, pPropiedad?:PropiedadCampoDTO){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(AddFieldComponent, {
+      maxHeight: '90vh',
+      data: { template: pCampo , propiedad: pPropiedad },
     });
     return dialogRef.afterClosed();
   }
 
-  fieldAddModalFlex(pTemplate?: string, pPropiedad?:PropiedadCampoDTO){
+  propertyAddModalFlex(pCampo: string, pPropiedad?:PropiedadCampoDTO){
     const dialogRef: MatDialogRef<any> = this.dialog.open(AddPropertyComponent, {
       maxHeight: '90vh',
-      data: { template: pTemplate , propiedad: pPropiedad },
+      data: { template: pCampo , propiedad: pPropiedad },
     });
     return dialogRef.afterClosed();
   }
