@@ -27,6 +27,7 @@ export class AddPropertyComponent {
     usuarios: UsuarioDTO[];
 
     propiedadesRelacion: RelacionInternaDTO[] = [];
+    def: PropiedadValorDefinidoDTO = null;
 
     filtroUsuario = '';
     filtroUsuarioExcluyente = '';
@@ -40,6 +41,10 @@ export class AddPropertyComponent {
         @Inject(MAT_DIALOG_DATA) public data: any,
 
     ) { }
+
+    onPropiedadValorChange(llaveSeleccionada: PropiedadValorDefinidoDTO): void {
+            this.def = llaveSeleccionada;
+    }
 
 
     onUsuarioInputChange() {
@@ -91,7 +96,6 @@ export class AddPropertyComponent {
                 }
                 this.cargando = false;
                 Swal.fire('Exito', 'Propiedad cargada con exito');
-                dialogRef: MatDialogRef;
             },
             error: error => {
                 Swal.fire('Error', 'No se pudo crear la propiedad ' + error, 'error');
