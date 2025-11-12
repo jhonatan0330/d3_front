@@ -46,6 +46,7 @@ export class MassiveComponent implements OnInit {
   isLoading = false;
   isValidate = false;
   isProcessing = false;
+  isUpdate = false;
 
   camposConsultar: DocumentoPlantillaCaracteristicaDTO[];
 
@@ -313,6 +314,7 @@ export class MassiveComponent implements OnInit {
   ///////////////////// CARGAR /////////////////////////////////
 
   handleFileInput(files: FileList) {
+    this.isUpdate = false;
     if (this.plantilla) {
       if (!this.validateCamposPlantilla(this.plantilla)) {
         return;
@@ -348,6 +350,7 @@ export class MassiveComponent implements OnInit {
   generateColumnNames(template:DocumentoPlantillaDTO){
     this.titleColumns = [];
     this.displayedColumns = ['orderNumber'];
+    if(this.isUpdate){this.displayedColumns.push('updateId');}
     this.displayedColumns.push('status');
     this.displayedColumns.push('messages');
     for (let k = 0; k < template.caracteristicas.length; k++) {
@@ -404,8 +407,8 @@ export class MassiveComponent implements OnInit {
         this.lblCarga;
       this.inicio = new Date();
       if (template.llaveTabla === this.plantilla.llaveTabla) {
-        this.generateColumnNames(this.plantilla);
         this.documentosGenerados = this.generateVO(documentos, template);
+        this.generateColumnNames(this.plantilla);
         this.dataSource = new MatTableDataSource(this.documentosGenerados);
         if (!this.documentosGenerados || this.documentosGenerados.length === 0) {
           this.lblCarga = this.lblCarga + 'Revisa la carga debido a que no se generaron documentos';
@@ -446,7 +449,6 @@ export class MassiveComponent implements OnInit {
     let documentosNewsFromXML: LoadLineDTO[] = [];
     let pedido: PedidoVentaDTO;
     let indexInicialProcesar = 0;
-    let map = new Map();
     if (!(source instanceof HTMLCollection)) {
       indexInicialProcesar = 1;
     }
@@ -456,6 +458,19 @@ export class MassiveComponent implements OnInit {
       pedido.imagen = template.imagen;
       pedido.plantilla = template.llaveTabla;
       pedido.caracteristicas = [];
+
+      //Esto es para las cargas de update
+      if (source instanceof HTMLCollection) {
+        if (("UPDATE_" + template.codigo) === source[i].children[0].localName) {
+          pedido.nombre = source[i].children[0].textContent;
+          this.isUpdate = true;
+        }
+      } else{
+        if (("UPDATE_" + template.codigo) === this.formatStringXML(source[0][0])) {
+          pedido.nombre = source[i][0];
+          this.isUpdate = true;
+        }
+      }
 
       for (let k = 0; k < template.caracteristicas.length; k++) {
         const iCampo = template.caracteristicas[k];
@@ -510,9 +525,16 @@ export class MassiveComponent implements OnInit {
       }
       const line = new LoadLineDTO();
       line.document = pedido;
+      line.updateId = pedido.nombre;
       line.orderNumber = documentosNewsFromXML.length + 1;
       documentosNewsFromXML.push(line);
     }
+    this.reviewFieldsOfTemplate(source, template);
+    return documentosNewsFromXML;
+  }
+
+  private reviewFieldsOfTemplate(source: any, template: DocumentoPlantillaDTO) {
+    let map = new Map();
     if (source instanceof HTMLCollection) {
       const camposTexto = source[0].children;
       for (let j = 0; j < camposTexto.length; j++) {
@@ -534,11 +556,10 @@ export class MassiveComponent implements OnInit {
     if (map.size > 0) {
       let camposSinValidar = '';
       for (let key of map.keys()) {
-        if (!key.endsWith("_NUMID")) { camposSinValidar = key + ", " + camposSinValidar; }
+        if (!key.endsWith("_NUMID") && !key.startsWith("UPDATE_")) { camposSinValidar = key + ", " + camposSinValidar; }
       }
       if (camposSinValidar) Swal.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar, "warning");
     }
-    return documentosNewsFromXML;
   }
 
   mensajeValidacion(pedido: PedidoVentaDTO, i: number) {
@@ -796,7 +817,7 @@ export class MassiveComponent implements OnInit {
         }
         setTimeout(() => {
           this.api
-            .guardarDocumento(this.currentPedido, this.plantilla.server, Date.now().toString())
+            .saveByMassive(this.currentPedido, this.plantilla.server, Date.now().toString())
             .subscribe({
               next: (value: PedidoVentaDTO) => {
                 this.isProcessing = false;
@@ -880,7 +901,7 @@ export class MassiveComponent implements OnInit {
             fieldDoc.valorOpcion = newDocument.llaveTabla;
             this.isProcessing = true;
             this.api
-              .guardarDocumento(element.document, this.plantilla.server, Date.now().toString())
+              .saveByMassive(element.document, this.plantilla.server, Date.now().toString())
               .subscribe({
                 next: (resultDocument: PedidoVentaDTO) => {
                   this.isProcessing = false;
@@ -951,6 +972,7 @@ export class MassiveComponent implements OnInit {
     this.documentosGeneradosMultiple = undefined;
 
     this.inicialCamposConsultar = 0;
+    this.isUpdate = false;
 
   }
 

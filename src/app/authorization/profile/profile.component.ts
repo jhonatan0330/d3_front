@@ -172,7 +172,8 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!value) { value = ''; }
     if (value.endsWith(' ')) { value = value.substring(0, value.length - 1); }
     const _moduleFilter  = Object.assign([], this.modules).filter(
-      (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
+      (item) => (
+        ((item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1) || (item.codigo && item.codigo.toLowerCase() === value.toLowerCase()))
         && (item.estado && item.estado.indexOf('P') > -1))
     );
     this.filteredModules = [];

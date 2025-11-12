@@ -93,6 +93,14 @@ export class ApiService {
         );
     }
 
+    saveByMassive(documento: PedidoVentaDTO, _server: string, session: string): Observable<PedidoVentaDTO> {
+        const headers = { 'non-duplicate': session };
+        return this.http.post<PedidoVentaDTO>(
+            this.ls.getUrlAccess('/rest/saveByMassive', _server),
+            documento, { headers }
+        );
+    }
+
     verificarToken(usuario: UsuarioAutenticacionDTO): Observable<UsuarioAutenticacionDTO> {
         return this.http.post<UsuarioAutenticacionDTO>(
             this.ls.getUrlAccess('/user/dfa', null), usuario);

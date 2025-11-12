@@ -7,5 +7,6 @@ export class LoadLineDTO {
 	status : string = 'OK';
 	documentName: string;
 	documentId: string;
+	updateId: string;
 }
 
