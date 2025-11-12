@@ -61,6 +61,9 @@
     </div>
   </div>
 
+  <div *ngIf="headerSection && headerSection.length!==0" class="w-full">
+    <div *ngFor="let iHeader of headerSection" [innerHTML]="iHeader"></div>
+  </div>
   <!-- Content -->
   <div class="flex flex-col flex-auto">
     <!-- *ngIf="true" hack is required here for router-outlet to work correctly.

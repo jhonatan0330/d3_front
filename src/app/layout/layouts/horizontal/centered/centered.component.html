@@ -1,7 +1,5 @@
 <div class="flex flex-auto justify-center w-full sm:p-4 md:p-8 bg-gray-200 dark:bg-card">
-  <div *ngIf="headerSection && headerSection.length!==0" class="hidden">
-    <div *ngFor="let iHeader of headerSection" [innerHTML]="iHeader"></div>
-  </div>
+
   <!-- Navigation -->
   <ng-container *ngIf="isScreenSmall">
     <fuse-vertical-navigation class="dark bg-gray-900 print:hidden" [mode]="'over'" [name]="'mainNavigation'"
@@ -44,13 +42,17 @@
       </ng-container>
       <!-- Components -->
       <div class="flex items-center pl-2 ml-auto space-x-1 sm:space-x-2">
-        <app-home-button ></app-home-button>
+        <app-home-button></app-home-button>
         <fuse-fullscreen class="hidden md:block"></fuse-fullscreen>
-        <search  [appearance]="'bar'"></search>
-        <shortcuts ></shortcuts>
-        <notifications ></notifications>
+        <search [appearance]="'bar'"></search>
+        <shortcuts></shortcuts>
+        <notifications></notifications>
         <user></user>
       </div>
+    </div>
+
+    <div *ngIf="headerSection && headerSection.length!==0" class="w-full">
+      <div *ngFor="let iHeader of headerSection" [innerHTML]="iHeader"></div>
     </div>
 
     <!-- Content -->

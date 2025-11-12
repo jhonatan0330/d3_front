@@ -1,7 +1,6 @@
 <!-- Navigation -->
 <fuse-vertical-navigation class="dark bg-indigo-800 text-white print:hidden" [mode]="isScreenSmall ? 'over' : 'side'"
-  [name]="'mainNavigation'" [navigation]="navigation?.futuristic"
-  [opened]="!isScreenSmall && user ">
+  [name]="'mainNavigation'" [navigation]="navigation?.futuristic" [opened]="!isScreenSmall && user ">
   <!-- Navigation header hook -->
   <ng-container fuseVerticalNavigationHeader>
     <!-- Logo -->
@@ -43,13 +42,17 @@
     </button>
     <!-- Components -->
     <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
-      <app-home-button ></app-home-button>
+      <app-home-button></app-home-button>
       <fuse-fullscreen class="hidden md:block"></fuse-fullscreen>
-      <search  [appearance]="'bar'"></search>
-      <shortcuts ></shortcuts>
-      <notifications ></notifications>
+      <search [appearance]="'bar'"></search>
+      <shortcuts></shortcuts>
+      <notifications></notifications>
       <user></user>
     </div>
+  </div>
+
+  <div *ngIf="headerSection && headerSection.length!==0" class="w-full">
+    <div *ngFor="let iHeader of headerSection" [innerHTML]="iHeader"></div>
   </div>
 
   <!-- Content -->
