@@ -10,9 +10,9 @@ import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/mo
     selector: 'app-campo-form',
     standalone: true,
     imports: [CommonModule, FormsModule],
-    templateUrl: './fieldComponent2.html',
+    templateUrl: './addField.html',
 })
-export class FieldComponent2 {
+export class AddFieldComponent {
     campo: DocumentoPlantillaCaracteristicaDTO;
 
     imagenPreview: string | null = null;

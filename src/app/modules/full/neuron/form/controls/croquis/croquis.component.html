@@ -2,3 +2,66 @@
     <mat-label>{{structure.nombre | titlecase }} </mat-label>
     <input matInput />
 </mat-form-field>
+
+<div class="w-full space-y-3">
+
+  <!-- Barra de acciones -->
+  <div class="flex items-center gap-2 flex-wrap">
+    <!-- Subir plano -->
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="setBase()"
+      [disabled]="!isEnabled">
+      Subir plano
+    </button>
+
+    <!-- Nombre del componente -->
+    <mat-form-field appearance="outline" style="min-width: 240px;">
+      <mat-label>Nombre del componente</mat-label>
+      <input matInput [formControl]="nombreCtrl" maxlength="120" />
+      <mat-hint align="end">{{ (nombreCtrl.value || '').length }} / 120</mat-hint>
+    </mat-form-field>
+
+    <!-- Agregar componente -->
+    <button
+      mat-stroked-button
+      color="accent"
+      (click)="addComponente()"
+      [disabled]="!isEnabled">
+      Agregar componente
+    </button>
+
+    <span class="flex-1"></span>
+
+  </div>
+
+  <!-- Lienzo del croquis -->
+  <div class="w-full border rounded-md overflow-hidden" style="max-width: 100%;">
+    <!-- Ajusta width/height según tu layout -->
+    <canvas
+      #canvas
+      width="500"
+      height="300"
+      style="display:block; width:100%; height:auto; cursor: grab;"
+      [style.opacity]="isEnabled ? 1 : 0.7"
+      aria-label="Croquis interactivo">
+    </canvas>
+  </div>
+
+  <input
+    #fileBase
+    type="file"
+    accept="image/*"
+    class="hidden"
+    (change)="onFileBaseChange($event)" />
+
+  <input
+    #fileItem
+    type="file"
+    accept="image/*"
+    class="hidden"
+    (change)="onFileItemChange($event)" />
+
+</div>
+
