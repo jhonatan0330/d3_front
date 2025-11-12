@@ -120,4 +120,24 @@ export class AddPropertyComponent {
         this.usuarios = [];
         this.buscandoUsuarioExcluyente = false;
     }
+
+    
+
+    listarRelacionesPropiedad(): void {
+        if (!this.propiedad) return;
+        const prop = this.propiedad;
+        const filtro = new RelacionInternaFilterDTO();
+        filtro.propiedad = prop.llaveTabla;
+        filtro.estado = prop.estado;
+
+        this.flexService.relacionesPropiedad(filtro, null).subscribe({
+            next: (rels) => {
+                this.propiedadesRelacion = rels;
+            },
+            error: () => {
+                this.propiedadesRelacion = [];
+                Swal.fire('Error', 'No se pudieron cargar las relaciones de la propiedad.', 'error');
+            }
+        });
+    }
 }
