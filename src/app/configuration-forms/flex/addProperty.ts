@@ -42,8 +42,8 @@ export class AddPropertyComponent {
 
     ) { }
 
-    onPropiedadValorChange(llaveSeleccionada: PropiedadValorDefinidoDTO): void {
-            this.def = llaveSeleccionada;
+    onPropiedadValorChange(llaveSeleccionada: string): void {
+        this.def = this.propiedadValores.find(p => p.llaveTabla === llaveSeleccionada);
     }
 
 
@@ -70,6 +70,18 @@ export class AddPropertyComponent {
             this.propiedad = new PropiedadCampoDTO;
         }
 
+        
+        this.propiedad.campo = this.data.template;
+        this.propiedad.tipo = "C";
+        this.propiedad.valor = 1;
+
+
+        this.buscarRoles();
+        this.buscarPropiedades();
+        this.listarRelacionesPropiedad();
+    }
+
+    buscarPropiedades(){
         const _a = new PropiedadValorDefinidoDTO();
         _a.origenCategoria = 'C';
         _a.origen = 'C';
@@ -77,17 +89,15 @@ export class AddPropertyComponent {
             .subscribe(p => {
                 this.propiedadValores = p;
             });
+    }
+    buscarRoles(){
         this.flexService.listarConsultaRolAcceso().subscribe(p => {
             this.roles = p;
         })
-        //this.flexService.listarRolUsuario(this.filtroUsuario).subscribe(p => { this.usuarios = p; })
     }
 
     guardarPropiedad() {
         this.cargando = true;
-        this.propiedad.campo = this.data.template;
-        this.propiedad.tipo = "C";
-        this.propiedad.valor = 1;
         this.flexService.addProperty(this.propiedad).subscribe({
             next: (result: ApiErrorResponse) => {
                 if (result?.message) {
@@ -124,7 +134,7 @@ export class AddPropertyComponent {
     
 
     listarRelacionesPropiedad(): void {
-        if (!this.propiedad) return;
+        if (!this.propiedad.propiedadValor) return;
         const prop = this.propiedad;
         const filtro = new RelacionInternaFilterDTO();
         filtro.propiedad = prop.llaveTabla;
