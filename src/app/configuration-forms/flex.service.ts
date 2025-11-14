@@ -58,6 +58,13 @@ export class FlexService {
         );
     }
 
+    changeProperty(pTemplate: PropiedadCampoDTO){
+        return this.http.post(
+            this.ls.getUrlAccess('/flex/actualizarPropiedad', null),
+            pTemplate
+        );
+    }
+
     consultaXIdPropiedadValorDefinido(pTemplate: String, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
         return this.http.post<PropiedadValorDefinidoDTO[]>(
             this.ls.getUrlAccess('/flex/consultaXIdPropiedadValorDefinido', _server),

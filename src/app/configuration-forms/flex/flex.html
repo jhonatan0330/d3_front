@@ -15,90 +15,81 @@
         <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4">{{ msg }}</div>
     </ng-template>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 h-full">
+    <div class="grid grid-cols-1 gap-6 flex-1 h-full">
         <div class="flex flex-col h-full min-h-[300px]">
-            <div class="flex justify-between items-center mb-2 gap-2 flex-wrap">
-                <h2 class="text-lg font-bold">Campos</h2>
+            <div class="flex justify-between items-center flex-wrap">
+                <div class="flex justify-center">
+                    <div (dragover)="onTrashDragOver($event)" (drop)="onTrashDrop($event)" [ngClass]="{'opacity-0 translate-y-4 scale-75 pointer-events-none': !isDragging,
+                                'opacity-100 translate-y-0 scale-100 pointer-events-auto': isDragging}"
+                        class="transition-all duration-300 ease-out w-20 h-12 border-2 border-dashed border-red-400 rounded-2xl flex flex-col items-center justify-center bg-red-50/80 dark:bg-red-900/30 shadow-inner">
+                        <svg class="w-4 h-4 mb-1 animate-bounce text-red-500 dark:text-red-300" fill="currentColor"
+                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M6 2a1 1 0 00-1 1v1H3.5a.5.5 0 000 1h13a.5.5 0 000-1H15V3a1 1 0 00-1-1H6zm1 2V3h6v1H7z">
+                            </path>
+                            <path
+                                d="M6 7a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7zm3.25 0a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7zm3.25 0a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7z">
+                            </path>
+                            <path d="M5 6h10v9a2 2 0 01-2 2H7a2 2 0 01-2-2V6z"></path>
+                        </svg>
+                    </div>
+                </div>
                 <button (click)="getFields()"
                     class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
-                <ng-container *ngIf="!isLoading; else loadingCampos">
-                    <div *ngIf="campos.length > 0; else noCampos" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div *ngFor="let item of campos" (click)="onClickCampo(item.llaveTabla)"
-                            class="group border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition relative cursor-pointer">
-                            <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.llaveTabla
-                                }}</span>
-                            <h4 class="text-base font-semibold">{{ item.title }}</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle }}</p>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-2 overflow-y-auto">
+                <ng-container *ngIf="!isLoading; else loadingFields">
+                    <div *ngIf="campos.length > 0; else noCampos" class="space-y-4">
+                        <div class="grid grid-cols-1 gap-3">
+                            <div *ngFor="let item of campos; let i = index" draggable="true"
+                                (dragstart)="onDragStart(i)" (dragend)="onDragEnd()" (dragover)="onDragOver(i, $event)"
+                                (drop)="onDrop(i, $event)"
+                                [ngClass]="{'opacity-60 ring-2 ring-blue-400': draggedIndex === i}"
+                                class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move">
+                                <span class="p-2 rounded">
+                                    {{ getFormatoLabelImage(item.formato) }}
+                                </span>
+                                <div class="mt-2 grid-cols-1 gap-3" (click)="onClickCampo(item.llaveTabla)">
+                                    <h4 class="text-base font-semibold">{{ item.nombre }}</h4>
+                                </div>
+                                <button mat-icon-button [matMenuTriggerFor]="menu" class="m-1 flex-none">
+                                    <mat-icon svgIcon="heroicons_outline:bars-3"></mat-icon>
+                                </button>
+                            </div>
+                        </div>
 
-                            <button (click)="editarPropiedad(item); $event.stopPropagation()"
-                                class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-blue-600 focus:outline-none"
-                                title="Editar">
-                                ✏
-                            </button>
+                        <div class="flex justify-center mt-2">
+                            <div (dragover)="onTrashDragOver($event)" (drop)="onTrashDrop($event)" [ngClass]="{'opacity-0 translate-y-4 scale-75 pointer-events-none': !isDragging,
+                                'opacity-100 translate-y-0 scale-100 pointer-events-auto': isDragging}"
+                                class="transition-all duration-300 ease-out w-40 h-24 border-2 border-dashed border-red-400 rounded-2xl flex flex-col items-center justify-center bg-red-50/80 dark:bg-red-900/30 shadow-inner">
+                                <svg class="w-8 h-8 mb-1 animate-bounce text-red-500 dark:text-red-300"
+                                    fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M6 2a1 1 0 00-1 1v1H3.5a.5.5 0 000 1h13a.5.5 0 000-1H15V3a1 1 0 00-1-1H6zm1 2V3h6v1H7z">
+                                    </path>
+                                    <path
+                                        d="M6 7a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7zm3.25 0a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7zm3.25 0a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7z">
+                                    </path>
+                                    <path d="M5 6h10v9a2 2 0 01-2 2H7a2 2 0 01-2-2V6z"></path>
+                                </svg>
+                                <span class="text-xs font-semibold text-red-600 dark:text-red-300 text-center px-2">
+                                    Suelta aquí para eliminar
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <ng-template #noCampos>
+
+                    <ng-template #noFields>
                         <ng-container
                             *ngTemplateOutlet="emptyTpl; context: { $implicit: 'No hay campos disponibles' }"></ng-container>
                     </ng-template>
                 </ng-container>
 
-                <ng-template #loadingCampos>
+                <ng-template #loadingFields>
                     <ng-container
                         *ngTemplateOutlet="loadingTpl; context: { $implicit: 'Cargando campos...' }"></ng-container>
-                </ng-template>
-            </div>
-        </div>
-
-        <div class="flex flex-col h-full min-h-[300px]">
-            <div class="flex justify-between items-center mb-2 gap-2 flex-wrap">
-                <h2 class="text-lg font-bold">Propiedades de Plantilla</h2>
-                <button (click)="listarConsultaPropiedadPlantilla()"
-                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
-                <ng-container *ngIf="!isLoading; else loadingPropiedades">
-                    <div *ngIf="propiedadesPlantilla.length > 0; else noPropiedades"
-                        class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div *ngFor="let item of propiedadesPlantilla" (click)="onPropiedadPlantillaClick(item)"
-                            [ngClass]="{ 'ring-2 ring-blue-500': propiedadPlantillaSeleccionada?.code === item.code }"
-                            class="group border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition relative cursor-pointer">
-                            <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ item.code
-                                }}</span>
-                            <h4 class="text-base font-semibold">{{ item.title }}</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-300">{{ item.subtitle }}</p>
-
-                            <!-- Botones visibles solo al hover -->
-                            <div
-                                class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                <button (click)="editarCampo(); $event.stopPropagation()"
-                                    class="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600"
-                                    title="Editar">
-                                    ✏
-                                </button>
-                                <button (click)="eliminarCampo(); $event.stopPropagation()"
-                                    class="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
-                                    title="Eliminar">
-                                    ❌
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <ng-template #noPropiedades>
-                        <ng-container
-                            *ngTemplateOutlet="emptyTpl; context: { $implicit: 'No hay propiedades disponibles' }"></ng-container>
-                    </ng-template>
-                </ng-container>
-
-                <ng-template #loadingPropiedades>
-                    <ng-container
-                        *ngTemplateOutlet="loadingTpl; context: { $implicit: 'Cargando propiedades...' }"></ng-container>
                 </ng-template>
             </div>
         </div>

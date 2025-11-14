@@ -19,7 +19,7 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 export class FieldComponent implements OnInit {
 
 
-    campo: DocumentoPlantillaCaracteristicaDTO;
+    field: DocumentoPlantillaCaracteristicaDTO;
     propiedadesCampo: propiedadCampo[] = [];
 
     isLoading = false;
@@ -46,7 +46,7 @@ export class FieldComponent implements OnInit {
 
         this.flexService.getField(this.data.template, null).subscribe({
             next: (resp) => {
-                this.campo = resp;
+                this.field = resp;
                 this.isLoading = false;
                 this.listarPropiedadesCampo();
             },
@@ -59,9 +59,9 @@ export class FieldComponent implements OnInit {
     }
 
     listarPropiedadesCampo(): void {
-        if (!this.campo?.llaveTabla) return;
+        if (!this.field?.llaveTabla) return;
 
-        this.flexService.listarConsultaPropiedad(this.campo.llaveTabla, null).subscribe({
+        this.flexService.listarConsultaPropiedad(this.field.llaveTabla, null).subscribe({
             next: (props) => {
                 this.propiedadesCampo = props;
             },
@@ -73,15 +73,17 @@ export class FieldComponent implements OnInit {
     }
 
     editarCampo(): void {
-        this.utilsService.fieldEditModalFlex(this.campo.llaveTabla);
+        this.utilsService.fieldEditModalFlex(this.field.llaveTabla);
     }
 
     editarPropiedad(pPropiedad?: PropiedadCampoDTO): void {
-        this.utilsService.propertyAddModalFlex(this.campo.llaveTabla, pPropiedad);
+        this.utilsService.propertyAddModalFlex(this.field.llaveTabla, pPropiedad);
     }
 
     agregarPropiedadCampo() {
-        this.utilsService.propertyAddModalFlex(this.campo.llaveTabla);
+        this.utilsService.propertyAddModalFlex(this.field.llaveTabla).subscribe(response => {
+                    if(response) this.listarPropiedadesCampo();
+                });
     }
 
     toggleExpandido(): void {

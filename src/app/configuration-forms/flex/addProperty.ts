@@ -39,11 +39,20 @@ export class AddPropertyComponent {
     constructor(
         private flexService: FlexService,
         @Inject(MAT_DIALOG_DATA) public data: any,
+        public dialogRef: MatDialogRef<AddPropertyComponent>
 
     ) { }
 
     onPropiedadValorChange(llaveSeleccionada: string): void {
         this.def = this.propiedadValores.find(p => p.llaveTabla === llaveSeleccionada);
+        if (this.def.pideRol) {
+            this.buscarRoles();
+        }
+        this.propiedad = new PropiedadCampoDTO;
+        this.propiedad.campo = this.data.template;
+        this.propiedad.tipo = "C";
+        this.propiedad.valor = 1;
+        this.propiedad.propiedadValor = llaveSeleccionada;
     }
 
 
@@ -63,54 +72,78 @@ export class AddPropertyComponent {
         }, 200);
     }
     ngOnInit(): void {
-
+        this.buscarPropiedades();
         if (this.data.propiedad) {
             this.propiedad = this.data.propiedad;
+            this.listarRelacionesPropiedad();
         } else {
             this.propiedad = new PropiedadCampoDTO;
+            this.buscarRoles();
+            this.propiedad.campo = this.data.template;
+            this.propiedad.tipo = "C";
+            this.propiedad.valor = 1;
         }
 
-        
-        this.propiedad.campo = this.data.template;
-        this.propiedad.tipo = "C";
-        this.propiedad.valor = 1;
-
-
-        this.buscarRoles();
-        this.buscarPropiedades();
-        this.listarRelacionesPropiedad();
     }
 
-    buscarPropiedades(){
+    buscarPropiedades() {
         const _a = new PropiedadValorDefinidoDTO();
         _a.origenCategoria = 'C';
         _a.origen = 'C';
         this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null)
             .subscribe(p => {
                 this.propiedadValores = p;
+                this.def = this.propiedadValores.find(p => p.llaveTabla === this.propiedad.propiedadValor);
+                if (this.def.pideRol) {
+                    this.buscarRoles();
+                }
+
             });
     }
-    buscarRoles(){
+    buscarRoles() {
         this.flexService.listarConsultaRolAcceso().subscribe(p => {
             this.roles = p;
+            if(!this.propiedad.llaveTabla){
+                this.propiedad.rol = null;
+                this.propiedad.rolExcluyente = null;
+            }     
         })
     }
 
     guardarPropiedad() {
         this.cargando = true;
-        this.flexService.addProperty(this.propiedad).subscribe({
+        if(this.propiedad.llaveTabla){
+            this.flexService.changeProperty(this.propiedad).subscribe({
+            next: (result: ApiErrorResponse) => {
+                if (result?.message) {
+                    Swal.fire('Error', 'No se pudo cambiar la propiedad ' + result.message, 'error');
+                    return;
+                }
+                this.cargando = false;
+                this.dialogRef.close(true);
+            },
+            error: error => {
+                Swal.fire('Error', 'No se pudo cambiar la propiedad ' + error, 'error');
+                this.dialogRef.close(false);
+            }
+        });
+
+        }else{
+            this.flexService.addProperty(this.propiedad).subscribe({
             next: (result: ApiErrorResponse) => {
                 if (result?.message) {
                     Swal.fire('Error', 'No se pudo crear la propiedad ' + result.message, 'error');
                     return;
                 }
                 this.cargando = false;
-                Swal.fire('Exito', 'Propiedad cargada con exito');
+                this.dialogRef.close(true);
             },
             error: error => {
                 Swal.fire('Error', 'No se pudo crear la propiedad ' + error, 'error');
+                this.dialogRef.close(false);
             }
         });
+        }
     }
     filtrarUsuarios(pFiltro) {
         this.flexService.listarRolUsuario(pFiltro).subscribe(p => {
@@ -131,10 +164,10 @@ export class AddPropertyComponent {
         this.buscandoUsuarioExcluyente = false;
     }
 
-    
+
 
     listarRelacionesPropiedad(): void {
-        if (!this.propiedad.propiedadValor) return;
+        if (!this.propiedad.key) return;
         const prop = this.propiedad;
         const filtro = new RelacionInternaFilterDTO();
         filtro.propiedad = prop.llaveTabla;
