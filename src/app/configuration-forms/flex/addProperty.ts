@@ -72,7 +72,6 @@ export class AddPropertyComponent {
         }, 200);
     }
     ngOnInit(): void {
-        this.buscarPropiedades();
         if (this.data.propiedad) {
             this.propiedad = this.data.propiedad;
             this.listarRelacionesPropiedad();
@@ -83,13 +82,14 @@ export class AddPropertyComponent {
             this.propiedad.tipo = "C";
             this.propiedad.valor = 1;
         }
+        this.buscarPropiedades();
 
     }
 
     buscarPropiedades() {
         const _a = new PropiedadValorDefinidoDTO();
-        _a.origenCategoria = 'C';
-        _a.origen = 'C';
+        _a.origenCategoria = this.propiedad.tipo;
+        _a.origen = this.propiedad.tipo;
         this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null)
             .subscribe(p => {
                 this.propiedadValores = p;
@@ -106,7 +106,7 @@ export class AddPropertyComponent {
             if(!this.propiedad.llaveTabla){
                 this.propiedad.rol = null;
                 this.propiedad.rolExcluyente = null;
-            }     
+            }
         })
     }
 

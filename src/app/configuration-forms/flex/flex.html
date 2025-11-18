@@ -1,5 +1,8 @@
 <div class="min-h-screen w-full bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col text-gray-900 dark:text-gray-100">
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <button mat-icon-button class="ml-3 px-3 py-1 rounded" (click)="propiedadesPlantilla()">
+            <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+        </button>
         <div class="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
             <div class="text-xl font-bold">{{ plantilla?.nombre || 'Plantilla' }}</div>
         </div>
@@ -42,21 +45,53 @@
                 <ng-container *ngIf="!isLoading; else loadingFields">
                     <div *ngIf="campos.length > 0; else noCampos" class="space-y-4">
                         <div class="grid grid-cols-1 gap-3">
+                            <div
+                                class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move">
+                                <span class="p-2 rounded">
+                                    {{ getFormatoLabelImage(formatoActual) }}
+                                </span>
+                                <div class="flex-1 cursor-pointer mt-2">
+                                    <h4 class="text-base font-semibold">Escribe nombre</h4>
+                                </div>
+                                <button mat-icon-button class="ml-3 px-3 py-1 rounded" (click)="agregarCampo()">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                            </div>
                             <div *ngFor="let item of campos; let i = index" draggable="true"
                                 (dragstart)="onDragStart(i)" (dragend)="onDragEnd()" (dragover)="onDragOver(i, $event)"
                                 (drop)="onDrop(i, $event)"
                                 [ngClass]="{'opacity-60 ring-2 ring-blue-400': draggedIndex === i}"
                                 class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move">
+
+                                <!-- icono / formato -->
                                 <span class="p-2 rounded">
                                     {{ getFormatoLabelImage(item.formato) }}
                                 </span>
-                                <div class="mt-2 grid-cols-1 gap-3" (click)="onClickCampo(item.llaveTabla)">
-                                    <h4 class="text-base font-semibold">{{ item.nombre }}</h4>
+
+                                <!-- nombre / input -->
+                                <div class="flex-1 mt-2">
+
+                                    <!-- MODO TEXTO -->
+                                    <h4 *ngIf="!item.editando" class="text-base font-semibold cursor-pointer"
+                                        (click)="item.editando = true">
+                                        {{ item.nombre }}
+                                    </h4>
+
+                                    <!-- MODO INPUT -->
+                                    <input *ngIf="item.editando" [(ngModel)]="item.nombre" type="text" class="w-full bg-white border border-gray-300 rounded-md px-2 py-1
+                      focus:outline-none focus:ring-2 focus:ring-blue-500" (blur)="item.editando = false"
+                                        (keyup.enter)="item.editando = false" autofocus />
                                 </div>
-                                <button mat-icon-button [matMenuTriggerFor]="menu" class="m-1 flex-none">
-                                    <mat-icon svgIcon="heroicons_outline:bars-3"></mat-icon>
+
+                                <!-- botón opciones -->
+                                <button mat-icon-button class="ml-3 px-3 py-1 rounded"
+                                    (click)="editarCampo(item.llaveTabla)">
+                                    <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                                 </button>
+
                             </div>
+
+
                         </div>
 
                         <div class="flex justify-center mt-2">

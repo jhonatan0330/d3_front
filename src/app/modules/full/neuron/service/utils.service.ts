@@ -106,10 +106,10 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  fieldModalFlex(pTemplate: string){
+  fieldModalFlex(pTemplate: string, pTipo?:string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(FieldComponent, {
       maxHeight: '90vh',
-      data: { template: pTemplate},
+      data: { template: pTemplate, tipo: pTipo},
     });
     return dialogRef.afterClosed();
   }
@@ -119,7 +119,7 @@ export class UtilsService {
       maxHeight: '90vh',
       data: { template: pTemplate},
     });
-    return dialogRef.afterClosed(); 
+    return dialogRef.afterClosed();
   }
 
   fieldAddModalFlex(pCampo: string, pPropiedad?:PropiedadCampoDTO){

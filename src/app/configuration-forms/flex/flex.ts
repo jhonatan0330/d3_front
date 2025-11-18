@@ -9,6 +9,8 @@ import Swal from 'sweetalert2';
 import { FlexService } from '../flex.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 
 
 export enum FormatoCampoSimboloEnum {
@@ -36,7 +38,8 @@ export enum FormatoCampoSimboloEnum {
     selector: 'FlexComponent',
     standalone: true,
     templateUrl: 'flex.html',
-    imports: [CommonModule]
+    imports: [CommonModule,
+            MatIconModule,]
 })
 export class FlexComponent implements OnInit {
 
@@ -75,6 +78,14 @@ export class FlexComponent implements OnInit {
 
     onClickCampo(campoId: string) {
         this.utilsService.fieldModalFlex(campoId);
+    }
+
+    propiedadesPlantilla() {
+        this.utilsService.fieldModalFlex(this.data.template,'plantilla');
+    }
+
+    editarCampo(campoId: string): void {
+        this.utilsService.fieldEditModalFlex(campoId);
     }
 
     onDragStart(index: number) {
