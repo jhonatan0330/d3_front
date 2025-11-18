@@ -32,7 +32,6 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loginService.getUrlServices();
     this.recoverForm = new FormGroup({
-      clave: new FormControl('', Validators.required),
       first: new FormControl('', Validators.required),
       second: new FormControl('', Validators.required)
     });
