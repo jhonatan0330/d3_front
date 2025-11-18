@@ -30,31 +30,16 @@ export class AddFieldComponent {
     ) { }
 
     ngOnInit(): void {
-        this.flexService.getField(this.data.template, null)
-            .subscribe(p => {
-                this.campo = p;
-            });
+        if(this.data.campo){
+            this.campo = this.data.campo;
+        }else{
+            this.flexService.getField(this.data.template, null) //datos del campo antiguo
+                .subscribe(p => {
+                    this.campo = p;
+                });
+            }
     }
 
-
-
-
-    onSeleccionarImagen(event: Event): void {
-        /*const input = event.target as HTMLInputElement;
-        if (input.files && input.files.length > 0) {
-            this.campo.imagen = input.files[0].text();
-
-            // Mostrar preview
-            const reader = new FileReader();
-            reader.onload = (e) => (this.imagenPreview = e.target?.result as string);
-            reader.readAsDataURL(this.campo.imagen);
-        }*/
-    }
-
-
-    cargarImagenDesdeCamara(): void {
-        alert('📷 Función de cámara aún no implementada');
-    }
 
 
     actualizarCampo(): void {

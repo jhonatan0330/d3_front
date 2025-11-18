@@ -31,18 +31,6 @@
       class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
   </div>
 
-  <div class="flex items-center gap-3">
-    <label class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer">
-      Cargar
-      <input type="file" accept="image/*" class="hidden" (change)="onSeleccionarImagen($event)" />
-    </label>
-
-    <button type="button" (click)="cargarImagenDesdeCamara()"
-      class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded">
-      Foto
-    </button>
-  </div>
-
   <div *ngIf="imagenPreview" class="mt-2 text-center">
     <img [src]="imagenPreview" alt="Vista previa" class="max-h-32 mx-auto rounded border border-gray-300" />
   </div>

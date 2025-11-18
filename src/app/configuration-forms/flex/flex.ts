@@ -44,13 +44,16 @@ export enum FormatoCampoSimboloEnum {
 export class FlexComponent implements OnInit {
 
     plantilla: DocumentoPlantillaDTO;
-    fields: DocumentoPlantillaCaracteristicaDTO[];
     isLoading: boolean = false;
 
     campos: DocumentoPlantillaCaracteristicaDTO[] = [];
+    nuevoCampo : DocumentoPlantillaCaracteristicaDTO;
 
     draggedIndex: number | null = null;
     isDragging: boolean = false;
+
+    formatos = Object.keys(FormatoCampoSimboloEnum) as (keyof typeof FormatoCampoSimboloEnum)[];
+
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -65,13 +68,13 @@ export class FlexComponent implements OnInit {
             this.isLoading = false;
             this.getFields();
         });
+        this.nuevoCampo = new DocumentoPlantillaCaracteristicaDTO();
     }
 
     getFields() {
         this.isLoading = true;
         this.flexService.getFields(this.plantilla.llaveTabla).subscribe((_returnedFields) => {
-            this.fields = _returnedFields;
-            this.campos = [...this.fields]; // copia para manipular orden
+            this.campos = _returnedFields; 
             this.isLoading = false;
         });
     }
@@ -86,6 +89,10 @@ export class FlexComponent implements OnInit {
 
     editarCampo(campoId: string): void {
         this.utilsService.fieldEditModalFlex(campoId);
+    }
+    
+    agregarCampo(): void {
+        this.utilsService.fieldAddModalFlex(this.data.template,this.nuevoCampo);
     }
 
     onDragStart(index: number) {

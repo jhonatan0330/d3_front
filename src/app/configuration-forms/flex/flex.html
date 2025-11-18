@@ -47,45 +47,61 @@
                         <div class="grid grid-cols-1 gap-3">
                             <div
                                 class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move">
-                                <span class="p-2 rounded">
-                                    {{ getFormatoLabelImage(formatoActual) }}
-                                </span>
-                                <div class="flex-1 cursor-pointer mt-2">
-                                    <h4 class="text-base font-semibold">Escribe nombre</h4>
+
+                                <!-- Botón de formato -->
+                                <button type="button" class="p-2 rounded text-2xl"
+                                    (click)="mostrarSelectorFormato = !mostrarSelectorFormato">
+                                    {{ getFormatoLabelImage(nuevoCampo.formato || '') }}
+                                </button>
+
+                                <!-- Input de nombre -->
+                                <div class="flex-1 mt-2">
+                                    <input type="text" [(ngModel)]="nuevoCampo.nombre" placeholder="Escribe nombre" // no funciona
+                                        class="w-full bg-white border border-gray-300 rounded-md px-2 py-1             focus:outline-none focus:ring-2 focus:ring-blue-500" />
                                 </div>
+
+                                <!-- Botón agregar -->
                                 <button mat-icon-button class="ml-3 px-3 py-1 rounded" (click)="agregarCampo()">
                                     <mat-icon>add</mat-icon>
                                 </button>
+
+                                <!-- Lista de formatos -->
+                                <div *ngIf="mostrarSelectorFormato" class="absolute left-2 top-full mt-1 z-20 bg-white border border-gray-200           rounded-md shadow-lg min-w-[180px]">
+
+                                    <button *ngFor="let f of formatos" type="button"
+                                        class="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 text-left"
+                                        (click)="nuevoCampo.formato = f">
+
+                                        <span class="text-xl">{{ getFormatoLabelImage(f) }}</span>
+                                        <span class="text-sm">{{ f }}</span>
+
+                                    </button>
+                                </div>
                             </div>
+
                             <div *ngFor="let item of campos; let i = index" draggable="true"
                                 (dragstart)="onDragStart(i)" (dragend)="onDragEnd()" (dragover)="onDragOver(i, $event)"
                                 (drop)="onDrop(i, $event)"
                                 [ngClass]="{'opacity-60 ring-2 ring-blue-400': draggedIndex === i}"
-                                class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move">
+                                class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move"
+                                (click)="onClickCampo(item.llaveTabla)">
 
-                                <!-- icono / formato -->
                                 <span class="p-2 rounded">
                                     {{ getFormatoLabelImage(item.formato) }}
                                 </span>
 
-                                <!-- nombre / input -->
                                 <div class="flex-1 mt-2">
-
-                                    <!-- MODO TEXTO -->
-                                    <h4 *ngIf="!item.editando" class="text-base font-semibold cursor-pointer"
-                                        (click)="item.editando = true">
-                                        {{ item.nombre }}
-                                    </h4>
-
-                                    <!-- MODO INPUT -->
-                                    <input *ngIf="item.editando" [(ngModel)]="item.nombre" type="text" class="w-full bg-white border border-gray-300 rounded-md px-2 py-1
-                      focus:outline-none focus:ring-2 focus:ring-blue-500" (blur)="item.editando = false"
-                                        (keyup.enter)="item.editando = false" autofocus />
+                                    <input [value]="item.nombre" (input)="item.nombre = $event.target.value"
+                                        (click)="item.editando = true; $event.stopPropagation()"
+                                        (blur)="item.editando = false" (keyup.enter)="item.editando = false"
+                                        [ngClass]="{
+                                        'opacity-60 bg-transparent border-none px-0 py-0 cursor-pointer font-semibold text-base select-none': !item.editando,
+                                        'opacity-100 bg-white border border-gray-300 rounded-md px-2 py-1 cursor-text focus:outline-none focus:ring-2 focus:ring-blue-500': item.editando }"
+                                        class="w-full transition-all duration-150" />
                                 </div>
 
-                                <!-- botón opciones -->
                                 <button mat-icon-button class="ml-3 px-3 py-1 rounded"
-                                    (click)="editarCampo(item.llaveTabla)">
+                                    (click)="editarCampo(item.llaveTabla) ; $event.stopPropagation()">
                                     <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                                 </button>
 
