@@ -8,38 +8,17 @@ import {
 import Swal from 'sweetalert2';
 import { FlexService } from '../flex.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum, FormatoCampoSimboloEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
-
-
-export enum FormatoCampoSimboloEnum {
-  T = '📝',
-  F = '📅',
-  Z = '🔄',
-  N = '🔢',
-  I = '⚙️',
-  J = '📦',
-  A = '📁',
-  B = '🧩',
-  G = '🛠️',
-  U = '🟢',
-  Q = '🧾',
-  S = '📚',
-  P = '📍',
-  M = '🗾',
-  V = '💡',
-  C = '🔗'
-}
-
 
 
 @Component({
     selector: 'FlexComponent',
     standalone: true,
     templateUrl: 'flex.html',
-    imports: [CommonModule,
-            MatIconModule,]
+    imports: [CommonModule, FormsModule,
+        MatIconModule,]
 })
 export class FlexComponent implements OnInit {
 
@@ -47,7 +26,8 @@ export class FlexComponent implements OnInit {
     isLoading: boolean = false;
 
     campos: DocumentoPlantillaCaracteristicaDTO[] = [];
-    nuevoCampo : DocumentoPlantillaCaracteristicaDTO;
+    nuevoCampo: DocumentoPlantillaCaracteristicaDTO;
+    campoActual: DocumentoPlantillaCaracteristicaDTO;
 
     draggedIndex: number | null = null;
     isDragging: boolean = false;
@@ -63,18 +43,20 @@ export class FlexComponent implements OnInit {
 
     ngOnInit(): void {
         this.isLoading = true;
+        this.nuevoCampo = new DocumentoPlantillaCaracteristicaDTO();
+        this.nuevoCampo.formato = 'T';
+        this.nuevoCampo.plantilla = this.data.template;
         this.flexService.getTemplate(this.data.template, null).subscribe((_returnedTemplate) => {
             this.plantilla = _returnedTemplate;
             this.isLoading = false;
             this.getFields();
         });
-        this.nuevoCampo = new DocumentoPlantillaCaracteristicaDTO();
     }
 
     getFields() {
         this.isLoading = true;
         this.flexService.getFields(this.plantilla.llaveTabla).subscribe((_returnedFields) => {
-            this.campos = _returnedFields; 
+            this.campos = _returnedFields;
             this.isLoading = false;
         });
     }
@@ -84,16 +66,41 @@ export class FlexComponent implements OnInit {
     }
 
     propiedadesPlantilla() {
-        this.utilsService.fieldModalFlex(this.data.template,'plantilla');
+        this.utilsService.fieldModalFlex(this.data.template, 'plantilla');
     }
 
     editarCampo(campoId: string): void {
-        this.utilsService.fieldEditModalFlex(campoId);
+        this.utilsService.fieldEditModalFlex(campoId).subscribe(result => {
+            if (result) {
+                this.getFields();
+            }
+        });
     }
-    
+
     agregarCampo(): void {
-        this.utilsService.fieldAddModalFlex(this.data.template,this.nuevoCampo);
+        this.utilsService.fieldAddModalFlex(this.data.template, this.nuevoCampo);
     }
+
+    onNuevoNombreChange(valor: string) {
+        //algo
+    }
+
+
+    async confirmar(): Promise<boolean> {
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción es irreversible.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        });
+
+        return result.isConfirmed;
+    }
+
 
     onDragStart(index: number) {
         this.draggedIndex = index;
@@ -106,7 +113,6 @@ export class FlexComponent implements OnInit {
     }
 
     onDragOver(index: number, event: DragEvent) {
-        // Necesario para que el "drop" dispare
         event.preventDefault();
     }
 
@@ -129,11 +135,12 @@ export class FlexComponent implements OnInit {
         const item = this.campos[from];
         this.campos.splice(from, 1);
         this.campos.splice(to, 0, item);
+        item.orden = to + 1;
 
         this.onDragEnd();
-
-        // Si quieres guardar el nuevo orden:
-        // this.flexService.saveOrder(this.campos).subscribe();
+        this.flexService.actualizarDocumentoPlantillaCaracteristica(item).subscribe(p => {
+            //this.campo = p;
+        });
     }
 
     // === Caneca de basura ===
@@ -144,7 +151,7 @@ export class FlexComponent implements OnInit {
 
 
     getFormatoLabel(codigo: string): string {
-        const entry = Object.entries(FormatoCampoSimboloEnum).find(([key, value]) => value === codigo);
+        const entry = Object.entries(DocumentoPlantillaCaracteristicaEnum).find(([key, value]) => value === codigo);
 
         return entry ? entry[0] : codigo;
     }
@@ -157,12 +164,32 @@ export class FlexComponent implements OnInit {
         event.preventDefault();
 
         if (this.draggedIndex !== null) {
-            const eliminado = this.campos.splice(this.draggedIndex, 1)[0];
-
-            // Si quieres eliminar también en backend:
-            // this.flexService.deleteField(eliminado.llaveTabla).subscribe();
+            this.deleteField();
         }
 
         this.onDragEnd();
+    }
+
+    private async deleteField(){
+        const eliminado = this.campos.splice(this.draggedIndex, 1)[0];
+            // eliminar en backend:
+
+        const ok = await this.confirmar();
+
+        if (!ok) {
+            return; // se canceló
+        }
+
+        this.flexService.inactivarDocumentoPlantillaCaracteristica(eliminado).subscribe();
+    }
+
+    async actualizarCampo() {
+        const ok = await this.confirmar();
+
+        if (!ok) {
+            return; // se canceló
+        }
+
+        this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campoActual).subscribe();
     }
 }

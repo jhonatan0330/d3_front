@@ -56,8 +56,8 @@
 
                                 <!-- Input de nombre -->
                                 <div class="flex-1 mt-2">
-                                    <input type="text" [(ngModel)]="nuevoCampo.nombre" placeholder="Escribe nombre" // no funciona
-                                        class="w-full bg-white border border-gray-300 rounded-md px-2 py-1             focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    <input type="text" [(ngModel)]="nuevoCampo.nombre" (ngModelChange)="onNuevoNombreChange($event)" placeholder="Escribe nombre" (keyup.enter)="nuevoCampo.nombre = $event.target.value ;agregarCampo()" 
+                                        class="w-full bg-white border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                                 </div>
 
                                 <!-- Botón agregar -->
@@ -66,14 +66,14 @@
                                 </button>
 
                                 <!-- Lista de formatos -->
-                                <div *ngIf="mostrarSelectorFormato" class="absolute left-2 top-full mt-1 z-20 bg-white border border-gray-200           rounded-md shadow-lg min-w-[180px]">
+                                <div *ngIf="mostrarSelectorFormato ;" class="absolute left-2 top-full mt-1 z-20 bg-white border border-gray-200  rounded-md shadow-lg min-w-[180px]">
 
                                     <button *ngFor="let f of formatos" type="button"
                                         class="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 text-left"
-                                        (click)="nuevoCampo.formato = f">
+                                        (click)="nuevoCampo.formato = f; mostrarSelectorFormato = !mostrarSelectorFormato">
 
                                         <span class="text-xl">{{ getFormatoLabelImage(f) }}</span>
-                                        <span class="text-sm">{{ f }}</span>
+                                        <span class="text-sm">{{ getFormatoLabel(f) }}</span>
 
                                     </button>
                                 </div>
@@ -91,11 +91,10 @@
                                 </span>
 
                                 <div class="flex-1 mt-2">
-                                    <input [value]="item.nombre" (input)="item.nombre = $event.target.value"
+                                    <input [value]="item.nombre" (input)="item.nombre = $event.target.value" 
                                         (click)="item.editando = true; $event.stopPropagation()"
-                                        (blur)="item.editando = false" (keyup.enter)="item.editando = false"
-                                        [ngClass]="{
-                                        'opacity-60 bg-transparent border-none px-0 py-0 cursor-pointer font-semibold text-base select-none': !item.editando,
+                                        (blur)="item.editando = false" (keyup.enter)="item.editando = false; this.campoActual = item; actualizarCampo()"
+                                        [ngClass]="{ 'opacity-60 bg-transparent border-none px-0 py-0 cursor-pointer font-semibold text-base select-none': !item.editando,
                                         'opacity-100 bg-white border border-gray-300 rounded-md px-2 py-1 cursor-text focus:outline-none focus:ring-2 focus:ring-blue-500': item.editando }"
                                         class="w-full transition-all duration-150" />
                                 </div>
@@ -132,7 +131,7 @@
                     </div>
 
 
-                    <ng-template #noFields>
+                    <ng-template #noCampos>
                         <ng-container
                             *ngTemplateOutlet="emptyTpl; context: { $implicit: 'No hay campos disponibles' }"></ng-container>
                     </ng-template>
