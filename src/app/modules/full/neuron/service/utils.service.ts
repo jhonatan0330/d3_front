@@ -14,7 +14,8 @@ import { dfaComponent } from 'app/authentication/DFA/dfa';
 import { FieldComponent } from 'app/configuration-forms/flex/fieldComponent';
 import { AddFieldComponent } from 'app/configuration-forms/flex/addField';
 import { AddPropertyComponent } from 'app/configuration-forms/flex/addProperty';
-import { PropiedadDTO } from 'app/shared/shared.domain';
+import { PropiedadDTO, PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
+import { char } from '@zxing/library/esm/customTypings';
 
 @Injectable({
   providedIn: 'root',
@@ -130,10 +131,10 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  propertyAddModalFlex(pCampo: string, pPropiedad?:PropiedadCampoDTO){
+  propertyAddModalFlex(pCampo: string, ptipo:PropiedadValorDefinidoDTO , pPropiedad?:PropiedadCampoDTO){
     const dialogRef: MatDialogRef<any> = this.dialog.open(AddPropertyComponent, {
       maxHeight: '90vh',
-      data: { template: pCampo , propiedad: pPropiedad },
+      data: { template: pCampo , propiedad: pPropiedad, tipo: ptipo },
     });
     return dialogRef.afterClosed();
   }

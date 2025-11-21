@@ -9,6 +9,7 @@ import {
 import Swal from 'sweetalert2';
 import { FlexService } from '../flex.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 
 @Component({
     selector: 'FieldComponent',
@@ -90,13 +91,31 @@ export class FieldComponent implements OnInit {
     }
 
     editarPropiedad(pPropiedad?: PropiedadCampoDTO): void {
-        this.utilsService.propertyAddModalFlex(this.field.llaveTabla, pPropiedad);
+        const _a = new PropiedadValorDefinidoDTO();
+        if (this.tipo === 'Plantilla') {
+            _a.origen = 'L';
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pPropiedad);
+        } else {
+            _a.origen = 'C';
+            _a.origenCategoria = this.field.formato;
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pPropiedad);
+        }
     }
 
     agregarPropiedadCampo() {
-        this.utilsService.propertyAddModalFlex(this.field.llaveTabla).subscribe(response => {
-            if (response) this.listarPropiedadesCampo();
-        });
+        const _a = new PropiedadValorDefinidoDTO();
+        if (this.tipo === 'Plantilla') {
+            _a.origen = 'L';
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe(response => {
+                if (response) this.listarPropiedadesCampo();
+            });
+        } else {
+            _a.origen = 'C';
+            _a.origenCategoria = this.field.formato;
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe(response => {
+                if (response) this.listarPropiedadesCampo();
+            });
+        }
     }
 
     toggleExpandido(): void {
