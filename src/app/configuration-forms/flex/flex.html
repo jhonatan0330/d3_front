@@ -1,4 +1,5 @@
-<div class="min-h-screen w-full bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col text-gray-900 dark:text-gray-100">
+<div class="w-full bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col text-gray-900 dark:text-gray-100"
+    (document:click)="closeAllFormatSelectors()">
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <button mat-icon-button class="ml-3 px-3 py-1 rounded" (click)="propiedadesPlantilla()">
             <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
@@ -20,87 +21,142 @@
 
     <div class="grid grid-cols-1 gap-6 flex-1 h-full">
         <div class="flex flex-col h-full min-h-[300px]">
-            <div class="flex justify-between items-center flex-wrap">
-                <div class="flex justify-center">
-                    <div (dragover)="onTrashDragOver($event)" (drop)="onTrashDrop($event)" [ngClass]="{'opacity-0 translate-y-4 scale-75 pointer-events-none': !isDragging,
-                                'opacity-100 translate-y-0 scale-100 pointer-events-auto': isDragging}"
-                        class="transition-all duration-300 ease-out w-20 h-12 border-2 border-dashed border-red-400 rounded-2xl flex flex-col items-center justify-center bg-red-50/80 dark:bg-red-900/30 shadow-inner">
-                        <svg class="w-4 h-4 mb-1 animate-bounce text-red-500 dark:text-red-300" fill="currentColor"
-                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M6 2a1 1 0 00-1 1v1H3.5a.5.5 0 000 1h13a.5.5 0 000-1H15V3a1 1 0 00-1-1H6zm1 2V3h6v1H7z">
-                            </path>
-                            <path
-                                d="M6 7a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7zm3.25 0a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7zm3.25 0a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7z">
-                            </path>
-                            <path d="M5 6h10v9a2 2 0 01-2 2H7a2 2 0 01-2-2V6z"></path>
-                        </svg>
-                    </div>
+            <div class="flex justify-center items-center ">
+                <div class="flex items-center overflow-hidden rounded-full bg-gray-200 p-0.5 dark:bg-gray-700 my-2">
+                    <button mat-flat-button disableripple
+                        class="rounded-full mdc-button mdc-button--unelevated mat-mdc-unelevated-button mat-unthemed mat-mdc-button-base"
+                        [ngClass]="{ 'bg-card pointer-events-none shadow': !mostrarCodigo, 'bg-transparent': mostrarCodigo }"
+                        (click)="mostrarCodigo = false">
+                        <span class="mat-mdc-button-persistent-ripple mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Nombre</span>
+                        <span class="mat-focus-indicator"></span>
+                        <span class="mat-mdc-button-touch-target"></span>
+                        <span class="mat-ripple mat-mdc-button-ripple"></span>
+                    </button>
+
+                    <button mat-flat-button disableripple
+                        class="rounded-full mdc-button mdc-button--unelevated mat-mdc-unelevated-button mat-unthemed mat-mdc-button-base"
+                        [ngClass]="{ 'bg-card pointer-events-none shadow': mostrarCodigo, 'bg-transparent': !mostrarCodigo }"
+                        (click)="mostrarCodigo = true">
+                        <span class="mat-mdc-button-persistent-ripple mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Código</span>
+                        <span class="mat-focus-indicator"></span>
+                        <span class="mat-mdc-button-touch-target"></span>
+                        <span class="mat-ripple mat-mdc-button-ripple"></span>
+                    </button>
                 </div>
-                <button (click)="getFields()"
-                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">↺</button>
             </div>
 
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-2 overflow-y-auto">
                 <ng-container *ngIf="!isLoading; else loadingFields">
                     <div *ngIf="campos.length > 0; else noCampos" class="space-y-4">
                         <div class="grid grid-cols-1 gap-3">
-                            <div
-                                class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move">
-
-                                <!-- Botón de formato -->
-                                <button type="button" class="p-2 rounded text-2xl"
-                                    (click)="mostrarSelectorFormato = !mostrarSelectorFormato">
-                                    {{ getFormatoLabelImage(nuevoCampo.formato || '') }}
-                                </button>
-
-                                <!-- Input de nombre -->
-                                <div class="flex-1 mt-2">
-                                    <input type="text" [(ngModel)]="nuevoCampo.nombre" (ngModelChange)="onNuevoNombreChange($event)" placeholder="Escribe nombre" (keyup.enter)="nuevoCampo.nombre = $event.target.value ;agregarCampo()" 
-                                        class="w-full bg-white border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                                </div>
-
-                                <!-- Botón agregar -->
-                                <button mat-icon-button class="ml-3 px-3 py-1 rounded" (click)="agregarCampo()">
-                                    <mat-icon>add</mat-icon>
-                                </button>
-
-                                <!-- Lista de formatos -->
-                                <div *ngIf="mostrarSelectorFormato ;" class="absolute left-2 top-full mt-1 z-20 bg-white border border-gray-200  rounded-md shadow-lg min-w-[180px]">
-
-                                    <button *ngFor="let f of formatos" type="button"
-                                        class="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 text-left"
-                                        (click)="nuevoCampo.formato = f; mostrarSelectorFormato = !mostrarSelectorFormato">
-
-                                        <span class="text-xl">{{ getFormatoLabelImage(f) }}</span>
-                                        <span class="text-sm">{{ getFormatoLabel(f) }}</span>
-
-                                    </button>
+                            <!-- Mostrar papelera en lugar del formulario cuando se está arrastrando -->
+                            <div *ngIf="isDragging; else addFieldForm" class="w-full flex justify-center">
+                                <div (dragover)="onTrashDragOver($event)" (drop)="onTrashDrop($event)" [ngClass]="{'opacity-0 translate-y-4 scale-75 pointer-events-none': !isDragging,
+                                            'opacity-100 translate-y-0 scale-100 pointer-events-auto': isDragging}"
+                                    class="w-full transition-all duration-300 ease-out w-20 h-12 border-2 border-dashed border-red-400 rounded-2xl flex flex-col items-center justify-center bg-red-50/80 dark:bg-red-900/30 shadow-inner">
+                                    <svg class="w-4 h-4 mb-1 animate-bounce text-red-500 dark:text-red-300"
+                                        fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M6 2a1 1 0 00-1 1v1H3.5a.5.5 0 000 1h13a.5.5 0 000-1H15V3a1 1 0 00-1-1H6zm1 2V3h6v1H7z">
+                                        </path>
+                                        <path
+                                            d="M6 7a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7zm3.25 0a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7zm3.25 0a.75.75 0 011.5 0v7a.75.75 0 01-1.5 0V7z">
+                                        </path>
+                                        <path d="M5 6h10v9a2 2 0 01-2 2H7a2 2 0 01-2-2V6z"></path>
+                                    </svg>
                                 </div>
                             </div>
+
+                            <ng-template #addFieldForm>
+                                <div
+                                    class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move">
+
+                                    <!-- Botón de formato -->
+                                    <button type="button" class="p-2 rounded text-2xl"
+                                        (click)="$event.stopPropagation(); mostrarSelectorFormato = !mostrarSelectorFormato">
+                                        {{ getFormatoLabelImage(nuevoCampo.formato || '') }}
+                                    </button>
+
+                                    <!-- Input de nombre -->
+                                    <div class="flex-1 mt-2">
+                                        <input type="text" [(ngModel)]="nuevoCampo.nombre"
+                                            (ngModelChange)="onNuevoNombreChange($event)" placeholder="Escribe nombre"
+                                            (keyup.enter)="nuevoCampo.nombre = $event.target.value ;agregarCampo()"
+                                            class="w-full bg-white border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                    </div>
+
+                                    <!-- Botón agregar -->
+                                    <button mat-icon-button class="ml-3 px-3 py-1 rounded" (click)="agregarCampo()">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+
+                                    <!-- Lista de formatos -->
+                                    <div *ngIf="mostrarSelectorFormato ;"
+                                        class="absolute left-2 top-full mt-1 z-20 bg-white border border-gray-200  rounded-md shadow-lg min-w-[180px]"
+                                        (click)="$event.stopPropagation()">
+
+                                        <button *ngFor="let f of formatos" type="button"
+                                            class="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 text-left"
+                                            (click)="nuevoCampo.formato = f; mostrarSelectorFormato = !mostrarSelectorFormato">
+
+                                            <span class="text-xl">{{ getFormatoLabelImage(f) }}</span>
+                                            <span class="text-sm">{{ getFormatoLabel(f) }}</span>
+
+                                        </button>
+                                    </div>
+                                </div>
+                            </ng-template>
 
                             <div *ngFor="let item of campos; let i = index" draggable="true"
                                 (dragstart)="onDragStart(i)" (dragend)="onDragEnd()" (dragover)="onDragOver(i, $event)"
                                 (drop)="onDrop(i, $event)"
                                 [ngClass]="{'opacity-60 ring-2 ring-blue-400': draggedIndex === i}"
                                 class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move"
-                                (click)="onClickCampo(item.llaveTabla)">
+                                (click)="editarCampo(item.llaveTabla)">
 
-                                <span class="p-2 rounded">
+                                <button type="button" class="p-2 rounded relative"
+                                    (click)="$event.stopPropagation(); item.mostrarSelectorFormato = !item.mostrarSelectorFormato">
                                     {{ getFormatoLabelImage(item.formato) }}
-                                </span>
+                                </button>
+
+                                <!-- Selector de formatos por campo -->
+                                <div *ngIf="item.mostrarSelectorFormato"
+                                    class="absolute left-2 top-full mt-1 z-20 bg-white border border-gray-200 rounded-md shadow-lg min-w-[180px]"
+                                    (click)="$event.stopPropagation()">
+
+                                    <button *ngFor="let f of formatos" type="button"
+                                        class="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-100 text-left"
+                                        (click)="item.formato = f; item.mostrarSelectorFormato = false; this.campoActual = item; actualizarCampo()">
+
+                                        <span class="text-xl">{{ getFormatoLabelImage(f) }}</span>
+                                        <span class="text-sm">{{ getFormatoLabel(f) }}</span>
+
+                                    </button>
+                                </div>
 
                                 <div class="flex-1 mt-2">
-                                    <input [value]="item.nombre" (input)="item.nombre = $event.target.value" 
-                                        (click)="item.editando = true; $event.stopPropagation()"
-                                        (blur)="item.editando = false" (keyup.enter)="item.editando = false; this.campoActual = item; actualizarCampo()"
-                                        [ngClass]="{ 'opacity-60 bg-transparent border-none px-0 py-0 cursor-pointer font-semibold text-base select-none': !item.editando,
-                                        'opacity-100 bg-white border border-gray-300 rounded-md px-2 py-1 cursor-text focus:outline-none focus:ring-2 focus:ring-blue-500': item.editando }"
-                                        class="w-full transition-all duration-150" />
+                                    <!-- Mostrar texto cuando no se está editando -->
+                                    <div *ngIf="!item.editando"
+                                        class="w-full text-base font-semibold cursor-text select-text px-1 py-1"
+                                        (click)="startEditingCodigo(item)">
+                                        {{ mostrarCodigo ? (item.codigo) : (item.nombre) }}
+                                    </div>
+
+                                    <!-- Input solo en modo edición -->
+                                    <div *ngIf="item.editando">
+                                        <input [(ngModel)]="item._editValue"
+                                            (ngModelChange)="onItemValueChange(item, $event)"
+                                            (click)="$event.stopPropagation()" (blur)="onBlurItem(item)"
+                                            (keyup.enter)="onEnterItem(item)"
+                                            [placeholder]="mostrarCodigo ? (item.codigo || 'sin valor') : (item.nombre || 'sin valor')"
+                                            class="w-full bg-white border border-blue-400 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                                    </div>
                                 </div>
 
                                 <button mat-icon-button class="ml-3 px-3 py-1 rounded"
-                                    (click)="editarCampo(item.llaveTabla) ; $event.stopPropagation()">
+                                    (click)="onClickCampo(item.llaveTabla); $event.stopPropagation()">
                                     <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                                 </button>
 
@@ -112,7 +168,7 @@
                         <div class="flex justify-center mt-2">
                             <div (dragover)="onTrashDragOver($event)" (drop)="onTrashDrop($event)" [ngClass]="{'opacity-0 translate-y-4 scale-75 pointer-events-none': !isDragging,
                                 'opacity-100 translate-y-0 scale-100 pointer-events-auto': isDragging}"
-                                class="transition-all duration-300 ease-out w-40 h-24 border-2 border-dashed border-red-400 rounded-2xl flex flex-col items-center justify-center bg-red-50/80 dark:bg-red-900/30 shadow-inner">
+                                class="w-full transition-all duration-300 ease-out w-40 h-24 border-2 border-dashed border-red-400 rounded-2xl flex flex-col items-center justify-center bg-red-50/80 dark:bg-red-900/30 shadow-inner">
                                 <svg class="w-8 h-8 mb-1 animate-bounce text-red-500 dark:text-red-300"
                                     fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -132,8 +188,9 @@
 
 
                     <ng-template #noCampos>
-                        <ng-container
-                            *ngTemplateOutlet="emptyTpl; context: { $implicit: 'No hay campos disponibles' }"></ng-container>
+                        <!-- Mostrar mensaje vacío y permitir añadir campos reutilizando addFieldForm -->
+                        <ng-container *ngTemplateOutlet="emptyTpl; context: { $implicit: 'No hay campos disponibles' }"></ng-container>
+                        <ng-container *ngTemplateOutlet="addFieldForm"></ng-container>
                     </ng-template>
                 </ng-container>
 

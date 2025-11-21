@@ -24,6 +24,9 @@ export class FlexComponent implements OnInit {
 
     plantilla: DocumentoPlantillaDTO;
     isLoading: boolean = false;
+    mostrarSelectorFormato: boolean = false;
+    // Si true mostramos y editamos el campo 'codigo', si false usamos 'nombre'
+    mostrarCodigo: boolean = true;
 
     campos: DocumentoPlantillaCaracteristicaDTO[] = [];
     nuevoCampo: DocumentoPlantillaCaracteristicaDTO;
@@ -70,19 +73,62 @@ export class FlexComponent implements OnInit {
     }
 
     editarCampo(campoId: string): void {
-        this.utilsService.fieldEditModalFlex(campoId).subscribe(result => {
+       /* this.utilsService.fieldEditModalFlex(campoId).subscribe(result => {
             if (result) {
                 this.getFields();
             }
-        });
+        });*/
     }
 
     agregarCampo(): void {
-        this.utilsService.fieldAddModalFlex(this.data.template, this.nuevoCampo);
+        //this.utilsService.fieldAddModalFlex(this.data.template, this.nuevoCampo);
+        this.flexService.guardarDocumentoPlantillaCaracteristica(this.nuevoCampo).subscribe(p => {
+                //this.nuevoCampo = p;
+                this.nuevoCampo.nombre = '';
+                this.getFields();
+            });
     }
 
     onNuevoNombreChange(valor: string) {
         //algo
+    }
+
+    // Inicia la edición del código de un campo (muestra el input con el valor codigo)
+    startEditingCodigo(item: DocumentoPlantillaCaracteristicaDTO) {
+        // marcar como en modo edición y preparar valor temporal
+        (item as any).editandoCodigo = true;
+        (item as any).editando = true;
+        // si mostrarCodigo está activo, inicializar con codigo, si no con nombre
+        (item as any)._editValue = this.mostrarCodigo ? (item.codigo ?? '') : (item.nombre ?? '');
+        this.campoActual = item;
+    }
+
+    // Actualiza el valor temporal en la edición
+    onItemValueChange(item: DocumentoPlantillaCaracteristicaDTO, value: string) {
+        (item as any)._editValue = value;
+    }
+
+    // Al presionar Enter guardamos y salimos del modo edición
+    onEnterItem(item: DocumentoPlantillaCaracteristicaDTO) {
+        (item as any).editando = false;
+        (item as any).editandoCodigo = false;
+        // asigna el código guardado y lo persiste
+        if ((item as any)._editValue !== undefined) {
+            if (this.mostrarCodigo) {
+                item.codigo = (item as any)._editValue;
+            } else {
+                item.nombre = (item as any)._editValue;
+            }
+            this.campoActual = item;
+            this.actualizarCampo();
+        }
+    }
+
+    // Al perder el foco salimos del modo edición sin guardar automáticamente
+    onBlurItem(item: DocumentoPlantillaCaracteristicaDTO) {
+        // cerrar modo edición (no guarda automáticamente)
+        (item as any).editandoCodigo = false;
+        (item as any).editando = false;
     }
 
 
@@ -97,7 +143,6 @@ export class FlexComponent implements OnInit {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33'
         });
-
         return result.isConfirmed;
     }
 
@@ -162,34 +207,38 @@ export class FlexComponent implements OnInit {
 
     onTrashDrop(event: DragEvent) {
         event.preventDefault();
-
         if (this.draggedIndex !== null) {
             this.deleteField();
         }
-
         this.onDragEnd();
+    }
+
+    // Cierra todos los selectores de formato (nuevo y por-item)
+    closeAllFormatSelectors(): void {
+        this.mostrarSelectorFormato = false;
+        if (this.campos && this.campos.length) {
+            for (const c of this.campos) {
+                // añadimos la propiedad dinámicamente en la plantilla
+                (c as any).mostrarSelectorFormato = false;
+            }
+        }
     }
 
     private async deleteField(){
         const eliminado = this.campos.splice(this.draggedIndex, 1)[0];
             // eliminar en backend:
-
         const ok = await this.confirmar();
-
         if (!ok) {
             return; // se canceló
         }
-
         this.flexService.inactivarDocumentoPlantillaCaracteristica(eliminado).subscribe();
     }
 
     async actualizarCampo() {
         const ok = await this.confirmar();
-
         if (!ok) {
             return; // se canceló
         }
-
         this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campoActual).subscribe();
     }
 }

@@ -6,11 +6,14 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import Swal from 'sweetalert2';
+import { firstValueFrom } from 'rxjs';
+
 import { BaseComponent } from '../base/base.component';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import Swal from 'sweetalert2';
-import { PedidoVentaDTO } from '../../../model/sw42.domain';
-import { MatDialog } from '@angular/material/dialog';
+import { DocumentMessage, PedidoVentaDTO } from '../../../model/sw42.domain';
+import { ApiErrorResponse } from '../../../model/sw42.utils';
 
 interface RenderItem {
   exp: PedidoVentaDTO;
@@ -24,12 +27,11 @@ interface RenderItem {
 
 @Component({
   selector: 'app-croquis',
-  templateUrl: './croquis.component.html'
+  templateUrl: './croquis.component.html',
 })
 export class CroquisComponent extends BaseComponent
   implements OnInit, AfterViewInit, OnDestroy {
 
-  // Canvas y contexto (dentro del popup)
   private canvas?: HTMLCanvasElement;
   private ctx?: CanvasRenderingContext2D;
   private canvasInitialized = false;
@@ -37,25 +39,29 @@ export class CroquisComponent extends BaseComponent
   // Plano base
   baseImg = new Image();
   baseLoaded = false;
+  private baseNaturalWidth = 0;
+  private baseNaturalHeight = 0;
 
-  // Lista renderizada de componentes
+  // Lista de componentes renderizados
   items: RenderItem[] = [];
 
-  // Controles UI
+  // Controles de la interfaz
   nombreCtrl = new FormControl<string>('', {
     nonNullable: true,
     validators: [Validators.maxLength(120)],
   });
+
   valorTextCtrl = new FormControl<string>('', { nonNullable: true });
 
-  // Drag
+  // Arrastre (drag)
   private dragging: RenderItem | null = null;
   private dragOffsetX = 0;
   private dragOffsetY = 0;
 
-  // Tamaños por defecto de ítems
-  private defaultItemSize = 48;
+  // Tamaño por defecto de los ítems
+  private readonly defaultItemSize = 48;
 
+  // Plantilla base para nuevo componente (si es necesaria)
   exp: PedidoVentaDTO = {} as PedidoVentaDTO;
 
   constructor(
@@ -69,12 +75,12 @@ export class CroquisComponent extends BaseComponent
   openCroquisDialog(tpl: TemplateRef<any>): void {
     const dialogRef = this.dialog.open(tpl, {
       width: '900px',
-      maxWidth: '95vw'
+      maxWidth: '95vw',
     });
 
     dialogRef.afterOpened().subscribe(() => {
       this.initCanvasIfNeeded();
-      this.draw(); // pintamos con lo que ya exista (plano + items)
+      this.draw();
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -85,16 +91,15 @@ export class CroquisComponent extends BaseComponent
     });
   }
 
-  // ---------- Ciclo de vida ----------
   ngOnInit(): void {
     super.ngOnInit();
 
-    // valorText (URL del plano) existente
+    // URL del plano existente
     if (this.data?.valorText) {
       this.valorTextCtrl.setValue(this.data.valorText);
     }
 
-    // Cargar expedientes existentes a capa de render
+    // Cargar expedientes existentes
     if (Array.isArray(this.data?.expedientes)) {
       for (const exp of this.data.expedientes as PedidoVentaDTO[]) {
         this.pushRenderItemFromExp(exp);
@@ -108,18 +113,16 @@ export class CroquisComponent extends BaseComponent
   }
 
   ngAfterViewInit(): void {
-    // El canvas no existe hasta que se abre el popup
+    // El canvas se obtiene cuando se abre el popup
   }
 
   ngOnDestroy(): void {
     this.removeCanvasListeners();
   }
 
-  // ---------- Canvas init & listeners ----------
   private initCanvasIfNeeded(): void {
     if (this.canvasInitialized) return;
 
-    // canvas está en el popup (overlay) → lo buscamos por id
     const canvas = document.getElementById('croquisCanvas') as HTMLCanvasElement | null;
     if (!canvas) {
       Swal.fire('Error', 'No se encontró el canvas del croquis', 'error');
@@ -135,16 +138,21 @@ export class CroquisComponent extends BaseComponent
     this.canvas = canvas;
     this.ctx = ctx;
 
-    // Eventos canvas
     canvas.addEventListener('mousedown', this.onMouseDown);
     canvas.addEventListener('mousemove', this.onMouseMove);
     canvas.addEventListener('dblclick', this.onDblClick);
     window.addEventListener('mouseup', this.onMouseUp);
 
     this.canvasInitialized = true;
-
-    // Si quieres que el tamaño interno se adapte a la vista del dialog:
-    this.syncCanvasSizeToView();
+  //  tamaño natural como resolución interna del canvas para que las coordenadas de los ítems sigan siendo consistentes.
+    if (this.baseLoaded && this.baseNaturalWidth > 0 && this.baseNaturalHeight > 0) {
+      this.canvas.width = this.baseNaturalWidth;
+      this.canvas.height = this.baseNaturalHeight;
+      this.canvas.style.width = '90%';
+      this.canvas.style.height = 'auto';
+    } else {
+      this.syncCanvasSizeToView();
+    }
   }
 
   private removeCanvasListeners(): void {
@@ -159,18 +167,17 @@ export class CroquisComponent extends BaseComponent
   private syncCanvasSizeToView(): void {
     if (!this.canvas) return;
     const rect = this.canvas.getBoundingClientRect();
-    this.canvas.width = rect.width;
-    this.canvas.height = rect.height;
+    this.canvas.width = Math.max(1, Math.round(rect.width));
+    this.canvas.height = Math.max(1, Math.round(rect.height));
   }
 
-  // ---------- Utilidad: coordenadas reales del canvas ----------
+  // ---------- coordenadas mouse en sistema del canvas ----------
   private getMousePos(ev: MouseEvent): { x: number; y: number } {
     if (!this.canvas) {
       return { x: 0, y: 0 };
     }
 
     const rect = this.canvas.getBoundingClientRect();
-
     const scaleX = this.canvas.width / rect.width;
     const scaleY = this.canvas.height / rect.height;
 
@@ -204,8 +211,7 @@ export class CroquisComponent extends BaseComponent
 
     // Componentes
     for (const it of this.items) {
-      const x = it.x;
-      const y = it.y;
+      const { x, y } = it;
       const w = it.loaded ? it.w : this.defaultItemSize;
       const h = it.loaded ? it.h : this.defaultItemSize;
 
@@ -223,14 +229,38 @@ export class CroquisComponent extends BaseComponent
       }
 
       if (it.exp?.nombre) {
-        this.ctx.fillStyle = '#111';
-        this.ctx.font = '12px sans-serif';
-        this.ctx.fillText(it.exp.nombre, x + 2, y - 4);
+        const text = it.exp.nombre;
+        const fontSize = 12;
+        this.ctx.font = `${fontSize}px sans-serif`;
+        this.ctx.textBaseline = 'middle';
+        this.ctx.textAlign = 'center';
+
+        const centerX = x + w / 2;
+        const centerY = y + h / 2;
+
+        const metrics = this.ctx.measureText(text);
+        const textWidth = metrics.width;
+        const padding = 6;
+        const bgWidth = textWidth + padding * 2;
+        const bgHeight = fontSize + 6;
+        const bgX = centerX - bgWidth / 2;
+        const bgY = centerY - bgHeight / 2;
+
+  // Fondo para legibilidad
+  this.ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        this.ctx.fillRect(bgX, bgY, bgWidth, bgHeight);
+  this.ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+        this.ctx.strokeRect(bgX + 0.5, bgY + 0.5, bgWidth - 1, bgHeight - 1);
+
+  this.ctx.fillStyle = '#111';
+        this.ctx.fillText(text, centerX, centerY);
+  // restaurar valores por defecto
+        this.ctx.textAlign = 'start';
+        this.ctx.textBaseline = 'alphabetic';
       }
     }
   }
 
-  // ---------- Carga de base y componentes ----------
   setBase(): void {
     if (!this.isEnabled) return;
     const input = document.getElementById('fileBaseInput') as HTMLInputElement | null;
@@ -239,14 +269,17 @@ export class CroquisComponent extends BaseComponent
 
   addComponente(): void {
     if (!this.isEnabled) return;
+
     if (!this.baseLoaded) {
       Swal.fire('Advertencia', 'Primero sube el plano', 'warning');
       return;
     }
+
     if (!this.nombreCtrl.value?.trim()) {
       Swal.fire('Advertencia', 'Escribe un nombre para el componente', 'warning');
       return;
     }
+
     const input = document.getElementById('fileItemInput') as HTMLInputElement | null;
     input?.click();
   }
@@ -258,13 +291,13 @@ export class CroquisComponent extends BaseComponent
     if (!file) return;
 
     try {
-      const url = await this.uploadFile(file);
+      const url = (await this.uploadFile(file)).message; 
       this.data.valorText = url;
       this.valorTextCtrl.setValue(url);
       this.loadBaseFromUrl(url);
       this.avisarModificacion();
       Swal.fire('Éxito', 'Plano subido correctamente', 'success');
-    } catch {
+    } catch (e) {
       Swal.fire('Error', 'No se pudo subir el plano', 'error');
     }
   }
@@ -281,7 +314,8 @@ export class CroquisComponent extends BaseComponent
     }
 
     try {
-      const url = await this.uploadFile(file);
+      const url = (await this.uploadFile(file)).message;
+
       const count = (this.data.expedientes?.length || 0) + 1;
 
       const nuevoExp: PedidoVentaDTO = {
@@ -292,11 +326,14 @@ export class CroquisComponent extends BaseComponent
         dinero: {
           ...(this.exp.dinero ?? { saldo: 0, valorTotal: 0 }),
           saldo: 30 + 5 * count,
-          valorTotal: 30 + 5 * count
-        }
+          valorTotal: 30 + 5 * count,
+        },
       } as PedidoVentaDTO;
 
-      if (!Array.isArray(this.data.expedientes)) this.data.expedientes = [];
+      if (!Array.isArray(this.data.expedientes)) {
+        this.data.expedientes = [];
+      }
+
       this.data.expedientes.push(nuevoExp);
       this.pushRenderItemFromExp(nuevoExp);
       this.nombreCtrl.setValue('');
@@ -309,19 +346,52 @@ export class CroquisComponent extends BaseComponent
 
   private loadBaseFromUrl(url: string): void {
     this.baseLoaded = false;
-    this.baseImg = new Image();
-    this.baseImg.crossOrigin = 'anonymous';
-    this.baseImg.onload = () => {
-      this.baseLoaded = true;
-      // si el canvas ya está inicializado, pintamos
-      this.draw();
+
+  // Intentar cargar con CORS primero .
+    const tryLoad = (useCors: boolean) => {
+      const img = new Image();
+      if (useCors) img.crossOrigin = 'anonymous';
+
+      img.onload = () => {
+        this.baseImg = img;
+        this.baseLoaded = true;
+  // almacenar tamaño natural
+        this.baseNaturalWidth = img.naturalWidth || img.width || 0;
+        this.baseNaturalHeight = img.naturalHeight || img.height || 0;
+
+  // Si el canvas ya está inicializado, establece su resolución interna al tamaño natural de la imagen
+        if (this.canvas) {
+          if (this.baseNaturalWidth > 0 && this.baseNaturalHeight > 0) {
+            this.canvas.width = this.baseNaturalWidth;
+            this.canvas.height = this.baseNaturalHeight;
+            // Mantener ancho CSS responsivo
+            this.canvas.style.width = '90%';
+            this.canvas.style.height = 'auto';
+          } else {
+            this.syncCanvasSizeToView();
+          }
+        }
+
+        this.draw();
+      };
+
+      img.onerror = (error) => {
+        if (useCors) {
+          // Reintentar sin CORS
+          tryLoad(false);
+          return;
+        }
+
+        console.error('Error cargando imagen', error, url);
+        this.baseLoaded = false;
+        Swal.fire('Error', 'No se pudo cargar el plano', 'error');
+        this.draw();
+      };
+
+      img.src = url;
     };
-    this.baseImg.onerror = () => {
-      this.baseLoaded = false;
-      Swal.fire('Error', 'No se pudo cargar el plano', 'error');
-      this.draw();
-    };
-    this.baseImg.src = url;
+
+    tryLoad(true);
   }
 
   private pushRenderItemFromExp(exp: PedidoVentaDTO): void {
@@ -334,18 +404,44 @@ export class CroquisComponent extends BaseComponent
       h: this.defaultItemSize,
       loaded: false,
     };
+
     it.img.crossOrigin = 'anonymous';
-    it.img.onload = () => {
-      it.w = it.img.naturalWidth || this.defaultItemSize;
-      it.h = it.img.naturalHeight || this.defaultItemSize;
-      it.loaded = true;
-      this.draw();
+
+    const loadItemImage = (url?: string) => {
+      if (!url) return;
+
+      const attempt = (useCors: boolean) => {
+        const img = new Image();
+        if (useCors) img.crossOrigin = 'anonymous';
+
+        img.onload = () => {
+          it.img = img;
+          it.w = img.naturalWidth || this.defaultItemSize;
+          it.h = img.naturalHeight || this.defaultItemSize;
+          it.loaded = true;
+          this.draw();
+        };
+
+        img.onerror = () => {
+          if (useCors) {
+            attempt(!false);
+            return;
+          }
+
+          it.loaded = false;
+          this.draw();
+        };
+
+        img.src = url;
+      };
+
+      attempt(!true);
     };
-    it.img.onerror = () => {
-      it.loaded = false;
-      this.draw();
-    };
-    if (exp.imagen) it.img.src = exp.imagen;
+
+    if (exp.imagen) {
+      loadItemImage(exp.imagen);
+    }
+
     this.items.push(it);
     this.draw();
   }
@@ -353,8 +449,8 @@ export class CroquisComponent extends BaseComponent
   // ---------- Drag & Drop ----------
   private onMouseDown = (ev: MouseEvent) => {
     if (!this.isEnabled) return;
-    const { x, y } = this.getMousePos(ev);
 
+    const { x, y } = this.getMousePos(ev);
     const top = this.pickTopmost(x, y);
     if (!top) return;
 
@@ -385,27 +481,30 @@ export class CroquisComponent extends BaseComponent
     if (!this.dragging.exp.dinero) {
       this.dragging.exp.dinero = { saldo: 0, valorTotal: 0 } as any;
     }
+
     this.dragging.exp.dinero.saldo = this.dragging.x;
     this.dragging.exp.dinero.valorTotal = this.dragging.y;
+
     this.dragging = null;
     this.avisarModificacion();
   };
 
   private onDblClick = (ev: MouseEvent) => {
     if (!this.isEnabled) return;
-    const { x, y } = this.getMousePos(ev);
 
+    const { x, y } = this.getMousePos(ev);
     const top = this.pickTopmost(x, y);
     if (!top) return;
 
     const idx = this.items.indexOf(top);
-    if (idx !== -1) this.items.splice(idx, 1);
+    if (idx !== -1) {
+      this.items.splice(idx, 1);
+    }
 
     if (Array.isArray(this.data.expedientes)) {
-      const i2 = (this.data.expedientes as PedidoVentaDTO[]).findIndex(
-        e => e.llaveTabla === top.exp.llaveTabla
-      );
-      if (i2 !== -1) (this.data.expedientes as PedidoVentaDTO[]).splice(i2, 1);
+      const arr = this.data.expedientes as PedidoVentaDTO[];
+      const i2 = arr.findIndex(e => e.llaveTabla === top.exp.llaveTabla);
+      if (i2 !== -1) arr.splice(i2, 1);
     }
 
     this.draw();
@@ -418,6 +517,7 @@ export class CroquisComponent extends BaseComponent
       const it = this.items[i];
       const w = it.loaded ? it.w : this.defaultItemSize;
       const h = it.loaded ? it.h : this.defaultItemSize;
+
       if (x >= it.x && x <= it.x + w && y >= it.y && y <= it.y + h) {
         return it;
       }
@@ -431,15 +531,12 @@ export class CroquisComponent extends BaseComponent
     Swal.fire('Guardado', 'Posiciones guardadas correctamente', 'success');
   }
 
-  // ---------- Upload helper ----------
-  private async uploadFile(file: File): Promise<string> {
-    const fd = new FormData();
-    fd.append('file', file);
-
-    // Aquí conectas tu ApiService real, por ahora mock local:
-    return await new Promise<string>((resolve) => {
-      const local = URL.createObjectURL(file);
-      resolve(local);
-    });
+  private async uploadFile(file: File): Promise<ApiErrorResponse> {
+    try {
+      const resp = await firstValueFrom(this.api.uploadFile(file, null));
+      return resp;
+    } catch (error) {
+      return error as ApiErrorResponse;
+    }
   }
 }

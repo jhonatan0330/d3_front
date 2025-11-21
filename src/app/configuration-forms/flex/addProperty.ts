@@ -50,7 +50,7 @@ export class AddPropertyComponent {
         }
         this.propiedad = new PropiedadCampoDTO;
         this.propiedad.campo = this.data.template;
-        this.propiedad.tipo = "C";
+        this.propiedad.tipo = this.data.tipo.origen;
         this.propiedad.valor = 1;
         this.propiedad.propiedadValor = llaveSeleccionada;
     }
@@ -79,7 +79,7 @@ export class AddPropertyComponent {
             this.propiedad = new PropiedadCampoDTO;
             this.buscarRoles();
             this.propiedad.campo = this.data.template;
-            this.propiedad.tipo = "C";
+            this.propiedad.tipo = this.data.tipo.origen;
             this.propiedad.valor = 1;
         }
         this.buscarPropiedades();
@@ -88,8 +88,8 @@ export class AddPropertyComponent {
 
     buscarPropiedades() {
         const _a = new PropiedadValorDefinidoDTO();
-        _a.origenCategoria = this.propiedad.tipo;
         _a.origen = this.propiedad.tipo;
+        _a.origenCategoria = this.data.tipo.origenCategoria;
         this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null)
             .subscribe(p => {
                 this.propiedadValores = p;
