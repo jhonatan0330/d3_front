@@ -24,6 +24,7 @@ export class FlexComponent implements OnInit {
 
     plantilla: DocumentoPlantillaDTO;
     isLoading: boolean = false;
+    mostrarSelectorFormato: boolean = false;
 
     campos: DocumentoPlantillaCaracteristicaDTO[] = [];
     nuevoCampo: DocumentoPlantillaCaracteristicaDTO;
@@ -78,7 +79,12 @@ export class FlexComponent implements OnInit {
     }
 
     agregarCampo(): void {
-        this.utilsService.fieldAddModalFlex(this.data.template, this.nuevoCampo);
+        //this.utilsService.fieldAddModalFlex(this.data.template, this.nuevoCampo);
+        this.flexService.guardarDocumentoPlantillaCaracteristica(this.nuevoCampo).subscribe(p => {
+                //this.nuevoCampo = p;
+                this.nuevoCampo.nombre = '';
+                this.getFields();
+            });
     }
 
     onNuevoNombreChange(valor: string) {
