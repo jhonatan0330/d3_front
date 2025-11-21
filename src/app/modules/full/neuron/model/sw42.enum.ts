@@ -39,3 +39,22 @@ export enum PropiedadEnum {
   ACCOUNT = "K",
 }
 
+export enum FormatoCampoSimboloEnum {
+  T = '📝',
+  F = '📅',
+  Z = '🔄',
+  N = '🔢',
+  I = '⚙️',
+  J = '📦',
+  A = '📁',
+  B = '🧩',
+  G = '🛠️',
+  U = '🟢',
+  Q = '🧾',
+  S = '📚',
+  P = '📍',
+  M = '🗾',
+  V = '💡',
+  C = '🔗'
+}
+

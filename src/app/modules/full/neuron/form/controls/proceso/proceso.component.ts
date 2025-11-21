@@ -176,15 +176,15 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.proceso = value;
           this.filteredDocuments = null;
           this.showAlertSelectedProcess();
-          const _pHTML =this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL)
-          if( _pHTML) {
-              this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla).subscribe({
-                next: (res: IdResponse) => {
-    this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(res.comment);
-                },
-                error: () => {
-                }
-              });
+          const _pHTML = this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL)
+          if (_pHTML) {
+            this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla).subscribe({
+              next: (res: IdResponse) => {
+                this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(res.comment);
+              },
+              error: () => {
+              }
+            });
           }
         } else {
           this.proceso = null;
@@ -525,7 +525,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
     if (this.relatedFields) {
       if (this.multiple && !this.data.documento) {
-        if(!this.data.expedientes) this.data.expedientes = [];
+        if (!this.data.expedientes) this.data.expedientes = [];
         return; // Sucede que en un campo multiple nuevo no hay necesidad de ir a buscar
       }
       if (this.tipoTexto && !campoFiltro.filtroParametro) {
@@ -563,7 +563,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         }
         // en fseta me dicuenta que al retirar un turno del RC se calculaba la caja vacia, entonces decidi bloquearlo
-        if (bCampoRequerido && (this.isEnabled|| this.required)) {
+        if (bCampoRequerido && (this.isEnabled || this.required)) {
           this.errorMessage = 'Selecciona una opcion del campo ' + iDepen.campoDTO.nombre;
           this.actualizarDataProvider(null);
           this.fControl.setValue(null);
@@ -1157,6 +1157,47 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
       }
 
+      const relationProperty = this.templateService.getPropertyRelation(_property);
+      if (!relationProperty|| relationProperty.length == 0) {
+        const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
+        filtro.estado = StatesEnum.ACTIVE;
+        filtro.propiedad = _property;
+        this.isLoadingList = true;
+        this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
+          next: (value: RelacionInternaDTO[]) => {
+            if (!value || value.length === 0) {
+              //Creo una relacion falsa para que no vuelva a filtrar
+              const ri: RelacionInternaDTO = new RelacionInternaDTO();
+              ri.propiedad = _property;
+              ri.campo = "FALSE";
+              ri.plantilla = "FALSE";
+              ri.auxiliar = "FALSE";
+              value = [];
+              value.push(ri);
+            }
+            this.templateService.addRelations(value);
+            this.isLoadingList = false;
+            this.createNewDocument(_plantilla, _property);
+          },
+          error: () => {
+            this.isLoadingList = false;
+          },
+        });
+        return;
+      } else{
+        for (let k = 0; k < relationProperty.length; k++) {
+            const iRelation = relationProperty[k];
+            if (iRelation.plantilla === _plantilla) {
+                  if (!_doc.caracteristicas) { _doc.caracteristicas = []; }
+                  const fieldNewToCreateDependent: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
+                  fieldNewToCreateDependent.valorOpcion = this.data.documento;
+                  fieldNewToCreateDependent.campo = iRelation.campo;
+                  _doc.caracteristicas.push(fieldNewToCreateDependent);
+                  break;
+            }
+          }
+      }
+
     }
     _doc.plantilla = _plantilla;
     _doc.server = this.urlServer;
@@ -1206,14 +1247,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   actualizarTexto(): void {
     if (this.proceso) {
       let _updated = false;
-      if (this.proceso.dinero && !this.data.valorNumero ) {
+      if (this.proceso.dinero && !this.data.valorNumero) {
         if (!this.isEmpty(this.procesoValor) && this.procesoValor === '2') {
-          if(this.data.valorNumero !== this.proceso.dinero.saldo){
+          if (this.data.valorNumero !== this.proceso.dinero.saldo) {
             this.data.valorNumero = this.proceso.dinero.saldo;
             _updated = true;
           }
         } else {
-          if(this.data.valorNumero !== this.proceso.dinero.valorTotal){
+          if (this.data.valorNumero !== this.proceso.dinero.valorTotal) {
             this.data.valorNumero = this.proceso.dinero.valorTotal;
             _updated = true;
           }
@@ -1221,7 +1262,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
       if (
         (!this.data.valorOpcion && this.proceso.llaveTabla) ||
-        (this.data.valorOpcion !== this.proceso.llaveTabla) 
+        (this.data.valorOpcion !== this.proceso.llaveTabla)
       ) {
         this.data.valorOpcion = this.proceso.llaveTabla;
         this.data.principal = this.proceso;
@@ -1229,7 +1270,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         if (!this.data.valorText) { this.data.valorText = this.proceso.descripcion; }
         _updated = true;
       }
-      if(_updated){
+      if (_updated) {
         this.avisarModificacion();
       }
 
@@ -1350,7 +1391,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             for (let i = 0; i < this.data.dependientes.length; i++) {
               const iDepen = this.data.dependientes[i];
               if (!iDepen.valorOpcion && !PlantillaHelper.buscarPropiedad(iDepen.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
-                alert('Por favor revisa que este seleccionado el campo ' +    iDepen.campoDTO.nombre );
+                alert('Por favor revisa que este seleccionado el campo ' + iDepen.campoDTO.nombre);
                 return;
               }
             }
@@ -1392,7 +1433,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
     } else {
       // Solo se puede consultar herencia de un documento existente
-      if(!this.data.documento) {return;}
+      if (!this.data.documento) { return; }
       entity.textoFiltro = this.data.documento;
     }
 
@@ -1545,12 +1586,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
     // Valido obligatoriedad
     this.errorMessage = null;
-    if (this.required && !this.multiple && !this.herencia && !this.data.valorOpcion && this.isEnabled && !this.isInvisible){
-      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
+    if (this.required && !this.multiple && !this.herencia && !this.data.valorOpcion && this.isEnabled && !this.isInvisible) {
+      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre + " es obligatorio registrar el campo " + this._structure.nombre + ")"
     }
     if (this.errorMessage) {
       const input = document.getElementById(this.idField) as HTMLInputElement;
-      if (input) { input.focus();  }
+      if (input) { input.focus(); }
       return false;
     }
     return true;

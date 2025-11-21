@@ -1,12 +1,13 @@
 import { Component, Inject } from '@angular/core';
-import { PropiedadCampoDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { propiedadCampo, PropiedadCampoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { FlexService } from '../flex.service';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { ApiErrorResponse } from 'app/modules/full/neuron/model/sw42.utils';
 
 
 @Component({
@@ -25,6 +26,9 @@ export class AddPropertyComponent {
     roles: RolAccesoFilterDTO[];
     usuarios: UsuarioDTO[];
 
+    propiedadesRelacion: RelacionInternaDTO[] = [];
+    def: PropiedadValorDefinidoDTO = null;
+
     filtroUsuario = '';
     filtroUsuarioExcluyente = '';
     buscandoUsuario = false;
@@ -35,8 +39,21 @@ export class AddPropertyComponent {
     constructor(
         private flexService: FlexService,
         @Inject(MAT_DIALOG_DATA) public data: any,
+        public dialogRef: MatDialogRef<AddPropertyComponent>
 
     ) { }
+
+    onPropiedadValorChange(llaveSeleccionada: string): void {
+        this.def = this.propiedadValores.find(p => p.llaveTabla === llaveSeleccionada);
+        if (this.def.pideRol) {
+            this.buscarRoles();
+        }
+        this.propiedad = new PropiedadCampoDTO;
+        this.propiedad.campo = this.data.template;
+        this.propiedad.tipo = "C";
+        this.propiedad.valor = 1;
+        this.propiedad.propiedadValor = llaveSeleccionada;
+    }
 
 
     onUsuarioInputChange() {
@@ -55,37 +72,78 @@ export class AddPropertyComponent {
         }, 200);
     }
     ngOnInit(): void {
-
-        if(this.data.propiedad){
+        if (this.data.propiedad) {
             this.propiedad = this.data.propiedad;
-        }else{
+            this.listarRelacionesPropiedad();
+        } else {
             this.propiedad = new PropiedadCampoDTO;
+            this.buscarRoles();
+            this.propiedad.campo = this.data.template;
+            this.propiedad.tipo = "C";
+            this.propiedad.valor = 1;
         }
+        this.buscarPropiedades();
 
+    }
+
+    buscarPropiedades() {
         const _a = new PropiedadValorDefinidoDTO();
-            _a.origenCategoria = 'C';
-            _a.origen = 'C';
+        _a.origenCategoria = this.propiedad.tipo;
+        _a.origen = this.propiedad.tipo;
         this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null)
             .subscribe(p => {
                 this.propiedadValores = p;
+                this.def = this.propiedadValores.find(p => p.llaveTabla === this.propiedad.propiedadValor);
+                if (this.def.pideRol) {
+                    this.buscarRoles();
+                }
+
             });
-            this.flexService.listarConsultaRolAcceso().subscribe(p => {
+    }
+    buscarRoles() {
+        this.flexService.listarConsultaRolAcceso().subscribe(p => {
             this.roles = p;
+            if(!this.propiedad.llaveTabla){
+                this.propiedad.rol = null;
+                this.propiedad.rolExcluyente = null;
+            }
         })
-        //this.flexService.listarRolUsuario(this.filtroUsuario).subscribe(p => { this.usuarios = p; })
     }
 
     guardarPropiedad() {
         this.cargando = true;
-        this.flexService.addProperty(this.propiedad).subscribe({
-            next: () => {
+        if(this.propiedad.llaveTabla){
+            this.flexService.changeProperty(this.propiedad).subscribe({
+            next: (result: ApiErrorResponse) => {
+                if (result?.message) {
+                    Swal.fire('Error', 'No se pudo cambiar la propiedad ' + result.message, 'error');
+                    return;
+                }
                 this.cargando = false;
-                Swal.fire('Exito', 'Propiedad cargada con exito');
+                this.dialogRef.close(true);
+            },
+            error: error => {
+                Swal.fire('Error', 'No se pudo cambiar la propiedad ' + error, 'error');
+                this.dialogRef.close(false);
+            }
+        });
+
+        }else{
+            this.flexService.addProperty(this.propiedad).subscribe({
+            next: (result: ApiErrorResponse) => {
+                if (result?.message) {
+                    Swal.fire('Error', 'No se pudo crear la propiedad ' + result.message, 'error');
+                    return;
+                }
+                this.cargando = false;
+                this.dialogRef.close(true);
             },
             error: error => {
                 Swal.fire('Error', 'No se pudo crear la propiedad ' + error, 'error');
+                this.dialogRef.close(false);
             }
         });
+        }
     }
     filtrarUsuarios(pFiltro) {
         this.flexService.listarRolUsuario(pFiltro).subscribe(p => {
@@ -104,5 +162,25 @@ export class AddPropertyComponent {
         this.filtroUsuarioExcluyente = pUser.nombre;
         this.usuarios = [];
         this.buscandoUsuarioExcluyente = false;
+    }
+
+
+
+    listarRelacionesPropiedad(): void {
+        if (!this.propiedad.key) return;
+        const prop = this.propiedad;
+        const filtro = new RelacionInternaFilterDTO();
+        filtro.propiedad = prop.llaveTabla;
+        filtro.estado = prop.estado;
+
+        this.flexService.relacionesPropiedad(filtro, null).subscribe({
+            next: (rels) => {
+                this.propiedadesRelacion = rels;
+            },
+            error: () => {
+                this.propiedadesRelacion = [];
+                Swal.fire('Error', 'No se pudieron cargar las relaciones de la propiedad.', 'error');
+            }
+        });
     }
 }

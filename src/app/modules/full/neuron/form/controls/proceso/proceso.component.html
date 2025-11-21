@@ -1,11 +1,13 @@
 <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
- <div *ngIf="messageHTML" class="w-full" [innerHTML]="messageHTML"></div>
+<div *ngIf="messageHTML" class="w-full" [innerHTML]="messageHTML"></div>
 <!-- Campos unicos -->
-<mat-form-field class="w-full" *ngIf="!herencia && !multiple" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+<mat-form-field class="w-full" *ngIf="!herencia && !multiple"
+  [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-  <input matInput [id]="idField" [matAutocomplete]="auto" [formControl]="fControl" [required]="required" [readonly]="!isEnabled"
-    (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [inputmode]="inputModeText" translate="no"
-    (focusout)="gestionarKeyUpTextoFocusOut()" [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
+  <input matInput [id]="idField" [matAutocomplete]="auto" [formControl]="fControl" [required]="required"
+    [readonly]="!isEnabled" (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [inputmode]="inputModeText"
+    translate="no" (focusout)="gestionarKeyUpTextoFocusOut()"
+    [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
   <a *ngIf="proceso && linkExternal" class="a-hyperlink" (click)="goToLink()">{{linkExternal.valor}}</a>
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay">
   </mat-autocomplete>
@@ -14,8 +16,9 @@
     <mat-icon>open_in_new</mat-icon>
   </button>
   <!-- Create -->
-  <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenu" *ngIf="acciones && !errorMessage && !proceso && !fControl.value"
-    #clickHoverMenuTrigger="matMenuTrigger" (click)="sendCreate()" tabindex="-1">
+  <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenu"
+    *ngIf="acciones && !errorMessage && !proceso && !fControl.value" #clickHoverMenuTrigger="matMenuTrigger"
+    (click)="sendCreate()" tabindex="-1">
     <mat-icon>add_circle</mat-icon>
   </button>
   <mat-menu #clickHoverMenu="matMenu">
@@ -39,7 +42,7 @@
   <div *ngIf="scannerEnabled && !proceso" class="w-full">
     <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
   </div>
-  
+
   <!-- Opciones de seleccion -->
   <div class="w-full" *ngIf="isEnabled && !proceso" style="overflow: auto">
     <!-- Vista modo tabla -->
@@ -92,15 +95,30 @@
     </table>
   </div>
 </mat-form-field>
-<label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+<label *ngIf="errorMessage"
+  class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
 <!-- Campos multiples -->
 <div *ngIf="tipoMultiple" class="pb-1" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   <!-- Titulo y boton buscar -->
-  <div>
-    <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))" *ngIf="!isLoading"
-      [matBadge]="data.valorText" matBadgeColor="primary" class="w-full">
-      {{ structure.nombre | titlecase }}
-    </button>
+  <div *ngIf="!isLoading">
+    <div class="flex justify-between items-center w-full mb-1 gap-1">
+      <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))" 
+        [matBadge]="data.valorText" matBadgeColor="primary" class="w-full">
+        {{ structure.nombre | titlecase }}
+      </button>
+      <button mat-raised-button color="accent" [matMenuTriggerFor]="clickHoverMenu"
+        *ngIf="acciones && formIsEnabled && data?.expedientes" #clickHoverMenuTrigger="matMenuTrigger"
+        (click)="sendCreate()" tabindex="-1">
+        <mat-icon>add</mat-icon>
+      </button>
+      <mat-menu #clickHoverMenu="matMenu">
+        <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)" *ngFor="let item of acciones"
+          tabindex="-1">
+          Crear {{ item.texto | titlecase }}
+        </button>
+      </mat-menu>
+    </div>
+
     <span *ngIf="data.valorNumero && data.valorNumero !== 0"
       class="text-28 font-weight-bold mat-color-primary w-full text-center">{{ titulo }}</span>
   </div>
@@ -134,8 +152,10 @@
             <div>{{ d.estadoNombre }}</div>
           </div>
           <div class="flex justify-between" *ngIf="d.dinero">
-            <div *ngIf="d.dinero.valorCampo && 0!== d.dinero.valorCampo && 0!== d.dinero.valorTotal"><small class="text-sm">Valor incluido: </small>{{ d.dinero.valorCampo | number }}</div>
-            <div *ngIf="d.dinero.valorTotal !== d.dinero.saldo &&  0 !== d.dinero.saldo"><small class="text-sm">Saldo: </small>{{ d.dinero.saldo | number }}</div>
+            <div *ngIf="d.dinero.valorCampo && 0!== d.dinero.valorCampo && 0!== d.dinero.valorTotal"><small
+                class="text-sm">Valor incluido: </small>{{ d.dinero.valorCampo | number }}</div>
+            <div *ngIf="d.dinero.valorTotal !== d.dinero.saldo &&  0 !== d.dinero.saldo"><small class="text-sm">Saldo:
+              </small>{{ d.dinero.saldo | number }}</div>
             <div><small class="text-sm">Valor Total: </small>{{ d.dinero.valorTotal | number }}</div>
           </div>
         </mat-card-title>
@@ -169,7 +189,7 @@
       </div>
       <!-- Texto de filtro -->
       <div class="pr-1 sm:flex">
-        <input class="px-2" type="checkbox" [formControl]="fControlCheck"/><span class="px-2">Codigo Exacto</span>
+        <input class="px-2" type="checkbox" [formControl]="fControlCheck" /><span class="px-2">Codigo Exacto</span>
         <mat-form-field>
           <input matInput type="text" placeholder="Coloca un texto y presiona enter" name="fControlSearch"
             [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
@@ -185,7 +205,8 @@
         </button>
         <!-- Create copiado de arriba -->
         <button mat-raised-button matSuffix [matMenuTriggerFor]="clickHoverMenuMultiple"
-          *ngIf="acciones && !proceso && (isEnabled || herencia)" #clickHoverMenuTrigger="matMenuTrigger" (click)="sendCreate()">
+          *ngIf="acciones && !proceso && (isEnabled || herencia)" #clickHoverMenuTrigger="matMenuTrigger"
+          (click)="sendCreate()">
           <mat-icon>add_circle</mat-icon>
         </button>
         <mat-menu #clickHoverMenuMultiple="matMenu">
@@ -209,9 +230,9 @@
       </div>
     </div>
     <div *ngIf="showFilterState">
-      <input class="px-2" type="checkbox" [formControl]="fCheckActivo"/><span class="px-2">Activos</span>
-      <input class="px-2" type="checkbox" [formControl]="fCheckFinalizado"/><span class="px-2">Finalizados</span>
-      <input class="px-2" type="checkbox" [formControl]="fCheckInactivo"/><span class="px-2">Inactivo</span>
+      <input class="px-2" type="checkbox" [formControl]="fCheckActivo" /><span class="px-2">Activos</span>
+      <input class="px-2" type="checkbox" [formControl]="fCheckFinalizado" /><span class="px-2">Finalizados</span>
+      <input class="px-2" type="checkbox" [formControl]="fCheckInactivo" /><span class="px-2">Inactivo</span>
     </div>
     <div class="w-full text-center" *ngIf="labelSearch">
       <span class="text-28 font-weight-bold mat-color-primary ">{{ labelSearch }}</span>

@@ -1,0 +1,60 @@
+.bpm-diagram {
+  user-select: none;
+}
+.node-circle {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+}
+.node-label {
+  font-size: 12px;
+  pointer-events: none;
+}
+.node-collapsed-center image { pointer-events: none; }
+.node-collapsed-center .node-label { font-size: 12px; fill: #1f2937; }
+.plus-button { cursor: pointer; }
+
+/* enable transform origin and smooth scaling for node groups */
+.node-scale {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 220ms cubic-bezier(.2,.8,.2,1);
+}
+
+.node-rect { rx: 8; }
+
+/* header strip inside node rectangle */
+.node-header {
+  pointer-events: none;
+}
+.node-header rect {
+  stroke: none;
+}
+.node-header image {
+  pointer-events: none;
+}
+.node-header-name {
+  font-size: 12px;
+  fill: #1f2937;
+  font-weight: 600;
+}
+.node-badges text {
+  font-size: 11px;
+  fill: #fff;
+  font-weight: 600;
+}
+.node-badges rect {
+  opacity: 0.95;
+}
+
+.node-header, .node-badges { pointer-events: none; }
+.node-footer-badges { pointer-events: auto; }
+.node-footer-badges g { cursor: pointer; }
+.node-footer-badges rect { opacity: 0.95; }
+.node-footer-badges text { font-size: 11px; fill: #fff; font-weight: 600; }
+.plus-button { pointer-events: auto; }
+
+/* badge hover effect */
+.node-footer-badges g:hover rect {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 4px 8px rgba(31,75,122,0.25));
+}
+.node-footer-badges g text { pointer-events: none; }

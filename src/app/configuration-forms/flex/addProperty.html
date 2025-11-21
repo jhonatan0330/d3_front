@@ -1,82 +1,219 @@
 <div class="max-w-md mx-auto bg-white text-black rounded-xl shadow-lg p-6 space-y-4">
-    <h2 class="text-center text-lg font-bold border-b border-gray-300 pb-2">
-        PROPIEDAD
-    </h2>
+  <h2 class="text-center text-lg font-bold border-b border-gray-300 pb-2">
+    PROPIEDAD
+  </h2>
 
-    <div>
-        <label class="block text-sm font-semibold mb-1">Propiedad Valor</label>
-        <select
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            [(ngModel)]="propiedad.propiedadValor">
-            <option *ngFor="let propiedadValor of propiedadValores" [value]="propiedadValor.llaveTabla">{{
-                propiedadValor.nombre }}</option>
-        </select>
-    </div>
+  <div>
+    <label class="block text-sm font-semibold mb-1">Propiedad Valor</label>
+    <select
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      [(ngModel)]="propiedad.propiedadValor"
+      (ngModelChange)="onPropiedadValorChange($event)"
+    >
+      <option *ngFor="let propiedadValor of propiedadValores" [value]="propiedadValor.llaveTabla">
+        {{ propiedadValor.nombre }}
+      </option>
+    </select>
+  </div>
 
-    <div>
+  <ng-container *ngIf="def">
+
+    <!-- ===== Rol / Rol Excluyente ===== -->
+    <!-- Solo si def.pideRol === true -->
+    <ng-container *ngIf="def?.pideRol">
+      <div>
         <label class="block text-sm font-semibold mb-1">Rol</label>
         <select
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            [(ngModel)]="propiedad.rol">
-            <option *ngFor="let rolLista of roles" [value]="rolLista.llaveTabla">{{ rolLista.nombre }}</option>
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [(ngModel)]="propiedad.rol">
+          <option *ngFor="let rolLista of roles" [value]="rolLista.llaveTabla">{{ rolLista.nombre }}</option>
         </select>
-    </div>
+      </div>
 
-    <div>
+      <div>
         <label class="block text-sm font-semibold mb-1">Rol Excluyente</label>
         <select
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            [(ngModel)]="propiedad.rolExcluyente">
-            <option *ngFor="let rolLista of roles" [value]="rolLista.llaveTabla">{{ rolLista.nombre }}</option>
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [(ngModel)]="propiedad.rolExcluyente">
+          <option *ngFor="let rolLista of roles" [value]="rolLista.llaveTabla">{{ rolLista.nombre }}</option>
         </select>
-    </div>
+      </div>
+    </ng-container>
 
-    <div class="relative">
+    <!-- ===== Usuario / Usuario Excluyente ===== -->
+    <!-- Solo si def.pideUsuario === true -->
+    <ng-container *ngIf="def?.pideUsuario">
+      <div class="relative">
         <label class="block text-sm font-semibold mb-1">Usuario</label>
 
-        <input type="text" [(ngModel)]="filtroUsuario" (input)="onUsuarioInputChange()" (blur)="filtrarUsuarios(filtroUsuario)"
-            placeholder="Buscar usuario..."
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <ul *ngIf=" filtroUsuario && usuarios?.length > 0 && buscandoUsuario"
-            class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full max-h-48 overflow-y-auto shadow">
-            <li *ngFor="let user of usuarios" (click)="seleccionarUsuario(user)"
-                class="px-3 py-2 text-sm hover:bg-blue-100 cursor-pointer">
-                {{ user.nombre }} ({{ user.codigo }})
-            </li>
+        <input type="text"
+          [(ngModel)]="filtroUsuario"
+          (input)="onUsuarioInputChange()"
+          (blur)="filtrarUsuarios(filtroUsuario)"
+          placeholder="Buscar usuario..."
+          class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+        <ul *ngIf="filtroUsuario && usuarios?.length > 0 && buscandoUsuario"
+          class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full max-h-48 overflow-y-auto shadow">
+          <li *ngFor="let user of usuarios"
+              (click)="seleccionarUsuario(user)"
+              class="px-3 py-2 text-sm hover:bg-blue-100 cursor-pointer">
+            {{ user.nombre }} ({{ user.codigo }})
+          </li>
         </ul>
+
         <p *ngIf="filtroUsuario && usuarios?.length === 0 && buscandoUsuario" class="text-xs text-gray-500 italic mt-1">
-            No se encontraron usuarios.
+          No se encontraron usuarios.
         </p>
-    </div>
+      </div>
 
-
-    <div>
+      <div class="relative">
         <label class="block text-sm font-semibold mb-1">Usuario Excluyente</label>
-        <input type="text" [(ngModel)]="filtroUsuarioExcluyente" (input)="onUsuarioExcluyenteInputChange()" (blur)="filtrarUsuarios(filtroUsuarioExcluyente)"
-            placeholder="Buscar usuario..."
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <ul *ngIf=" filtroUsuarioExcluyente && usuarios?.length > 0 && buscandoUsuarioExcluyente"
-            class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full max-h-48 overflow-y-auto shadow">
-            <li *ngFor="let user of usuarios" (click)="seleccionarUsuarioExcluyente(user)"
-                class="px-3 py-2 text-sm hover:bg-blue-100 cursor-pointer">
-                {{ user.nombre }} ({{ user.codigo }})
-            </li>
+        <input type="text"
+          [(ngModel)]="filtroUsuarioExcluyente"
+          (input)="onUsuarioExcluyenteInputChange()"
+          (blur)="filtrarUsuarios(filtroUsuarioExcluyente)"
+          placeholder="Buscar usuario..."
+          class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+        <ul *ngIf="filtroUsuarioExcluyente && usuarios?.length > 0 && buscandoUsuarioExcluyente"
+          class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full max-h-48 overflow-y-auto shadow">
+          <li *ngFor="let user of usuarios"
+              (click)="seleccionarUsuarioExcluyente(user)"
+              class="px-3 py-2 text-sm hover:bg-blue-100 cursor-pointer">
+            {{ user.nombre }} ({{ user.codigo }})
+          </li>
         </ul>
-        <p *ngIf="filtroUsuario && usuarios?.length === 0 && buscandoUsuarioExcluyente" class="text-xs text-gray-500 italic mt-1">
-            No se encontraron usuarios.
+
+        <p *ngIf="filtroUsuarioExcluyente && usuarios?.length === 0 && buscandoUsuarioExcluyente"
+          class="text-xs text-gray-500 italic mt-1">
+          No se encontraron usuarios.
         </p>
-    </div>
+      </div>
+    </ng-container>
+
+    <!-- ===== Fechas ===== -->
+    <!-- Solo si def.pideFechas === true -->
+    <ng-container *ngIf="def?.pideFechas">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-semibold mb-1">Fecha inicial</label>
+          <input type="datetime-local"
+            [(ngModel)]="propiedad.fechaInicial"
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-1">Fecha final</label>
+          <input type="datetime-local"
+            [(ngModel)]="propiedad.fechaFinal"
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ===== Tiempo de bloqueo ===== -->
+    <!-- Solo si def.pideTiempoBloqueo === true -->
+    <ng-container *ngIf="def?.pideTiempoBloqueo">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Tiempo de bloqueo</label>
+        <input type="number" min="0" step="1"
+          [(ngModel)]="propiedad.bloqueo"
+          placeholder="Minutos"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+    </ng-container>
+
+    <!-- ===== Valor ===== -->
+    <!-- Solo si NO necesitaDesarrollo, NO propiedadBoolean -->
+    <ng-container *ngIf="!def?.necesitaDesarrollo && !def?.propiedadBoolean">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Valor</label>
+        <textarea
+          rows="3"
+          [(ngModel)]="propiedad.valor"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </textarea>
+      </div>
+    </ng-container>
+
+    <!-- ===== Texto ===== -->
+    <!-- Solo si NO necesitaDesarrollo, NO propiedadBoolean y NO textOculto -->
+    <ng-container *ngIf="!def?.necesitaDesarrollo && !def?.propiedadBoolean && !def?.textOculto">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Texto</label>
+        <input type="text"
+          [(ngModel)]="propiedad.texto"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+    </ng-container>
 
     <div>
-        <label class="block text-sm font-semibold mb-1">Motivo</label>
-        <textarea rows="3" [(ngModel)]="propiedad.motivo"
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+      <label class="block text-sm font-semibold mb-1">Motivo</label>
+      <textarea
+        rows="3"
+        [(ngModel)]="propiedad.motivo"
+        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </textarea>
     </div>
 
     <div class="pt-2">
-        <button type="button" (click)="guardarPropiedad()" [disabled]="cargando"
-            class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold py-2 rounded">
-            {{ cargando ? 'Guardando...' : 'Guardar' }}
-        </button>
+      <button
+        type="button"
+        (click)="guardarPropiedad()"
+        [disabled]="cargando"
+        class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold py-2 rounded">
+        {{ cargando ? 'Guardando...' : 'Guardar' }}
+      </button>
     </div>
+
+    <!-- ===== Relaciones de Propiedad ===== -->
+    <div class="flex flex-col h-full">
+      <ng-container *ngIf="def && propiedad.key">
+        <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
+          <h2 class="text-lg font-bold">Relaciones de Propiedad</h2>
+          <button
+            (click)="listarRelacionesPropiedad();"
+            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+            title="Recargar">
+            ↺
+          </button>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
+          <ng-container *ngIf="propiedadesRelacion?.length > 0; else noPropsRelacion">
+            <div class="grid grid-cols-1 gap-3">
+              <div *ngFor="let prop of propiedadesRelacion"
+                class="group border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition relative">
+                <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{ prop.fechaInicio}}</span>
+                <h4 class="text-base font-semibold">{{ prop.campoNombre }}</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-300">{{ prop.plantillaNombre }}</p>
+
+                <div
+                  class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <button
+                    (click)="editarRelacion(prop); $event.stopPropagation()"
+                    class="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600"
+                    title="Editar relación">
+                    ✏
+                  </button>
+                  <button
+                    (click)="eliminarRelacion(prop); $event.stopPropagation()"
+                    class="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
+                    title="Eliminar relación">
+                    ❌
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #noPropsRelacion>
+            <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4">
+              Sin relaciones de propiedad
+            </div>
+          </ng-template>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
 </div>

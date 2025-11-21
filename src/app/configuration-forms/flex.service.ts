@@ -41,6 +41,27 @@ export class FlexService {
         );
     }
 
+    guardarDocumentoPlantillaCaracteristica(pTemplate: DocumentoPlantillaCaracteristicaDTO) : Observable<DocumentoPlantillaCaracteristicaDTO> {
+        return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
+            this.ls.getUrlAccess('/flex/guardarDocumentoPlantillaCaracteristica', null),
+            pTemplate
+        );
+    }
+
+    inactivarDocumentoPlantillaCaracteristica(pTemplate: DocumentoPlantillaCaracteristicaDTO) : Observable<DocumentoPlantillaCaracteristicaDTO> {
+        return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
+            this.ls.getUrlAccess('/flex/inactivarDocumentoPlantillaCaracteristica', null),
+            pTemplate
+        );
+    }
+
+    actualizarDocumentoPlantillaCaracteristica(pTemplate: DocumentoPlantillaCaracteristicaDTO) : Observable<DocumentoPlantillaCaracteristicaDTO> {
+        return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
+            this.ls.getUrlAccess('/flex/actualizarDocumentoPlantillaCaracteristica', null),
+            pTemplate
+        );
+    }
+
     listarConsultaPropiedad(llaveTabla: string, _server: string): Observable<propiedadCampo[]> {
         const payload = {
             estado: 'A',
@@ -54,6 +75,13 @@ export class FlexService {
     addProperty(pTemplate: PropiedadCampoDTO){
         return this.http.post(
             this.ls.getUrlAccess('/flex/guardarPropiedad', null),
+            pTemplate
+        );
+    }
+
+    changeProperty(pTemplate: PropiedadCampoDTO){
+        return this.http.post(
+            this.ls.getUrlAccess('/flex/actualizarPropiedad', null),
             pTemplate
         );
     }

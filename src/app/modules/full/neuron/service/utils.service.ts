@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { PedidoVentaDTO, PropiedadCampoDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaDTO, PropiedadCampoDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { FormComponent } from 'app/modules/full/neuron/form/form.component';
 import { TransferFormComponent } from 'app/notification/transfer-form/transfer-form.component';
 import { TrazabilityComponent } from 'app/document-transition/trazability/trazability.component';
@@ -12,7 +12,7 @@ import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { FlexComponent } from 'app/configuration-forms/flex/flex';
 import { dfaComponent } from 'app/authentication/DFA/dfa';
 import { FieldComponent } from 'app/configuration-forms/flex/fieldComponent';
-import { FieldComponent2 } from 'app/configuration-forms/flex/fieldComponent2';
+import { AddFieldComponent } from 'app/configuration-forms/flex/addField';
 import { AddPropertyComponent } from 'app/configuration-forms/flex/addProperty';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 
@@ -105,26 +105,35 @@ export class UtilsService {
     });
     return dialogRef.afterClosed();
   }
-  fieldModalFlex(pTemplate: string){
+
+  fieldModalFlex(pTemplate: string, pTipo?:string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(FieldComponent, {
       maxHeight: '90vh',
-      data: { template: pTemplate},
+      data: { template: pTemplate, tipo: pTipo},
     });
     return dialogRef.afterClosed();
   }
 
   fieldEditModalFlex(pTemplate: string){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(FieldComponent2, {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(AddFieldComponent, {
       maxHeight: '90vh',
       data: { template: pTemplate},
     });
     return dialogRef.afterClosed();
   }
 
-  fieldAddModalFlex(pTemplate?: string, pPropiedad?:PropiedadCampoDTO){
+  fieldAddModalFlex(ptemplate: string, pCampo?:DocumentoPlantillaCaracteristicaDTO){
+    const dialogRef: MatDialogRef<any> = this.dialog.open(AddFieldComponent, {
+      maxHeight: '90vh',
+      data: { template: ptemplate , campo: pCampo },
+    });
+    return dialogRef.afterClosed();
+  }
+
+  propertyAddModalFlex(pCampo: string, pPropiedad?:PropiedadCampoDTO){
     const dialogRef: MatDialogRef<any> = this.dialog.open(AddPropertyComponent, {
       maxHeight: '90vh',
-      data: { template: pTemplate , propiedad: pPropiedad },
+      data: { template: pCampo , propiedad: pPropiedad },
     });
     return dialogRef.afterClosed();
   }

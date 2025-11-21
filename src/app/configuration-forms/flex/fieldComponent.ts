@@ -5,8 +5,6 @@ import {
     DocumentoPlantillaCaracteristicaDTO,
     propiedadCampo,
     PropiedadCampoDTO,
-    RelacionInternaDTO,
-    RelacionInternaFilterDTO
 } from 'app/modules/full/neuron/model/sw42.domain';
 import Swal from 'sweetalert2';
 import { FlexService } from '../flex.service';
@@ -21,13 +19,13 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 export class FieldComponent implements OnInit {
 
 
-    campo: DocumentoPlantillaCaracteristicaDTO;
+    field: DocumentoPlantillaCaracteristicaDTO;
     propiedadesCampo: propiedadCampo[] = [];
-    propiedadesRelacion: RelacionInternaDTO[] = [];
 
     isLoading = false;
     cargandoCampo = false;
     expandido = true;
+    tipo = 'Campo';
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -37,11 +35,20 @@ export class FieldComponent implements OnInit {
 
     ngOnInit(): void {
         if (!this.data?.template) {
-            Swal.fire('Advertencia', 'No se recibió información del campo.', 'warning');
+            Swal.fire('Advertencia', 'No se recibió información .', 'warning');
             return;
         }
 
-        this.cargarCampo();
+        if (this.data.tipo == 'plantilla') {
+            this.tipo = 'Plantilla';
+            this.field = new DocumentoPlantillaCaracteristicaDTO();
+            this.field.llaveTabla = this.data.template;
+            this.listarPropiedadesCampo();
+
+        } else {
+            this.cargarCampo();
+        }
+
     }
 
     cargarCampo(): void {
@@ -49,9 +56,10 @@ export class FieldComponent implements OnInit {
 
         this.flexService.getField(this.data.template, null).subscribe({
             next: (resp) => {
-                this.campo = resp;
-                this.isLoading = false;
+                this.field = resp;
                 this.listarPropiedadesCampo();
+                this.isLoading = false;
+
             },
             error: (err) => {
                 console.error('Error al cargar campo:', err);
@@ -62,9 +70,11 @@ export class FieldComponent implements OnInit {
     }
 
     listarPropiedadesCampo(): void {
-        if (!this.campo?.llaveTabla) return;
+        if (!this.field?.llaveTabla) {
+            return;
+        }
 
-        this.flexService.listarConsultaPropiedad(this.campo.llaveTabla, null).subscribe({
+        this.flexService.listarConsultaPropiedad(this.field.llaveTabla, null).subscribe({
             next: (props) => {
                 this.propiedadesCampo = props;
             },
@@ -75,37 +85,57 @@ export class FieldComponent implements OnInit {
         });
     }
 
-    listarRelacionesPropiedad(prop: propiedadCampo): void {
-        if (!this.campo) return;
-
-        const filtro = new RelacionInternaFilterDTO();
-        filtro.propiedad = prop.llaveTabla;
-        filtro.estado = prop.estado;
-
-        this.flexService.relacionesPropiedad(filtro, null).subscribe({
-            next: (rels) => {
-                this.propiedadesRelacion = rels;
-            },
-            error: () => {
-                this.propiedadesRelacion = [];
-                Swal.fire('Error', 'No se pudieron cargar las relaciones de la propiedad.', 'error');
-            }
-        });
-    }
-
     editarCampo(): void {
-        this.utilsService.fieldEditModalFlex(this.campo.llaveTabla);
+        this.utilsService.fieldEditModalFlex(this.field.llaveTabla);
     }
 
-    editarPropiedad(pPropiedad?:PropiedadCampoDTO): void {
-        this.utilsService.fieldAddModalFlex(null,pPropiedad);
+    editarPropiedad(pPropiedad?: PropiedadCampoDTO): void {
+        this.utilsService.propertyAddModalFlex(this.field.llaveTabla, pPropiedad);
     }
 
     agregarPropiedadCampo() {
-        this.utilsService.fieldAddModalFlex(this.campo.llaveTabla);
+        this.utilsService.propertyAddModalFlex(this.field.llaveTabla).subscribe(response => {
+            if (response) this.listarPropiedadesCampo();
+        });
     }
 
     toggleExpandido(): void {
         this.expandido = !this.expandido;
     }
+
+    eliminarPropiedad(pPropiedad: any): void {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción eliminará la propiedad seleccionada.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Eliminando...',
+                    text: 'Por favor espera',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                this.flexService.inactivarPropiedad(pPropiedad).subscribe({
+                    next: () => {
+                        Swal.fire('Eliminado', 'La propiedad fue eliminada correctamente.', 'success');
+                        this.cargarCampo();
+                    },
+                    error: (err) => {
+                        console.error('Error al eliminar la propiedad de campo:', err);
+                        Swal.fire('Error', 'No se pudo eliminar la propiedad.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
 }
