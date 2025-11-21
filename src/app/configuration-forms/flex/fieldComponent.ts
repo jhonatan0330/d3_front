@@ -28,6 +28,8 @@ export class FieldComponent implements OnInit {
     expandido = true;
     tipo = 'Campo';
 
+    editarDisabled = true;
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
         private flexService: FlexService,
