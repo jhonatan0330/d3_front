@@ -2,3 +2,15 @@
 /*  @ Import/write your custom styles here.
 /*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
 /* ----------------------------------------------------------------------------------------------------- */
+.flex-right-panel {
+	box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+	border-radius: 12px !important;
+	overflow: hidden !important;
+	display: flex !important;
+	flex-direction: column !important;
+}
+
+.flex-right-panel .mat-dialog-container {
+	padding: 0 !important;
+	height: 100% !important;
+}

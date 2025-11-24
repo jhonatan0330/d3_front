@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import {
     DocumentoPlantillaCaracteristicaDTO,
     propiedadCampo,
@@ -15,7 +16,7 @@ import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
     selector: 'FieldComponent',
     standalone: true,
     templateUrl: 'fieldComponent.html',
-    imports: [CommonModule]
+    imports: [CommonModule, MatIconModule]
 })
 export class FieldComponent implements OnInit {
 
@@ -27,6 +28,8 @@ export class FieldComponent implements OnInit {
     cargandoCampo = false;
     expandido = true;
     tipo = 'Campo';
+
+    editarDisabled = true;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
@@ -155,6 +158,14 @@ export class FieldComponent implements OnInit {
                 });
             }
         });
+    }
+
+    openHelpProp(prop: any): void {
+        if (!prop) return;
+        const key = ( prop.propiedadValor ?? '').toString();
+        if (!key) return;
+        const url = `https://softwareparati.com/ave/${encodeURIComponent(key)}.html`;
+        window.open(url, '_blank');
     }
 
 }

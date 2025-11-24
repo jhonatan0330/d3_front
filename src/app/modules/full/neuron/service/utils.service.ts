@@ -101,7 +101,11 @@ export class UtilsService {
 
   modalFlex(pTemplate: string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(FlexComponent, {
-      maxHeight: '90vh',
+      hasBackdrop: false,
+      disableClose: false,
+      width: '420px',
+      position: { right: '16px', top: '16px', bottom: '16px' },
+      panelClass: 'flex-right-panel',
       data: { template: pTemplate},
     });
     return dialogRef.afterClosed();

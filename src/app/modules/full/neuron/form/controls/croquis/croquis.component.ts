@@ -144,7 +144,7 @@ export class CroquisComponent extends BaseComponent
     window.addEventListener('mouseup', this.onMouseUp);
 
     this.canvasInitialized = true;
-  //  tamaño natural como resolución interna del canvas para que las coordenadas de los ítems sigan siendo consistentes.
+    //  tamaño natural como resolución interna del canvas para que las coordenadas de los ítems sigan siendo consistentes.
     if (this.baseLoaded && this.baseNaturalWidth > 0 && this.baseNaturalHeight > 0) {
       this.canvas.width = this.baseNaturalWidth;
       this.canvas.height = this.baseNaturalHeight;
@@ -230,7 +230,7 @@ export class CroquisComponent extends BaseComponent
 
       if (it.exp?.nombre) {
         const text = it.exp.nombre;
-        const fontSize = 12;
+        const fontSize = 48;
         this.ctx.font = `${fontSize}px sans-serif`;
         this.ctx.textBaseline = 'middle';
         this.ctx.textAlign = 'center';
@@ -246,15 +246,15 @@ export class CroquisComponent extends BaseComponent
         const bgX = centerX - bgWidth / 2;
         const bgY = centerY - bgHeight / 2;
 
-  // Fondo para legibilidad
-  this.ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        // Fondo para legibilidad
+        this.ctx.fillStyle = 'rgba(255,255,255,0.85)';
         this.ctx.fillRect(bgX, bgY, bgWidth, bgHeight);
-  this.ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+        this.ctx.strokeStyle = 'rgba(0,0,0,0.08)';
         this.ctx.strokeRect(bgX + 0.5, bgY + 0.5, bgWidth - 1, bgHeight - 1);
 
-  this.ctx.fillStyle = '#111';
+        this.ctx.fillStyle = '#111';
         this.ctx.fillText(text, centerX, centerY);
-  // restaurar valores por defecto
+        // restaurar valores por defecto
         this.ctx.textAlign = 'start';
         this.ctx.textBaseline = 'alphabetic';
       }
@@ -291,7 +291,7 @@ export class CroquisComponent extends BaseComponent
     if (!file) return;
 
     try {
-      const url = (await this.uploadFile(file)).message; 
+      const url = (await this.uploadFile(file)).message;
       this.data.valorText = url;
       this.valorTextCtrl.setValue(url);
       this.loadBaseFromUrl(url);
@@ -347,7 +347,7 @@ export class CroquisComponent extends BaseComponent
   private loadBaseFromUrl(url: string): void {
     this.baseLoaded = false;
 
-  // Intentar cargar con CORS primero .
+    // Intentar cargar con CORS primero .
     const tryLoad = (useCors: boolean) => {
       const img = new Image();
       if (useCors) img.crossOrigin = 'anonymous';
@@ -355,11 +355,11 @@ export class CroquisComponent extends BaseComponent
       img.onload = () => {
         this.baseImg = img;
         this.baseLoaded = true;
-  // almacenar tamaño natural
+        // almacenar tamaño natural
         this.baseNaturalWidth = img.naturalWidth || img.width || 0;
         this.baseNaturalHeight = img.naturalHeight || img.height || 0;
 
-  // Si el canvas ya está inicializado, establece su resolución interna al tamaño natural de la imagen
+        // Si el canvas ya está inicializado, establece su resolución interna al tamaño natural de la imagen
         if (this.canvas) {
           if (this.baseNaturalWidth > 0 && this.baseNaturalHeight > 0) {
             this.canvas.width = this.baseNaturalWidth;
