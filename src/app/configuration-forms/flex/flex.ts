@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
     DocumentoPlantillaCaracteristicaDTO,
     DocumentoPlantillaDTO
@@ -10,6 +10,7 @@ import { FlexService } from '../flex.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { DocumentoPlantillaCaracteristicaEnum, FormatoCampoSimboloEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { MatIconModule } from '@angular/material/icon';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
 
 
@@ -18,7 +19,7 @@ import { FormsModule } from '@angular/forms';
     standalone: true,
     templateUrl: 'flex.html',
     imports: [CommonModule, FormsModule,
-        MatIconModule,]
+        MatIconModule, DragDropModule]
 })
 export class FlexComponent implements OnInit {
 
@@ -40,9 +41,16 @@ export class FlexComponent implements OnInit {
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
+        public dialogRef: MatDialogRef<FlexComponent>,
         private flexService: FlexService,
         private utilsService: UtilsService
     ) { }
+
+    close(): void {
+        if (this.dialogRef) {
+            this.dialogRef.close();
+        }
+    }
 
     ngOnInit(): void {
         this.isLoading = true;
