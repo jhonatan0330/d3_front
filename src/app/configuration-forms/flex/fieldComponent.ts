@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import {
@@ -34,8 +35,15 @@ export class FieldComponent implements OnInit {
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: any,
         private flexService: FlexService,
-        private utilsService: UtilsService
+        private utilsService: UtilsService,
+        private dialogRef: MatDialogRef<FieldComponent>
     ) { }
+
+    close(): void {
+        try{
+            this.dialogRef.close();
+        }catch(e){ console.warn('Error closing dialog', e); }
+    }
 
     ngOnInit(): void {
         if (!this.data?.template) {

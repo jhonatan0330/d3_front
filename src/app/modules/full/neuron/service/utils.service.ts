@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaDTO, PropiedadCampoDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { FormComponent } from 'app/modules/full/neuron/form/form.component';
@@ -22,7 +23,11 @@ import { char } from '@zxing/library/esm/customTypings';
 })
 export class UtilsService {
 
-  constructor(public dialog: MatDialog) { }
+  // Keep references to open right-side dialogs to ensure only one instance of each type is open
+  private _fieldDialogRef: MatDialogRef<any> | null = null;
+  private _flexDialogRef: MatDialogRef<any> | null = null;
+
+  constructor(public dialog: MatDialog, @Inject(DOCUMENT) private _document: any) { }
 
   modalWithParams(pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null, pSaveInField = false) {
 
@@ -100,24 +105,45 @@ export class UtilsService {
   }
 
   modalFlex(pTemplate: string){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(FlexComponent, {
+    // Close any previously opened flex panel
+    try{ if (this._flexDialogRef) { this._flexDialogRef.close(); } }catch(e){ }
+
+    this._flexDialogRef = this.dialog.open(FlexComponent, {
       hasBackdrop: false,
       disableClose: false,
-      width: '420px',
-      position: { right: '16px', top: '16px', bottom: '16px' },
       panelClass: 'flex-right-panel',
       data: { template: pTemplate},
     });
-    return dialogRef.afterClosed();
+
+    this._flexDialogRef.afterClosed().subscribe(() => { this._flexDialogRef = null; });
+    return this._flexDialogRef.afterClosed();
   }
 
   fieldModalFlex(pTemplate: string, pTipo?:string){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(FieldComponent, {
-      maxHeight: '90vh',
+    // Close any previously opened Field dialog so only one is displayed
+    try{ if (this._fieldDialogRef) { this._fieldDialogRef.close(); } }catch(e){ }
+
+    this._fieldDialogRef = this.dialog.open(FieldComponent, {
+      hasBackdrop: false,
+      disableClose: false,
+      panelClass: 'flex-right-panel',
       data: { template: pTemplate, tipo: pTipo},
     });
-    return dialogRef.afterClosed();
+
+    try{
+      this._document.body.classList.add('flex-panel-open');
+    }catch(e){  }
+
+    this._fieldDialogRef.afterClosed().subscribe(() => {
+      try{
+        this._document.body.classList.remove('flex-panel-open');
+      }catch(e){ }
+      this._fieldDialogRef = null;
+    });
+
+    return this._fieldDialogRef.afterClosed();
   }
+
 
   fieldEditModalFlex(pTemplate: string){
     const dialogRef: MatDialogRef<any> = this.dialog.open(AddFieldComponent, {
