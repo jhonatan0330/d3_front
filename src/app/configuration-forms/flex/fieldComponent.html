@@ -1,7 +1,7 @@
-<div class="w-full bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col text-gray-900 dark:text-gray-100">
+<div class="w-full h-full bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col text-gray-900 dark:text-gray-100">
   <!-- Header -->
   <div class="flex justify-between items-center mb-6 gap-4">
-    <div class="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
+    <div class="flex items-center flex-wrap justify-center sm:justify-start">
       <div class="text-xl font-bold">{{ field?.nombre || 'Detalle de plantila' }}</div>
       <button [disabled]="editarDisabled" (click)="!editarDisabled && editarCampo()"
         [ngClass]="{'opacity-50 hover:bg-blue-600': editarDisabled, 'bg-blue-500 text-white hover:bg-blue-600': !editarDisabled}"
@@ -9,7 +9,12 @@
         ✏
       </button>
     </div>
-    <img *ngIf="field?.imagen" [src]="field.imagen" alt="Imagen del campo" class="h-10 object-cover rounded-lg" />
+    <div class="flex items-center gap-2">
+      <img *ngIf="field?.imagen" [src]="field.imagen" alt="Imagen del campo" class="h-10 object-cover rounded-lg" />
+      <button mat-icon-button aria-label="Cerrar" (click)="close()" class="ml-2 bg-transparent">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </div>
 
   <div class="flex-1 h-full">
@@ -31,13 +36,13 @@
 
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
         <ng-container *ngIf="propiedadesCampo?.length > 0; else noPropsField">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 gap-3">
             <div *ngFor="let prop of propiedadesCampo" (click)="listarRelacionesPropiedad(prop)"
               class="group border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition relative cursor-pointer">
-              <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{
+              <!--<span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{
                 prop.propiedadValor
-                }}</span>
-              <h4 class="text-base font-semibold">{{ prop.nombre }}</h4>
+                }}</span>-->
+              <h4 class="text-base font-semibold">{{ prop.nombre }}</h4> 
               <p class="text-sm text-gray-600 dark:text-gray-300">{{ prop.texto }}</p>
 
               <!-- Botones visibles solo al pasar el mouse -->
