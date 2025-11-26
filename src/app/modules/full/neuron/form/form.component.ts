@@ -743,7 +743,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     getTransitionsOfTemplate(pTemplate: DocumentoPlantillaDTO, pState: string, pDocumentTransition: PedidoVentaDTO) {
-        if (!pTemplate.estados || pTemplate.estados.length === 0) return;
+        if (!pTemplate || !pTemplate.estados || pTemplate.estados.length === 0) return;
 
         for (let _iField = 0; _iField < pTemplate.estados.length; _iField++) {
             const _stateElement = pTemplate.estados[_iField];
