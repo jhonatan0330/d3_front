@@ -24,6 +24,8 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/modules/full/neuron/form/controls/base/base.component';
 import { getComponent } from 'app/modules/full/neuron/form-helper';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { BpmDiagramComponent, Proceso } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-cruds',
@@ -89,7 +91,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         private ls: LocalStoreService,
         private utilsService: UtilsService,
         private compiler: ComponentFactoryResolver,
-        private _fuseMediaWatcherService: FuseMediaWatcherService
+        private _fuseMediaWatcherService: FuseMediaWatcherService,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
@@ -686,4 +689,78 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         }
       }
 
+      openDiagram() {
+              // Example proceso data for demo; replace with real data as needed
+              const demo: Proceso = {
+                  id: 'root',
+                  nombre: 'Proceso Raiz',
+                  roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png',
+                  children: [
+                      { id: 'c1', nombre: 'Hijo 1',  roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png',
+                  children: [ { id: 'c1-1', nombre: 'Nieto 1' , roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png'}, { id: 'c1-2', nombre: 'Nieto 2' , roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png'} ] },
+                      { id: 'c2', nombre: 'Hijo 2' , roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png'},
+                      { id: 'c3', nombre: 'Hijo 3',  roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png',children: [ { id: 'c3-1', nombre: 'Nieto A',  roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png' }, { id: 'c3-2', nombre: 'Nieto B' ,  roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png'}, 
+                          { id: 'c3-3', nombre: 'Nieto C',  roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png',children: [{ id: 'c3-3-1', nombre: 'BisNieto A',  roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png' }, { id: 'c3-3-2', nombre: 'BisNieto B' , roles: 5,
+                  plantillas: 3,
+                  apis: 2,
+                  reportes: 4,
+                  imagen: 'https://fs.softwareparati.com/modulo.png'}] } 
+                      ] }
+                  ]
+              };
+      
+              const w = Math.min(window.innerWidth * 0.8, 1400);
+              const h = Math.min(window.innerHeight * 0.8, 900);
+      
+              this.dialog.open(BpmDiagramComponent, {
+                  width: '80vw',
+                  height: '80vh',
+                  panelClass: 'bpm-dialog',
+                  data: {
+                      proceso: demo,
+                      width: w,
+                      height: h
+                  }
+              });
+          }
 }

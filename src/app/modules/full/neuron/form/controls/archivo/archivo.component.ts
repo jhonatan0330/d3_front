@@ -17,7 +17,7 @@ import { formatImageUrl } from 'app/shared/local-image';
     }
   `]
 })
-export class ArchivoComponent extends BaseComponent implements OnInit, AfterViewInit  {
+export class ArchivoComponent extends BaseComponent implements OnInit, AfterViewInit {
   @ViewChild('signatureCanvas') signatureCanvas!: ElementRef<HTMLCanvasElement>;
   signaturePad!: SignaturePad;
 
@@ -42,13 +42,13 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   isLoadingUrl = false;
   urlText = '';
 
-  constructor(private api: ApiService, private imageCompress: NgxImageCompressService, private ls:LocalStoreService) {
+  constructor(private api: ApiService, private imageCompress: NgxImageCompressService, private ls: LocalStoreService) {
     super();
   }
 
   ngOnInit(): void {
     super.ngOnInit();
-    
+
     if (this.isEnabled && !this.formIsEnabled) {
       this.isEnabled = false;
     }
@@ -66,7 +66,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
     this.porcentajeCalidad = Number(
       this.obtenerValor(PlantillaHelper.PORCENTAJE_CALIDAD)
     );
-    if(this.porcentajeCalidad && this.porcentajeCalidad> 100){
+    if (this.porcentajeCalidad && this.porcentajeCalidad > 100) {
       this.porcentajeCalidad = undefined;
     }
     this.filtroExtension = this.obtenerValor(PlantillaHelper.ARCHIVO_TIPO);
@@ -86,11 +86,15 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
       this.maximoSize = 1024;
     }
     this.source = this.data.valorText;
+    const defaultValue = this.obtenerPropiedad(PlantillaHelper.DEFAULT);
+    if (defaultValue && !this.data.principal && !this.data.valorText) {
+      this.source = defaultValue.valor;
+    }
     this.actualizarVista();
   }
 
   ngAfterViewInit(): void {
-    if(this.signatureCanvas){
+    if (this.signatureCanvas) {
       this.signaturePad = new SignaturePad(this.signatureCanvas.nativeElement);
       this.resizeCanvas();
     }
@@ -102,7 +106,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   }
 
   resizeCanvas() {
-    if(!this.signatureCanvas) return;
+    if (!this.signatureCanvas) return;
     const canvas = this.signatureCanvas.nativeElement;
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
     canvas.width = canvas.offsetWidth * ratio;
@@ -195,9 +199,9 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
       var reader = new FileReader();
       reader.readAsDataURL(iFile);
       reader.onload = (_event) => {
-        if(this.porcentajeCalidad){
+        if (this.porcentajeCalidad) {
           this.compressFile(reader.result, iFile.name);
-        } else{
+        } else {
           this.addFileToTable(iFile.name, reader.result, iFile);
         }
       };
@@ -209,9 +213,9 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
 
   compressFile(image, fileName) {
     var orientation = -1;
-    console.warn('Size in bytes is now:',  this.imageCompress.byteCount(image) / (1024 * 1024));
+    console.warn('Size in bytes is now:', this.imageCompress.byteCount(image) / (1024 * 1024));
     this.imageCompress.compressFile(image, orientation, this.porcentajeCalidad, this.porcentajeCalidad).then(
-    result => {
+      result => {
         console.warn('Size in bytes after compression:', this.imageCompress.byteCount(result) / (1024 * 1024));
         // call method that creates a blob from dataUri
         //const imageBlob = this.dataURItoBlob(result);

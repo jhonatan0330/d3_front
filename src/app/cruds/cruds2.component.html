@@ -193,7 +193,7 @@
                     <!-- Header -->
                     <div
                         class="flex flex-row flex-0 sm:items-center sm:justify-between p-3 sm:py-4 sm:px-5 border-b bg-card dark:bg-transparent">
-                        <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}" />
+                        <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}"  (click)="openDiagram()"/>
                         <div class="flex-1 min-w-0">
                             <!-- Title -->
                             <div class="mt-2">

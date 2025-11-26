@@ -1,0 +1,9 @@
+.bpm-leaf-dialog {
+  padding: 12px;
+}
+.bpm-leaf-dialog .title { margin: 0 0 8px 0; font-size: 16px; }
+.canvas-wrap { overflow: auto; }
+.actions { margin-top: 12px; text-align: right; }
+
+circle { transition: transform 160ms ease; }
+g:hover circle { transform: scale(1.06); }

@@ -1,7 +1,8 @@
 import { Component, Input, OnChanges, SimpleChanges, OnInit, Inject, Optional, Output, EventEmitter, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
+import { BpmLeafDiagramComponent } from '../bpm-leaf-diagram/bpm-leaf-diagram.component';
 
 export interface Proceso {
   id: string;
@@ -37,7 +38,7 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   @Input() height = 400;
   @Input() nodeRadius = 48;
 
-  constructor(private notification: NotificationCenterService, @Optional() @Inject(MAT_DIALOG_DATA) private data?: any) {
+  constructor(private notification: NotificationCenterService, private dialog: MatDialog, @Optional() @Inject(MAT_DIALOG_DATA) private data?: any) {
     // If opened via MatDialog with data, accept proceso/width/height from it
     if (data) {
       if (data.proceso) this.proceso = data.proceso;
@@ -89,6 +90,15 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
 
   onNodeClick(p: Proceso, ev?: MouseEvent) {
     if (ev) ev.stopPropagation();
+    // if node has no children, open leaf diagram popup to show states/transitions
+    if (!p.children || p.children.length === 0) {
+      try {
+        this.dialog.open(BpmLeafDiagramComponent, { data: { procesoId: p.id, server: (p as any).server || null }, width: '880px', maxWidth: '98vw' });
+        return;
+      } catch (e) {
+        // continue to emit selection if dialog fails
+      }
+    }
     this.nodeSelected.emit(p);
   }
 
