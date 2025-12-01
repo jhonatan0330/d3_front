@@ -157,7 +157,9 @@ export class BaseComponent implements OnInit, IDynamicControl {
   avisarModificacion(inicioCampo: boolean = false, omitirFormModified: boolean = false): void {
     if (!inicioCampo && this.data) {
       this.data.modificado = true;
-      if (!omitirFormModified) { this.formIsModified.next(true); }
+      if (!omitirFormModified) { 
+        this.formIsModified.next(true); 
+      }
     }
     if (this.listeners && this.listeners.length !== 0) {
       for (let index = 0; index < this.listeners.length; index++) {

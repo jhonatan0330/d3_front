@@ -25,11 +25,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   formulaMaximum: PropiedadDTO;
   formulaMinimum: PropiedadDTO;
   funcion: string;
-  numeroDecimales = 0;
-  optionsMask = {
-    precision: 0,
-    prefix: '',
-  };
+  numeroDecimales = 2;
 
   constructor(private api: ApiService) {
     super();
@@ -92,7 +88,6 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     );
     if (decimales) {
       this.numeroDecimales = Number(decimales);
-      this.optionsMask.precision = this.numeroDecimales;
     }
     if (this.data.valorText) {
       if (this.data.valorNumero === 0) {
@@ -142,7 +137,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       numericValue = 0;
     }
 
-    return formatNumber(numericValue, 'en-US', '1.0-2');
+    return formatNumber(numericValue, 'en-US', '1.0-' + this.numeroDecimales);
   }
 
 
