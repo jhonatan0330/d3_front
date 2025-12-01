@@ -16,12 +16,12 @@
     <mat-icon>open_in_new</mat-icon>
   </button>
   <!-- Create -->
-  <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenu"
-    *ngIf="acciones && !errorMessage && !proceso && !fControl.value" #clickHoverMenuTrigger="matMenuTrigger"
+  <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenuButton"
+    *ngIf="acciones && !errorMessage && !proceso && !fControl.value" #clickHoverMenuButtonTrigger="matMenuTrigger"
     (click)="sendCreate()" tabindex="-1">
     <mat-icon>add_circle</mat-icon>
   </button>
-  <mat-menu #clickHoverMenu="matMenu">
+  <mat-menu #clickHoverButtonMenu="matMenu">
     <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)" *ngFor="let item of acciones"
       tabindex="-1">
       Crear {{ item.texto | titlecase }}
@@ -220,7 +220,7 @@
         </button>
         <!-- Boton Agregar todos-->
         <button mat-raised-button (click)="agregarTodos()" class="ml-1"
-          *ngIf="isEnabled && dataProvider && dataProvider.length">
+          *ngIf="isEnabled && dataProvider && dataProvider.length && !herencia">
           <mat-icon>file_upload</mat-icon>
         </button>
         <!-- Boton Agregar todos-->

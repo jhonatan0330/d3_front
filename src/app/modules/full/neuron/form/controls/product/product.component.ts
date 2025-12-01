@@ -226,10 +226,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
       ) {
         stepValorUnitario = formItemRecurso;
         //if (tarifa.rangoPrecios) {
-          valorUnitario = formItemRecurso.data.valorNumero;
+        //  valorUnitario = formItemRecurso.data.valorNumero;
         //} else {
-        //  valorUnitario = tarifa.valor;
-        //  formItemRecurso.setValorNumero(valorUnitario);
+          valorUnitario = tarifa.valor;
+          formItemRecurso.setValorNumero(valorUnitario);
         //}
       }
     }
