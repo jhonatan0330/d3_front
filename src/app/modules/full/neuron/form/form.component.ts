@@ -619,7 +619,9 @@ export class FormComponent implements OnInit, AfterViewInit {
                     element.campoDTO = _campo;
                     componentRef.instance.formIsEnabled = this.modificable;
                     componentRef.instance.formIsModified.subscribe((x: boolean) => {
-                        if (x) { this.formIsModified = true; }
+                        if (x) { 
+                            this.formIsModified = true; 
+                        }
                     });
                     break;
                 }

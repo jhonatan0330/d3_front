@@ -55,7 +55,7 @@ export class Puesto {
         this.ctx.fillStyle = 'rgba(0, 255, 0, 0.3)'; // 'rgba(0, 255, 0, 0.3)'; CAMBIAAAR
         this.ctx.fillRect(this.x, this.y, this.ancho, this.alto);
       }
-      if (this.dto?.nombre) {
+      /*if (this.dto?.nombre) {
         const text = this.dto.nombre;
         const fontSize = 24;
         this.ctx.font = `${fontSize}px sans-serif`;
@@ -84,7 +84,7 @@ export class Puesto {
         // restaurar valores por defecto
         this.ctx.textAlign = 'start';
         this.ctx.textBaseline = 'alphabetic';
-      }
+      }*/
 
     };
     render.onerror = () => {
