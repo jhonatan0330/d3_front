@@ -616,6 +616,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 const element = this.pedido.caracteristicas[index];
                 if (element.campo === _campo.llaveTabla) {
                     componentRef.instance.data = element;
+                    element.campoDTO = _campo;
                     componentRef.instance.formIsEnabled = this.modificable;
                     componentRef.instance.formIsModified.subscribe((x: boolean) => {
                         if (x) { this.formIsModified = true; }

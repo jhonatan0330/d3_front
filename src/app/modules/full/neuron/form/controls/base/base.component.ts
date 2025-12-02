@@ -51,7 +51,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   required = true;
   isEnabled = true;
   formIsEnabled = true;
-  isLoading = false; 
+  isLoading = false;
   help = 'x';
   isInvisible = false;
   isSectionInvisible = false;
@@ -72,7 +72,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
     this.required = PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL);
     this.isInvisible = !PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.INVISIBLE);
     this.relatedFields = this.obtenerValorMultiple(PlantillaHelper.DEPENDE);
-    this.idField = ((this.parent && this.parent.llaveTabla)?this.parent.llaveTabla: Date.now().toString())+value.llaveTabla ;
+    this.idField = ((this.parent && this.parent.llaveTabla) ? this.parent.llaveTabla : Date.now().toString()) + value.llaveTabla;
     this.propVisibleDepende = this.obtenerValorMultiple(PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE);
   }
   constructor() { }
@@ -92,7 +92,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
       PlantillaHelper.PERMISO_CAMPO_BLOQUEAR
     );
     if (this.data && this.data.documento) {
-      if (!this.formIsEnabled) { return false;}
+      if (!this.formIsEnabled) { return false; }
       if (
         !PlantillaHelper.isEmpty(
           this.structure.propiedades,
@@ -157,8 +157,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
   avisarModificacion(inicioCampo: boolean = false, omitirFormModified: boolean = false): void {
     if (!inicioCampo && this.data) {
       this.data.modificado = true;
-      if (!omitirFormModified) { 
-        this.formIsModified.next(true); 
+      if (!omitirFormModified) {
+        this.formIsModified.next(true);
       }
     }
     if (this.listeners && this.listeners.length !== 0) {
@@ -182,12 +182,12 @@ export class BaseComponent implements OnInit, IDynamicControl {
       for (let index = 0; index < this.propVisibleDepende.length; index++) {
         const propVisible = this.propVisibleDepende[index];
         if (propVisible.campo === this.structure.llaveTabla) {
-          if(textSelected === propVisible.valor) {
+          if (textSelected === propVisible.valor) {
             this.isInvisible = false;
             this.form.reviewFieldsVisibility();
             break;
           }
-          
+
         }
       }
     }
@@ -200,9 +200,16 @@ export class BaseComponent implements OnInit, IDynamicControl {
     if (!pField.data.dependientes) {
       pField.data.dependientes = [];
     }
-   
-     pField.data.dependientes.push(this.data);
-    this.listeners.push(pField);
+
+    // Evitar duplicado en dependientes
+    if (!pField.data.dependientes.some(dep => dep.llaveTabla === this.data.llaveTabla)) {
+      pField.data.dependientes.push(this.data);
+    }
+
+    // Evitar duplicado en listeners
+    if (!this.listeners.some(l => l === pField)) {
+      this.listeners.push(pField);
+    }
     pField.validateVisibility(this.getValorTexto())
   }
 
@@ -243,7 +250,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
     nFilter.expedientes = campoFiltro.expedientes;
     nFilter.llaveTabla = campoFiltro.llaveTabla;
     nFilter.valorAuxiliar = campoFiltro.valorAuxiliar;
-  
+
     nFilter.valorOpcion = campoFiltro.valorOpcion;
     nFilter.valorText = campoFiltro.valorText;
     return nFilter;
