@@ -537,8 +537,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       ) {
         if (campoFiltro.filtroParametro != null) {
           alert('Revisa los dependientes del campo ' + this.structure.nombre);
-          return;
         }
+        return;
       }
       // La parte de modifciado la coloque porque en roa no se veia la ciudad de una guia al cambiar el destinatario
       for (let i = 0; i < this.data.dependientes.length; i++) {
