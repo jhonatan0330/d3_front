@@ -202,14 +202,14 @@ export class BaseComponent implements OnInit, IDynamicControl {
     }
 
     // Evitar duplicado en dependientes
-    if (!pField.data.dependientes.some(dep => dep.llaveTabla === this.data.llaveTabla)) {
+    //if (!pField.data.dependientes.some(dep => dep.llaveTabla === this.data.llaveTabla)) {
       pField.data.dependientes.push(this.data);
-    }
+   // }
 
     // Evitar duplicado en listeners
-    if (!this.listeners.some(l => l === pField)) {
+    //if (!this.listeners.some(l => l === pField)) {
       this.listeners.push(pField);
-    }
+    //}
     pField.validateVisibility(this.getValorTexto())
   }
 
