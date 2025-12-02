@@ -225,12 +225,12 @@ export class ProductComponent implements OnInit, AfterViewInit {
         this.campoValorUnitario.valor === formItemRecurso.structure.llaveTabla
       ) {
         stepValorUnitario = formItemRecurso;
-        //if (tarifa.rangoPrecios) {
-        //  valorUnitario = formItemRecurso.data.valorNumero;
-        //} else {
+        if (!tarifa.llaveTabla || (tarifa.valorMinimo !== tarifa.valorMaximo && tarifa.valorMinimo !== tarifa.valor)) {
+          valorUnitario = formItemRecurso.data.valorNumero;
+        } else {
           valorUnitario = tarifa.valor;
           formItemRecurso.setValorNumero(valorUnitario);
-        //}
+        }
       }
     }
 
