@@ -147,6 +147,9 @@ export class PlantillaHelper {
   static TEMPLATE_VOUCHER = "TEMPLATE_VOUCHER";
 
   static SECCION_FUNCION = 'SECCION_FUNCION_SQL';
+
+  static VINCULO_DATA = 'VINCULO_DATA';
+  
   
   // Estos dos los quite porque genrarban muchos cilso infirnitos
   //PlantillaHelper.RELACIONAR_DOCUMENTOS, PlantillaHelper.RETIRAR_DOCUMENTOS,

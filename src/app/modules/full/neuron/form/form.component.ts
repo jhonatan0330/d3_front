@@ -125,7 +125,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             return;
         }
 
-    this.pedidoBase = this.data.data;
+        this.pedidoBase = this.data.data;
         this.identificadorInicial = this.data.identificador;
         this.saveInField = this.data.saveInField;
         if (this.data.close2Save) {
@@ -619,8 +619,8 @@ export class FormComponent implements OnInit, AfterViewInit {
                     element.campoDTO = _campo;
                     componentRef.instance.formIsEnabled = this.modificable;
                     componentRef.instance.formIsModified.subscribe((x: boolean) => {
-                        if (x) { 
-                            this.formIsModified = true; 
+                        if (x) {
+                            this.formIsModified = true;
                         }
                     });
                     break;
@@ -733,13 +733,28 @@ export class FormComponent implements OnInit, AfterViewInit {
 
         this.getTransitionsOfTemplate(this.plantilla, _estadollave, this.pedido);
 
-        if (this.pedido.llaveTabla) {
+        if (this.pedido.llaveTabla && this.pedido.estado === 'A') {
             for (let _f = 0; _f < this.pedido.caracteristicas.length; _f++) {
                 const _element = this.pedido.caracteristicas[_f];
-                if (_element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.VINCULO && _element.expedientes) {
-                    this.getTransitionsOfTemplate(
-                        this.templateService.getTemplate(_element.expedientes[0].plantilla, null),
-                        _element.expedientes[0].estadoExpediente, _element.expedientes[0])
+                if (_element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.VINCULO) {
+                    if (_element.expedientes) {
+                        this.getTransitionsOfTemplate(
+                            this.templateService.getTemplate(_element.expedientes[0].plantilla, null),
+                            _element.expedientes[0].estadoExpediente, _element.expedientes[0]);
+                    } else {
+                        const _property = PlantillaHelper.buscarPropiedad(_element.campoDTO.propiedades, PlantillaHelper.VINCULO_DATA);
+                        if (_property && !_property.relaciones ) {
+                            const _templateVinculo = this.templateService.getTemplate(_property.valor, null);
+                            if (_templateVinculo) {
+                                const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
+                                _newtransicion.imagen = _templateVinculo.imagen;
+                                _newtransicion.plantilla = _templateVinculo.llaveTabla;
+                                _newtransicion.nombre = _templateVinculo.nombre;
+                                //_newtransicion.documentToTransition = pDocumentTransition;
+                                this.transiciones.push(_newtransicion);
+                            }
+                        }
+                    }
                 }
             }
         }

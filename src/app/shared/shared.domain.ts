@@ -25,6 +25,7 @@ export class PropiedadDTO extends BasicDTO {
   valor: string;
   texto: string;
   motivo: string;
+  relaciones: number;
 }
 
 export class PropiedadValorDefinidoDTO extends BasicDTO {
