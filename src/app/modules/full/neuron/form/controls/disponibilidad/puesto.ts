@@ -53,11 +53,11 @@ export class Puesto {
 
       if (colorFill) {
         this.ctx.globalAlpha = 0.9;
-        this.ctx.fillStyle = colorFill; // 'rgba(0, 255, 0, 0.3)'; CAMBIAAAR
+        this.ctx.fillStyle = colorFill;
         this.ctx.fillRect(this.x, this.y, this.ancho, this.alto);
         this.ctx.globalAlpha = 1;
       }
-      /*if (this.dto?.nombre) {
+      if (this.dto?.nombre) {
         const text = this.dto.nombre;
         const fontSize = 12 - this.ancho*this.alto/(this.ancho + text.length);
         this.ctx.font = `${fontSize}px sans-serif`;
@@ -83,7 +83,7 @@ export class Puesto {
         // restaurar valores por defecto
         this.ctx.textAlign = 'start';
         this.ctx.textBaseline = 'alphabetic';
-      }*/
+      }
 
     };
     render.onerror = () => {
