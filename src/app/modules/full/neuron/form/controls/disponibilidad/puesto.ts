@@ -52,8 +52,10 @@ export class Puesto {
       }
 
       if (colorFill) {
-        this.ctx.fillStyle = 'rgba(0, 255, 0, 0.3)'; // 'rgba(0, 255, 0, 0.3)'; CAMBIAAAR
+        this.ctx.globalAlpha = 0.9;
+        this.ctx.fillStyle = colorFill; // 'rgba(0, 255, 0, 0.3)'; CAMBIAAAR
         this.ctx.fillRect(this.x, this.y, this.ancho, this.alto);
+        this.ctx.globalAlpha = 1;
       }
       /*if (this.dto?.nombre) {
         const text = this.dto.nombre;
