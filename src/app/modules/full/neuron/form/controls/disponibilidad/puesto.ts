@@ -59,7 +59,7 @@ export class Puesto {
       }
       /*if (this.dto?.nombre) {
         const text = this.dto.nombre;
-        const fontSize = 24;
+        const fontSize = 12 - this.ancho*this.alto/(this.ancho + text.length);
         this.ctx.font = `${fontSize}px sans-serif`;
         this.ctx.textBaseline = 'middle';
         this.ctx.textAlign = 'center';
@@ -69,17 +69,14 @@ export class Puesto {
 
         const metrics = this.ctx.measureText(text);
         const textWidth = metrics.width;
-        const padding = 6;
-        const bgWidth = textWidth + padding * 2;
-        const bgHeight = fontSize + 6;
+        const bgWidth = textWidth + 2;
+        const bgHeight = textWidth / text.length + 2;
         const bgX = centerX - bgWidth / 2;
         const bgY = centerY - bgHeight / 2;
 
         // Fondo para legibilidad
-        this.ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         this.ctx.fillRect(bgX, bgY, bgWidth, bgHeight);
-        this.ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-        this.ctx.strokeRect(bgX + 0.5, bgY + 0.5, bgWidth - 1, bgHeight - 1);
 
         this.ctx.fillStyle = '#111';
         this.ctx.fillText(text, centerX, centerY);
