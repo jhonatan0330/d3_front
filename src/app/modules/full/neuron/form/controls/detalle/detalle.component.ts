@@ -6,7 +6,9 @@ import {
   PedidoVentaCaracteristicaDTO,
   PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
-  ProductoDTO
+  ProductoDTO,
+  RelacionInternaDTO,
+  RelacionInternaFilterDTO
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -15,7 +17,7 @@ import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
-import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../../model/sw42.enum';
 import { UtilsService } from '../../../service/utils.service';
 
 @Component({
@@ -384,19 +386,60 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       if (item.documentoDetalle == null) {
         item.documentoDetalle = new PedidoVentaDTO();
         item.documentoDetalle.plantilla = item.plantillaDetalle;
-
       }
 
       if (this.data.dependientes) {
+
+
         for (let index = 0; index < this.data.dependientes.length; index++) {
           const element = this.data.dependientes[index];
+          let fieldCodeToFill = element.campoDTO.codigo;
+          for (let i = 0; i < this.relatedFields.length; i++) {
+            const dependentIterato = this.relatedFields[i];
+            if (dependentIterato.valor === element.campo) {
+              const relations = this.templateService.getPropertyRelation(dependentIterato.llaveTabla);
+              if (!relations || relations.length == 0) {
+                //Copiado de tipo proceso
+                const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
+                filtro.estado = StatesEnum.ACTIVE;
+                filtro.propiedad = dependentIterato.llaveTabla;
+                //this.isLoadingList = true;
+                this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
+                  next: (value: RelacionInternaDTO[]) => {
+                    if (!value || value.length === 0) {
+                      //Creo una relacion falsa para que no vuelva a filtrar
+                      const ri: RelacionInternaDTO = new RelacionInternaDTO();
+                      ri.propiedad = dependentIterato.llaveTabla;
+                      ri.campo = "FALSE";
+                      ri.plantilla = "FALSE";
+                      ri.auxiliar = "FALSE";
+                      value = [];
+                      value.push(ri);
+                    }
+                    this.templateService.addRelations(value);
+                    //this.isLoadingList = false;
+                    this.modificarDetallePedido(item);
+                  },
+                  error: () => {
+                    //this.isLoadingList = false;
+                  },
+                });
+                return;
+              } else {
+                if(relations[0].campo!== 'FALSE' ){
+                  fieldCodeToFill = relations[0].campo;
+                }
+              }
+            }
+          }
+
           for (
             let i = 0;
             i < item.documentoDetalle.caracteristicas.length;
             i++
           ) {
             const uc = item.documentoDetalle.caracteristicas[i];
-            if (element.campoDTO.codigo === uc.campoDTO.codigo) {
+            if (fieldCodeToFill === uc.campoDTO.codigo || fieldCodeToFill === uc.campo) {
               uc.valorOpcion = element.valorOpcion;
               uc.valorNumero = element.valorNumero;
               uc.valorText = element.valorText;

@@ -627,7 +627,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.fControlCheck = new FormControl();
     this.fCheckActivo = new FormControl(true);
     this.fCheckInactivo = new FormControl();
-    this.fCheckFinalizado = new FormControl(true);
+    // Lo quite porque en roa cierre de vales no queria que viniera por defecto
+    this.fCheckFinalizado = new FormControl();
     if (this.isEnabled) {
       if (this.solicitarFechas) {
         this.fControlDateStart.setValue(new Date());
@@ -1434,7 +1435,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     } else {
       // Solo se puede consultar herencia de un documento existente
       if (!this.data.documento) { return; }
-      entity.textoFiltro = this.data.documento;
+      if(this.data.dependientes && this.data.dependientes.length > 0 && this.data.dependientes[0].valorOpcion){
+        entity.textoFiltro = this.data.dependientes[0].valorOpcion;
+      }else{
+        entity.textoFiltro = this.data.documento;
+      }
+      
     }
 
     if (this.plantilla && !this.herencia) {
