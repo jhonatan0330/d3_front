@@ -1435,7 +1435,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     } else {
       // Solo se puede consultar herencia de un documento existente
       if (!this.data.documento) { return; }
-      if(this.data.dependientes && this.data.dependientes.length > 0 && this.data.dependientes[0].valorOpcion){
+      if(!this.isEmpty(this.obtenerValor(PlantillaHelper.DEPENDE)) && this.data.dependientes && this.data.dependientes.length > 0 && this.data.dependientes[0].valorOpcion){
         entity.textoFiltro = this.data.dependientes[0].valorOpcion;
       }else{
         entity.textoFiltro = this.data.documento;
