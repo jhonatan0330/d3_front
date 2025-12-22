@@ -230,27 +230,13 @@ export class CroquisComponent extends BaseComponent
 
       if (it.exp?.nombre) {
         const text = it.exp.nombre;
-        const fontSize = 48;
+        const fontSize = 12/w*2/text.length;
         this.ctx.font = `${fontSize}px sans-serif`;
         this.ctx.textBaseline = 'middle';
         this.ctx.textAlign = 'center';
 
         const centerX = x + w / 2;
         const centerY = y + h / 2;
-
-        const metrics = this.ctx.measureText(text);
-        const textWidth = metrics.width;
-        const padding = 6;
-        const bgWidth = textWidth + padding * 2;
-        const bgHeight = fontSize + 6;
-        const bgX = centerX - bgWidth / 2;
-        const bgY = centerY - bgHeight / 2;
-
-        // Fondo para legibilidad
-        this.ctx.fillStyle = 'rgba(255,255,255,0.85)';
-        this.ctx.fillRect(bgX, bgY, bgWidth, bgHeight);
-        this.ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-        this.ctx.strokeRect(bgX + 0.5, bgY + 0.5, bgWidth - 1, bgHeight - 1);
 
         this.ctx.fillStyle = '#111';
         this.ctx.fillText(text, centerX, centerY);

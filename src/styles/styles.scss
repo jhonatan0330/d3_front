@@ -1,38 +1,51 @@
-/* ----------------------------------------------------------------------------------------------------- */
-/*  @ Import/write your custom styles here.
-/*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
-/* ----------------------------------------------------------------------------------------------------- */
-.flex-right-panel {
-	box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
-	border-radius: 12px !important;
-	overflow: hidden !important;
-	display: flex !important;
-	flex-direction: column !important;
+/* Desktop / tablet */
+.flex-right-panel{
+  position: fixed !important;
+  right: 16px !important;
+  top: 16px !important;
+  bottom: 16px !important;
+  width: 420px !important;
+  max-width: calc(100vw - 32px) !important; /* clave */
+  z-index: 2000 !important;
 }
 
-.flex-right-panel .mat-dialog-container {
-	padding: 0 !important;
-	height: 100% !important;
+/* Empuje SOLO en pantallas grandes */
+@media (min-width: 768px){
+  .flex-panel-open .layout,
+  .flex-panel-open .layout-root,
+  .flex-panel-open .fuse-layout,
+  .flex-panel-open .fuse-main,
+  .flex-panel-open .fuse-content,
+  .flex-panel-open .content{
+    transition: margin-right 280ms ease;
+    margin-right: 456px; /* 420 + 32 */
+  }
 }
 
+/* En móvil: overlay (NO empujar) + casi full screen */
+@media (max-width: 767px){
+  .flex-panel-open .layout,
+  .flex-panel-open .layout-root,
+  .flex-panel-open .fuse-layout,
+  .flex-panel-open .fuse-main,
+  .flex-panel-open .fuse-content,
+  .flex-panel-open .content{
+    margin-right: 0 !important;
+  }
 
-.flex-panel-open layout, .flex-panel-open .layout-root, .flex-panel-open .fuse-layout, .flex-panel-open .fuse-main, .flex-panel-open .fuse-content, .flex-panel-open .content {
-	transition: margin-right 280ms ease;
-	margin-right: 456px; /* panel width (420px) + 2*16px spacing */
+  .flex-right-panel{
+    left: 8px !important;
+    right: 8px !important;
+    top: 8px !important;
+    bottom: 8px !important;
+    width: auto !important; /* usa left/right */
+    border-radius: 12px !important;
+  }
 }
 
-.flex-right-panel {
-	position: fixed !important;
-	right: 16px !important;
-	top: 16px !important;
-	bottom: 16px !important;
-	width: 420px !important;
-	z-index: 2000 !important;
-}
-
-.flex-right-panel .mat-dialog-container {
-	height: calc(100vh - 32px) !important;
-	box-shadow: 0 6px 24px rgba(0,0,0,0.2) !important;
-	border-radius: none !important;
-	overflow: auto !important;
+.flex-right-panel .mat-dialog-container{
+  padding: 0 !important;
+  height: 100% !important;
+  overflow: auto !important;
+  border-radius: 0 !important; /* si no quieres redondeo interno */
 }
