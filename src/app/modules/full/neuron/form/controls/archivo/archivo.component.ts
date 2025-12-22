@@ -89,6 +89,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
     const defaultValue = this.obtenerPropiedad(PlantillaHelper.DEFAULT);
     if (defaultValue && !this.data.principal && !this.data.valorText) {
       this.source = defaultValue.valor;
+      this.data.valorText = defaultValue.valor;
     }
     this.actualizarVista();
   }

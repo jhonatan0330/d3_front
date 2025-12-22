@@ -58,16 +58,17 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
       } else {
         const _defaultValue = this.obtenerValor(PlantillaHelper.DEFAULT);
         if(this.isEmpty(_defaultValue) ){
-        if (this.disponibles.length === 1 && this.required) {
-          this.fControl.setValue(this.disponibles[0]);
-          this.actualizar();
-        }
+          if (this.disponibles.length === 1 && this.required) {
+            this.fControl.setValue(this.disponibles[0]);
+            this.actualizar();
+          }
         } else{
           const l: PedidoVentaDTO[] = this.disponibles.filter(
             (option) => option.llaveTabla === _defaultValue
           );
           if (l && l.length !== 0) {
             this.fControl.setValue(l[0]);
+            this.actualizar();
           }
         }
 
