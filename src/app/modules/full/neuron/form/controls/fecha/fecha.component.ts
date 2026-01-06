@@ -280,4 +280,44 @@ export class FechaComponent extends BaseComponent implements OnInit {
       }
     }
   }
+
+  send2Server(): boolean {
+    if (!this.isEmpty(this.obtenerValor(PlantillaHelper.FECHA_MAXIMA))){
+      const maxTime = this.obtenerValor(PlantillaHelper.FECHA_MAXIMA);
+      if (!this.isEmpty(maxTime) && this.dateFrom?.value) {
+        const fechaMaxima = new Date(Date.now() + Number(maxTime));
+
+        if (this.dateFrom.value > fechaMaxima) {
+          this.errorMessage =
+            `La fecha no puede ser mayor a ${fechaMaxima.toLocaleString('en-ZA')}`;
+        }
+      }
+
+    }
+  if (!this.isEmpty(this.obtenerValor(PlantillaHelper.FECHA_MINIMA))){
+      const minTime = this.obtenerValor(PlantillaHelper.FECHA_MINIMA);
+      if (!this.isEmpty(minTime) && this.dateFrom?.value) {
+        const fechaMinima = new Date(Date.now() - Number(minTime));
+        
+        if (this.dateFrom.value < fechaMinima) {
+          this.errorMessage =
+            `La fecha no puede ser menor a ${fechaMinima.toLocaleString('en-ZA')}`;
+        }
+      }
+
+    }
+  
+  if (!this.errorMessage && this.required && !this.isInvisible && !this.data.valorFecha) {
+    this.errorMessage =
+      `En la plantilla ${this._structure.plantillaNombre} es obligatorio registrar el campo ${this._structure.nombre})`;
+  }
+
+  if (this.errorMessage) {
+    const input = document.getElementById(this.idField) as HTMLInputElement;
+    if (input) { input.focus();  }
+    return false;
+  }
+  return true;
+}
+
 }
