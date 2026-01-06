@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountingService } from '../accounting.service';
@@ -40,9 +40,7 @@ export class ManualFormComponent implements OnInit {
         private _formBuilder: UntypedFormBuilder,
         public accountingService: AccountingService,
         private ls: LocalStoreService,
-        private templateService: TemplateService
-        
-        ,
+        private templateService: TemplateService,
         private notificationCenter: NotificationCenterService
     ) {
     }
@@ -57,10 +55,7 @@ export class ManualFormComponent implements OnInit {
                 factDate: [new Date(), Validators.required],
                 value: 0
             }),
-            records: this._formBuilder.group({
-                line: this._formBuilder.array([], Validators.required),
-                references: this.createreferenceArray([])
-            })
+            records: this._formBuilder.array([], Validators.required)
         });
         this.getAccounts();
 
@@ -75,31 +70,36 @@ export class ManualFormComponent implements OnInit {
                 this.botonAccion = undefined;
             }
             this.key = this.data.key;
-            this.loading = true;
-            this.accountingService.getVoucher(this.data.key)
-                .subscribe(x => {
+            if (this.key) {
+                this.loading = true;
+                this.accountingService.getVoucher(this.data.key)
+                    .subscribe(x => {
+                        if (!x) { return; }
+                        this.form = this._formBuilder.group({
+                            header: this._formBuilder.group(x.header),
+                            records: this._formBuilder.array([], Validators.required)
+                        });
 
-                    this.form = this._formBuilder.group({
-                        header: this._formBuilder.group(x.header),
-                        records: this._formBuilder.array([], Validators.required)
+                        this.timeFrom.setValue(x.header.factDate.getHours() + ':' + x.header.factDate.getMinutes());
+
+                        x.records.forEach(i => {
+                            i.line.accountDTO = new AccountDTO();
+                            i.line.accountDTO.name = i.line.accountName;
+                            i.line.accountDTO.code = i.line.accountCode;
+                            i.line.accountDTO.key = i.line.account;
+                            this.creditValue += i.line.negative;
+                            this.debitValue += i.line.positive;
+                            this.recordsArray.push(this.createRecord(i));
+                        })
+                        this.codigoComprobante = x.header.code;
+                        this.differenceValue = this.debitValue - this.creditValue;
+                        if (this.data.catalogId) { this.recordsArray.push(this.createRecord(new VoucherLine())); }
+                        this.loading = false;
                     });
+            } else{
+                this.recordsArray.push(this.createRecord(new VoucherLine()));
+            }
 
-                    this.timeFrom.setValue(x.header.factDate.getHours() + ':' + x.header.factDate.getMinutes());
-
-                    x.records.forEach(i => {
-                        i.line.accountDTO = new AccountDTO();
-                        i.line.accountDTO.name = i.line.accountName;
-                        i.line.accountDTO.code = i.line.accountCode;
-                        i.line.accountDTO.key = i.line.account;
-                        this.creditValue += i.line.negative;
-                        this.debitValue += i.line.positive;
-                        this.recordsArray.push(this.createRecord(i));
-                    })
-                    this.codigoComprobante = x.header.code;
-                    this.differenceValue = this.debitValue - this.creditValue;
-                    if (this.data.catalogId) { this.recordsArray.push(this.createRecord(new VoucherLine())); }
-                    this.loading = false;
-                });
         }
         else {
             this.recordsArray.push(this.createRecord(new VoucherLine()));
@@ -115,6 +115,7 @@ export class ManualFormComponent implements OnInit {
             },
         });
     }
+
 
     createreferenceArray(pItems: ManualAccountAuxiliarDTO[]): FormArray {
         const resultList = this._formBuilder.array([], Validators.required);
@@ -221,6 +222,10 @@ export class ManualFormComponent implements OnInit {
 
         if (!manualaccount.line.account)
             manualaccount.line.account = "";
+        if (!manualaccount.line.accountName)
+            manualaccount.line.accountName = "";
+        if (!manualaccount.line.note)
+            manualaccount.line.note = "";
 
         const group = this._formBuilder.group({
             line: this._formBuilder.group(manualaccount.line),
@@ -302,7 +307,7 @@ export class ManualFormComponent implements OnInit {
 
         this.subscription = group.valueChanges.pipe(
             debounceTime(1000)).subscribe(item => {
-                if (item.account && (item.positive !== 0 || item.negative !== 0)) {
+                if (item && item.line && item.line.account && (item.line.positive !== 0 || item.line.negative !== 0)) {
                     this.recordsArray.push(this.createRecord(new VoucherLine()));
                 }
             });
@@ -340,34 +345,34 @@ export class ManualFormComponent implements OnInit {
     }
 
     printReport() {
-         for (let r = 0; r < this.reportes.length; r++) {
-                const _report = this.reportes[r];
-                  this.showReport(_report);
-                
-              }
-            }
+        for (let r = 0; r < this.reportes.length; r++) {
+            const _report = this.reportes[r];
+            this.showReport(_report);
+
+        }
+    }
 
     showReport(reporte: ReporteBaseDTO) {
         if (!reporte) {
-          return;
+            return;
         }
         let stringURL = reporte.servidorUrl;
         if (!stringURL) {
-          stringURL = this.ls.getItem(LocalConstants.URL_CONF);
+            stringURL = this.ls.getItem(LocalConstants.URL_CONF);
         }
         stringURL =
-          stringURL +
-          '/reporte?nombre=' +
-          reporte.llaveTabla +
-          '&P_KEY=' +
-          this.key +
-          '&P_TOKEN=' +
-          this.templateService.getTokenConnection(stringURL);
-    
+            stringURL +
+            '/reporte?nombre=' +
+            reporte.llaveTabla +
+            '&P_KEY=' +
+            this.key +
+            '&P_TOKEN=' +
+            this.templateService.getTokenConnection(stringURL);
+
         if (reporte.variables) {
-          stringURL = stringURL + '&' + reporte.variables;
+            stringURL = stringURL + '&' + reporte.variables;
         }
         window.open(stringURL, '_blank');
-      }
+    }
 
 }

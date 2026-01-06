@@ -194,6 +194,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   }
 
   adicionarListener(pField: IDynamicControl) {
+    if (!this.data) return;
     if (!this.listeners) {
       this.listeners = [];
     }
