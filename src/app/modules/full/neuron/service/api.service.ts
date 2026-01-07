@@ -139,6 +139,8 @@ export class ApiService {
                 newElement.valorFecha = element.valorFecha;
                 newElement.valorText = element.valorText;
                 newElement.campo = element.campo;
+                //Es encesario para que se calculen algunas formulas, trustmetrans recibo de factura
+                newElement.expedientes = element.expedientes;
 
                 filter.dependientes.push(newElement)
             }
