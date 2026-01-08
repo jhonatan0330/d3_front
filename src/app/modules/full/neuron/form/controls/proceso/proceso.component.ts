@@ -451,6 +451,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       this.actualizarCombo(true);
     } else {
       if (this.tipoTexto) {
+        //Sucede que los combo no se calculaban al cambiar, recibo de pago de trustmetrans refefuente
+        if(this.proceso==null) this.setValorNumero(null);
         this.actualizarTexto();
       } else {
         let valorNumero = 0;
