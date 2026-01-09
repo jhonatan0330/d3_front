@@ -16,6 +16,7 @@ import {
 } from '@angular/router';
 import { ContactsService } from './contact.services';
 import {
+    debounceTime,
     Observable,
     Subject,
     switchMap,
@@ -85,6 +86,7 @@ export class PersonsComponent implements OnInit, OnDestroy {
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
             .pipe(
+                debounceTime(500),
                 takeUntil(this._unsubscribeAll),
                 switchMap((query) =>
                     // Search
