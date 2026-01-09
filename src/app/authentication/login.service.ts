@@ -136,6 +136,8 @@ export class LoginService {
     }
 
     if (this.company && this.company.llaveTabla === _company?.llaveTabla) {
+      // se presentaba un bug en los modulos 
+      this.company.propiedades = _company.propiedades;
       //Evito que se vuelva a consultar los template coverad
       return;
     }
@@ -426,5 +428,22 @@ export class LoginService {
       //}
     }
   }
+
+  validateAccessModule(pModuleKey: string): boolean {
+    
+        if (this.company) {
+            const _modules = PlantillaHelper.buscarValorMultiple(this.company.propiedades, PlantillaHelper.APP_MODULES);
+            if (_modules) {
+                for (let index = 0; index < _modules.length; index++) {
+                    const element = _modules[index];
+                    if (element.valor === pModuleKey) {
+                        return true;
+                        
+                    }
+                }
+            }
+        }
+        return false;
+      }
 
 }
