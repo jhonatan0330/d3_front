@@ -743,7 +743,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                             _element.expedientes[0].estadoExpediente, _element.expedientes[0]);
                     } else {
                         const _property = PlantillaHelper.buscarPropiedad(_element.campoDTO.propiedades, PlantillaHelper.VINCULO_DATA);
-                        if (_property && !_property.relaciones ) {
+                        if (_property && !_property.relaciones) {
                             const _templateVinculo = this.templateService.getTemplate(_property.valor, null);
                             if (_templateVinculo) {
                                 const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
@@ -806,33 +806,37 @@ export class FormComponent implements OnInit, AfterViewInit {
         _doc.plantilla = pNextTemplate;
         const camposPosibles: DocumentoPlantillaCaracteristicaDTO[] = [];
         let textoCampoPosible: string;
+
         // Valido que existan caracteristicas con el mismo codigo y lo modifico
-        for (let i = 0; i < _nextTemplate.caracteristicas.length; i++) {
-            const campo = _nextTemplate.caracteristicas[i];
-            // Itero por los campos del pedido para ver que tengan el mismo codigo
-            if (pDocument.caracteristicas) {
-                for (let j = 0; j < pDocument.caracteristicas.length; j++) {
-                    const campoDoc = pDocument.caracteristicas[j];
-                    if (campo.codigo === campoDoc.campoDTO.codigo) {
-                        if (!_doc.caracteristicas) {
-                            _doc.caracteristicas = [];
+        if (_nextTemplate.caracteristicas) {
+            for (let i = 0; i < _nextTemplate.caracteristicas.length; i++) {
+                const campo = _nextTemplate.caracteristicas[i];
+                // Itero por los campos del pedido para ver que tengan el mismo codigo
+                if (pDocument.caracteristicas) {
+                    for (let j = 0; j < pDocument.caracteristicas.length; j++) {
+                        const campoDoc = pDocument.caracteristicas[j];
+                        if (campo.codigo === campoDoc.campoDTO.codigo) {
+                            if (!_doc.caracteristicas) {
+                                _doc.caracteristicas = [];
+                            }
+                            campoDoc.principal = null;
+                            _doc.caracteristicas.push(campoDoc);
+                            break;
                         }
-                        campoDoc.principal = null;
-                        _doc.caracteristicas.push(campoDoc);
-                        break;
+                    }
+                }
+
+                textoCampoPosible = this.validateIsPossibleField(campo, pDocument.plantilla);
+                if (textoCampoPosible) {
+                    if (textoCampoPosible === this.CAMPO_POSIBLE_MENOR_PRIORIDAD) {
+                        camposPosibles.push(campo);
+                    } else {
+                        camposPosibles.unshift(campo);
                     }
                 }
             }
-
-            textoCampoPosible = this.validateIsPossibleField(campo, pDocument.plantilla);
-            if (textoCampoPosible) {
-                if (textoCampoPosible === this.CAMPO_POSIBLE_MENOR_PRIORIDAD) {
-                    camposPosibles.push(campo);
-                } else {
-                    camposPosibles.unshift(campo);
-                }
-            }
         }
+
 
         if (camposPosibles.length !== 0) {
             const campoTransicion: DocumentoPlantillaCaracteristicaDTO = camposPosibles[0];
