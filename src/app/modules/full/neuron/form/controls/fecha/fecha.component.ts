@@ -81,7 +81,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
         if (this.required) {
           if (!this.data.documento && !this.isEmpty(this.funcion)) {
             this.procesarCampo(this.transformPVCtoFilter(this.data));
-          } else{
+          } else {
             const initialDate: Date = new Date();
             if (!this.conHora) {
               initialDate.setHours(0);
@@ -222,7 +222,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
     if (this.data.valorFecha) {
       let distance = this.data.valorFecha.getTime() - new Date().getTime();
       this.day = Math.floor(distance / (1000 * 60 * 60 * 24));
-      if(this.day < 0){ this.day = this.day + 1 ;}
+      if (this.day < 0) { this.day = this.day + 1; }
       this.hours = Math.floor(
         (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
       );
@@ -271,11 +271,11 @@ export class FechaComponent extends BaseComponent implements OnInit {
         this.api
           .consultarDatosBase(filtro, this.urlServer)
           .subscribe((_value: PedidoVentaCaracteristicaFilterDTO) => {
-            if(_value && _value.valorFechaMax){
+            if (_value && _value.valorFechaMax) {
               this.dateFrom.setValue(_value.valorFechaMax);
               this.timeFrom.setValue(('0' + _value.valorFechaMax.getHours()).slice(-2) + ":" + ('0' + _value.valorFechaMax.getMinutes()).slice(-2));
             }
-            
+
           });
       }
     }
@@ -284,40 +284,43 @@ export class FechaComponent extends BaseComponent implements OnInit {
   send2Server(): boolean {
 
     this.errorMessage = null;
-    if (!this.isEmpty(this.obtenerValor(PlantillaHelper.FECHA_MAXIMA))){
-      const maxTime = this.obtenerValor(PlantillaHelper.FECHA_MAXIMA);
-      if (!this.isEmpty(maxTime) && this.data?.valorFecha) {
-        const fechaMaxima = new Date(Date.now() + Number(maxTime));
+    if (this.data.modificado) {
+      if (!this.isEmpty(this.obtenerValor(PlantillaHelper.FECHA_MAXIMA))) {
+        const maxTime = this.obtenerValor(PlantillaHelper.FECHA_MAXIMA);
+        if (!this.isEmpty(maxTime) && this.data?.valorFecha) {
+          const fechaMaxima = new Date(Date.now() + Number(maxTime));
 
-        if (this.data.valorFecha > fechaMaxima) {
-          this.errorMessage =
-            `La fecha no puede ser mayor a ${fechaMaxima.toLocaleString('en-ZA')}`;
+          if (this.data.valorFecha > fechaMaxima) {
+            this.errorMessage =
+              `La fecha no puede ser mayor a ${fechaMaxima.toLocaleString('en-ZA')}`;
+          }
+        }
+      }
+      if (!this.isEmpty(this.obtenerValor(PlantillaHelper.FECHA_MINIMA))) {
+        const minTime = this.obtenerValor(PlantillaHelper.FECHA_MINIMA);
+        if (!this.isEmpty(minTime) && this.data?.valorFecha) {
+          const fechaMinima = new Date(Date.now() - Number(minTime));
+
+          if (this.data.valorFecha < fechaMinima) {
+            this.errorMessage =
+              `La fecha no puede ser menor a ${fechaMinima.toLocaleString('en-ZA')}`;
+          }
         }
       }
     }
-  if (!this.isEmpty(this.obtenerValor(PlantillaHelper.FECHA_MINIMA))){
-      const minTime = this.obtenerValor(PlantillaHelper.FECHA_MINIMA);
-      if (!this.isEmpty(minTime) && this.data?.valorFecha) {
-        const fechaMinima = new Date(Date.now() - Number(minTime));
-        
-        if (this.data.valorFecha < fechaMinima) {
-          this.errorMessage =
-            `La fecha no puede ser menor a ${fechaMinima.toLocaleString('en-ZA')}`;
-        }
-      }
-    }
-  
-  if (!this.errorMessage && this.required && !this.isInvisible && !this.data.valorFecha) {
-    this.errorMessage =
-      `En la plantilla ${this._structure.plantillaNombre} es obligatorio registrar el campo ${this._structure.nombre})`;
-  }
 
-  if (this.errorMessage) {
-    const input = document.getElementById(this.idField) as HTMLInputElement;
-    if (input) { input.focus();  }
-    return false;
+
+    if (!this.errorMessage && this.required && !this.isInvisible && !this.data.valorFecha) {
+      this.errorMessage =
+        `En la plantilla ${this._structure.plantillaNombre} es obligatorio registrar el campo ${this._structure.nombre})`;
+    }
+
+    if (this.errorMessage) {
+      const input = document.getElementById(this.idField) as HTMLInputElement;
+      if (input) { input.focus(); }
+      return false;
+    }
+    return true;
   }
-  return true;
-}
 
 }
