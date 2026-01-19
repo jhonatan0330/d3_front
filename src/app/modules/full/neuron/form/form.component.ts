@@ -733,7 +733,8 @@ export class FormComponent implements OnInit, AfterViewInit {
 
         this.getTransitionsOfTemplate(this.plantilla, _estadollave, this.pedido);
 
-        if (this.pedido.llaveTabla && this.pedido.estado === 'A') {
+        // Lo retire porque se vehia muy feo todas las transiciones juntas
+        /*if (this.pedido.llaveTabla && this.pedido.estado === 'A') {
             for (let _f = 0; _f < this.pedido.caracteristicas.length; _f++) {
                 const _element = this.pedido.caracteristicas[_f];
                 if (_element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.VINCULO) {
@@ -757,7 +758,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                     }
                 }
             }
-        }
+        }*/
     }
 
     getTransitionsOfTemplate(pTemplate: DocumentoPlantillaDTO, pState: string, pDocumentTransition: PedidoVentaDTO) {
