@@ -152,6 +152,8 @@ export class PlantillaHelper {
   static SECCION_FUNCION = 'SECCION_FUNCION_SQL';
 
   static VINCULO_DATA = 'VINCULO_DATA';
+  static TRANSICION_VISIBLE_VINCULO = 'TRANSICION_VISIBLE_VINCULO';
+  
   
   
   // Estos dos los quite porque genrarban muchos cilso infirnitos

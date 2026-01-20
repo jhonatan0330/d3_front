@@ -731,17 +731,17 @@ export class FormComponent implements OnInit, AfterViewInit {
         let _estadollave = this.pedido.estadoExpediente;
         if (!_estadollave) _estadollave = this.pedido.estado;
 
-        this.getTransitionsOfTemplate(this.plantilla, _estadollave, this.pedido);
+        this.getTransitionsOfTemplate(this.plantilla, _estadollave, this.pedido, false);
 
         // Lo retire porque se vehia muy feo todas las transiciones juntas
-        /*if (this.pedido.llaveTabla && this.pedido.estado === 'A') {
+        if (this.pedido.llaveTabla && this.pedido.estado === 'A') {
             for (let _f = 0; _f < this.pedido.caracteristicas.length; _f++) {
                 const _element = this.pedido.caracteristicas[_f];
                 if (_element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.VINCULO) {
                     if (_element.expedientes) {
                         this.getTransitionsOfTemplate(
                             this.templateService.getTemplate(_element.expedientes[0].plantilla, null),
-                            _element.expedientes[0].estadoExpediente, _element.expedientes[0]);
+                            _element.expedientes[0].estadoExpediente, _element.expedientes[0], true);
                     } else {
                         const _property = PlantillaHelper.buscarPropiedad(_element.campoDTO.propiedades, PlantillaHelper.VINCULO_DATA);
                         if (_property && !_property.relaciones) {
@@ -758,10 +758,10 @@ export class FormComponent implements OnInit, AfterViewInit {
                     }
                 }
             }
-        }*/
+        }
     }
 
-    getTransitionsOfTemplate(pTemplate: DocumentoPlantillaDTO, pState: string, pDocumentTransition: PedidoVentaDTO) {
+    getTransitionsOfTemplate(pTemplate: DocumentoPlantillaDTO, pState: string, pDocumentTransition: PedidoVentaDTO, pIsVinculo: boolean) {
         if (!pTemplate || !pTemplate.estados || pTemplate.estados.length === 0) return;
 
         for (let _iField = 0; _iField < pTemplate.estados.length; _iField++) {
@@ -776,6 +776,12 @@ export class FormComponent implements OnInit, AfterViewInit {
                     if (_transition.plantilla) {
                         const _templateTransition: DocumentoPlantillaDTO = this.templateService.getTemplate(_transition.plantilla, pTemplate.server);
                         if (_templateTransition && !PlantillaHelper.isEmpty(_templateTransition.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+                            //Esto es para que no se vean todas las transiciones, si toca mejorar un poco la logica por el momento va asi
+                            if (pIsVinculo) {
+                                if(PlantillaHelper.isEmpty(_transition.propiedades, PlantillaHelper.TRANSICION_VISIBLE_VINCULO)){
+                                    continue;
+                                }
+                            }
                             const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
                             _newtransicion.imagen = _templateTransition.imagen;
                             _newtransicion.plantilla = _templateTransition.llaveTabla;
