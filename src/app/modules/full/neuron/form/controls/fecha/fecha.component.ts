@@ -284,28 +284,32 @@ export class FechaComponent extends BaseComponent implements OnInit {
   send2Server(): boolean {
 
     this.errorMessage = null;
-    if (this.data.modificado) {
-      if (!this.isEmpty(this.obtenerValor(PlantillaHelper.FECHA_MAXIMA))) {
-        const maxTime = this.obtenerValor(PlantillaHelper.FECHA_MAXIMA);
-        if (!this.isEmpty(maxTime) && this.data?.valorFecha) {
-          const fechaMaxima = new Date(Date.now() + Number(maxTime));
+    if (this.data.modificado && this.data?.valorFecha) {
 
-          if (this.data.valorFecha > fechaMaxima) {
-            this.errorMessage =
-              `La fecha no puede ser mayor a ${fechaMaxima.toLocaleString('en-ZA')}`;
-          }
+      const fechaActual = new Date();
+      if (!this.conHora) {
+        fechaActual.setHours(0);
+        fechaActual.setMinutes(0);
+        fechaActual.setSeconds(0);
+        fechaActual.setMilliseconds(0);
+      }
+
+      const maxTime = this.obtenerValor(PlantillaHelper.FECHA_MAXIMA);
+      if (!this.isEmpty(maxTime)) {
+        let fechaMaxima = new Date(fechaActual.getTime() + Number(maxTime));
+        if (this.data.valorFecha > fechaMaxima) {
+          this.errorMessage =
+            `La fecha no puede ser mayor a ${fechaMaxima.toLocaleString('en-ZA')}`;
         }
       }
-      if (!this.isEmpty(this.obtenerValor(PlantillaHelper.FECHA_MINIMA))) {
-        const minTime = this.obtenerValor(PlantillaHelper.FECHA_MINIMA);
-        if (!this.isEmpty(minTime) && this.data?.valorFecha) {
-          const fechaMinima = new Date(Date.now() - Number(minTime));
-
-          if (this.data.valorFecha < fechaMinima) {
-            this.errorMessage =
-              `La fecha no puede ser menor a ${fechaMinima.toLocaleString('en-ZA')}`;
-          }
+      const minTime = this.obtenerValor(PlantillaHelper.FECHA_MINIMA);
+      if (!this.isEmpty(minTime)) {
+        let fechaMinima = new Date(fechaActual.getTime() - Number(minTime));
+        if (this.data.valorFecha < fechaMinima) {
+          this.errorMessage =
+            `La fecha no puede ser menor a ${fechaMinima.toLocaleString('en-ZA')}`;
         }
+
       }
     }
 
