@@ -743,14 +743,15 @@ export class FormComponent implements OnInit, AfterViewInit {
                             this.templateService.getTemplate(_element.expedientes[0].plantilla, null),
                             _element.expedientes[0].estadoExpediente, _element.expedientes[0], true);
                     } else {
+                        //Para no crear una nueva propiedad use el campo del motivo
                         const _property = PlantillaHelper.buscarPropiedad(_element.campoDTO.propiedades, PlantillaHelper.VINCULO_DATA);
-                        if (_property && !_property.relaciones) {
+                        if (_property &&_property.motivo && !_property.relaciones) {
                             const _templateVinculo = this.templateService.getTemplate(_property.valor, null);
                             if (_templateVinculo) {
                                 const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
                                 _newtransicion.imagen = _templateVinculo.imagen;
                                 _newtransicion.plantilla = _templateVinculo.llaveTabla;
-                                _newtransicion.nombre = _templateVinculo.nombre;
+                                _newtransicion.nombre = _property.motivo.toUpperCase();
                                 //_newtransicion.documentToTransition = pDocumentTransition;
                                 this.transiciones.push(_newtransicion);
                             }
