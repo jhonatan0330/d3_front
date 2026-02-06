@@ -263,14 +263,15 @@ export class ManualFormComponent implements OnInit {
                 pairwise())
             .subscribe(
                 ([prevValue, selectedValue]) => {
+                    selectedValue *= 1;
                     this.debitValue -= prevValue;
                     this.debitValue += selectedValue;
                     this.form.get('header').get('value').setValue(this.debitValue);
                     this.differenceValue = this.debitValue - this.creditValue;
                     if (selectedValue !== 0) {
-                        group.get('line').get('negative').disable();
+                        group.get('line').get('negative').disable({ emitEvent: false });
                     } else {
-                        if (!group.get('line').get('negative').enabled) { group.get('line').get('negative').enable(); }
+                        if (!group.get('line').get('negative').enabled) { group.get('line').get('negative').enable({ emitEvent: false }); }
                     }
                 }
             );
@@ -281,13 +282,14 @@ export class ManualFormComponent implements OnInit {
                 pairwise())
             .subscribe(
                 ([prevValue, selectedValue]) => {
+                    selectedValue *= 1; // el *1 es para pasar a numero porque viene como string y al sumar concatena
                     this.creditValue -= prevValue;
                     this.creditValue += selectedValue;
                     this.differenceValue = this.debitValue - this.creditValue;
                     if (selectedValue !== 0) {
-                        group.get('line').get('positive').disable();
+                        group.get('line').get('positive').disable({ emitEvent: false });
                     } else {
-                        if (!group.get('line').get('positive').enabled) { group.get('line').get('positive').enable(); }
+                        if (!group.get('line').get('positive').enabled) { group.get('line').get('positive').enable({ emitEvent: false }); }
                     }
                 }
             );
@@ -302,7 +304,7 @@ export class ManualFormComponent implements OnInit {
 
         this.subscription = group.valueChanges.pipe(
             debounceTime(1000)).subscribe(item => {
-                if (item.account && (item.positive !== 0 || item.negative !== 0)) {
+                if (item.line?.account && (item.line?.positive !== 0 || item.line?.negative !== 0)) {
                     this.recordsArray.push(this.createRecord(new VoucherLine()));
                 }
             });
