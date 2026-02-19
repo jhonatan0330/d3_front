@@ -203,7 +203,7 @@
         <button mat-raised-button (click)="listar(1)" class="ml-1">
           <mat-icon>refresh</mat-icon>
         </button>
-        <!-- Create copiado de arriba -->
+        <!-- Create copiado de arriba 
         <button mat-raised-button matSuffix [matMenuTriggerFor]="clickHoverMenuMultiple"
           *ngIf="acciones && !proceso && (isEnabled || herencia)" #clickHoverMenuTrigger="matMenuTrigger"
           (click)="sendCreate()">
@@ -213,7 +213,7 @@
           <button mat-menu-item (click)="createNewDocument(item.valor)" *ngFor="let item of acciones">
             Crear {{ item.texto | titlecase }}
           </button>
-        </mat-menu>
+        </mat-menu>-->
         <!-- Boton codigo QR-->
         <button mat-raised-button (click)="toogleScanner()" class="ml-1" *ngIf="isEnabled && readQR">
           <mat-icon>camera_enhance</mat-icon>
