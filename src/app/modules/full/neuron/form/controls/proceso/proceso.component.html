@@ -17,11 +17,12 @@
   </button>
   <!-- Create -->
   <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenuButton"
-    *ngIf="acciones && !errorMessage && !proceso && !fControl.value" #clickHoverMenuButtonTrigger="matMenuTrigger"
+    [style.display]="!fControl.value ? 'inline-flex' : 'none !important'"
+    *ngIf="acciones && !errorMessage && !proceso" #clickHoverMenuTrigger="matMenuTrigger"
     (click)="sendCreate()" tabindex="-1">
     <mat-icon>add_circle</mat-icon>
   </button>
-  <mat-menu #clickHoverButtonMenu="matMenu">
+  <mat-menu #clickHoverMenuButton="matMenu">
     <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)" *ngFor="let item of acciones"
       tabindex="-1">
       Crear {{ item.texto | titlecase }}
