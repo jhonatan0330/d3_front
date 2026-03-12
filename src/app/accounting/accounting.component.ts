@@ -11,6 +11,8 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 import { MatTableDataSource } from '@angular/material/table';
 import Swal from 'sweetalert2';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { LoginService } from 'app/authentication/login.service';
+import { Router } from '@angular/router';
 
 interface AccountNode {
     account: AccountDTO;
@@ -73,12 +75,18 @@ export class AccountComponent implements OnInit, OnDestroy {
     dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     constructor(private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _matDialog: MatDialog,
+
         private utilsService: UtilsService,
-        public accountingService: AccountingService) {
+        public accountingService: AccountingService,
+        private _jwt: LoginService,
+        private _router: Router) {
     }
 
     ngOnInit(): void {
+        if (!this._jwt.validateAccessModule('account')) {
+            this._router.navigate(['/main']);
+            return;
+        }
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({ matchingAliases }) => {
@@ -144,7 +152,7 @@ export class AccountComponent implements OnInit, OnDestroy {
                     error: () => {
                         this.isLoadingCatalog = false;
                     },
-                    complete: () =>{
+                    complete: () => {
                         this.getVouchers();
                     }
                 });
@@ -236,6 +244,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     openManualForm(): void {
         if (!this.accountingService.currentCatalog) { return; }
         this.utilsService.modalVoucher(null, this.accountingService.currentCatalog.key)
-        .subscribe(() => { this.getBalance(); this.getVouchers(); });
+            .subscribe(() => { this.getBalance(); this.getVouchers(); });
     }
 }

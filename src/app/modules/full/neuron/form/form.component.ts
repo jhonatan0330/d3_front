@@ -731,8 +731,9 @@ export class FormComponent implements OnInit, AfterViewInit {
         let _estadollave = this.pedido.estadoExpediente;
         if (!_estadollave) _estadollave = this.pedido.estado;
 
-        this.getTransitionsOfTemplate(this.plantilla, _estadollave, this.pedido);
+        this.getTransitionsOfTemplate(this.plantilla, _estadollave, this.pedido, false);
 
+        // Lo retire porque se vehia muy feo todas las transiciones juntas
         if (this.pedido.llaveTabla && this.pedido.estado === 'A') {
             for (let _f = 0; _f < this.pedido.caracteristicas.length; _f++) {
                 const _element = this.pedido.caracteristicas[_f];
@@ -740,16 +741,17 @@ export class FormComponent implements OnInit, AfterViewInit {
                     if (_element.expedientes) {
                         this.getTransitionsOfTemplate(
                             this.templateService.getTemplate(_element.expedientes[0].plantilla, null),
-                            _element.expedientes[0].estadoExpediente, _element.expedientes[0]);
+                            _element.expedientes[0].estadoExpediente, _element.expedientes[0], true);
                     } else {
+                        //Para no crear una nueva propiedad use el campo del motivo
                         const _property = PlantillaHelper.buscarPropiedad(_element.campoDTO.propiedades, PlantillaHelper.VINCULO_DATA);
-                        if (_property && !_property.relaciones ) {
+                        if (_property &&_property.motivo && !_property.relaciones) {
                             const _templateVinculo = this.templateService.getTemplate(_property.valor, null);
                             if (_templateVinculo) {
                                 const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
                                 _newtransicion.imagen = _templateVinculo.imagen;
                                 _newtransicion.plantilla = _templateVinculo.llaveTabla;
-                                _newtransicion.nombre = _templateVinculo.nombre;
+                                _newtransicion.nombre = _property.motivo.toUpperCase();
                                 //_newtransicion.documentToTransition = pDocumentTransition;
                                 this.transiciones.push(_newtransicion);
                             }
@@ -760,7 +762,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         }
     }
 
-    getTransitionsOfTemplate(pTemplate: DocumentoPlantillaDTO, pState: string, pDocumentTransition: PedidoVentaDTO) {
+    getTransitionsOfTemplate(pTemplate: DocumentoPlantillaDTO, pState: string, pDocumentTransition: PedidoVentaDTO, pIsVinculo: boolean) {
         if (!pTemplate || !pTemplate.estados || pTemplate.estados.length === 0) return;
 
         for (let _iField = 0; _iField < pTemplate.estados.length; _iField++) {
@@ -775,6 +777,12 @@ export class FormComponent implements OnInit, AfterViewInit {
                     if (_transition.plantilla) {
                         const _templateTransition: DocumentoPlantillaDTO = this.templateService.getTemplate(_transition.plantilla, pTemplate.server);
                         if (_templateTransition && !PlantillaHelper.isEmpty(_templateTransition.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+                            //Esto es para que no se vean todas las transiciones, si toca mejorar un poco la logica por el momento va asi
+                            if (pIsVinculo) {
+                                if(PlantillaHelper.isEmpty(_transition.propiedades, PlantillaHelper.TRANSICION_VISIBLE_VINCULO)){
+                                    continue;
+                                }
+                            }
                             const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
                             _newtransicion.imagen = _templateTransition.imagen;
                             _newtransicion.plantilla = _templateTransition.llaveTabla;
@@ -806,33 +814,37 @@ export class FormComponent implements OnInit, AfterViewInit {
         _doc.plantilla = pNextTemplate;
         const camposPosibles: DocumentoPlantillaCaracteristicaDTO[] = [];
         let textoCampoPosible: string;
+
         // Valido que existan caracteristicas con el mismo codigo y lo modifico
-        for (let i = 0; i < _nextTemplate.caracteristicas.length; i++) {
-            const campo = _nextTemplate.caracteristicas[i];
-            // Itero por los campos del pedido para ver que tengan el mismo codigo
-            if (pDocument.caracteristicas) {
-                for (let j = 0; j < pDocument.caracteristicas.length; j++) {
-                    const campoDoc = pDocument.caracteristicas[j];
-                    if (campo.codigo === campoDoc.campoDTO.codigo) {
-                        if (!_doc.caracteristicas) {
-                            _doc.caracteristicas = [];
+        if (_nextTemplate.caracteristicas) {
+            for (let i = 0; i < _nextTemplate.caracteristicas.length; i++) {
+                const campo = _nextTemplate.caracteristicas[i];
+                // Itero por los campos del pedido para ver que tengan el mismo codigo
+                if (pDocument.caracteristicas) {
+                    for (let j = 0; j < pDocument.caracteristicas.length; j++) {
+                        const campoDoc = pDocument.caracteristicas[j];
+                        if (campo.codigo === campoDoc.campoDTO.codigo) {
+                            if (!_doc.caracteristicas) {
+                                _doc.caracteristicas = [];
+                            }
+                            campoDoc.principal = null;
+                            _doc.caracteristicas.push(campoDoc);
+                            break;
                         }
-                        campoDoc.principal = null;
-                        _doc.caracteristicas.push(campoDoc);
-                        break;
+                    }
+                }
+
+                textoCampoPosible = this.validateIsPossibleField(campo, pDocument.plantilla);
+                if (textoCampoPosible) {
+                    if (textoCampoPosible === this.CAMPO_POSIBLE_MENOR_PRIORIDAD) {
+                        camposPosibles.push(campo);
+                    } else {
+                        camposPosibles.unshift(campo);
                     }
                 }
             }
-
-            textoCampoPosible = this.validateIsPossibleField(campo, pDocument.plantilla);
-            if (textoCampoPosible) {
-                if (textoCampoPosible === this.CAMPO_POSIBLE_MENOR_PRIORIDAD) {
-                    camposPosibles.push(campo);
-                } else {
-                    camposPosibles.unshift(campo);
-                }
-            }
         }
+
 
         if (camposPosibles.length !== 0) {
             const campoTransicion: DocumentoPlantillaCaracteristicaDTO = camposPosibles[0];

@@ -40,7 +40,7 @@
                                 <mat-icon class="icon-size-5" matPrefix
                                     [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
                                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                                    [placeholder]="'Search contacts'" />
+                                    [placeholder]="'Buscar usuarios'" />
                             </mat-form-field>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                                             !selectedContact || selectedContact.identificador !== contact.identificador,
                                         'bg-primary-50 dark:bg-hover':
                                             selectedContact && selectedContact.identificador === contact.identificador
-                                    }" >
+                                    }">
                                     <div
                                         class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full">
                                         <img *ngIf="contact.imagen" class="h-full w-full object-cover"

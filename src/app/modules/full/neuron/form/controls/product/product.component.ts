@@ -235,7 +235,13 @@ export class ProductComponent implements OnInit, AfterViewInit {
     }
 
     this.detallePedidoVenta.valorUnitario = valorUnitario;
-    this.detallePedidoVenta.valorMaximo = tarifa.valorMaximo;
+    
+    if(tarifa.valorMaximo<this.detallePedidoVenta.valorUnitario) {
+      this.detallePedidoVenta.valorMaximo = this.detallePedidoVenta.valorUnitario;
+    }else{
+      this.detallePedidoVenta.valorMaximo = tarifa.valorMaximo;
+    }
+
     this.detallePedidoVenta.valorMinimo = tarifa.valorMinimo;
 
 

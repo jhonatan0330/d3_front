@@ -451,6 +451,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       this.actualizarCombo(true);
     } else {
       if (this.tipoTexto) {
+        //Sucede que los combo no se calculaban al cambiar, recibo de pago de trustmetrans refefuente
+        if(this.proceso==null) this.setValorNumero(null);
         this.actualizarTexto();
       } else {
         let valorNumero = 0;
@@ -628,7 +630,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.fCheckActivo = new FormControl(true);
     this.fCheckInactivo = new FormControl();
     // Lo quite porque en roa cierre de vales no queria que viniera por defecto
-    this.fCheckFinalizado = new FormControl();
+    // pero debi volverlo a colocar toca buscar otra estrategia
+    this.fCheckFinalizado = new FormControl(true);
     if (this.isEnabled) {
       if (this.solicitarFechas) {
         this.fControlDateStart.setValue(new Date());
@@ -1355,6 +1358,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           return;
         }
         entity.nombre = this.fControlSearch.value;
+        entity.estado = StatesEnum.ACTIVE + ";" + StatesEnum.INACTIVE + ";" + StatesEnum.FINALIZADO;
         entity.filtroParametro = null;
       } else {
         entity.nombre = null;

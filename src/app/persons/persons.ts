@@ -16,6 +16,7 @@ import {
 } from '@angular/router';
 import { ContactsService } from './contact.services';
 import {
+    debounceTime,
     Observable,
     Subject,
     switchMap,
@@ -59,21 +60,7 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
-        let _notPermission = true;
-        if (this._jwt.company) {
-            const _modules = PlantillaHelper.buscarValorMultiple(this._jwt.company.propiedades, PlantillaHelper.APP_MODULES);
-            if (_modules) {
-                for (let index = 0; index < _modules.length; index++) {
-                    const element = _modules[index];
-                    if (element.valor === 'persons') {
-                        _notPermission = false;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (_notPermission) {
+        if (!this._jwt.validateAccessModule('persons') ) {
             this._router.navigate(['/main']);
             return;
         }
@@ -88,6 +75,7 @@ export class PersonsComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
             });
 
+            this._contactsService.clearContacts();
         this.contacts$ = this._contactsService.contacts$;
 
 
@@ -98,6 +86,7 @@ export class PersonsComponent implements OnInit, OnDestroy {
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
             .pipe(
+                debounceTime(500),
                 takeUntil(this._unsubscribeAll),
                 switchMap((query) =>
                     // Search

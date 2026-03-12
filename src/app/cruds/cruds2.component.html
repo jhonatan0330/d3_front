@@ -265,13 +265,15 @@
                                 <!-- Content-->
                                 <div class="p-1"
                                     *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
-                                    <div class="flex items-center" *ngFor="let f of iDocument.caracteristicas">
+                                    <div class="flex items-center" *ngFor="let f of iDocument.caracteristicas" >
                                         <small [id]="'css' + plantilla.codigo+  f.campoDTO.codigo + '-0'"
                                             class="whitespace-nowrap font-extralight mr-2">{{ f.campoDTO.nombre
                                             }}</small>
                                         <div [id]="'css' + plantilla.codigo + f.campoDTO.codigo +'-1'"
                                             class="text-right w-full truncate text-md" *ngIf="f.valorText">
-                                            <div class="line-clamp-1" *ngIf="!f.valorText.startsWith('http')">
+                                            <div class="line-clamp-1" 
+                                                [class.font-bold]="f.estado === 'C'"
+                                                *ngIf="!f.valorText.startsWith('http')">
                                                 {{f.valorText}}</div>
                                             <img *ngIf="f.valorText.startsWith('http')" [src]="f.valorText"
                                                 [name]="f.valorText" />

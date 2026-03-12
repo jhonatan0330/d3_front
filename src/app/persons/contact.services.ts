@@ -62,6 +62,9 @@ export class ContactsService {
         );
     }
 
+    clearContacts(): void {
+        this._contacts.next([]);
+    }
 
     searchContacts(query: string): Observable<UsuarioDTO[]> {
         return this._httpClient.post<UsuarioDTO[]>(
