@@ -59,7 +59,7 @@ export class CroquisComponent extends BaseComponent
   private dragOffsetY = 0;
 
   // Tamaño por defecto de los ítems
-  private readonly defaultItemSize = 48;
+  private readonly defaultItemSize = 24;
 
   // Plantilla base para nuevo componente (si es necesaria)
   exp: PedidoVentaDTO = {} as PedidoVentaDTO;
@@ -311,8 +311,8 @@ export class CroquisComponent extends BaseComponent
         imagen: url,
         dinero: {
           ...(this.exp.dinero ?? { saldo: 0, valorTotal: 0 }),
-          saldo: 30 + 5 * count,
-          valorTotal: 30 + 5 * count,
+          saldo: 30 + 5 ,
+          valorTotal: 30 + 5 ,
         },
       } as PedidoVentaDTO;
 
