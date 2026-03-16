@@ -3,11 +3,13 @@ import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountingService } from '../accounting.service';
 import { Observable, Subscription, debounceTime, pairwise, startWith, map } from 'rxjs';
-import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, VoucherLine } from '../accounting.domain';
+import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, ManualDTO, VoucherLine } from '../accounting.domain';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ReporteBaseDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'account-manual-form',
@@ -181,6 +183,35 @@ export class ManualFormComponent implements OnInit {
             this.update();
         }
     }
+    
+    deleteVouchers(voucher: ManualDTO) {
+    
+            Swal.fire({
+                title: '¿Desea eliminar el comprobante?',
+                text: voucher.code,
+                icon: "warning",
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: "Si, eliminar",
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'No, volver'
+            }).then((resultado) => {
+    
+                if (resultado.isConfirmed) {
+                    this.accountingService.deleteVoucher(voucher.key).subscribe({
+                        next: (dataResult: ManualDTO) => {
+                        },
+                        error: () => {
+                            this.loading = true;
+                        },
+                        complete: () => {
+                            this.matDialogRef.close();
+                        }
+                    });
+                }
+    
+            })
+        }
 
     private create() {
         this.accountingService.createManual(this.form.value)
