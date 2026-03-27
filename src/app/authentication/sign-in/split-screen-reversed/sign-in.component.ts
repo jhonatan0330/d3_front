@@ -140,4 +140,8 @@ export class SignInSplitScreenReversedComponent implements OnInit {
             this.signIn();
         });
     }
+
+    testPrint(){
+        this.utilsService.openPDF().subscribe();
+    }
 }

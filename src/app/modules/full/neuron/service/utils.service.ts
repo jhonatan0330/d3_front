@@ -15,8 +15,8 @@ import { dfaComponent } from 'app/authentication/DFA/dfa';
 import { FieldComponent } from 'app/configuration-forms/flex/fieldComponent';
 import { AddFieldComponent } from 'app/configuration-forms/flex/addField';
 import { AddPropertyComponent } from 'app/configuration-forms/flex/addProperty';
-import { PropiedadDTO, PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
-import { char } from '@zxing/library/esm/customTypings';
+import {  PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
+import { VisorPdfDialogComponent } from 'app/shared/components/visor-pdf-dialog/visor-pdf-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -169,4 +169,14 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
+  openPDF() {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(VisorPdfDialogComponent, {
+      width: '80%',
+      height: '90%',
+      data: {
+        params: { id: 123 }
+      }
+    });
+    return dialogRef.afterClosed();
+  }
 }
