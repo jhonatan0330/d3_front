@@ -29,18 +29,16 @@
   <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" />
 </div>
 <!-- Tiempo -->
-<div class="flex items-center w-full gap-2"
+<div 
+
      *ngIf="!isRango && sinCalendar"
-     [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+     [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'flex'">
 
-  <span class="w-[100px] truncate flex-1 text-center" title="{{ structure.nombre }}">
-    {{ structure.nombre | titlecase }}
-  </span>
-
-  <mat-form-field class="pl-2 w-auto">
-    <mat-label>Hora</mat-label>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ structure.nombre | titlecase }}</mat-label>
 
     <input
+    class="flex justify-end w-full"
       matInput
       type="time"
       [formControl]="ftimeFromMinutesAndHours"
