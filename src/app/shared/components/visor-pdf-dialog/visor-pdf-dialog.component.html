@@ -1,0 +1,24 @@
+<!-- visor-pdf-dialog.component.html -->
+
+<h2 mat-dialog-title>Vista previa</h2>
+
+<mat-dialog-content>
+
+  <div *ngIf="loading">
+    Cargando PDF...
+  </div>
+
+  <iframe
+    *ngIf="pdfUrl"
+    #iframe
+    [src]="pdfUrl"
+    width="100%"
+    height="500px">
+  </iframe>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="imprimir()">Imprimir</button>
+  <button mat-button (click)="cerrar()">Cerrar</button>
+</mat-dialog-actions>
