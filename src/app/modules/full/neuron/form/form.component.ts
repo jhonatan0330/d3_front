@@ -737,7 +737,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (this.pedido.llaveTabla && this.pedido.estado === 'A') {
             for (let _f = 0; _f < this.pedido.caracteristicas.length; _f++) {
                 const _element = this.pedido.caracteristicas[_f];
-                if (_element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.VINCULO) {
+                if (_element.campoDTO && _element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.VINCULO) {
                     if (_element.expedientes) {
                         this.getTransitionsOfTemplate(
                             this.templateService.getTemplate(_element.expedientes[0].plantilla, null),
