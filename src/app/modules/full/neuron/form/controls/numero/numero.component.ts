@@ -256,7 +256,10 @@ export class NumeroComponent extends BaseComponent implements OnInit {
                 DocumentoPlantillaCaracteristicaEnum.PROCESO
               ) {
                 if(!PlantillaHelper.buscarPropiedad(pvc.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)){
-                  return;
+                  if(!PlantillaHelper.buscarPropiedad(pvc.campoDTO.propiedades, PlantillaHelper.MULTIPLE)){
+                  
+                    return;
+                  }
                 }
               }
             }
