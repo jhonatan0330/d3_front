@@ -17,11 +17,12 @@
   </button>
   <!-- Create -->
   <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenuButton"
-    *ngIf="acciones && !errorMessage && !proceso && !fControl.value" #clickHoverMenuButtonTrigger="matMenuTrigger"
+    [style.display]="!fControl.value ? 'inline-flex' : 'none !important'"
+    *ngIf="acciones && !errorMessage && !proceso" #clickHoverMenuTrigger="matMenuTrigger"
     (click)="sendCreate()" tabindex="-1">
     <mat-icon>add_circle</mat-icon>
   </button>
-  <mat-menu #clickHoverButtonMenu="matMenu">
+  <mat-menu #clickHoverMenuButton="matMenu">
     <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)" *ngFor="let item of acciones"
       tabindex="-1">
       Crear {{ item.texto | titlecase }}
@@ -203,7 +204,7 @@
         <button mat-raised-button (click)="listar(1)" class="ml-1">
           <mat-icon>refresh</mat-icon>
         </button>
-        <!-- Create copiado de arriba -->
+        <!-- Create copiado de arriba 
         <button mat-raised-button matSuffix [matMenuTriggerFor]="clickHoverMenuMultiple"
           *ngIf="acciones && !proceso && (isEnabled || herencia)" #clickHoverMenuTrigger="matMenuTrigger"
           (click)="sendCreate()">
@@ -213,7 +214,7 @@
           <button mat-menu-item (click)="createNewDocument(item.valor)" *ngFor="let item of acciones">
             Crear {{ item.texto | titlecase }}
           </button>
-        </mat-menu>
+        </mat-menu>-->
         <!-- Boton codigo QR-->
         <button mat-raised-button (click)="toogleScanner()" class="ml-1" *ngIf="isEnabled && readQR">
           <mat-icon>camera_enhance</mat-icon>

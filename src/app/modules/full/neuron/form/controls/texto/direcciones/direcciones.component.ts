@@ -109,7 +109,7 @@ export class DireccionesComponent implements OnInit {
     }
 
     // 4) Detectar tipo de vía
-    const tipoMatch = s.match(/^(CL|CALLE|CR|CRA|CARRERA|AV|AVDA|AVENIDA|DIAGONAL|TRANSVERSAL|TRANSV|TRAV)\b/i);
+    const tipoMatch = s.match(/^(CL|CALLE|CR|CRA|CARRERA|AV|AVDA|AVENIDA|DIAGONAL|TRANSVERSAL|TRANSV|TRAV|AVCARRERA|AVCALLE|KILOMETRO|VEREDA)\b/i);
     let tipoVia = '';
     if (tipoMatch) {
       switch (tipoMatch[1].toUpperCase()) {
@@ -118,6 +118,10 @@ export class DireccionesComponent implements OnInit {
         case 'AV': case 'AVDA': case 'AVENIDA': tipoVia = 'Avenida'; break;
         case 'DIAGONAL': tipoVia = 'Diagonal'; break;
         case 'TRANSVERSAL': case 'TRANSV': case 'TRAV': tipoVia = 'Transversal'; break;
+        case 'AVCARRERA':  case 'AvCarrera': tipoVia = 'AvCarrera'; break;
+        case 'AVCALLE':  case 'AvCalle': tipoVia = 'AvCalle'; break;
+        case 'KILOMETRO':  case 'Kilometro': tipoVia = 'Kilómetro'; break;
+        case 'VEREDA': case 'vereda': tipoVia = 'Vereda'; break;
       }
       s = s.slice(tipoMatch[0].length).trim();
     }

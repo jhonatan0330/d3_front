@@ -25,6 +25,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
   fControlHoras: FormControl = new FormControl(0); // Controla las horas
   fControlMinutes: FormControl = new FormControl(0); // Controla los minutos
+  ftimeFromMinutesAndHours: FormControl = new FormControl(0); // Controla los minutos
 
   // Variables del contador regresivo
   day = 0;
@@ -68,6 +69,9 @@ export class FechaComponent extends BaseComponent implements OnInit {
           this.fControlMinutes.setValue(
             ((this.data.valorNumero / 1000) % 3600) / 60
           );
+          this.ftimeFromMinutesAndHours.setValue(
+            ('0' + Math.floor(this.data.valorNumero / 3600000)).slice(-2) + ":" + ('0' + (((this.data.valorNumero / 1000) % 3600) / 60)).slice(-2)
+          );
         }
         if (this.data.valorAuxiliar && this.data.valorAuxiliar === 'R') {
           this.fControlDateStart.setValue(this.data.valorFecha);
@@ -105,6 +109,8 @@ export class FechaComponent extends BaseComponent implements OnInit {
         this.fControlHoras.updateValueAndValidity();
         this.fControlMinutes.setValidators(Validators.required);
         this.fControlMinutes.updateValueAndValidity();
+        this.ftimeFromMinutesAndHours.setValidators(Validators.required);
+        this.ftimeFromMinutesAndHours.updateValueAndValidity();
       }
     }
     if (this.sinCalendar) {
@@ -114,17 +120,22 @@ export class FechaComponent extends BaseComponent implements OnInit {
       this.fControlMinutes.valueChanges.subscribe(() => {
         this.updateTimer();
       });
+      this.ftimeFromMinutesAndHours.valueChanges.subscribe(() => {
+        this.updateTimer();
+      });
     }
     if (this.isEnabled) {
       this.fControlDateStart.enable();
       this.fControlDateEnd.enable();
       this.fControlHoras.enable();
       this.fControlMinutes.enable();
+      this.ftimeFromMinutesAndHours.enable();
     } else {
       this.fControlDateStart.disable();
       this.fControlDateEnd.disable();
       this.fControlHoras.disable();
       this.fControlMinutes.disable();
+      this.ftimeFromMinutesAndHours.disable();
     }
     this.dateFrom.valueChanges.subscribe({
       next: () => {
@@ -203,13 +214,22 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
 
   updateTimer() {
+    
     let horas = 0;
+    let minutos = 0;
+
+    
     if (this.fControlHoras.value) {
       horas = this.fControlHoras.value;
     }
-    let minutos = 0;
     if (this.fControlMinutes.value) {
       minutos = this.fControlMinutes.value;
+    }
+    if (this.ftimeFromMinutesAndHours.value){
+      horas = this.ftimeFromMinutesAndHours.value.substring(0, 2);
+      minutos = this.ftimeFromMinutesAndHours.value.substring(3, 5);
+      this.fControlHoras.setValue(horas, { emitEvent: false });
+      this.fControlMinutes.setValue(minutos, { emitEvent: false });
     }
     this.data.valorNumero = horas * 3600 + minutos * 60;
     this.data.valorNumero = this.data.valorNumero * 1000; // Para milisegundos

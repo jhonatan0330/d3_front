@@ -4,6 +4,9 @@
         <button mat-icon-button (click)="printReport()" [tabIndex]="-1" *ngIf="reportes.length > 0">
             <mat-icon class="text-current" svgIcon="heroicons_outline:printer"></mat-icon>
         </button>
+        <button mat-icon-button (click)="deleteVouchers(data)" [tabIndex]="-1" *ngIf="data.key">
+            <mat-icon class="text-current" svgIcon="heroicons_outline:trash"></mat-icon>
+        </button>
         <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
             <mat-icon class="text-current" svgIcon="heroicons_outline:x-circle"></mat-icon>
         </button>
