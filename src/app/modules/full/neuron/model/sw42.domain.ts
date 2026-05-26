@@ -316,7 +316,6 @@ export class ProcesoTransicionFilterDTO extends BasicFilterDTO {
     documentadorFilter: boolean;
     afectaSaldo: string;
     imagen: string;
-    rapidaFilter: boolean;
     estadoLLegada: string;
     estadoLlegadaNombre: string;
     estadoLlegadaTipo: string;

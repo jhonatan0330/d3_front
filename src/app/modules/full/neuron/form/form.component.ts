@@ -51,33 +51,35 @@ import { LoginService } from 'app/authentication/login.service';
 export class FormComponent implements OnInit, AfterViewInit {
     // Variables para el control de los campos
     @ViewChild('dynamycFormElement', { read: ViewContainerRef })
-    myForm: ViewContainerRef;
+    myForm?: ViewContainerRef;
     formIsModified = false;
     dynamicControls: IDynamicControl[] = [];
 
     // flags
     submitted = false;
     modificable = false;
-    instruccionCrear: string;
+    instruccionCrear?: string;
     fullScreen = false;
 
-    pedidoBase: PedidoVentaDTO; // Lo uso para guardar lo que recibi para crear el formulario
-    plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
-    pedido: PedidoVentaDTO; // Contiene la data del formulario
+    pedidoBase?: PedidoVentaDTO; // Lo uso para guardar lo que recibi para crear el formulario
+    plantilla?: DocumentoPlantillaDTO; // Contiene la estructura del formulario
+    pedido?: PedidoVentaDTO; // Contiene la data del formulario
 
     esRol = false;
 
     // Variables de comportamiento
-    identificadorInicial: string; // La use para llenar el campo inicial
+    identificadorInicial?: string; // La use para llenar el campo inicial
     close2Save = false;
+    // Para pasajes
     saveInField = false;
+    openQuickTransitionAfterSave?: string;
 
     // ACTIONS
 
-    auxPlantillaProxima: string; // LAs transiciones aveces no tienen cargados los campos y se encesitan
-    documentToTransition: PedidoVentaDTO;
+    auxPlantillaProxima?: string; // LAs transiciones aveces no tienen cargados los campos y se encesitan
+    documentToTransition?: PedidoVentaDTO;
     transiciones: ProcesoTransicionDTO[] = []; // Lista de botones
-    uidOpenToNotDuplicate: string;
+    uidOpenToNotDuplicate?: string;
 
     // REPORTS
     reportes: ReporteBaseDTO[] = [];
@@ -93,7 +95,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     canChangeState = false;
     isChangeState = false;
     changeStateIsLoading = false;
-    changeStateForm: FormGroup;
+    changeStateForm?: FormGroup;
     isLoading = false;
 
     private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
@@ -118,7 +120,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (this.pedidoBase && this.pedidoBase === this.data.data) {
             return;
         }
-
+        
         if (this._jwt.token !== this._jwt.getJwtToken()) {
             location.reload();
             this.dialogRef.close(false);
@@ -128,8 +130,13 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.pedidoBase = this.data.data;
         this.identificadorInicial = this.data.identificador;
         this.saveInField = this.data.saveInField;
+        this.openQuickTransitionAfterSave = this.data.openQuickTransitionAfterSave;
+        //this
         if (this.data.close2Save) {
             this.close2Save = this.data.close2Save;
+        }
+        if (!this.pedidoBase) {
+            return;
         }
         // Cargo la plantilla al formulario para comenzar
         this.plantilla = this.cargarPlantilla(this.pedidoBase.plantilla, this.pedidoBase.server);
@@ -165,6 +172,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (!this.modificable) {
             return;
         }
+        
         this.submitted = true;
         // La variable modificado me indica si el usuario hizo cambios a los datos
         for (let i = 0; i < this.dynamicControls.length; i++) {
@@ -195,8 +203,9 @@ export class FormComponent implements OnInit, AfterViewInit {
             this.submitted = false;
             return;
         }
-        this.pedidoBase.messages = null;
+        this.pedidoBase.messages = [];
 
+        // Esto sirve para pasajes para un transbordo que guarda varios tipos documento que despues va a almacenar
         if (this.saveInField) {
             if (this.dialogRef) {
                 this.dialogRef.close({ data: this.pedido });
@@ -272,6 +281,23 @@ export class FormComponent implements OnInit, AfterViewInit {
             // Aqui va los cambios de variables
             this.utilsService.modalSuccess(successFullText);
         }
+
+        if(this.plantilla && this.plantilla.estados && this.plantilla.estados.length > 0 ){
+            for (let i = 0; i < this.plantilla.estados.length; i++) {
+                if(this.plantilla.estados[i].llaveTabla === value.estadoExpediente){
+                    for (let j = 0; j < this.plantilla.estados[i].transiciones.length; j++) {
+                        const _transition = this.plantilla.estados[i].transiciones[j];
+                        if (_transition.rapida) {
+                            this.reloadScreen(_transition.plantilla);
+                            //this.formIsModified = false;
+                            //this.crearPlantilla(_transition.plantilla, value);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         if (this.dialogRef) {
             if (!openNewFormCopyData) {
                 this.dialogRef.close({ data: value });
@@ -575,6 +601,9 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.showFields();
         this.resolvePropiertiesForm();
         this.getReports();
+        if(this.openQuickTransitionAfterSave){
+            this.crearPlantilla(this.openQuickTransitionAfterSave, this.pedido);
+        }
     }
 
 
@@ -1081,9 +1110,9 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.getSizePop();
     }
 
-    reloadScreen() {
+    reloadScreen(pTemplate: string) {
         this.dialogRef.close();
-        this.utilsService.modalWithParams(this.pedido, false).subscribe();
+        this.utilsService.modalWithParams(this.pedido, false, null, false, pTemplate).subscribe();
     }
 
 
@@ -1105,7 +1134,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         }
     }
 
-    abrirUsuario(pUsuario) {
+    abrirUsuario(pUsuario: string) {
         this.api.searchUserByRol(pUsuario).subscribe((contact: UsuarioDTO) => {
             this.utilsService.modalUser(contact.llaveTabla).subscribe();
         });
