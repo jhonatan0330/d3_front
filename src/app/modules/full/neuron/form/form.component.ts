@@ -284,7 +284,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
         if(this.plantilla && this.plantilla.estados && this.plantilla.estados.length > 0 ){
             for (let i = 0; i < this.plantilla.estados.length; i++) {
-                if(this.plantilla.estados[i].llaveTabla === value.estadoExpediente){
+                if(this.plantilla.estados[i].llaveTabla === value.estadoExpediente && this.plantilla.estados[i].transiciones && this.plantilla.estados[i].transiciones.length > 0){
                     for (let j = 0; j < this.plantilla.estados[i].transiciones.length; j++) {
                         const _transition = this.plantilla.estados[i].transiciones[j];
                         if (_transition.rapida) {
