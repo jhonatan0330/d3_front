@@ -7,12 +7,18 @@
 
       <!-- Cover image -->
       <div *ngIf="slides">
-        <mat-carousel timings="250ms ease-in" [autoplay]="true" interval="5000" color="accent" maxWidth="auto"
-          proportion="25" slides="5" [loop]="true" [hideArrows]="false" [hideIndicators]="true" [useKeyboard]="true"
-          [useMouseWheel]="false" orientation="ltr" class="h-40 lg:h-50 object-cover w-full">
-          <mat-carousel-slide #matCarouselSlide *ngFor="let slide of slides; let i = index" [image]="slide"
-            overlayColor="#00000040" [hideOverlay]="true"></mat-carousel-slide>
-        </mat-carousel>
+        <swiper-container
+          class="h-40 lg:h-50 w-full"
+          autoplay="true"
+          autoplay-delay="5000"
+          loop="true"
+          navigation="true"
+          keyboard="true"
+          slides-per-view="1">
+          <swiper-slide *ngFor="let slide of slides" class="flex">
+            <img class="h-40 lg:h-50 object-cover w-full" [src]="slide" alt="">
+          </swiper-slide>
+        </swiper-container>
       </div>
 
       <!-- User info -->

@@ -49,7 +49,8 @@
                             "src/@fuse/styles/main.scss",
                             "src/styles/styles.scss",
                             "src/styles/tailwind.scss",
-                            "node_modules/ol/ol.css"
+                            "node_modules/ol/ol.css",
+                            "node_modules/swiper/swiper-bundle.css"
                         ],
                         "scripts": [
 

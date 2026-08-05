@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { MatCarouselModule } from "@magloft/material-carousel";
 
 import { SharedModule } from "app/shared/shared.module";
 import { ProfileComponent } from "./profile/profile.component";
@@ -63,8 +62,7 @@ import { FuseScrollbarModule } from "@fuse/directives/scrollbar";
         MatInputModule,
         MatIconModule,
         MatButtonModule,
-        MatCardModule,
-        MatCarouselModule.forRoot()
+        MatCardModule
     ]
 })
 export class ProfileModule {

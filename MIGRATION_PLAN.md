@@ -9,7 +9,7 @@
 | Componentes | ~75 |
 | Servicios | ~21 |
 | Módulos Ng | 32 |
-| Rutas lazy | 9 |
+| Rutas lazy | 8 |
 | Módulo más complejo | Neuron (motor de forms dinámicos, 21 componentes, 1200+ líneas) |
 | Template base | @fuse (107 archivos, 14 NgModules, 100% constructor injection) |
 
@@ -19,15 +19,25 @@
 
 ### 0.1 Auditoría pre-migración
 - [ ] Crear rama `migration/angular-22` desde `main`
-- [ ] Ejecutar `ng build` y `ng test` — asegurar que todo compila y pasa en Angular 17
+- [ ] Ejecutar `npm install` y `ng build` — asegurar que todo compila en Angular 17
+- [ ] Crear un checkpoint (`git tag migration/angular-17`) al cierre de cada fase para poder hacer rollback
 - [ ] Documentar bugs existentes (no corregir, solo registrar)
+
+> **Nota**: `npm test` está roto — **no existen `*.spec.ts` ni `src/test.ts`** en el repo. La verificación es **solo `ng build`** + `npx tsc -p tsconfig.app.json --noEmit`.
+
+### 0.1a Hallazgos de la auditoría (5/8/2026, solo registrar, no corregir)
+- `npm run build` estaba roto: `--build-optimizer` no existe en CLI 17.3 (builder `application` esbuild). **Corregido**: script → `ng build`.
+- `index.html` referencia `assets/styles/splash-screen.css` que **no existe** → warning de build (fallback a `C:\assets\styles\...`).
+- Bundle inicial **3.53 MB** supera el budget de 3.00 MB (warning).
+- Dependencias CommonJS que causan bailout de optimización: `lerc`/`geotiff`, `apexcharts`, `sweetalert2`, `file-saver`.
+- **Node 24** no es soportado por Angular 17 (solo warning; se resuelve al llegar a Angular 20+).
 
 ### 0.2 Dependencias críticas a resolver ANTES de empezar
 
 | Dependencia | Problema | Acción |
 |---|---|---|
-| `@magloft/material-carousel@14` | **Abandonado**, no funciona más allá de Angular 14 | **Reemplazar** por `swiper` o carousel nativo de Angular Material |
-| `ngx-editor@17` | Solo hasta beta para Angular 19+ | Evaluar `@tiptap/angular` como alternativa |
+| `@magloft/material-carousel@14` | **Abandonado**, no funciona más allá de Angular 14 | **HECHO**: reemplazado por `swiper@11` (custom elements `<swiper-container>`) en el carrusel de portadas del perfil |
+| `ngx-editor@17` | Abandonado (latest = `19.0.0-beta.1`) | **Plan**: mantener `ngx-editor@17` durante la migración (peers `>=17.1.0`, soporta 17→22) y **swap a `@bobbyquantum/ngx-editor@22` en Fase 4** (drop-in, misma API `Editor`/`NgxEditorModule`/`Toolbar`, requiere Angular 21+). Único consumidor: `tasks/details/details.component.ts`. `@tiptap/angular` NO existe en npm. |
 | `ng-apexcharts@1.8` | Necesita salto a `@2.4` + `apexcharts@5.x` | Upgrade conjunto |
 | `@zxing/ngx-scanner@17` | Upgrade directo a `@22` | Upgrade normal |
 
@@ -42,6 +52,11 @@ El template FuseAdmin (107 archivos, 14 NgModules) usa patrones anticuados:
 **Opción B**: Reemplazar por otro admin template (más trabajo inicial, más limpio)
 
 **Recomendación**: Opción A por ahora. Fuse funciona y reemplazarlo es un proyecto separado.
+
+### 0.4 Entorno (estado actual)
+- Node.js **24** ya instalado (requisito Angular 22: ≥20.11.1) — OK, sin cambios
+- No existe `.browserslistrc` en el repo (CLI usa defaults) — crear solo si se requiere soporte específico
+- No hay workflows CI en el repo — coordinar el requisito de Node con el CI externo
 
 ---
 
@@ -64,13 +79,17 @@ npm install ng-apexcharts@1.11 apexcharts@^4
 
 ### 1.3 Cambios manuales
 - [ ] Verificar que los estilos de Angular Material no se rompieron (MDC classes)
-- [ ] Actualizar `browserslist` si es necesario
-- [ ] Fix `throwError(errorMessage)` → `throwError(() => errorMessage)` en `error.interceptor.ts`
+- [ ] Fix `throwError(arg)` → `throwError(() => arg)` (lazy arg) en **ambos** lugares:
+  - [ ] `shared/error.interceptor.ts:53`
+  - [ ] `authentication/login.service.ts:114`
+- [ ] Migrar `ComponentFactoryResolver` → `ViewContainerRef.createComponent(Type)` **temprano** (de-risking del módulo crítico antes de que rompa en majors posteriores), en los **3** archivos:
+  - [ ] `cruds/cruds2.component.ts`
+  - [ ] `neuron/form/form.component.ts`
+  - [ ] `neuron/form/controls/product/product.component.ts`
 
 ### 1.4 Verificación
-- [ ] `ng build` exitoso
-- [ ] `ng test` todos pasan
-- [ ] Smoke test manual: login, forms, mapa GPS, tareas
+- [ ] `ng build` exitoso (sin `npm test`: no hay suite de tests)
+- [ ] Smoke test manual: login, forms dinámicos, mapas (controles GPS de Neuron), tareas
 
 ---
 
@@ -100,7 +119,7 @@ npm install ng-apexcharts@1.14 apexcharts@^4
 - [ ] Verificar `FuseLoadingInterceptor` con `HTTP_INTERCEPTORS`
 
 ### 2.5 Verificación
-- [ ] Build + test + smoke test completo
+- [ ] Build + smoke test completo (`npm test` no aplica: no hay suite)
 
 ---
 
@@ -112,17 +131,17 @@ ng update @angular/core@20 @angular/cli@20
 ```
 
 ### 3.2 Breaking changes críticos
-- **Node.js 18 dropped** (requiere 20.11.1+)
-- **Karma eliminado** de `@angular/build` → necesita `@angular-devkit/build-angular` temporal o migrar a Vitest
+- **Node.js 18 dropped** (requiere 20.11.1+; ya tenemos Node 24 — OK)
+- **Karma eliminado** de `@angular/build` → **eliminar Karma por completo** (no hay `*.spec.ts` ni `src/test.ts`, no existe suite que migrar; no usar bridge temporal)
 - `@angular-devkit/build-angular` → `@angular/build` (nuevo paquete)
 
 ### 3.3 Acciones
-- [ ] Actualizar Node.js a 20.x en CI/CD y development
-- [ ] Reinstalar `@angular-devkit/build-angular` como bridge temporal para tests
-- [ ] Verificar `browserslist` (Opera removido)
+- [ ] Verificar Node.js en CI/CD (local ya está en 24 — OK)
+- [ ] Eliminar config de Karma: bloque `test` de `angular.json`, deps `karma*`/`jasmine*` de `package.json`, y `src/test.ts`/`tsconfig.spec.json` si existen
+- [ ] Verificar `browserslist` (Opera removido) si se crea el archivo
 
 ### 3.4 Verificación
-- [ ] Build + test + smoke test
+- [ ] Build + smoke test
 
 ---
 
@@ -136,7 +155,7 @@ ng update @angular/core@22 @angular/cli@22
 ```
 
 ### 4.2 Cambios Angular 21
-- Zoneless change detection (default)
+- **Zoneless es default solo para proyectos NUEVOS**; esta app usa zone.js y **se mantiene zone.js durante toda la migración** (totalmente soportado). Migración a zoneless = Fase 5, decisión explícita y opcional.
 - `afterRender()` → `afterEveryRender()` (verificar en @fuse y app code)
 
 ### 4.3 Cambios Angular 22
@@ -148,6 +167,8 @@ ng update @angular/core@22 @angular/cli@22
 ```bash
 npm install @zxing/ngx-scanner@22
 npm install ng-apexcharts@2.4 apexcharts@^5.10
+npm uninstall ngx-editor
+npm install @bobbyquantum/ngx-editor@22   # drop-in de ngx-editor
 ```
 
 ### 4.5 Verificación final
@@ -155,8 +176,7 @@ npm install ng-apexcharts@2.4 apexcharts@^5.10
 - [ ] Todos los tests pasando
 - [ ] Smoke test de todas las funcionalidades:
   - Login / Logout / DFA
-  - Neuron (forms dinámicos)
-  - GPS / Mapas
+  - Neuron (forms dinámicos, controles GPS/Mapa con OpenLayers)
   - Tareas
   - Contabilidad
   - Personas
@@ -175,21 +195,31 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 - [ ] Fix naming inconsistente (`persons.ts` → `persons.component.ts`, etc.)
 
 ### 5.2 Migración a standalone (gradual, 1 componente a la vez)
-- [ ] Empezar por componentes pequeños y aislados
-- [ ] Usar `ng generate @angular/core:standalone` para automatizar
-- [ ] No tocar Neuron ni Fuse hasta el final
+- [ ] Usar el workflow oficial en **3 fases** (`ng generate @angular/core:standalone`), con `ng build` verificado entre cada una:
+  - [ ] Fase 1: correr el schematic → seleccionar **"Convert all components, directives and pipes to standalone"**
+  - [ ] `ng build`
+  - [ ] Fase 2: correr de nuevo → seleccionar **"Remove unnecessary NgModule classes"**
+  - [ ] `ng build`
+  - [ ] Fase 3: correr de nuevo → seleccionar **"Bootstrap the project using standalone APIs"**
+  - [ ] `ng build`
+  - [ ] No tocar Neuron ni Fuse hasta el final
 
-### 5.3 Adoption de Signals (gradual)
+### 5.3 Adoption de Signals (gradual, usar schematics oficiales, no refactor manual)
+- [ ] `ng generate @angular/core:inject` — convertir constructor injection → `inject()`
+- [ ] `ng generate @angular/core:signal-input-migration` — inputs → signal inputs
+- [ ] `ng generate @angular/core:signal-queries-migration` — queries → signal queries
+- [ ] `ng generate @angular/core:output-migration` — outputs → signal outputs
+- [ ] `ng generate @angular/core:control-flow` — `*ngIf/*ngFor/*ngSwitch` → `@if/@for/@switch`
 - [ ] Empezar por servicios con BehaviorSubjects
-- [ ] Migrar inputs/outputs a signal inputs/outputs
 - [ ] Neuron es el último en migrar (muy complejo)
 
 ### 5.4 Migración de interceptores
-- [ ] `HTTP_INTERCEPTORS` class-based → `withInterceptors()` functional
+- [ ] `HTTP_INTERCEPTORS` class-based → `withInterceptors()` functional (vía `provideHttpClient`)
 - [ ] Aplicar a `TokenInterceptor`, `HttpErrorInterceptor`, `FuseLoadingInterceptor`
+- [ ] Decidir migración a **zoneless** (`provideZonelessChangeDetection()`): evaluar usos de `NgZone`/zone.js; opcional y solo cuando la versión esté estable
 
 ### 5.5 Testing framework
-- [ ] Migrar de Karma a Vitest o Jest (Angular 22 lo requiere eventualmente)
+- [ ] No hay suite que migrar (cero tests). Si se quieren tests, **montar Vitest desde cero** (runner primario en Angular 21+): configurar Vitest y escribir una primera suite sobre un módulo pequeño
 
 ---
 
@@ -198,10 +228,10 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 | Riesgo | Impacto | Mitigación |
 |---|---|---|
 | @fuse no compila en Angular 22 | **Alto** | Mantener copia funcional de @fuse; si no compila, migrar a otro template o refactorizar @fuse incrementalmente |
-| Neuron module se rompe | **Alto** | El motor de forms dinámicos usa `ComponentFactoryResolver` deprecated; migrar a `ViewContainerRef.createComponent(Type)` antes del salto a 22 |
+| Neuron module se rompe | **Alto** | El motor de forms dinámicos usa `ComponentFactoryResolver` (3 archivos: `cruds2`, `neuron/form`, `neuron/controls/product`); migrar a `ViewContainerRef.createComponent(Type)` en Fase 1 como de-risking |
 | `ngx-editor` sin soporte | **Medio** | Evaluar migración a Tiptap antes de la migración |
 | `@magloft/material-carousel` roto | **Alto** | Reemplazar en Fase 0 antes de empezar |
-| Tests de Karma no funcionan | **Medio** | Bridge temporal con `@angular-devkit/build-angular`; migrar a Vitest en Fase 5 |
+| Sin suite de tests | **Bajo** | No existen `*.spec.ts` ni `src/test.ts`; eliminar Karma en Fase 3 y (opcional) montar Vitest desde cero en Fase 5 |
 
 ---
 
@@ -231,14 +261,14 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 ### Neuron (Motor de Forms Dinámicos)
 - **21 componentes**, 3 servicios, 64 archivos totales
 - **16 tipos de controles dinámicos** (texto, fecha, número, binario, proceso, archivo, croquis, GPS, etc.)
-- **Rendering dinámico** via `ComponentFactoryResolver` + `ViewContainerRef` (deprecated)
+- **Rendering dinámico** via `ComponentFactoryResolver` + `ViewContainerRef` (deprecated, presente en 3 archivos: `cruds/cruds2.component.ts`, `neuron/form/form.component.ts`, `neuron/form/controls/product/product.component.ts`)
 - **50+ property keys** que controlan comportamiento de campos
 - **State machine** para transiciones de documentos
 - **Multi-server federation** para templates
 
 ### Interceptores
 - `TokenInterceptor`: Agrega Authorization header, convierte fechas
-- `HttpErrorInterceptor`: Maneja errores, usa `throwError(string)` (deprecated, debe ser `throwError(() => string)`)
+- `HttpErrorInterceptor`: Maneja errores, usa `throwError(string)` (deprecated → `throwError(() => string)`) en `error.interceptor.ts:53` y `login.service.ts:114`
 - `FuseLoadingInterceptor`: Loading bar automático
 
 ### Routing
