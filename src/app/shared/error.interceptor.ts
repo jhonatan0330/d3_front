@@ -50,7 +50,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             this.notificationCenter.info('Error de conexion', errorMessage);
           }
         }
-        return throwError(errorMessage);
+        return throwError(() => errorMessage);
       })
     );
   }

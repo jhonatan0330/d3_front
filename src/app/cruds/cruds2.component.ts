@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ComponentFactoryResolver, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
@@ -90,7 +90,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         private formBuilder: FormBuilder,
         private ls: LocalStoreService,
         private utilsService: UtilsService,
-        private compiler: ComponentFactoryResolver,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private dialog: MatDialog
     ) { }
@@ -541,11 +540,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.MULTIPLE)
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)) {
                 const componentDynamic: Type<any> = getComponent(_campo);
-                const _componentFactory = this.compiler.resolveComponentFactory(
-                    componentDynamic
-                );
                 const componentRef = this.myForm.createComponent<IDynamicControl>(
-                    _componentFactory
+                    componentDynamic
                 );
                 componentRef.instance.structure = _campo;
                 componentRef.instance.parent = filterDocument

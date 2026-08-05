@@ -31,6 +31,7 @@
 - Bundle inicial **3.53 MB** supera el budget de 3.00 MB (warning).
 - Dependencias CommonJS que causan bailout de optimización: `lerc`/`geotiff`, `apexcharts`, `sweetalert2`, `file-saver`.
 - **Node 24** no es soportado por Angular 17 (solo warning; se resuelve al llegar a Angular 20+).
+- `npm run lint` ya estaba roto: no existe target `lint` en `angular.json` (aunque hay `.eslintrc.json`). No bloquea la migración.
 
 ### 0.2 Dependencias críticas a resolver ANTES de empezar
 
@@ -63,33 +64,33 @@ El template FuseAdmin (107 archivos, 14 NgModules) usa patrones anticuados:
 ## Fase 1: Angular 17 → 18 (2 semanas)
 
 ### 1.1 Upgrade core
-```bash
-ng update @angular/core@18 @angular/cli@18
-```
+- [x] `ng update @angular/core@18 @angular/cli@18` (core 18.2.14, CLI 18.2.21) + `ng update @angular/material@18 @angular/cdk@18` (18.2.14)
+- [x] **Bloqueante resuelto**: `node-xlsx` trae `xlsx` vía tarball CDN de SheetJS y npm 12 (`allow-remote=none`) lo bloquea → se añadió `xlsx@0.18.5` como dependencia directa + `overrides` en `package.json`
+- [x] `esbuild@0.23.0` (usado por build-angular 18) agregado a `allowScripts` de `package.json`
+
 **Breaking changes principales:**
 - Node.js 16 dropped (requiere 18.13+)
 - TypeScript 5.2+ required
 - Angular Material migrado a MDC (ya estaba desde 15, verificar estilos)
 
 ### 1.2 Dependencias de terceros
-```bash
-npm install @zxing/ngx-scanner@18
-npm install ng-apexcharts@1.11 apexcharts@^4
-```
+- [x] `npm install @zxing/ngx-scanner@18`
+- [x] `npm install ng-apexcharts@1.11 apexcharts@^3.49`
+> `apexcharts@^4` NO matchea con `ng-apexcharts@1.11` (pide `^3.49.1`); el `^4`/`^5` va con `ng-apexcharts@2.x` en Fase 4.
 
 ### 1.3 Cambios manuales
-- [ ] Verificar que los estilos de Angular Material no se rompieron (MDC classes)
-- [ ] Fix `throwError(arg)` → `throwError(() => arg)` (lazy arg) en **ambos** lugares:
-  - [ ] `shared/error.interceptor.ts:53`
-  - [ ] `authentication/login.service.ts:114`
-- [ ] Migrar `ComponentFactoryResolver` → `ViewContainerRef.createComponent(Type)` **temprano** (de-risking del módulo crítico antes de que rompa en majors posteriores), en los **3** archivos:
-  - [ ] `cruds/cruds2.component.ts`
-  - [ ] `neuron/form/form.component.ts`
-  - [ ] `neuron/form/controls/product/product.component.ts`
+- [x] Verificar que los estilos de Angular Material no se rompieron (MDC classes) — build OK
+- [x] Fix `throwError(arg)` → `throwError(() => arg)` (lazy arg) en **ambos** lugares:
+  - [x] `shared/error.interceptor.ts:53`
+  - [x] `authentication/login.service.ts:114`
+- [x] Migrar `ComponentFactoryResolver` → `ViewContainerRef.createComponent(Type)` **temprano** (de-risking del módulo crítico antes de que rompa en majors posteriores), en los **3** archivos:
+  - [x] `cruds/cruds2.component.ts`
+  - [x] `neuron/form/form.component.ts`
+  - [x] `neuron/form/controls/product/product.component.ts`
 
 ### 1.4 Verificación
-- [ ] `ng build` exitoso (sin `npm test`: no hay suite de tests)
-- [ ] Smoke test manual: login, forms dinámicos, mapas (controles GPS de Neuron), tareas
+- [x] `ng build` exitoso + `npx tsc --noEmit` limpio (sin `npm test`: no hay suite de tests)
+- [ ] Smoke test manual: login, forms dinámicos, mapas (controles GPS de Neuron), tareas — **pendiente del usuario** (requiere backend)
 
 ---
 

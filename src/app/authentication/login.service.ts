@@ -111,7 +111,7 @@ export class LoginService {
         }),
         catchError((error) => {
           this.signout();
-          return throwError(error);
+          return throwError(() => error);
         })
       );
   }

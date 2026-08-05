@@ -2,7 +2,6 @@ import {
     Component,
     OnInit,
     Inject,
-    ComponentFactoryResolver,
     ViewContainerRef,
     ViewChild,
     Type,
@@ -109,7 +108,6 @@ export class FormComponent implements OnInit, AfterViewInit {
         private api: ApiService,
         public _jwt: LoginService,
         private ls: LocalStoreService,
-        private compiler: ComponentFactoryResolver,
         private utilsService: UtilsService,
         private _router: Router
     ) { }
@@ -631,11 +629,8 @@ export class FormComponent implements OnInit, AfterViewInit {
 
         this.plantilla.caracteristicas.forEach((_campo) => {
             const componentDynamic: Type<any> = getComponent(_campo);
-            const _componentFactory = this.compiler.resolveComponentFactory(
-                componentDynamic
-            );
             const componentRef = this.myForm.createComponent<IDynamicControl>(
-                _componentFactory
+                componentDynamic
             );
             componentRef.instance.structure = _campo;
             componentRef.instance.parent = this.pedido;

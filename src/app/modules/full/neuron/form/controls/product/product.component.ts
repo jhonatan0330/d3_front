@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   Component,
-  ComponentFactoryResolver,
   Inject,
   OnInit,
   Type,
@@ -47,7 +46,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<ProductComponent>,
-    private compiler: ComponentFactoryResolver,
     private api: ApiService
   ) {}
 
@@ -112,11 +110,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
     for (let d = 0; d < this.detallePedidoVenta.documentoDetalle.caracteristicas.length; d++) {
       const _campo = this.detallePedidoVenta.documentoDetalle.caracteristicas[d];
       const componentDynamic: Type<any> = getComponent(_campo.campoDTO);
-      const _componentFactory = this.compiler.resolveComponentFactory(
-        componentDynamic
-      );
       const componentRef = this.myForm.createComponent<IDynamicControl>(
-        _componentFactory
+        componentDynamic
       );
       componentRef.instance.structure = _campo.campoDTO;
       componentRef.instance.productForm = this;
