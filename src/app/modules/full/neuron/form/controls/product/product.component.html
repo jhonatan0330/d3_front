@@ -6,33 +6,38 @@
     <mat-icon class="h-6" (click)="consultarInventarios()">find_in_page</mat-icon>
     <mat-icon class="h-6" (click)="dialogRef.close(true)">exit_to_app</mat-icon>
   </div>
-  <mat-progress-bar *ngIf="isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
-  <div *ngIf="inventories" class="w-full">
-    <table mat-table [dataSource]="inventories" class="w-full bg-default">
-      <!-- Item Column -->
-      <ng-container matColumnDef="item">
-        <th mat-header-cell *matHeaderCellDef> Bodega </th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction.nombreBodega}} </td>
-      </ng-container>
-
-      <!-- Cost Column -->
-      <ng-container matColumnDef="cost">
-        <th mat-header-cell *matHeaderCellDef> Cantidad </th>
-        <td mat-cell *matCellDef="let transaction"> {{transaction.cantidadActual | number}} </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="['item', 'cost']"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['item', 'cost'];"></tr>
-    </table>
-  </div>
-  <mat-progress-bar *ngIf="isLoading" color="primary" mode="indeterminate"></mat-progress-bar>
+  @if (isLoading) {
+    <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
+  }
+  @if (inventories) {
+    <div class="w-full">
+      <table mat-table [dataSource]="inventories" class="w-full bg-default">
+        <!-- Item Column -->
+        <ng-container matColumnDef="item">
+          <th mat-header-cell *matHeaderCellDef> Bodega </th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.nombreBodega}} </td>
+        </ng-container>
+        <!-- Cost Column -->
+        <ng-container matColumnDef="cost">
+          <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.cantidadActual | number}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['item', 'cost']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['item', 'cost'];"></tr>
+      </table>
+    </div>
+  }
+  @if (isLoading) {
+    <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
+  }
   <!-- Campos dinamicos -->
   <div class="w-full p-4">
     <ng-template #dynamycFormElement></ng-template>
   </div>
   <!-- Boton de guardar -->
-  
-    <div *ngIf="this.allowEdit" class="p-4 w-full flex justify-between">
+
+  @if (this.allowEdit) {
+    <div class="p-4 w-full flex justify-between">
       <button mat-raised-button color="primary" (click)="dialogRef.close(false)">
         <mat-icon>clear</mat-icon> Borrar registro
       </button>
@@ -40,4 +45,5 @@
         <mat-icon>save</mat-icon> Aceptar
       </button>
     </div>
+  }
 </div>

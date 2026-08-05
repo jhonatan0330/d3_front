@@ -2,17 +2,16 @@ import { Component, Inject, ElementRef, ViewChild, OnDestroy } from '@angular/co
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
+
 import { PdfService } from 'app/shared/pdf.service';
 
 
 @Component({
     selector: 'app-visor-pdf-dialog',
     imports: [
-        CommonModule,
-        MatDialogModule,
-        MatButtonModule
-    ],
+    MatDialogModule,
+    MatButtonModule
+],
     templateUrl: './visor-pdf-dialog.component.html'
 })
 export class VisorPdfDialogComponent implements OnDestroy {

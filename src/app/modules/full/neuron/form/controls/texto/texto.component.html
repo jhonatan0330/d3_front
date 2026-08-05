@@ -1,19 +1,29 @@
 <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+  @if (errorMessage) {
+    <label class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+  }
   <mat-label>{{structure.nombre | titlecase }} </mat-label>
-  <input matInput 
-    [id]="idField" 
-    [formControl]="fControl" 
-    [name]="structure.llaveTabla" 
-    [required]="required"
-    [readonly]="!isEnabled || formatText==='D'" 
-    autocomplete="off" *ngIf="!textoLargo" />
-  <textarea *ngIf="textoLargo" matInput class="textarea-form" [formControl]="fControl" [name]="structure.llaveTabla"
-    [required]="required" [readonly]="!isEnabled"
-    oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
+  @if (!textoLargo) {
+    <input matInput
+      [id]="idField"
+      [formControl]="fControl"
+      [name]="structure.llaveTabla"
+      [required]="required"
+      [readonly]="!isEnabled || formatText==='D'"
+      autocomplete="off" />
+  }
+  @if (textoLargo) {
+    <textarea matInput class="textarea-form" [formControl]="fControl" [name]="structure.llaveTabla"
+      [required]="required" [readonly]="!isEnabled"
+      oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
     onclick='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+  }
 </mat-form-field>
-<div *ngIf="scannerEnabled" class="w-full">
-  <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
-</div>
-<app-direccion-form *ngIf="isEnabled && formatText==='D'" [direccionInicial]="fControl.value" (direccionChange)="onDireccionChange($event)"></app-direccion-form>
+@if (scannerEnabled) {
+  <div class="w-full">
+    <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+  </div>
+}
+@if (isEnabled && formatText==='D') {
+  <app-direccion-form [direccionInicial]="fControl.value" (direccionChange)="onDireccionChange($event)"></app-direccion-form>
+}

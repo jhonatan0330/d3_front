@@ -4,24 +4,30 @@
     <svg [attr.width]="svgWidth()" height="160">
       <g [attr.transform]="'translate(80,80)'">
         <!-- lines between states -->
-        <ng-container *ngFor="let s of estados; let i = index">
-          <ng-container *ngIf="i < estados.length - 1">
-            <line [attr.x1]="xFor(i)" [attr.y1]="0" [attr.x2]="xFor(i+1)" [attr.y2]="0" stroke="#6b7280" stroke-width="2"></line>
-            <!-- action icon in the middle of the line -->
-            <g [attr.transform]="'translate(' + ((xFor(i) + xFor(i+1)) / 2 - 12) + ', -12)'" (click)="onActionClick({ from: estados[i].id, to: estados[i+1].id })" style="cursor:pointer;">
-              <rect x="0" y="0" width="24" height="24" rx="4" fill="#2563eb"></rect>
-              <text x="12" y="16" text-anchor="middle" fill="#fff" font-size="12">F</text>
-            </g>
+        @for (s of estados; track s; let i = $index) {
+          <ng-container>
+            @if (i < estados.length - 1) {
+              <ng-container>
+                <line [attr.x1]="xFor(i)" [attr.y1]="0" [attr.x2]="xFor(i+1)" [attr.y2]="0" stroke="#6b7280" stroke-width="2"></line>
+                <!-- action icon in the middle of the line -->
+                <g [attr.transform]="'translate(' + ((xFor(i) + xFor(i+1)) / 2 - 12) + ', -12)'" (click)="onActionClick({ from: estados[i].id, to: estados[i+1].id })" style="cursor:pointer;">
+                  <rect x="0" y="0" width="24" height="24" rx="4" fill="#2563eb"></rect>
+                  <text x="12" y="16" text-anchor="middle" fill="#fff" font-size="12">F</text>
+                </g>
+              </ng-container>
+            }
           </ng-container>
-        </ng-container>
+        }
 
         <!-- state circles -->
-        <ng-container *ngFor="let s of estados; let i = index">
-          <g [attr.transform]="'translate(' + xFor(i) + ',0)'" (click)="onStateClick(s,$event)" style="cursor:pointer;">
-            <circle [attr.r]="radius" fill="#fff" stroke="#1f4b78" stroke-width="2"></circle>
-            <text [attr.y]="4" text-anchor="middle" alignment-baseline="middle" font-size="11" fill="#1f2937">{{ s.nombre }}</text>
-          </g>
-        </ng-container>
+        @for (s of estados; track s; let i = $index) {
+          <ng-container>
+            <g [attr.transform]="'translate(' + xFor(i) + ',0)'" (click)="onStateClick(s,$event)" style="cursor:pointer;">
+              <circle [attr.r]="radius" fill="#fff" stroke="#1f4b78" stroke-width="2"></circle>
+              <text [attr.y]="4" text-anchor="middle" alignment-baseline="middle" font-size="11" fill="#1f2937">{{ s.nombre }}</text>
+            </g>
+          </ng-container>
+        }
       </g>
     </svg>
   </div>

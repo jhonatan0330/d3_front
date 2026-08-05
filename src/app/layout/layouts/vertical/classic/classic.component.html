@@ -6,7 +6,9 @@
 
     <a [routerLink]="'/main'">
       <div class="flex flex-col w-full items-center h-16 p-1">
-        <img *ngIf="company?.imagen" src="{{ company?.imagen | imageFormat }}" class="h-full" />
+        @if (company?.imagen) {
+          <img src="{{ company?.imagen | imageFormat }}" class="h-full" />
+        }
       </div>
     </a>
 
@@ -18,9 +20,13 @@
           {{ user?.nombre }}
         </div>
         <div class="relative w-24 h-24">
-          <img class="w-full h-full rounded-full" *ngIf="user?.imagen" [src]="user.imagen" alt="User avatar" />
-          <mat-icon class="icon-size-24" *ngIf="!user?.imagen" [svgIcon]="'heroicons_outline:user-circle'">
-          </mat-icon>
+          @if (user?.imagen) {
+            <img class="w-full h-full rounded-full" [src]="user.imagen" alt="User avatar" />
+          }
+          @if (!user?.imagen) {
+            <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:user-circle'">
+            </mat-icon>
+          }
         </div>
         <div
           class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-secondary">
@@ -58,19 +64,29 @@
     </div>
   </div>
 
-  <div *ngIf="headerSection && headerSection.length!==0" class="w-full">
-    <div *ngFor="let iHeader of headerSection" [innerHTML]="iHeader"></div>
-  </div>
+  @if (headerSection && headerSection.length!==0) {
+    <div class="w-full">
+      @for (iHeader of headerSection; track iHeader) {
+        <div [innerHTML]="iHeader"></div>
+      }
+    </div>
+  }
 
   <!-- Content -->
   <div class="flex flex-col flex-auto">
     <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
-             Otherwise, layout changes won't be registered and the view won't be updated! -->
-    <router-outlet *ngIf="true"></router-outlet>
+    Otherwise, layout changes won't be registered and the view won't be updated! -->
+    @if (true) {
+      <router-outlet></router-outlet>
+    }
   </div>
   <!-- footer -->
-  <div *ngIf="landing && landing.length!==0" class="w-full">
-    <div *ngFor="let iFooter of landing" [innerHTML]="iFooter" class="w-full"></div>
-  </div>
+  @if (landing && landing.length!==0) {
+    <div class="w-full">
+      @for (iFooter of landing; track iFooter) {
+        <div [innerHTML]="iFooter" class="w-full"></div>
+      }
+    </div>
+  }
 
 </div>

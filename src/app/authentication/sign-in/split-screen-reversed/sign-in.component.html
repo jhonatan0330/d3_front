@@ -1,86 +1,90 @@
 <div class="flex min-w-0 flex-auto flex-col items-center sm:flex-row sm:justify-center md:items-start md:justify-start">
-    <div
-        class="relative hidden h-full w-1/2 flex-auto items-center justify-center overflow-hidden bg-slate-900  dark:border-r md:flex ">
-        <div [innerHTML]="logo" class="w-full"></div>
-    </div>
-    <div
-        class="w-full px-4 py-8 sm:bg-card sm:w-auto sm:rounded-2xl sm:p-12 sm:shadow md:flex md:h-full md:items-center md:justify-start md:rounded-none md:p-16 md:shadow-none">
-        <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
-            <!-- Logo -->
-            <div class="text-center p-4">
-                <img class="m-auto" src="{{ company?.imagen | imageFormat }}" alt="">
-            </div>
+  <div
+    class="relative hidden h-full w-1/2 flex-auto items-center justify-center overflow-hidden bg-slate-900  dark:border-r md:flex ">
+    <div [innerHTML]="logo" class="w-full"></div>
+  </div>
+  <div
+    class="w-full px-4 py-8 sm:bg-card sm:w-auto sm:rounded-2xl sm:p-12 sm:shadow md:flex md:h-full md:items-center md:justify-start md:rounded-none md:p-16 md:shadow-none">
+    <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
+      <!-- Logo -->
+      <div class="text-center p-4">
+        <img class="m-auto" src="{{ company?.imagen | imageFormat }}" alt="">
+      </div>
 
-            <!-- Title -->
-            <div class="mt-8 text-4xl font-extrabold leading-tight tracking-tight">
-                {{company?.nombre}}
-            </div>
-            <!--div class="mt-0.5 flex items-baseline font-medium">
-                <div>Don't have an account?</div>
-                <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['/sign-up']">Sign up
-                </a>
-            </div-->
+      <!-- Title -->
+      <div class="mt-8 text-4xl font-extrabold leading-tight tracking-tight">
+        {{company?.nombre}}
+      </div>
+      <!--div class="mt-0.5 flex items-baseline font-medium">
+      <div>Don't have an account?</div>
+      <a class="ml-1 text-primary-500 hover:underline" [routerLink]="['/sign-up']">Sign up
+      </a>
+    </div-->
 
-            <form [formGroup]="signInForm" (ngSubmit)="signIn()">
-                <div class="mb-5">
-                    <label for="username"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Usuario*</label>
-                    <input matInput name="username" [formControl]="signInForm.controls['username']" value=""
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <small
-                        *ngIf="signInForm.controls['username'].hasError('required') && signInForm.controls['username'].touched"
-                        class="form-error-msg"> Necesitamos tu usuario para poder autenticarnos </small>
-                </div>
-
-                <div class="mb-5">
-                    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Clave de
-                        acceso*</label>
-                    <input type="password" name="password" matInput [formControl]="signInForm.controls['password']"
-                        autocomplete="new-password" value=""
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <small
-                        *ngIf="signInForm.controls['password'].hasError('required') && signInForm.controls['password'].touched"
-                        class="form-error-msg"> No olvides colocar tu clave y que nadie la sepa :)</small>
-                </div>
-
-                <div class="mb-5">
-                    <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    [disabled]="signInForm.invalid">Ingresar</button>
-            </div>
-                <small class="m-0" (click)="testPrint()">{{currentApplicationVersion}}</small>
-                <!-- Actions -->
-                <div
-                    class="mt-1.5 inline-flex w-full items-center justify-between"
-                >
-                    
-                    <a
-                        class="text-md font-medium text-primary-500 hover:underline"
-                       (click)="recoverPassword()"
-                        >Olvidaste tu clave?
-                    </a>
-                </div>
-                <!-- Separator 
-                <div class="mt-8 flex items-center">
-                    <div class="mt-px flex-auto border-t"></div>
-                    <div class="text-secondary mx-2">Or continue with</div>
-                    <div class="mt-px flex-auto border-t"></div>
-                </div>-->
-
-                <!-- Single sign-on buttons -->
-                <!--div class="mt-8 flex items-center space-x-4">
-                    <button class="flex-auto" type="button" mat-stroked-button>
-                        <mat-icon class="icon-size-5" [svgIcon]="'feather:facebook'"></mat-icon>
-                    </button>
-                    <button class="flex-auto" type="button" mat-stroked-button>
-                        <mat-icon class="icon-size-5" [svgIcon]="'feather:twitter'"></mat-icon>
-                    </button>
-                    <button class="flex-auto" type="button" mat-stroked-button>
-                        <mat-icon class="icon-size-5" [svgIcon]="'feather:github'"></mat-icon>
-                    </button>
-                </div-->
-            </form>
-            <button *ngIf="templateNewUser" (click)="newUser()"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Nuevo usuario</button>
+    <form [formGroup]="signInForm" (ngSubmit)="signIn()">
+      <div class="mb-5">
+        <label for="username"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Usuario*</label>
+        <input matInput name="username" [formControl]="signInForm.controls['username']" value=""
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          @if (signInForm.controls['username'].hasError('required') && signInForm.controls['username'].touched) {
+            <small
+            class="form-error-msg"> Necesitamos tu usuario para poder autenticarnos </small>
+          }
         </div>
+
+        <div class="mb-5">
+          <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Clave de
+          acceso*</label>
+          <input type="password" name="password" matInput [formControl]="signInForm.controls['password']"
+            autocomplete="new-password" value=""
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            @if (signInForm.controls['password'].hasError('required') && signInForm.controls['password'].touched) {
+              <small
+              class="form-error-msg"> No olvides colocar tu clave y que nadie la sepa :)</small>
+            }
+          </div>
+
+          <div class="mb-5">
+            <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            [disabled]="signInForm.invalid">Ingresar</button>
+          </div>
+          <small class="m-0" (click)="testPrint()">{{currentApplicationVersion}}</small>
+          <!-- Actions -->
+          <div
+            class="mt-1.5 inline-flex w-full items-center justify-between"
+            >
+
+            <a
+              class="text-md font-medium text-primary-500 hover:underline"
+              (click)="recoverPassword()"
+              >Olvidaste tu clave?
+            </a>
+          </div>
+          <!-- Separator
+          <div class="mt-8 flex items-center">
+            <div class="mt-px flex-auto border-t"></div>
+            <div class="text-secondary mx-2">Or continue with</div>
+            <div class="mt-px flex-auto border-t"></div>
+          </div>-->
+
+          <!-- Single sign-on buttons -->
+          <!--div class="mt-8 flex items-center space-x-4">
+          <button class="flex-auto" type="button" mat-stroked-button>
+            <mat-icon class="icon-size-5" [svgIcon]="'feather:facebook'"></mat-icon>
+          </button>
+          <button class="flex-auto" type="button" mat-stroked-button>
+            <mat-icon class="icon-size-5" [svgIcon]="'feather:twitter'"></mat-icon>
+          </button>
+          <button class="flex-auto" type="button" mat-stroked-button>
+            <mat-icon class="icon-size-5" [svgIcon]="'feather:github'"></mat-icon>
+          </button>
+        </div-->
+      </form>
+      @if (templateNewUser) {
+        <button (click)="newUser()"
+        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Nuevo usuario</button>
+      }
     </div>
+  </div>
 </div>

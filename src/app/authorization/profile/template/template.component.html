@@ -2,7 +2,11 @@
   <img class="w-10 h-10 mr-4" alt="..." src="{{ imagen | imageFormat }}">
   <div class="flex flex-col">
     <div class="text-base font-medium leading-tight line-clamp-2">{{ nombre }}</div>
-    <div *ngIf="type==='R'" class="text-xs text-secondary">Report</div>
-    <div *ngIf="type==='T'" class="text-xs text-secondary">Process</div>
+    @if (type==='R') {
+      <div class="text-xs text-secondary">Report</div>
+    }
+    @if (type==='T') {
+      <div class="text-xs text-secondary">Process</div>
+    }
   </div>
 </div>

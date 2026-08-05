@@ -7,193 +7,266 @@
     <div class="w-full flex sm:flex">
       <span class="px-1 font-semibold w-full">
         <span>{{ plantilla?.nombre }}</span>
-        <span *ngIf="pedido && pedido.historico && pedido.historico !== 0">*</span>
-        <span *ngIf="pedido && pedido.llaveTabla"> - {{ pedido.nombre }}</span>
-        <a class="cursor-pointer px-1" *ngIf="pedido && pedido.llaveTabla" (click)="copyName()">
-          <mat-icon inline="true" [style.color]="getColorFont()">content_copy</mat-icon>
-        </a>
+        @if (pedido && pedido.historico && pedido.historico !== 0) {
+          <span>*</span>
+        }
+        @if (pedido && pedido.llaveTabla) {
+          <span> - {{ pedido.nombre }}</span>
+        }
+        @if (pedido && pedido.llaveTabla) {
+          <a class="cursor-pointer px-1" (click)="copyName()">
+            <mat-icon inline="true" [style.color]="getColorFont()">content_copy</mat-icon>
+          </a>
+        }
       </span>
-      <a class="cursor-pointer h-6 px-1" *ngIf="pedido && pedido.llaveTabla" (click)="showTrace()">
-        <mat-icon [style.color]="getColorFont()" svgIcon="heroicons_outline:clock"></mat-icon>
-      </a>
-      <mat-icon *ngIf="!fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()"
+      @if (pedido && pedido.llaveTabla) {
+        <a class="cursor-pointer h-6 px-1" (click)="showTrace()">
+          <mat-icon [style.color]="getColorFont()" svgIcon="heroicons_outline:clock"></mat-icon>
+        </a>
+      }
+      @if (!fullScreen) {
+        <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()"
         [style.color]="getColorFont()">fullscreen</mat-icon>
-      <mat-icon *ngIf="fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()"
+      }
+      @if (fullScreen) {
+        <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()"
         [style.color]="getColorFont()">fullscreen_exit</mat-icon>
+      }
     </div>
-    <div *ngIf="pedido && pedido.llaveTabla" class="w-full sm:flex justify-between">
-      <div *ngIf="pedido && pedido.llaveTabla" class="font-semibold px-1 text-center text-md">{{pedido.estadoNombre }}
-      </div>
+    @if (pedido && pedido.llaveTabla) {
+      <div class="w-full sm:flex justify-between">
+        @if (pedido && pedido.llaveTabla) {
+          <div class="font-semibold px-1 text-center text-md">{{pedido.estadoNombre }}
+          </div>
+        }
       <!--div class="text-center px-1 text-sm line-clamp-1"> {{ pedido.funcionarioNombre }}</div-->
       <div class="text-right text-xs px-2">{{ pedido.fecha | date: 'medium' }}</div>
     </div>
-    <div class="w-full justify-between flex px-2" *ngIf="pedido && pedido.dinero">
-      <div *ngIf="pedido.dinero.saldo" class="px-2 text-sm">Saldo : {{pedido.dinero.saldo | currency}}</div>
-      <div *ngIf="pedido.dinero.valorTotal" class="text-md font-bold flex-auto text-right">Valor
+  }
+  @if (pedido && pedido.dinero) {
+    <div class="w-full justify-between flex px-2">
+      @if (pedido.dinero.saldo) {
+        <div class="px-2 text-sm">Saldo : {{pedido.dinero.saldo | currency}}</div>
+      }
+      @if (pedido.dinero.valorTotal) {
+        <div class="text-md font-bold flex-auto text-right">Valor
         {{pedido.dinero.valorTotal | currency}}</div>
+      }
     </div>
-    <span *ngIf="instruccionCrear" class="px-1 text-xs">{{ instruccionCrear }}</span>
-  </div>
-  <!-- Botones de accion -->
+  }
+  @if (instruccionCrear) {
+    <span class="px-1 text-xs">{{ instruccionCrear }}</span>
+  }
+</div>
+<!-- Botones de accion -->
+<div>
+  <!-- Boton Cerrar -->
   <div>
-    <!-- Boton Cerrar -->
-    <div>
-      <mat-icon class="h-6 cursor-pointer" (click)="dialogRef.close(false)"
-        [style.color]="getColorFont()">exit_to_app</mat-icon>
-    </div>
-    <div>
-      <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList"
-        [style.color]="getColorFont()">menu</mat-icon>
-      <mat-menu #formMenuList="matMenu">
-        <!-- Boton Cambiar estado -->
-        <button mat-menu-item *ngIf="canChangeState" (click)="showChangeState()" tabindex="-1">
+    <mat-icon class="h-6 cursor-pointer" (click)="dialogRef.close(false)"
+    [style.color]="getColorFont()">exit_to_app</mat-icon>
+  </div>
+  <div>
+    <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList"
+    [style.color]="getColorFont()">menu</mat-icon>
+    <mat-menu #formMenuList="matMenu">
+      <!-- Boton Cambiar estado -->
+      @if (canChangeState) {
+        <button mat-menu-item (click)="showChangeState()" tabindex="-1">
           <mat-icon>swap_horiz</mat-icon>Cambiar estado
         </button>
-        <!-- Boton transferir -->
-        <button mat-menu-item *ngIf="canTransfer" (click)="showTransfer()" tabindex="-1">
+      }
+      <!-- Boton transferir -->
+      @if (canTransfer) {
+        <button mat-menu-item (click)="showTransfer()" tabindex="-1">
           <mat-icon>transfer_within_a_station</mat-icon>Transferir
         </button>
-        <!-- Boton carga masiva -->
-        <button mat-menu-item *ngIf="canMassive" (click)="showMassive()" tabindex="-1">
+      }
+      <!-- Boton carga masiva -->
+      @if (canMassive) {
+        <button mat-menu-item (click)="showMassive()" tabindex="-1">
           <mat-icon>cloud_upload</mat-icon> Carga Masiva
         </button>
-        <!-- Boton Duplicar -->
-        <button mat-menu-item (click)="duplicate()" tabindex="-1">
-          <mat-icon>file_copy</mat-icon>Duplicar
-        </button>
-        <button mat-menu-item (click)="reloadScreen()" tabindex="-1" *ngIf="pedido && pedido.llaveTabla">
+      }
+      <!-- Boton Duplicar -->
+      <button mat-menu-item (click)="duplicate()" tabindex="-1">
+        <mat-icon>file_copy</mat-icon>Duplicar
+      </button>
+      @if (pedido && pedido.llaveTabla) {
+        <button mat-menu-item (click)="reloadScreen()" tabindex="-1">
           <mat-icon svgIcon="heroicons_outline:arrow-path-rounded-square"></mat-icon>Recargar
         </button>
-        <!-- Boton Compartir -->
-        <button *ngIf="pedido && pedido.llaveTabla" mat-menu-item (click)="copyUrl()">
+      }
+      <!-- Boton Compartir -->
+      @if (pedido && pedido.llaveTabla) {
+        <button mat-menu-item (click)="copyUrl()">
           <mat-icon>link</mat-icon>
           <span>Copiar link</span>
         </button>
-        <!-- Boton Whatsapp -->
-        <button mat-menu-item *ngIf="pedido && pedido.llaveTabla" (click)="sendWhatsApp()">
+      }
+      <!-- Boton Whatsapp -->
+      @if (pedido && pedido.llaveTabla) {
+        <button mat-menu-item (click)="sendWhatsApp()">
           <mat-icon>share</mat-icon>
           <span>Whatsapp</span>
         </button>
-        <!-- Boton Usuario -->
-        <button mat-menu-item *ngIf="pedido && pedido.llaveTabla && esRol" (click)="abrirUsuario(pedido.llaveTabla)">
+      }
+      <!-- Boton Usuario -->
+      @if (pedido && pedido.llaveTabla && esRol) {
+        <button mat-menu-item (click)="abrirUsuario(pedido.llaveTabla)">
           <mat-icon>person</mat-icon>
           <span>Usuario Rol</span>
         </button>
-        <button mat-menu-item *ngIf="_jwt.isAdmin" (click)="flex()">
+      }
+      @if (_jwt.isAdmin) {
+        <button mat-menu-item (click)="flex()">
           <mat-icon>person</mat-icon>
           <span>Administrar plantilla</span>
         </button>
-      </mat-menu>
-    </div>
+      }
+    </mat-menu>
   </div>
+</div>
 </div>
 <!-- -->
 <div class="flex flex-col bg-white dark:bg-gray-900 max-h-[70vh]">
   <!-- Overlay con spinner -->
-  <div *ngIf="submitted" class="absolute inset-0 bg-white bg-opacity-70 z-10 flex items-center justify-center">
-    <div class="text-center">
-      <svg class="animate-spin h-6 w-6 text-gray-600 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none"
-        viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-      </svg>
-      <span class="text-gray-700 font-semibold">Enviando información...</span>
+  @if (submitted) {
+    <div class="absolute inset-0 bg-white bg-opacity-70 z-10 flex items-center justify-center">
+      <div class="text-center">
+        <svg class="animate-spin h-6 w-6 text-gray-600 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+        </svg>
+        <span class="text-gray-700 font-semibold">Enviando información...</span>
+      </div>
     </div>
-  </div>
+  }
   <div class="px-4 overflow-x-hidden">
     <!-- Cambiar estado del documento -->
-    <mat-card class="p-2" *ngIf="isChangeState">
-      <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="changeStateIsLoading"></mat-progress-bar>
-      <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
-        <div>
-          <mat-form-field class="w-full">
-            <input matInput name="estadoFinal" [matAutocomplete]="auto"
-              [formControl]="changeStateForm.controls['estadoFinal']" placeholder="Nuevo estado" required />
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayChangeState">
-              <mat-option *ngFor="let newState of plantilla.estados" [value]="newState">
-                <span>{{ newState.nombre }}</span>
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
+    @if (isChangeState) {
+      <mat-card class="p-2">
+        @if (changeStateIsLoading) {
+          <mat-progress-bar class="w-full" mode="indeterminate"></mat-progress-bar>
+        }
+        <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
+          <div>
+            <mat-form-field class="w-full">
+              <input matInput name="estadoFinal" [matAutocomplete]="auto"
+                [formControl]="changeStateForm.controls['estadoFinal']" placeholder="Nuevo estado" required />
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayChangeState">
+                  @for (newState of plantilla.estados; track newState) {
+                    <mat-option [value]="newState">
+                      <span>{{ newState.nombre }}</span>
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field class="w-full">
+                <textarea name="motivo" class="textarea-form" matInput [formControl]="changeStateForm.controls['motivo']"
+                placeholder="Motivo" required></textarea>
+              </mat-form-field>
+            </div>
+            @if (!changeStateIsLoading) {
+              <button mat-raised-button class="mat-primary w-full" [disabled]="changeStateForm.invalid"
+                >
+                Cambiar estado
+              </button>
+            }
+          </form>
+        </mat-card>
+      }
+      <!-- Alertas-->
+      @if (pedido && pedido.messages) {
+        <div class="py-1 gap-1">
+          @for (msg of pedido.messages; track msg) {
+            <div>
+              @if (msg.type === 'ERROR') {
+                <div
+                  class="flex items-center p-1 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                  role="alert">
+                  <mat-icon class="text-red-800">error</mat-icon>
+                  <div class="w-full px-2"> {{msg.message}} </div>
+                </div>
+              }
+              @if (msg.type !== 'ERROR') {
+                <div
+                  class="flex items-center p-1 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800"
+                  role="alert">
+                  <mat-icon class="text-blue-800">info</mat-icon>
+                  <div class="w-full px-2"> {{msg.message}}</div>
+                </div>
+              }
+            </div>
+          }
         </div>
+      }
 
-        <div>
-          <mat-form-field class="w-full">
-            <textarea name="motivo" class="textarea-form" matInput [formControl]="changeStateForm.controls['motivo']"
-              placeholder="Motivo" required></textarea>
-          </mat-form-field>
+      <!-- Acciones  -->
+      @if (pedido && pedido.llaveTabla) {
+        <div class="w-full">
+          @if (isLoading) {
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          }
+          <!-- Acciones -->
+          @if (!isLoading) {
+            <div class="p-1 w-full justify-between flex flex-wrap">
+              <!-- Botones de transiciones -->
+              @for (t of transiciones; track t) {
+                <a (click)="crearPlantilla(t.plantilla, (t.documentToTransition==null)?pedido:t.documentToTransition)" class="cursor-pointer flex-auto">
+                  <div class="p-1 w-full h-full items-center flex justify-center">
+                    <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
+                    <div class="pl-2 text-sm font-bold">{{ t.nombre }}</div>
+                  </div>
+                </a>
+              }
+              <!-- Botones de reportes -->
+              @for (r of reportes; track r) {
+                <a (click)="showReport(r)" class="cursor-pointer flex-auto">
+                  <div class="p-1 w-full h-full items-center flex justify-center">
+                    <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
+                      <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_outline:printer"></mat-icon>
+                    </div>
+                    <div class="pl-2 text-sm font-bold">{{ r.nombre | slice: 0:30 }}</div>
+                  </div>
+                </a>
+              }
+              <!-- Boton de historial
+              <button mat-flat-button (click)="showTrace()" class="flex-auto">
+                <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Historial
+              </button> -->
+              <a class="cursor-pointer flex-auto" (click)="showTrace()">
+                <div class="p-1 w-full h-full items-center flex justify-center">
+                  <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
+                    <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_outline:clock"> </mat-icon>
+                  </div>
+                  <div class="pl-2 text-sm font-bold">HISTORIAL</div>
+                </div>
+              </a>
+            </div>
+          }
         </div>
-        <button mat-raised-button class="mat-primary w-full" [disabled]="changeStateForm.invalid"
-          *ngIf="!changeStateIsLoading">
-          Cambiar estado
-        </button>
-      </form>
-    </mat-card>
-    <!-- Alertas-->
-    <div *ngIf="pedido && pedido.messages" class="py-1 gap-1">
-      <div *ngFor="let msg of pedido.messages">
-        <div *ngIf="msg.type === 'ERROR'"
-          class="flex items-center p-1 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
-          role="alert">
-          <mat-icon class="text-red-800">error</mat-icon>
-          <div class="w-full px-2"> {{msg.message}} </div>
-        </div>
-        <div *ngIf="msg.type !== 'ERROR'"
-          class="flex items-center p-1 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800"
-          role="alert">
-          <mat-icon class="text-blue-800">info</mat-icon>
-          <div class="w-full px-2"> {{msg.message}}</div>
-        </div>
+      }
+      <!-- Campos dinamicos -->
+      <div class="pt-2">
+        <ng-template #dynamycFormElement></ng-template>
       </div>
     </div>
-
-    <!-- Acciones  -->
-    <div class="w-full" *ngIf="pedido && pedido.llaveTabla">
-      <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-      <!-- Acciones -->
-      <div *ngIf="!isLoading" class="p-1 w-full justify-between flex flex-wrap">
-        <!-- Botones de transiciones -->
-        <a *ngFor="let t of transiciones" (click)="crearPlantilla(t.plantilla, (t.documentToTransition==null)?pedido:t.documentToTransition)" class="cursor-pointer flex-auto">
-          <div class="p-1 w-full h-full items-center flex justify-center">
-            <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
-            <div class="pl-2 text-sm font-bold">{{ t.nombre }}</div>
+    <!-- Boton de guardar -->
+    @if (modificable) {
+      <div class="pt-1 px-4 pb-4">
+        @if (submitted) {
+          <mat-progress-bar class="w-full" mode="indeterminate"></mat-progress-bar>
+        }
+        @if (!submitted) {
+          <div>
+            <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified">
+              <mat-icon>save</mat-icon> Guardar {{ plantilla?.nombre | titlecase }}
+            </button>
           </div>
-        </a>
-        <!-- Botones de reportes -->
-        <a *ngFor="let r of reportes" (click)="showReport(r)" class="cursor-pointer flex-auto">
-          <div class="p-1 w-full h-full items-center flex justify-center">
-            <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
-              <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_outline:printer"></mat-icon>
-            </div>
-            <div class="pl-2 text-sm font-bold">{{ r.nombre | slice: 0:30 }}</div>
-          </div>
-        </a>
-        <!-- Boton de historial
-        <button mat-flat-button (click)="showTrace()" class="flex-auto">
-          <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Historial
-        </button> -->
-        <a class="cursor-pointer flex-auto" (click)="showTrace()">
-          <div class="p-1 w-full h-full items-center flex justify-center">
-            <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
-              <mat-icon class="icon-size-5 text-white" svgIcon="heroicons_outline:clock"> </mat-icon>
-            </div>
-            <div class="pl-2 text-sm font-bold">HISTORIAL</div>
-          </div>
-        </a>
+        }
       </div>
-    </div>
-    <!-- Campos dinamicos -->
-    <div class="pt-2">
-      <ng-template #dynamycFormElement></ng-template>
-    </div>
+    }
   </div>
-  <!-- Boton de guardar -->
-  <div *ngIf="modificable" class="pt-1 px-4 pb-4">
-    <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
-    <div *ngIf="!submitted">
-      <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified">
-        <mat-icon>save</mat-icon> Guardar {{ plantilla?.nombre | titlecase }}
-      </button>
-    </div>
-  </div>
-</div>

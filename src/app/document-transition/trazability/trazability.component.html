@@ -1,27 +1,33 @@
 <!-- Titulo -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle *ngIf="plantilla"
-  [style]="styleSizePop" class="p-4 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent flex">
-  <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
-  <!-- Texto del titulo -->
-  <div class="w-full">
-    <small class="w-full font-semibold">{{documentState}}</small>
-    <div>
-      <span class="flex font-semibold">
-        <span>{{ plantilla.nombre }}</span>
-        <span> - {{ documentName }}</span>
-      </span>
+@if (plantilla) {
+  <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle
+    [style]="styleSizePop" class="p-4 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent flex">
+    <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
+    <!-- Texto del titulo -->
+    <div class="w-full">
+      <small class="w-full font-semibold">{{documentState}}</small>
+      <div>
+        <span class="flex font-semibold">
+          <span>{{ plantilla.nombre }}</span>
+          <span> - {{ documentName }}</span>
+        </span>
+      </div>
+    </div>
+    <!-- Botones de accion -->
+    <div class="flex">
+      @if (!fullScreen) {
+        <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen</mat-icon>
+      }
+      @if (fullScreen) {
+        <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen_exit</mat-icon>
+      }
+      <!-- Boton Cerrar -->
+      <a class="cursor-pointer px-1" (click)="dialogRef.close(false)">
+        <mat-icon class="h-6">exit_to_app</mat-icon>
+      </a>
     </div>
   </div>
-  <!-- Botones de accion -->
-  <div class="flex">
-    <mat-icon *ngIf="!fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen</mat-icon>
-    <mat-icon *ngIf="fullScreen" class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen_exit</mat-icon>
-    <!-- Boton Cerrar -->
-    <a class="cursor-pointer px-1" (click)="dialogRef.close(false)">
-      <mat-icon class="h-6">exit_to_app</mat-icon>
-    </a>
-  </div>
-</div>
+}
 <!-- Filtros de la trazabilidad -->
 <div class="w-full flex p-2">
 
@@ -34,305 +40,345 @@
 
 
   <!-- Dropdown menu -->
-  <div *ngIf="dropdownOpen" id="dropdownBgHover"
-    class="absolute z-10 w-48 -mt-18 bg-white rounded-lg shadow-sm dark:bg-gray-700">
-    <ul class="p-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
-      <li *ngFor="let opt of optionsTrace">
-        <div class="flex items-center p-1 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
-          <input [id]="'checkbox-item-'+opt.value" type="checkbox"
-            class="w-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-            [value]="opt.value" (change)="onCheckboxChange($event)" [checked]="selectedTrace.value.includes(opt.value)">
-          <label [for]="'checkbox-item-'+opt.value"
-            class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">{{ opt.viewValue
-            }}</label>
-        </div>
-      </li>
-    </ul>
-  </div>
-
-
-
-
-  <button mat-raise-button class="px-2" (click)="listar(1)">
-    <mat-icon svgIcon="heroicons_outline:clock"></mat-icon>
-  </button>
-</div>
-
-<!-- Lista de la trazabilidad -->
-<div class="bg-sky-100 dark:bg-transparent flex flex-col max-h-[70vh]">
-  <div class="overflow-x-hidden pr-4 pl-7">
-
-    <div *ngIf="state!=='I'">
-      <div *ngFor="let item of vouchersTemplate"
-        class="sm:col-span-1 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
-
-        <div class="text-lg font-medium tracking-tight leading-6 truncate">
-          {{(item.motivo)?item.motivo:item.texto |uppercase}}</div>
-
-        <button class="w-full m-1" mat-flat-button [color]="'accent'" (click)="showVoucherAccount(item)"
-          [disabled]="isLoading">
-          <mat-icon>refresh</mat-icon>
-          <span>Consultar comprobante</span>
-        </button>
-        <button *ngIf="item.estado==='CONSULTADO'" class="w-full m-1" mat-flat-button [color]="'accent'"
-          (click)="generateVoucher(item.campo)" [disabled]="isLoading">
-          <mat-icon>add</mat-icon>
-          <span>Crear comprobante</span>
-        </button>
+  @if (dropdownOpen) {
+    <div id="dropdownBgHover"
+      class="absolute z-10 w-48 -mt-18 bg-white rounded-lg shadow-sm dark:bg-gray-700">
+      <ul class="p-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
+        @for (opt of optionsTrace; track opt) {
+          <li>
+            <div class="flex items-center p-1 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
+              <input [id]="'checkbox-item-'+opt.value" type="checkbox"
+                class="w-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                [value]="opt.value" (change)="onCheckboxChange($event)" [checked]="selectedTrace.value.includes(opt.value)">
+                <label [for]="'checkbox-item-'+opt.value"
+                  class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">{{ opt.viewValue
+                }}</label>
+              </div>
+            </li>
+          }
+        </ul>
       </div>
-    </div>
+    }
 
-    <ol>
-      <!-- Activities -->
-      <ng-container *ngFor="let g of dataProvider;let i = index;">
-        <li *ngIf="!isSameDay( g.fecha, i)" class="relative flex py-4">
-          <div class="relative rounded-full bg-primary px-8 py-2 text-md font-medium leading-5 text-on-primary">
-            {{ getRelativeFormat(g.fecha) | titlecase}}
-          </div>
-        </li>
-        <!-- Activity -->
-        <li class="relative flex py-1">
-          <div class="absolute left-5 w-0.5 h-full -ml-px bg-gray-300 dark:bg-gray-600"></div>
 
-          <div class="relative flex flex-auto">
-            <!-- Image -->
-            <ng-container>
 
-              <div class=" w-10 h-10 mr-4 "               *ngIf="!g.responsableImagen">
-              </div>
-              <img class="shrink-0 w-10 h-10 mr-4 rounded-full overflow-hidden object-cover object-center"
-                [src]="g.responsableImagen" [alt]="'Activity image'" *ngIf="g.responsableImagen">
 
-            </ng-container>
-
-            <div [ngSwitch]="g.estado">
-
-              <div *ngSwitchCase="'VALORES'" class="flex flex-col flex-auto items-start">
-                <div
-                  class="bg-white border-l-4 border-green-500 p-4 shadow rounded-md max-w-sm w-full mx-auto flex items-start gap-4">
-                  <!-- Logo o ícono -->
-                  <div class="flex-shrink-0 bg-green-100 p-2 rounded-full">
-                    <!-- Icono (ej: documento check) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" fill="none"
-                      viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4m1-4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V8l-6-6z" />
-                    </svg>
-                  </div>
-
-                  <!-- Información del documento -->
-                  <div class="flex-1">
-                    <div class="flex justify-between items-center">
-                      <h4 class="text-gray-800 font-semibold">{{g.estadoFinal | currency}}</h4>
-                      <!--span
-                        class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">Aqui depronto va el usuario</span-->
-                    </div>
-                    <p class="text-sm text-gray-600 mt-1">Saldo: <span
-                        class="font-bold text-green-700">{{g.estadoInicial | currency}}</span>
-                    </p>
-                    <p class="text-xs text-gray-400 mt-0.5">{{ getDateFormat(g.fecha) }}</p>
-                  </div>
-                </div>
-              </div>
-              <div *ngSwitchCase="'UBICACION'" class="flex flex-col flex-auto items-start">
-                <div
-                  class="flex items-start space-x-3 bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm shadow-sm max-w-md w-full">
-                  <!-- Ícono de ubicación -->
-                  <div class="text-emerald-600 mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
-                    </svg>
-                  </div>
-                  <!-- Contenido -->
-                  <div class="flex-1 space-y-1">
-                    <!-- Fecha -->
-                    <div class="text-xs text-gray-500">
-                      🗓️ Fecha: <span class="text-gray-700">{{ getDateFormat(g.fecha) }}</span>
-                    </div>
-                    <!-- Enlace a la ubicación -->
-                    <div class="text-xs">
-                      {{g.plantillaNombre}} - <a class="cursor-pointer text-primary"
-                        (click)="showTraceDocument(g.documentoModificador, g.plantilla)">{{
-                        g.comentario }}</a>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div *ngSwitchCase="'REPORTES'" class="flex flex-col flex-auto items-start">
-                <div
-                  class="flex items-start space-x-3 bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm shadow-sm max-w-md w-full">
-
-                  <!-- Icono del reporte -->
-                  <div class="text-indigo-600 mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12h6m2 8H7a2 2 0 01-2-2V6a2 2 0 012-2h6l4 4v12a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-
-                  <!-- Contenido -->
-                  <div class="flex-1 space-y-1">
-                    <div class="font-semibold text-gray-800"><span class="text-gray-900">{{ g.nombre }}</span></div>
-
-                    <div class="text-xs text-gray-500">
-                      👤 <span class="text-gray-700">{{ g.responsable }}</span> ·🕓 {{getDateFormat(g.fecha)}} · ⏱ {{
-                      g.estadoFinal }}
-                    </div>
-
-                    <!-- Error si aplica -->
-                    <div *ngIf="g.comentario"
-                      class="text-xs text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded">
-                      ⚠️ {{ g.comentario }}
-                    </div>
-
-                    <!-- Enlace al adjunto -->
-                    <div *ngIf="g.adjunto" class="text-xs">
-                      🔗 <a href="{{g.adjunto | imageFormat}}" target="_blank" class="text-indigo-600 hover:underline">Ver reporte</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div *ngSwitchCase="'API'" class="flex flex-col flex-auto items-start">
-                <div
-                  class="flex items-center space-x-3 bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm shadow-sm max-w-md">
-
-                  <!-- Ícono (puede ser un robot o engranaje) -->
-                  <div class="text-blue-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 17v-1a2 2 0 012-2h2a2 2 0 012 2v1m-6 0a2 2 0 01-2-2v-2a2 2 0 012-2m6 6a2 2 0 002-2v-2a2 2 0 00-2-2m0 0V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v2" />
-                    </svg>
-                  </div>
-
-                  <!-- Contenido -->
-                  <div>
-                    <div class="font-semibold text-gray-700"><span class="text-gray-900">{{g.nombre}}</span>
-                    </div>
-                    <div class="text-xs text-gray-500">
-                      <span *ngIf="g.estadoInicial" class="mr-2"><a href="{{ g.estadoInicial | imageFormat }}" target="_blank"
-                          class="cursor-pointer text-primary text-sm">📥 Input</a></span>
-                      <span *ngIf="g.estadoInicial" ><a href="{{ g.estadoFinal | imageFormat }}" target="_blank" class="cursor-pointer text-primary text-sm">📤
-                          Output: </a></span>
-                    </div>
-                    <div class="mt-1 text-xs text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded"
-                      *ngIf="g.comentario">
-                      ⚠️ Error: {{ g.comentario }}
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div *ngSwitchCase="'MENSAJE'" class="flex flex-col flex-auto items-start">
-                <div
-                  class="bg-white border-l-4 border-blue-500 p-4 shadow rounded-md max-w-sm w-full mx-auto flex items-start gap-4">
-
-                  <!-- Ícono de correo -->
-                  <div class="flex-shrink-0 bg-blue-100 p-2 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none"
-                      viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M16 12H8m0 0l4-4m-4 4l4 4m8-8v8a2 2 0 01-2 2H6a2 2 0 01-2-2V8" />
-                    </svg>
-                  </div>
-
-                  <!-- Información del estado -->
-                  <div class="flex-1">
-                    <div class="flex justify-between items-center">
-                      <h4 class="text-gray-800 font-semibold">{{g.comentario}}</h4>
-                      <span
-                        class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">Enviado</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mt-1">{{ g.nombre}}</p>
-                    <p class="text-xs text-gray-400 mt-0.5">{{ getDateFormat(g.fecha) }}</p>
-                    <div *ngIf="g.adjunto" class="w-full">
-                      <div *ngFor="let iUrl of g.adjunto.split(';;'); let i = index">
-                        <a href="{{ iUrl | imageFormat }}" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1
-                          }}</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Content -->
-              <div *ngSwitchDefault class="flex flex-col flex-auto items-start">
-
-                <!-- Description -->
-                <ng-container>
-                  <!-- Primera linea:quien y cuando -->
-                  <div class="w-full text-sm">
-                    <mat-icon (click)="onUsuarioClick(g.usuario)" class="cursor-pointer text-primary !w-2 !h-2 py-1.5" svgIcon="heroicons_outline:user" style="min-width: 18px;"></mat-icon>
-                    <b >{{ g.responsable }}</b> realizo la accion de <b>{{ g.nombre }}</b><a
-                      *ngIf="g.transaccion && !g.campos" (click)="showTraceField2Document(g)"><mat-icon
-                        inline="true">view_headline</mat-icon></a>
-                  </div>
-                  <div class="w-full">
-                    <small>{{ getDateFormat(g.fecha) }}</small>
-                    <small *ngIf="g.documentoModificador"> - <a class="cursor-pointer text-primary"
-                        (click)="showTraceDocument(g.documentoModificador, g.plantilla)">{{
-                        g.modificadorNombre }}</a> </small>
-                  </div>
-
-                  <div *ngIf="g.estados"
-                    class="flex items-center w-full  mx-auto">
-                    <div class="flex-1 flex py-1 px-3">
-                      <!-- Punto e ícono -->
-                      <!--div>
-                        <div class="w-6 h-6 rounded-full z-10 border-1 border-white shadow-md bg-green-100">
-                        </div>
-                        <div class="text-xs text-center w-24">
-                          {{ g.estadoInicial }}
-                        </div>
-                      </div-->
-                      <ng-container *ngFor="let estado of g.estados; let j = index">
-                        <div *ngIf="j!==0" class="w-26 h-1 bg-gray-300 mt-2 -ml-20"></div>
-                        <div>
-                          <div  class="w-4 h-4 rounded-full z-10 border-1 border-white shadow-md bg-green-100">
-                          </div>
-                          <div class="text-xs text-center w-24">
-                            {{ estado }}
-                          </div>
-                        </div>
-                      </ng-container>                   
-                    </div>
-                  </div>
-
-                  <!-- Cuarta linea : comentario -->
-                  <div *ngIf="g.comentario" class="py-1 px-2 rounded-lg bg-gray-200 dark:bg-gray-800">
-                    <div class="text-sm line-clamp-3">{{g.comentario }}
-                    </div>
-                  </div>
-                  <!-- Sexta linea Adjuntos -->
-                  <div *ngIf="g.adjunto" class="w-full">
-                    <div *ngFor="let iUrl of g.adjunto.split(';;'); let i = index">
-                      <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1
-                        }}</a>
-                    </div>
-                  </div>
-                  <!-- Septima linea Campos nuevos -->
-                  <div class="w-full" *ngIf="g.campos">
-                    <div *ngFor="let iCampoOriginal of g.campos">
-                      <b class="text-xs">{{ iCampoOriginal.campo }} :</b><small> {{ iCampoOriginal.valorText }}</small>
-                    </div>
-                  </div>
-                </ng-container>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ng-container>
-    </ol>
-    <button mat-flat-button (click)="listar(pagina)" *ngIf="!isEnd">
-      <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Seguir consultando
+    <button mat-raise-button class="px-2" (click)="listar(1)">
+      <mat-icon svgIcon="heroicons_outline:clock"></mat-icon>
     </button>
   </div>
 
-</div>
+  <!-- Lista de la trazabilidad -->
+  <div class="bg-sky-100 dark:bg-transparent flex flex-col max-h-[70vh]">
+    <div class="overflow-x-hidden pr-4 pl-7">
+
+      @if (state!=='I') {
+        <div>
+          @for (item of vouchersTemplate; track item) {
+            <div
+              class="sm:col-span-1 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+              <div class="text-lg font-medium tracking-tight leading-6 truncate">
+              {{(item.motivo)?item.motivo:item.texto |uppercase}}</div>
+              <button class="w-full m-1" mat-flat-button [color]="'accent'" (click)="showVoucherAccount(item)"
+                [disabled]="isLoading">
+                <mat-icon>refresh</mat-icon>
+                <span>Consultar comprobante</span>
+              </button>
+              @if (item.estado==='CONSULTADO') {
+                <button class="w-full m-1" mat-flat-button [color]="'accent'"
+                  (click)="generateVoucher(item.campo)" [disabled]="isLoading">
+                  <mat-icon>add</mat-icon>
+                  <span>Crear comprobante</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <ol>
+        <!-- Activities -->
+        @for (g of dataProvider; track g; let i = $index) {
+          @if (!isSameDay( g.fecha, i)) {
+            <li class="relative flex py-4">
+              <div class="relative rounded-full bg-primary px-8 py-2 text-md font-medium leading-5 text-on-primary">
+                {{ getRelativeFormat(g.fecha) | titlecase}}
+              </div>
+            </li>
+          }
+          <!-- Activity -->
+          <li class="relative flex py-1">
+            <div class="absolute left-5 w-0.5 h-full -ml-px bg-gray-300 dark:bg-gray-600"></div>
+            <div class="relative flex flex-auto">
+              <!-- Image -->
+              <ng-container>
+                @if (!g.responsableImagen) {
+                  <div class=" w-10 h-10 mr-4 "              >
+                  </div>
+                }
+                @if (g.responsableImagen) {
+                  <img class="shrink-0 w-10 h-10 mr-4 rounded-full overflow-hidden object-cover object-center"
+                    [src]="g.responsableImagen" [alt]="'Activity image'">
+                }
+              </ng-container>
+              <div>
+                @switch (g.estado) {
+                  @case ('VALORES') {
+                    <div class="flex flex-col flex-auto items-start">
+                      <div
+                        class="bg-white border-l-4 border-green-500 p-4 shadow rounded-md max-w-sm w-full mx-auto flex items-start gap-4">
+                        <!-- Logo o ícono -->
+                        <div class="flex-shrink-0 bg-green-100 p-2 rounded-full">
+                          <!-- Icono (ej: documento check) -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4m1-4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V8l-6-6z" />
+                            </svg>
+                          </div>
+                          <!-- Información del documento -->
+                          <div class="flex-1">
+                            <div class="flex justify-between items-center">
+                              <h4 class="text-gray-800 font-semibold">{{g.estadoFinal | currency}}</h4>
+                              <!--span
+                            class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">Aqui depronto va el usuario</span-->
+                          </div>
+                          <p class="text-sm text-gray-600 mt-1">Saldo: <span
+                          class="font-bold text-green-700">{{g.estadoInicial | currency}}</span>
+                        </p>
+                        <p class="text-xs text-gray-400 mt-0.5">{{ getDateFormat(g.fecha) }}</p>
+                      </div>
+                    </div>
+                  </div>
+                }
+                @case ('UBICACION') {
+                  <div class="flex flex-col flex-auto items-start">
+                    <div
+                      class="flex items-start space-x-3 bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm shadow-sm max-w-md w-full">
+                      <!-- Ícono de ubicación -->
+                      <div class="text-emerald-600 mt-0.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                          stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 22s8-4.5 8-10a8 8 0 10-16 0c0 5.5 8 10 8 10z" />
+                            </svg>
+                          </div>
+                          <!-- Contenido -->
+                          <div class="flex-1 space-y-1">
+                            <!-- Fecha -->
+                            <div class="text-xs text-gray-500">
+                              🗓️ Fecha: <span class="text-gray-700">{{ getDateFormat(g.fecha) }}</span>
+                            </div>
+                            <!-- Enlace a la ubicación -->
+                            <div class="text-xs">
+                              {{g.plantillaNombre}} - <a class="cursor-pointer text-primary"
+                              (click)="showTraceDocument(g.documentoModificador, g.plantilla)">{{
+                            g.comentario }}</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                  @case ('REPORTES') {
+                    <div class="flex flex-col flex-auto items-start">
+                      <div
+                        class="flex items-start space-x-3 bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm shadow-sm max-w-md w-full">
+                        <!-- Icono del reporte -->
+                        <div class="text-indigo-600 mt-0.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12h6m2 8H7a2 2 0 01-2-2V6a2 2 0 012-2h6l4 4v12a2 2 0 01-2 2z" />
+                            </svg>
+                          </div>
+                          <!-- Contenido -->
+                          <div class="flex-1 space-y-1">
+                            <div class="font-semibold text-gray-800"><span class="text-gray-900">{{ g.nombre }}</span></div>
+                            <div class="text-xs text-gray-500">
+                              👤 <span class="text-gray-700">{{ g.responsable }}</span> ·🕓 {{getDateFormat(g.fecha)}} · ⏱ {{
+                              g.estadoFinal }}
+                            </div>
+                            <!-- Error si aplica -->
+                            @if (g.comentario) {
+                              <div
+                                class="text-xs text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded">
+                                ⚠️ {{ g.comentario }}
+                              </div>
+                            }
+                            <!-- Enlace al adjunto -->
+                            @if (g.adjunto) {
+                              <div class="text-xs">
+                                🔗 <a href="{{g.adjunto | imageFormat}}" target="_blank" class="text-indigo-600 hover:underline">Ver reporte</a>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    @case ('API') {
+                      <div class="flex flex-col flex-auto items-start">
+                        <div
+                          class="flex items-center space-x-3 bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 text-sm shadow-sm max-w-md">
+                          <!-- Ícono (puede ser un robot o engranaje) -->
+                          <div class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                              stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-1a2 2 0 012-2h2a2 2 0 012 2v1m-6 0a2 2 0 01-2-2v-2a2 2 0 012-2m6 6a2 2 0 002-2v-2a2 2 0 00-2-2m0 0V7a2 2 0 00-2-2h-2a2 2 0 00-2 2v2" />
+                              </svg>
+                            </div>
+                            <!-- Contenido -->
+                            <div>
+                              <div class="font-semibold text-gray-700"><span class="text-gray-900">{{g.nombre}}</span>
+                            </div>
+                            <div class="text-xs text-gray-500">
+                              @if (g.estadoInicial) {
+                                <span class="mr-2"><a href="{{ g.estadoInicial | imageFormat }}" target="_blank"
+                                class="cursor-pointer text-primary text-sm">📥 Input</a></span>
+                              }
+                              @if (g.estadoInicial) {
+                                <span ><a href="{{ g.estadoFinal | imageFormat }}" target="_blank" class="cursor-pointer text-primary text-sm">📤
+                                Output: </a></span>
+                              }
+                            </div>
+                            @if (g.comentario) {
+                              <div class="mt-1 text-xs text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded"
+                                >
+                                ⚠️ Error: {{ g.comentario }}
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    @case ('MENSAJE') {
+                      <div class="flex flex-col flex-auto items-start">
+                        <div
+                          class="bg-white border-l-4 border-blue-500 p-4 shadow rounded-md max-w-sm w-full mx-auto flex items-start gap-4">
+                          <!-- Ícono de correo -->
+                          <div class="flex-shrink-0 bg-blue-100 p-2 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none"
+                              viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 12H8m0 0l4-4m-4 4l4 4m8-8v8a2 2 0 01-2 2H6a2 2 0 01-2-2V8" />
+                              </svg>
+                            </div>
+                            <!-- Información del estado -->
+                            <div class="flex-1">
+                              <div class="flex justify-between items-center">
+                                <h4 class="text-gray-800 font-semibold">{{g.comentario}}</h4>
+                                <span
+                                class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">Enviado</span>
+                              </div>
+                              <p class="text-sm text-gray-600 mt-1">{{ g.nombre}}</p>
+                              <p class="text-xs text-gray-400 mt-0.5">{{ getDateFormat(g.fecha) }}</p>
+                              @if (g.adjunto) {
+                                <div class="w-full">
+                                  @for (iUrl of g.adjunto.split(';;'); track iUrl; let i = $index) {
+                                    <div>
+                                      <a href="{{ iUrl | imageFormat }}" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1
+                                      }}</a>
+                                    </div>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      }
+                      <!-- Content -->
+                      @default {
+                        <div class="flex flex-col flex-auto items-start">
+                          <!-- Description -->
+                          <ng-container>
+                            <!-- Primera linea:quien y cuando -->
+                            <div class="w-full text-sm">
+                              <mat-icon (click)="onUsuarioClick(g.usuario)" class="cursor-pointer text-primary !w-2 !h-2 py-1.5" svgIcon="heroicons_outline:user" style="min-width: 18px;"></mat-icon>
+                              <b >{{ g.responsable }}</b> realizo la accion de <b>{{ g.nombre }}</b>@if (g.transaccion && !g.campos) {
+                              <a
+                                (click)="showTraceField2Document(g)"><mat-icon
+                              inline="true">view_headline</mat-icon></a>
+                            }
+                          </div>
+                          <div class="w-full">
+                            <small>{{ getDateFormat(g.fecha) }}</small>
+                            @if (g.documentoModificador) {
+                              <small> - <a class="cursor-pointer text-primary"
+                                (click)="showTraceDocument(g.documentoModificador, g.plantilla)">{{
+                              g.modificadorNombre }}</a> </small>
+                            }
+                          </div>
+                          @if (g.estados) {
+                            <div
+                              class="flex items-center w-full  mx-auto">
+                              <div class="flex-1 flex py-1 px-3">
+                                <!-- Punto e ícono -->
+                                <!--div>
+                                <div class="w-6 h-6 rounded-full z-10 border-1 border-white shadow-md bg-green-100">
+                                </div>
+                                <div class="text-xs text-center w-24">
+                                  {{ g.estadoInicial }}
+                                </div>
+                              </div-->
+                              @for (estado of g.estados; track estado; let j = $index) {
+                                @if (j!==0) {
+                                  <div class="w-26 h-1 bg-gray-300 mt-2 -ml-20"></div>
+                                }
+                                <div>
+                                  <div  class="w-4 h-4 rounded-full z-10 border-1 border-white shadow-md bg-green-100">
+                                  </div>
+                                  <div class="text-xs text-center w-24">
+                                    {{ estado }}
+                                  </div>
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        }
+                        <!-- Cuarta linea : comentario -->
+                        @if (g.comentario) {
+                          <div class="py-1 px-2 rounded-lg bg-gray-200 dark:bg-gray-800">
+                            <div class="text-sm line-clamp-3">{{g.comentario }}
+                            </div>
+                          </div>
+                        }
+                        <!-- Sexta linea Adjuntos -->
+                        @if (g.adjunto) {
+                          <div class="w-full">
+                            @for (iUrl of g.adjunto.split(';;'); track iUrl; let i = $index) {
+                              <div>
+                                <a [href]="iUrl" target="_blank" class="cursor-pointer text-primary text-sm"> Enlace # {{i + 1
+                                }}</a>
+                              </div>
+                            }
+                          </div>
+                        }
+                        <!-- Septima linea Campos nuevos -->
+                        @if (g.campos) {
+                          <div class="w-full">
+                            @for (iCampoOriginal of g.campos; track iCampoOriginal) {
+                              <div>
+                                <b class="text-xs">{{ iCampoOriginal.campo }} :</b><small> {{ iCampoOriginal.valorText }}</small>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </ng-container>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          </li>
+        }
+      </ol>
+      @if (!isEnd) {
+        <button mat-flat-button (click)="listar(pagina)">
+          <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Seguir consultando
+        </button>
+      }
+    </div>
+
+  </div>

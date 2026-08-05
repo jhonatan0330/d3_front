@@ -1,17 +1,19 @@
 <!-- Navigation -->
-<ng-container *ngIf="isScreenSmall">
+@if (isScreenSmall) {
   <fuse-vertical-navigation class="dark bg-gray-900 print:hidden" [mode]="'over'" [name]="'mainNavigation'"
     [navigation]="navigation?.default" [opened]="!isScreenSmall && user && !_loginService.isPublicUser">
     <!-- Navigation header hook -->
     <ng-container fuseVerticalNavigationContentHeader>
       <!-- Logo -->
       <div class="flex items-center justify-center h-28 pt-5 pb-5 px-8">
-        <img *ngIf="company?.imagen" class="h-16 w-auto max-w-xs object-contain px-2"
-          src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+        @if (company?.imagen) {
+          <img class="h-16 w-auto max-w-xs object-contain px-2"
+            src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+        }
       </div>
     </ng-container>
   </fuse-vertical-navigation>
-</ng-container>
+}
 
 <!-- Wrapper -->
 <div class="flex flex-col flex-auto w-full min-w-0">
@@ -19,65 +21,75 @@
   <!-- Header -->
   <div
     class="relative flex flex-0 items-center w-full h-16 sm:h-20 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent print:hidden">
-    <ng-container *ngIf="!isScreenSmall">
-
+    @if (!isScreenSmall) {
       <div class="flex items-center mx-2 lg:mr-8">
         <!-- Logo -->
         <div class="hidden lg:flex flex-col items-center">
-          <img *ngIf="company?.imagen" class="h-12 w-auto max-w-xs object-contain px-2"
-            src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+          @if (company?.imagen) {
+            <img class="h-12 w-auto max-w-xs object-contain px-2"
+              src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+          }
         </div>
       </div>
-
       <!-- Horizontal navigation -->
       <fuse-horizontal-navigation class="mr-2" [name]="'mainNavigation'"
-        [navigation]="navigation?.horizontal"></fuse-horizontal-navigation>
-    </ng-container>
+      [navigation]="navigation?.horizontal"></fuse-horizontal-navigation>
+    }
 
     <!-- Date and Version-->
     <!-- <div
-          class="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-gray-500 text-xxs leading-none whitespace-nowrap">
-          {{ time | date : "medium" }} - {{ currentApplicationVersion }}
-      </div> -->
+    class="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-gray-500 text-xxs leading-none whitespace-nowrap">
+    {{ time | date : "medium" }} - {{ currentApplicationVersion }}
+  </div> -->
 
-    <!-- Navigation toggle button -->
-    <ng-container *ngIf="isScreenSmall">
-      <button mat-icon-button (click)="toggleNavigation('mainNavigation')">
-        <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-      </button>
-    </ng-container>
+  <!-- Navigation toggle button -->
+  @if (isScreenSmall) {
+    <button mat-icon-button (click)="toggleNavigation('mainNavigation')">
+      <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+    </button>
+  }
 
-    <!-- Components -->
-    <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
-      <app-home-button></app-home-button>
-      <search [appearance]="'bar'"></search>
-      <shortcuts></shortcuts>
-      <notifications></notifications>
-      <user></user>
-    </div>
-
+  <!-- Components -->
+  <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+    <app-home-button></app-home-button>
+    <search [appearance]="'bar'"></search>
+    <shortcuts></shortcuts>
+    <notifications></notifications>
+    <user></user>
   </div>
 
-  <div *ngIf="headerSection && headerSection.length!==0" class="w-full">
-    <div *ngFor="let iHeader of headerSection" [innerHTML]="iHeader"></div>
-  </div>
+</div>
 
-  <!-- Content -->
-  <div class="flex flex-col flex-auto w-full">
-    <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
-             Otherwise, layout changes won't be registered and the view won't be updated! -->
-    <router-outlet *ngIf="true"></router-outlet>
+@if (headerSection && headerSection.length!==0) {
+  <div class="w-full">
+    @for (iHeader of headerSection; track iHeader) {
+      <div [innerHTML]="iHeader"></div>
+    }
   </div>
-  <!-- footer -->
-  <div *ngIf="landing && landing.length!==0" class="w-full">
-    <div *ngFor="let iFooter of landing" [innerHTML]="iFooter" class="w-full"></div>
+}
+
+<!-- Content -->
+<div class="flex flex-col flex-auto w-full">
+  <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
+  Otherwise, layout changes won't be registered and the view won't be updated! -->
+  @if (true) {
+    <router-outlet></router-outlet>
+  }
+</div>
+<!-- footer -->
+@if (landing && landing.length!==0) {
+  <div class="w-full">
+    @for (iFooter of landing; track iFooter) {
+      <div [innerHTML]="iFooter" class="w-full"></div>
+    }
   </div>
+}
 </div>
 
 
 <!-- <div class="flex items-center justify-center px-2 text-gray-500">
-    <span class="text-xxxs text-center leading-none">
-        {{ time | date : "medium" }} - {{ currentApplicationVersion }}
-    </span>
-    fixed top-0 left-0 z-50
+<span class="text-xxxs text-center leading-none">
+  {{ time | date : "medium" }} - {{ currentApplicationVersion }}
+</span>
+fixed top-0 left-0 z-50
 </div> -->

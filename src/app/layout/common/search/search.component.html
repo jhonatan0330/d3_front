@@ -1,26 +1,33 @@
 <!-- Bar search -->
-<ng-container *ngIf="appearance === 'bar'">
-    <button mat-icon-button *ngIf="!opened" (click)="open()">
-        <mat-icon [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
+@if (appearance === 'bar') {
+  @if (!opened) {
+    <button mat-icon-button (click)="open()">
+      <mat-icon [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
     </button>
-    <div class="absolute inset-0 flex items-center shrink-0 z-99 bg-card" *ngIf="opened" @slideInTop @slideOutTop>
-        <mat-icon class="absolute ml-6 sm:ml-8" [svgIcon]="'heroicons_outline:magnifying-glass'" (click)="searchDocument()"></mat-icon>
-        <input class="w-full h-full px-16 sm:px-18" [formControl]="searchControl" [matAutocomplete]="matAutocomplete"
-            [placeholder]="'Search...'" (keyUp.enter)="searchDocument()" (keydown)="onKeydown($event)" #barSearchInput>
-        <mat-progress-bar  class="w-full right-16 sm:right-18" mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  }
+  @if (opened) {
+    <div class="absolute inset-0 flex items-center shrink-0 z-99 bg-card" @slideInTop @slideOutTop>
+      <mat-icon class="absolute ml-6 sm:ml-8" [svgIcon]="'heroicons_outline:magnifying-glass'" (click)="searchDocument()"></mat-icon>
+      <input class="w-full h-full px-16 sm:px-18" [formControl]="searchControl" [matAutocomplete]="matAutocomplete"
+        [placeholder]="'Search...'" (keyUp.enter)="searchDocument()" (keydown)="onKeydown($event)" #barSearchInput>
+        @if (isLoading) {
+          <mat-progress-bar  class="w-full right-16 sm:right-18" mode="indeterminate"></mat-progress-bar>
+        }
         <mat-autocomplete class="max-h-128 sm:px-2 border-t rounded-b shadow-md" [autoSelectActiveOption]="true"
-            [disableRipple]="true" #matAutocomplete="matAutocomplete" [displayWith]="autoCompleteDisplay">
-            <mat-option *ngFor="let document of resultSets" [value]="document">
-                <div class="flex flex-row">
-                    <img class="h-6" [src]="document.imagen" />
-                    <span>{{ document.nombre }}</span> |
-                    <small>{{ document.descripcion }}</small>
-                </div>
+          [disableRipple]="true" #matAutocomplete="matAutocomplete" [displayWith]="autoCompleteDisplay">
+          @for (document of resultSets; track document) {
+            <mat-option [value]="document">
+              <div class="flex flex-row">
+                <img class="h-6" [src]="document.imagen" />
+                <span>{{ document.nombre }}</span> |
+                <small>{{ document.descripcion }}</small>
+              </div>
             </mat-option>
+          }
         </mat-autocomplete>
-
         <button class="absolute top-1/2 right-5 sm:right-7 shrink-0 w-10 h-10 -mt-5" mat-icon-button (click)="close()">
-            <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+          <mat-icon [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
         </button>
-    </div>
-</ng-container>
+      </div>
+    }
+  }

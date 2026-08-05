@@ -1,26 +1,35 @@
 <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+  @if (errorMessage) {
+    <label class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+  }
   <mat-label>{{ structure.nombre | titlecase }}</mat-label>
   <input type="text" matInput [formControl]="fControl" [matAutocomplete]="auto"
-  [id]="idField"
-  [name]="structure.llaveTabla"
-  [required]="required"
-  [readonly]="!isEnabled">
-  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-      <span>{{option.nombre}}</span><span *ngIf="option.descripcion"> - {{option.descripcion}}</span>
-    </mat-option>
+    [id]="idField"
+    [name]="structure.llaveTabla"
+    [required]="required"
+    [readonly]="!isEnabled">
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+      @for (option of filteredOptions | async; track option) {
+        <mat-option [value]="option">
+          <span>{{option.nombre}}</span>@if (option.descripcion) {
+          <span> - {{option.descripcion}}</span>
+        }
+      </mat-option>
+    }
   </mat-autocomplete>
   <!-- Limpiar -->
-  <button
-    mat-icon-button
-    matSuffix
-    *ngIf="isEnabled"
-    (click)="fControl.setValue('')"
-    tabindex="-1"
-  >
-    <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
-  </button>
+  @if (isEnabled) {
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="fControl.setValue('')"
+      tabindex="-1"
+      >
+      <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
+    </button>
+  }
 </mat-form-field>
 
-<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+@if (isLoading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}

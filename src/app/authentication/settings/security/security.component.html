@@ -1,55 +1,61 @@
 <div class="flex items-center justify-center px-4 sm:px-6 lg:px-8 py-2">
-    <!-- Form -->
-    <form [formGroup]="securityForm" (ngSubmit)="changePwd()">
+  <!-- Form -->
+  <form [formGroup]="securityForm" (ngSubmit)="changePwd()">
 
-        <!-- Section -->
-        <div class="w-full text-center sm:text-left">
-            <div class="text-xl font-semibold">Cambie su clave</div>
-            <div *ngIf="!data?.key" class="text-secondary text-sm sm:text-base">
-                Recuerda cambiar tu clave constantemente!
-            </div>
-            <div *ngIf="data?.key" class="text-secondary text-sm sm:text-base">
-                Recuerda comentarle al usuario sobre el cambio!
-            </div>
+    <!-- Section -->
+    <div class="w-full text-center sm:text-left">
+      <div class="text-xl font-semibold">Cambie su clave</div>
+      @if (!data?.key) {
+        <div class="text-secondary text-sm sm:text-base">
+          Recuerda cambiar tu clave constantemente!
         </div>
-
-        <div class="grid grid-cols-1 gap-6 w-full mt-8">
-            <!-- Current password -->
-            <div>
-                <mat-form-field class="w-full">
-                    <mat-label>Contraseña actual</mat-label>
-                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
-                    <input [formControl]="securityForm.controls['oldPwd']" type="password" matInput>
-                </mat-form-field>
-            </div>
-            <!-- New password -->
-            <div>
-                <mat-form-field class="w-full">
-                    <mat-label>Nueva contraseña</mat-label>
-                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
-                    <input [formControl]="securityForm.controls['newPwd']" type="password" matInput>
-                </mat-form-field>
-            </div>
-            <!-- Repeat password -->
-            <div>
-                <mat-form-field class="w-full">
-                    <mat-label>Repetir contraseña</mat-label>
-                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
-                    <input [formControl]="securityForm.controls['repeatPwd']" type="password" matInput>
-                </mat-form-field>
-            </div>
+      }
+      @if (data?.key) {
+        <div class="text-secondary text-sm sm:text-base">
+          Recuerda comentarle al usuario sobre el cambio!
         </div>
+      }
+    </div>
 
-        <!-- Divider -->
-        <div class="my-8 border-t"></div>
+    <div class="grid grid-cols-1 gap-6 w-full mt-8">
+      <!-- Current password -->
+      <div>
+        <mat-form-field class="w-full">
+          <mat-label>Contraseña actual</mat-label>
+          <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
+          <input [formControl]="securityForm.controls['oldPwd']" type="password" matInput>
+        </mat-form-field>
+      </div>
+      <!-- New password -->
+      <div>
+        <mat-form-field class="w-full">
+          <mat-label>Nueva contraseña</mat-label>
+          <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
+          <input [formControl]="securityForm.controls['newPwd']" type="password" matInput>
+        </mat-form-field>
+      </div>
+      <!-- Repeat password -->
+      <div>
+        <mat-form-field class="w-full">
+          <mat-label>Repetir contraseña</mat-label>
+          <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
+          <input [formControl]="securityForm.controls['repeatPwd']" type="password" matInput>
+        </mat-form-field>
+      </div>
+    </div>
 
-        <!-- Actions -->
-        <div class="flex items-center justify-end gap-4">
-            <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-            <button mat-flat-button color="primary"
-                [disabled]="securityForm.invalid || isLoading">
-                Guardar
-            </button>
-        </div>
-    </form>
+    <!-- Divider -->
+    <div class="my-8 border-t"></div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-4">
+      @if (isLoading) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      }
+      <button mat-flat-button color="primary"
+        [disabled]="securityForm.invalid || isLoading">
+        Guardar
+      </button>
+    </div>
+  </form>
 </div>

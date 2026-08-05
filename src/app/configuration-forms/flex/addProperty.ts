@@ -3,7 +3,7 @@ import { propiedadCampo, PropiedadCampoDTO, RelacionInternaDTO, RelacionInternaF
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { FlexService } from '../flex.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CommonModule } from '@angular/common';
+
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
@@ -13,7 +13,7 @@ import { ApiErrorResponse } from 'app/modules/full/neuron/model/sw42.utils';
 @Component({
     selector: 'app-property-form',
     templateUrl: './addProperty.html',
-    imports: [CommonModule, FormsModule]
+    imports: [FormsModule]
 })
 export class AddPropertyComponent {
     cargando = false;

@@ -1,14 +1,15 @@
 <mat-form-field [style.display]="isInvisible ? 'none': 'block'">
   <mat-label>{{structure.nombre | titlecase }} </mat-label>
-  <button
-    mat-icon-button
-    matPrefix
-    (click)="showMap()"
-    *ngIf="data.valorText"
-    tabindex="-1"
-  >
-    <mat-icon>map</mat-icon>
-  </button>
+  @if (data.valorText) {
+    <button
+      mat-icon-button
+      matPrefix
+      (click)="showMap()"
+      tabindex="-1"
+      >
+      <mat-icon>map</mat-icon>
+    </button>
+  }
   <input
     matInput
     [formControl]="fControl"
@@ -18,13 +19,13 @@
     autocomplete="off"
     class="cursor-pointer text-primary underline"
     (click)="showMap()"
-  />
-  <button
-    mat-icon-button
-    matSuffix
-    (click)="getLocation()"
-    tabindex="-1"
-  >
-    <mat-icon>gps_fixed</mat-icon>
-  </button>
-</mat-form-field>
+    />
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="getLocation()"
+      tabindex="-1"
+      >
+      <mat-icon>gps_fixed</mat-icon>
+    </button>
+  </mat-form-field>

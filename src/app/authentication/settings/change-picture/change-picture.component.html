@@ -2,43 +2,58 @@
 <div class="absolute flex flex-auto items-end -mt-16 right-6">
   <!-- Avatar -->
   <div class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
-    <img class="absolute rounded-full object-cover w-32 h-32" *ngIf="jwtAuth.user && jwtAuth.user.imagen"
-      [src]="jwtAuth.user && jwtAuth.user.imagen">
+    @if (jwtAuth.user && jwtAuth.user.imagen) {
+      <img class="absolute rounded-full object-cover w-32 h-32"
+        [src]="jwtAuth.user && jwtAuth.user.imagen">
+    }
     <video  #video id="video" [style.display]="isTakingPicture?'block':'none'" class="absolute rounded-full w-32 h-32"></video>
     <canvas #canvas id="canvas" [style.display]="isReviewingPicture?'block':'none'" class="absolute rounded-full w-32 h-32"></canvas>
     <div  class="absolute rounded-full inset-0 bg-black bg-opacity-50 z-10"></div>
-    <div class="absolute rounded-full inset-0 flex items-center justify-center z-20" *ngIf="!submitted">
-      <div *ngIf="!isTakingPicture && !isReviewingPicture">
-        <input (change)="onFileSelected($event.target.files)" #fileInput
-          class="absolute h-0 w-0 opacity-0 invisible pointer-events-none" type="file" id="file">
-        <label class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-hover" for="file"
-          matRipple>
-          <mat-icon class="text-white" svgIcon="heroicons_outline:paper-clip"></mat-icon>
-        </label>
-      </div>
-      <div *ngIf="!isTakingPicture && !isReviewingPicture">
-        <button mat-icon-button (click)="isTakingPicture = true;setupDevices()">
-          <mat-icon class="text-white" [svgIcon]="'heroicons_outline:video-camera'"></mat-icon>
-        </button>
-      </div>
-      <div *ngIf="isTakingPicture" (click)="capture()">
-        <button mat-icon-button>
-          <mat-icon class="text-white" [svgIcon]="'heroicons_outline:camera'"></mat-icon>
-        </button>
-      </div>
-      <div *ngIf="isReviewingPicture && dataUrl">
-        <button mat-icon-button (click)="submit()">
-          <mat-icon class="text-white" [svgIcon]="'heroicons_outline:upload'"></mat-icon>
-        </button>
-      </div>
-      <div *ngIf="isReviewingPicture && dataUrl">
-        <button mat-icon-button (click)="isReviewingPicture= false; isTakingPicture = false">
-          <mat-icon class="text-white" [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-        </button>
-      </div>
-
+    @if (!submitted) {
+      <div class="absolute rounded-full inset-0 flex items-center justify-center z-20">
+        @if (!isTakingPicture && !isReviewingPicture) {
+          <div>
+            <input (change)="onFileSelected($event.target.files)" #fileInput
+              class="absolute h-0 w-0 opacity-0 invisible pointer-events-none" type="file" id="file">
+              <label class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-hover" for="file"
+                matRipple>
+                <mat-icon class="text-white" svgIcon="heroicons_outline:paper-clip"></mat-icon>
+              </label>
+            </div>
+          }
+          @if (!isTakingPicture && !isReviewingPicture) {
+            <div>
+              <button mat-icon-button (click)="isTakingPicture = true;setupDevices()">
+                <mat-icon class="text-white" [svgIcon]="'heroicons_outline:video-camera'"></mat-icon>
+              </button>
+            </div>
+          }
+          @if (isTakingPicture) {
+            <div (click)="capture()">
+              <button mat-icon-button>
+                <mat-icon class="text-white" [svgIcon]="'heroicons_outline:camera'"></mat-icon>
+              </button>
+            </div>
+          }
+          @if (isReviewingPicture && dataUrl) {
+            <div>
+              <button mat-icon-button (click)="submit()">
+                <mat-icon class="text-white" [svgIcon]="'heroicons_outline:upload'"></mat-icon>
+              </button>
+            </div>
+          }
+          @if (isReviewingPicture && dataUrl) {
+            <div>
+              <button mat-icon-button (click)="isReviewingPicture= false; isTakingPicture = false">
+                <mat-icon class="text-white" [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      }
+      @if (submitted) {
+        <mat-progress-bar class="w-full inset-0 absolute" mode="indeterminate"></mat-progress-bar>
+      }
     </div>
-    <mat-progress-bar class="w-full inset-0 absolute" mode="indeterminate" *ngIf="submitted"></mat-progress-bar>
   </div>
-</div>
-<!-- Boton de guardar -->
+  <!-- Boton de guardar -->

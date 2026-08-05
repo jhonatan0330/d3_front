@@ -1,322 +1,311 @@
 <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
 
-    <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent">
+  <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent">
 
-        <!-- Drawer -->
-        <mat-drawer class="w-72 dark:bg-gray-900" [mode]="drawerMode" [opened]="true" [position]="'start'"
-            [disableClose]="!accountingService.currentCatalog" #drawer>
+    <!-- Drawer -->
+    <mat-drawer class="w-72 dark:bg-gray-900" [mode]="drawerMode" [opened]="true" [position]="'start'"
+      [disableClose]="!accountingService.currentCatalog" #drawer>
 
-            <!-- Main -->
-            <div class="flex-auto">
-                <!-- Header -->
-                <div class="py-8 px-6 border-b">
-                    <div class="text-4xl font-extrabold tracking-tight leading-none pb-4">Catalogos</div>
-                    <div class="flex-auto">
-                        <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full" subscriptSizing="dynamic">
-                            <mat-icon class="icon-size-5" matPrefix>search</mat-icon>
-                            <input matInput [formControl]="searchInputControl">
-                        </mat-form-field>
-                    </div>
-                </div>
+      <!-- Main -->
+      <div class="flex-auto">
+        <!-- Header -->
+        <div class="py-8 px-6 border-b">
+          <div class="text-4xl font-extrabold tracking-tight leading-none pb-4">Catalogos</div>
+          <div class="flex-auto">
+            <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full" subscriptSizing="dynamic">
+              <mat-icon class="icon-size-5" matPrefix>search</mat-icon>
+              <input matInput [formControl]="searchInputControl">
+            </mat-form-field>
+          </div>
+        </div>
 
-                <div class="relative">
-                    <mat-progress-bar mode="indeterminate" *ngIf="isLoadingCatalog"></mat-progress-bar>
-                    <ng-container *ngIf="catalogs && catalogs.length; else noCatalogs">
-                        <ng-container *ngFor="let catalog of catalogs; let i = index; trackBy: trackByFn">
-                            <a class="z-20 flex items-center justify-between px-6 py-4 md:px-8 cursor-pointer border-b"
-                                (click)="selectCatalog(catalog)"
+        <div class="relative">
+          @if (isLoadingCatalog) {
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          }
+          @if (catalogs && catalogs.length) {
+            @for (catalog of catalogs; track trackByFn(i, catalog); let i = $index) {
+              <a class="z-20 flex items-center justify-between px-6 py-4 md:px-8 cursor-pointer border-b"
+                (click)="selectCatalog(catalog)"
                                 [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !accountingService.currentCatalog || accountingService.currentCatalog.key !== catalog.key,
                                                 'bg-primary-50 dark:bg-hover': accountingService.currentCatalog && accountingService.currentCatalog.key === catalog.key}">
-                                <div class="min-w-0 ml-4">
-                                    <div class="font-medium leading-5 truncate">{{catalog.name}}</div>
-                                    <div class="leading-5 truncate text-secondary">{{catalog.code}}</div>
-                                </div>
-
-                            </a>
-                        </ng-container>
-                    </ng-container>
-
-                    <!-- No catalogs -->
-                    <ng-template #noCatalogs>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay
-                            catalogos creados!</div>
-                    </ng-template>
+                <div class="min-w-0 ml-4">
+                  <div class="font-medium leading-5 truncate">{{catalog.name}}</div>
+                  <div class="leading-5 truncate text-secondary">{{catalog.code}}</div>
                 </div>
+              </a>
+            }
+          } @else {
+            <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">No hay
+            catalogos creados!</div>
+          }
+
+          <!-- No catalogs -->
+        </div>
+      </div>
+
+    </mat-drawer>
+
+    <!-- Drawer content -->
+    <mat-drawer-content class="h-full">
+
+      @if (accountingService.currentCatalog) {
+        <div class="flex flex-col flex-auto w-full bg-gray-100 dark:bg-transparent p-4 md:p-6 gap-2">
+          <!-- Title and action buttons -->
+          <div class="flex w-full">
+            <button mat-icon-button (click)="toggleDrawer()">
+              <mat-icon>menu</mat-icon>
+            </button>
+            <div class="w-full text-center">
+              <h2 class="text-3xl font-semibold tracking-tight leading-8">
+              {{accountingService.currentCatalog.name}}</h2>
             </div>
-
-        </mat-drawer>
-
-        <!-- Drawer content -->
-        <mat-drawer-content class="h-full">
-
-            <ng-container *ngIf="accountingService.currentCatalog; else noChats">
-                <div class="flex flex-col flex-auto w-full bg-gray-100 dark:bg-transparent p-4 md:p-6 gap-2">
-
-                    <!-- Title and action buttons -->
-                    <div class="flex w-full">
-                        <button mat-icon-button (click)="toggleDrawer()">
-                            <mat-icon>menu</mat-icon>
-                        </button>
-                        <div class="w-full text-center">
-                            <h2 class="text-3xl font-semibold tracking-tight leading-8">
-                                {{accountingService.currentCatalog.name}}</h2>
-                        </div>
+          </div>
+          <!-- Account balance -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full min-w-0">
+            @for (item of balance; track item) {
+              <div
+                class="sm:col-span-1 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+                <div class="flex items-start justify-between">
+                  <div class="flex flex-col">
+                    <div class="text-lg font-medium tracking-tight leading-6 truncate">
+                    {{item.accountName |uppercase}}</div>
+                    <div class="text-red-600 font-medium text-sm">{{ item.timeFrameName }}</div>
+                  </div>
+                  <div class="ml-2 -mt-2 -mr-3">
+                    <button class="h-6 min-h-6 px-2 rounded-full bg-hover" mat-icon-button
+                      [matMenuTriggerFor]="monthlyExpensesMenu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #monthlyExpensesMenu="matMenu">
+                      <button mat-menu-item>Minutos</button>
+                      <button mat-menu-item>Horas</button>
+                      <button mat-menu-item>Dias</button>
+                      <button mat-menu-item>Meses</button>
+                      <button mat-menu-item>Años</button>
+                    </mat-menu>
+                  </div>
+                </div>
+                <div class="flex items-center pt-1">
+                  <div class="flex flex-col">
+                    <div class="text-3xl font-semibold tracking-tight leading-tight">
+                      {{item.value| number}}
                     </div>
-
-                    <!-- Account balance -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full min-w-0">
-                        <div *ngFor="let item of balance"
-                            class="sm:col-span-1 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
-                            <div class="flex items-start justify-between">
-                                <div class="flex flex-col">
-                                    <div class="text-lg font-medium tracking-tight leading-6 truncate">
-                                        {{item.accountName |uppercase}}</div>
-                                    <div class="text-red-600 font-medium text-sm">{{ item.timeFrameName }}</div>
-                                </div>
-
-                                <div class="ml-2 -mt-2 -mr-3">
-                                    <button class="h-6 min-h-6 px-2 rounded-full bg-hover" mat-icon-button
-                                        [matMenuTriggerFor]="monthlyExpensesMenu">
-                                        <mat-icon>more_vert</mat-icon>
-                                    </button>
-                                    <mat-menu #monthlyExpensesMenu="matMenu">
-                                        <button mat-menu-item>Minutos</button>
-                                        <button mat-menu-item>Horas</button>
-                                        <button mat-menu-item>Dias</button>
-                                        <button mat-menu-item>Meses</button>
-                                        <button mat-menu-item>Años</button>
-                                    </mat-menu>
-                                </div>
-                            </div>
-                            <div class="flex items-center pt-1">
-                                <div class="flex flex-col">
-                                    <div class="text-3xl font-semibold tracking-tight leading-tight">
-                                        {{item.value| number}}
-                                    </div>
-                                    <div class="flex items-center">
-                                        <mat-icon class="pr-1 icon-size-5 text-red-500"> trending_flat</mat-icon>
-                                        <div class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
-                                            <span class="text-red-500">0%</span> proyectado
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="flex items-center">
+                      <mat-icon class="pr-1 icon-size-5 text-red-500"> trending_flat</mat-icon>
+                      <div class="font-medium text-sm text-secondary leading-none whitespace-nowrap">
+                        <span class="text-red-500">0%</span> proyectado
+                      </div>
                     </div>
-
-                    <!-- Voucher List -->
-                    <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
-                        <div class="p-6 flex justify-between w-full">
-                            <div>
-                                <div class=" text-lg font-medium tracking-tight leading-6 truncate">Comprobantes
-                                    contables recientes</div>
-                                <div class="text-secondary font-medium">1 pending, 4 completed</div>
-                            </div>
-                            <div>
-                                <button [matMenuTriggerFor]="actionsVoucher" mat-icon-button>
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu #actionsVoucher="matMenu">
-                                    <button mat-menu-item (click)="getBalance()">
-                                        <mat-icon class="icon-size-5">refresh</mat-icon>
-                                        <span>Actualizar balance</span>
-                                    </button>
-                                    <button mat-menu-item (click)="openManualForm()">
-                                        <mat-icon class="icon-size-5">add</mat-icon>
-                                        <span>Comprobante Manual</span>
-                                    </button>
-                                </mat-menu>
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto mx-6">
-                            <table class="w-full bg-transparent" mat-table matSort
-                                [dataSource]="recentTransactionsDataSource" [trackBy]="trackByFn"
-                                #recentTransactionsTable>
-
-                                <!-- Transaction ID -->
-                                <ng-container matColumnDef="transactionId">
-                                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
-                                        Comprobante ID
-                                    </th>
-                                    <td mat-cell *matCellDef="let transaction">
-                                        <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap">
-                                            {{transaction.code}}
-                                        </span>
-                                    </td>
-                                </ng-container>
-
-                                <!-- Date -->
-                                <ng-container matColumnDef="date">
-                                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
-                                        Fecha
-                                    </th>
-                                    <td mat-cell *matCellDef="let transaction">
-                                        <span class="pr-6 whitespace-nowrap">
-                                            {{transaction.factDate | date:'MMM dd, y'}}
-                                        </span>
-                                    </td>
-                                </ng-container>
-
-                                <!-- Name -->
-                                <ng-container matColumnDef="name">
-                                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
-                                        Nota
-                                    </th>
-                                    <td mat-cell *matCellDef="let transaction">
-                                        <span class="pr-6 whitespace-nowrap">
-                                            {{transaction.concept}}
-                                        </span>
-                                    </td>
-                                </ng-container>
-
-                                <!-- Amount -->
-                                <ng-container matColumnDef="amount">
-                                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
-                                        Valor
-                                    </th>
-                                    <td mat-cell *matCellDef="let transaction">
-                                        <span class="pr-6 font-medium whitespace-nowrap">
-                                            {{transaction.value | number}}
-                                        </span>
-                                    </td>
-                                </ng-container>
-
-                                <!-- Status -->
-                                <ng-container matColumnDef="status">
-                                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
-                                        Estado
-                                    </th>
-                                    <td mat-cell *matCellDef="let transaction">
-                                        <span
-                                            class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+          <!-- Voucher List -->
+          <div class="flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
+            <div class="p-6 flex justify-between w-full">
+              <div>
+                <div class=" text-lg font-medium tracking-tight leading-6 truncate">Comprobantes
+                contables recientes</div>
+                <div class="text-secondary font-medium">1 pending, 4 completed</div>
+              </div>
+              <div>
+                <button [matMenuTriggerFor]="actionsVoucher" mat-icon-button>
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #actionsVoucher="matMenu">
+                  <button mat-menu-item (click)="getBalance()">
+                    <mat-icon class="icon-size-5">refresh</mat-icon>
+                    <span>Actualizar balance</span>
+                  </button>
+                  <button mat-menu-item (click)="openManualForm()">
+                    <mat-icon class="icon-size-5">add</mat-icon>
+                    <span>Comprobante Manual</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </div>
+            <div class="overflow-x-auto mx-6">
+              <table class="w-full bg-transparent" mat-table matSort
+                [dataSource]="recentTransactionsDataSource" [trackBy]="trackByFn"
+                #recentTransactionsTable>
+                <!-- Transaction ID -->
+                <ng-container matColumnDef="transactionId">
+                  <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                    Comprobante ID
+                  </th>
+                  <td mat-cell *matCellDef="let transaction">
+                    <span class="pr-6 font-medium text-sm text-secondary whitespace-nowrap">
+                      {{transaction.code}}
+                    </span>
+                  </td>
+                </ng-container>
+                <!-- Date -->
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                    Fecha
+                  </th>
+                  <td mat-cell *matCellDef="let transaction">
+                    <span class="pr-6 whitespace-nowrap">
+                      {{transaction.factDate | date:'MMM dd, y'}}
+                    </span>
+                  </td>
+                </ng-container>
+                <!-- Name -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                    Nota
+                  </th>
+                  <td mat-cell *matCellDef="let transaction">
+                    <span class="pr-6 whitespace-nowrap">
+                      {{transaction.concept}}
+                    </span>
+                  </td>
+                </ng-container>
+                <!-- Amount -->
+                <ng-container matColumnDef="amount">
+                  <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                    Valor
+                  </th>
+                  <td mat-cell *matCellDef="let transaction">
+                    <span class="pr-6 font-medium whitespace-nowrap">
+                      {{transaction.value | number}}
+                    </span>
+                  </td>
+                </ng-container>
+                <!-- Status -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                    Estado
+                  </th>
+                  <td mat-cell *matCellDef="let transaction">
+                    <span
+                      class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                             [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': transaction.state === 'I',
                                                         'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': transaction.state === 'A'}">
-                                            <span
-                                                class="leading-relaxed whitespace-nowrap">{{(transaction.state==='A')?'Procesado':'Pendiente'}}</span>
-                                        </span>
-                                    </td>
-                                </ng-container>
-
-                                <!-- actions -->
-                                <ng-container matColumnDef="actions">
-                                    <th mat-header-cell *matHeaderCellDef>
-                                        Acciones
-                                    </th>
-                                    <td mat-cell *matCellDef="let row">
-                                        <div>
-                                            <button [matMenuTriggerFor]="actionsTable" mat-icon-button>
-                                                <mat-icon>more_vert</mat-icon>
-                                            </button>
-                                            <mat-menu #actionsTable="matMenu">
-                                                <button mat-menu-item (click)="editVouchers(row)">
-                                                    <mat-icon class="icon-size-5">edit</mat-icon>
-                                                    <span>Actualizar Comprobante</span>
-                                                </button>
-                                                <button mat-menu-item (click)="deleteVouchers(row)">
-                                                    <mat-icon class="icon-size-5">delete</mat-icon>
-                                                    <span>Eliminar Comprobante</span>
-                                                </button>
-                                            </mat-menu>
-                                        </div>
-                                    </td>
-                                </ng-container>
-
-                                <!-- Footer -->
-                                <ng-container matColumnDef="recentOrdersTableFooter">
-                                    <td class="py-6 px-0 border-0" mat-footer-cell *matFooterCellDef colspan="6">
-                                        <button mat-stroked-button (click)="getVouchers()">Ver mas comprobantes</button>
-                                    </td>
-                                </ng-container>
-
-                                <tr mat-header-row *matHeaderRowDef="recentTransactionsTableColumns"></tr>
-                                <tr class="order-row h-16" mat-row
-                                    *matRowDef="let row; columns: recentTransactionsTableColumns;"></tr>
-                                <tr class="h-16 border-0" mat-footer-row *matFooterRowDef="['recentOrdersTableFooter']">
-                                </tr>
-                            </table>
-                        </div>
+                      <span
+                      class="leading-relaxed whitespace-nowrap">{{(transaction.state==='A')?'Procesado':'Pendiente'}}</span>
+                    </span>
+                  </td>
+                </ng-container>
+                <!-- actions -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>
+                    Acciones
+                  </th>
+                  <td mat-cell *matCellDef="let row">
+                    <div>
+                      <button [matMenuTriggerFor]="actionsTable" mat-icon-button>
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #actionsTable="matMenu">
+                        <button mat-menu-item (click)="editVouchers(row)">
+                          <mat-icon class="icon-size-5">edit</mat-icon>
+                          <span>Actualizar Comprobante</span>
+                        </button>
+                        <button mat-menu-item (click)="deleteVouchers(row)">
+                          <mat-icon class="icon-size-5">delete</mat-icon>
+                          <span>Eliminar Comprobante</span>
+                        </button>
+                      </mat-menu>
                     </div>
-
-                    <!-- Account List-->
-                    <div class="bg-card shadow rounded-2xl overflow-hidden">
-                        <div class="p-6 flex justify-between w-full">
-                            <div class=" text-lg font-medium tracking-tight leading-6 truncate">Cuentas del
-                                catalogo</div>
-                            <div>
-                                <button [matMenuTriggerFor]="actionsBalance" mat-icon-button>
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu #actionsBalance="matMenu">
-                                    <button mat-menu-item (click)="getAccounts()">
-                                        <mat-icon class="icon-size-5">refresh</mat-icon>
-                                        <span>Actualizar cuentas</span>
-                                    </button>
-                                </mat-menu>
-                            </div>
-                        </div>
-
-                        <div class="px-6 py-2 overflow-x-auto">
-                            <mat-progress-bar mode="indeterminate" *ngIf="isLoadingAccount"
-                                class="w-full"></mat-progress-bar>
-                            <table class="w-full bg-transparent" mat-table matSort [dataSource]="dataSource">
-                                <!-- WBS -->
-                                <ng-container matColumnDef="code">
-                                    <th mat-header-cell mat-sort-header *matHeaderCellDef>Codigo</th>
-                                    <td mat-cell *matCellDef="let row">
-                                        <div class="flex">
-                                            <button mat-icon-button [style.visibility]="!row.expandable ? 'hidden' : ''"
-                                                (click)="treeControl.toggle(row)">
-                                                <mat-icon class="mat-icon-rtl-mirror">{{treeControl.isExpanded(row) ?
-                                                    'expand_more' : 'chevron_right'}}</mat-icon>
-                                            </button>
-                                            <span class="pt-2 text-sm">{{row.code}}</span>
-                                        </div>
-                                    </td>
-                                </ng-container>
-                                <!-- Name -->
-                                <ng-container matColumnDef="name">
-                                    <th mat-header-cell mat-sort-header *matHeaderCellDef>Nombre</th>
-                                    <td mat-cell *matCellDef="let row">
-                                        <span class="whitespace-nowrap">{{row.name}}</span>
-                                    </td>
-                                </ng-container>
-                                <!-- Status -->
-                                <ng-container matColumnDef="status">
-                                    <th mat-header-cell mat-sort-header *matHeaderCellDef>
-                                        Status
-                                    </th>
-                                    <td mat-cell *matCellDef="let transaction">
-                                        <span
-                                            class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
+                  </td>
+                </ng-container>
+                <!-- Footer -->
+                <ng-container matColumnDef="recentOrdersTableFooter">
+                  <td class="py-6 px-0 border-0" mat-footer-cell *matFooterCellDef colspan="6">
+                    <button mat-stroked-button (click)="getVouchers()">Ver mas comprobantes</button>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="recentTransactionsTableColumns"></tr>
+                <tr class="order-row h-16" mat-row
+                *matRowDef="let row; columns: recentTransactionsTableColumns;"></tr>
+                <tr class="h-16 border-0" mat-footer-row *matFooterRowDef="['recentOrdersTableFooter']">
+                </tr>
+              </table>
+            </div>
+          </div>
+          <!-- Account List-->
+          <div class="bg-card shadow rounded-2xl overflow-hidden">
+            <div class="p-6 flex justify-between w-full">
+              <div class=" text-lg font-medium tracking-tight leading-6 truncate">Cuentas del
+              catalogo</div>
+              <div>
+                <button [matMenuTriggerFor]="actionsBalance" mat-icon-button>
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #actionsBalance="matMenu">
+                  <button mat-menu-item (click)="getAccounts()">
+                    <mat-icon class="icon-size-5">refresh</mat-icon>
+                    <span>Actualizar cuentas</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </div>
+            <div class="px-6 py-2 overflow-x-auto">
+              @if (isLoadingAccount) {
+                <mat-progress-bar mode="indeterminate"
+                class="w-full"></mat-progress-bar>
+              }
+              <table class="w-full bg-transparent" mat-table matSort [dataSource]="dataSource">
+                <!-- WBS -->
+                <ng-container matColumnDef="code">
+                  <th mat-header-cell mat-sort-header *matHeaderCellDef>Codigo</th>
+                  <td mat-cell *matCellDef="let row">
+                    <div class="flex">
+                      <button mat-icon-button [style.visibility]="!row.expandable ? 'hidden' : ''"
+                        (click)="treeControl.toggle(row)">
+                        <mat-icon class="mat-icon-rtl-mirror">{{treeControl.isExpanded(row) ?
+                        'expand_more' : 'chevron_right'}}</mat-icon>
+                      </button>
+                      <span class="pt-2 text-sm">{{row.code}}</span>
+                    </div>
+                  </td>
+                </ng-container>
+                <!-- Name -->
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell mat-sort-header *matHeaderCellDef>Nombre</th>
+                  <td mat-cell *matCellDef="let row">
+                    <span class="whitespace-nowrap">{{row.name}}</span>
+                  </td>
+                </ng-container>
+                <!-- Status -->
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell mat-sort-header *matHeaderCellDef>
+                    Status
+                  </th>
+                  <td mat-cell *matCellDef="let transaction">
+                    <span
+                      class="inline-flex items-center font-bold text-xs px-2.5 py-0.5 rounded-full tracking-wide uppercase"
                                             [ngClass]="{'bg-red-200 text-red-800 dark:bg-red-600 dark:text-red-50': transaction.status === 'PLANNING',
                                                         'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50': transaction.status === 'OPERATING'}">
-                                            <span
-                                                class="leading-relaxed whitespace-nowrap">{{transaction.status}}</span>
-                                        </span>
-                                    </td>
-                                </ng-container>
-                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                <tr class="h-16" mat-row *matRowDef="let row; columns: displayedColumns;"
-                                    [ngClass]="{'bg-slate-100': treeControl.isExpanded(row)}">
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </ng-container>
-            <!-- No chats template -->
-            <ng-template #noChats>
-                <div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default h-full">
-                    <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
-                        <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:chat-bubble-oval-left-ellipsis'"></mat-icon>
-                        <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Selecciona un catalogo
-                        </div>
-                    </div>
-                </div>
-            </ng-template>
+                      <span
+                      class="leading-relaxed whitespace-nowrap">{{transaction.status}}</span>
+                    </span>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr class="h-16" mat-row *matRowDef="let row; columns: displayedColumns;"
+                  [ngClass]="{'bg-slate-100': treeControl.isExpanded(row)}">
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="flex flex-col flex-auto overflow-y-auto lg:overflow-hidden bg-card dark:bg-default h-full">
+          <div class="flex flex-col flex-auto items-center justify-center bg-gray-100 dark:bg-transparent">
+            <mat-icon class="icon-size-24" [svgIcon]="'heroicons_outline:chat-bubble-oval-left-ellipsis'"></mat-icon>
+            <div class="mt-4 text-2xl font-semibold tracking-tight text-secondary">Selecciona un catalogo
+            </div>
+          </div>
+        </div>
+      }
+      <!-- No chats template -->
 
-        </mat-drawer-content>
+    </mat-drawer-content>
 
-    </mat-drawer-container>
+  </mat-drawer-container>
 
 </div>

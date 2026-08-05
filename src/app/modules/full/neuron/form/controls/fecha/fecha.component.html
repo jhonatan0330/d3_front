@@ -1,61 +1,70 @@
 <!-- Timer -->
-<div class="time-countdown" *ngIf="timerBackCount" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  <ul>
-    <li>
-      <span>{{ day }}</span>Dias
-    </li>
-    <li>
-      <span>{{ hours }}</span>Hrs
-    </li>
-    <li>
-      <span>{{ minutes }}</span>Min
-    </li>
-    <li>
-      <span>{{ seconds }}</span>Seg
-    </li>
-  </ul>
-</div>
+@if (timerBackCount) {
+  <div class="time-countdown" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+    <ul>
+      <li>
+        <span>{{ day }}</span>Dias
+      </li>
+      <li>
+        <span>{{ hours }}</span>Hrs
+      </li>
+      <li>
+        <span>{{ minutes }}</span>Min
+      </li>
+      <li>
+        <span>{{ seconds }}</span>Seg
+      </li>
+    </ul>
+  </div>
+}
 <!-- Fecha normal -->
-<mat-form-field *ngIf="!isRango && !sinCalendar" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  <label *ngIf="errorMessage" class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
-  <mat-label>{{ structure.nombre | titlecase }}</mat-label>
-  <input matInput [matDatepicker]="pickerFrom" [required]="required" [formControl]="dateFrom" [readonly]="!isEnabled"
-    autocomplete="off" />
-  <mat-datepicker-toggle matSuffix [for]="pickerFrom" *ngIf="isEnabled"></mat-datepicker-toggle>
-  <mat-datepicker #pickerFrom></mat-datepicker>
-</mat-form-field>
-<div class="relative left-24 -top-10 h-0" *ngIf="!isRango && !sinCalendar && conHora && data.valorFecha"
-  [style.display]="isInvisible ? 'none': 'block'">
-  <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" />
-</div>
-<!-- Tiempo -->
-<div 
-
-     *ngIf="!isRango && sinCalendar"
-     [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'flex'">
-
-  <mat-form-field appearance="outline">
+@if (!isRango && !sinCalendar) {
+  <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+    @if (errorMessage) {
+      <label class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+    }
     <mat-label>{{ structure.nombre | titlecase }}</mat-label>
-
-    <input
-    class="flex justify-end w-full"
-      matInput
-      type="time"
-      [formControl]="ftimeFromMinutesAndHours"
-      [required]="required"
-      autocomplete="off">
-  </mat-form-field>
-
-</div>
-<!-- Rango -->
-<mat-form-field *ngIf="isRango" class="dialog-control" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  <mat-label>{{ structure.nombre | titlecase }} {{(required)?'*':''}}</mat-label>
-  <mat-date-range-input [rangePicker]="picker">
-    <input matStartDate placeholder="Fecha inicial" [formControl]="fControlDateStart" (dateInput)="datesUpdated()"
-      (dateChange)="datesUpdated()" autocomplete="off" [required]="required" />
-    <input matEndDate placeholder="Fecha final" [formControl]="fControlDateEnd" (dateInput)="datesUpdated()"
-      (dateChange)="datesUpdated()" autocomplete="off" [required]="required" />
-  </mat-date-range-input>
-  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-date-range-picker #picker></mat-date-range-picker>
-</mat-form-field>
+    <input matInput [matDatepicker]="pickerFrom" [required]="required" [formControl]="dateFrom" [readonly]="!isEnabled"
+      autocomplete="off" />
+      @if (isEnabled) {
+        <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+      }
+      <mat-datepicker #pickerFrom></mat-datepicker>
+    </mat-form-field>
+  }
+  @if (!isRango && !sinCalendar && conHora && data.valorFecha) {
+    <div class="relative left-24 -top-10 h-0"
+      [style.display]="isInvisible ? 'none': 'block'">
+      <input matInput type="time" [readonly]="!isEnabled" [required]="required" [formControl]="timeFrom" />
+    </div>
+  }
+  <!-- Tiempo -->
+  @if (!isRango && sinCalendar) {
+    <div
+      [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'flex'">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ structure.nombre | titlecase }}</mat-label>
+        <input
+          class="flex justify-end w-full"
+          matInput
+          type="time"
+          [formControl]="ftimeFromMinutesAndHours"
+          [required]="required"
+          autocomplete="off">
+        </mat-form-field>
+      </div>
+    }
+    <!-- Rango -->
+    @if (isRango) {
+      <mat-form-field class="dialog-control" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+        <mat-label>{{ structure.nombre | titlecase }} {{(required)?'*':''}}</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="Fecha inicial" [formControl]="fControlDateStart" (dateInput)="datesUpdated()"
+            (dateChange)="datesUpdated()" autocomplete="off" [required]="required" />
+            <input matEndDate placeholder="Fecha final" [formControl]="fControlDateEnd" (dateInput)="datesUpdated()"
+              (dateChange)="datesUpdated()" autocomplete="off" [required]="required" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        }

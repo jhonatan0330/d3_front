@@ -10,7 +10,9 @@
       </button>
     </div>
     <div class="flex items-center gap-2">
-      <img *ngIf="field?.imagen" [src]="field.imagen" alt="Imagen del campo" class="h-10 object-cover rounded-lg" />
+      @if (field?.imagen) {
+        <img [src]="field.imagen" alt="Imagen del campo" class="h-10 object-cover rounded-lg" />
+      }
       <button mat-icon-button aria-label="Cerrar" (click)="close()" class="ml-2 bg-transparent">
         <mat-icon>close</mat-icon>
       </button>
@@ -35,16 +37,16 @@
       </div>
 
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
-        <ng-container *ngIf="propiedadesCampo?.length > 0; else noPropsField">
+        @if (propiedadesCampo?.length > 0) {
           <div class="grid grid-cols-1 gap-3">
-            <div *ngFor="let prop of propiedadesCampo" (click)="listarRelacionesPropiedad(prop)"
-              class="group border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition relative cursor-pointer">
-              <!--<span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{
+            @for (prop of propiedadesCampo; track prop) {
+              <div (click)="listarRelacionesPropiedad(prop)"
+                class="group border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-700 hover:shadow-md transition relative cursor-pointer">
+                <!--<span class="text-xs text-gray-500 dark:text-gray-400 font-mono block">{{
                 prop.propiedadValor
-                }}</span>-->
-              <h4 class="text-base font-semibold">{{ prop.nombre }}</h4> 
+              }}</span>-->
+              <h4 class="text-base font-semibold">{{ prop.nombre }}</h4>
               <p class="text-sm text-gray-600 dark:text-gray-300">{{ prop.texto }}</p>
-
               <!-- Botones visibles solo al pasar el mouse -->
               <div
                 class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -58,14 +60,14 @@
                 </button>
               </div>
             </div>
-          </div>
-        </ng-container>
+          }
+        </div>
+      } @else {
+        <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4">
+          Sin relaciones de propiedad
+        </div>
+      }
 
-        <ng-template #noPropsField>
-          <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4">
-            Sin relaciones de propiedad
-          </div>
-        </ng-template>
-      </div>
     </div>
   </div>
+</div>

@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { FlexService } from '../flex.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -8,7 +8,7 @@ import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/mo
 
 @Component({
     selector: 'app-campo-form',
-    imports: [CommonModule, FormsModule],
+    imports: [FormsModule],
     templateUrl: './addField.html'
 })
 export class AddFieldComponent {

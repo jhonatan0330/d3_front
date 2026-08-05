@@ -1,34 +1,41 @@
-<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+@if (isLoading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
 
-<div *ngIf="!isLoading && proceso" class="rounded shadow-md h-full border bg-card dark:bg-transparent my-2"
-  [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  <a (click)="openDocument(proceso)">
-    <div class="p-1 rounded cursor-pointer" [style.backgroundColor]="getColor(proceso.estadoExpediente)"
-      [style.color]="getColorFont(proceso.estadoExpediente)">
-      <div class="flex items-center ">
-        <div class="w-8 p-1">
-          <img src="{{ proceso.imagen | imageFormat }}" />
-        </div>
-        <div class="w-full p-1 rounded leading-tight font-semibold">
-          <div class=" w-full flex justify-between">
-            <div class="text-md">{{ proceso.nombre }}</div>
-            <div class="text-md font-semibold mx-1">{{ structure.nombre | titlecase }} - {{ proceso.estadoNombre }}</div>
+@if (!isLoading && proceso) {
+  <div class="rounded shadow-md h-full border bg-card dark:bg-transparent my-2"
+    [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+    <a (click)="openDocument(proceso)">
+      <div class="p-1 rounded cursor-pointer" [style.backgroundColor]="getColor(proceso.estadoExpediente)"
+        [style.color]="getColorFont(proceso.estadoExpediente)">
+        <div class="flex items-center ">
+          <div class="w-8 p-1">
+            <img src="{{ proceso.imagen | imageFormat }}" />
           </div>
-          <div class="text-sm line-clamp-4">{{proceso.descripcion }}</div>
+          <div class="w-full p-1 rounded leading-tight font-semibold">
+            <div class=" w-full flex justify-between">
+              <div class="text-md">{{ proceso.nombre }}</div>
+              <div class="text-md font-semibold mx-1">{{ structure.nombre | titlecase }} - {{ proceso.estadoNombre }}</div>
+            </div>
+            <div class="text-sm line-clamp-4">{{proceso.descripcion }}</div>
+          </div>
         </div>
-      </div>
-    </div>
-  </a>
-  <!-- Botones de transiciones -->
-  <div *ngIf="!isLoading" class=" w-full justify-between flex flex-wrap gap-1">
-    <a *ngFor="let t of transiciones"
-      (click)="consultarDocumento(t.plantilla)"
-      class="cursor-pointer flex-auto">
-      <div class=" rounded py-1 w-full h-full items-center flex justify-center">
-        <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
-        <div class="pl-2 text-sm font-bold">{{ t.nombre }}</div>
       </div>
     </a>
+    <!-- Botones de transiciones -->
+    @if (!isLoading) {
+      <div class=" w-full justify-between flex flex-wrap gap-1">
+        @for (t of transiciones; track t) {
+          <a
+            (click)="consultarDocumento(t.plantilla)"
+            class="cursor-pointer flex-auto">
+            <div class=" rounded py-1 w-full h-full items-center flex justify-center">
+              <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
+              <div class="pl-2 text-sm font-bold">{{ t.nombre }}</div>
+            </div>
+          </a>
+        }
+      </div>
+    }
   </div>
-
-</div>
+}

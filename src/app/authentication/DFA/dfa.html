@@ -1,46 +1,50 @@
 <div class="flex flex-col flex-auto items-center sm:justify-center bg-card min-w-0 bg-slate-900 text-white">
-    <div class="w-full sm:w-auto py-8 px-4 sm:p-12 sm:rounded-2 bg-card sm:shadow">
-        <div class="w-full max-w-80 sm:w-80 mx-auto sm:mx-0">
+  <div class="w-full sm:w-auto py-8 px-4 sm:p-12 sm:rounded-2 bg-card sm:shadow">
+    <div class="w-full max-w-80 sm:w-80 mx-auto sm:mx-0">
 
-            <!-- Logo -->
-            <div class="p-4">
-                <img class="m-auto" src="assets/images/password_secure.png" alt="Logo seguridad">
-            </div>
+      <!-- Logo -->
+      <div class="p-4">
+        <img class="m-auto" src="assets/images/password_secure.png" alt="Logo seguridad">
+      </div>
 
-            <!-- Título -->
-            <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight text-center text-black">
-                Introduce el código
-            </div>
+      <!-- Título -->
+      <div class="mt-8 text-4xl font-extrabold tracking-tight leading-tight text-center text-black">
+        Introduce el código
+      </div>
 
-            <!-- Mensaje de error -->
-            <p *ngIf="errorMsg" class="text-center mt-2">
-                <small class="text-red-400">{{ errorMsg }}</small>
-            </p>
+      <!-- Mensaje de error -->
+      @if (errorMsg) {
+        <p class="text-center mt-2">
+          <small class="text-red-400">{{ errorMsg }}</small>
+        </p>
+      }
 
-            <!-- Formulario -->
-            <form class="mt-8" [formGroup]="recoverForm" (ngSubmit)="signin()">
+      <!-- Formulario -->
+      <form class="mt-8" [formGroup]="recoverForm" (ngSubmit)="signin()">
 
-                <!-- Texto de instrucción (solo cuando está vacío) -->
-                <p *ngIf="showInstruction" class="text-center text-gray-400 mb-1">
-                    Introduce el código que te llegó al correo de tu cuenta
-                </p>
+        <!-- Texto de instrucción (solo cuando está vacío) -->
+        @if (showInstruction) {
+          <p class="text-center text-gray-400 mb-1">
+            Introduce el código que te llegó al correo de tu cuenta
+          </p>
+        }
 
-                <input type="text" id="code" formControlName="code"
-                    class="w-full text-center text-4xl p-3 rounded-lg text-black mb-3" placeholder="Código" />
+        <input type="text" id="code" formControlName="code"
+          class="w-full text-center text-4xl p-3 rounded-lg text-black mb-3" placeholder="Código" />
 
-                <button type="submit" mat-raised-button color="accent" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    [disabled]="recoverForm.invalid">
-                    Aceptar
-                </button>
+          <button type="submit" mat-raised-button color="accent" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            [disabled]="recoverForm.invalid">
+            Aceptar
+          </button>
 
-                <!-- Footer -->
-                <div class="mt-8 text-md font-medium text-center text-gray-400">
-                    <span>Regresar </span>
-                    <a class="ml-1 text-blue-400 hover:underline" routerLink="/sign-in">
-                        a la pantalla principal
-                    </a>
-                </div>
-            </form>
-        </div>
+          <!-- Footer -->
+          <div class="mt-8 text-md font-medium text-center text-gray-400">
+            <span>Regresar </span>
+            <a class="ml-1 text-blue-400 hover:underline" routerLink="/sign-in">
+              a la pantalla principal
+            </a>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
+  </div>

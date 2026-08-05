@@ -10,7 +10,7 @@ import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { CommonModule } from '@angular/common';
+
 import { MatInputModule } from '@angular/material/input';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
 
@@ -19,7 +19,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatMenuModule, CommonModule, MatInputModule]
+    imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatMenuModule, MatInputModule]
 })
 export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('titleField') private _titleField: ElementRef;

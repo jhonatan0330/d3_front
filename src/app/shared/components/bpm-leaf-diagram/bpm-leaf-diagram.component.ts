@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -18,7 +18,7 @@ interface Transicion {
 
 @Component({
     selector: 'bpm-leaf-diagram',
-    imports: [CommonModule, MatButtonModule],
+    imports: [MatButtonModule],
     templateUrl: './bpm-leaf-diagram.component.html',
     styleUrls: ['./bpm-leaf-diagram.component.scss']
 })

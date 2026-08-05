@@ -1,48 +1,56 @@
 <!-- Button -->
-<button mat-icon-button [matMenuTriggerFor]="userActions"> 
-    <span class="relative">
-        <img class="w-7 h-7 rounded-full" *ngIf="user?.imagen" [src]="user?.imagen">
-        <mat-icon *ngIf="!user?.imagen" [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
-    </span>
+<button mat-icon-button [matMenuTriggerFor]="userActions">
+  <span class="relative">
+    @if (user?.imagen) {
+      <img class="w-7 h-7 rounded-full" [src]="user?.imagen">
+    }
+    @if (!user?.imagen) {
+      <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+    }
+  </span>
 </button>
-  
+
 <mat-menu [xPosition]="'before'" #userActions="matMenu">
-    <span class="flex flex-col items-center justify-center leading-none text-center">
-        <span>Authenticado como</span>
-        <span class="mt-1.5 text-md font-medium">{{user?.identificacion}}</span>
-        <span class="mt-1.5 text-md font-medium">{{user?.nombre}}</span>
-        <span class="text-xs">{{ currentApplicationVersion }}</span>
-    </span>  
-   
-    <mat-divider class="my-2"></mat-divider>
-    <button mat-menu-item (click)="goToMyAccount(user)">
-        <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
-        <span>Mi cuenta</span>
-    </button>    
-    <button mat-menu-item (click)="getRefreshTemplates('USER')">
-        <mat-icon [svgIcon]="'heroicons_outline:arrow-path'"></mat-icon>
-        <span>Cargar de nuevo</span>
+  <span class="flex flex-col items-center justify-center leading-none text-center">
+    <span>Authenticado como</span>
+    <span class="mt-1.5 text-md font-medium">{{user?.identificacion}}</span>
+    <span class="mt-1.5 text-md font-medium">{{user?.nombre}}</span>
+    <span class="text-xs">{{ currentApplicationVersion }}</span>
+  </span>
+
+  <mat-divider class="my-2"></mat-divider>
+  <button mat-menu-item (click)="goToMyAccount(user)">
+    <mat-icon [svgIcon]="'heroicons_outline:cog'"></mat-icon>
+    <span>Mi cuenta</span>
+  </button>
+  <button mat-menu-item (click)="getRefreshTemplates('USER')">
+    <mat-icon [svgIcon]="'heroicons_outline:arrow-path'"></mat-icon>
+    <span>Cargar de nuevo</span>
+  </button>
+  @if (jwtAuth.isAdmin) {
+    <button mat-menu-item (click)="getRefreshTemplates('ADMIN')">
+      <mat-icon [svgIcon]="'heroicons_outline:shield-check'"></mat-icon>
+      <span>Administrador</span>
     </button>
-    <button mat-menu-item *ngIf="jwtAuth.isAdmin" (click)="getRefreshTemplates('ADMIN')">
-        <mat-icon [svgIcon]="'heroicons_outline:shield-check'"></mat-icon>
-        <span>Administrador</span>
+  }
+  @if (jwtAuth.isReader) {
+    <button mat-menu-item (click)="getRefreshTemplates('READER')">
+      <mat-icon [svgIcon]="'heroicons_outline:shield-check'"></mat-icon>
+      <span>Auditor</span>
     </button>
-    <button mat-menu-item *ngIf="jwtAuth.isReader" (click)="getRefreshTemplates('READER')">
-        <mat-icon [svgIcon]="'heroicons_outline:shield-check'"></mat-icon>
-        <span>Auditor</span>
-    </button>
-    <button mat-menu-item (click)="downloadApk()">
-        <mat-icon [svgIcon]="'heroicons_outline:device-phone-mobile'"></mat-icon>
-        <span>Version Android</span>
-    </button>
-    <button mat-menu-item (click)="cambiarClave()">
-        <mat-icon [svgIcon]="'heroicons_outline:key'"></mat-icon>
-        <span>Cambiar clave de acceso</span>
-    </button>
-    <mat-divider class="my-2"></mat-divider>
-    <button mat-menu-item (click)="signOut()">
-        <mat-icon [svgIcon]="'heroicons_outline:arrow-right-on-rectangle'"></mat-icon>
-        <span>Salir</span>
-    </button>
-    
+  }
+  <button mat-menu-item (click)="downloadApk()">
+    <mat-icon [svgIcon]="'heroicons_outline:device-phone-mobile'"></mat-icon>
+    <span>Version Android</span>
+  </button>
+  <button mat-menu-item (click)="cambiarClave()">
+    <mat-icon [svgIcon]="'heroicons_outline:key'"></mat-icon>
+    <span>Cambiar clave de acceso</span>
+  </button>
+  <mat-divider class="my-2"></mat-divider>
+  <button mat-menu-item (click)="signOut()">
+    <mat-icon [svgIcon]="'heroicons_outline:arrow-right-on-rectangle'"></mat-icon>
+    <span>Salir</span>
+  </button>
+
 </mat-menu>

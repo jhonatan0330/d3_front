@@ -1,112 +1,116 @@
 <div class="flex flex-col flex-auto min-w-0">
- 
 
-  <div *ngIf="user" class="flex flex-auto flex-col">
-    <!-- Header -->
-    <div class="flex flex-col shadow bg-card">
 
-      <!-- Cover image -->
-      <div *ngIf="slides">
-        <swiper-container
-          class="h-40 lg:h-50 w-full"
-          autoplay="true"
-          autoplay-delay="5000"
-          loop="true"
-          navigation="true"
-          keyboard="true"
-          slides-per-view="1">
-          <swiper-slide *ngFor="let slide of slides" class="flex">
-            <img class="h-40 lg:h-50 object-cover w-full" [src]="slide" alt="">
-          </swiper-slide>
-        </swiper-container>
-      </div>
-
-      <!-- User info -->
-      <div class="flex flex-row flex-0 items-center max-w-5xl w-full mx-auto px-8 lg:h-18 bg-card">
-
-        <!-- Avatar -->
-        <div class=" max-w-32 z-0">
-          <img class="w-full h-full rounded-full ring-4 ring-bg-card bg-white" [src]="company?.imagen"
-            alt="User avatar">
-        </div>
-
-        <!-- Details -->
-        <div class="flex flex-col items-center lg:items-start mt-4 mb-4 lg:mt-0 lg:mb-0">
-          <div class="text-lg font-bold leading-none">{{ company?.nombre }}</div>
-          <div class="text-secondary p-1">{{ company?.slogan }}</div>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- Tabs -->
-    <div class="flex items-center justify-center gap-3 py-3 px-4 bg-card">
-      <button
-        class="px-6 py-2 text-sm font-semibold rounded-full transition"
-        [ngClass]="activeTab === 'menu' ? 'bg-primary text-white shadow' : 'text-secondary hover:bg-hover'"
-        (click)="activeTab = 'menu'">Menú</button>
-      <button
-        class="px-6 py-2 text-sm font-semibold rounded-full transition"
-        [ngClass]="activeTab === 'metrics' ? 'bg-primary text-white shadow' : 'text-secondary hover:bg-hover'"
-        (click)="activeTab = 'metrics'">Métricas</button>
-    </div>
-
-    <!-- Main -->
-    <div *ngIf="activeTab === 'metrics'">
-
-    </div>
-
-    <!--div class="flex flex-auto justify-center w-full max-w-5xl mx-auto p-3"-->
-    <div *ngIf="activeTab === 'menu'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 lg:gap-y-0 md:gap-x-6 px-8 py-4">
-
-      <!-- Column -->
-      <div class=" col-span-1 lg:col-span-2 flex flex-col items-start w-full">
-
-        <!-- Filtro modulos -->
-        <mat-card class="flex flex-col w-full p-3">
-          <div class="text-xl font-semibold">Bienvenido {{ user?.name }}</div>
-          <div class="flex flex-col sm:flex-row items-start mt-2">
-            <div class="hidden sm:flex items-center">
-              <img class="w-12 min-w-12 h-12 rounded-full mr-4" src="{{ user?.imagen }}">
-            </div>
-            <mat-form-field class="w-full">
-              <input #searchModule matInput [placeholder]="'Que deseas consultar?'" [formControl]="filterControl"
-                (input)="filterItem()" (keyUp.enter)="selectFirst()" />
-            </mat-form-field>
+  @if (user) {
+    <div class="flex flex-auto flex-col">
+      <!-- Header -->
+      <div class="flex flex-col shadow bg-card">
+        <!-- Cover image -->
+        @if (slides) {
+          <div>
+            <swiper-container
+              class="h-40 lg:h-50 w-full"
+              autoplay="true"
+              autoplay-delay="5000"
+              loop="true"
+              navigation="true"
+              keyboard="true"
+              slides-per-view="1">
+              @for (slide of slides; track slide) {
+                <swiper-slide class="flex">
+                  <img class="h-40 lg:h-50 object-cover w-full" [src]="slide" alt="">
+                </swiper-slide>
+              }
+            </swiper-container>
           </div>
-        </mat-card>
-
-        <!-- modulos -->
-        <div class="w-full">
-          <div class="bg-gray-50 px-6 py-4  border-b dark:bg-transparent rounded" *ngFor="let iGroup of filteredModules">
-            <div class="flex items-center p-4 cursor-pointer " (click)="toogleSection(iGroup)">
-              <img class="w-10 h-10 mr-4" alt="..." src="{{ iGroup.image | imageFormat }}" *ngIf="!iGroup.visible"> 
-              <div class="text-xl font-semibold">{{iGroup.section}}</div>
+        }
+        <!-- User info -->
+        <div class="flex flex-row flex-0 items-center max-w-5xl w-full mx-auto px-8 lg:h-18 bg-card">
+          <!-- Avatar -->
+          <div class=" max-w-32 z-0">
+            <img class="w-full h-full rounded-full ring-4 ring-bg-card bg-white" [src]="company?.imagen"
+              alt="User avatar">
             </div>
-            <div class="flex flex-wrap mt-4" *ngIf="iGroup.visible">
-              <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1" *ngFor="let template of iGroup.children">
-                <app-template class="h-full" [id]="template.llaveTabla" [nombre]="template.nombre"
-                  [imagen]="template.imagen" [process_id]="template.proceso" [serverId]="template.server"
-                  [type]="template.estado"></app-template>
+            <!-- Details -->
+            <div class="flex flex-col items-center lg:items-start mt-4 mb-4 lg:mt-0 lg:mb-0">
+              <div class="text-lg font-bold leading-none">{{ company?.nombre }}</div>
+              <div class="text-secondary p-1">{{ company?.slogan }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- Tabs -->
+        <div class="flex items-center justify-center gap-3 py-3 px-4 bg-card">
+          <button
+            class="px-6 py-2 text-sm font-semibold rounded-full transition"
+            [ngClass]="activeTab === 'menu' ? 'bg-primary text-white shadow' : 'text-secondary hover:bg-hover'"
+          (click)="activeTab = 'menu'">Menú</button>
+          <button
+            class="px-6 py-2 text-sm font-semibold rounded-full transition"
+            [ngClass]="activeTab === 'metrics' ? 'bg-primary text-white shadow' : 'text-secondary hover:bg-hover'"
+          (click)="activeTab = 'metrics'">Métricas</button>
+        </div>
+        <!-- Main -->
+        @if (activeTab === 'metrics') {
+          <div>
+          </div>
+        }
+        <!--div class="flex flex-auto justify-center w-full max-w-5xl mx-auto p-3"-->
+        @if (activeTab === 'menu') {
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 lg:gap-y-0 md:gap-x-6 px-8 py-4">
+            <!-- Column -->
+            <div class=" col-span-1 lg:col-span-2 flex flex-col items-start w-full">
+              <!-- Filtro modulos -->
+              <mat-card class="flex flex-col w-full p-3">
+                <div class="text-xl font-semibold">Bienvenido {{ user?.name }}</div>
+                <div class="flex flex-col sm:flex-row items-start mt-2">
+                  <div class="hidden sm:flex items-center">
+                    <img class="w-12 min-w-12 h-12 rounded-full mr-4" src="{{ user?.imagen }}">
+                  </div>
+                  <mat-form-field class="w-full">
+                    <input #searchModule matInput [placeholder]="'Que deseas consultar?'" [formControl]="filterControl"
+                      (input)="filterItem()" (keyUp.enter)="selectFirst()" />
+                    </mat-form-field>
+                  </div>
+                </mat-card>
+                <!-- modulos -->
+                <div class="w-full">
+                  @for (iGroup of filteredModules; track iGroup) {
+                    <div class="bg-gray-50 px-6 py-4  border-b dark:bg-transparent rounded">
+                      <div class="flex items-center p-4 cursor-pointer " (click)="toogleSection(iGroup)">
+                        @if (!iGroup.visible) {
+                          <img class="w-10 h-10 mr-4" alt="..." src="{{ iGroup.image | imageFormat }}">
+                        }
+                        <div class="text-xl font-semibold">{{iGroup.section}}</div>
+                      </div>
+                      @if (iGroup.visible) {
+                        <div class="flex flex-wrap mt-4">
+                          @for (template of iGroup.children; track template) {
+                            <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
+                              <app-template class="h-full" [id]="template.llaveTabla" [nombre]="template.nombre"
+                                [imagen]="template.imagen" [process_id]="template.proceso" [serverId]="template.server"
+                              [type]="template.estado"></app-template>
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
               </div>
+              <!-- Reportes -->
+              <mat-card class=" col-span-1 flex flex-col w-full p-3">
+                <div class="flex items-center justify-between">
+                  <div class="text-2xl font-semibold leading-tight">Reportes</div>
+                </div>
+                @for (template of filteredReports; track template) {
+                  <div class="w-full  p-1">
+                    <app-template class="h-full" [id]="template.llaveTabla" [nombre]="template.nombre" [imagen]="template.imagen"
+                    [process_id]="template.proceso" [serverId]="template.server" [type]="template.estado"></app-template>
+                  </div>
+                }
+              </mat-card>
             </div>
+          }
         </div>
-        </div>
-
-      </div>
-
-      <!-- Reportes -->
-      <mat-card class=" col-span-1 flex flex-col w-full p-3">
-        <div class="flex items-center justify-between">
-          <div class="text-2xl font-semibold leading-tight">Reportes</div>
-        </div>
-        <div class="w-full  p-1" *ngFor="let template of filteredReports">
-          <app-template class="h-full" [id]="template.llaveTabla" [nombre]="template.nombre" [imagen]="template.imagen"
-            [process_id]="template.proceso" [serverId]="template.server" [type]="template.estado"></app-template>
-        </div>
-      </mat-card>
-
+      }
     </div>
-  </div>
-</div>

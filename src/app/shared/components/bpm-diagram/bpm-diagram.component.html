@@ -1,6 +1,6 @@
 <div class="bpm-diagram" [style.width.px]="width" [style.height.px]="height">
   <svg [attr.width]="width" [attr.height]="height" [attr.viewBox]="'0 0 ' + width + ' ' + height"
-       (mousedown)="startDrag($event)" (mousemove)="doDrag($event)" (mouseup)="endDrag()" (mouseleave)="endDrag()">
+    (mousedown)="startDrag($event)" (mousemove)="doDrag($event)" (mouseup)="endDrag()" (mouseleave)="endDrag()">
     <defs>
       <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M 0 0 L 10 5 L 0 10 z" fill="#666" />
@@ -12,77 +12,97 @@
     </defs>
 
     <g [attr.transform]="'translate(' + panX + ',' + panY + ') scale(' + scale + ')'">
-      <g *ngFor="let l of links">
-        <line [attr.x1]="l.x1" [attr.y1]="l.y1" [attr.x2]="l.x2" [attr.y2]="l.y2" stroke="#666" stroke-width="2" marker-end="url(#arrow)" />
-      </g>
+      @for (l of links; track l) {
+        <g>
+          <line [attr.x1]="l.x1" [attr.y1]="l.y1" [attr.x2]="l.x2" [attr.y2]="l.y2" stroke="#666" stroke-width="2" marker-end="url(#arrow)" />
+        </g>
+      }
 
-      <g *ngFor="let n of nodes">
-        <g class="node-group" [attr.transform]="'translate(' + n.x + ',' + n.y + ')'"
-           (click)="onNodeClick(n.proceso, $event)" (contextmenu)="onNodeContext(n.proceso, $event)">
-          <title>{{ buildTooltip(n.proceso) }}</title>
-
-          <!-- render different shapes by type -->
-          <ng-container [ngSwitch]="nodeType(n)">
-            <ng-container *ngSwitchCase="'DECISION'">
-              <polygon [attr.points]="(-n.w/2) + ',0 0,' + (-n.h/2) + ' ' + (n.w/2) + ',0 0,' + (n.h/2)" class="node-shape" fill="#fff" stroke="#2b6cb0" stroke-width="2"></polygon>
+      @for (n of nodes; track n) {
+        <g>
+          <g class="node-group" [attr.transform]="'translate(' + n.x + ',' + n.y + ')'"
+            (click)="onNodeClick(n.proceso, $event)" (contextmenu)="onNodeContext(n.proceso, $event)">
+            <title>{{ buildTooltip(n.proceso) }}</title>
+            <!-- render different shapes by type -->
+            <ng-container>
+              @switch (nodeType(n)) {
+                @case ('DECISION') {
+                  <ng-container>
+                    <polygon [attr.points]="(-n.w/2) + ',0 0,' + (-n.h/2) + ' ' + (n.w/2) + ',0 0,' + (n.h/2)" class="node-shape" fill="#fff" stroke="#2b6cb0" stroke-width="2"></polygon>
+                  </ng-container>
+                }
+                @case ('API') {
+                  <ng-container>
+                    <rect [attr.x]="-n.w/2" [attr.y]="-n.h/2" [attr.width]="n.w" [attr.height]="n.h" rx="8" ry="8" class="node-shape" fill="#fff" stroke="#2b6cb0" stroke-width="2"></rect>
+                  </ng-container>
+                }
+                @default {
+                  <ng-container>
+                    <rect [attr.x]="-n.w/2" [attr.y]="-n.h/2" [attr.width]="n.w" [attr.height]="n.h" rx="8" ry="8" class="node-rect" fill="#fff" stroke="#2b6cb0" stroke-width="2"></rect>
+                  </ng-container>
+                }
+              }
             </ng-container>
-            <ng-container *ngSwitchCase="'API'">
-              <rect [attr.x]="-n.w/2" [attr.y]="-n.h/2" [attr.width]="n.w" [attr.height]="n.h" rx="8" ry="8" class="node-shape" fill="#fff" stroke="#2b6cb0" stroke-width="2"></rect>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-              <rect [attr.x]="-n.w/2" [attr.y]="-n.h/2" [attr.width]="n.w" [attr.height]="n.h" rx="8" ry="8" class="node-rect" fill="#fff" stroke="#2b6cb0" stroke-width="2"></rect>
-            </ng-container>
-          </ng-container>
-
-          <!-- when expanded: header strip at top -->
-          <g *ngIf="expanded.has(n.proceso.id)" class="node-header" [attr.transform]="'translate(' + (-n.w/2) + ',' + (-n.h/2) + ')'">
-            <rect [attr.x]="0" [attr.y]="0" [attr.width]="n.w" [attr.height]="headerHeight" fill="#f5f7fb"></rect>
-
-            <!-- image/icon -->
-            <ng-container *ngIf="getIconUrl(n.proceso) as iconUrl">
-              <image [attr.x]="8" [attr.y]="(headerHeight - avatarSize)/2" [attr.width]="avatarSize" [attr.height]="avatarSize" [attr.href]="iconUrl"></image>
-            </ng-container>
-
-            <!-- name next to icon -->
-            <text class="node-header-name" [attr.x]="(getIconUrl(n.proceso) ? (8 + avatarSize + 8) : 12)" [attr.y]="headerHeight/2 + 4" alignment-baseline="middle">{{ n.proceso.nombre || n.proceso.id }}</text>
-
-            <!-- badges removed from header; they will render in footer when expanded -->
-          </g>
-
-          <!-- when collapsed: show logo and name centered inside node -->
-          <g *ngIf="!expanded.has(n.proceso.id)" class="node-collapsed-center">
-            <ng-container *ngIf="getIconUrl(n.proceso) as iconUrl">
-              <image [attr.x]="-avatarSize/2" [attr.y]="-avatarSize - 6" [attr.width]="avatarSize" [attr.height]="avatarSize" [attr.href]="iconUrl"></image>
-              <text class="node-label" text-anchor="middle" [attr.y]="8">{{ n.proceso.nombre || n.proceso.id }}</text>
-            </ng-container>
-            <ng-container *ngIf="!getIconUrl(n.proceso)">
-              <text class="node-label" text-anchor="middle" alignment-baseline="middle">{{ n.proceso.nombre || n.proceso.id }}</text>
-            </ng-container>
-          </g>
-
-          <!-- + button -->
-          <g *ngIf="hasChildren(n.proceso)" class="plus-button" (click)="$event.stopPropagation(); toggle(n.proceso)">
-            <circle [attr.cx]="n.w/2 - 12" [attr.cy]="-n.h/2 + 12" r="12" fill="#2b6cb0" />
-            <text [attr.x]="n.w/2 - 12" [attr.y]="-n.h/2 + 16" text-anchor="middle" fill="#fff" font-size="16">{{ expanded.has(n.proceso.id) ? '-' : '+' }}</text>
-          </g>
-
-          <!-- footer badges: only visible when node is expanded and there are badges -->
-          <g *ngIf="expanded.has(n.proceso.id) && getBadges(n.proceso).length > 0"
-             class="node-footer-badges"
-               [attr.transform]="'translate(' + (-n.w/2) + ',' + ( -n.h/2 + n.h - (getBadges(n.proceso).length * (badgeHeight + badgePadding)) - 8 ) + ')'">
-            <ng-container *ngFor="let b of getBadges(n.proceso); let i = index">
+            <!-- when expanded: header strip at top -->
+            @if (expanded.has(n.proceso.id)) {
+              <g class="node-header" [attr.transform]="'translate(' + (-n.w/2) + ',' + (-n.h/2) + ')'">
+                <rect [attr.x]="0" [attr.y]="0" [attr.width]="n.w" [attr.height]="headerHeight" fill="#f5f7fb"></rect>
+                <!-- image/icon -->
+                @if (getIconUrl(n.proceso); as iconUrl) {
+                  <ng-container>
+                    <image [attr.x]="8" [attr.y]="(headerHeight - avatarSize)/2" [attr.width]="avatarSize" [attr.height]="avatarSize" [attr.href]="iconUrl"></image>
+                  </ng-container>
+                }
+                <!-- name next to icon -->
+                <text class="node-header-name" [attr.x]="(getIconUrl(n.proceso) ? (8 + avatarSize + 8) : 12)" [attr.y]="headerHeight/2 + 4" alignment-baseline="middle">{{ n.proceso.nombre || n.proceso.id }}</text>
+                <!-- badges removed from header; they will render in footer when expanded -->
+              </g>
+            }
+            <!-- when collapsed: show logo and name centered inside node -->
+            @if (!expanded.has(n.proceso.id)) {
+              <g class="node-collapsed-center">
+                @if (getIconUrl(n.proceso); as iconUrl) {
+                  <ng-container>
+                    <image [attr.x]="-avatarSize/2" [attr.y]="-avatarSize - 6" [attr.width]="avatarSize" [attr.height]="avatarSize" [attr.href]="iconUrl"></image>
+                    <text class="node-label" text-anchor="middle" [attr.y]="8">{{ n.proceso.nombre || n.proceso.id }}</text>
+                  </ng-container>
+                }
+                @if (!getIconUrl(n.proceso)) {
+                  <ng-container>
+                    <text class="node-label" text-anchor="middle" alignment-baseline="middle">{{ n.proceso.nombre || n.proceso.id }}</text>
+                  </ng-container>
+                }
+              </g>
+            }
+            <!-- + button -->
+            @if (hasChildren(n.proceso)) {
+              <g class="plus-button" (click)="$event.stopPropagation(); toggle(n.proceso)">
+                <circle [attr.cx]="n.w/2 - 12" [attr.cy]="-n.h/2 + 12" r="12" fill="#2b6cb0" />
+                <text [attr.x]="n.w/2 - 12" [attr.y]="-n.h/2 + 16" text-anchor="middle" fill="#fff" font-size="16">{{ expanded.has(n.proceso.id) ? '-' : '+' }}</text>
+              </g>
+            }
+            <!-- footer badges: only visible when node is expanded and there are badges -->
+            @if (expanded.has(n.proceso.id) && getBadges(n.proceso).length > 0) {
+              <g
+                class="node-footer-badges"
+                [attr.transform]="'translate(' + (-n.w/2) + ',' + ( -n.h/2 + n.h - (getBadges(n.proceso).length * (badgeHeight + badgePadding)) - 8 ) + ')'">
+                @for (b of getBadges(n.proceso); track b; let i = $index) {
+                  <ng-container>
                 <g [attr.transform]="'translate(' + 8 + ',' + (i * (badgeHeight + badgePadding)) + ')'
                  " (click)="$event.stopPropagation(); onBadgeClick(n.proceso, b, $event)" style="pointer-events:auto;">
-                <rect [attr.x]="0" [attr.y]="0" [attr.width]="(n.w - 16)" [attr.height]="badgeHeight" rx="6" fill="url(#badgeGrad)" stroke="#1f4b7a" stroke-width="1"></rect>
-                <!-- label (left) -->
-                <text [attr.x]="badgePadding + 6" [attr.y]="badgeHeight/2 + 4" text-anchor="start" fill="#fff" font-size="11">{{ b.label }}</text>
-                <!-- count (right) -->
-                <text [attr.x]="(n.w - 16) - (badgePadding + 6)" [attr.y]="badgeHeight/2 + 4" text-anchor="end" fill="#fff" font-size="11" font-weight="700">{{ b.count }}</text>
+                      <rect [attr.x]="0" [attr.y]="0" [attr.width]="(n.w - 16)" [attr.height]="badgeHeight" rx="6" fill="url(#badgeGrad)" stroke="#1f4b7a" stroke-width="1"></rect>
+                      <!-- label (left) -->
+                      <text [attr.x]="badgePadding + 6" [attr.y]="badgeHeight/2 + 4" text-anchor="start" fill="#fff" font-size="11">{{ b.label }}</text>
+                      <!-- count (right) -->
+                      <text [attr.x]="(n.w - 16) - (badgePadding + 6)" [attr.y]="badgeHeight/2 + 4" text-anchor="end" fill="#fff" font-size="11" font-weight="700">{{ b.count }}</text>
+                    </g>
+                  </ng-container>
+                }
               </g>
-            </ng-container>
+            }
           </g>
         </g>
-      </g>
+      }
     </g>
   </svg>
 </div>

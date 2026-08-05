@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, OnInit, Inject, Optional, Output, EventEmitter, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { BpmLeafDiagramComponent } from '../bpm-leaf-diagram/bpm-leaf-diagram.component';
@@ -27,7 +27,7 @@ interface NodeRender {
 
 @Component({
     selector: 'bpm-diagram',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './bpm-diagram.component.html',
     styleUrls: ['./bpm-diagram.component.scss']
 })

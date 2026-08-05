@@ -1,123 +1,139 @@
 <div class="flex flex-col max-w-240 md:min-w-160 max-h-screen ">
-    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
-        <div class="text-lg font-medium">Comprobante contable Manual  {{codigoComprobante}}</div>
-        <button mat-icon-button (click)="printReport()" [tabIndex]="-1" *ngIf="reportes.length > 0">
-            <mat-icon class="text-current" svgIcon="heroicons_outline:printer"></mat-icon>
-        </button>
-        <button mat-icon-button (click)="deleteVouchers(data)" [tabIndex]="-1" *ngIf="data.key">
-            <mat-icon class="text-current" svgIcon="heroicons_outline:trash"></mat-icon>
-        </button>
-        <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
-            <mat-icon class="text-current" svgIcon="heroicons_outline:x-circle"></mat-icon>
-        </button>
-    </div>
-    <form class="p-6 sm:p-8" [formGroup]="form" *ngIf="!loading">
-        <div [formGroupName]="'header'" class="w-full">
-            <div class="sm:flex sm:justify-between w-full sm:gap-2">
-                <mat-form-field>
-                    <mat-label>Catalogo</mat-label>
-                    <input matInput disabled="true" [value]="accountingService.currentCatalog?.name" />
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Tipo</mat-label>
-                    <input matInput disabled="true" [value]="accountingService.currentCatalog?.name" />
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Fecha</mat-label>
-                    <input matInput [matDatepicker]="pickerFrom" [formControlName]="'factDate'" required="true" />
-                    <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
-                    <mat-datepicker #pickerFrom></mat-datepicker>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Hora</mat-label>
-                    <input matInput type="time" required="true" [formControl]="timeFrom" />
-                </mat-form-field>
-            </div>
-            <mat-form-field class="w-full">
-                <mat-label>Concepto</mat-label>
-                <textarea matInput [formControlName]="'concept'"></textarea>
-            </mat-form-field>
+  <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+    <div class="text-lg font-medium">Comprobante contable Manual  {{codigoComprobante}}</div>
+    @if (reportes.length > 0) {
+      <button mat-icon-button (click)="printReport()" [tabIndex]="-1">
+        <mat-icon class="text-current" svgIcon="heroicons_outline:printer"></mat-icon>
+      </button>
+    }
+    @if (data.key) {
+      <button mat-icon-button (click)="deleteVouchers(data)" [tabIndex]="-1">
+        <mat-icon class="text-current" svgIcon="heroicons_outline:trash"></mat-icon>
+      </button>
+    }
+    <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
+      <mat-icon class="text-current" svgIcon="heroicons_outline:x-circle"></mat-icon>
+    </button>
+  </div>
+  @if (!loading) {
+    <form class="p-6 sm:p-8" [formGroup]="form">
+      <div [formGroupName]="'header'" class="w-full">
+        <div class="sm:flex sm:justify-between w-full sm:gap-2">
+          <mat-form-field>
+            <mat-label>Catalogo</mat-label>
+            <input matInput disabled="true" [value]="accountingService.currentCatalog?.name" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Tipo</mat-label>
+            <input matInput disabled="true" [value]="accountingService.currentCatalog?.name" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="pickerFrom" [formControlName]="'factDate'" required="true" />
+            <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFrom></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Hora</mat-label>
+            <input matInput type="time" required="true" [formControl]="timeFrom" />
+          </mat-form-field>
         </div>
-
-        <div class="w-full flex text-primary text-xs uppercase font-bold px-2">
-            <h2 class="w-full">Asientos contables</h2>
-            <div class="py-2 flex"><label><input class="p-0.5 mx-1" type="checkbox" [(ngModel)]="referencesActive" [ngModelOptions]="{standalone: true}" /> Auxiliares</label></div>
-        </div>
-        <div class="w-full p-1  max-h-[35vh] overflow-scroll">
-            <div formArrayName="records" >
-                <div [formGroupName]="i" *ngFor="let r of recordsArray.controls;let i = index">
-                    <div formArrayName="line">
-                        <div class="w-full sm:flex gap-1">
-                            <div class="w-full sm:w-1/2 ">
-                                <mat-form-field class="w-full">
-                                    <mat-label>Cuenta {{ i + 1 }}</mat-label>
-                                    <input matInput formControlName="accountDTO" id="{{'account'+i}}"
-                                        [matAutocomplete]="auto" />
-                                </mat-form-field>
-                            </div>
-                            <div class="flex justify-between w-full sm:w-1/2 gap-1">
-                                <mat-form-field>
-                                    <mat-label>Débito</mat-label>
-                                    <input matInput currencyMask formControlName="positive" placeholder="Debito"
-                                        id="{{'debit'+i}}"
-                                        [options]="{ precision: 0, allowNegative: false, decimal: ',', thousands: '.'}" />
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <mat-label>Crédito</mat-label>
-                                    <input matInput currencyMask formControlName="negative" placeholder="Credito"
-                                        id="{{'credit'+i}}"
-                                        [options]="{ precision: 0, allowNegative: false, decimal: ',', thousands: '.'}" />
-                                </mat-form-field>
-                            </div>
-                            
+        <mat-form-field class="w-full">
+          <mat-label>Concepto</mat-label>
+          <textarea matInput [formControlName]="'concept'"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="w-full flex text-primary text-xs uppercase font-bold px-2">
+        <h2 class="w-full">Asientos contables</h2>
+        <div class="py-2 flex"><label><input class="p-0.5 mx-1" type="checkbox" [(ngModel)]="referencesActive" [ngModelOptions]="{standalone: true}" /> Auxiliares</label></div>
+      </div>
+      <div class="w-full p-1  max-h-[35vh] overflow-scroll">
+        <div formArrayName="records" >
+          @for (r of recordsArray.controls; track r; let i = $index) {
+            <div [formGroupName]="i">
+              <div formArrayName="line">
+                <div class="w-full sm:flex gap-1">
+                  <div class="w-full sm:w-1/2 ">
+                    <mat-form-field class="w-full">
+                      <mat-label>Cuenta {{ i + 1 }}</mat-label>
+                      <input matInput formControlName="accountDTO" id="{{'account'+i}}"
+                        [matAutocomplete]="auto" />
+                      </mat-form-field>
+                    </div>
+                    <div class="flex justify-between w-full sm:w-1/2 gap-1">
+                      <mat-form-field>
+                        <mat-label>Débito</mat-label>
+                        <input matInput currencyMask formControlName="positive" placeholder="Debito"
+                          id="{{'debit'+i}}"
+                          [options]="{ precision: 0, allowNegative: false, decimal: ',', thousands: '.'}" />
+                        </mat-form-field>
+                        <mat-form-field>
+                          <mat-label>Crédito</mat-label>
+                          <input matInput currencyMask formControlName="negative" placeholder="Credito"
+                            id="{{'credit'+i}}"
+                            [options]="{ precision: 0, allowNegative: false, decimal: ',', thousands: '.'}" />
+                          </mat-form-field>
                         </div>
-                        <div class="w-full sm:w-1/2"  [style.display]="(referencesActive) ? 'block':'none'">
-                            <mat-form-field class="w-full">
-                                <mat-label>Notas</mat-label>
-                                <textarea matInput formControlName="note" id="{{'note'+i}}"></textarea>
-                            </mat-form-field>
-                        </div>
+                      </div>
+                      <div class="w-full sm:w-1/2"  [style.display]="(referencesActive) ? 'block':'none'">
+                        <mat-form-field class="w-full">
+                          <mat-label>Notas</mat-label>
+                          <textarea matInput formControlName="note" id="{{'note'+i}}"></textarea>
+                        </mat-form-field>
+                      </div>
                     </div>
                     <div formArrayName="references" class="w-full gap-1 justify-end"  [style.display]="(referencesActive) ? 'block':'none'">
-                        <div *ngFor="let f of auxiliares(i).controls ;let j = index" [formGroupName]="j" class="w-full sm:w-1/2 ">
-                            <div class="flex justify-between w-full gap-1">
-                                <mat-form-field class="w-full">
-                                    <mat-label>{{f.get('auxiliarType')?.value}} CODIGO</mat-label>
-                                    <input matInput formControlName="auxiliarCode" id="{{'auxiliarCode'+i+j}}" />
-                                </mat-form-field>
-                                <mat-form-field class="w-full">
-                                    <mat-label>{{f.get('auxiliarType')?.value}} NOMBRE</mat-label>
-                                    <input matInput formControlName="auxiliarName" id="{{'auxiliarName'+i+j}}" />
-                                </mat-form-field>
-                            </div>
+                      @for (f of auxiliares(i).controls ; track f; let j = $index) {
+                        <div [formGroupName]="j" class="w-full sm:w-1/2 ">
+                          <div class="flex justify-between w-full gap-1">
+                            <mat-form-field class="w-full">
+                              <mat-label>{{f.get('auxiliarType')?.value}} CODIGO</mat-label>
+                              <input matInput formControlName="auxiliarCode" id="{{'auxiliarCode'+i+j}}" />
+                            </mat-form-field>
+                            <mat-form-field class="w-full">
+                              <mat-label>{{f.get('auxiliarType')?.value}} NOMBRE</mat-label>
+                              <input matInput formControlName="auxiliarName" id="{{'auxiliarName'+i+j}}" />
+                            </mat-form-field>
+                          </div>
                         </div>
+                      }
                     </div>
-                </div>
+                  </div>
+                }
+              </div>
             </div>
-        </div>
-        <!-- Divider -->
-        <div class="w-full my-3 border-b"></div>
-        <!-- Total -->
-        <div class="flex ">
-            <div class="text-2xl font-medium tracking-tight text-secondary">TOTAL</div>
-            <div class="w-full text-right text-2xl font-medium">{{debitValue | currency}}</div>
-        </div>
-        <div class="flex justify-between" *ngIf="differenceValue !== 0">
-            <div class="font-medium tracking-tight text-secondary">Debitos - creditos</div>
-            <div class="text-right font-medium">{{debitValue | currency}}</div> -
-            <div class="text-right font-medium">{{creditValue | currency}}</div>
-            <div class="text-right font-medium">{{differenceValue | currency}}</div>
-        </div>
-        <button *ngIf="botonAccion" class="order-first sm:order-last w-full" mat-flat-button [color]="'primary'"
-            (click)="send()">{{ botonAccion }}</button>
-    </form>
+            <!-- Divider -->
+            <div class="w-full my-3 border-b"></div>
+            <!-- Total -->
+            <div class="flex ">
+              <div class="text-2xl font-medium tracking-tight text-secondary">TOTAL</div>
+              <div class="w-full text-right text-2xl font-medium">{{debitValue | currency}}</div>
+            </div>
+            @if (differenceValue !== 0) {
+              <div class="flex justify-between">
+                <div class="font-medium tracking-tight text-secondary">Debitos - creditos</div>
+                <div class="text-right font-medium">{{debitValue | currency}}</div> -
+                <div class="text-right font-medium">{{creditValue | currency}}</div>
+                <div class="text-right font-medium">{{differenceValue | currency}}</div>
+              </div>
+            }
+            @if (botonAccion) {
+              <button class="order-first sm:order-last w-full" mat-flat-button [color]="'primary'"
+              (click)="send()">{{ botonAccion }}</button>
+            }
+          </form>
+        }
 
-    <div class="w-full flex justify-center p-8" *ngIf="loading">
-        <mat-spinner></mat-spinner>
-    </div>
-    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-        <mat-option *ngFor="let f of filteredOptions | async" [value]="f">
-            <span>{{f.code}}</span> | <small>{{f.name}}</small>
-        </mat-option>
-    </mat-autocomplete>
-</div>
+        @if (loading) {
+          <div class="w-full flex justify-center p-8">
+            <mat-spinner></mat-spinner>
+          </div>
+        }
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          @for (f of filteredOptions | async; track f) {
+            <mat-option [value]="f">
+              <span>{{f.code}}</span> | <small>{{f.name}}</small>
+            </mat-option>
+          }
+        </mat-autocomplete>
+      </div>

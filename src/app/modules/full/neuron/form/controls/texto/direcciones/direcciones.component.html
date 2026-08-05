@@ -9,7 +9,7 @@
       <option value="Transversal">Transversal</option>
       <option value="Diagonal">Diagonal</option>
       <option value="Autopista">Autopista</option>
-      <option value="Circular">Circular</option>      
+      <option value="Circular">Circular</option>
       <option value="AvCarrera">AV Carrera</option>
       <option value="AvCalle">Av Calle</option>
       <option value="Kilometro">Kilómetro</option>
@@ -29,7 +29,9 @@
       </select>
       <select formControlName="orientacion1" class="border rounded p-2">
         <option value="">—</option>
-        <option *ngFor="let o of orientaciones1">{{ o }}</option>
+        @for (o of orientaciones1; track o) {
+          <option>{{ o }}</option>
+        }
       </select>
     </div>
   </div>
@@ -46,7 +48,9 @@
       </select>
       <select formControlName="orientacion2" class="border rounded p-2">
         <option value="">—</option>
-        <option *ngFor="let o of orientaciones2" >{{ o }}</option>
+        @for (o of orientaciones2; track o) {
+          <option >{{ o }}</option>
+        }
       </select>
     </div>
   </div>

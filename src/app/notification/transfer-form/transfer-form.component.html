@@ -5,34 +5,40 @@
       <mat-form-field>
         <input matInput name="responsable" [matAutocomplete]="auto" [formControl]="transferForm.controls['responsable']"
           placeholder="Asignar a" required />
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayTransfer">
-          <mat-option *ngFor="let user of users" [value]="user">
-            <div class="flex">
-              <img class="icon-size-10 rounded my-1" src="{{ user?.imagen | imageFormat }}" />
-              <small class="px-2">{{ user.nombre }}</small>
-            </div>
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field>
-        <textarea name="comentario" class="textarea-form" matInput [formControl]="transferForm.controls['comentario']"
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayTransfer">
+            @for (user of users; track user) {
+              <mat-option [value]="user">
+                <div class="flex">
+                  <img class="icon-size-10 rounded my-1" src="{{ user?.imagen | imageFormat }}" />
+                  <small class="px-2">{{ user.nombre }}</small>
+                </div>
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field>
+          <textarea name="comentario" class="textarea-form" matInput [formControl]="transferForm.controls['comentario']"
           placeholder="Comentario" required></textarea>
-      </mat-form-field>
-      <div class="flex justify-between">
-        <button mat-raised-button color="accent" (click)="dialogRef.close(false)">
-          <mat-icon>exit_to_app</mat-icon> Cerrar
-        </button>
-        <span></span>
-        <button mat-raised-button class="mat-primary mb-1" [disabled]="transferForm.invalid" *ngIf="!isTransfering">
-          Reasignar
-        </button>
-        <mat-progress-bar class="w-full" mode="indeterminate" *ngIf="isTransfering"></mat-progress-bar>
-      </div>
+        </mat-form-field>
+        <div class="flex justify-between">
+          <button mat-raised-button color="accent" (click)="dialogRef.close(false)">
+            <mat-icon>exit_to_app</mat-icon> Cerrar
+          </button>
+          <span></span>
+          @if (!isTransfering) {
+            <button mat-raised-button class="mat-primary mb-1" [disabled]="transferForm.invalid">
+              Reasignar
+            </button>
+          }
+          @if (isTransfering) {
+            <mat-progress-bar class="w-full" mode="indeterminate"></mat-progress-bar>
+          }
+        </div>
 
-    </form>
-  </mat-card-content>
-  <!-- Boton cerrar -->
-  <div>
+      </form>
+    </mat-card-content>
+    <!-- Boton cerrar -->
+    <div>
 
-  </div>
-</mat-card>
+    </div>
+  </mat-card>

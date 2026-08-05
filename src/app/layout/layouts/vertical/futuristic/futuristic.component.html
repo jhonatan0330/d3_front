@@ -5,8 +5,10 @@
   <ng-container fuseVerticalNavigationHeader>
     <!-- Logo -->
     <div class="flex items-center h-20 px-4 py-2">
-      <img *ngIf="company?.imagen" class="w-auto max-h-full mx-2" src="{{ company?.imagen | imageFormat }}"
-        alt="Logo image" />
+      @if (company?.imagen) {
+        <img class="w-auto max-h-full mx-2" src="{{ company?.imagen | imageFormat }}"
+          alt="Logo image" />
+      }
     </div>
     <div class="flex flex-col items-center justify-center px-2 text-gray-500">
       <span class="text-xxs">{{ time | date : "medium" }} {{ currentApplicationVersion }} </span>
@@ -50,19 +52,29 @@
     </div>
   </div>
 
-  <div *ngIf="headerSection && headerSection.length!==0" class="w-full">
-    <div *ngFor="let iHeader of headerSection" [innerHTML]="iHeader"></div>
-  </div>
+  @if (headerSection && headerSection.length!==0) {
+    <div class="w-full">
+      @for (iHeader of headerSection; track iHeader) {
+        <div [innerHTML]="iHeader"></div>
+      }
+    </div>
+  }
 
   <!-- Content -->
   <div class="flex flex-col flex-auto">
     <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
-             Otherwise, layout changes won't be registered and the view won't be updated! -->
-    <router-outlet *ngIf="true"></router-outlet>
+    Otherwise, layout changes won't be registered and the view won't be updated! -->
+    @if (true) {
+      <router-outlet></router-outlet>
+    }
   </div>
 
   <!-- footer -->
-  <div *ngIf="landing && landing.length!==0" class="w-full">
-    <div *ngFor="let iFooter of landing" [innerHTML]="iFooter" class="w-full"></div>
-  </div>
+  @if (landing && landing.length!==0) {
+    <div class="w-full">
+      @for (iFooter of landing; track iFooter) {
+        <div [innerHTML]="iFooter" class="w-full"></div>
+      }
+    </div>
+  }
 </div>

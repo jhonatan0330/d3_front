@@ -1,88 +1,115 @@
-<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-<div *ngIf="messageHTML" class="w-full" [innerHTML]="messageHTML"></div>
+@if (isLoading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
+@if (messageHTML) {
+  <div class="w-full" [innerHTML]="messageHTML"></div>
+}
 <!-- Campos unicos -->
-<mat-form-field class="w-full" *ngIf="!herencia && !multiple"
-  [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-  <input matInput [id]="idField" [matAutocomplete]="auto" [formControl]="fControl" [required]="required"
-    [readonly]="!isEnabled" (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [inputmode]="inputModeText"
-    translate="no" (focusout)="gestionarKeyUpTextoFocusOut()"
-    [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
-  <a *ngIf="proceso && linkExternal" class="a-hyperlink" (click)="goToLink()">{{linkExternal.valor}}</a>
-  <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay">
-  </mat-autocomplete>
-  <!-- Open window -->
-  <button mat-icon-button matPrefix *ngIf="proceso" (click)="openDialog(proceso)" tabindex="-1">
-    <mat-icon>open_in_new</mat-icon>
-  </button>
-  <!-- Create -->
-  <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenuButton"
-    [style.display]="!fControl.value ? 'inline-flex' : 'none !important'"
-    *ngIf="acciones && !errorMessage && !proceso" #clickHoverMenuTrigger="matMenuTrigger"
-    (click)="sendCreate()" tabindex="-1">
-    <mat-icon>add_circle</mat-icon>
-  </button>
-  <mat-menu #clickHoverMenuButton="matMenu">
-    <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)" *ngFor="let item of acciones"
-      tabindex="-1">
-      Crear {{ item.texto | titlecase }}
-    </button>
-  </mat-menu>
-  <!-- Buscar -->
-  <button mat-icon-button matSuffix *ngIf="isEnabled && !proceso" (click)="gestionarKeyUpTexto()" tabindex="-1">
-    <mat-icon>search</mat-icon>
-  </button>
-  <!-- Limpiar -->
-  <button mat-icon-button matSuffix *ngIf="proceso && isEnabled" (click)="fControl.setValue('')" tabindex="-1">
-    <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
-  </button>
-  <!-- Boton codigo QR-->
-  <button mat-icon-button matPrefix (click)="toogleScanner()" tabindex="-1" *ngIf="isEnabled && readQR && !proceso">
-    <mat-icon>camera_enhance</mat-icon>
-  </button>
-  <div *ngIf="scannerEnabled && !proceso" class="w-full">
-    <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
-  </div>
-
-  <!-- Opciones de seleccion -->
-  <div class="w-full" *ngIf="isEnabled && !proceso" style="overflow: auto">
-    <!-- Vista modo tabla -->
-    <table mat-table [dataSource]="filteredDocuments" class="w-full">
-      <ng-container matColumnDef="nombre">
-        <td mat-cell *matCellDef="let element">
-          <span class="pr-1">{{ element.nombre }}</span>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="descripcion">
-        <td mat-cell *matCellDef="let element">
-          <small class="pr-1">{{ element.descripcion }}</small>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="valor">
-        <td mat-cell *matCellDef="let element">
-          <small *ngIf="element.dinero" class="pr-1">{{
-            element.dinero.valorTotal | number
-            }}</small>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="detalles">
-        <td mat-cell *matCellDef="let element">
-          <div class="pr-1 min-w-48" *ngIf="
-              element.caracteristicas && element.caracteristicas.length !== 0
-            ">
-            <div class="flex justify-between" *ngFor="let f of element.caracteristicas">
-              <div class="whitespace-nowrap font-extralight pr-2 text-xs hidden sm:block">{{ f.campoDTO.nombre }}</div>
-              <div class="text-right line-clamp-1 text-xs">{{ f.valorText }}</div>
-            </div>
-          </div>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="estadoExpediente">
-        <td mat-cell *matCellDef="let element" class="text-right"
-          [style.backgroundColor]="getColor(element.estadoExpediente)">
-          <small>{{ element.estadoNombre }}</small>
-        </td>
-      </ng-container>
+@if (!herencia && !multiple) {
+  <mat-form-field class="w-full"
+    [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+    <mat-label>{{ structure.nombre | titlecase }} </mat-label>
+    <input matInput [id]="idField" [matAutocomplete]="auto" [formControl]="fControl" [required]="required"
+      [readonly]="!isEnabled" (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [inputmode]="inputModeText"
+      translate="no" (focusout)="gestionarKeyUpTextoFocusOut()"
+      [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
+      @if (proceso && linkExternal) {
+        <a class="a-hyperlink" (click)="goToLink()">{{linkExternal.valor}}</a>
+      }
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay">
+      </mat-autocomplete>
+      <!-- Open window -->
+      @if (proceso) {
+        <button mat-icon-button matPrefix (click)="openDialog(proceso)" tabindex="-1">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      }
+      <!-- Create -->
+      @if (acciones && !errorMessage && !proceso) {
+        <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenuButton"
+          [style.display]="!fControl.value ? 'inline-flex' : 'none !important'"
+          #clickHoverMenuTrigger="matMenuTrigger"
+          (click)="sendCreate()" tabindex="-1">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      }
+      <mat-menu #clickHoverMenuButton="matMenu">
+        @for (item of acciones; track item) {
+          <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)"
+            tabindex="-1">
+            Crear {{ item.texto | titlecase }}
+          </button>
+        }
+      </mat-menu>
+      <!-- Buscar -->
+      @if (isEnabled && !proceso) {
+        <button mat-icon-button matSuffix (click)="gestionarKeyUpTexto()" tabindex="-1">
+          <mat-icon>search</mat-icon>
+        </button>
+      }
+      <!-- Limpiar -->
+      @if (proceso && isEnabled) {
+        <button mat-icon-button matSuffix (click)="fControl.setValue('')" tabindex="-1">
+          <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
+        </button>
+      }
+      <!-- Boton codigo QR-->
+      @if (isEnabled && readQR && !proceso) {
+        <button mat-icon-button matPrefix (click)="toogleScanner()" tabindex="-1">
+          <mat-icon>camera_enhance</mat-icon>
+        </button>
+      }
+      @if (scannerEnabled && !proceso) {
+        <div class="w-full">
+          <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+        </div>
+      }
+      <!-- Opciones de seleccion -->
+      @if (isEnabled && !proceso) {
+        <div class="w-full" style="overflow: auto">
+          <!-- Vista modo tabla -->
+          <table mat-table [dataSource]="filteredDocuments" class="w-full">
+            <ng-container matColumnDef="nombre">
+              <td mat-cell *matCellDef="let element">
+                <span class="pr-1">{{ element.nombre }}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="descripcion">
+              <td mat-cell *matCellDef="let element">
+                <small class="pr-1">{{ element.descripcion }}</small>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="valor">
+              <td mat-cell *matCellDef="let element">
+                @if (element.dinero) {
+                  <small class="pr-1">{{
+                    element.dinero.valorTotal | number
+                  }}</small>
+                }
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="detalles">
+              <td mat-cell *matCellDef="let element">
+                @if (
+                  element.caracteristicas && element.caracteristicas.length !== 0
+                  ) {
+                  <div class="pr-1 min-w-48">
+                    @for (f of element.caracteristicas; track f) {
+                      <div class="flex justify-between">
+                        <div class="whitespace-nowrap font-extralight pr-2 text-xs hidden sm:block">{{ f.campoDTO.nombre }}</div>
+                        <div class="text-right line-clamp-1 text-xs">{{ f.valorText }}</div>
+                      </div>
+                    }
+                  </div>
+                }
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="estadoExpediente">
+              <td mat-cell *matCellDef="let element" class="text-right"
+                [style.backgroundColor]="getColor(element.estadoExpediente)">
+                <small>{{ element.estadoNombre }}</small>
+              </td>
+            </ng-container>
       <tr mat-row class="cursor-pointer" *matRowDef="
           let row;
           columns: [
@@ -93,218 +120,286 @@
             'estadoExpediente'
           ]
         " (click)="fControl.setValue(row)"></tr>
-    </table>
-  </div>
-</mat-form-field>
-<label *ngIf="errorMessage"
-  class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
-<!-- Campos multiples -->
-<div *ngIf="tipoMultiple" class="pb-1" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  <!-- Titulo y boton buscar -->
-  <div *ngIf="!isLoading">
-    <div class="flex justify-between items-center w-full mb-1 gap-1">
-      <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))" 
-        [matBadge]="data.valorText" matBadgeColor="primary" class="w-full">
-        {{ structure.nombre | titlecase }}
-      </button>
-      <button mat-raised-button color="accent" [matMenuTriggerFor]="clickHoverMenu"
-        *ngIf="acciones && formIsEnabled && data?.expedientes" #clickHoverMenuTrigger="matMenuTrigger"
-        (click)="sendCreate()" tabindex="-1">
-        <mat-icon>add</mat-icon>
-      </button>
-      <mat-menu #clickHoverMenu="matMenu">
-        <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)" *ngFor="let item of acciones"
-          tabindex="-1">
-          Crear {{ item.texto | titlecase }}
-        </button>
-      </mat-menu>
-    </div>
-
-    <span *ngIf="data.valorNumero && data.valorNumero !== 0"
-      class="text-28 font-weight-bold mat-color-primary w-full text-center">{{ titulo }}</span>
-  </div>
-  <!-- Lista de seleccionados (Expedientes) -->
-  <div class="flex flex-wrap p-1 w-full">
-    <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1" *ngFor="let d of data?.expedientes">
-      <mat-card class="p-0 rounded h-full">
-        <mat-card-title class="p-1 rounded mb-0">
-          <div class="flex items-center">
-            <div class="w-16 p-1">
-              <a (click)="openDialog(d)"><img src="{{ d.imagen | imageFormat }}" /></a>
-            </div>
-            <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(d.estadoExpediente)"
-              [style.color]="getColorFont(d.estadoExpediente)">
-              <a (click)="openDialog(d)">
-                <div class="text-md">{{ d.nombre }}</div>
-              </a>
-              <a (click)="openDialog(d)" *ngIf="d.descripcion">
-                <div class="text-sm line-clamp-4 leading-none">
-                  {{ d.descripcion }}
-                </div>
-              </a>
-            </div>
-            <button mat-icon-button *ngIf="isEnabled" (click)="retirarProceso(d)">
-              <mat-icon>cancel</mat-icon>
+          </table>
+        </div>
+      }
+    </mat-form-field>
+  }
+  @if (errorMessage) {
+    <label
+    class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+  }
+  <!-- Campos multiples -->
+  @if (tipoMultiple) {
+    <div class="pb-1" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+      <!-- Titulo y boton buscar -->
+      @if (!isLoading) {
+        <div>
+          <div class="flex justify-between items-center w-full mb-1 gap-1">
+            <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))"
+              [matBadge]="data.valorText" matBadgeColor="primary" class="w-full">
+              {{ structure.nombre | titlecase }}
             </button>
-          </div>
-          <!-- <mat-divider></mat-divider> -->
-          <div class="text-sm flex justify-between">
-            <div>{{ d.fecha | date }}</div>
-            <div>{{ d.estadoNombre }}</div>
-          </div>
-          <div class="flex justify-between" *ngIf="d.dinero">
-            <div *ngIf="d.dinero.valorCampo && 0!== d.dinero.valorCampo && 0!== d.dinero.valorTotal"><small
-                class="text-sm">Valor incluido: </small>{{ d.dinero.valorCampo | number }}</div>
-            <div *ngIf="d.dinero.valorTotal !== d.dinero.saldo &&  0 !== d.dinero.saldo"><small class="text-sm">Saldo:
-              </small>{{ d.dinero.saldo | number }}</div>
-            <div><small class="text-sm">Valor Total: </small>{{ d.dinero.valorTotal | number }}</div>
-          </div>
-        </mat-card-title>
-        <mat-card-content class="p-1">
-          <div *ngIf="d.caracteristicas && d.caracteristicas.length !== 0">
-            <div class="flex justify-between" *ngFor="let f of d.caracteristicas">
-              <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-              <div class="text-right text-sm line-clamp-1" *ngIf="f.valorText">
-                {{ f.valorText }}
-              </div>
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </div>
-  <!-- Buscador de expedientes -->
-  <div *ngIf="(data.expedientes || dataProvider) && (isEnabled || herencia)">
-    <div class="grey-200 my-1 w-[72vw] flex flex-wrap justify-center">
-      <!-- Fechas -->
-      <div class="pr-1" *ngIf="fControlCheck && !fControlCheck.value">
-        <mat-form-field>
-          <mat-label>Escoge una fecha</mat-label>
-          <mat-date-range-input [rangePicker]="picker">
-            <input matStartDate placeholder="Fecha inicial" [formControl]="fControlDateStart" />
-            <input matEndDate placeholder="Fecha final" [formControl]="fControlDateEnd" />
-          </mat-date-range-input>
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-        </mat-form-field>
-      </div>
-      <!-- Texto de filtro -->
-      <div class="pr-1 sm:flex">
-        <input class="px-2" type="checkbox" [formControl]="fControlCheck" /><span class="px-2">Codigo Exacto</span>
-        <mat-form-field>
-          <input matInput type="text" placeholder="Coloca un texto y presiona enter" name="fControlSearch"
-            [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
-          <button matSuffix (click)="fControlSearch.setValue('')">
-            <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
-          </button>
-        </mat-form-field>
-      </div>
-      <div class="pr-1">
-        <!-- Boton filtrar -->
-        <button mat-raised-button (click)="listar(1)" class="ml-1">
-          <mat-icon>refresh</mat-icon>
-        </button>
-        <!-- Create copiado de arriba 
-        <button mat-raised-button matSuffix [matMenuTriggerFor]="clickHoverMenuMultiple"
-          *ngIf="acciones && !proceso && (isEnabled || herencia)" #clickHoverMenuTrigger="matMenuTrigger"
-          (click)="sendCreate()">
-          <mat-icon>add_circle</mat-icon>
-        </button>
-        <mat-menu #clickHoverMenuMultiple="matMenu">
-          <button mat-menu-item (click)="createNewDocument(item.valor)" *ngFor="let item of acciones">
-            Crear {{ item.texto | titlecase }}
-          </button>
-        </mat-menu>-->
-        <!-- Boton codigo QR-->
-        <button mat-raised-button (click)="toogleScanner()" class="ml-1" *ngIf="isEnabled && readQR">
-          <mat-icon>camera_enhance</mat-icon>
-        </button>
-        <!-- Boton Agregar todos-->
-        <button mat-raised-button (click)="agregarTodos()" class="ml-1"
-          *ngIf="isEnabled && dataProvider && dataProvider.length && !herencia">
-          <mat-icon>file_upload</mat-icon>
-        </button>
-        <!-- Boton Agregar todos-->
-        <button mat-raised-button (click)="showFilterState = !showFilterState" class="ml-1">
-          <mat-icon>filter_alt</mat-icon>
-        </button>
-      </div>
-    </div>
-    <div *ngIf="showFilterState">
-      <input class="px-2" type="checkbox" [formControl]="fCheckActivo" /><span class="px-2">Activos</span>
-      <input class="px-2" type="checkbox" [formControl]="fCheckFinalizado" /><span class="px-2">Finalizados</span>
-      <input class="px-2" type="checkbox" [formControl]="fCheckInactivo" /><span class="px-2">Inactivo</span>
-    </div>
-    <div class="w-full text-center" *ngIf="labelSearch">
-      <span class="text-28 font-weight-bold mat-color-primary ">{{ labelSearch }}</span>
-    </div>
-    <div *ngIf="scannerEnabled" class="w-full">
-      <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
-    </div>
-    <!-- Resultado de la busqueda -->
-    <div class="flex flex-wrap">
-      <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1" *ngFor="let iDocument of dataProvider">
-        <mat-card class="p-0 rounded h-full">
-          <mat-card-title class="p-1 rounded">
-            <div class="flex items-center">
-              <div class="w-16 p-1">
-                <a (click)="openDialog(iDocument)"><img src="{{ iDocument.imagen | imageFormat }}" /></a>
-              </div>
-              <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
-                [style.color]="getColorFont(iDocument.estadoExpediente)">
-                <a (click)="openDialog(iDocument)">
-                  <div class="text-md">{{ iDocument.nombre }}</div>
-                </a>
-                <a (click)="openDialog(iDocument)" *ngIf="iDocument.descripcion">
-                  <div class="text-sm line-clamp-4 leading-none">
-                    {{ iDocument.descripcion }}
-                  </div>
-                </a>
-              </div>
-              <button mat-icon-button (click)="agregarProceso(iDocument)" *ngIf="!herencia">
-                <mat-icon>file_upload</mat-icon>
+            @if (acciones && formIsEnabled && data?.expedientes) {
+              <button mat-raised-button color="accent" [matMenuTriggerFor]="clickHoverMenu"
+                #clickHoverMenuTrigger="matMenuTrigger"
+                (click)="sendCreate()" tabindex="-1">
+                <mat-icon>add</mat-icon>
               </button>
-            </div>
-            <!-- <mat-divider></mat-divider> -->
-            <div class="flex">
-              <div class="text-sm">{{ iDocument.fecha | date }}</div>
-              <div class="text-sm mx-1 text-right">{{ iDocument.estadoNombre }}</div>
-            </div>
-            <div class="flex justify-between" *ngIf="iDocument.dinero">
-              <div class="text-sm line-clamp-1"
-                *ngIf="iDocument.dinero.valorTotal !== iDocument.dinero.saldo && 0 !== iDocument.dinero.saldo">
-                {{iDocument.dinero.saldo | number}}
-              </div>
-              <div>{{ iDocument.dinero.valorTotal | number }}</div>
-            </div>
-          </mat-card-title>
-          <mat-card-content class="p-1">
-            <div class="w-full" *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
-              <div class="flex justify-between" *ngFor="let f of iDocument.caracteristicas">
-                <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-                <div class="text-right text-sm line-clamp-1" *ngIf="f.valorText">
-                  {{ f.valorText }}
+            }
+            <mat-menu #clickHoverMenu="matMenu">
+              @for (item of acciones; track item) {
+                <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)"
+                  tabindex="-1">
+                  Crear {{ item.texto | titlecase }}
+                </button>
+              }
+            </mat-menu>
+          </div>
+          @if (data.valorNumero && data.valorNumero !== 0) {
+            <span
+            class="text-28 font-weight-bold mat-color-primary w-full text-center">{{ titulo }}</span>
+          }
+        </div>
+      }
+      <!-- Lista de seleccionados (Expedientes) -->
+      <div class="flex flex-wrap p-1 w-full">
+        @for (d of data?.expedientes; track d) {
+          <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
+            <mat-card class="p-0 rounded h-full">
+              <mat-card-title class="p-1 rounded mb-0">
+                <div class="flex items-center">
+                  <div class="w-16 p-1">
+                    <a (click)="openDialog(d)"><img src="{{ d.imagen | imageFormat }}" /></a>
+                  </div>
+                  <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(d.estadoExpediente)"
+                    [style.color]="getColorFont(d.estadoExpediente)">
+                    <a (click)="openDialog(d)">
+                      <div class="text-md">{{ d.nombre }}</div>
+                    </a>
+                    @if (d.descripcion) {
+                      <a (click)="openDialog(d)">
+                        <div class="text-sm line-clamp-4 leading-none">
+                          {{ d.descripcion }}
+                        </div>
+                      </a>
+                    }
+                  </div>
+                  @if (isEnabled) {
+                    <button mat-icon-button (click)="retirarProceso(d)">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  }
                 </div>
+                <!-- <mat-divider></mat-divider> -->
+                <div class="text-sm flex justify-between">
+                  <div>{{ d.fecha | date }}</div>
+                  <div>{{ d.estadoNombre }}</div>
+                </div>
+                @if (d.dinero) {
+                  <div class="flex justify-between">
+                    @if (d.dinero.valorCampo && 0!== d.dinero.valorCampo && 0!== d.dinero.valorTotal) {
+                      <div><small
+                      class="text-sm">Valor incluido: </small>{{ d.dinero.valorCampo | number }}</div>
+                    }
+                    @if (d.dinero.valorTotal !== d.dinero.saldo &&  0 !== d.dinero.saldo) {
+                      <div><small class="text-sm">Saldo:
+                      </small>{{ d.dinero.saldo | number }}</div>
+                    }
+                    <div><small class="text-sm">Valor Total: </small>{{ d.dinero.valorTotal | number }}</div>
+                  </div>
+                }
+              </mat-card-title>
+              <mat-card-content class="p-1">
+                @if (d.caracteristicas && d.caracteristicas.length !== 0) {
+                  <div>
+                    @for (f of d.caracteristicas; track f) {
+                      <div class="flex justify-between">
+                        <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
+                        @if (f.valorText) {
+                          <div class="text-right text-sm line-clamp-1">
+                            {{ f.valorText }}
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </mat-card-content>
+            </mat-card>
+          </div>
+        }
+      </div>
+      <!-- Buscador de expedientes -->
+      @if ((data.expedientes || dataProvider) && (isEnabled || herencia)) {
+        <div>
+          <div class="grey-200 my-1 w-[72vw] flex flex-wrap justify-center">
+            <!-- Fechas -->
+            @if (fControlCheck && !fControlCheck.value) {
+              <div class="pr-1">
+                <mat-form-field>
+                  <mat-label>Escoge una fecha</mat-label>
+                  <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate placeholder="Fecha inicial" [formControl]="fControlDateStart" />
+                    <input matEndDate placeholder="Fecha final" [formControl]="fControlDateEnd" />
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+              </div>
+            }
+            <!-- Texto de filtro -->
+            <div class="pr-1 sm:flex">
+              <input class="px-2" type="checkbox" [formControl]="fControlCheck" /><span class="px-2">Codigo Exacto</span>
+              <mat-form-field>
+                <input matInput type="text" placeholder="Coloca un texto y presiona enter" name="fControlSearch"
+                  [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
+                  <button matSuffix (click)="fControlSearch.setValue('')">
+                    <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+              <div class="pr-1">
+                <!-- Boton filtrar -->
+                <button mat-raised-button (click)="listar(1)" class="ml-1">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+                <!-- Create copiado de arriba
+                <button mat-raised-button matSuffix [matMenuTriggerFor]="clickHoverMenuMultiple"
+                  *ngIf="acciones && !proceso && (isEnabled || herencia)" #clickHoverMenuTrigger="matMenuTrigger"
+                  (click)="sendCreate()">
+                  <mat-icon>add_circle</mat-icon>
+                </button>
+                <mat-menu #clickHoverMenuMultiple="matMenu">
+                  <button mat-menu-item (click)="createNewDocument(item.valor)" *ngFor="let item of acciones">
+                    Crear {{ item.texto | titlecase }}
+                  </button>
+                </mat-menu>-->
+                <!-- Boton codigo QR-->
+                @if (isEnabled && readQR) {
+                  <button mat-raised-button (click)="toogleScanner()" class="ml-1">
+                    <mat-icon>camera_enhance</mat-icon>
+                  </button>
+                }
+                <!-- Boton Agregar todos-->
+                @if (isEnabled && dataProvider && dataProvider.length && !herencia) {
+                  <button mat-raised-button (click)="agregarTodos()" class="ml-1"
+                    >
+                    <mat-icon>file_upload</mat-icon>
+                  </button>
+                }
+                <!-- Boton Agregar todos-->
+                <button mat-raised-button (click)="showFilterState = !showFilterState" class="ml-1">
+                  <mat-icon>filter_alt</mat-icon>
+                </button>
               </div>
             </div>
-          </mat-card-content>
-        </mat-card>
+            @if (showFilterState) {
+              <div>
+                <input class="px-2" type="checkbox" [formControl]="fCheckActivo" /><span class="px-2">Activos</span>
+                <input class="px-2" type="checkbox" [formControl]="fCheckFinalizado" /><span class="px-2">Finalizados</span>
+                <input class="px-2" type="checkbox" [formControl]="fCheckInactivo" /><span class="px-2">Inactivo</span>
+              </div>
+            }
+            @if (labelSearch) {
+              <div class="w-full text-center">
+                <span class="text-28 font-weight-bold mat-color-primary ">{{ labelSearch }}</span>
+              </div>
+            }
+            @if (scannerEnabled) {
+              <div class="w-full">
+                <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+              </div>
+            }
+            <!-- Resultado de la busqueda -->
+            <div class="flex flex-wrap">
+              @for (iDocument of dataProvider; track iDocument) {
+                <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
+                  <mat-card class="p-0 rounded h-full">
+                    <mat-card-title class="p-1 rounded">
+                      <div class="flex items-center">
+                        <div class="w-16 p-1">
+                          <a (click)="openDialog(iDocument)"><img src="{{ iDocument.imagen | imageFormat }}" /></a>
+                        </div>
+                        <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
+                          [style.color]="getColorFont(iDocument.estadoExpediente)">
+                          <a (click)="openDialog(iDocument)">
+                            <div class="text-md">{{ iDocument.nombre }}</div>
+                          </a>
+                          @if (iDocument.descripcion) {
+                            <a (click)="openDialog(iDocument)">
+                              <div class="text-sm line-clamp-4 leading-none">
+                                {{ iDocument.descripcion }}
+                              </div>
+                            </a>
+                          }
+                        </div>
+                        @if (!herencia) {
+                          <button mat-icon-button (click)="agregarProceso(iDocument)">
+                            <mat-icon>file_upload</mat-icon>
+                          </button>
+                        }
+                      </div>
+                      <!-- <mat-divider></mat-divider> -->
+                      <div class="flex">
+                        <div class="text-sm">{{ iDocument.fecha | date }}</div>
+                        <div class="text-sm mx-1 text-right">{{ iDocument.estadoNombre }}</div>
+                      </div>
+                      @if (iDocument.dinero) {
+                        <div class="flex justify-between">
+                          @if (iDocument.dinero.valorTotal !== iDocument.dinero.saldo && 0 !== iDocument.dinero.saldo) {
+                            <div class="text-sm line-clamp-1"
+                              >
+                              {{iDocument.dinero.saldo | number}}
+                            </div>
+                          }
+                          <div>{{ iDocument.dinero.valorTotal | number }}</div>
+                        </div>
+                      }
+                    </mat-card-title>
+                    <mat-card-content class="p-1">
+                      @if (iDocument.caracteristicas && iDocument.caracteristicas.length !== 0) {
+                        <div class="w-full">
+                          @for (f of iDocument.caracteristicas; track f) {
+                            <div class="flex justify-between">
+                              <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
+                              @if (f.valorText) {
+                                <div class="text-right text-sm line-clamp-1">
+                                  {{ f.valorText }}
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                    </mat-card-content>
+                  </mat-card>
+                </div>
+              }
+              @if (!isLoadingList && !isEndList) {
+                <button mat-flat-button color="accent" (click)="listar(pagina)" tabindex="-1" class="w-full"
+                  >
+                  <mat-icon>refresh</mat-icon> Mas resultados {{ labelSearch }}
+                </button>
+              }
+            </div>
+            @if (isLoadingList) {
+              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            }
+          </div>
+        }
+        @if (!tipoMultiple && herencia) {
+          <div class="pb-1">
+            <!-- Titulo y boton buscar -->
+            <div class="text-center">
+              @if (!isLoading) {
+                <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))"
+                  class="w-full">
+                  {{ structure.nombre | titlecase }}
+                </button>
+              }
+            </div>
+          </div>
+        }
       </div>
-      <button mat-flat-button color="accent" (click)="listar(pagina)" tabindex="-1" class="w-full"
-        *ngIf="!isLoadingList && !isEndList">
-        <mat-icon>refresh</mat-icon> Mas resultados {{ labelSearch }}
-      </button>
-    </div>
-    <mat-progress-bar mode="indeterminate" *ngIf="isLoadingList"></mat-progress-bar>
-
-  </div>
-  <div *ngIf="!tipoMultiple && herencia" class="pb-1">
-    <!-- Titulo y boton buscar -->
-    <div class="text-center">
-      <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))" *ngIf="!isLoading"
-        class="w-full">
-        {{ structure.nombre | titlecase }}
-      </button>
-    </div>
-  </div>
-</div>
+    }

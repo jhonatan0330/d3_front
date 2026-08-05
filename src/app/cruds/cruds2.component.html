@@ -1,475 +1,548 @@
 <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
 
-    <mat-drawer-container class="flex-auto h-full">
+  <mat-drawer-container class="flex-auto h-full">
 
-        <!-- Drawer -->
-        <mat-drawer position="end" class="w-80 dark:bg-gray-900" [mode]="drawerMode" [(opened)]="drawerOpened" #drawer>
+    <!-- Drawer -->
+    <mat-drawer position="end" class="w-80 dark:bg-gray-900" [mode]="drawerMode" [(opened)]="drawerOpened" #drawer>
 
-            <!-- sidebar -->
-            <div class="flex flex-col flex-auto w-full">
-                <!-- Title -->
-                <div class="p-2">
-                    <!-- Botones de accion en la lista -->
-                    <div *ngIf="!isLoading" class="w-full">
-                        <button mat-icon-button color="primary" matTooltip="Listar" (click)="listar(1)" class="m-1">
-                            <mat-icon>refresh</mat-icon>
-                        </button>
-                        <button mat-icon-button [color]="viewMode === 'list-view' ? 'accent' : ''"
-                            (click)="viewMode = 'list-view'" *ngIf="plantilla">
-                            <mat-icon>format_list_bulleted</mat-icon>
-                        </button>
-                        <button mat-icon-button [color]="viewMode === 'grid-view' ? 'accent' : ''"
-                            (click)="viewMode = 'grid-view'" *ngIf="plantilla">
-                            <mat-icon>apps</mat-icon>
-                        </button>
-                        <div *ngIf="viewMode !== 'grid-view' && plantilla.reportes" class="py-1">
-                            <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="userMenuList">
-                                <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Imprimir
-                            </button>
-                            <mat-menu #userMenuList="matMenu">
-                                <button mat-menu-item *ngFor="let r of plantilla.reportes"
-                                    (click)="showReport(r, null)">
-                                    <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
-                                    <span>{{ r.nombre }}</span>
-                                </button>
-                            </mat-menu>
-                        </div>
-                        <div *ngIf="reportForms" class="py-1">
-                            <button mat-flat-button color="accent" class="w-full"
-                                [matMenuTriggerFor]="reportFormMenuList">
-                                <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Informes
-                            </button>
-                            <mat-menu #reportFormMenuList="matMenu">
-                                <button mat-menu-item *ngFor="let rf of reportForms" (click)="openDialog(rf.valor)">
-                                    <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
-                                    <span>{{ rf.texto }}</span>
-                                </button>
-                            </mat-menu>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="w-full" *ngIf="hasCreatePermission" mat-flat-button [color]="'primary'"
-                            (click)="openDialogFromTemplateModule()">
-                            <mat-icon>add</mat-icon>
-                            <span>Nuevo</span>
-                        </button>
-                        <div *ngIf="templatesFromProcess">
-                            <button *ngFor="let templateToCreate of templatesFromProcess" class="w-full my-1"
-                                mat-flat-button [color]="'primary'"
-                                (click)="openDialog(templateToCreate.llaveTabla, templateToCreate.server)">
-                                <mat-icon>add</mat-icon>
-                                <span>{{templateToCreate.nombre}}</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Buscador de texto -->
-                    <div class="text-primary text-xs uppercase font-bold py-2">Filtrar</div>
-                    <label><input id="chkCodeFull" class="mx-2" type="checkbox" [formControl]="fControlCheck" />Filtrar
-                        por codigo Exacto</label>
-                    <div>
-                        <mat-form-field>
-                            <input matInput type="text" placeholder="Coloca un texto y presiona enter"
-                                [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
-                            <button matSuffix mat-icon-button (click)="fControlSearch.setValue('')">
-                                <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
-                            </button>
+      <!-- sidebar -->
+      <div class="flex flex-col flex-auto w-full">
+        <!-- Title -->
+        <div class="p-2">
+          <!-- Botones de accion en la lista -->
+          @if (!isLoading) {
+            <div class="w-full">
+              <button mat-icon-button color="primary" matTooltip="Listar" (click)="listar(1)" class="m-1">
+                <mat-icon>refresh</mat-icon>
+              </button>
+              @if (plantilla) {
+                <button mat-icon-button [color]="viewMode === 'list-view' ? 'accent' : ''"
+                  (click)="viewMode = 'list-view'">
+                  <mat-icon>format_list_bulleted</mat-icon>
+                </button>
+              }
+              @if (plantilla) {
+                <button mat-icon-button [color]="viewMode === 'grid-view' ? 'accent' : ''"
+                  (click)="viewMode = 'grid-view'">
+                  <mat-icon>apps</mat-icon>
+                </button>
+              }
+              @if (viewMode !== 'grid-view' && plantilla.reportes) {
+                <div class="py-1">
+                  <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="userMenuList">
+                    <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Imprimir
+                  </button>
+                  <mat-menu #userMenuList="matMenu">
+                    @for (r of plantilla.reportes; track r) {
+                      <button mat-menu-item
+                        (click)="showReport(r, null)">
+                        <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
+                        <span>{{ r.nombre }}</span>
+                      </button>
+                    }
+                  </mat-menu>
+                </div>
+              }
+              @if (reportForms) {
+                <div class="py-1">
+                  <button mat-flat-button color="accent" class="w-full"
+                    [matMenuTriggerFor]="reportFormMenuList">
+                    <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Informes
+                  </button>
+                  <mat-menu #reportFormMenuList="matMenu">
+                    @for (rf of reportForms; track rf) {
+                      <button mat-menu-item (click)="openDialog(rf.valor)">
+                        <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
+                        <span>{{ rf.texto }}</span>
+                      </button>
+                    }
+                  </mat-menu>
+                </div>
+              }
+            </div>
+          }
+          <div>
+            @if (hasCreatePermission) {
+              <button class="w-full" mat-flat-button [color]="'primary'"
+                (click)="openDialogFromTemplateModule()">
+                <mat-icon>add</mat-icon>
+                <span>Nuevo</span>
+              </button>
+            }
+            @if (templatesFromProcess) {
+              <div>
+                @for (templateToCreate of templatesFromProcess; track templateToCreate) {
+                  <button class="w-full my-1"
+                    mat-flat-button [color]="'primary'"
+                    (click)="openDialog(templateToCreate.llaveTabla, templateToCreate.server)">
+                    <mat-icon>add</mat-icon>
+                    <span>{{templateToCreate.nombre}}</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+          <!-- Buscador de texto -->
+          <div class="text-primary text-xs uppercase font-bold py-2">Filtrar</div>
+          <label><input id="chkCodeFull" class="mx-2" type="checkbox" [formControl]="fControlCheck" />Filtrar
+          por codigo Exacto</label>
+          <div>
+            <mat-form-field>
+              <input matInput type="text" placeholder="Coloca un texto y presiona enter"
+                [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
+                <button matSuffix mat-icon-button (click)="fControlSearch.setValue('')">
+                  <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
+                </button>
+              </mat-form-field>
+              <button class="w-full " mat-flat-button [color]="'accent'" (click)="listar(1)">
+                <mat-icon>refresh</mat-icon>
+                <span>Listar</span>
+              </button>
+            </div>
+            @if (fControlCheck && !fControlCheck.value) {
+              <div>
+                <!-- Buscador de fecha -->
+                <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fechas </div>
+                <div>
+                  <div class="flex">
+                    <mat-form-field class="pr-2">
+                      <mat-label>Fecha Inicial</mat-label>
+                      <input matInput [matDatepicker]="pickerFrom" [formControl]="fCDateStart"
+                        (dateChange)="cambioFecha('start', '', $event)" autocomplete="off" />
+                        <mat-datepicker-toggle matSuffix [for]="pickerFrom"
+                        tabIndex="-1"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerFrom></mat-datepicker>
+                      </mat-form-field>
+                      @if (fCDateStart.value) {
+                        <mat-form-field class="w-52">
+                          <mat-label>Hora Inicial</mat-label>
+                          <input matInput type="time" [formControl]="fCTimeStart" />
                         </mat-form-field>
-                        <button class="w-full " mat-flat-button [color]="'accent'" (click)="listar(1)">
-                            <mat-icon>refresh</mat-icon>
-                            <span>Listar</span>
-                        </button>
+                      }
                     </div>
-                    <div *ngIf="fControlCheck && !fControlCheck.value">
-                        <!-- Buscador de fecha -->
-                        <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fechas </div>
-                        <div>
-                            <div class="flex">
-                                <mat-form-field class="pr-2">
-                                    <mat-label>Fecha Inicial</mat-label>
-                                    <input matInput [matDatepicker]="pickerFrom" [formControl]="fCDateStart"
-                                        (dateChange)="cambioFecha('start', '', $event)" autocomplete="off" />
-                                    <mat-datepicker-toggle matSuffix [for]="pickerFrom"
-                                        tabIndex="-1"></mat-datepicker-toggle>
-                                    <mat-datepicker #pickerFrom></mat-datepicker>
-                                </mat-form-field>
-                                <mat-form-field class="w-52" *ngIf="fCDateStart.value">
-                                    <mat-label>Hora Inicial</mat-label>
-                                    <input matInput type="time" [formControl]="fCTimeStart" />
-                                </mat-form-field>
-                            </div>
-                            <div class="flex">
-                                <mat-form-field class="pr-2">
-                                    <mat-label>Fecha Final</mat-label>
-                                    <input matInput [matDatepicker]="pickerTo" [formControl]="fCDateEnd"
-                                        (dateChange)="cambioFecha('end', '', $event)" autocomplete="off" />
-                                    <mat-datepicker-toggle matSuffix [for]="pickerTo"
-                                        tabIndex="-1"></mat-datepicker-toggle>
-                                    <mat-datepicker #pickerTo></mat-datepicker>
-                                </mat-form-field>
-                                <mat-form-field class="w-52" *ngIf="fCDateEnd.value">
-                                    <mat-label>Hora Final</mat-label>
-                                    <input matInput type="time" [formControl]="fCTimeEnd" />
-                                </mat-form-field>
-                            </div>
-                        </div>
-                        <!-- Campos dinamicos -->
-                        <div *ngIf="this.dynamicControls && this.dynamicControls.length !==0"
-                            class="text-primary text-xs uppercase font-bold py-2"> Filtros por campos </div>
-                        <div class="pt-2">
-                            <ng-template #dynamycFormElement></ng-template>
-                        </div>
-
-                        <!-- Filtro por Estados  -->
-                        <div class="py-2">
-                            <label class="text-primary text-xs uppercase font-bold px-2">
-                                <input class="mx-2 py-1" type="checkbox" [(ngModel)]="masterSelected"
-                                    (change)="toggleAll()" />Filtrar por estados
-                            </label>
-                        </div>
-                        <form [formGroup]="form">
-                            <div *ngIf="plantilla?.estados ">
-                                <div *ngFor="let _estado of plantilla.estados" class="p-0.5 w-full flex">
-                                    <label class="text-sm w-full px-2">
-                                        <input class="mx-2 py-1" type="checkbox"
-                                            [formControlName]="_estado.llaveTabla" />
-                                        {{ _estado.nombre }}
-                                    </label>
-                                    <div class="icon-size-4 border rounded"
-                                        [style.backgroundColor]="getColor(_estado.llaveTabla)"
-                                        [style.color]="getColorFont(_estado.llaveTabla)">
-                                    </div>
+                    <div class="flex">
+                      <mat-form-field class="pr-2">
+                        <mat-label>Fecha Final</mat-label>
+                        <input matInput [matDatepicker]="pickerTo" [formControl]="fCDateEnd"
+                          (dateChange)="cambioFecha('end', '', $event)" autocomplete="off" />
+                          <mat-datepicker-toggle matSuffix [for]="pickerTo"
+                          tabIndex="-1"></mat-datepicker-toggle>
+                          <mat-datepicker #pickerTo></mat-datepicker>
+                        </mat-form-field>
+                        @if (fCDateEnd.value) {
+                          <mat-form-field class="w-52">
+                            <mat-label>Hora Final</mat-label>
+                            <input matInput type="time" [formControl]="fCTimeEnd" />
+                          </mat-form-field>
+                        }
+                      </div>
+                    </div>
+                    <!-- Campos dinamicos -->
+                    @if (this.dynamicControls && this.dynamicControls.length !==0) {
+                      <div
+                      class="text-primary text-xs uppercase font-bold py-2"> Filtros por campos </div>
+                    }
+                    <div class="pt-2">
+                      <ng-template #dynamycFormElement></ng-template>
+                    </div>
+                    <!-- Filtro por Estados  -->
+                    <div class="py-2">
+                      <label class="text-primary text-xs uppercase font-bold px-2">
+                        <input class="mx-2 py-1" type="checkbox" [(ngModel)]="masterSelected"
+                          (change)="toggleAll()" />Filtrar por estados
+                        </label>
+                      </div>
+                      <form [formGroup]="form">
+                        @if (plantilla?.estados ) {
+                          <div>
+                            @for (_estado of plantilla.estados; track _estado) {
+                              <div class="p-0.5 w-full flex">
+                                <label class="text-sm w-full px-2">
+                                  <input class="mx-2 py-1" type="checkbox"
+                                    [formControlName]="_estado.llaveTabla" />
+                                    {{ _estado.nombre }}
+                                  </label>
+                                  <div class="icon-size-4 border rounded"
+                                    [style.backgroundColor]="getColor(_estado.llaveTabla)"
+                                    [style.color]="getColorFont(_estado.llaveTabla)">
+                                  </div>
                                 </div>
+                              }
                             </div>
+                          }
                         </form>
-
                         <!-- Buscador de fecha registro -->
                         <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fecha registro </div>
                         <div>
-                            <div class="flex">
-                                <mat-form-field class="pr-2">
-                                    <mat-label>Fecha Inicial</mat-label>
-                                    <input matInput [matDatepicker]="pickerFromR" [formControl]="fRegistroDateStart"
-                                        (dateChange)="cambioFecha('start', 'registro', $event)" autocomplete="off" />
-                                    <mat-datepicker-toggle matSuffix [for]="pickerFromR"
-                                        tabIndex="-1"></mat-datepicker-toggle>
-                                    <mat-datepicker #pickerFromR></mat-datepicker>
-                                </mat-form-field>
-                                <mat-form-field class="w-52">
-                                    <mat-label>Hora Inicial</mat-label>
-                                    <input matInput type="time" [formControl]="fRegistroTimeStart" />
-                                </mat-form-field>
+                          <div class="flex">
+                            <mat-form-field class="pr-2">
+                              <mat-label>Fecha Inicial</mat-label>
+                              <input matInput [matDatepicker]="pickerFromR" [formControl]="fRegistroDateStart"
+                                (dateChange)="cambioFecha('start', 'registro', $event)" autocomplete="off" />
+                                <mat-datepicker-toggle matSuffix [for]="pickerFromR"
+                                tabIndex="-1"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFromR></mat-datepicker>
+                              </mat-form-field>
+                              <mat-form-field class="w-52">
+                                <mat-label>Hora Inicial</mat-label>
+                                <input matInput type="time" [formControl]="fRegistroTimeStart" />
+                              </mat-form-field>
                             </div>
                             <div class="flex">
-                                <mat-form-field class="pr-2">
-                                    <mat-label>Fecha Final</mat-label>
-                                    <input matInput [matDatepicker]="pickerToR" [formControl]="fRegistroDateEnd"
-                                        (dateChange)="cambioFecha('end', 'registro', $event)" autocomplete="off" />
-                                    <mat-datepicker-toggle matSuffix [for]="pickerToR"
-                                        tabIndex="-1"></mat-datepicker-toggle>
-                                    <mat-datepicker #pickerToR></mat-datepicker>
+                              <mat-form-field class="pr-2">
+                                <mat-label>Fecha Final</mat-label>
+                                <input matInput [matDatepicker]="pickerToR" [formControl]="fRegistroDateEnd"
+                                  (dateChange)="cambioFecha('end', 'registro', $event)" autocomplete="off" />
+                                  <mat-datepicker-toggle matSuffix [for]="pickerToR"
+                                  tabIndex="-1"></mat-datepicker-toggle>
+                                  <mat-datepicker #pickerToR></mat-datepicker>
                                 </mat-form-field>
                                 <mat-form-field class="w-52">
-                                    <mat-label>Hora Final</mat-label>
-                                    <input matInput type="time" [formControl]="fRegistroTimeEnd" />
+                                  <mat-label>Hora Final</mat-label>
+                                  <input matInput type="time" [formControl]="fRegistroTimeEnd" />
                                 </mat-form-field>
+                              </div>
                             </div>
-                        </div>
-
-                        <!-- Informes Modulo -->
-                        <div class="text-primary text-xs uppercase font-bold py-2"> Informes </div>
-                        <div class="w-full  p-1" *ngFor="let template of filteredReports">
-
-                        </div>
+                            <!-- Informes Modulo -->
+                            <div class="text-primary text-xs uppercase font-bold py-2"> Informes </div>
+                            @for (template of filteredReports; track template) {
+                              <div class="w-full  p-1">
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
                     </div>
-                </div>
-            </div>
-        </mat-drawer>
+                  </mat-drawer>
 
-        <!-- Drawer content -->
-        <mat-drawer-content class="flex flex-col">
-            <!-- Main -->
-            <div class="flex-auto">
-                <div class="flex flex-col flex-auto min-w-0">
-                    <!-- Header -->
-                    <div
-                        class="flex flex-row flex-0 sm:items-center sm:justify-between p-3 sm:py-4 sm:px-5 border-b bg-card dark:bg-transparent">
-                        <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}"  (click)="openDiagram()"/>
-                        <div class="flex-1 min-w-0">
+                  <!-- Drawer content -->
+                  <mat-drawer-content class="flex flex-col">
+                    <!-- Main -->
+                    <div class="flex-auto">
+                      <div class="flex flex-col flex-auto min-w-0">
+                        <!-- Header -->
+                        <div
+                          class="flex flex-row flex-0 sm:items-center sm:justify-between p-3 sm:py-4 sm:px-5 border-b bg-card dark:bg-transparent">
+                          <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}"  (click)="openDiagram()"/>
+                          <div class="flex-1 min-w-0">
                             <!-- Title -->
                             <div class="mt-2">
-                                <h2
-                                    class="text-xl md:text-2xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
-                                    {{ plantilla?.nombre }}
-                                </h2>
+                              <h2
+                                class="text-xl md:text-2xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
+                                {{ plantilla?.nombre }}
+                              </h2>
                             </div>
-                        </div>
-                        <button mat-icon-button matTooltip="Listar" *ngIf="!drawerOpened" (click)="listar(1)"
-                            class="m-1">
-                            <mat-icon>refresh</mat-icon>
-                        </button>
-                        <button mat-icon-button matTooltip="Crear" (click)="openDialogFromTemplateModule()"
-                            *ngIf="!drawerOpened && hasCreatePermission" class="m-1">
-                            <mat-icon>add</mat-icon>
-                        </button>
-                        <button mat-icon-button class="m-1" (click)="toggleDrawer()">
+                          </div>
+                          @if (!drawerOpened) {
+                            <button mat-icon-button matTooltip="Listar" (click)="listar(1)"
+                              class="m-1">
+                              <mat-icon>refresh</mat-icon>
+                            </button>
+                          }
+                          @if (!drawerOpened && hasCreatePermission) {
+                            <button mat-icon-button matTooltip="Crear" (click)="openDialogFromTemplateModule()"
+                              class="m-1">
+                              <mat-icon>add</mat-icon>
+                            </button>
+                          }
+                          <button mat-icon-button class="m-1" (click)="toggleDrawer()">
                             <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-                        </button>
-                    </div>
-                    <!-- Vista modo grilla -->
-                    <div class="flex flex-wrap p-1 w-full" *ngIf="viewMode === 'grid-view'">
-                        <div *ngFor="let iDocument of dataProvider" class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
-                            <div class="p-0 rounded shadow-sm h-full border-b bg-card dark:bg-transparent">
-                                <!-- Title-->
-                                <div class="p-1 rounded-t"
+                          </button>
+                        </div>
+                        <!-- Vista modo grilla -->
+                        @if (viewMode === 'grid-view') {
+                          <div class="flex flex-wrap p-1 w-full">
+                            @for (iDocument of dataProvider; track iDocument) {
+                              <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
+                                <div class="p-0 rounded shadow-sm h-full border-b bg-card dark:bg-transparent">
+                                  <!-- Title-->
+                                  <div class="p-1 rounded-t"
                                     [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
                                     [style.color]="getColorFont(iDocument.estadoExpediente)">
                                     <div class="flex items-center ">
-                                        <div class="w-16 p-1">
-                                            <a (click)="openDocument(iDocument)"><img
-                                                    src="{{ iDocument.imagen | imageFormat }}" /></a>
-                                        </div>
-                                        <div class="w-full p-1 rounded leading-tight font-semibold">
-                                            <a (click)="openDocument(iDocument)">
-                                                <div class="text-md">{{ iDocument.nombre }}</div>
-                                            </a>
-                                            <a (click)="openDocument(iDocument)" *ngIf="iDocument.descripcion">
-                                                <div class="text-sm line-clamp-4">{{iDocument.descripcion }}
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <div *ngIf="plantilla.reportes && plantilla.reportes.length!==0">
+                                      <div class="w-16 p-1">
+                                        <a (click)="openDocument(iDocument)"><img
+                                        src="{{ iDocument.imagen | imageFormat }}" /></a>
+                                      </div>
+                                      <div class="w-full p-1 rounded leading-tight font-semibold">
+                                        <a (click)="openDocument(iDocument)">
+                                          <div class="text-md">{{ iDocument.nombre }}</div>
+                                        </a>
+                                        @if (iDocument.descripcion) {
+                                          <a (click)="openDocument(iDocument)">
+                                            <div class="text-sm line-clamp-4">{{iDocument.descripcion }}
+                                            </div>
+                                          </a>
+                                        }
+                                      </div>
+                                      @if (plantilla.reportes && plantilla.reportes.length!==0) {
+                                        <div>
+                                          @if (iDocument.llaveTabla) {
                                             <button mat-icon-button [matMenuTriggerFor]="userMenu"
-                                                *ngIf="iDocument.llaveTabla">
-                                                <mat-icon>more_vert</mat-icon>
+                                              >
+                                              <mat-icon>more_vert</mat-icon>
                                             </button>
-                                            <mat-menu #userMenu="matMenu">
-                                                <button mat-menu-item *ngFor="let r of plantilla.reportes"
-                                                    (click)="showReport(r, iDocument)">
-                                                    <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
-                                                    <span>{{ r.nombre }}</span>
-                                                </button>
-                                            </mat-menu>
+                                          }
+                                          <mat-menu #userMenu="matMenu">
+                                            @for (r of plantilla.reportes; track r) {
+                                              <button mat-menu-item
+                                                (click)="showReport(r, iDocument)">
+                                                <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
+                                                <span>{{ r.nombre }}</span>
+                                              </button>
+                                            }
+                                          </mat-menu>
                                         </div>
+                                      }
                                     </div>
                                     <!-- <mat-divider></mat-divider> -->
                                     <div class="flex flex-row">
-                                        <div class="text-xs">{{ iDocument.fecha | date }}</div>
-                                        <div class="text-xs font-semibold mx-1">{{ iDocument.estadoNombre }}</div>
+                                      <div class="text-xs">{{ iDocument.fecha | date }}</div>
+                                      <div class="text-xs font-semibold mx-1">{{ iDocument.estadoNombre }}</div>
                                     </div>
-                                    <div class="flex justify-between" *ngIf="iDocument.dinero">
+                                    @if (iDocument.dinero) {
+                                      <div class="flex justify-between">
                                         <div class="text-sm line-clamp-1">{{ iDocument.dinero.valorCampo | currency }}
                                         </div>
                                         <div>{{ iDocument.dinero.valorTotal | currency }}</div>
-                                    </div>
-                                </div>
-                                <!-- Content-->
-                                <div class="p-1"
-                                    *ngIf="iDocument.caracteristicas && iDocument.caracteristicas.length !== 0">
-                                    <div class="flex items-center" *ngFor="let f of iDocument.caracteristicas" >
-                                        <small [id]="'css' + plantilla.codigo+  f.campoDTO.codigo + '-0'"
+                                      </div>
+                                    }
+                                  </div>
+                                  <!-- Content-->
+                                  @if (iDocument.caracteristicas && iDocument.caracteristicas.length !== 0) {
+                                    <div class="p-1"
+                                      >
+                                      @for (f of iDocument.caracteristicas; track f) {
+                                        <div class="flex items-center" >
+                                          <small [id]="'css' + plantilla.codigo+  f.campoDTO.codigo + '-0'"
                                             class="whitespace-nowrap font-extralight mr-2">{{ f.campoDTO.nombre
-                                            }}</small>
-                                        <div [id]="'css' + plantilla.codigo + f.campoDTO.codigo +'-1'"
-                                            class="text-right w-full truncate text-md" *ngIf="f.valorText">
-                                            <div class="line-clamp-1" 
-                                                [class.font-bold]="f.estado === 'C'"
-                                                *ngIf="!f.valorText.startsWith('http')">
+                                          }}</small>
+                                          @if (f.valorText) {
+                                            <div [id]="'css' + plantilla.codigo + f.campoDTO.codigo +'-1'"
+                                              class="text-right w-full truncate text-md">
+                                              @if (!f.valorText.startsWith('http')) {
+                                                <div class="line-clamp-1"
+                                                  [class.font-bold]="f.estado === 'C'"
+                                                  >
                                                 {{f.valorText}}</div>
-                                            <img *ngIf="f.valorText.startsWith('http')" [src]="f.valorText"
-                                                [name]="f.valorText" />
+                                              }
+                                              @if (f.valorText.startsWith('http')) {
+                                                <img [src]="f.valorText"
+                                                  [name]="f.valorText" />
+                                              }
+                                            </div>
+                                          }
                                         </div>
+                                      }
                                     </div>
+                                  }
                                 </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Vista modo tabla -->
-                    <table mat-table [dataSource]="dataProvider" class="mat-elevation-z8 full-width"
-                        *ngIf="viewMode !== 'grid-view'">
-                        <ng-container matColumnDef="select">
-                            <th mat-header-cell *matHeaderCellDef>
+                              </div>
+                            }
+                          </div>
+                        }
+                        <!-- Vista modo tabla -->
+                        @if (viewMode !== 'grid-view') {
+                          <table mat-table [dataSource]="dataProvider" class="mat-elevation-z8 full-width"
+                            >
+                            <ng-container matColumnDef="select">
+                              <th mat-header-cell *matHeaderCellDef>
                                 <input type="checkbox" (change)="$event ? masterToggle() : null"
-                                    [checked]="selection.hasValue() && isAllSelected()"
-                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
-                                    [aria-label]="checkboxLabel()" />
-                            </th>
-                            <td mat-cell *matCellDef="let row">
-                                <input type="checkbox" (click)="$event.stopPropagation();multipleSelect($event,row)"
+                                  [checked]="selection.hasValue() && isAllSelected()"
+                                  [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                  [aria-label]="checkboxLabel()" />
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                  <input type="checkbox" (click)="$event.stopPropagation();multipleSelect($event,row)"
                                     (change)="$event ? selection.toggle(row) : null"
                                     [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)" />
-                            </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="nombre">
-                            <th mat-header-cell *matHeaderCellDef>CODIGO</th>
-                            <td mat-cell *matCellDef="let element">
-                                <a (click)="$event.stopPropagation();openDocument(element)">
-                                    <mat-icon class="ml-1" inline="true">open_in_new</mat-icon>
-                                    <span class="mat-caption">{{ element.nombre }}</span>
-                                </a>
-                            </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="descripcion">
-                            <th mat-header-cell *matHeaderCellDef>NOMBRE</th>
-                            <td mat-cell *matCellDef="let element">
-                                <small>{{ element.descripcion }}</small>
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="valor">
-                            <th mat-header-cell *matHeaderCellDef>VALOR</th>
-                            <td mat-cell *matCellDef="let element">
-                                <div class="card-title-text" *ngIf="element.dinero">
-                                    <span class="pr-1">{{ element.dinero.valorTotal | currency }}</span>
-                                </div>
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="fecha">
-                            <th mat-header-cell *matHeaderCellDef>FECHA</th>
-                            <td mat-cell *matCellDef="let element">
-                                <small>{{ element.fecha | date }}</small>
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="estadoExpediente">
-                            <th mat-header-cell *matHeaderCellDef>ESTADO</th>
-                            <td mat-cell *matCellDef="let element">
-                                <small>{{ element.estadoNombre }}</small>
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="acciones">
-                            <th mat-header-cell *matHeaderCellDef>:</th>
-                            <td mat-cell *matCellDef="let element">
-                                <div *ngIf="plantilla && plantilla.reportes">
-                                    <button mat-icon-button [matMenuTriggerFor]="userMenu"
-                                        (click)="$event.stopPropagation()">
-                                        <mat-icon>more_vert</mat-icon>
-                                    </button>
-                                    <mat-menu #userMenu="matMenu">
-                                        <button mat-menu-item *ngFor="let r of plantilla.reportes"
-                                            (click)="showReport(r, element)">
-                                            <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
-                                            <span>{{ r.nombre }}</span>
+                                  </td>
+                                </ng-container>
+                                <ng-container matColumnDef="nombre">
+                                  <th mat-header-cell *matHeaderCellDef>CODIGO</th>
+                                  <td mat-cell *matCellDef="let element">
+                                    <a (click)="$event.stopPropagation();openDocument(element)">
+                                      <mat-icon class="ml-1" inline="true">open_in_new</mat-icon>
+                                      <span class="mat-caption">{{ element.nombre }}</span>
+                                    </a>
+                                  </td>
+                                </ng-container>
+                                <ng-container matColumnDef="descripcion">
+                                  <th mat-header-cell *matHeaderCellDef>NOMBRE</th>
+                                  <td mat-cell *matCellDef="let element">
+                                    <small>{{ element.descripcion }}</small>
+                                  </td>
+                                </ng-container>
+                                <ng-container matColumnDef="valor">
+                                  <th mat-header-cell *matHeaderCellDef>VALOR</th>
+                                  <td mat-cell *matCellDef="let element">
+                                    @if (element.dinero) {
+                                      <div class="card-title-text">
+                                        <span class="pr-1">{{ element.dinero.valorTotal | currency }}</span>
+                                      </div>
+                                    }
+                                  </td>
+                                </ng-container>
+                                <ng-container matColumnDef="fecha">
+                                  <th mat-header-cell *matHeaderCellDef>FECHA</th>
+                                  <td mat-cell *matCellDef="let element">
+                                    <small>{{ element.fecha | date }}</small>
+                                  </td>
+                                </ng-container>
+                                <ng-container matColumnDef="estadoExpediente">
+                                  <th mat-header-cell *matHeaderCellDef>ESTADO</th>
+                                  <td mat-cell *matCellDef="let element">
+                                    <small>{{ element.estadoNombre }}</small>
+                                  </td>
+                                </ng-container>
+                                <ng-container matColumnDef="acciones">
+                                  <th mat-header-cell *matHeaderCellDef>:</th>
+                                  <td mat-cell *matCellDef="let element">
+                                    @if (plantilla && plantilla.reportes) {
+                                      <div>
+                                        <button mat-icon-button [matMenuTriggerFor]="userMenu"
+                                          (click)="$event.stopPropagation()">
+                                          <mat-icon>more_vert</mat-icon>
                                         </button>
-                                    </mat-menu>
-                                </div>
-                            </td>
-                        </ng-container>
-                        <ng-container matColumnDef="detalles">
-                            <th mat-header-cell *matHeaderCellDef>DETALLES</th>
-                            <td mat-cell *matCellDef="let element">
-                                <div class="w-full"
-                                    *ngIf="element.caracteristicas && element.caracteristicas.length !== 0">
-                                    <div class="w-full flex justify-between text-sm"
-                                        *ngFor="let f of element.caracteristicas">
-                                        <div>{{ f.campoDTO.nombre }}</div>
-                                        <div class="w-full text-right pl-2 line-clamp-1">{{ f.valorText }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                        </ng-container>
+                                        <mat-menu #userMenu="matMenu">
+                                          @for (r of plantilla.reportes; track r) {
+                                            <button mat-menu-item
+                                              (click)="showReport(r, element)">
+                                              <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
+                                              <span>{{ r.nombre }}</span>
+                                            </button>
+                                          }
+                                        </mat-menu>
+                                      </div>
+                                    }
+                                  </td>
+                                </ng-container>
+                                <ng-container matColumnDef="detalles">
+                                  <th mat-header-cell *matHeaderCellDef>DETALLES</th>
+                                  <td mat-cell *matCellDef="let element">
+                                    @if (element.caracteristicas && element.caracteristicas.length !== 0) {
+                                      <div class="w-full"
+                                        >
+                                        @for (f of element.caracteristicas; track f) {
+                                          <div class="w-full flex justify-between text-sm"
+                                            >
+                                            <div>{{ f.campoDTO.nombre }}</div>
+                                            <div class="w-full text-right pl-2 line-clamp-1">{{ f.valorText }}</div>
+                                          </div>
+                                        }
+                                      </div>
+                                    }
+                                  </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns"
+                                (click)="multipleSelect($event, row)"></tr>
+                              </table>
+                            }
 
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns"
-                            (click)="multipleSelect($event, row)"></tr>
-                    </table>
-
-                    <!-- Star View-->
-                    <div class="my-48 flex flex-col flex-auto overflow-y-auto lg:overflow-hidden dark:bg-default"
-                        *ngIf="!isLoading && !isEnd && dataProvider?.length === 0">
-                        <div
-                            class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
-                            <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}" />
-                            <a href="#">
-                                <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{
+                            <!-- Star View-->
+                            @if (!isLoading && !isEnd && dataProvider?.length === 0) {
+                              <div class="my-48 flex flex-col flex-auto overflow-y-auto lg:overflow-hidden dark:bg-default"
+                                >
+                                <div
+                                  class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
+                                  <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}" />
+                                  <a href="#">
+                                    <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{
                                     plantilla?.nombre }}</h5>
-                            </a>
-                            <p>{{ plantilla?.objetivo }}</p>
-                            <br>
-                            <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Para encontrar lo que
-                                necesitas, simplemente utiliza los filtros.
-                                <button class="icon-size-4" mat-icon-button (click)="toggleDrawer()">
-                                    <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-                                </button>
-                            </p>
+                                  </a>
+                                  <p>{{ plantilla?.objetivo }}</p>
+                                  <br>
+                                    <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Para encontrar lo que
+                                      necesitas, simplemente utiliza los filtros.
+                                      <button class="icon-size-4" mat-icon-button (click)="toggleDrawer()">
+                                        <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                                      </button>
+                                    </p>
+                                    <button mat-flat-button style="width: 100%;"
+                                      class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      tabindex="-1" (click)="listar(pagina)">
+                                      Buscar
+                                    </button>
+                                  </div>
+                                </div>
+                              }
 
-                            <button mat-flat-button style="width: 100%;"
-                                class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                tabindex="-1" (click)="listar(pagina)">
-                                Buscar
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="m-auto my-48 flex flex-col items-center justify-center"
-                        *ngIf="isEnd && dataProvider?.length === 0">
-                        <div
-                            class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
-                            <!-- <mat-icon class="icon-size-24 m-auto" [svgIcon]="'description'"></mat-icon> -->
-                            <img mat-card-image class="icon-size-24" [src]="'assets/images/noData.png'">
-
-                            <p>No se han encontrado resultados</p>
-                            <br>
-                            <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Lo sentimos. no encontramos
-                                ningun resultado para su búsqueda,
-                                puedes usar los filtros para mejorar tu busqueda.
-                                <button class="icon-size-4" mat-icon-button (click)="toggleDrawer()">
-                                    <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-                                </button>
-                            </p>
-
-                            <button mat-flat-button style="width: 100%;"
-                                class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                tabindex="-1" (click)="listar(pagina)">
-                                Buscar
-                            </button>
-                        </div>
-                    </div>
+                              @if (isEnd && dataProvider?.length === 0) {
+                                <div class="m-auto my-48 flex flex-col items-center justify-center"
+                                  >
+                                  <div
+                                    class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
+                                    <!-- <mat-icon class="icon-size-24 m-auto" [svgIcon]="'description'"></mat-icon> -->
+                                    <img mat-card-image class="icon-size-24" [src]="'assets/images/noData.png'">
+                                    <p>No se han encontrado resultados</p>
+                                    <br>
+                                      <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Lo sentimos. no encontramos
+                                        ningun resultado para su búsqueda,
+                                        puedes usar los filtros para mejorar tu busqueda.
+                                        <button class="icon-size-4" mat-icon-button (click)="toggleDrawer()">
+                                          <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                                        </button>
+                                      </p>
+                                      <button mat-flat-button style="width: 100%;"
+                                        class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        tabindex="-1" (click)="listar(pagina)">
+                                        Buscar
+                                      </button>
+                                    </div>
+                                  </div>
+                                }
 
 
-                </div>
-                <div class="w-full px-4 py-3 bg-white border-t border-gray-200 shadow-md sm:px-6">
-                    <!-- Paginador -->
-                    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-                    <div class="flex justify-between w-full items-center" *ngIf="!isLoading">
-                        <div class=" flex items-center flex-col">
-                            <div *ngIf="viewMode !== 'grid-view'">Seleccionados : {{ this.selection?.selected.length }}
+                              </div>
+                              <div class="w-full px-4 py-3 bg-white border-t border-gray-200 shadow-md sm:px-6">
+                                <!-- Paginador -->
+                                @if (isLoading) {
+                                  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                                }
+                                @if (!isLoading) {
+                                  <div class="flex justify-between w-full items-center">
+                                    <div class=" flex items-center flex-col">
+                                      @if (viewMode !== 'grid-view') {
+                                        <div>Seleccionados : {{ this.selection?.selected.length }}
+                                        </div>
+                                      }
+                                      <div class="flex items-center">
+                                        <button mat-icon-button (click)="toggleDrawer()">
+                                          <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                                        </button>
+                                        <span class="font-medium dark:text-white">Total :</span> {{
+                                        dataProvider?.length }}
+                                      </div>
+                                    </div>
+                                    <form class="w-20">
+                                      <select [formControl]="pageControl" required
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option value="30">30</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                      </select>
+                                    </form>
+                                    @if (!isLoading && !isEnd) {
+                                      <button mat-raise-button tabindex="-1" (click)="listar(pagina)"
+                                        class="relative inline-flex items-center px-2 py-2 text-sm 5xl:text-xl   font-medium text-gray-700 bg-white border border-gray-300 rounded-md sm:rounded-none hover:bg-gray-50 sm:rounded-r-md"
+                                        data-id="pagination-next">Presiona aquí para buscar mas resultados<svg stroke="currentColor"
+                                        fill="currentColor" stroke-width="0" viewBox="0 0 20 20" class="w-5 h-5"
+                                        height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd"></path>
+                                      </svg></button>
+                                    }
+                                  </div>
+                                }
+                              </div>
+
                             </div>
-                            <div class="flex items-center">
-                                <button mat-icon-button (click)="toggleDrawer()">
-                                    <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-                                </button>
-                                <span class="font-medium dark:text-white">Total :</span> {{
-                                dataProvider?.length }}
-                            </div>
-                        </div>
 
-                        <form class="w-20">
-                            <select [formControl]="pageControl" required
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="30">30</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                        </form>
-
-                        <button mat-raise-button tabindex="-1" (click)="listar(pagina)" *ngIf="!isLoading && !isEnd"
-                            class="relative inline-flex items-center px-2 py-2 text-sm 5xl:text-xl   font-medium text-gray-700 bg-white border border-gray-300 rounded-md sm:rounded-none hover:bg-gray-50 sm:rounded-r-md"
-                            data-id="pagination-next">Presiona aquí para buscar mas resultados<svg stroke="currentColor"
-                                fill="currentColor" stroke-width="0" viewBox="0 0 20 20" class="w-5 h-5"
-                                height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                    clip-rule="evenodd"></path>
-                            </svg></button>
-                    </div>
-                </div>
-
-            </div>
-
-        </mat-drawer-content>
+                          </mat-drawer-content>
 
 
-    </mat-drawer-container>
+                        </mat-drawer-container>
 
-</div>
+                      </div>
