@@ -13,7 +13,6 @@ import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { DenseLayoutComponent } from 'app/layout/layouts/vertical/dense/dense.component';
-import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
@@ -34,7 +33,6 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         ShortcutsModule,
         UserModule,
         SharedModule,
-        QuickChatModule,
         HomeButtonModule
     ],
     exports     : [

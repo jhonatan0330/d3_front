@@ -32,7 +32,6 @@ import { ChangePictureComponent } from './authentication/settings/change-picture
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { SettingsSecurityComponent } from './authentication/settings/security/security.component';
-import { IndicatorsComponent } from './indicators/indicatorsPag/indicators.component';
 
 
 const routerConfig: ExtraOptions = {
@@ -85,8 +84,7 @@ const routerConfig: ExtraOptions = {
     MatIconModule,
     MatInputModule,
     MatMenuModule,
-    MatButtonModule,
-    IndicatorsComponent   
+    MatButtonModule,  
   ],
   providers: [
     { provide: ErrorHandler, useClass: ErrorHandlerService },

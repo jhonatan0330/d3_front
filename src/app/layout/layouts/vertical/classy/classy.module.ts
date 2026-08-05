@@ -13,12 +13,13 @@ import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
 import { UserModule } from 'app/layout/common/user/user.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { ClassyLayoutComponent } from 'app/layout/layouts/vertical/classy/classy.component';
-import { QuickChatModule } from 'app/layout/common/quick-chat/quick-chat.module';
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
+import { SearchPopButtonComponent } from 'app/layout/common/search-pop/search-pop.component';
 
 @NgModule({
     declarations: [
-        ClassyLayoutComponent
+        ClassyLayoutComponent,
+        SearchPopButtonComponent
     ],
     imports     : [
         HttpClientModule,
@@ -33,7 +34,6 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         SearchModule,
         ShortcutsModule,
         UserModule,
-        QuickChatModule,
         SharedModule,
         HomeButtonModule
     ],

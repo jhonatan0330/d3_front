@@ -168,12 +168,4 @@ export class FieldComponent implements OnInit {
         });
     }
 
-    openHelpProp(prop: any): void {
-        if (!prop) return;
-        const key = ( prop.propiedadValor ?? '').toString();
-        if (!key) return;
-        const url = `https://softwareparati.com/ave/${encodeURIComponent(key)}.html`;
-        window.open(url, '_blank');
-    }
-
 }
