@@ -169,7 +169,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
      * @private
      */
     @HostListener('mouseenter')
-    private _onMouseenter(): void {
+    onMouseenter(): void {
         // Enable the animations
         this._enableAnimations();
 
@@ -183,7 +183,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
      * @private
      */
     @HostListener('mouseleave')
-    private _onMouseleave(): void {
+    onMouseleave(): void {
         // Enable the animations
         this._enableAnimations();
 

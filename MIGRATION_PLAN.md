@@ -162,7 +162,10 @@ ng update @angular/core@22 @angular/cli@22
 
 ### 4.2 Cambios Angular 21
 - **Zoneless es default solo para proyectos NUEVOS**; esta app usa zone.js y **se mantiene zone.js durante toda la migración** (totalmente soportado). Migración a zoneless = Fase 5, decisión explícita y opcional.
-- `afterRender()` → `afterEveryRender()` (verificar en @fuse y app code)
+- `afterRender()` → `afterEveryRender()` (verificar en @fuse y app code) — no se usa `afterRender` en el código, no aplica
+- **[x] Ejecutado**: `ng update @angular/core@21 @angular/cli@21` + `ng update @angular/material@21 @angular/cdk@21` → core/cli 21.2.x, material/cdk 21.x, control-flow migration automática (68 archivos HTML/TS)
+- **[x] Breaking fix**: `MATERIAL_SANITY_CHECKS` eliminado de Material 21 → removido el provider de `src/@fuse/fuse.module.ts`
+- **[x] Breaking fix**: `@HostListener` con métodos `private` ya no compila en 21 → `_onMouseenter`/`_onMouseleave` pasan a `onMouseenter`/`onMouseleave` públicos en `vertical.component.ts`
 
 ### 4.3 Cambios Angular 22
 - Signal forms estables
