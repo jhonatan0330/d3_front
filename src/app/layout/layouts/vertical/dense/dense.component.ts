@@ -12,7 +12,8 @@ import { SafeHtml } from '@angular/platform-browser';
 @Component({
     selector: 'dense-layout',
     templateUrl: './dense.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class DenseLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;

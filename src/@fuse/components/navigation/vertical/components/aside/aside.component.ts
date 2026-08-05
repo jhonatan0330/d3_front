@@ -5,11 +5,13 @@ import { filter, Subject, takeUntil } from 'rxjs';
 import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/vertical/vertical.component';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
+import { FuseUtilsService } from '@fuse/services/utils';
 
 @Component({
-    selector       : 'fuse-vertical-navigation-aside-item',
-    templateUrl    : './aside.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'fuse-vertical-navigation-aside-item',
+    templateUrl: './aside.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class FuseVerticalNavigationAsideItemComponent implements OnChanges, OnInit, OnDestroy
 {
@@ -34,7 +36,8 @@ export class FuseVerticalNavigationAsideItemComponent implements OnChanges, OnIn
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
-        private _fuseNavigationService: FuseNavigationService
+        private _fuseNavigationService: FuseNavigationService,
+        private _fuseUtilsService: FuseUtilsService
     )
     {
     }
@@ -154,7 +157,9 @@ export class FuseVerticalNavigationAsideItemComponent implements OnChanges, OnIn
             }
 
             // Check if the child has a link and is active
-            if ( child.link && this._router.isActive(child.link, child.exactMatch || false) )
+            if ( child.link && this._router.isActive(child.link, child.exactMatch
+                ? this._fuseUtilsService.exactMatchOptions
+                : this._fuseUtilsService.subsetMatchOptions) )
             {
                 return true;
             }

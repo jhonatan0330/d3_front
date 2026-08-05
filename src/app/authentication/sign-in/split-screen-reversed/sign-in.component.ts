@@ -18,7 +18,8 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'sign-in-split-screen-reversed',
-    templateUrl: './sign-in.component.html'
+    templateUrl: './sign-in.component.html',
+    standalone: false
 })
 export class SignInSplitScreenReversedComponent implements OnInit {
 

@@ -21,8 +21,9 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { TarifaDTO } from 'app/modules/full/neuron/model/tariff.domain';
 
 @Component({
-  selector: 'form-control-product',
-  templateUrl: './product.component.html'
+    selector: 'form-control-product',
+    templateUrl: './product.component.html',
+    standalone: false
 })
 export class ProductComponent implements OnInit, AfterViewInit {
 

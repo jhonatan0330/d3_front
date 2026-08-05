@@ -13,7 +13,8 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
     templateUrl: './shortcuts.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs: 'shortcuts'
+    exportAs: 'shortcuts',
+    standalone: false
 })
 export class ShortcutsComponent implements OnInit, OnDestroy {
     @ViewChild('shortcutsOrigin') private _shortcutsOrigin: MatButton;

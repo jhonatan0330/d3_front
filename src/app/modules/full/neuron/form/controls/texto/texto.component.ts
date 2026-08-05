@@ -7,9 +7,10 @@ import { BarcodeFormat } from '@zxing/library';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-texto',
-  templateUrl: './texto.component.html',
-  styleUrls: ['./texto.component.scss'],
+    selector: 'app-texto',
+    templateUrl: './texto.component.html',
+    styleUrls: ['./texto.component.scss'],
+    standalone: false
 })
 export class TextoComponent extends BaseComponent implements OnInit {
   textoLargo = false;

@@ -26,8 +26,9 @@ interface RenderItem {
 }
 
 @Component({
-  selector: 'app-croquis',
-  templateUrl: './croquis.component.html',
+    selector: 'app-croquis',
+    templateUrl: './croquis.component.html',
+    standalone: false
 })
 export class CroquisComponent extends BaseComponent
   implements OnInit, AfterViewInit, OnDestroy {

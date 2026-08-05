@@ -11,8 +11,9 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { formatNumber } from '@angular/common';
 
 @Component({
-  selector: 'app-numero',
-  templateUrl: './numero.component.html'
+    selector: 'app-numero',
+    templateUrl: './numero.component.html',
+    standalone: false
 })
 export class NumeroComponent extends BaseComponent implements OnInit {
 

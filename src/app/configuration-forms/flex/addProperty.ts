@@ -11,10 +11,9 @@ import { ApiErrorResponse } from 'app/modules/full/neuron/model/sw42.utils';
 
 
 @Component({
-    standalone: true,
     selector: 'app-property-form',
     templateUrl: './addProperty.html',
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule]
 })
 export class AddPropertyComponent {
     cargando = false;

@@ -20,8 +20,9 @@ export const DEFAULT_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAA
 export const DEFAULT_TEXT = '';
 
 @Component({
-  selector: 'app-ol-map',
-  templateUrl: './ol-map.component.html'
+    selector: 'app-ol-map',
+    templateUrl: './ol-map.component.html',
+    standalone: false
 })
 export class OlMapComponent implements OnInit, AfterViewInit {
 

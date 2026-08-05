@@ -6,8 +6,9 @@ import { UtilsService } from '../../../service/utils.service';
 import { ApiService } from '../../../service/api.service';
 
 @Component({
-  selector: 'app-informative',
-  templateUrl: './informative.component.html'
+    selector: 'app-informative',
+    templateUrl: './informative.component.html',
+    standalone: false
 })
 export class InformativeComponent extends BaseComponent implements OnInit {
 

@@ -16,7 +16,8 @@ import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
     styleUrls: ['./vertical.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs: 'fuseVerticalNavigation'
+    exportAs: 'fuseVerticalNavigation',
+    standalone: false
 })
 export class FuseVerticalNavigationComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
     /* eslint-disable @typescript-eslint/naming-convention */

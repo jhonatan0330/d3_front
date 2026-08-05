@@ -12,7 +12,8 @@ import { SafeHtml } from '@angular/platform-browser';
 @Component({
     selector: 'thin-layout',
     templateUrl: './thin.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ThinLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;

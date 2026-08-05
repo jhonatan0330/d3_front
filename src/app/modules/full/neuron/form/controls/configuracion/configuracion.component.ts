@@ -13,8 +13,9 @@ import { BaseComponent } from '../base/base.component';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({
-  selector: 'app-configuracion',
-  templateUrl: './configuracion.component.html'
+    selector: 'app-configuracion',
+    templateUrl: './configuracion.component.html',
+    standalone: false
 })
 export class ConfiguracionComponent extends BaseComponent implements OnInit {
   fControl: FormControl = new FormControl();

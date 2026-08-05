@@ -7,8 +7,9 @@ import { ApiService } from '../../../service/api.service';
 import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from '../../../model/sw42.domain';
 
 @Component({
-  selector: 'app-gps-map',
-  templateUrl: './gps-map.component.html'
+    selector: 'app-gps-map',
+    templateUrl: './gps-map.component.html',
+    standalone: false
 })
 export class GpsMapComponent extends BaseComponent implements OnInit {
 

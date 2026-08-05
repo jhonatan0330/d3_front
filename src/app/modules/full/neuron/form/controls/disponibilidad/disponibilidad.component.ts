@@ -14,8 +14,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
 
 @Component({
-  selector: 'app-disponibilidad',
-  templateUrl: './disponibilidad.component.html'
+    selector: 'app-disponibilidad',
+    templateUrl: './disponibilidad.component.html',
+    standalone: false
 })
 export class DisponibilidadComponent extends BaseComponent implements OnInit {
   @ViewChild('canvas', { static: true }) myCanvas: ElementRef<HTMLCanvasElement>;

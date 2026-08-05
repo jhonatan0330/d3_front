@@ -8,8 +8,9 @@ import { BaseComponent } from '../base/base.component';
 import { PedidoVentaCaracteristicaFilterDTO, ProductoDTO, UsuarioRolProductoDTO } from '../../../model/sw42.domain';
 
 @Component({
-  selector: 'app-producto-lista',
-  templateUrl: './producto-lista.component.html'
+    selector: 'app-producto-lista',
+    templateUrl: './producto-lista.component.html',
+    standalone: false
 })
 export class ProductoListaComponent extends BaseComponent implements OnInit {
 

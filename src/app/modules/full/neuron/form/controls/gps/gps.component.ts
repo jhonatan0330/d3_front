@@ -6,8 +6,9 @@ import { BaseComponent } from '../base/base.component';
 import { OlMapComponent } from './ol-map/ol-map.component';
 
 @Component({
-  selector: 'app-gps',
-  templateUrl: './gps.component.html'
+    selector: 'app-gps',
+    templateUrl: './gps.component.html',
+    standalone: false
 })
 export class GpsComponent extends BaseComponent implements OnInit {
 

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
     selector: 'app-home-button',
     templateUrl: './home-button.component.html',
     encapsulation: ViewEncapsulation.None,
-
+    standalone: false
 })
 export class HomeButtonComponent {
 

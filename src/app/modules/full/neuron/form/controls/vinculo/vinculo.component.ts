@@ -12,8 +12,9 @@ import { ApiService } from '../../../service/api.service';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Component({
-  selector: 'app-vinculo',
-  templateUrl: './vinculo.component.html'
+    selector: 'app-vinculo',
+    templateUrl: './vinculo.component.html',
+    standalone: false
 })
 export class VinculoComponent extends BaseComponent implements OnInit {
 

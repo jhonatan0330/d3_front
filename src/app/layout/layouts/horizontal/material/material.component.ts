@@ -11,9 +11,10 @@ import { LoginService } from 'app/authentication/login.service';
 import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
-  selector: 'material-layout',
-  templateUrl: './material.component.html',
-  encapsulation: ViewEncapsulation.None
+    selector: 'material-layout',
+    templateUrl: './material.component.html',
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class MaterialLayoutComponent implements OnInit, OnDestroy {
   isScreenSmall: boolean;

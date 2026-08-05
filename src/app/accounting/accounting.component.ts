@@ -32,6 +32,7 @@ interface AccountFlatNode {
     selector: 'accounting',
     templateUrl: './accounting.component.html',
     encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class AccountComponent implements OnInit, OnDestroy {
     @ViewChild('drawer') drawer: MatDrawer;

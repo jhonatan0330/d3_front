@@ -12,7 +12,8 @@ import { SafeHtml } from '@angular/platform-browser';
 @Component({
     selector: 'futuristic-layout',
     templateUrl: './futuristic.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class FuturisticLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;

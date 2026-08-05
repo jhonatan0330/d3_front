@@ -11,8 +11,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
     selector: 'app-new-password',
     templateUrl: './dfa.html',
-    standalone: true,
-    imports:[
+    imports: [
         ReactiveFormsModule
     ]
 })

@@ -13,7 +13,8 @@ import { SafeHtml } from '@angular/platform-browser';
 @Component({
     selector: 'enterprise-layout',
     templateUrl: './enterprise.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class EnterpriseLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;

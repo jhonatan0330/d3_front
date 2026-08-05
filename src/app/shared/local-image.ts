@@ -13,7 +13,10 @@ export function formatImageUrl(ls: LocalStoreService, url: string) {
   return url;
 }
 
-@Pipe({ name: 'imageFormat' })
+@Pipe({
+    name: 'imageFormat',
+    standalone: false
+})
 export class ImageFormatPipe implements PipeTransform {
   constructor(private ls: LocalStoreService) { }
   transform(url: string) {

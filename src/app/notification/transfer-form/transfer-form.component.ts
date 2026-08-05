@@ -11,9 +11,10 @@ import { PropiedadDTO } from "app/shared/shared.domain";
 import { UsuarioDTO } from "app/authentication/authentication.domain";
 
 @Component({
-  selector: 'transfer-form',
-  templateUrl: './transfer-form.component.html',
-  exportAs: 'transfer-form'
+    selector: 'transfer-form',
+    templateUrl: './transfer-form.component.html',
+    exportAs: 'transfer-form',
+    standalone: false
 })
 export class TransferFormComponent implements OnInit {
 

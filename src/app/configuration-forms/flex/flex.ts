@@ -16,7 +16,6 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'FlexComponent',
-    standalone: true,
     templateUrl: 'flex.html',
     imports: [CommonModule, FormsModule,
         MatIconModule, DragDropModule]

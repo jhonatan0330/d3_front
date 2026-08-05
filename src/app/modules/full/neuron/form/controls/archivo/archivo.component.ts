@@ -9,13 +9,14 @@ import { LocalStoreService } from 'app/shared/local-store.service';
 import { formatImageUrl } from 'app/shared/local-image';
 
 @Component({
-  selector: 'app-archivo',
-  templateUrl: './archivo.component.html',
-  styles: [`
+    selector: 'app-archivo',
+    templateUrl: './archivo.component.html',
+    styles: [`
     canvas {
       touch-action: none; /* evita scroll en móviles */
     }
-  `]
+  `],
+    standalone: false
 })
 export class ArchivoComponent extends BaseComponent implements OnInit, AfterViewInit {
   @ViewChild('signatureCanvas') signatureCanvas!: ElementRef<HTMLCanvasElement>;

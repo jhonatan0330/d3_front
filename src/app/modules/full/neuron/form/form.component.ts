@@ -45,7 +45,8 @@ import { LoginService } from 'app/authentication/login.service';
 
 @Component({
     selector: 'app-form',
-    templateUrl: './form.component.html'
+    templateUrl: './form.component.html',
+    standalone: false
 })
 export class FormComponent implements OnInit, AfterViewInit {
     // Variables para el control de los campos

@@ -12,7 +12,8 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
     selector: 'search',
     templateUrl: './search.component.html',
     encapsulation: ViewEncapsulation.None,
-    exportAs: 'fuseSearch'
+    exportAs: 'fuseSearch',
+    standalone: false
 })
 export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     @Input() appearance: 'basic' | 'bar' = 'basic';

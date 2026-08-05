@@ -21,9 +21,10 @@ import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../../model
 import { UtilsService } from '../../../service/utils.service';
 
 @Component({
-  selector: 'app-detalle',
-  templateUrl: './detalle.component.html',
-  styleUrls: ['./detalle.component.scss'],
+    selector: 'app-detalle',
+    templateUrl: './detalle.component.html',
+    styleUrls: ['./detalle.component.scss'],
+    standalone: false
 })
 export class DetalleComponent extends BaseComponent implements OnInit, AfterViewInit {
   unicoProducto = false;

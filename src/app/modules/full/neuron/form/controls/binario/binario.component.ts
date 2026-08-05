@@ -4,8 +4,9 @@ import { BaseComponent } from '../base/base.component';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({
-  selector: 'app-binario',
-  templateUrl: './binario.component.html'
+    selector: 'app-binario',
+    templateUrl: './binario.component.html',
+    standalone: false
 })
 export class BinarioComponent extends BaseComponent implements OnInit {
   fControl = new FormControl(false);

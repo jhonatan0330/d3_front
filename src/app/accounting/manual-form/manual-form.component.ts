@@ -14,7 +14,8 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'account-manual-form',
     templateUrl: './manual-form.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ManualFormComponent implements OnInit {
 

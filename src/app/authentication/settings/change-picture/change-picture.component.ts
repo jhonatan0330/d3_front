@@ -3,8 +3,9 @@ import { LoginService } from 'app/authentication/login.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-change-picture',
-  templateUrl: './change-picture.component.html'
+    selector: 'app-change-picture',
+    templateUrl: './change-picture.component.html',
+    standalone: false
 })
 export class ChangePictureComponent {
   WIDTH = 128;

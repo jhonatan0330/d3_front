@@ -11,9 +11,10 @@ import { LoginService } from 'app/authentication/login.service';
 import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
-  selector: 'modern-layout',
-  templateUrl: './modern.component.html',
-  encapsulation: ViewEncapsulation.None
+    selector: 'modern-layout',
+    templateUrl: './modern.component.html',
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ModernLayoutComponent implements OnInit, OnDestroy {
   isScreenSmall: boolean;

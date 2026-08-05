@@ -7,14 +7,13 @@ import { PdfService } from 'app/shared/pdf.service';
 
 
 @Component({
-  selector: 'app-visor-pdf-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule
-  ],
-  templateUrl: './visor-pdf-dialog.component.html'
+    selector: 'app-visor-pdf-dialog',
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule
+    ],
+    templateUrl: './visor-pdf-dialog.component.html'
 })
 export class VisorPdfDialogComponent implements OnDestroy {
 

@@ -6,8 +6,9 @@ import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({
-  selector: 'app-seccion',
-  templateUrl: './seccion.component.html'
+    selector: 'app-seccion',
+    templateUrl: './seccion.component.html',
+    standalone: false
 })
 export class SeccionComponent extends BaseComponent implements OnInit {
   

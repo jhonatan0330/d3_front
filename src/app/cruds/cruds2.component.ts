@@ -29,7 +29,8 @@ import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-cruds',
-    templateUrl: './cruds2.component.html'
+    templateUrl: './cruds2.component.html',
+    standalone: false
 })
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     plantilla: DocumentoPlantillaDTO; // Estructura base de la lista

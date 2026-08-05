@@ -25,8 +25,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoadLineDTO } from './massive.domain';
 
 @Component({
-  selector: 'app-massive',
-  templateUrl: './massive.component.html',
+    selector: 'app-massive',
+    templateUrl: './massive.component.html',
+    standalone: false
 })
 export class MassiveComponent implements OnInit {
   plantillaId: string;

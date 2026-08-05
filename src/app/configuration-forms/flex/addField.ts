@@ -8,9 +8,8 @@ import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/mo
 
 @Component({
     selector: 'app-campo-form',
-    standalone: true,
     imports: [CommonModule, FormsModule],
-    templateUrl: './addField.html',
+    templateUrl: './addField.html'
 })
 export class AddFieldComponent {
     campo: DocumentoPlantillaCaracteristicaDTO;

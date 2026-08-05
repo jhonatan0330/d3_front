@@ -8,9 +8,10 @@ import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
 import { ApiService } from '../../../service/api.service';
 
 @Component({
-  selector: 'app-fecha',
-  templateUrl: './fecha.component.html',
-  styleUrls: ['./fecha.component.scss'],
+    selector: 'app-fecha',
+    templateUrl: './fecha.component.html',
+    styleUrls: ['./fecha.component.scss'],
+    standalone: false
 })
 export class FechaComponent extends BaseComponent implements OnInit {
   conHora = false; // Define si se pide las fechas con hora

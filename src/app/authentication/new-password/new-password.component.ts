@@ -10,8 +10,9 @@ import Swal from 'sweetalert2';
 import { LoginService } from '../login.service';
 
 @Component({
-  selector: 'app-new-password',
-  templateUrl: './new-password.component.html'
+    selector: 'app-new-password',
+    templateUrl: './new-password.component.html',
+    standalone: false
 })
 export class NewPasswordComponent implements OnInit, OnDestroy {
 

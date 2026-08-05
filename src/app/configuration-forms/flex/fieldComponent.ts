@@ -15,7 +15,6 @@ import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 
 @Component({
     selector: 'FieldComponent',
-    standalone: true,
     templateUrl: 'fieldComponent.html',
     imports: [CommonModule, MatIconModule]
 })

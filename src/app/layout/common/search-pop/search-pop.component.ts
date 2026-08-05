@@ -8,7 +8,8 @@ import { BuscadorComponent } from 'app/authorization/profile/buscador';
     <button mat-icon-button (click)="openDashboard()" matTooltip="Ir al inicio">
         <mat-icon svgIcon="home"></mat-icon>
     </button>
-    `
+    `,
+    standalone: false
 })
 export class SearchPopButtonComponent {
 

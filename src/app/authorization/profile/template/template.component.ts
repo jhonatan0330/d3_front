@@ -12,8 +12,9 @@ export enum TemplateEnum {
 
 
 @Component({
-  selector: 'app-template',
-  templateUrl: './template.component.html'
+    selector: 'app-template',
+    templateUrl: './template.component.html',
+    standalone: false
 })
 export class TemplateComponent implements OnInit {
   @Input() nombre = '';

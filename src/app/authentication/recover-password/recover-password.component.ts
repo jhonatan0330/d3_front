@@ -14,9 +14,10 @@ import { LoginService } from '../login.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-recover-password',
-  providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
-  templateUrl: './recover-password.component.html'
+    selector: 'app-recover-password',
+    providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }],
+    templateUrl: './recover-password.component.html',
+    standalone: false
 })
 export class RecoverPasswordComponent implements OnInit, OnDestroy {
   @ViewChild(MatProgressBar) progressBar: MatProgressBar;

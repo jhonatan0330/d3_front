@@ -15,17 +15,16 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 
 @Component({
-  standalone: true,
-  selector: 'app-buscador',
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatProgressBarModule
-  ],
-  template: `
+    selector: 'app-buscador',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatProgressBarModule
+    ],
+    template: `
     <div class="flex flex-col h-full max-h-[90vh] overflow-hidden">
       <div class="flex justify-end p-2">
         <button matIconButton mat-dialog-close>
@@ -110,7 +109,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
         </div>
       </div>
     </div>
-  `,
+  `
 })
 export class BuscadorComponent implements OnDestroy {
   private readonly templateService = inject(TemplateService);

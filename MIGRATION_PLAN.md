@@ -108,19 +108,19 @@ ng update @angular/core@19 @angular/cli@19
 - `afterRender()` renombrado a `afterEveryRender()` (si se usa)
 
 ### 2.3 Dependencias de terceros
-```bash
-npm install @zxing/ngx-scanner@19
-npm install ngx-editor@19.0.0-beta.1  # o evaluar alternativa
-npm install ng-apexcharts@1.14 apexcharts@^4
-```
+- [x] `npm install @zxing/ngx-scanner@19`
+- [x] `ngx-editor@17` se mantiene (swap a fork en Fase 4, ver Fase 0.2)
+- [x] `npm install ng-apexcharts@1.15 apexcharts@^4`
+> **Cuidado**: `ng-apexcharts@1.14.0` está publicado **sin archivos compilados** (publish roto, solo source). Usar `1.15.0` (misma compat Angular 19).
 
 ### 2.4 Migración de @fuse
-- [ ] Verificar que `FuseModule` y sub-módulos compilan en 19
-- [ ] Fix `Router.isActive(link, boolean)` → usar `IsActiveMatchOptions`
-- [ ] Verificar `FuseLoadingInterceptor` con `HTTP_INTERCEPTORS`
+- [x] Verificar que `FuseModule` y sub-módulos compilan en 19 — build OK (migración `standalone: false` automática aplicada por ng update)
+- [x] Fix `Router.isActive(link, boolean)` → `IsActiveMatchOptions` (`collapsable.component.ts` y `aside.component.ts`, usando `FuseUtilsService.exactMatchOptions`/`subsetMatchOptions`)
+- [x] Verificar `FuseLoadingInterceptor` con `HTTP_INTERCEPTORS` — build OK
 
 ### 2.5 Verificación
-- [ ] Build + smoke test completo (`npm test` no aplica: no hay suite)
+- [x] Build OK + `npx tsc --noEmit` limpio (`npm test` no aplica: no hay suite)
+- [ ] Smoke test manual — **pendiente del usuario** (requiere backend)
 
 ---
 

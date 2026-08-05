@@ -15,7 +15,8 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
     selector: 'layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class LayoutComponent implements OnInit, OnDestroy {
     config: AppConfig;

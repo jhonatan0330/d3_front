@@ -19,8 +19,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
     templateUrl: './details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatMenuModule, CommonModule, MatInputModule],
+    imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatMenuModule, CommonModule, MatInputModule]
 })
 export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('titleField') private _titleField: ElementRef;

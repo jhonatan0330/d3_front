@@ -12,7 +12,8 @@ import { SafeHtml } from '@angular/platform-browser';
 @Component({
     selector: 'compact-layout',
     templateUrl: './compact.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CompactLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;

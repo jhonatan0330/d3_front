@@ -10,7 +10,8 @@ import Swal from 'sweetalert2';
     selector: 'settings-security',
     templateUrl: './security.component.html',
     encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SettingsSecurityComponent implements OnInit {
     securityForm: UntypedFormGroup;

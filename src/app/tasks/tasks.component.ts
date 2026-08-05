@@ -6,7 +6,8 @@ import { LoginService } from 'app/authentication/login.service';
     selector: 'tasks',
     templateUrl: './tasks.component.html',
     encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class TasksComponent implements OnInit{
     constructor(

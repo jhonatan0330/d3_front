@@ -19,9 +19,10 @@ interface OptionTrace {
 }
 
 @Component({
-  selector: 'trazability',
-  templateUrl: './trazability.component.html',
-  exportAs: 'trazability'
+    selector: 'trazability',
+    templateUrl: './trazability.component.html',
+    exportAs: 'trazability',
+    standalone: false
 })
 export class TrazabilityComponent implements OnInit {
 

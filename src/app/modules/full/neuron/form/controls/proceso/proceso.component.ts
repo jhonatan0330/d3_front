@@ -26,9 +26,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { IdResponse } from '../../../model/sw42.utils';
 
 @Component({
-  selector: 'app-proceso',
-  templateUrl: './proceso.component.html',
-  styleUrls: ['./proceso.component.scss'],
+    selector: 'app-proceso',
+    templateUrl: './proceso.component.html',
+    styleUrls: ['./proceso.component.scss'],
+    standalone: false
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {
   @ViewChild('clickHoverMenuTrigger') trigger: MatMenuTrigger;

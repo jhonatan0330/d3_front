@@ -12,7 +12,8 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
     templateUrl: './user.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs: 'user'
+    exportAs: 'user',
+    standalone: false
 })
 export class UserComponent implements OnInit, OnDestroy {
 

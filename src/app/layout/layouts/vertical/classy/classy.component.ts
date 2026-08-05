@@ -12,7 +12,8 @@ import { SafeHtml } from '@angular/platform-browser';
 @Component({
     selector: 'classy-layout',
     templateUrl: './classy.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;

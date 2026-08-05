@@ -17,11 +17,10 @@ interface Transicion {
 }
 
 @Component({
-  standalone: true,
-  selector: 'bpm-leaf-diagram',
-  imports: [CommonModule, MatButtonModule],
-  templateUrl: './bpm-leaf-diagram.component.html',
-  styleUrls: ['./bpm-leaf-diagram.component.scss']
+    selector: 'bpm-leaf-diagram',
+    imports: [CommonModule, MatButtonModule],
+    templateUrl: './bpm-leaf-diagram.component.html',
+    styleUrls: ['./bpm-leaf-diagram.component.scss']
 })
 export class BpmLeafDiagramComponent implements OnInit {
   procesoId: string;

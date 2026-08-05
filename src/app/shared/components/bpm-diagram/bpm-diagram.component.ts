@@ -26,11 +26,10 @@ interface NodeRender {
 }
 
 @Component({
-  standalone: true,
-  selector: 'bpm-diagram',
-  imports: [CommonModule],
-  templateUrl: './bpm-diagram.component.html',
-  styleUrls: ['./bpm-diagram.component.scss']
+    selector: 'bpm-diagram',
+    imports: [CommonModule],
+    templateUrl: './bpm-diagram.component.html',
+    styleUrls: ['./bpm-diagram.component.scss']
 })
 export class BpmDiagramComponent implements OnChanges, OnInit {
   @Input() proceso: Proceso | null = null;

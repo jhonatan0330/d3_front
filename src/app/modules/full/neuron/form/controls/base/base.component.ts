@@ -37,9 +37,10 @@ export interface IDynamicControl {
 }
 
 @Component({
-  selector: 'app-base',
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
+    selector: 'app-base',
+    templateUrl: './base.component.html',
+    styleUrls: ['./base.component.scss'],
+    standalone: false
 })
 export class BaseComponent implements OnInit, IDynamicControl {
   data: PedidoVentaCaracteristicaDTO;

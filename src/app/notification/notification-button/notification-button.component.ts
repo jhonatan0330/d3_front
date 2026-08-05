@@ -17,7 +17,8 @@ import { LoginService } from 'app/authentication/login.service';
     templateUrl: './notification-button.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs: 'notifications'
+    exportAs: 'notifications',
+    standalone: false
 })
 export class NotificationButtonComponent implements OnInit, OnDestroy {
     @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;

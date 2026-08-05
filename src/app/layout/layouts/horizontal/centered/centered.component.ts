@@ -12,7 +12,8 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
     selector: 'centered-layout',
     templateUrl: './centered.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class CenteredLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;

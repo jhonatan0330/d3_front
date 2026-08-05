@@ -3,8 +3,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-direccion-form',
-  templateUrl: './direcciones.component.html'
+    selector: 'app-direccion-form',
+    templateUrl: './direcciones.component.html',
+    standalone: false
 })
 export class DireccionesComponent implements OnInit {
   form: FormGroup;

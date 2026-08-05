@@ -3,8 +3,9 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-success-form',
-  templateUrl: './success.component.html',
+    selector: 'app-success-form',
+    templateUrl: './success.component.html',
+    standalone: false
 })
 
 export class SuccessComponent implements OnInit {
