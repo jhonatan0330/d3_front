@@ -120,7 +120,8 @@ ng update @angular/core@19 @angular/cli@19
 
 ### 2.5 Verificación
 - [x] Build OK + `npx tsc --noEmit` limpio (`npm test` no aplica: no hay suite)
-- [ ] Smoke test manual — **pendiente del usuario** (requiere backend)
+- [x] Smoke test manual — **confirmado por el usuario** (app corre normal)
+- [x] Commit + tag `migration/angular-19`
 
 ---
 
@@ -137,12 +138,16 @@ ng update @angular/core@20 @angular/cli@20
 - `@angular-devkit/build-angular` → `@angular/build` (nuevo paquete)
 
 ### 3.3 Acciones
-- [ ] Verificar Node.js en CI/CD (local ya está en 24 — OK)
-- [ ] Eliminar config de Karma: bloque `test` de `angular.json`, deps `karma*`/`jasmine*` de `package.json`, y `src/test.ts`/`tsconfig.spec.json` si existen
-- [ ] Verificar `browserslist` (Opera removido) si se crea el archivo
+- [x] Verificar Node.js en CI/CD (local ya está en 24 — OK)
+- [x] Eliminar config de Karma: bloque `test` de `angular.json`, deps `karma*`/`jasmine*` de `package.json`, `tsconfig.spec.json` (ya no existía `src/test.ts`) y scripts `test`/`lint` de package.json
+- [x] Migrar builders a `@angular/build:application` / `@angular/build:dev-server` / `@angular/build:extract-i18n` (la migración `use-application-builder` solo agregó el bloque `schematics`)
+- [x] Verificar `browserslist` (Opera removido) si se crea el archivo — no aplica, no existe archivo
+- [x] Deps de terceros: `@zxing/ngx-scanner@20`, `ng-apexcharts@1.16` (soporta Angular ^20 manteniendo apexcharts ^4; la serie 2.x queda para Fase 4), `lodash` como dependencia directa (lo usa `src/@fuse/tailwind/utils/generate-palette.js`; dejó de ser transitivo), `rxjs@7.8.2` (peer mínimo de ng-apexcharts@1.16)
+- [x] Migración automática `DOCUMENT` de `@angular/common` → `@angular/core` (4 archivos)
 
 ### 3.4 Verificación
-- [ ] Build + smoke test
+- [x] Build OK + `npx tsc --noEmit` limpio (solo warnings ya documentados: budget initial 3.21MB, non-ESM de geotiff/sweetalert2/file-saver, splash-screen.css ausente)
+- [ ] Smoke test manual — **pendiente del usuario**
 
 ---
 
