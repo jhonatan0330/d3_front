@@ -6,6 +6,7 @@ import {
   Type,
   ViewChild,
   ViewContainerRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
@@ -23,6 +24,7 @@ import { TarifaDTO } from 'app/modules/full/neuron/model/tariff.domain';
 @Component({
     selector: 'form-control-product',
     templateUrl: './product.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProductComponent implements OnInit, AfterViewInit {

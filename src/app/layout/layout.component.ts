@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, Renderer2, ViewEncapsulation, DOCUMENT } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, Renderer2, ViewEncapsulation, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { combineLatest, filter, map, Subject, takeUntil } from 'rxjs';
@@ -16,6 +16,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class LayoutComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -20,6 +20,7 @@ interface Transicion {
     selector: 'bpm-leaf-diagram',
     imports: [MatButtonModule],
     templateUrl: './bpm-leaf-diagram.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./bpm-leaf-diagram.component.scss']
 })
 export class BpmLeafDiagramComponent implements OnInit {

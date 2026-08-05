@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   TemplateRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -28,6 +29,7 @@ interface RenderItem {
 @Component({
     selector: 'app-croquis',
     templateUrl: './croquis.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CroquisComponent extends BaseComponent

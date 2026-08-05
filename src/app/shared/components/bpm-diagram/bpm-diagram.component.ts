@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, OnInit, Inject, Optional, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnInit, Inject, Optional, Output, EventEmitter, HostListener, ChangeDetectionStrategy } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
@@ -29,6 +29,7 @@ interface NodeRender {
     selector: 'bpm-diagram',
     imports: [],
     templateUrl: './bpm-diagram.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./bpm-diagram.component.scss']
 })
 export class BpmDiagramComponent implements OnChanges, OnInit {

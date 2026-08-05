@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from "@angular/core";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DocumentoPlantillaDTO } from "app/modules/full/neuron/model/sw42.domain";
@@ -14,6 +14,7 @@ import { UsuarioDTO } from "app/authentication/authentication.domain";
     selector: 'transfer-form',
     templateUrl: './transfer-form.component.html',
     exportAs: 'transfer-form',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TransferFormComponent implements OnInit {

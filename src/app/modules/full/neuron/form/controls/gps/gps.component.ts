@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
@@ -8,6 +8,7 @@ import { OlMapComponent } from './ol-map/ol-map.component';
 @Component({
     selector: 'app-gps',
     templateUrl: './gps.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GpsComponent extends BaseComponent implements OnInit {

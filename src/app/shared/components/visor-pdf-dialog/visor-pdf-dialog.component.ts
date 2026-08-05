@@ -1,4 +1,4 @@
-import { Component, Inject, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { Component, Inject, ElementRef, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -12,6 +12,7 @@ import { PdfService } from 'app/shared/pdf.service';
     MatDialogModule,
     MatButtonModule
 ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './visor-pdf-dialog.component.html'
 })
 export class VisorPdfDialogComponent implements OnDestroy {

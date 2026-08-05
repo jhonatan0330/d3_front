@@ -1,6 +1,7 @@
 import {
-    Component,
-    Inject,
+  Component,
+  Inject,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -11,6 +12,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
     selector: 'app-new-password',
     templateUrl: './dfa.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         ReactiveFormsModule
     ]

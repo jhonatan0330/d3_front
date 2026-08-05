@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, ElementRef, Inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, ElementRef, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { Map } from 'ol';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -22,6 +22,7 @@ export const DEFAULT_TEXT = '';
 @Component({
     selector: 'app-ol-map',
     templateUrl: './ol-map.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class OlMapComponent implements OnInit, AfterViewInit {

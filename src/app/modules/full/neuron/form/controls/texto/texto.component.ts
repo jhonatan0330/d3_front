@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {  PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
     selector: 'app-texto',
     templateUrl: './texto.component.html',
     styleUrls: ['./texto.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TextoComponent extends BaseComponent implements OnInit {

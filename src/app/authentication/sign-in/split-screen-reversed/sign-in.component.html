@@ -8,7 +8,7 @@
     <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
       <!-- Logo -->
       <div class="text-center p-4">
-        <img class="m-auto" src="{{ company?.imagen | imageFormat }}" alt="">
+        <img class="m-auto" src="{{ $safeNavigationMigration(company?.imagen) | imageFormat }}" alt="">
       </div>
 
       <!-- Title -->

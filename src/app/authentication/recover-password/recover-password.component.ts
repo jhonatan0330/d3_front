@@ -3,6 +3,7 @@ import {
   OnInit,
   ViewChild,
   OnDestroy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatProgressBar } from '@angular/material/progress-bar';
@@ -17,6 +18,7 @@ import { Router } from '@angular/router';
     selector: 'app-recover-password',
     providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }],
     templateUrl: './recover-password.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class RecoverPasswordComponent implements OnInit, OnDestroy {

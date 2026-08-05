@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject, signal, effect } from '@angular/core';
+import { Component, OnDestroy, inject, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +24,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
         MatDialogModule,
         MatProgressBarModule
     ],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
     <div class="flex flex-col h-full max-h-[90vh] overflow-hidden">
       <div class="flex justify-end p-2">

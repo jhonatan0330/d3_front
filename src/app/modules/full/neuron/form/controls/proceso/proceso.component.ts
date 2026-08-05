@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, UntypedFormControl, Validators } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import {
@@ -29,6 +29,7 @@ import { IdResponse } from '../../../model/sw42.utils';
     selector: 'app-proceso',
     templateUrl: './proceso.component.html',
     styleUrls: ['./proceso.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {

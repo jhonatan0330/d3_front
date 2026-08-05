@@ -1,13 +1,13 @@
 <!-- Navigation -->
 <fuse-vertical-navigation class="bg-card dark:bg-gray-900 print:hidden" [appearance]="'thin'"
-  [mode]="isScreenSmall ? 'over' : 'side'" [name]="'mainNavigation'" [navigation]="navigation?.compact"
+  [mode]="isScreenSmall ? 'over' : 'side'" [name]="'mainNavigation'" [navigation]="$safeNavigationMigration(navigation?.compact)"
   [opened]="!isScreenSmall">
   <!-- Navigation header hook -->
   <ng-container fuseVerticalNavigationContentHeader>
     <!-- Logo -->
     <div class="flex items-center justify-center h-20">
       @if (company?.imagen) {
-        <img class="w-full px-2" src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+        <img class="w-full px-2" src="{{ $safeNavigationMigration(company?.imagen) | imageFormat }}" alt="Logo image" />
       }
     </div>
     <!-- <div class="flex flex-col items-center justify-center px-2 text-gray-500">

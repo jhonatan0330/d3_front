@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
@@ -10,6 +10,7 @@ import { PedidoVentaCaracteristicaFilterDTO, ProductoDTO, UsuarioRolProductoDTO 
 @Component({
     selector: 'app-producto-lista',
     templateUrl: './producto-lista.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ProductoListaComponent extends BaseComponent implements OnInit {

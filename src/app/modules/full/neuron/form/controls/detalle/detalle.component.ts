@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
   DetallePedidoVentaDTO,
@@ -24,6 +24,7 @@ import { UtilsService } from '../../../service/utils.service';
     selector: 'app-detalle',
     templateUrl: './detalle.component.html',
     styleUrls: ['./detalle.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class DetalleComponent extends BaseComponent implements OnInit, AfterViewInit {

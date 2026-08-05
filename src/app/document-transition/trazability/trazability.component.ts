@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from "app/modules/full/neuron/model/sw42.domain";
@@ -22,6 +22,7 @@ interface OptionTrace {
     selector: 'trazability',
     templateUrl: './trazability.component.html',
     exportAs: 'trazability',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TrazabilityComponent implements OnInit {

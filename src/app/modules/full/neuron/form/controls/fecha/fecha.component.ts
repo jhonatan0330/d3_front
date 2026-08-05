@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
@@ -11,6 +11,7 @@ import { ApiService } from '../../../service/api.service';
     selector: 'app-fecha',
     templateUrl: './fecha.component.html',
     styleUrls: ['./fecha.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class FechaComponent extends BaseComponent implements OnInit {

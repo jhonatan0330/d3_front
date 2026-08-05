@@ -1,6 +1,7 @@
 import {
-    Component,
-    ModuleWithComponentFactories,
+  Component,
+  ModuleWithComponentFactories,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {
     ChangeDetectorRef,
@@ -33,6 +34,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
 @Component({
     selector: 'PersonsComponent',
     templateUrl: 'persons.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class PersonsComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { BaseComponent } from '../base/base.component';
@@ -8,6 +8,7 @@ import { ApiService } from '../../../service/api.service';
 @Component({
     selector: 'app-informative',
     templateUrl: './informative.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class InformativeComponent extends BaseComponent implements OnInit {

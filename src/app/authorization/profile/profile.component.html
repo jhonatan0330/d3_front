@@ -28,7 +28,7 @@
         <div class="flex flex-row flex-0 items-center max-w-5xl w-full mx-auto px-8 lg:h-18 bg-card">
           <!-- Avatar -->
           <div class=" max-w-32 z-0">
-            <img class="w-full h-full rounded-full ring-4 ring-bg-card bg-white" [src]="company?.imagen"
+            <img class="w-full h-full rounded-full ring-4 ring-bg-card bg-white" [src]="$safeNavigationMigration(company?.imagen)"
               alt="User avatar">
             </div>
             <!-- Details -->

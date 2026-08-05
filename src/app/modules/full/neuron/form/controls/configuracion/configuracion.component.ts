@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {
   DocumentoPlantillaDTO,
@@ -15,6 +15,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 @Component({
     selector: 'app-configuracion',
     templateUrl: './configuracion.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ConfiguracionComponent extends BaseComponent implements OnInit {

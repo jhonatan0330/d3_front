@@ -1,6 +1,7 @@
 import {
-    Component,
-    OnInit
+  Component,
+  OnInit,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { ContactsService } from '../contact.services';
 import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
@@ -14,6 +15,7 @@ import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 @Component({
     selector: 'contacts-details',
     templateUrl: 'detail_person.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ContactsDetailsComponent implements OnInit {

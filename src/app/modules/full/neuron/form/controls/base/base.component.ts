@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ProductComponent } from 'app/modules/full/neuron/form/controls/product/product.component';
 import {
   DocumentoPlantillaCaracteristicaDTO,
@@ -40,6 +40,7 @@ export interface IDynamicControl {
     selector: 'app-base',
     templateUrl: './base.component.html',
     styleUrls: ['./base.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BaseComponent implements OnInit, IDynamicControl {

@@ -223,7 +223,7 @@
                         <!-- Header -->
                         <div
                           class="flex flex-row flex-0 sm:items-center sm:justify-between p-3 sm:py-4 sm:px-5 border-b bg-card dark:bg-transparent">
-                          <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}"  (click)="openDiagram()"/>
+                          <img class="icon-size-12" src="{{ $safeNavigationMigration(plantilla?.imagen) | imageFormat }}"  (click)="openDiagram()"/>
                           <div class="flex-1 min-w-0">
                             <!-- Title -->
                             <div class="mt-2">
@@ -446,7 +446,7 @@
                                 >
                                 <div
                                   class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
-                                  <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}" />
+                                  <img class="icon-size-12" src="{{ $safeNavigationMigration(plantilla?.imagen) | imageFormat }}" />
                                   <a href="#">
                                     <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{
                                     plantilla?.nombre }}</h5>

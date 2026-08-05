@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +16,7 @@ import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 @Component({
     selector: 'FieldComponent',
     templateUrl: 'fieldComponent.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [CommonModule, MatIconModule]
 })
 export class FieldComponent implements OnInit {

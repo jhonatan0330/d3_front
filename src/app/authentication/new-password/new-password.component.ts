@@ -2,6 +2,7 @@ import {
   Component,
   OnInit,
   OnDestroy,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Validators, FormGroup, FormControl } from '@angular/forms';
@@ -12,6 +13,7 @@ import { LoginService } from '../login.service';
 @Component({
     selector: 'app-new-password',
     templateUrl: './new-password.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class NewPasswordComponent implements OnInit, OnDestroy {

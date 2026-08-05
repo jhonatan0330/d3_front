@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, ElementRef, Inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, ElementRef, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { Map } from 'ol';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -24,6 +24,7 @@ export const DEFAULT_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAA
 @Component({
     selector: 'app-full-map',
     templateUrl: './full-map.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class FullMapComponent implements OnInit, AfterViewInit {

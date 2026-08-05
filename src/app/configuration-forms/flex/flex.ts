@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
     DocumentoPlantillaCaracteristicaDTO,
@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
     selector: 'FlexComponent',
     templateUrl: 'flex.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [CommonModule, FormsModule,
         MatIconModule, DragDropModule]
 })

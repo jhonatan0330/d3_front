@@ -1,12 +1,12 @@
 <!-- Navigation -->
 <fuse-vertical-navigation class="dark bg-indigo-800 text-white print:hidden" [mode]="isScreenSmall ? 'over' : 'side'"
-  [name]="'mainNavigation'" [navigation]="navigation?.futuristic" [opened]="!isScreenSmall && user ">
+  [name]="'mainNavigation'" [navigation]="$safeNavigationMigration(navigation?.futuristic)" [opened]="!isScreenSmall && user ">
   <!-- Navigation header hook -->
   <ng-container fuseVerticalNavigationHeader>
     <!-- Logo -->
     <div class="flex items-center h-20 px-4 py-2">
       @if (company?.imagen) {
-        <img class="w-auto max-h-full mx-2" src="{{ company?.imagen | imageFormat }}"
+        <img class="w-auto max-h-full mx-2" src="{{ $safeNavigationMigration(company?.imagen) | imageFormat }}"
           alt="Logo image" />
       }
     </div>

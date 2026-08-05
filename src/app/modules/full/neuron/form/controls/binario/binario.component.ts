@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { BaseComponent } from '../base/base.component';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -6,6 +6,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 @Component({
     selector: 'app-binario',
     templateUrl: './binario.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BinarioComponent extends BaseComponent implements OnInit {

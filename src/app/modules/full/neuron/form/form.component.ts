@@ -1,12 +1,13 @@
 import {
-    Component,
-    OnInit,
-    Inject,
-    ViewContainerRef,
-    ViewChild,
-    Type,
-    AfterViewInit,
-    HostListener,
+  Component,
+  OnInit,
+  Inject,
+  ViewContainerRef,
+  ViewChild,
+  Type,
+  AfterViewInit,
+  HostListener,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {
     MatDialogRef,
@@ -46,6 +47,7 @@ import { LoginService } from 'app/authentication/login.service';
 @Component({
     selector: 'app-form',
     templateUrl: './form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class FormComponent implements OnInit, AfterViewInit {

@@ -9,7 +9,7 @@
             @for (user of users; track user) {
               <mat-option [value]="user">
                 <div class="flex">
-                  <img class="icon-size-10 rounded my-1" src="{{ user?.imagen | imageFormat }}" />
+                  <img class="icon-size-10 rounded my-1" src="{{ $safeNavigationMigration(user?.imagen) | imageFormat }}" />
                   <small class="px-2">{{ user.nombre }}</small>
                 </div>
               </mat-option>

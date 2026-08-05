@@ -1,7 +1,7 @@
 <!-- Titulo  [style]="styleSizePop"-->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex px-4 py-2 shadow-md"
   [style]="styleSizePop" [style.color]="getColorFont()" [style.backgroundColor]="getColor()">
-  <img src="{{ pedido?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
+  <img src="{{ $safeNavigationMigration(pedido?.imagen) | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
   <!-- Texto del titulo -->
   <div class="w-full">
     <div class="w-full flex sm:flex">
@@ -263,7 +263,7 @@
         @if (!submitted) {
           <div>
             <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified">
-              <mat-icon>save</mat-icon> Guardar {{ plantilla?.nombre | titlecase }}
+              <mat-icon>save</mat-icon> Guardar {{ $safeNavigationMigration(plantilla?.nombre) | titlecase }}
             </button>
           </div>
         }

@@ -3,7 +3,7 @@
   <!-- Header -->
   <div class="relative h-40 w-full bg-accent-100 px-1 dark:bg-accent-700 sm:h-48">
     <!-- Background -->
-    <img class="absolute inset-0 h-full w-full object-cover" [src]="contact?.imagen" />
+    <img class="absolute inset-0 h-full w-full object-cover" [src]="$safeNavigationMigration(contact?.imagen)" />
 
     <!-- Close button -->
     <div class="flex w-full items-center justify-end ">

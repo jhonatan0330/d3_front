@@ -1,6 +1,6 @@
 <!-- Navigation -->
 <fuse-vertical-navigation class="dark bg-gray-900 print:hidden" [mode]="isScreenSmall ? 'over' : 'side'"
-  [name]="'mainNavigation'" [navigation]="navigation?.default"
+  [name]="'mainNavigation'" [navigation]="$safeNavigationMigration(navigation?.default)"
   [opened]="!isScreenSmall && user">
   <!-- Navigation header hook -->
   <ng-container fuseVerticalNavigationContentHeader>
@@ -8,7 +8,7 @@
     <a [routerLink]="'/main'">
       <div class="flex flex-col w-full items-center h-16 p-1">
         @if (company?.imagen) {
-          <img src="{{ company?.imagen | imageFormat }}" class="h-full" />
+          <img src="{{ $safeNavigationMigration(company?.imagen) | imageFormat }}" class="h-full" />
         }
       </div>
     </a>

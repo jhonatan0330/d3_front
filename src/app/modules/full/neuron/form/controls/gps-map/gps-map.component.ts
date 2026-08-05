@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BaseComponent } from '../base/base.component';
 import Swal from 'sweetalert2';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -9,6 +9,7 @@ import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaCaracteristicaDTO, Pedi
 @Component({
     selector: 'app-gps-map',
     templateUrl: './gps-map.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class GpsMapComponent extends BaseComponent implements OnInit {

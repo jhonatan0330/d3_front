@@ -1,14 +1,14 @@
 <!-- Navigation -->
 @if (isScreenSmall) {
   <fuse-vertical-navigation class="dark bg-gray-900 print:hidden" [mode]="'over'" [name]="'mainNavigation'"
-    [navigation]="navigation?.default" [opened]="!isScreenSmall && user && !_loginService.isPublicUser">
+    [navigation]="$safeNavigationMigration(navigation?.default)" [opened]="!isScreenSmall && user && !_loginService.isPublicUser">
     <!-- Navigation header hook -->
     <ng-container fuseVerticalNavigationContentHeader>
       <!-- Logo -->
       <div class="flex items-center justify-center h-28 pt-5 pb-5 px-8">
         @if (company?.imagen) {
           <img class="h-16 w-auto max-w-xs object-contain px-2"
-            src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+            src="{{ $safeNavigationMigration(company?.imagen) | imageFormat }}" alt="Logo image" />
         }
       </div>
     </ng-container>
@@ -27,13 +27,13 @@
         <div class="hidden lg:flex flex-col items-center">
           @if (company?.imagen) {
             <img class="h-12 w-auto max-w-xs object-contain px-2"
-              src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+              src="{{ $safeNavigationMigration(company?.imagen) | imageFormat }}" alt="Logo image" />
           }
         </div>
       </div>
       <!-- Horizontal navigation -->
       <fuse-horizontal-navigation class="mr-2" [name]="'mainNavigation'"
-      [navigation]="navigation?.horizontal"></fuse-horizontal-navigation>
+      [navigation]="$safeNavigationMigration(navigation?.horizontal)"></fuse-horizontal-navigation>
     }
 
     <!-- Date and Version-->

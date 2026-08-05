@@ -1,10 +1,11 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { LoginService } from 'app/authentication/login.service';
 import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-change-picture',
     templateUrl: './change-picture.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ChangePictureComponent {

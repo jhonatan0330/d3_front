@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BaseComponent } from '../base/base.component';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.domain';
 import { ApiService } from '../../../service/api.service';
@@ -8,6 +8,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 @Component({
     selector: 'app-seccion',
     templateUrl: './seccion.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class SeccionComponent extends BaseComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   DocumentMessage,
   DocumentoPlantillaCaracteristicaDTO,
@@ -27,6 +27,7 @@ import { LoadLineDTO } from './massive.domain';
 @Component({
     selector: 'app-massive',
     templateUrl: './massive.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class MassiveComponent implements OnInit {

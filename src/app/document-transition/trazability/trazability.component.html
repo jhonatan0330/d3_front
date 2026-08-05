@@ -2,7 +2,7 @@
 @if (plantilla) {
   <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle
     [style]="styleSizePop" class="p-4 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent flex">
-    <img src="{{ plantilla?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
+    <img src="{{ $safeNavigationMigration(plantilla?.imagen) | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
     <!-- Texto del titulo -->
     <div class="w-full">
       <small class="w-full font-semibold">{{documentState}}</small>
