@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { FuseFullscreenModule } from '@fuse/components/fullscreen';
 import { FuseNavigationModule } from '@fuse/components/navigation';
 import { NotificationsModule } from 'app/notification/notification.module';
 import { SearchModule } from 'app/layout/common/search/search.module';
@@ -27,7 +26,6 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         MatDividerModule,
         MatIconModule,
         MatMenuModule,
-        FuseFullscreenModule,
         FuseNavigationModule,
         NotificationsModule,
         SearchModule,

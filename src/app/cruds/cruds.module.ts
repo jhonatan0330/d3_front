@@ -3,7 +3,6 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
-import { FuseScrollResetModule } from '@fuse/directives/scroll-reset';
 import { FuseScrollbarModule } from '@fuse/directives/scrollbar';
 import { FuseNavigationModule } from '@fuse/components/navigation';
 import { MatSelectModule } from '@angular/material/select';
@@ -52,8 +51,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatNativeDateModule,
         MatTableModule,
         FuseNavigationModule,
-        FuseScrollbarModule,
-        FuseScrollResetModule,
+        FuseScrollbarModule
         
     ]
 })

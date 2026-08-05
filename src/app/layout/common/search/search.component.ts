@@ -2,7 +2,6 @@ import { Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnD
 import { UntypedFormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { Subject } from 'rxjs';
-import { fuseAnimations } from '@fuse/animations/public-api';
 import Swal from 'sweetalert2';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
@@ -13,8 +12,7 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
     selector: 'search',
     templateUrl: './search.component.html',
     encapsulation: ViewEncapsulation.None,
-    exportAs: 'fuseSearch',
-    animations: fuseAnimations
+    exportAs: 'fuseSearch'
 })
 export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     @Input() appearance: 'basic' | 'bar' = 'basic';

@@ -32,7 +32,6 @@ export const appRoutes: Route[] = [
     children: [
       { path: 'main', loadChildren: () => import('app/authorization/authorization.module').then(m => m.ProfileModule) },
       { path: 'list', loadChildren: () => import('app/cruds/cruds.module').then(m => m.CrudsModule) },
-      { path: 'maps', loadChildren: () => import('app/gps/gps.module').then(m => m.GPSModule) },
       { path: 'tasks', loadChildren: () => import('app/tasks/tasks.module').then(m => m.TasksModule) },
       { path: 'noseperolodejopormodule', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
       { path: 'massive', loadChildren: () => import('app/massive/massive.module').then(m => m.MassiveModule) },

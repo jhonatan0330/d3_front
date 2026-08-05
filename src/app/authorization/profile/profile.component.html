@@ -34,11 +34,25 @@
 
     </div>
 
-    <!--IndicatorsComponent></IndicatorsComponent-->
+    <!-- Tabs -->
+    <div class="flex items-center justify-center gap-3 py-3 px-4 bg-card">
+      <button
+        class="px-6 py-2 text-sm font-semibold rounded-full transition"
+        [ngClass]="activeTab === 'menu' ? 'bg-primary text-white shadow' : 'text-secondary hover:bg-hover'"
+        (click)="activeTab = 'menu'">Menú</button>
+      <button
+        class="px-6 py-2 text-sm font-semibold rounded-full transition"
+        [ngClass]="activeTab === 'metrics' ? 'bg-primary text-white shadow' : 'text-secondary hover:bg-hover'"
+        (click)="activeTab = 'metrics'">Métricas</button>
+    </div>
 
     <!-- Main -->
+    <div *ngIf="activeTab === 'metrics'">
+
+    </div>
+
     <!--div class="flex flex-auto justify-center w-full max-w-5xl mx-auto p-3"-->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 lg:gap-y-0 md:gap-x-6 px-8 py-4">
+    <div *ngIf="activeTab === 'menu'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 lg:gap-y-0 md:gap-x-6 px-8 py-4">
 
       <!-- Column -->
       <div class=" col-span-1 lg:col-span-2 flex flex-col items-start w-full">

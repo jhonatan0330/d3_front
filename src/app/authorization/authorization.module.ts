@@ -22,7 +22,6 @@ import { MatNativeDateModule } from "@angular/material/core";
 import { MatTableModule } from "@angular/material/table";
 import { FuseNavigationModule } from "@fuse/components/navigation";
 import { FuseScrollbarModule } from "@fuse/directives/scrollbar";
-import { FuseScrollResetModule } from "@fuse/directives/scroll-reset";
 
 @NgModule({
     declarations: [
@@ -58,7 +57,6 @@ import { FuseScrollResetModule } from "@fuse/directives/scroll-reset";
           MatTableModule,
           FuseNavigationModule,
           FuseScrollbarModule,
-          FuseScrollResetModule,
 
         SharedModule,
         MatFormFieldModule,

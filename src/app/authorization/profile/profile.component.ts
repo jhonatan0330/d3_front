@@ -38,6 +38,8 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   filterControl: UntypedFormControl = new UntypedFormControl();
   isLoading = false;
 
+  activeTab: 'menu' | 'metrics' = 'menu';
+
   slides: string[] = [];
 
   user: UsuarioDTO;

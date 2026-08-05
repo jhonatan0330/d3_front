@@ -6,7 +6,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { FuseNavigationModule } from '@fuse/components/navigation';
-import { FuseFullscreenModule } from '@fuse/components/fullscreen/fullscreen.module';
 import { NotificationsModule } from 'app/notification/notification.module';
 import { SearchModule } from 'app/layout/common/search/search.module';
 import { ShortcutsModule } from 'app/layout/common/shortcuts/shortcuts.module';
@@ -28,7 +27,6 @@ import { SearchPopButtonComponent } from 'app/layout/common/search-pop/search-po
         MatDividerModule,
         MatIconModule,
         MatMenuModule,
-        FuseFullscreenModule,
         FuseNavigationModule,
         NotificationsModule,
         SearchModule,
