@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { FuseNavigationModule } from '@fuse/components/navigation';
-import { SharedModule } from 'app/shared/shared.module';
+
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
@@ -23,35 +23,33 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     imports: [
-        RouterModule.forChild([
-            {
-                path: '',
-                component: AccountComponent
-            }
-        ]),
-        MatButtonModule,
-        MatIconModule,
-        SharedModule,
-        FuseNavigationModule,
-        MatMenuModule,
-        MatDividerModule,
-        NgApexchartsModule,
-        MatTableModule,
-        MatDatepickerModule,
-        MatAutocompleteModule,
-        MatSortModule,
-        MatProgressBarModule,
-        CurrencyPipe,
-        DatePipe,
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSidenavModule,
-        MatProgressSpinnerModule,
-        ManualFormComponent,
-        AccountComponent
-    ]
+    RouterModule.forChild([
+        {
+            path: '',
+            component: AccountComponent
+        }
+    ]),
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule,
+    NgApexchartsModule,
+    MatTableModule,
+    MatDatepickerModule,
+    MatAutocompleteModule,
+    MatSortModule,
+    MatProgressBarModule,
+    CurrencyPipe,
+    DatePipe,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSidenavModule,
+    MatProgressSpinnerModule,
+    ManualFormComponent,
+    AccountComponent
+]
 })
 export class AccountingModule
 {

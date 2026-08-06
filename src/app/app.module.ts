@@ -13,7 +13,7 @@ import { appRoutes } from 'app/app.routing';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './shared/error.interceptor';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
-import { SharedModule } from './shared/shared.module';
+
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
@@ -44,38 +44,36 @@ const routerConfig: ExtraOptions = {
 @NgModule({
     declarations: [AppComponent],
     imports: [
-        CommonModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot(appRoutes, routerConfig),
-        // Fuse, FuseConfig & FuseMockAPI
-        FuseModule,
-        FuseConfigModule.forRoot(appConfig),
-        // Core module of your application
-        CoreModule,
-        // Layout module of your application
-        LayoutModule,
-        // 3rd party modules that require global configuration via forRoot
-        SharedModule,
-        ReactiveFormsModule,
-        FormsModule,
-        DragDropModule,
-        HttpClientModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatDialogModule,
-        MatSidenavModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatMenuModule,
-        MatButtonModule,
-        SignInSplitScreenReversedComponent,
-        PersonsComponent,
-        ContactsDetailsComponent,
-        SettingsSecurityComponent,
-        ChangePictureComponent,
-    ],
+    CommonModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot(appRoutes, routerConfig),
+    // Fuse, FuseConfig & FuseMockAPI
+    FuseModule,
+    FuseConfigModule.forRoot(appConfig),
+    // Core module of your application
+    CoreModule,
+    // Layout module of your application
+    LayoutModule,
+    ReactiveFormsModule,
+    FormsModule,
+    DragDropModule,
+    HttpClientModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatDialogModule,
+    MatSidenavModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatButtonModule,
+    SignInSplitScreenReversedComponent,
+    PersonsComponent,
+    ContactsDetailsComponent,
+    SettingsSecurityComponent,
+    ChangePictureComponent,
+],
     providers: [
         { provide: ErrorHandler, useClass: ErrorHandlerService },
         // REQUIRED IF YOU USE JWT AUTHENTICATION

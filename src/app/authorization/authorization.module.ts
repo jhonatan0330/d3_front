@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
-import { SharedModule } from "app/shared/shared.module";
+
 import { ProfileComponent } from "./profile/profile.component";
 import { TemplateComponent } from "./profile/template/template.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -19,46 +19,43 @@ import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatTableModule } from "@angular/material/table";
-import { FuseNavigationModule } from "@fuse/components/navigation";
-import { FuseScrollbarModule } from "@fuse/directives/scrollbar";
+
+
 
 @NgModule({
     imports: [
-        RouterModule.forChild([
-            {
-                path: '',
-                component: ProfileComponent
-            },
-            {
-                path: ':type',
-                component: ProfileComponent
-            },
-            {
-                path: ':type/:id',
-                component: ProfileComponent
-            }
-        ]),
-        MatDialogModule,
-        MatDividerModule,
-        MatMenuModule,
-        MatTooltipModule,
-        MatProgressBarModule,
-        MatSelectModule,
-        MatSidenavModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatTableModule,
-        FuseNavigationModule,
-        FuseScrollbarModule,
-        SharedModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatButtonModule,
-        MatCardModule,
-        TemplateComponent,
-        ProfileComponent
-    ],
+    RouterModule.forChild([
+        {
+            path: '',
+            component: ProfileComponent
+        },
+        {
+            path: ':type',
+            component: ProfileComponent
+        },
+        {
+            path: ':type/:id',
+            component: ProfileComponent
+        }
+    ]),
+    MatDialogModule,
+    MatDividerModule,
+    MatMenuModule,
+    MatTooltipModule,
+    MatProgressBarModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCardModule,
+    TemplateComponent,
+    ProfileComponent
+],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ProfileModule {

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
-import { SharedModule } from 'app/shared/shared.module';
+
 import { TrazabilityComponent } from './trazability/trazability.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,21 +11,20 @@ import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     imports: [
-        RouterModule.forChild([
-            {
-                path: '',
-                component: TrazabilityComponent
-            }
-        ]),
-        MatFormFieldModule,
-        MatSelectModule,
-        MatInputModule,
-        MatIconModule,
-        MatButtonModule,
-        DragDropModule,
-        SharedModule,
-        TrazabilityComponent
-    ],
+    RouterModule.forChild([
+        {
+            path: '',
+            component: TrazabilityComponent
+        }
+    ]),
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+    DragDropModule,
+    TrazabilityComponent
+],
     exports: [
         TrazabilityComponent
     ]

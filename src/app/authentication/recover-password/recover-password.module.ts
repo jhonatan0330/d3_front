@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { SharedModule } from 'app/shared/shared.module';
+
 
 import { RecoverPasswordComponent } from './recover-password.component';
 import { recoverPasswordRoutes } from './recover-password.routing';
@@ -11,14 +11,13 @@ import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     imports: [
-        RouterModule.forChild(recoverPasswordRoutes),
-        SharedModule,
-        MatProgressBarModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        RecoverPasswordComponent
-    ]
+    RouterModule.forChild(recoverPasswordRoutes),
+    MatProgressBarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    RecoverPasswordComponent
+]
 })
 export class RecoverPasswordModule
 {

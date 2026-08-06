@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { SharedModule } from 'app/shared/shared.module';
+
 
 import { NewPasswordComponent } from './new-password.component';
 import { newPasswordRoutes } from './new-password.routing';
@@ -11,14 +11,13 @@ import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
     imports: [
-        RouterModule.forChild(newPasswordRoutes),
-        SharedModule,
-        MatProgressBarModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        NewPasswordComponent
-    ]
+    RouterModule.forChild(newPasswordRoutes),
+    MatProgressBarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    NewPasswordComponent
+]
 })
 export class NewPasswordModule
 {

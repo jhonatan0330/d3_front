@@ -15,7 +15,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { SharedModule } from 'app/shared/shared.module';
+
 import { TasksComponent } from 'app/tasks/tasks.component';
 import { TasksDetailsComponent } from 'app/tasks/details/details.component';
 import { TasksListComponent } from 'app/tasks/list/list.component';
@@ -23,38 +23,37 @@ import { CanDeactivateTasksDetails } from './tasks.guards';
 
 @NgModule({
     imports: [
-        RouterModule.forChild([
-            {
-                path: '',
-                component: TasksListComponent,
-                children: [
-                    {
-                        path: ':id',
-                        component: TasksDetailsComponent,
-                        canDeactivate: [CanDeactivateTasksDetails]
-                    }
-                ]
-            }
-        ]),
-        DragDropModule,
-        MatAutocompleteModule,
-        MatButtonModule,
-        MatDatepickerModule,
-        MatDividerModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatMenuModule,
-        MatProgressBarModule,
-        MatRadioModule,
-        MatRippleModule,
-        MatSelectModule,
-        MatSidenavModule,
-        MatTooltipModule,
-        SharedModule,
-        TasksComponent,
-        TasksListComponent
-    ]
+    RouterModule.forChild([
+        {
+            path: '',
+            component: TasksListComponent,
+            children: [
+                {
+                    path: ':id',
+                    component: TasksDetailsComponent,
+                    canDeactivate: [CanDeactivateTasksDetails]
+                }
+            ]
+        }
+    ]),
+    DragDropModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatMenuModule,
+    MatProgressBarModule,
+    MatRadioModule,
+    MatRippleModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatTooltipModule,
+    TasksComponent,
+    TasksListComponent
+]
 })
 export class TasksModule
 {
