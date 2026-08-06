@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewEncapsulation, inject, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
@@ -29,7 +29,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     private _tasksService = inject(TasksService);
     private notificationCenter = inject(NotificationCenterService);
 
-    @ViewChild('titleField') private _titleField: ElementRef;
+    private readonly _titleField = viewChild<ElementRef>('titleField');
 
     task: Task;
     taskForm: UntypedFormGroup;
@@ -48,7 +48,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit(): void {
         // Open the drawer
-        this._tasksListComponent.matDrawer.open();
+        this._tasksListComponent.matDrawer().open();
 
         this.editor = new Editor();
 
@@ -68,7 +68,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((task: Task) => {
 
                 // Open the drawer in case it is closed
-                this._tasksListComponent.matDrawer.open();
+                this._tasksListComponent.matDrawer().open();
 
                 // Get the task
                 this.task = task;
@@ -113,20 +113,20 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe(() => {
                 // Focus on the title field
-                this._titleField.nativeElement.focus();
+                this._titleField().nativeElement.focus();
             });
     }
 
     ngAfterViewInit(): void {
         // Listen for matDrawer opened change
-        this._tasksListComponent.matDrawer.openedChange
+        this._tasksListComponent.matDrawer().openedChange
             .pipe(
                 takeUntil(this._unsubscribeAll),
                 filter(opened => opened)
             )
             .subscribe(() => {
                 // Focus on the title element
-                this._titleField.nativeElement.focus();
+                this._titleField().nativeElement.focus();
             });
     }
 
@@ -139,7 +139,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     closeDrawer(): Promise<MatDrawerToggleResult> {
-        return this._tasksListComponent.matDrawer.close();
+        return this._tasksListComponent.matDrawer().close();
     }
 
 

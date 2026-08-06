@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Subject, takeUntil } from 'rxjs';
@@ -50,7 +50,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     private _jwt = inject(LoginService);
     private _router = inject(Router);
 
-    @ViewChild('drawer') drawer: MatDrawer;
+    readonly drawer = viewChild<MatDrawer>('drawer');
 
     drawerMode: 'over' | 'side' = 'over';
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -110,7 +110,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     toggleDrawer(): void {
-        this.drawer.toggle();
+        this.drawer().toggle();
     }
 
     ngOnDestroy(): void {
@@ -188,7 +188,7 @@ export class AccountComponent implements OnInit, OnDestroy {
             return;
         }
         this.accountingService.currentCatalog = catalog;
-        this.drawer.close();
+        this.drawer().close();
         this.getAccounts();
         this.getBalance();
         this.getVouchers();

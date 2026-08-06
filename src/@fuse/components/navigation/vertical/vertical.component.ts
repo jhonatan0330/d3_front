@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren, ViewEncapsulation, DOCUMENT, inject, input } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, QueryList, Renderer2, SimpleChanges, ViewChildren, ViewEncapsulation, DOCUMENT, inject, input, viewChild } from '@angular/core';
 import { animate, AnimationBuilder, AnimationPlayer, style } from '@angular/animations';
 
 import { NavigationEnd, Router } from '@angular/router';
@@ -56,7 +56,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
     @Output() readonly modeChanged: EventEmitter<FuseVerticalNavigationMode> = new EventEmitter<FuseVerticalNavigationMode>();
     @Output() readonly openedChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() readonly positionChanged: EventEmitter<FuseVerticalNavigationPosition> = new EventEmitter<FuseVerticalNavigationPosition>();
-    @ViewChild('navigationContent') private _navigationContentEl: ElementRef;
+    private readonly _navigationContentEl = viewChild<ElementRef>('navigationContent');
 
     activeAsideItemId: string | null = null;
     onCollapsableItemCollapsed: ReplaySubject<FuseNavigationItem> = new ReplaySubject<FuseNavigationItem>(1);
@@ -355,15 +355,16 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
         setTimeout(() => {
 
             // Return if 'navigation content' element does not exist
-            if (!this._navigationContentEl) {
+            const _navigationContentEl = this._navigationContentEl();
+            if (!_navigationContentEl) {
                 return;
             }
 
             // If 'navigation content' element doesn't have
             // perfect scrollbar activated on it...
-            if (!this._navigationContentEl.nativeElement.classList.contains('ps')) {
+            if (!_navigationContentEl.nativeElement.classList.contains('ps')) {
                 // Find the active item
-                const activeItem = this._navigationContentEl.nativeElement.querySelector('.fuse-vertical-navigation-item-active');
+                const activeItem = _navigationContentEl.nativeElement.querySelector('.fuse-vertical-navigation-item-active');
 
                 // If the active item exists, scroll it into view
                 if (activeItem) {

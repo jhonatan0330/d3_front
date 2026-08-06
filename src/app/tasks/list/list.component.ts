@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, DOCUMENT, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation, DOCUMENT, inject, viewChild } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragPreview, CdkDragHandle } from '@angular/cdk/drag-drop';
@@ -28,7 +28,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     private _tasksService = inject(TasksService);
     private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
 
-    @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
+    readonly matDrawer = viewChild<MatDrawer>('matDrawer');
 
     drawerMode: 'side' | 'over';
     selectedTask: Task;

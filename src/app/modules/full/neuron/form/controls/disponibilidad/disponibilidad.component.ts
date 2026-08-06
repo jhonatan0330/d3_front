@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -31,7 +31,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
   private utils = inject(UtilsService);
   private dialog = inject(MatDialog);
 
-  @ViewChild('canvas', { static: true }) myCanvas: ElementRef<HTMLCanvasElement>;
+  readonly myCanvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
   ctx: CanvasRenderingContext2D;
   estructura: Estructura;
   multiple = false;
@@ -41,7 +41,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     super.ngOnInit();
     this.multiple = !this.isEmpty(this.obtenerValor(PlantillaHelper.MULTIPLE_SELECCION));
-    this.ctx = this.myCanvas.nativeElement.getContext('2d');
+    this.ctx = this.myCanvas().nativeElement.getContext('2d');
     this.fControl.setValue(this.data.valorText);
   }
 

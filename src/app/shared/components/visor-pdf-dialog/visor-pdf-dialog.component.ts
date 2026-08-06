@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -22,7 +22,7 @@ export class VisorPdfDialogComponent implements OnDestroy {
   data = inject(MAT_DIALOG_DATA);
 
 
-  @ViewChild('iframe') iframe!: ElementRef;
+  readonly iframe = viewChild.required<ElementRef>('iframe');
 
   pdfUrl: any = null;
   loading = true;
@@ -51,8 +51,8 @@ this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.orimi.c
 
   imprimir() {
     try {
-      this.iframe?.nativeElement?.contentWindow?.focus();
-      this.iframe?.nativeElement?.contentWindow?.print();
+      this.iframe()?.nativeElement?.contentWindow?.focus();
+      this.iframe()?.nativeElement?.contentWindow?.print();
     } catch (e) {
       console.warn('Print bloqueado por el navegador');
     }

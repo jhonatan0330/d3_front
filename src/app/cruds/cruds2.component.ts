@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
@@ -91,15 +91,14 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     masterSelected: boolean = false;
 
 
-    @ViewChild('drawer') drawer: MatDrawer;
+    readonly drawer = viewChild<MatDrawer>('drawer');
 
     drawerMode: 'over' | 'side' = 'side';
     drawerOpened: boolean = true;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     //VAriables del filtro
-    @ViewChild('dynamycFormElement', { read: ViewContainerRef })
-    myForm: ViewContainerRef;
+    readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
     formIsModified = false;
     dynamicControls: IDynamicControl[] = [];
 
@@ -254,7 +253,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
        */
     toggleDrawer(): void {
         // Toggle the drawer
-        this.drawer.toggle();
+        this.drawer().toggle();
     }
 
     /*removeColumn(pColumn: string) {
@@ -529,8 +528,9 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     // Agrega los campos al formulario de busqueda
     showFields() {
 
-        if (this.myForm) {
-            this.myForm.clear();
+        const myForm = this.myForm();
+        if (myForm) {
+            myForm.clear();
             this.dynamicControls = [];
         } else {
             // Espero que se cargue con el AfterInitView
@@ -549,7 +549,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.MULTIPLE)
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)) {
                 const componentDynamic: Type<any> = getComponent(_campo);
-                const componentRef = this.myForm.createComponent<IDynamicControl>(
+                const componentRef = this.myForm().createComponent<IDynamicControl>(
                     componentDynamic
                 );
                 componentRef.instance.structure = _campo;

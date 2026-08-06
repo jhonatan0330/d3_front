@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject, input, viewChild } from '@angular/core';
 import { BooleanInput } from '@angular/cdk/coercion';
 import { MatMenu, MatMenuTrigger, MatMenuItem } from '@angular/material/menu';
 import { Subject, takeUntil } from 'rxjs';
@@ -29,7 +29,7 @@ export class FuseHorizontalNavigationBranchItemComponent implements OnInit, OnDe
     readonly child = input<boolean>(false);
     readonly item = input<FuseNavigationItem>(undefined);
     readonly name = input<string>(undefined);
-    @ViewChild('matMenu', {static: true}) matMenu: MatMenu;
+    readonly matMenu = viewChild<MatMenu>('matMenu');
 
     private _fuseHorizontalNavigationComponent: FuseHorizontalNavigationComponent;
     private _unsubscribeAll: Subject<any> = new Subject<any>();

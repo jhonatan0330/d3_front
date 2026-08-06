@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,8 +21,8 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
   private loginService = inject(LoginService);
   private router = inject(Router);
 
-  @ViewChild(MatProgressBar) progressBar: MatProgressBar;
-  @ViewChild(MatButton) submitButton: MatButton;
+  readonly progressBar = viewChild(MatProgressBar);
+  readonly submitButton = viewChild(MatButton);
 
   recoverForm: FormGroup;
   errorMsg = '';
@@ -49,8 +49,8 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
   signin() {
     const signinData = this.recoverForm.value;
 
-    this.submitButton.disabled = true;
-    this.progressBar.mode = 'indeterminate';
+    this.submitButton().disabled = true;
+    this.progressBar().mode = 'indeterminate';
 
     this.loginService.recoverPassword(signinData.identificacion, signinData.correo).subscribe({
       next: () => {
@@ -59,8 +59,8 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('main');
       },
       error: () => {
-        this.submitButton.disabled = false;
-        this.progressBar.mode = 'determinate';
+        this.submitButton().disabled = false;
+        this.progressBar().mode = 'determinate';
       }
     });
   }

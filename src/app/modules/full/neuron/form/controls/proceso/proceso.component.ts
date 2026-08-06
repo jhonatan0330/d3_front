@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { FormControl, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import {
@@ -51,7 +51,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   private utilsService = inject(UtilsService);
   private sanitizer = inject(DomSanitizer);
 
-  @ViewChild('clickHoverMenuTrigger') trigger: MatMenuTrigger;
+  readonly trigger = viewChild<MatMenuTrigger>('clickHoverMenuTrigger');
   fControl = new UntypedFormControl();
   filteredDocuments: PedidoVentaDTO[];
 
@@ -1049,7 +1049,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           const iCampoPedido = this.data.dependientes[i];
           if (!iCampoPedido.valorText && !PlantillaHelper.buscarValor(iCampoPedido.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
             this.errorMessage = 'Por favor revisa que este seleccionado el campo ' + iCampoPedido.campoDTO.nombre;
-            if (this.trigger) { this.trigger.closeMenu(); }
+            const trigger = this.trigger();
+            if (trigger) { trigger.closeMenu(); }
             return;
           }
         }
@@ -1057,9 +1058,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
       if (this.acciones.length === 1) {
         this.createNewDocument(this.acciones[0].valor, this.acciones[0].llaveTabla);
-        if (this.trigger) { this.trigger.closeMenu(); }
+        const trigger = this.trigger();
+        if (trigger) { trigger.closeMenu(); }
       } else {
-        if (this.trigger) { this.trigger.openMenu(); }
+        const trigger = this.trigger();
+        if (trigger) { trigger.openMenu(); }
       }
     }
   }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
@@ -30,7 +30,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   private imageCompress = inject(NgxImageCompressService);
   private ls = inject(LocalStoreService);
 
-  @ViewChild('signatureCanvas') signatureCanvas!: ElementRef<HTMLCanvasElement>;
+  readonly signatureCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('signatureCanvas');
   signaturePad!: SignaturePad;
 
   static SEPARADOR = ';;';
@@ -103,8 +103,9 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   }
 
   ngAfterViewInit(): void {
-    if (this.signatureCanvas) {
-      this.signaturePad = new SignaturePad(this.signatureCanvas.nativeElement);
+    const signatureCanvas = this.signatureCanvas();
+    if (signatureCanvas) {
+      this.signaturePad = new SignaturePad(signatureCanvas.nativeElement);
       this.resizeCanvas();
     }
   }
@@ -115,8 +116,9 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   }
 
   resizeCanvas() {
-    if (!this.signatureCanvas) return;
-    const canvas = this.signatureCanvas.nativeElement;
+    const signatureCanvas = this.signatureCanvas();
+    if (!signatureCanvas) return;
+    const canvas = signatureCanvas.nativeElement;
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
     canvas.width = canvas.offsetWidth * ratio;
     canvas.height = canvas.offsetHeight * ratio;

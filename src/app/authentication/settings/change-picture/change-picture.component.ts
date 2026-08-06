@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ElementRef, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { LoginService } from 'app/authentication/login.service';
 import Swal from 'sweetalert2';
 import { MatIcon } from '@angular/material/icon';
@@ -18,8 +18,8 @@ export class ChangePictureComponent {
   private static DEFAULT_IMAGE_TYPE: string = 'image/jpeg';
   private static DEFAULT_IMAGE_QUALITY: number = 0.92;
 
-  @ViewChild('video') public video: ElementRef;
-  @ViewChild('canvas') public canvas: ElementRef;
+  public readonly video = viewChild<ElementRef>('video');
+  public readonly canvas = viewChild<ElementRef>('canvas');
 
   submitted = false;
   dataUrl: string;
@@ -33,9 +33,12 @@ export class ChangePictureComponent {
           video: true,
         });
         if (stream) {
-          this.video.nativeElement.srcObject = stream;
-          this.video.nativeElement.play();
-          this.video.nativeElement.style = "display = 'block'"
+          const videoEl = this.video()?.nativeElement;
+          if (videoEl) {
+            videoEl.srcObject = stream;
+            videoEl.play();
+            videoEl.style = "display = 'block'"
+          }
         } else {
           Swal.fire('Video', 'You have no output video device', 'error');
         }
@@ -48,7 +51,7 @@ export class ChangePictureComponent {
 
   capture() {
     // set canvas size to actual video size
-    const _video = this.video.nativeElement;
+    const _video = this.video().nativeElement;
     let widthSquare = this.WIDTH;
     let xStart = 0;
     let yStart = 0;
@@ -65,7 +68,7 @@ export class ChangePictureComponent {
       }
     }
 
-    const _canvas = this.canvas.nativeElement;
+    const _canvas = this.canvas().nativeElement;
     _canvas.width = widthSquare;
     _canvas.height = widthSquare;
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation, inject, viewChild } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -24,8 +24,8 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     private _viewContainerRef = inject(ViewContainerRef);
     private _utilService = inject(UtilsService);
 
-    @ViewChild('shortcutsOrigin') private _shortcutsOrigin: MatButton;
-    @ViewChild('shortcutsPanel') private _shortcutsPanel: TemplateRef<any>;
+    private readonly _shortcutsOrigin = viewChild<MatButton>('shortcutsOrigin');
+    private readonly _shortcutsPanel = viewChild<TemplateRef<any>>('shortcutsPanel');
 
 
     @ViewChild('barSearchInput')
@@ -97,7 +97,8 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
      */
     openPanel(): void {
         // Return if the shortcuts panel or its origin is not defined
-        if (!this._shortcutsPanel || !this._shortcutsOrigin) {
+        const _shortcutsPanel = this._shortcutsPanel();
+        if (!_shortcutsPanel || !this._shortcutsOrigin()) {
             return;
         }
 
@@ -107,7 +108,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
         }
 
         // Attach the portal to the overlay
-        this._overlayRef.attach(new TemplatePortal(this._shortcutsPanel, this._viewContainerRef));
+        this._overlayRef.attach(new TemplatePortal(_shortcutsPanel, this._viewContainerRef));
 
     }
 
@@ -160,7 +161,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
             backdropClass: 'fuse-backdrop-on-mobile',
             scrollStrategy: this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
-                .flexibleConnectedTo(this._shortcutsOrigin._elementRef.nativeElement)
+                .flexibleConnectedTo(this._shortcutsOrigin()._elementRef.nativeElement)
                 .withLockedPosition(true)
                 .withPush(true)
                 .withPositions([

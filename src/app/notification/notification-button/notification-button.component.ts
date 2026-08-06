@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewContainerRef, ViewEncapsulation, inject, viewChild } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -32,8 +32,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     private _jwtAuth = inject(LoginService);
     private utilsService = inject(UtilsService);
 
-    @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;
-    @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;
+    private readonly _notificationsOrigin = viewChild<MatButton>('notificationsOrigin');
+    private readonly _notificationsPanel = viewChild<TemplateRef<any>>('notificationsPanel');
 
     notifications: ActividadDTO[];
     notificationCount: number = 0;
@@ -97,7 +97,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
      */
     openPanel(): void {
         // Return if the notifications panel or its origin is not defined
-        if (!this._notificationsPanel || !this._notificationsOrigin) {
+        const _notificationsPanel = this._notificationsPanel();
+        if (!_notificationsPanel || !this._notificationsOrigin()) {
             return;
         }
 
@@ -108,7 +109,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
         //Al presionar espacio se abrian varios paneles
         if (this.isOpen) return;
-        this._overlayRef.attach(new TemplatePortal(this._notificationsPanel, this._viewContainerRef));
+        this._overlayRef.attach(new TemplatePortal(_notificationsPanel, this._viewContainerRef));
         this.isOpen = true;
 
         this.refresh();
@@ -131,7 +132,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
             backdropClass: 'fuse-backdrop-on-mobile',
             scrollStrategy: this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
-                .flexibleConnectedTo(this._notificationsOrigin._elementRef.nativeElement)
+                .flexibleConnectedTo(this._notificationsOrigin()._elementRef.nativeElement)
                 .withLockedPosition(true)
                 .withPush(true)
                 .withPositions([
