@@ -1,117 +1,118 @@
 <div class="w-full max-w-3xl">
 
-    <form [formGroup]="form">
+  <form [formGroup]="form">
 
-        <!-- Section -->
-        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
-            <!-- Name -->
-            <div class="sm:col-span-3">
-                <mat-form-field class="w-full">
-                    <mat-label>Nombre</mat-label>
-                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:user'" matPrefix></mat-icon>
-                    <input [formControlName]="'nombre'" matInput>
-                </mat-form-field>
-            </div>
-            <!-- Codigo -->
-            <div class="sm:col-span-1">
-                <mat-form-field class="w-full">
-                    <mat-label>Codigo</mat-label>
-                    <mat-icon class="icon-size-5" matPrefix>qr_code</mat-icon>
-                    <input [formControlName]="'codigo'" matInput>
-                </mat-form-field>
-            </div>
-            <!-- slogan -->
-            <div class="sm:col-span-4">
-                <mat-form-field class="w-full">
-                    <mat-label>Slogan</mat-label>
-                    <mat-icon class="icon-size-5" matPrefix>textsms</mat-icon>
-                    <input [formControlName]="'slogan'" matInput>
-                </mat-form-field>
-            </div>
-            <!-- Servidor -->
-            <div class="sm:col-span-4">
-                <mat-form-field class="w-full">
-                    <mat-label>Servidor</mat-label>
-                    <mat-icon class="icon-size-5" matPrefix>language</mat-icon>
-                    <input [formControlName]="'servidor'" matInput>
-                </mat-form-field>
-            </div>
-            <!-- Imagen -->
-            <div class="sm:col-span-4">
-                <mat-form-field class="w-full">
-                    <mat-label>Imagen</mat-label>
-                    <mat-icon class="icon-size-5" matPrefix>image</mat-icon>
-                    <input [formControlName]="'imagen'" matInput>
-                </mat-form-field>
-            </div>
-            <!-- Mensaje de ingreso -->
-            <div class="sm:col-span-4">
-                <mat-form-field class="w-full">
-                    <mat-label>Mensaje de ingreso</mat-label>
-                    <mat-icon class="icon-size-5" matPrefix>text_format</mat-icon>
-                    <input [formControlName]="'mensajeIngreso'" matInput>
-                </mat-form-field>
-            </div>
-            <!-- Usuario System -->
-            <div class="sm:col-span-4">
-                <mat-form-field class="w-full">
-                    <mat-label>Usuario System</mat-label>
-                    <mat-icon class="icon-size-5" matPrefix>manage_accounts</mat-icon>
-                    <input [formControlName]="'usuarioSystem'" matInput>
-                </mat-form-field>
-            </div>
-        </div>
-        <!-- Actions -->
-        <div class="flex items-center justify-end">
-            <button class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
-            </button>
-        </div>
-        <!-- Divider -->
-        <div class="mt-11 mb-10 border-t"></div>
-
-    </form>
-
-
-    <!-- Add Property -->
-    <div class="w-full">
-        <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
-            <mat-label>Adiciona una propiedad</mat-label>
-            <mat-icon class="icon-size-5" matPrefix>mediation</mat-icon>
-            <input matInput [formControl]="fControl"  [matAutocomplete]="auto" />
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor="let f of types" [value]="f">
-                    <span>{{f.nombre}}</span> 
-                </mat-option>
-            </mat-autocomplete>
-            <button mat-icon-button matSuffix>
-                <mat-icon class="icon-size-5">add_circle_outline</mat-icon>
-            </button>
+    <!-- Section -->
+    <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+      <!-- Name -->
+      <div class="sm:col-span-3">
+        <mat-form-field class="w-full">
+          <mat-label>Nombre</mat-label>
+          <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:user'" matPrefix></mat-icon>
+          <input [formControlName]="'nombre'" matInput>
         </mat-form-field>
+      </div>
+      <!-- Codigo -->
+      <div class="sm:col-span-1">
+        <mat-form-field class="w-full">
+          <mat-label>Codigo</mat-label>
+          <mat-icon class="icon-size-5" matPrefix>qr_code</mat-icon>
+          <input [formControlName]="'codigo'" matInput>
+        </mat-form-field>
+      </div>
+      <!-- slogan -->
+      <div class="sm:col-span-4">
+        <mat-form-field class="w-full">
+          <mat-label>Slogan</mat-label>
+          <mat-icon class="icon-size-5" matPrefix>textsms</mat-icon>
+          <input [formControlName]="'slogan'" matInput>
+        </mat-form-field>
+      </div>
+      <!-- Servidor -->
+      <div class="sm:col-span-4">
+        <mat-form-field class="w-full">
+          <mat-label>Servidor</mat-label>
+          <mat-icon class="icon-size-5" matPrefix>language</mat-icon>
+          <input [formControlName]="'servidor'" matInput>
+        </mat-form-field>
+      </div>
+      <!-- Imagen -->
+      <div class="sm:col-span-4">
+        <mat-form-field class="w-full">
+          <mat-label>Imagen</mat-label>
+          <mat-icon class="icon-size-5" matPrefix>image</mat-icon>
+          <input [formControlName]="'imagen'" matInput>
+        </mat-form-field>
+      </div>
+      <!-- Mensaje de ingreso -->
+      <div class="sm:col-span-4">
+        <mat-form-field class="w-full">
+          <mat-label>Mensaje de ingreso</mat-label>
+          <mat-icon class="icon-size-5" matPrefix>text_format</mat-icon>
+          <input [formControlName]="'mensajeIngreso'" matInput>
+        </mat-form-field>
+      </div>
+      <!-- Usuario System -->
+      <div class="sm:col-span-4">
+        <mat-form-field class="w-full">
+          <mat-label>Usuario System</mat-label>
+          <mat-icon class="icon-size-5" matPrefix>manage_accounts</mat-icon>
+          <input [formControlName]="'usuarioSystem'" matInput>
+        </mat-form-field>
+      </div>
     </div>
-    <!-- Properties -->
-    <div class="flex flex-col mt-8 divide-y border-t border-b">
-        <ng-container *ngFor="let prop of properties">
-            <div class="flex flex-col sm:flex-row sm:items-center py-6">
-                <div class="flex items-center">
-                    <div class="ml-4">
-                        <div class="font-medium">{{prop.nombre}}</div>
-                        <div class="text-secondary">{{prop.texto}}</div>
-                    </div>
-                </div>
-                <div class="flex items-center mt-4 sm:mt-0 sm:ml-auto">
+    <!-- Actions -->
+    <div class="flex items-center justify-end">
+      <button class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
+      </button>
+    </div>
+    <!-- Divider -->
+    <div class="mt-11 mb-10 border-t"></div>
 
-                    <div class="order-1 sm:order-2 sm:ml-3">
-                        <button mat-icon-button>
-                            <mat-icon class="text-hint">edit_note</mat-icon>
-                        </button>
-                    </div>
-                    <div class="order-1 sm:order-2 sm:ml-3">
-                        <button mat-icon-button>
-                            <mat-icon class="text-hint">delete_outline</mat-icon>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </ng-container>
-    </div>
+  </form>
+
+
+  <!-- Add Property -->
+  <div class="w-full">
+    <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+      <mat-label>Adiciona una propiedad</mat-label>
+      <mat-icon class="icon-size-5" matPrefix>mediation</mat-icon>
+      <input matInput [formControl]="fControl"  [matAutocomplete]="auto" />
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+        @for (f of types; track f) {
+          <mat-option [value]="f">
+            <span>{{f.nombre}}</span>
+          </mat-option>
+        }
+      </mat-autocomplete>
+      <button mat-icon-button matSuffix>
+        <mat-icon class="icon-size-5">add_circle_outline</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <!-- Properties -->
+  <div class="flex flex-col mt-8 divide-y border-t border-b">
+    @for (prop of properties; track prop) {
+      <div class="flex flex-col sm:flex-row sm:items-center py-6">
+        <div class="flex items-center">
+          <div class="ml-4">
+            <div class="font-medium">{{prop.nombre}}</div>
+            <div class="text-secondary">{{prop.texto}}</div>
+          </div>
+        </div>
+        <div class="flex items-center mt-4 sm:mt-0 sm:ml-auto">
+          <div class="order-1 sm:order-2 sm:ml-3">
+            <button mat-icon-button>
+              <mat-icon class="text-hint">edit_note</mat-icon>
+            </button>
+          </div>
+          <div class="order-1 sm:order-2 sm:ml-3">
+            <button mat-icon-button>
+              <mat-icon class="text-hint">delete_outline</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>
