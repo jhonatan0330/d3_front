@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LoginService } from './authentication/login.service';
 
@@ -9,7 +9,7 @@ import { LoginService } from './authentication/login.service';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
   /**
