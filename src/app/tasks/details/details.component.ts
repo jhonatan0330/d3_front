@@ -6,7 +6,7 @@ import { debounceTime, filter, Subject, takeUntil, tap } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksListComponent } from 'app/tasks/list/list.component';
 import { TasksService } from 'app/tasks/tasks.service';
-import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
+import { Editor, NgxEditorModule, Toolbar } from '@bobbyquantum/ngx-editor';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';

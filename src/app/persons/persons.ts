@@ -1,6 +1,5 @@
 import {
   Component,
-  ModuleWithComponentFactories,
   ChangeDetectionStrategy
 } from '@angular/core';
 import {

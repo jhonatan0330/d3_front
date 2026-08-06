@@ -17,8 +17,7 @@ export class TemplateService {
   
   template: DocumentoPlantillaDTO[] = [];
   templates$ = new BehaviorSubject<DocumentoPlantillaDTO[]>(this.template);
-  private colores: PropiedadDTO[];
-  private coloresOthers: PropiedadDTO[];
+  private colores: PropiedadDTO[] = [];
 
   conectionTemplates: OrganizacionDTO[];
 
@@ -61,7 +60,7 @@ export class TemplateService {
 
   setTemplates(value: DocumentoPlantillaDTO[]) {
     this.template = value;
-    this.colores = null;
+    this.colores = [];
     this.getColor('');
     const processToMenu = [];
     // Transform document to MenuItems
@@ -105,25 +104,7 @@ export class TemplateService {
     if (prop) {
       return prop.valor;
     }
-    if (!this.coloresOthers) {
-      if (this.conectionTemplates) {
-        this.coloresOthers = [];
-        for (let i = 0; i < this.conectionTemplates.length; i++) {
-          const element = this.conectionTemplates[i];
-          if (element.plantillas) {
-            for (let y = 0; y < element.plantillas.length; y++) {
-              this.exploreTemplateColor(element.plantillas[y], this.coloresOthers);
-            }
-          }
-        }
-      }
-    }
-    if (this.coloresOthers) {
-      const prop2 = this.coloresOthers.find(item => item.campo === stateId);
-      if (prop2) {
-        return prop2.valor;
-      }
-    }
+   
     // No se porque se repirte tanto pero la cosa es que hay se mejora el color
     return null;
   }
@@ -198,9 +179,9 @@ export class TemplateService {
   }
 
   clear() {
-    this.colores = null;
+    this.colores = [];
     this.setTemplates([]);
-    this._modules = null;
+    this._modules = [];
   }
   setModules(value: PropiedadDTO[]) {
     this._modules = value;
