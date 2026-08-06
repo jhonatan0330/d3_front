@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +21,12 @@ import { ImageFormatPipe } from '../../../shared/local-image';
     imports: [FormsModule, ReactiveFormsModule, MatInput, ImageFormatPipe]
 })
 export class SignInSplitScreenReversedComponent implements OnInit {
+    private _formBuilder = inject(UntypedFormBuilder);
+    loginservice = inject(LoginService);
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+    private utilsService = inject(UtilsService);
+
 
     templateNewUser: string;
 
@@ -30,14 +36,6 @@ export class SignInSplitScreenReversedComponent implements OnInit {
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     logo: SafeHtml;
-
-    constructor(
-        private _formBuilder: UntypedFormBuilder,
-        public loginservice: LoginService,
-        private route: ActivatedRoute,
-        private router: Router,
-        private utilsService: UtilsService
-    ) { }
 
 
     ngOnInit(): void {

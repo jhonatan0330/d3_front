@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import {
@@ -46,6 +46,11 @@ import { ImageFormatPipe } from '../../../../../../shared/local-image';
     imports: [MatProgressBar, MatFormField, MatLabel, MatInput, MatAutocompleteTrigger, FormsModule, ReactiveFormsModule, NgClass, MatAutocomplete, MatIconButton, MatPrefix, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, MatSuffix, ZXingScannerModule, MatTable, MatColumnDef, MatCellDef, MatCell, MatRowDef, MatRow, MatButton, MatBadge, MatCard, MatCardTitle, MatCardContent, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker, DecimalPipe, TitleCasePipe, DatePipe, ImageFormatPipe]
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {
+  private templateService = inject(TemplateService);
+  private api = inject(ApiService);
+  private utilsService = inject(UtilsService);
+  private sanitizer = inject(DomSanitizer);
+
   @ViewChild('clickHoverMenuTrigger') trigger: MatMenuTrigger;
   fControl = new UntypedFormControl();
   filteredDocuments: PedidoVentaDTO[];
@@ -103,15 +108,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   inputModeText = 'text';
   errorMessage: string = null;
   messageHTML: SafeHtml;
-
-  constructor(
-    private templateService: TemplateService,
-    private api: ApiService,
-    private utilsService: UtilsService,
-    private sanitizer: DomSanitizer
-  ) {
-    super();
-  }
 
   autoCompleteDisplay(item: PedidoVentaDTO): string {
     if (!item) {

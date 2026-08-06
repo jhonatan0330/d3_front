@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +20,11 @@ import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
     imports: [CommonModule, MatIconModule]
 })
 export class FieldComponent implements OnInit {
+    data = inject(MAT_DIALOG_DATA);
+    private flexService = inject(FlexService);
+    private utilsService = inject(UtilsService);
+    private dialogRef = inject<MatDialogRef<FieldComponent>>(MatDialogRef);
+
 
 
     field: DocumentoPlantillaCaracteristicaDTO;
@@ -31,13 +36,6 @@ export class FieldComponent implements OnInit {
     tipo = 'Campo';
 
     editarDisabled = true;
-
-    constructor(
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        private flexService: FlexService,
-        private utilsService: UtilsService,
-        private dialogRef: MatDialogRef<FieldComponent>
-    ) { }
 
     close(): void {
         try{

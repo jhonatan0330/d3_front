@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -20,20 +20,17 @@ import { MatDivider } from '@angular/material/divider';
     imports: [MatIconButton, MatMenuTrigger, MatIcon, MatMenu, MatDivider, MatMenuItem]
 })
 export class UserComponent implements OnInit, OnDestroy {
+    private _changeDetectorRef = inject(ChangeDetectorRef);
+    jwtAuth = inject(LoginService);
+    private apiService = inject(ApiService);
+    private templateService = inject(TemplateService);
+    private utilService = inject(UtilsService);
+
 
     user: UsuarioDTO;
     time = new Date();
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-    constructor(
-        private _changeDetectorRef: ChangeDetectorRef,
-        public jwtAuth: LoginService,
-        private apiService: ApiService,
-        private templateService: TemplateService,
-        private utilService:UtilsService
-    ) {
-    }
 
     ngOnInit(): void {
         this.jwtAuth.user$

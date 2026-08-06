@@ -1,8 +1,4 @@
-import {
-  Component,
-  Inject,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UsuarioAutenticacionDTO } from '../authentication.domain';
@@ -18,19 +14,18 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
     ]
 })
 export class dfaComponent {
+    private fb = inject(FormBuilder);
+    private apiService = inject(ApiService);
+    data = inject(MAT_DIALOG_DATA);
+    private dialogRef = inject<MatDialogRef<dfaComponent>>(MatDialogRef);
+
 
     public recoverForm: FormGroup;
     errorMsg = '';
     autorizationId: string;
 
 
-    constructor(
-        private fb: FormBuilder,
-        private apiService: ApiService,
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        private dialogRef: MatDialogRef<dfaComponent>
-
-    ) {
+    constructor() {
 
         this.recoverForm = this.fb.group({
             code: ['', [Validators.required, Validators.minLength(4)]]

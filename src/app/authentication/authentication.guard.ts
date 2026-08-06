@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable, of, switchMap } from 'rxjs';
 import { LoginService } from './login.service';
@@ -7,14 +7,9 @@ import { LoginService } from './login.service';
     providedIn: 'root'
 })
 export class AuthGuard  {
-    /**
-     * Constructor
-     */
-    constructor(
-        private _authService: LoginService,
-        private _router: Router
-    ) {
-    }
+    private _authService = inject(LoginService);
+    private _router = inject(Router);
+
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods

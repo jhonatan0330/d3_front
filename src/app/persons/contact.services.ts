@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
     BehaviorSubject,
     catchError,
@@ -15,6 +15,9 @@ import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
+    private _httpClient = inject(HttpClient);
+    private ls = inject(LocalStoreService);
+
     // Private
     private _contact: BehaviorSubject<UsuarioDTO | null> = new BehaviorSubject(
         null
@@ -22,8 +25,6 @@ export class ContactsService {
     private _contacts: BehaviorSubject<UsuarioDTO[] | null> = new BehaviorSubject(
         null
     );
-
-    constructor(private _httpClient: HttpClient, private ls: LocalStoreService) { }
 
 
     get contact$(): Observable<UsuarioDTO> {

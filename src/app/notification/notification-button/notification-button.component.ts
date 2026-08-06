@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation, inject } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -24,6 +24,14 @@ import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
     imports: [MatIconButton, MatIcon, MatTooltip, NgClass, DecimalPipe, DatePipe]
 })
 export class NotificationButtonComponent implements OnInit, OnDestroy {
+    private _changeDetectorRef = inject(ChangeDetectorRef);
+    private _notificationsService = inject(NotificationsService);
+    private _overlay = inject(Overlay);
+    private _viewContainerRef = inject(ViewContainerRef);
+    private templateService = inject(TemplateService);
+    private _jwtAuth = inject(LoginService);
+    private utilsService = inject(UtilsService);
+
     @ViewChild('notificationsOrigin') private _notificationsOrigin: MatButton;
     @ViewChild('notificationsPanel') private _notificationsPanel: TemplateRef<any>;
 
@@ -33,20 +41,6 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     isOpen = false;
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-    /**
-     * Constructor
-     */
-    constructor(
-        private _changeDetectorRef: ChangeDetectorRef,
-        private _notificationsService: NotificationsService,
-        private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef,
-        private templateService: TemplateService,
-        private _jwtAuth: LoginService,
-        private utilsService: UtilsService
-    ) {
-    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks

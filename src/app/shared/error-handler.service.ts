@@ -1,13 +1,11 @@
-import { ErrorHandler, Injectable, Injector, ApplicationRef, ChangeDetectorRef } from '@angular/core';
+import { ErrorHandler, Injectable, Injector, ApplicationRef, ChangeDetectorRef, inject } from '@angular/core';
 
 @Injectable()
 export class ErrorHandlerService extends ErrorHandler {
+    protected injector = inject(Injector);
+
 
     errorCount = 0;
-
-    constructor(protected injector: Injector) {
-        super();
-    }
     // https://github.com/angular/angular/issues/17010
     handleError(error: any) {
         const increment = 5;

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { finalize, Observable } from 'rxjs';
 import { FuseLoadingService } from '@fuse/services/loading/loading.service';
@@ -6,14 +6,14 @@ import { FuseLoadingService } from '@fuse/services/loading/loading.service';
 @Injectable()
 export class FuseLoadingInterceptor implements HttpInterceptor
 {
+    private _fuseLoadingService = inject(FuseLoadingService);
+
     handleRequestsAutomatically: boolean;
 
     /**
      * Constructor
      */
-    constructor(
-        private _fuseLoadingService: FuseLoadingService
-    )
+    constructor()
     {
         // Subscribe to the auto
         this._fuseLoadingService.auto$

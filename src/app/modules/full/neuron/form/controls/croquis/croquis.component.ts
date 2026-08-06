@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  TemplateRef,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
@@ -40,6 +33,9 @@ interface RenderItem {
 })
 export class CroquisComponent extends BaseComponent
   implements OnInit, AfterViewInit, OnDestroy {
+  private api = inject(ApiService);
+  private dialog = inject(MatDialog);
+
 
   private canvas?: HTMLCanvasElement;
   private ctx?: CanvasRenderingContext2D;
@@ -72,13 +68,6 @@ export class CroquisComponent extends BaseComponent
 
   // Plantilla base para nuevo componente (si es necesaria)
   exp: PedidoVentaDTO = {} as PedidoVentaDTO;
-
-  constructor(
-    private api: ApiService,
-    private dialog: MatDialog
-  ) {
-    super();
-  }
 
   // ---------- POPUP ----------
   openCroquisDialog(tpl: TemplateRef<any>): void {

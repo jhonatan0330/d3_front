@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
     DocumentoPlantillaDTO,
@@ -21,11 +21,9 @@ import { UsuarioAutenticacionDTO, UsuarioDTO } from 'app/authentication/authenti
     providedIn: 'root',
 })
 export class ApiService {
+    private http = inject(HttpClient);
+    private ls = inject(LocalStoreService);
 
-    constructor(
-        private http: HttpClient,
-        private ls: LocalStoreService
-    ) { }
 
     listarPlantillas(pProfile: string, pServer: string = null): Observable<DocumentoPlantillaDTO[]> {
         return this.http.get<DocumentoPlantillaDTO[]>(

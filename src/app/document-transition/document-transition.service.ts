@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from './document-transition.types';
 import { Observable } from 'rxjs';
@@ -11,12 +11,9 @@ import { VoucherPrepareRequest } from 'app/accounting/accounting.domain';
   providedIn: 'root'
 })
 export class DocumentTransitionService {
-  
-  constructor(
-    private http: HttpClient,
-    private ls: LocalStoreService
-  ) {
-  }
+  private http = inject(HttpClient);
+  private ls = inject(LocalStoreService);
+
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountingService } from '../accounting.service';
@@ -27,6 +27,14 @@ import { AsyncPipe, CurrencyPipe } from '@angular/common';
     imports: [MatIconButton, MatIcon, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatAutocompleteTrigger, MatButton, MatProgressSpinner, MatAutocomplete, MatOption, AsyncPipe, CurrencyPipe]
 })
 export class ManualFormComponent implements OnInit {
+    data = inject(MAT_DIALOG_DATA);
+    matDialogRef = inject<MatDialogRef<ManualFormComponent>>(MatDialogRef);
+    private _formBuilder = inject(UntypedFormBuilder);
+    accountingService = inject(AccountingService);
+    private ls = inject(LocalStoreService);
+    private templateService = inject(TemplateService);
+    private notificationCenter = inject(NotificationCenterService);
+
 
     public form: UntypedFormGroup;
     public timeFrom: FormControl = new FormControl('00:00'); // Controlador del texto de la hora
@@ -45,17 +53,6 @@ export class ManualFormComponent implements OnInit {
     private catalog: CatalogDTO;
     public referencesActive: boolean = false;
     public reportes: ReporteBaseDTO[] = [];
-
-    constructor(
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        public matDialogRef: MatDialogRef<ManualFormComponent>,
-        private _formBuilder: UntypedFormBuilder,
-        public accountingService: AccountingService,
-        private ls: LocalStoreService,
-        private templateService: TemplateService,
-        private notificationCenter: NotificationCenterService
-    ) {
-    }
 
     ngOnInit(): void {
 

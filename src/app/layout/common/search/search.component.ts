@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { Subject } from 'rxjs';
@@ -20,6 +20,10 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     imports: [MatIconButton, MatIcon, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatProgressBar, MatAutocomplete, MatOption]
 })
 export class SearchComponent implements OnChanges, OnInit, OnDestroy {
+    private api = inject(ApiService);
+    private templateService = inject(TemplateService);
+    private utilsService = inject(UtilsService);
+
     @Input() appearance: 'basic' | 'bar' = 'basic';
     @Input() debounce: number = 300;
     @Input() minLength: number = 2;
@@ -31,16 +35,6 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     searchControl: UntypedFormControl = new UntypedFormControl();
     private _matAutocomplete: MatAutocomplete;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-    /**
-     * Constructor
-     */
-    constructor(
-        private api: ApiService,
-        private templateService: TemplateService,
-        private utilsService: UtilsService
-    ) {
-    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors

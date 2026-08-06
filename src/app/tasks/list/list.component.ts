@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ViewEncapsulation, DOCUMENT } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, DOCUMENT, inject } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragPreview, CdkDragHandle } from '@angular/cdk/drag-drop';
@@ -21,6 +21,13 @@ import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
     imports: [MatDrawerContainer, MatDrawer, RouterOutlet, MatDrawerContent, MatButton, MatTooltip, MatIcon, CdkDropList, CdkDrag, NgClass, CdkDragPreview, CdkDragHandle, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, DatePipe]
 })
 export class TasksListComponent implements OnInit, OnDestroy {
+    private _activatedRoute = inject(ActivatedRoute);
+    private _changeDetectorRef = inject(ChangeDetectorRef);
+    private _document = inject(DOCUMENT);
+    private _router = inject(Router);
+    private _tasksService = inject(TasksService);
+    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
+
     @ViewChild('matDrawer', { static: true }) matDrawer: MatDrawer;
 
     drawerMode: 'side' | 'over';
@@ -32,17 +39,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
         total: 0
     };
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-
-    constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _changeDetectorRef: ChangeDetectorRef,
-        @Inject(DOCUMENT) private _document: any,
-        private _router: Router,
-        private _tasksService: TasksService,
-        private _fuseMediaWatcherService: FuseMediaWatcherService
-    ) {
-    }
 
 
     ngOnInit(): void {

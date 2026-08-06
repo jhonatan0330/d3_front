@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   DetallePedidoVentaDTO,
@@ -37,6 +37,12 @@ import { ImageFormatPipe } from '../../../../../../shared/local-image';
     imports: [MatProgressBar, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatIconButton, MatSuffix, MatIcon, MatButton, MatCard, MatCardContent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow, DecimalPipe, TitleCasePipe, ImageFormatPipe]
 })
 export class DetalleComponent extends BaseComponent implements OnInit, AfterViewInit {
+  private templateService = inject(TemplateService);
+  private api = inject(ApiService);
+  private cd = inject(ChangeDetectorRef);
+  private utilsService = inject(UtilsService);
+  private dialog = inject(MatDialog);
+
   unicoProducto = false;
   fControl = new FormControl(''); // Texto que digita el usuario para filtrar
   categories: DocumentoPlantillaDTO[];
@@ -59,16 +65,6 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     'cantidad',
     'total'
   ];
-
-  constructor(
-    private templateService: TemplateService,
-    private api: ApiService,
-    private cd: ChangeDetectorRef,
-    private utilsService: UtilsService,
-    private dialog: MatDialog
-  ) {
-    super();
-  }
 
   ngOnInit(): void {
     super.ngOnInit();

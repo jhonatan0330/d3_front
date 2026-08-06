@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
@@ -17,12 +17,11 @@ import { TitleCasePipe } from '@angular/common';
     imports: [MatFormField, MatLabel, MatIconButton, MatPrefix, MatIcon, MatInput, FormsModule, ReactiveFormsModule, MatSuffix, TitleCasePipe]
 })
 export class GpsComponent extends BaseComponent implements OnInit {
+  dialog = inject(MatDialog);
+  private notificationCenter = inject(NotificationCenterService);
+
 
   fControl = new FormControl('');
-
-  constructor(public dialog: MatDialog, private notificationCenter: NotificationCenterService) {
-    super();
-  }
 
   ngOnInit(): void {
     super.ngOnInit();

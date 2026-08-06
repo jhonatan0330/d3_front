@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
@@ -26,6 +26,10 @@ import { ImageFormatPipe } from '../../../../../../shared/local-image';
     imports: [FormsModule, MatButton, MatIcon, MatProgressBar, TitleCasePipe, ImageFormatPipe]
 })
 export class ArchivoComponent extends BaseComponent implements OnInit, AfterViewInit {
+  private api = inject(ApiService);
+  private imageCompress = inject(NgxImageCompressService);
+  private ls = inject(LocalStoreService);
+
   @ViewChild('signatureCanvas') signatureCanvas!: ElementRef<HTMLCanvasElement>;
   signaturePad!: SignaturePad;
 
@@ -49,10 +53,6 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   allowUrlTextFromUser = false;
   isLoadingUrl = false;
   urlText = '';
-
-  constructor(private api: ApiService, private imageCompress: NgxImageCompressService, private ls: LocalStoreService) {
-    super();
-  }
 
   ngOnInit(): void {
     super.ngOnInit();

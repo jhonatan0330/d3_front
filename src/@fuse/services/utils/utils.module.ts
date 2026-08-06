@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, inject } from '@angular/core';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
 
 @NgModule({
@@ -7,11 +7,6 @@ import { FuseUtilsService } from '@fuse/services/utils/utils.service';
     ]
 })
 export class FuseUtilsModule
-{
-    /**
-     * Constructor
-     */
-    constructor(private _fuseUtilsService: FuseUtilsService)
-    {
-    }
+{    private _fuseUtilsService = inject(FuseUtilsService);
+
 }

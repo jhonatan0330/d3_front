@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -10,13 +10,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 })
 
 export class SuccessComponent implements OnInit {
+  data = inject(MAT_DIALOG_DATA);
+  private domSanitizer = inject(DomSanitizer);
+
 
 
   successFullText: SafeHtml = '';
-  constructor(
-     @Inject(MAT_DIALOG_DATA) public data: any,
-     private domSanitizer: DomSanitizer
-  ) { }
 
   ngOnInit() {
     if (!this.data || !this.data.data) {

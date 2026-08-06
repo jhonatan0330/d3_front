@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { FlexService } from '../flex.service';
@@ -13,6 +13,10 @@ import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/mo
     templateUrl: './addField.html'
 })
 export class AddFieldComponent {
+    private flexService = inject(FlexService);
+    data = inject(MAT_DIALOG_DATA);
+    private dialogRef = inject<MatDialogRef<AddFieldComponent>>(MatDialogRef);
+
     campo: DocumentoPlantillaCaracteristicaDTO;
 
     imagenPreview: string | null = null;
@@ -22,13 +26,6 @@ export class AddFieldComponent {
         nombre,
         valor
     }));
-
-    constructor(
-        private flexService: FlexService,
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        private dialogRef: MatDialogRef<AddFieldComponent>
-
-    ) { }
 
     ngOnInit(): void {
         if (this.data.campo) {

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Inject, Input, OnChanges, OnDestroy, OnInit, Output, QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren, ViewEncapsulation, DOCUMENT } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren, ViewEncapsulation, DOCUMENT, inject } from '@angular/core';
 import { animate, AnimationBuilder, AnimationPlayer, style } from '@angular/animations';
 
 import { NavigationEnd, Router } from '@angular/router';
@@ -27,6 +27,16 @@ import { FuseVerticalNavigationSpacerItemComponent } from './components/spacer/s
     imports: [FuseScrollbarDirective_1, FuseVerticalNavigationAsideItemComponent, FuseVerticalNavigationBasicItemComponent, FuseVerticalNavigationCollapsableItemComponent, FuseVerticalNavigationDividerItemComponent, FuseVerticalNavigationGroupItemComponent, FuseVerticalNavigationSpacerItemComponent]
 })
 export class FuseVerticalNavigationComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
+    private _animationBuilder = inject(AnimationBuilder);
+    private _changeDetectorRef = inject(ChangeDetectorRef);
+    private _document = inject<Document>(DOCUMENT);
+    private _elementRef = inject(ElementRef);
+    private _renderer2 = inject(Renderer2);
+    private _router = inject(Router);
+    private _scrollStrategyOptions = inject(ScrollStrategyOptions);
+    private _fuseNavigationService = inject(FuseNavigationService);
+    private _fuseUtilsService = inject(FuseUtilsService);
+
     /* eslint-disable @typescript-eslint/naming-convention */
     static ngAcceptInputType_inner: BooleanInput;
     static ngAcceptInputType_opened: BooleanInput;
@@ -68,17 +78,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
     /**
      * Constructor
      */
-    constructor(
-        private _animationBuilder: AnimationBuilder,
-        private _changeDetectorRef: ChangeDetectorRef,
-        @Inject(DOCUMENT) private _document: Document,
-        private _elementRef: ElementRef,
-        private _renderer2: Renderer2,
-        private _router: Router,
-        private _scrollStrategyOptions: ScrollStrategyOptions,
-        private _fuseNavigationService: FuseNavigationService,
-        private _fuseUtilsService: FuseUtilsService
-    ) {
+    constructor() {
         this._scrollStrategy = this._scrollStrategyOptions.block();
         this._handleAsideOverlayClick = (): void => {
             this.closeAside();

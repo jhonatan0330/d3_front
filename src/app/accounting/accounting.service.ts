@@ -1,17 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO, Voucher } from './accounting.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class AccountingService {
+    private http = inject(HttpClient);
+    private ls = inject(LocalStoreService);
+
 
     public currentCatalog: CatalogDTO;
-
-    constructor(private http: HttpClient,
-        private ls: LocalStoreService) {
-    }
 
     getVouchers(catalogId: string): Observable<ManualDTO[]> {
         return this.http.get<ManualDTO[]>(this.ls.getUrlAccess('/acc/voucher/' + catalogId));

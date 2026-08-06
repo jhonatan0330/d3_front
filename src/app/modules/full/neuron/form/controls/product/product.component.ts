@@ -1,13 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  Inject,
-  OnInit,
-  Type,
-  ViewChild,
-  ViewContainerRef,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, Type, ViewChild, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   DetallePedidoVentaDTO,
@@ -33,6 +24,10 @@ import { DecimalPipe } from '@angular/common';
     imports: [MatIcon, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, DecimalPipe]
 })
 export class ProductComponent implements OnInit, AfterViewInit {
+  data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<ProductComponent>>(MatDialogRef);
+  private api = inject(ApiService);
+
 
   detallePedidoVenta = new DetallePedidoVentaDTO();
   montos = false;
@@ -50,12 +45,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
   dynamicControls: IDynamicControl[] = [];
   @ViewChild('dynamycFormElement', { read: ViewContainerRef })
   myForm: ViewContainerRef;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<ProductComponent>,
-    private api: ApiService
-  ) {}
 
   ngOnInit(): void {
     this.detallePedidoVenta = this.data.data;

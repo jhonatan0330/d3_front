@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, ElementRef, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, ElementRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Map } from 'ol';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -27,6 +27,9 @@ export const DEFAULT_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAA
     changeDetection: ChangeDetectionStrategy.Eager
 })
 export class FullMapComponent implements OnInit, AfterViewInit {
+  data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<FullMapComponent>>(MatDialogRef);
+
 
   @Input() lat: number;
   @Input() lon: number;
@@ -36,9 +39,6 @@ export class FullMapComponent implements OnInit, AfterViewInit {
   documents: PedidoVentaDTO[];
 
   map: Map;
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<FullMapComponent>) { }
 
   ngOnInit(): void {
     this.lat = this.data.latitude;

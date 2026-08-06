@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { propiedadCampo, PropiedadCampoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { FlexService } from '../flex.service';
@@ -17,6 +17,10 @@ import { ApiErrorResponse } from 'app/modules/full/neuron/model/sw42.utils';
     imports: [FormsModule]
 })
 export class AddPropertyComponent {
+    private flexService = inject(FlexService);
+    data = inject(MAT_DIALOG_DATA);
+    dialogRef = inject<MatDialogRef<AddPropertyComponent>>(MatDialogRef);
+
     cargando = false;
 
     //propiedad : PropiedadValorDefinidoDTO; PropiedadCampoDTO
@@ -35,13 +39,6 @@ export class AddPropertyComponent {
     buscandoUsuarioExcluyente = false;
 
     private debounceTimer: any;
-
-    constructor(
-        private flexService: FlexService,
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        public dialogRef: MatDialogRef<AddPropertyComponent>
-
-    ) { }
 
     onPropiedadValorChange(llaveSeleccionada: string): void {
         this.def = this.propiedadValores.find(p => p.llaveTabla === llaveSeleccionada);

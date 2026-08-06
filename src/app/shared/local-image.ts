@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
 import { LocalConstants, LocalStoreService } from './local-store.service';
 
 // Helper function to reuse formatting logic in code
@@ -15,7 +15,12 @@ export function formatImageUrl(ls: LocalStoreService, url: string) {
 
 @Pipe({ name: 'imageFormat' })
 export class ImageFormatPipe implements PipeTransform {
-  constructor(private ls: LocalStoreService) { }
+  private ls: LocalStoreService;
+
+  constructor(ls?: LocalStoreService) {
+    this.ls = ls ?? inject(LocalStoreService);
+  }
+
   transform(url: string) {
     return formatImageUrl(this.ls, url);
   }

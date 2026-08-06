@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
@@ -18,19 +18,14 @@ import { MatButton } from '@angular/material/button';
     imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatIcon, MatPrefix, MatInput, MatButton]
 })
 export class SettingsSecurityComponent implements OnInit {
+    data = inject<{
+    key: UsuarioDTO;
+}>(MAT_DIALOG_DATA);
+    private _formBuilder = inject(UntypedFormBuilder);
+    private jwtAuth = inject(LoginService);
+
     securityForm: UntypedFormGroup;
     isLoading = false;
-
-    /**
-     * Constructor
-     */
-    constructor(
-
-        @Inject(MAT_DIALOG_DATA) public data: { key: UsuarioDTO },
-        private _formBuilder: UntypedFormBuilder,
-        private jwtAuth: LoginService
-    ) {
-    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks

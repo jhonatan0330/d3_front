@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
     DocumentoPlantillaCaracteristicaDTO,
@@ -22,6 +22,11 @@ import { FormsModule } from '@angular/forms';
         MatIconModule, DragDropModule]
 })
 export class FlexComponent implements OnInit {
+    data = inject(MAT_DIALOG_DATA);
+    dialogRef = inject<MatDialogRef<FlexComponent>>(MatDialogRef);
+    private flexService = inject(FlexService);
+    private utilsService = inject(UtilsService);
+
 
     plantilla: DocumentoPlantillaDTO;
     isLoading: boolean = false;
@@ -37,14 +42,6 @@ export class FlexComponent implements OnInit {
     isDragging: boolean = false;
 
     formatos = Object.keys(FormatoCampoSimboloEnum) as (keyof typeof FormatoCampoSimboloEnum)[];
-
-
-    constructor(
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        public dialogRef: MatDialogRef<FlexComponent>,
-        private flexService: FlexService,
-        private utilsService: UtilsService
-    ) { }
 
     close(): void {
         if (this.dialogRef) {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
@@ -44,6 +44,16 @@ import { ImageFormatPipe } from '../shared/local-image';
     imports: [MatDrawerContainer, MatDrawer, MatIconButton, MatTooltip, MatIcon, MatButton, MatMenuTrigger, MatMenu, MatMenuItem, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatDrawerContent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatProgressBar, CurrencyPipe, DatePipe, ImageFormatPipe]
 })
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
+    private route = inject(ActivatedRoute);
+    private templateService = inject(TemplateService);
+    private api = inject(ApiService);
+    private router = inject(Router);
+    private formBuilder = inject(FormBuilder);
+    private ls = inject(LocalStoreService);
+    private utilsService = inject(UtilsService);
+    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
+    private dialog = inject(MatDialog);
+
     plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
     templatesFromProcess: DocumentoPlantillaDTO[];
     tableroId: string;
@@ -92,19 +102,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     myForm: ViewContainerRef;
     formIsModified = false;
     dynamicControls: IDynamicControl[] = [];
-    //filterDocument: PedidoVentaDTO; // Contiene la info del filtro por campo
-
-    constructor(
-        private route: ActivatedRoute,
-        private templateService: TemplateService,
-        private api: ApiService,
-        private router: Router,
-        private formBuilder: FormBuilder,
-        private ls: LocalStoreService,
-        private utilsService: UtilsService,
-        private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private dialog: MatDialog
-    ) { }
 
     ngOnInit(): void {
         this.route.params.subscribe((params: Params) => {

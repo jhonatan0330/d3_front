@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -20,6 +15,10 @@ import { MatButton } from '@angular/material/button';
     imports: [FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatButton, RouterLink]
 })
 export class NewPasswordComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private loginService = inject(LoginService);
+
 
   recoverForm: FormGroup;
   errorMsg = '';
@@ -27,11 +26,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   
   private _unsubscribeAll: Subject<any>;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private loginService: LoginService
-  ) {
+  constructor() {
     this._unsubscribeAll = new Subject();
   }
 

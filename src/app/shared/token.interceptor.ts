@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpEvent,
   HttpInterceptor,
@@ -12,7 +12,8 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(private templateService: TemplateService) {}
+  private templateService = inject(TemplateService);
+
 
   intercept(
     req: HttpRequest<any>,

@@ -1,4 +1,4 @@
-import { Injectable, Inject, DOCUMENT } from '@angular/core';
+import { Injectable, DOCUMENT, inject } from '@angular/core';
 
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaDTO, PropiedadCampoDTO } from 'app/modules/full/neuron/model/sw42.domain';
@@ -22,12 +22,13 @@ import { VisorPdfDialogComponent } from 'app/shared/components/visor-pdf-dialog/
   providedIn: 'root',
 })
 export class UtilsService {
+  dialog = inject(MatDialog);
+  private _document = inject(DOCUMENT);
+
 
   // Keep references to open right-side dialogs to ensure only one instance of each type is open
   private _fieldDialogRef: MatDialogRef<any> | null = null;
   private _flexDialogRef: MatDialogRef<any> | null = null;
-
-  constructor(public dialog: MatDialog, @Inject(DOCUMENT) private _document: any) { }
 
   modalWithParams(pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null, pSaveInField = false, openQuickTransitionAfterSave = null) {
 

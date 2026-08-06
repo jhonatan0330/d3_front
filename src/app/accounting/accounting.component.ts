@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Subject, takeUntil } from 'rxjs';
@@ -44,6 +44,12 @@ interface AccountFlatNode {
     imports: [MatDrawerContainer, MatDrawer, MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, MatProgressBar, NgClass, MatDrawerContent, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow, UpperCasePipe, DecimalPipe, DatePipe]
 })
 export class AccountComponent implements OnInit, OnDestroy {
+    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
+    private utilsService = inject(UtilsService);
+    accountingService = inject(AccountingService);
+    private _jwt = inject(LoginService);
+    private _router = inject(Router);
+
     @ViewChild('drawer') drawer: MatDrawer;
 
     drawerMode: 'over' | 'side' = 'over';
@@ -83,14 +89,6 @@ export class AccountComponent implements OnInit, OnDestroy {
         node => node.expandable, node => node.children);
 
     dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
-    constructor(private _fuseMediaWatcherService: FuseMediaWatcherService,
-
-        private utilsService: UtilsService,
-        public accountingService: AccountingService,
-        private _jwt: LoginService,
-        private _router: Router) {
-    }
 
     ngOnInit(): void {
         if (!this._jwt.validateAccessModule('account')) {

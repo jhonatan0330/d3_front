@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
@@ -19,6 +19,8 @@ import { TitleCasePipe } from '@angular/common';
     imports: [MatFormField, MatLabel, MatInput, MatDatepickerInput, FormsModule, ReactiveFormsModule, MatDatepickerToggle, MatSuffix, MatDatepicker, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker, TitleCasePipe]
 })
 export class FechaComponent extends BaseComponent implements OnInit {
+  private api = inject(ApiService);
+
   conHora = false; // Define si se pide las fechas con hora
   sinCalendar = false; // Define si solo pide el time
   dateFrom: FormControl = new FormControl(); // Controlador de fecha de inicio
@@ -42,10 +44,6 @@ export class FechaComponent extends BaseComponent implements OnInit {
   clock: any;
 
   funcion: string;
-
-  constructor(private api: ApiService) {
-    super();
-  }
 
   ngOnInit() {
     super.ngOnInit();

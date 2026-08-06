@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ChangeDetectionStrategy } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy, inject } from "@angular/core";
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DocumentoPlantillaDTO } from "app/modules/full/neuron/model/sw42.domain";
@@ -26,6 +26,11 @@ import { ImageFormatPipe } from "../../shared/local-image";
     imports: [MatCard, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatAutocompleteTrigger, MatAutocomplete, MatOption, MatButton, MatIcon, MatProgressBar, ImageFormatPipe]
 })
 export class TransferFormComponent implements OnInit {
+  private notificationService = inject(NotificationsService);
+  data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<TransferFormComponent>>(MatDialogRef);
+  private templateService = inject(TemplateService);
+
 
   plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
   isTransfering = false;
@@ -34,15 +39,6 @@ export class TransferFormComponent implements OnInit {
     comentario: new FormControl('', Validators.required),
   });
   users: UsuarioDTO[] = [];
-
-  constructor(
-    private notificationService: NotificationsService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<TransferFormComponent>,
-    private templateService: TemplateService
-  ) {
-
-  }
 
   ngOnInit(): void {
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ChangeDetectionStrategy } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy, inject } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from "app/modules/full/neuron/model/sw42.domain";
@@ -31,6 +31,13 @@ interface OptionTrace {
     imports: [CdkDrag, CdkDragHandle, MatIcon, MatButton, UpperCasePipe, TitleCasePipe, CurrencyPipe, ImageFormatPipe]
 })
 export class TrazabilityComponent implements OnInit {
+  data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<TrazabilityComponent>>(MatDialogRef);
+  private _traceService = inject(DocumentTransitionService);
+  private templateService = inject(TemplateService);
+  private utilsService = inject(UtilsService);
+  private notificationCenter = inject(NotificationCenterService);
+
 
   // TRACE
   pagina = 1; // Indica que pagina estamos buscando
@@ -65,17 +72,6 @@ export class TrazabilityComponent implements OnInit {
   documentName;
   documentState;
   state;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<TrazabilityComponent>,
-    private _traceService: DocumentTransitionService,
-    private templateService: TemplateService,
-    private utilsService: UtilsService,
-    private notificationCenter: NotificationCenterService
-  ) {
-
-  }
 
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;

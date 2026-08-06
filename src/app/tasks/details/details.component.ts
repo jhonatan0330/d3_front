@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
@@ -22,6 +22,13 @@ import { NotificationCenterService } from 'app/notification/notification-center.
     imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatMenuModule, MatInputModule]
 })
 export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+    private _changeDetectorRef = inject(ChangeDetectorRef);
+    private _formBuilder = inject(UntypedFormBuilder);
+    private _router = inject(Router);
+    private _tasksListComponent = inject(TasksListComponent);
+    private _tasksService = inject(TasksService);
+    private notificationCenter = inject(NotificationCenterService);
+
     @ViewChild('titleField') private _titleField: ElementRef;
 
     task: Task;
@@ -38,16 +45,6 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     ['align_left', 'align_center', 'align_right', 'align_justify'],
   ];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-    constructor(
-        private _changeDetectorRef: ChangeDetectorRef,
-        private _formBuilder: UntypedFormBuilder,
-        private _router: Router,
-        private _tasksListComponent: TasksListComponent,
-        private _tasksService: TasksService,
-        private notificationCenter: NotificationCenterService,
-    ) {
-    }
 
     ngOnInit(): void {
         // Open the drawer

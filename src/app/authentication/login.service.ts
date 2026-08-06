@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, catchError } from 'rxjs/operators';
@@ -18,6 +18,16 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
+  private ls = inject(LocalStoreService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private dialog = inject(MatDialog);
+  private templateService = inject(TemplateService);
+  private notificationService = inject(NotificationsService);
+  private apiService = inject(ApiService);
+  private domSanitizer = inject(DomSanitizer);
+  private http = inject(HttpClient);
+
 
   token: string;
   urlService: string;
@@ -46,17 +56,7 @@ export class LoginService {
   headerSection: SafeHtml[] = [];
   headerSection$ = new BehaviorSubject<SafeHtml[]>(this.headerSection);
 
-  constructor(
-    private ls: LocalStoreService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private dialog: MatDialog,
-    private templateService: TemplateService,
-    private notificationService: NotificationsService,
-    private apiService: ApiService,
-    private domSanitizer: DomSanitizer,
-    private http: HttpClient
-  ) {
+  constructor() {
     this.route.queryParams.subscribe(
       (params) => (this.returnPath = params['return'] || '/')
     );

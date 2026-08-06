@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { LoginService } from 'app/authentication/login.service';
 
@@ -10,11 +10,9 @@ import { LoginService } from 'app/authentication/login.service';
     imports: [RouterOutlet]
 })
 export class TasksComponent implements OnInit{
-    constructor(
-        private _jwt: LoginService,
-        private _router: Router
-    ) {
-    }
+    private _jwt = inject(LoginService);
+    private _router = inject(Router);
+
     ngOnInit(): void {
 
         if (!this._jwt.validateAccessModule('tasks')) {

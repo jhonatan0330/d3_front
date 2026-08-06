@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -12,8 +12,8 @@ import { MatIcon } from '@angular/material/icon';
     imports: [MatIconButton, MatTooltip, MatIcon]
 })
 export class HomeButtonComponent {
+    private router = inject(Router);
 
-    constructor(private router: Router) {}
 
     goToHome(): void {
         this.router.navigate(['/main']);

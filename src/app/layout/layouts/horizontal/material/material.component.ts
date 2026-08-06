@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
@@ -28,6 +28,11 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     imports: [FuseVerticalNavigationComponent_1, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, FuseHorizontalNavigationComponent, RouterOutlet, ImageFormatPipe]
 })
 export class MaterialLayoutComponent implements OnInit, OnDestroy {
+  _loginService = inject(LoginService);
+  private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
+  private _fuseNavigationService = inject(FuseNavigationService);
+  private _navigationService = inject(NavigationService);
+
   isScreenSmall: boolean;
   navigation: Navigation;
   user: UsuarioDTO;
@@ -37,14 +42,6 @@ export class MaterialLayoutComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   headerSection: SafeHtml[];
   landing: SafeHtml[];
-
-  constructor(
-    public _loginService: LoginService,
-    private _fuseMediaWatcherService: FuseMediaWatcherService,
-    private _fuseNavigationService: FuseNavigationService,
-    private _navigationService: NavigationService
-  ) {
-  }
 
   // -----------------------------------------------------------------------------------------------------
   // @ Lifecycle hooks

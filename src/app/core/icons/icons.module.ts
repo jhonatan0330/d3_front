@@ -1,17 +1,17 @@
-import { NgModule } from '@angular/core';
+import { NgModule, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 
 @NgModule()
 export class IconsModule
 {
+    private _domSanitizer = inject(DomSanitizer);
+    private _matIconRegistry = inject(MatIconRegistry);
+
     /**
      * Constructor
      */
-    constructor(
-        private _domSanitizer: DomSanitizer,
-        private _matIconRegistry: MatIconRegistry
-    )
+    constructor()
     {
         // Register icon sets
         //this._matIconRegistry.addSvgIconSet(this._domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/material-twotone.svg'));

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -19,16 +19,16 @@ export enum TemplateEnum {
     imports: [ImageFormatPipe]
 })
 export class TemplateComponent implements OnInit {
+  private router = inject(Router);
+  private utilsService = inject(UtilsService);
+  private templateService = inject(TemplateService);
+
   @Input() nombre = '';
   @Input() imagen = '';
   @Input() id: string;
   @Input() process_id: string;
   @Input() type: TemplateEnum;
   @Input() serverId: string;
-
-  constructor(
-    private router: Router, 
-    private utilsService: UtilsService, private templateService: TemplateService) { }
 
   ngOnInit(): void { }
 

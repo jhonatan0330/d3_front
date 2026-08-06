@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import {
   DocumentMessage,
   DocumentoPlantillaCaracteristicaDTO,
@@ -36,6 +36,12 @@ import { NgClass } from '@angular/common';
     imports: [MatButton, MatIcon, FormsModule, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, NgClass, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
 })
 export class MassiveComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private templateService = inject(TemplateService);
+  private api = inject(ApiService);
+  private dialog = inject(MatDialog);
+
   plantillaId: string;
   urlServer: string;
 
@@ -73,14 +79,6 @@ export class MassiveComponent implements OnInit {
   pause: boolean = false;
 
   files: FileList;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private templateService: TemplateService,
-    private api: ApiService,
-    private dialog: MatDialog
-  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {

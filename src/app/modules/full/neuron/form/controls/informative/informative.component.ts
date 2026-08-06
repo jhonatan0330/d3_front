@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { BaseComponent } from '../base/base.component';
@@ -15,15 +15,11 @@ import { TitleCasePipe } from '@angular/common';
     imports: [MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, TitleCasePipe]
 })
 export class InformativeComponent extends BaseComponent implements OnInit {
+  private utilsService = inject(UtilsService);
+  private api = inject(ApiService);
+
 
   fControl = new FormControl('');
-
-  constructor(
-    private utilsService: UtilsService,
-    private api: ApiService
-  ) {
-    super(); // super(base);
-  }
 
   ngOnInit(): void {
     super.ngOnInit();

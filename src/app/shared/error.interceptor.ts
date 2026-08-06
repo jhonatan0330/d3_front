@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   HttpHandler,
   HttpRequest,
@@ -12,10 +12,9 @@ import { LoginService } from '../authentication/login.service';
   providedIn: 'root',
 })
 export class HttpErrorInterceptor implements HttpInterceptor {
-  constructor(
-    private jwtAuth: LoginService,
-    private notificationCenter: NotificationCenterService
-  ) {}
+  private jwtAuth = inject(LoginService);
+  private notificationCenter = inject(NotificationCenterService);
+
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     return next.handle(req).pipe(

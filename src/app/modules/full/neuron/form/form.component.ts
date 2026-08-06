@@ -1,14 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Inject,
-  ViewContainerRef,
-  ViewChild,
-  Type,
-  AfterViewInit,
-  HostListener,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject } from '@angular/core';
 import {
     MatDialogRef,
     MAT_DIALOG_DATA,
@@ -63,6 +53,15 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     imports: [CdkDrag, CdkDragHandle, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, MatCard, MatProgressBar, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatAutocompleteTrigger, MatAutocomplete, MatOption, MatButton, MatTooltip, SlicePipe, TitleCasePipe, CurrencyPipe, DatePipe, ImageFormatPipe]
 })
 export class FormComponent implements OnInit, AfterViewInit {
+    data = inject(MAT_DIALOG_DATA);
+    dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
+    private templateService = inject(TemplateService);
+    private api = inject(ApiService);
+    _jwt = inject(LoginService);
+    private ls = inject(LocalStoreService);
+    private utilsService = inject(UtilsService);
+    private _router = inject(Router);
+
     // Variables para el control de los campos
     @ViewChild('dynamycFormElement', { read: ViewContainerRef })
     myForm?: ViewContainerRef;
@@ -115,17 +114,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
 
     styleSizePop = '';
-
-    constructor(
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        public dialogRef: MatDialogRef<FormComponent>,
-        private templateService: TemplateService,
-        private api: ApiService,
-        public _jwt: LoginService,
-        private ls: LocalStoreService,
-        private utilsService: UtilsService,
-        private _router: Router
-    ) { }
 
     ngOnInit(): void {
 

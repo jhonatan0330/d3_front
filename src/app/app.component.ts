@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, HostListener, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -12,15 +12,10 @@ import { LoginService } from './authentication/login.service';
     imports: [RouterOutlet]
 })
 export class AppComponent implements OnInit {
-  /**
-   * Constructor
-   */
-  constructor(
-    public title: Title,
-    private router: Router,
-    private jwtAut: LoginService
-  ) {
-  }
+  title = inject(Title);
+  private router = inject(Router);
+  private jwtAut = inject(LoginService);
+
 
   ngOnInit() {
     this.changePageTitle();

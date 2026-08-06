@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy, AfterViewInit, Renderer2, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy, AfterViewInit, Renderer2, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -35,6 +35,14 @@ interface MenuNode {
     imports: [NgClass, MatCard, MatFormField, MatInput, FormsModule, ReactiveFormsModule, TemplateComponent, ImageFormatPipe]
 })
 export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
+  private templateService = inject(TemplateService);
+  _jwtAuth = inject(AuthenticationService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private _utilsService = inject(UtilsService);
+  private _formBuilder = inject(UntypedFormBuilder);
+  loginservice = inject(LoginService);
+
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   currentApplicationVersion = environment.appVersion;
@@ -55,18 +63,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
   tempTemplateOpen;
   tempIdOpen;
-
-  constructor(
-    private templateService: TemplateService,
-    public _jwtAuth: AuthenticationService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private _utilsService: UtilsService,
-    private _formBuilder: UntypedFormBuilder,
-  public loginservice: LoginService
-
-  ) {
-  }
 
   ngOnInit(): void {
 

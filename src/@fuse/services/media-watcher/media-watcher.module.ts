@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, inject } from '@angular/core';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher/media-watcher.service';
 
 @NgModule({
@@ -7,11 +7,6 @@ import { FuseMediaWatcherService } from '@fuse/services/media-watcher/media-watc
     ]
 })
 export class FuseMediaWatcherModule
-{
-    /**
-     * Constructor
-     */
-    constructor(private _fuseMediaWatcherService: FuseMediaWatcherService)
-    {
-    }
+{    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
+
 }

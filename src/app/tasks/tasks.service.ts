@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, map, Observable,  switchMap, take, tap } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
@@ -9,17 +9,12 @@ import { LocalStoreService } from 'app/shared/local-store.service';
     providedIn: 'root'
 })
 export class TasksService {
+    private _httpClient = inject(HttpClient);
+    private ls = inject(LocalStoreService);
+
     // Private
     private _task: BehaviorSubject<Task | null> = new BehaviorSubject(null);
     private _tasks: BehaviorSubject<Task[] | null> = new BehaviorSubject(null);
-
-    /**
-     * Constructor
-     */
-    constructor(
-        private _httpClient: HttpClient,
-        private ls: LocalStoreService) {
-    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors

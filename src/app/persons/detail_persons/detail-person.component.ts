@@ -1,13 +1,9 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ContactsService } from '../contact.services';
 import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Inject } from '@angular/core';
+
 import { LoginService } from 'app/authentication/login.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
@@ -23,6 +19,14 @@ import { NgClass } from '@angular/common';
     imports: [MatIconButton, MatIcon, ChangePictureComponent, NgClass]
 })
 export class ContactsDetailsComponent implements OnInit {
+    private _contactsService = inject(ContactsService);
+    data = inject<{
+    key: string;
+}>(MAT_DIALOG_DATA);
+    private dialogRef = inject<MatDialogRef<ContactsDetailsComponent>>(MatDialogRef);
+    jwtAuth = inject(LoginService);
+    private utilService = inject(UtilsService);
+
 
 
     public contact: UsuarioDTO = new UsuarioDTO();
@@ -30,16 +34,6 @@ export class ContactsDetailsComponent implements OnInit {
 
     tags: RolAccesoFilterDTO[];
     permisos: PermisosDTO[];
-
-
-    constructor(
-        private _contactsService: ContactsService,
-        @Inject(MAT_DIALOG_DATA) public data: { key: string; },
-        private dialogRef: MatDialogRef<ContactsDetailsComponent>,
-        public jwtAuth: LoginService,
-        private utilService: UtilsService,
-
-    ) { }
 
     ngOnInit(): void {
 

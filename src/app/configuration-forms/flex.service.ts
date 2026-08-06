@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, propiedadCampo, PropiedadCampoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
@@ -10,11 +10,9 @@ import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authenticatio
     providedIn: 'root',
 })
 export class FlexService {
+    private http = inject(HttpClient);
+    private ls = inject(LocalStoreService);
 
-    constructor(
-        private http: HttpClient,
-        private ls: LocalStoreService
-    ) { }
 
     getTemplate(pKey: string, _server: string): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(

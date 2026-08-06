@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, OnInit, Inject, Optional, Output, EventEmitter, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnInit, Output, EventEmitter, HostListener, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
@@ -33,12 +33,18 @@ interface NodeRender {
     styleUrls: ['./bpm-diagram.component.scss']
 })
 export class BpmDiagramComponent implements OnChanges, OnInit {
+  private notification = inject(NotificationCenterService);
+  private dialog = inject(MatDialog);
+  private data = inject(MAT_DIALOG_DATA, { optional: true });
+
   @Input() proceso: Proceso | null = null;
   @Input() width = 600;
   @Input() height = 400;
   @Input() nodeRadius = 48;
 
-  constructor(private notification: NotificationCenterService, private dialog: MatDialog, @Optional() @Inject(MAT_DIALOG_DATA) private data?: any) {
+  constructor() {
+    const data = this.data;
+
     // If opened via MatDialog with data, accept proceso/width/height from it
     if (data) {
       if (data.proceso) this.proceso = data.proceso;

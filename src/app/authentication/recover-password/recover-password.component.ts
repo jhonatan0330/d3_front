@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  OnDestroy,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -24,6 +18,9 @@ import { MatInput } from '@angular/material/input';
     imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, RouterLink, MatProgressBar]
 })
 export class RecoverPasswordComponent implements OnInit, OnDestroy {
+  private loginService = inject(LoginService);
+  private router = inject(Router);
+
   @ViewChild(MatProgressBar) progressBar: MatProgressBar;
   @ViewChild(MatButton) submitButton: MatButton;
 
@@ -32,10 +29,7 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
   
   private _unsubscribeAll: Subject<any>;
 
-  constructor(
-    private loginService: LoginService,
-    private router: Router
-  ) {
+  constructor() {
     this._unsubscribeAll = new Subject();
   }
 

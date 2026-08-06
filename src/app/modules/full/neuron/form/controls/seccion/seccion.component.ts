@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { BaseComponent } from '../base/base.component';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.domain';
 import { ApiService } from '../../../service/api.service';
@@ -11,10 +11,8 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
     changeDetection: ChangeDetectionStrategy.Eager
 })
 export class SeccionComponent extends BaseComponent implements OnInit {
-  
-  constructor(private api: ApiService) {
-    super();
-  }
+  private api = inject(ApiService);
+
 
   ngOnInit(): void {
     if(this.data.documento){

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation, inject } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -18,6 +18,12 @@ import { MatIcon } from '@angular/material/icon';
     imports: [MatIconButton, MatIcon]
 })
 export class ShortcutsComponent implements OnInit, OnDestroy {
+    private _changeDetectorRef = inject(ChangeDetectorRef);
+    private _templateService = inject(TemplateService);
+    private _overlay = inject(Overlay);
+    private _viewContainerRef = inject(ViewContainerRef);
+    private _utilService = inject(UtilsService);
+
     @ViewChild('shortcutsOrigin') private _shortcutsOrigin: MatButton;
     @ViewChild('shortcutsPanel') private _shortcutsPanel: TemplateRef<any>;
 
@@ -40,19 +46,6 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     shortcutsFiltered: DocumentoPlantillaDTO[];
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-
-    /**
-     * Constructor
-     */
-    constructor(
-        private _changeDetectorRef: ChangeDetectorRef,
-        private _templateService: TemplateService,
-        private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef,
-        private _utilService: UtilsService
-    ) {
-    }
 
     ngOnInit(): void {
 

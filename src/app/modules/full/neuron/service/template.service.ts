@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   DocumentoPlantillaDTO,
   RelacionInternaDTO,
@@ -14,6 +14,9 @@ import { NavigationService } from 'app/authorization/navigation/navigation.servi
   providedIn: 'root',
 })
 export class TemplateService {
+  private ls = inject(LocalStoreService);
+  private _navigationService = inject(NavigationService);
+
   
   template: DocumentoPlantillaDTO[] = [];
   templates$ = new BehaviorSubject<DocumentoPlantillaDTO[]>(this.template);
@@ -23,11 +26,6 @@ export class TemplateService {
 
   private propiedadesConRelaciones: RelacionInternaDTO[];
   private _modules:PropiedadDTO[];
-
-  constructor(
-    private ls: LocalStoreService,
-    private _navigationService: NavigationService
-  ) { }
 
   getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO {
     if (!this.template) { return null; }

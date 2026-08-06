@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, ElementRef, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, ElementRef, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Map } from 'ol';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -30,6 +30,10 @@ export const DEFAULT_TEXT = '';
     imports: [MatFormField, MatLabel, MatIconButton, MatPrefix, MatIcon, MatInput, FormsModule, ReactiveFormsModule, MatSuffix]
 })
 export class OlMapComponent implements OnInit, AfterViewInit {
+  data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<OlMapComponent>>(MatDialogRef);
+  private elementRef = inject(ElementRef);
+
 
   @Input() lat: number;
   @Input() lon: number;
@@ -45,10 +49,6 @@ export class OlMapComponent implements OnInit, AfterViewInit {
   map: Map;
   vectorLayer: VectorLayer;
   marker: Feature;
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<OlMapComponent>,
-    private elementRef: ElementRef) { }
 
   ngOnInit(): void {
     this.lat = this.data.latitude;

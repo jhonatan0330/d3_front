@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   DocumentoPlantillaDTO,
@@ -26,16 +26,12 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
     imports: [MatFormField, MatLabel, MatInput, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatAutocomplete, MatOption, MatIconButton, MatSuffix, MatIcon, MatProgressBar, AsyncPipe, TitleCasePipe]
 })
 export class ConfiguracionComponent extends BaseComponent implements OnInit {
+  private templateService = inject(TemplateService);
+  private api = inject(ApiService);
+
   fControl: FormControl = new FormControl();
   disponibles: PedidoVentaDTO[] = []; // Contiene los documetnos que resultaron de consultar el servidor
   filteredOptions: Observable<PedidoVentaDTO[]>;
-
-  constructor(
-    private templateService: TemplateService,
-    private api: ApiService
-  ) {
-    super();
-  }
 
   ngOnInit(): void {
     super.ngOnInit();

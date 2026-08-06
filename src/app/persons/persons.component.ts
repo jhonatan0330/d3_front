@@ -1,7 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import {
     ChangeDetectorRef,
     OnDestroy,
@@ -39,6 +36,13 @@ import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
     imports: [MatDrawerContainer, MatDrawer, RouterOutlet, MatDrawerContent, MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, AsyncPipe, I18nPluralPipe]
 })
 export class PersonsComponent implements OnInit, OnDestroy {
+    private _activatedRoute = inject(ActivatedRoute);
+    private _changeDetectorRef = inject(ChangeDetectorRef);
+    private _jwt = inject(LoginService);
+    private _contactsService = inject(ContactsService);
+    private _router = inject(Router);
+    private utilService = inject(UtilsService);
+
 
 
     contacts$: Observable<UsuarioDTO[]>;
@@ -50,16 +54,6 @@ export class PersonsComponent implements OnInit, OnDestroy {
     selectedContact: UsuarioDTO;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     tags$: Observable<RolAccesoFilterDTO[]>;
-
-
-    constructor(
-        private _activatedRoute: ActivatedRoute,
-        private _changeDetectorRef: ChangeDetectorRef,
-        private _jwt: LoginService,
-        private _contactsService: ContactsService,
-        private _router: Router,
-        private utilService: UtilsService
-    ) { }
 
 
     ngOnInit(): void {

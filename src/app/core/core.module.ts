@@ -1,4 +1,4 @@
-import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { NgModule, inject } from '@angular/core';
 import { IconsModule } from 'app/core/icons/icons.module';
 
 @NgModule({
@@ -11,10 +11,10 @@ export class CoreModule
     /**
      * Constructor
      */
-    constructor(
-        @Optional() @SkipSelf() parentModule?: CoreModule
-    )
+    constructor()
     {
+        const parentModule = inject(CoreModule, { optional: true, skipSelf: true });
+
         // Do not allow multiple injections
         if ( parentModule )
         {

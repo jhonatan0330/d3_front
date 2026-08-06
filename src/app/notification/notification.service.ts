@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, ReplaySubject, tap } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
@@ -10,14 +10,11 @@ import { UsuarioDTO } from 'app/authentication/authentication.domain';
   providedIn: 'root'
 })
 export class NotificationsService {
-  private _notifications: ReplaySubject<ActividadDTO[]> = new ReplaySubject<ActividadDTO[]>(1);
+  private http = inject(HttpClient);
+  private ls = inject(LocalStoreService);
+  private templateService = inject(TemplateService);
 
-  constructor(
-    private http: HttpClient,
-    private ls: LocalStoreService,
-    private templateService: TemplateService
-  ) {
-  }
+  private _notifications: ReplaySubject<ActividadDTO[]> = new ReplaySubject<ActividadDTO[]>(1);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors

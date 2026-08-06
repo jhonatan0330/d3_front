@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
@@ -22,6 +22,9 @@ import { DecimalPipe, TitleCasePipe } from '@angular/common';
     imports: [MatProgressBar, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatIconButton, MatSuffix, MatIcon, MatCard, MatButton, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCardContent, DecimalPipe, TitleCasePipe]
 })
 export class ProductoListaComponent extends BaseComponent implements OnInit {
+  private api = inject(ApiService);
+  private utils = inject(UtilsService);
+
 
   fControl = new FormControl('') ; // Texto que digita el usuario para filtrar
 
@@ -32,10 +35,6 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
   displayedColumns: string[] = [
     'producto', 'personalizado', 'promocion'
   ];
-
-  constructor(private api: ApiService, private utils: UtilsService) {
-    super();
-  }
 
   ngOnInit(): void {
 

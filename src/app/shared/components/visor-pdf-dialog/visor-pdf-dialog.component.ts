@@ -1,4 +1,4 @@
-import { Component, Inject, ElementRef, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -16,19 +16,17 @@ import { PdfService } from 'app/shared/pdf.service';
     templateUrl: './visor-pdf-dialog.component.html'
 })
 export class VisorPdfDialogComponent implements OnDestroy {
+  private pdfService = inject(PdfService);
+  private sanitizer = inject(DomSanitizer);
+  private dialogRef = inject<MatDialogRef<VisorPdfDialogComponent>>(MatDialogRef);
+  data = inject(MAT_DIALOG_DATA);
+
 
   @ViewChild('iframe') iframe!: ElementRef;
 
   pdfUrl: any = null;
   loading = true;
   private objectUrl: string | null = null;
-
-  constructor(
-    private pdfService: PdfService,
-    private sanitizer: DomSanitizer,
-    private dialogRef: MatDialogRef<VisorPdfDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
 
   ngOnInit() {
     this.cargarPdf();

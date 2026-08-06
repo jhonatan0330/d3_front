@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { BaseComponent } from '../base/base.component';
 import Swal from 'sweetalert2';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -13,13 +13,12 @@ import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaCaracteristicaDTO, Pedi
     standalone: false
 })
 export class GpsMapComponent extends BaseComponent implements OnInit {
+  dialog = inject(MatDialog);
+  private api = inject(ApiService);
+
 
   lat;
   lon;
-
-  constructor(public dialog: MatDialog,  private api: ApiService) {
-    super();
-  }
 
   ngOnInit(): void {
   }

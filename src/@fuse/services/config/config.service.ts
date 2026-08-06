@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FUSE_APP_CONFIG } from '@fuse/services/config/config.constants';
 
@@ -12,8 +12,10 @@ export class FuseConfigService
     /**
      * Constructor
      */
-    constructor(@Inject(FUSE_APP_CONFIG) config: any)
+    constructor()
     {
+        const config = inject(FUSE_APP_CONFIG);
+
         // Private
         this._config = new BehaviorSubject(config);
     }

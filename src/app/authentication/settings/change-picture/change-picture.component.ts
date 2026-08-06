@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
 import { LoginService } from 'app/authentication/login.service';
 import Swal from 'sweetalert2';
 import { MatIcon } from '@angular/material/icon';
@@ -11,6 +11,8 @@ import { MatIconButton } from '@angular/material/button';
     imports: [MatIcon, MatIconButton]
 })
 export class ChangePictureComponent {
+  jwtAuth = inject(LoginService);
+
   WIDTH = 128;
 
   private static DEFAULT_IMAGE_TYPE: string = 'image/jpeg';
@@ -23,10 +25,6 @@ export class ChangePictureComponent {
   dataUrl: string;
   public isTakingPicture = false;
   public isReviewingPicture = false;
-
-  constructor(
-    public jwtAuth: LoginService
-  ) { }
 
   async setupDevices() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {

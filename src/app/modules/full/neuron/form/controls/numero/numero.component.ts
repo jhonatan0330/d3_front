@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
@@ -20,6 +20,8 @@ import { MatInput } from '@angular/material/input';
     imports: [MatProgressBar, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, TitleCasePipe]
 })
 export class NumeroComponent extends BaseComponent implements OnInit {
+  private api = inject(ApiService);
+
 
   fControl = new UntypedFormControl(0, {
     updateOn: 'blur'
@@ -31,10 +33,6 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   formulaMinimum: PropiedadDTO;
   funcion: string;
   numeroDecimales = 2;
-
-  constructor(private api: ApiService) {
-    super();
-  }
 
   ngOnInit() {
     super.ngOnInit();

@@ -1,5 +1,5 @@
 // address-form.component.ts
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -9,12 +9,14 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
     imports: [FormsModule, ReactiveFormsModule]
 })
 export class DireccionesComponent implements OnInit {
+  private fb = inject(FormBuilder);
+
   form: FormGroup;
 
   @Input() direccionInicial: string = '';
   @Output() direccionChange = new EventEmitter<string>();
 
-  constructor(private fb: FormBuilder) {
+  constructor() {
     this.form = this.fb.group({
       tipoVia: [''],
       numPrincipal: [''],

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
@@ -28,6 +28,11 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     imports: [FuseVerticalNavigationComponent_1, RouterLink, MatIcon, MatIconButton, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
 })
 export class ClassicLayoutComponent implements OnInit, OnDestroy {
+    _loginService = inject(LoginService);
+    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
+    private _fuseNavigationService = inject(FuseNavigationService);
+    private _navigationService = inject(NavigationService);
+
     isScreenSmall: boolean;
     navigation: Navigation;
     user: UsuarioDTO;
@@ -37,14 +42,6 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     headerSection: SafeHtml[];
     landing: SafeHtml[];
-
-    constructor(
-        public _loginService: LoginService,
-        private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _fuseNavigationService: FuseNavigationService,
-        private _navigationService: NavigationService
-    ) {
-    }
 
 
     // -----------------------------------------------------------------------------------------------------

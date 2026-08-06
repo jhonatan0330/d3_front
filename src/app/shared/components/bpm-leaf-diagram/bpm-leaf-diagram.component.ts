@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -24,6 +24,11 @@ interface Transicion {
     styleUrls: ['./bpm-leaf-diagram.component.scss']
 })
 export class BpmLeafDiagramComponent implements OnInit {
+  data = inject(MAT_DIALOG_DATA);
+  dialogRef = inject<MatDialogRef<BpmLeafDiagramComponent>>(MatDialogRef);
+  private api = inject(ApiService);
+  private utils = inject(UtilsService);
+
   procesoId: string;
   server: string | null = null;
 
@@ -34,12 +39,9 @@ export class BpmLeafDiagramComponent implements OnInit {
   spacingX = 140;
   radius = 22;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<BpmLeafDiagramComponent>,
-    private api: ApiService,
-    private utils: UtilsService
-  ) {
+  constructor() {
+    const data = this.data;
+
     if (data) {
       this.procesoId = data.procesoId;
       this.server = data.server || null;

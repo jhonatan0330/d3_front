@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { map, Observable, ReplaySubject, switchMap } from 'rxjs';
 import { FuseConfigService } from '@fuse/services/config';
@@ -6,15 +6,15 @@ import { FuseConfigService } from '@fuse/services/config';
 @Injectable()
 export class FuseMediaWatcherService
 {
+    private _breakpointObserver = inject(BreakpointObserver);
+    private _fuseConfigService = inject(FuseConfigService);
+
     private _onMediaChange: ReplaySubject<{ matchingAliases: string[]; matchingQueries: any }> = new ReplaySubject<{ matchingAliases: string[]; matchingQueries: any }>(1);
 
     /**
      * Constructor
      */
-    constructor(
-        private _breakpointObserver: BreakpointObserver,
-        private _fuseConfigService: FuseConfigService
-    )
+    constructor()
     {
         this._fuseConfigService.config$.pipe(
             map(config => 

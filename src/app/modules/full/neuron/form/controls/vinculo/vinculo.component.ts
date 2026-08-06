@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { BaseComponent } from '../base/base.component';
 import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO, PedidoVentaFilterDTO, ProcesoTransicionDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
@@ -22,6 +22,11 @@ import { ImageFormatPipe } from '../../../../../../shared/local-image';
     imports: [MatProgressBar, MatTooltip, TitleCasePipe, ImageFormatPipe]
 })
 export class VinculoComponent extends BaseComponent implements OnInit {
+  private utilsService = inject(UtilsService);
+  private templateService = inject(TemplateService);
+  dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
+  private api = inject(ApiService);
+
 
   proceso: PedidoVentaDTO; // Contiene el documento seleccionado
 
@@ -32,15 +37,6 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
 
   private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
-
-  constructor(
-    private utilsService: UtilsService,
-    private templateService: TemplateService,
-    public dialogRef: MatDialogRef<FormComponent>,
-    private api: ApiService,
-  ) {
-    super();
-  }
 
   ngOnInit() {
     super.ngOnInit();

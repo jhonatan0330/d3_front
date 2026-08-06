@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { FuseNavigationItem, FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
@@ -10,9 +10,11 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
     providedIn: 'root'
 })
 export class NavigationService {
+    private _fuseNavigationService = inject(FuseNavigationService);
+
     private _navigation: ReplaySubject<Navigation> = new ReplaySubject<Navigation>(1);
 
-    constructor(private _fuseNavigationService: FuseNavigationService) {
+    constructor() {
         this.generate(null, null, null);
     }
 

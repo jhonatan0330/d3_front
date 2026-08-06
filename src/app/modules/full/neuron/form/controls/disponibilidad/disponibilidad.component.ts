@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -25,22 +25,18 @@ import { TitleCasePipe } from '@angular/common';
     imports: [MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatIconButton, MatSuffix, MatIcon, TitleCasePipe]
 })
 export class DisponibilidadComponent extends BaseComponent implements OnInit {
+  private api = inject(ApiService);
+  private ls = inject(LocalStoreService);
+  private template = inject(TemplateService);
+  private utils = inject(UtilsService);
+  private dialog = inject(MatDialog);
+
   @ViewChild('canvas', { static: true }) myCanvas: ElementRef<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
   estructura: Estructura;
   multiple = false;
 
   fControl = new FormControl('');
-
-  constructor(
-    private api: ApiService,
-    private ls: LocalStoreService,
-    private template: TemplateService,
-    private utils: UtilsService,
-    private dialog: MatDialog
-  ) {
-    super();
-  }
 
   ngOnInit(): void {
     super.ngOnInit();
