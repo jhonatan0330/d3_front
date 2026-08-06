@@ -218,17 +218,20 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 - [x] `ng build` + `npx tsc --noEmit` OK (bundle inicial 2.26 MB, dentro de budget)
 
 ### 5.3 Adoption de Signals (gradual, usar schematics oficiales, no refactor manual)
-- [ ] `ng generate @angular/core:inject` — convertir constructor injection → `inject()`
-- [ ] `ng generate @angular/core:signal-input-migration` — inputs → signal inputs
-- [ ] `ng generate @angular/core:signal-queries-migration` — queries → signal queries
-- [ ] `ng generate @angular/core:output-migration` — outputs → signal outputs
-- [ ] `ng generate @angular/core:control-flow` — `*ngIf/*ngFor/*ngSwitch` → `@if/@for/@switch`
-- [ ] Empezar por servicios con BehaviorSubjects
-- [ ] Neuron es el último en migrar (muy complejo)
+- [x] `ng generate @angular/core:inject` — constructor injection → `inject()` (~101 archivos); fix `ImageFormatPipe` con constructor opcional (`ls ?? inject(...)`) porque se instancia manualmente con `new` en estructura.ts/puesto.ts
+- [x] `ng generate @angular/core:signal-input-migration` — inputs → signal inputs (61/61). **Revierte a `@Input()` los inputs que el componente escribe**: `vertical.component.ts` (inner, name, opened, transparentOverlay), `horizontal.component.ts` (name), `scrollbar.directive.ts` (fuseScrollbar), `ol-map`/`full-map` (lat, lon). Fixes de templates e imports (TS2540)
+- [x] `ng generate @angular/core:signal-queries-migration` — queries → signal queries (19/25; 6 quedaron como `@ViewChild`). Fix de `this.video()?.nativeElement` en change-picture (variable local `videoEl`) y `this.iframe()` en visor-pdf-dialog
+- [x] `ng generate @angular/core:output-migration` — outputs → signal outputs (7/8)
+- [x] `ng generate @angular/core:control-flow` — `*ngIf/*ngFor/*ngSwitch` → `@if/@for/@switch` (organization.component.html; el resto de usos están en comentarios HTML → código muerto)
+- [x] `ng build` + `npx tsc --noEmit` OK en cada subfase
+- Empezar por servicios con BehaviorSubjects (pendiente, no bloqueante)
+- Neuron es el último en migrar (muy complejo) — pendiente
 
 ### 5.4 Migración de interceptores
-- [ ] `HTTP_INTERCEPTORS` class-based → `withInterceptors()` functional (vía `provideHttpClient`)
-- [ ] Aplicar a `TokenInterceptor`, `HttpErrorInterceptor`, `FuseLoadingInterceptor`
+- [x] `HTTP_INTERCEPTORS` class-based → `withInterceptors()` functional (vía `provideHttpClient`)
+- [x] Aplicar a `TokenInterceptor`, `HttpErrorInterceptor`, `FuseLoadingInterceptor`
+- [x] Eliminado `FuseLoadingModule` (solo existía para el interceptor); `main.ts` usa `provideHttpClient(withInterceptors([fuseLoadingInterceptor, tokenInterceptor, httpErrorInterceptor]))`; helper functions de token interceptor pasadas a top-level
+- [x] `ng build` + `npx tsc --noEmit` OK
 - [ ] Decidir migración a **zoneless** (`provideZonelessChangeDetection()`): evaluar usos de `NgZone`/zone.js; opcional y solo cuando la versión esté estable
 
 ### 5.5 Testing framework

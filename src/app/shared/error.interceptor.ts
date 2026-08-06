@@ -1,56 +1,48 @@
-import { Injectable, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import {
-  HttpHandler,
-  HttpRequest,
-  HttpInterceptor,
+  HttpInterceptorFn,
 } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { LoginService } from '../authentication/login.service';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class HttpErrorInterceptor implements HttpInterceptor {
-  private jwtAuth = inject(LoginService);
-  private notificationCenter = inject(NotificationCenterService);
+export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
+  const jwtAuth = inject(LoginService);
+  const notificationCenter = inject(NotificationCenterService);
 
-
-  intercept(req: HttpRequest<any>, next: HttpHandler) {
-    return next.handle(req).pipe(
-      catchError((error) => {
-        let errorMessage = '';
-        if (error.error &&  error.error.message) { // client-side error
-          errorMessage = error.error.message;
-          if (errorMessage.indexOf('CODE:caud_usuario') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
-            this.jwtAuth.signout();
+  return next(req).pipe(
+    catchError((error) => {
+      let errorMessage = '';
+      if (error.error &&  error.error.message) { // client-side error
+        errorMessage = error.error.message;
+        if (errorMessage.indexOf('CODE:caud_usuario') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
+          jwtAuth.signout();
+        } else{
+          if (errorMessage.indexOf('CODE:private_user') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
+            jwtAuth.signout();
+            //this.templateService.clear();
           } else{
-            if (errorMessage.indexOf('CODE:private_user') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
-              this.jwtAuth.signout();
-              //this.templateService.clear();
-            } else{
-              let showButton = true;
-              if(errorMessage.indexOf("ERROR: NOT_OK")!==-1) {
-                errorMessage = errorMessage.substring(errorMessage.indexOf("ERROR: NOT_OK") + "ERROR: NOT_OK".length);
-                showButton = false;
-                const audio = new Audio();
-                audio.src = 'assets/audio/incorrect.mp3';
-                audio.load();
-                audio.play();
-              }
-              this.notificationCenter.error(errorMessage, error.error.detail);
+            let showButton = true;
+            if(errorMessage.indexOf("ERROR: NOT_OK")!==-1) {
+              errorMessage = errorMessage.substring(errorMessage.indexOf("ERROR: NOT_OK") + "ERROR: NOT_OK".length);
+              showButton = false;
+              const audio = new Audio();
+              audio.src = 'assets/audio/incorrect.mp3';
+              audio.load();
+              audio.play();
             }
-          }
-        } else { // backend error
-          errorMessage = `Connection error: ${error.status} ${error.message}`;
-          if (error.status === 404 && error.message.indexOf('assets/conf.xml') !== -1) {
-
-          } else {
-            this.notificationCenter.info('Error de conexion', errorMessage);
+            notificationCenter.error(errorMessage, error.error.detail);
           }
         }
-        return throwError(() => errorMessage);
-      })
-    );
-  }
-}
+      } else { // backend error
+        errorMessage = `Connection error: ${error.status} ${error.message}`;
+        if (error.status === 404 && error.message.indexOf('assets/conf.xml') !== -1) {
+
+        } else {
+          notificationCenter.info('Error de conexion', errorMessage);
+        }
+      }
+      return throwError(() => errorMessage);
+    })
+  );
+};

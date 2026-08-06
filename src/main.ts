@@ -4,9 +4,10 @@ import 'swiper/element/bundle';
 import { environment } from 'environments/environment';
 
 import { ErrorHandlerService } from './app/shared/error-handler.service';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { TokenInterceptor } from './app/shared/token.interceptor';
-import { HttpErrorInterceptor } from './app/shared/error.interceptor';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { tokenInterceptor } from './app/shared/token.interceptor';
+import { httpErrorInterceptor } from './app/shared/error.interceptor';
+import { fuseLoadingInterceptor } from '@fuse/services/loading/loading.interceptor';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
@@ -52,18 +53,9 @@ bootstrapApplication(AppComponent, {
         // Core module of your application
         CoreModule, 
         // Layout module of your application
-        LayoutModule, ReactiveFormsModule, FormsModule, DragDropModule, HttpClientModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
+        LayoutModule, ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
+        provideHttpClient(withInterceptors([fuseLoadingInterceptor, tokenInterceptor, httpErrorInterceptor])),
         { provide: ErrorHandler, useClass: ErrorHandlerService },
-        // REQUIRED IF YOU USE JWT AUTHENTICATION
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: TokenInterceptor,
-            multi: true,
-        }, {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HttpErrorInterceptor,
-            multi: true,
-        },
         { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },
         {
             provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
