@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, QueryList, Renderer2, SimpleChanges, ViewChildren, ViewEncapsulation, DOCUMENT, inject, input, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, HostListener, Input, OnChanges, OnDestroy, OnInit, QueryList, Renderer2, SimpleChanges, ViewChildren, ViewEncapsulation, DOCUMENT, inject, input, viewChild, output } from '@angular/core';
 import { animate, AnimationBuilder, AnimationPlayer, style } from '@angular/animations';
 
 import { NavigationEnd, Router } from '@angular/router';
@@ -52,10 +52,10 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
     @Input() opened: boolean = true;
     readonly position = input<FuseVerticalNavigationPosition>('left');
     @Input() transparentOverlay: boolean = false;
-    @Output() readonly appearanceChanged: EventEmitter<FuseVerticalNavigationAppearance> = new EventEmitter<FuseVerticalNavigationAppearance>();
-    @Output() readonly modeChanged: EventEmitter<FuseVerticalNavigationMode> = new EventEmitter<FuseVerticalNavigationMode>();
-    @Output() readonly openedChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() readonly positionChanged: EventEmitter<FuseVerticalNavigationPosition> = new EventEmitter<FuseVerticalNavigationPosition>();
+    readonly appearanceChanged = output<FuseVerticalNavigationAppearance>();
+    readonly modeChanged = output<FuseVerticalNavigationMode>();
+    readonly openedChanged = output<boolean>();
+    readonly positionChanged = output<FuseVerticalNavigationPosition>();
     private readonly _navigationContentEl = viewChild<ElementRef>('navigationContent');
 
     activeAsideItemId: string | null = null;
@@ -211,7 +211,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
         // Appearance
         if ('appearance' in changes) {
             // Execute the observable
-            this.appearanceChanged.next(changes.appearance.currentValue);
+            this.appearanceChanged.emit(changes.appearance.currentValue);
         }
 
         // Inner
@@ -249,7 +249,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
             }
 
             // Execute the observable
-            this.modeChanged.next(currentMode);
+            this.modeChanged.emit(currentMode);
 
             // Enable the animations after a delay
             // The delay must be bigger than the current transition-duration
@@ -277,7 +277,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
         // Position
         if ('position' in changes) {
             // Execute the observable
-            this.positionChanged.next(changes.position.currentValue);
+            this.positionChanged.emit(changes.position.currentValue);
         }
 
         // Transparent overlay
@@ -728,6 +728,6 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
         }
 
         // Execute the observable
-        this.openedChanged.next(open);
+        this.openedChanged.emit(open);
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, OnInit, Output, EventEmitter, HostListener, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, OnInit, HostListener, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
@@ -72,8 +72,11 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   positionOverrides: { [id: string]: { x: number; y: number } } = {};
 
   // Events to let parent components respond to clicks/context menus
-  @Output() nodeSelected = new EventEmitter<Proceso>();
-  @Output() nodeContext = new EventEmitter<{ proceso: Proceso; event: MouseEvent }>();
+  readonly nodeSelected = output<Proceso>();
+  readonly nodeContext = output<{
+    proceso: Proceso;
+    event: MouseEvent;
+}>();
 
   nodes: NodeRender[] = [];
   links: { x1: number; y1: number; x2: number; y2: number }[] = [];

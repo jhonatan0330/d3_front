@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostBinding, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, inject, input } from '@angular/core';
+import { Component, ElementRef, HostBinding, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { Subject } from 'rxjs';
@@ -27,7 +27,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     readonly appearance = input<'basic' | 'bar'>('basic');
     readonly debounce = input<number>(300);
     readonly minLength = input<number>(2);
-    @Output() search: EventEmitter<any> = new EventEmitter<any>();
+    readonly search = output<any>();
 
     opened: boolean = false;
     isLoading: boolean = false;
