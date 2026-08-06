@@ -171,6 +171,11 @@ ng update @angular/core@22 @angular/cli@22
 - Signal forms estables
 - Selectorless components
 - `@angular/build` reemplaza completamente a `@angular-devkit/build-angular`
+- **[x] Ejecutado**: `ng update @angular/core@22 @angular/cli@22` + `ng update @angular/material@22 @angular/cdk@22` → core 22.1.0, cli/build 22.1.3, material/cdk 22.1.1, TypeScript 6.0.3, zone.js 0.15.1 (control-flow/standalone migrations automáticas)
+- **[x] TypeScript 6 rompe el build**: `--strict` pasa a ser **default** → se añadió `"strict": false` explícito a `tsconfig.json` (la modernización a strict/signals es Fase 5, no mezclar con el upgrade). `baseUrl`/`downlevelIteration` deprecados → `"ignoreDeprecations": "6.0"`.
+- **[x] NG4003**: `extendedDiagnostics` configurado con `strictTemplates: false` no tiene efecto → eliminado el bloque `extendedDiagnostics` de `tsconfig.app.json`
+- **[x] Apexcharts bug**: `apexcharts@5.16.0` rompe con `TS2304: Cannot find name 'ApexDrilldownEvent'` (issue apexcharts/ng-apexcharts#493) → **pin `apexcharts@5.15.2`** (exacto, compatible con `ng-apexcharts@2.4.0`)
+- **[x] Breaking fix**: `ModuleWithComponentFactories` eliminado de `@angular/core` 22 → quitado el import sin uso de `src/app/persons/persons.ts`
 
 ### 4.4 Dependencias finales
 ```bash
@@ -179,18 +184,19 @@ npm install ng-apexcharts@2.4 apexcharts@^5.10
 npm uninstall ngx-editor
 npm install @bobbyquantum/ngx-editor@22   # drop-in de ngx-editor
 ```
+- [x] **Ejecutado**: `@zxing/ngx-scanner@22.0.0`, `ng-apexcharts@2.4.0` + `apexcharts@5.15.2` (pin por bug TS2304), `@bobbyquantum/ngx-editor@22.0.1` (import actualizado en `tasks/details/details.component.ts`)
 
 ### 4.5 Verificación final
-- [ ] Build completo sin warnings críticos
-- [ ] Todos los tests pasando
+- [x] Build completo sin warnings críticos (solo los ya documentados: non-ESM de geotiff/sweetalert2/file-saver y splash-screen.css ausente) + `npx tsc -p tsconfig.app.json --noEmit` limpio
+- [ ] Todos los tests pasando — **N/A**: no existe suite (`*.spec.ts`/`src/test.ts`); montar Vitest es Fase 5.5
 - [ ] Smoke test de todas las funcionalidades:
-  - Login / Logout / DFA
-  - Neuron (forms dinámicos, controles GPS/Mapa con OpenLayers)
-  - Tareas
-  - Contabilidad
-  - Personas
-  - Carga masiva
-  - Notificaciones
+  - [x] Login / autenticación — **confirmado por el usuario** (8/8/2026)
+  - [ ] Neuron (forms dinámicos, controles GPS/Mapa con OpenLayers)
+  - [ ] Tareas
+  - [ ] Contabilidad
+  - [ ] Personas
+  - [ ] Carga masiva
+  - [ ] Notificaciones
 
 ---
 
