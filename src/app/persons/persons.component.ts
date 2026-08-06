@@ -32,7 +32,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
 
 @Component({
     selector: 'PersonsComponent',
-    templateUrl: 'persons.html',
+    templateUrl: 'persons.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })

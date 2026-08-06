@@ -45,12 +45,6 @@ export class TemplateService {
     return result;
   }
 
-  setOtherSystems(value: OrganizacionDTO[]) {
-    this.conectionTemplates = value;
-    this.ls.setItem(LocalConstants.SERVERS, value);
-  }
-
-
   getTemplateOfProcess(processId: string): DocumentoPlantillaDTO[] {
     if (!this.template) { return null; }
     return Object.assign([], this.template).filter(
@@ -74,20 +68,6 @@ export class TemplateService {
     this.templates$.next(value);
   }
 
-  addTemplatesFromOtherSystems() {
-    if (!this.conectionTemplates) { return; }
-    //Aqui retire el clone lo mejor si seria vo
-    let allTemplates = this.clone(this.template);
-    for (let i = 0; i < this.conectionTemplates.length; i++) {
-      allTemplates = allTemplates.concat(this.clone(this.conectionTemplates[i].plantillas));
-    }
-    this.templates$.next(allTemplates);
-
-  }
-
-  private clone(_templates:DocumentoPlantillaDTO[]): DocumentoPlantillaDTO[]{
-    return _templates;
-  }
 
   getColor(stateId: string): string {
     if (!stateId || !this.template) {

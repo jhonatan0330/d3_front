@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -19,7 +18,6 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
     MaterialLayoutComponent
   ],
   imports: [
-    HttpClientModule,
     RouterModule,
     MatButtonModule,
     MatDividerModule,

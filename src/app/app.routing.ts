@@ -2,7 +2,7 @@ import { Route } from '@angular/router';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { AuthGuard } from './authentication/authentication.guard';
 import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
-import { PersonsComponent } from './persons/persons';
+import { PersonsComponent } from './persons/persons.component';
 
 // @formatter:off
 /* eslint-disable max-len */

@@ -14,7 +14,7 @@ import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 
 @Component({
     selector: 'contacts-details',
-    templateUrl: 'detail_person.html',
+    templateUrl: 'detail-person.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })

@@ -7,7 +7,7 @@ import { TransferFormComponent } from 'app/notification/transfer-form/transfer-f
 import { TrazabilityComponent } from 'app/document-transition/trazability/trazability.component';
 import { SuccessComponent } from '../form/success/success.component';
 import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.component';
-import { ContactsDetailsComponent } from 'app/persons/detail_persons/detail_persons';
+import { ContactsDetailsComponent } from 'app/persons/detail_persons/detail-person.component';
 import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { FlexComponent } from 'app/configuration-forms/flex/flex';

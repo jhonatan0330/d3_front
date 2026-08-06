@@ -2,7 +2,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ExtraOptions, PreloadAllModules, RouterModule } from '@angular/router';
+import { ExtraOptions, RouterModule } from '@angular/router';
 import { FuseModule } from '@fuse';
 import { FuseConfigModule } from '@fuse/services/config';
 import { CoreModule } from 'app/core/core.module';
@@ -24,8 +24,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { PersonsComponent } from './persons/persons';
-import { ContactsDetailsComponent } from './persons/detail_persons/detail_persons';
+import { PersonsComponent } from './persons/persons.component';
+import { ContactsDetailsComponent } from './persons/detail_persons/detail-person.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ChangePictureComponent } from './authentication/settings/change-picture/change-picture.component';
@@ -35,7 +35,6 @@ import { SettingsSecurityComponent } from './authentication/settings/security/se
 
 
 const routerConfig: ExtraOptions = {
-  preloadingStrategy: PreloadAllModules,
   scrollPositionRestoration: 'enabled',
   useHash: false,
   anchorScrolling: 'enabled',
