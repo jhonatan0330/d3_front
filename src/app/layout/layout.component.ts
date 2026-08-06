@@ -10,6 +10,17 @@ import { AppConfig } from 'app/core/config/app.config';
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { EmptyLayoutComponent } from './layouts/empty/empty.component';
+import { CenteredLayoutComponent } from './layouts/horizontal/centered/centered.component';
+import { EnterpriseLayoutComponent } from './layouts/horizontal/enterprise/enterprise.component';
+import { MaterialLayoutComponent } from './layouts/horizontal/material/material.component';
+import { ModernLayoutComponent } from './layouts/horizontal/modern/modern.component';
+import { ClassicLayoutComponent } from './layouts/vertical/classic/classic.component';
+import { ClassyLayoutComponent } from './layouts/vertical/classy/classy.component';
+import { CompactLayoutComponent } from './layouts/vertical/compact/compact.component';
+import { DenseLayoutComponent } from './layouts/vertical/dense/dense.component';
+import { FuturisticLayoutComponent } from './layouts/vertical/futuristic/futuristic.component';
+import { ThinLayoutComponent } from './layouts/vertical/thin/thin.component';
 
 @Component({
     selector: 'layout',
@@ -17,7 +28,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
     styleUrls: ['./layout.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [EmptyLayoutComponent, CenteredLayoutComponent, EnterpriseLayoutComponent, MaterialLayoutComponent, ModernLayoutComponent, ClassicLayoutComponent, ClassyLayoutComponent, CompactLayoutComponent, DenseLayoutComponent, FuturisticLayoutComponent, ThinLayoutComponent]
 })
 export class LayoutComponent implements OnInit, OnDestroy {
     config: AppConfig;

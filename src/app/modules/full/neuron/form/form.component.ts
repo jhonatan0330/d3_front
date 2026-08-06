@@ -35,7 +35,7 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 import { IDynamicControl } from './controls/base/base.component';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { getComponent } from 'app/modules/full/neuron/form-helper';
 import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
@@ -43,12 +43,24 @@ import { LocalConstants, LocalStoreService } from 'app/shared/local-store.servic
 import { Router } from '@angular/router';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatCard } from '@angular/material/card';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from '@angular/material/autocomplete';
+import { MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { SlicePipe, TitleCasePipe, CurrencyPipe, DatePipe } from '@angular/common';
+import { ImageFormatPipe } from '../../../../shared/local-image';
 
 @Component({
     selector: 'app-form',
     templateUrl: './form.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [CdkDrag, CdkDragHandle, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, MatCard, MatProgressBar, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatAutocompleteTrigger, MatAutocomplete, MatOption, MatButton, MatTooltip, SlicePipe, TitleCasePipe, CurrencyPipe, DatePipe, ImageFormatPipe]
 })
 export class FormComponent implements OnInit, AfterViewInit {
     // Variables para el control de los campos

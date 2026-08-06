@@ -1,6 +1,8 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BuscadorComponent } from 'app/authorization/profile/buscador';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-search-pop-button',
@@ -10,7 +12,7 @@ import { BuscadorComponent } from 'app/authorization/profile/buscador';
     </button>
     `,
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatIconButton, MatIcon]
 })
 export class SearchPopButtonComponent {
 

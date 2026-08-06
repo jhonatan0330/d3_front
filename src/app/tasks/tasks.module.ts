@@ -22,41 +22,39 @@ import { TasksListComponent } from 'app/tasks/list/list.component';
 import { CanDeactivateTasksDetails } from './tasks.guards';
 
 @NgModule({
-    declarations: [
+    imports: [
+        RouterModule.forChild([
+            {
+                path: '',
+                component: TasksListComponent,
+                children: [
+                    {
+                        path: ':id',
+                        component: TasksDetailsComponent,
+                        canDeactivate: [CanDeactivateTasksDetails]
+                    }
+                ]
+            }
+        ]),
+        DragDropModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatMenuModule,
+        MatProgressBarModule,
+        MatRadioModule,
+        MatRippleModule,
+        MatSelectModule,
+        MatSidenavModule,
+        MatTooltipModule,
+        SharedModule,
         TasksComponent,
         TasksListComponent
-    ],
-    imports: [
-    RouterModule.forChild([
-        {
-            path: '',
-            component: TasksListComponent,
-            children: [
-                {
-                    path: ':id',
-                    component: TasksDetailsComponent,
-                    canDeactivate: [CanDeactivateTasksDetails]
-                }
-            ]
-        }
-    ]),
-    DragDropModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatDividerModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatProgressBarModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatTooltipModule,
-    SharedModule
-]
+    ]
 })
 export class TasksModule
 {

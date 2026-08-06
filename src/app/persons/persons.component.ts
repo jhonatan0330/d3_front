@@ -7,13 +7,8 @@ import {
     OnDestroy,
     OnInit,
 } from '@angular/core';
-import {
-    UntypedFormControl,
-} from '@angular/forms';
-import {
-    ActivatedRoute,
-    Router,
-} from '@angular/router';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContactsService } from './contact.services';
 import {
     debounceTime,
@@ -28,13 +23,20 @@ import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authenticatio
 import { LoginService } from 'app/authentication/login.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
+import { MatDrawerContainer, MatDrawer, MatDrawerContent } from '@angular/material/sidenav';
+import { MatFormField, MatPrefix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { NgClass, AsyncPipe, I18nPluralPipe } from '@angular/common';
+import { MatIconButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 
 
 @Component({
     selector: 'PersonsComponent',
     templateUrl: 'persons.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatDrawerContainer, MatDrawer, RouterOutlet, MatDrawerContent, MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, AsyncPipe, I18nPluralPipe]
 })
 export class PersonsComponent implements OnInit, OnDestroy {
 

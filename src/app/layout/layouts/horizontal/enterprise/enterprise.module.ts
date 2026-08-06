@@ -14,10 +14,7 @@ import { EnterpriseLayoutComponent } from 'app/layout/layouts/horizontal/enterpr
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
-    declarations: [
-        EnterpriseLayoutComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule,
         MatButtonModule,
         MatDividerModule,
@@ -29,9 +26,10 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         ShortcutsModule,
         UserModule,
         SharedModule,
-        HomeButtonModule
+        HomeButtonModule,
+        EnterpriseLayoutComponent
     ],
-    exports     : [
+    exports: [
         EnterpriseLayoutComponent
     ]
 })

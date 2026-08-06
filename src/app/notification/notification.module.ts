@@ -15,11 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
-    declarations: [
-        NotificationButtonComponent,
-        TransferFormComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule,
         OverlayModule,
         PortalModule,
@@ -31,9 +27,11 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
         MatCardModule,
         MatAutocompleteModule,
         MatProgressBarModule,
-        SharedModule
+        SharedModule,
+        NotificationButtonComponent,
+        TransferFormComponent
     ],
-    exports     : [
+    exports: [
         NotificationButtonComponent,
         TransferFormComponent
     ]

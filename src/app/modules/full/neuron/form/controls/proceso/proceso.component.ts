@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, UntypedFormControl, Validators } from '@angular/forms';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { FormControl, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
@@ -24,13 +24,26 @@ import { BarcodeFormat } from '@zxing/library';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { IdResponse } from '../../../model/sw42.utils';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatFormField, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
+import { NgClass, DecimalPipe, TitleCasePipe, DatePipe } from '@angular/common';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { MatTable, MatColumnDef, MatCellDef, MatCell, MatRowDef, MatRow } from '@angular/material/table';
+import { MatBadge } from '@angular/material/badge';
+import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
+import { MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker } from '@angular/material/datepicker';
+import { ImageFormatPipe } from '../../../../../../shared/local-image';
 
 @Component({
     selector: 'app-proceso',
     templateUrl: './proceso.component.html',
     styleUrls: ['./proceso.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatProgressBar, MatFormField, MatLabel, MatInput, MatAutocompleteTrigger, FormsModule, ReactiveFormsModule, NgClass, MatAutocomplete, MatIconButton, MatPrefix, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, MatSuffix, ZXingScannerModule, MatTable, MatColumnDef, MatCellDef, MatCell, MatRowDef, MatRow, MatButton, MatBadge, MatCard, MatCardTitle, MatCardContent, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker, DecimalPipe, TitleCasePipe, DatePipe, ImageFormatPipe]
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {
   @ViewChild('clickHoverMenuTrigger') trigger: MatMenuTrigger;

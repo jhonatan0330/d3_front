@@ -13,10 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ShortcutsComponent } from 'app/layout/common/shortcuts/shortcuts.component';
 
 @NgModule({
-    declarations: [
-        ShortcutsComponent
-    ],
-    imports     : [
+    imports: [
         CommonModule,
         ReactiveFormsModule,
         RouterModule,
@@ -27,9 +24,10 @@ import { ShortcutsComponent } from 'app/layout/common/shortcuts/shortcuts.compon
         MatIconModule,
         MatInputModule,
         MatSlideToggleModule,
-        MatTooltipModule
+        MatTooltipModule,
+        ShortcutsComponent
     ],
-    exports     : [
+    exports: [
         ShortcutsComponent
     ]
 })

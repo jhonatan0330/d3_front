@@ -3,12 +3,13 @@ import { Subject, takeUntil } from 'rxjs';
 import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/vertical/vertical.component';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'fuse-vertical-navigation-spacer-item',
     templateUrl: './spacer.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [NgClass]
 })
 export class FuseVerticalNavigationSpacerItemComponent implements OnInit, OnDestroy
 {

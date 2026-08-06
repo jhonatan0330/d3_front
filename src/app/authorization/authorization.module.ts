@@ -23,46 +23,41 @@ import { FuseNavigationModule } from "@fuse/components/navigation";
 import { FuseScrollbarModule } from "@fuse/directives/scrollbar";
 
 @NgModule({
-    declarations: [
-        TemplateComponent,
-        ProfileComponent
-    ],
     imports: [
         RouterModule.forChild([
             {
-              path: '',
-              component: ProfileComponent
+                path: '',
+                component: ProfileComponent
             },
             {
-              path: ':type',
-              component: ProfileComponent
+                path: ':type',
+                component: ProfileComponent
             },
             {
-              path: ':type/:id',
-              component: ProfileComponent
+                path: ':type/:id',
+                component: ProfileComponent
             }
-          ]),
-
-          MatDialogModule,
-          MatDividerModule,
-
-          MatMenuModule,
-          MatTooltipModule,
-          MatProgressBarModule,
-          MatSelectModule,
-          MatSidenavModule,
-          MatDatepickerModule,
-          MatNativeDateModule,
-          MatTableModule,
-          FuseNavigationModule,
-          FuseScrollbarModule,
-
+        ]),
+        MatDialogModule,
+        MatDividerModule,
+        MatMenuModule,
+        MatTooltipModule,
+        MatProgressBarModule,
+        MatSelectModule,
+        MatSidenavModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatTableModule,
+        FuseNavigationModule,
+        FuseScrollbarModule,
         SharedModule,
         MatFormFieldModule,
         MatInputModule,
         MatIconModule,
         MatButtonModule,
-        MatCardModule
+        MatCardModule,
+        TemplateComponent,
+        ProfileComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

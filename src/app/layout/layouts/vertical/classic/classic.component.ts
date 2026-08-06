@@ -8,13 +8,24 @@ import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { SafeHtml } from '@angular/platform-browser';
+import { FuseVerticalNavigationComponent as FuseVerticalNavigationComponent_1 } from '../../../../../@fuse/components/navigation/vertical/vertical.component';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { HomeButtonComponent } from '../../../common/home-button/home-button.component';
+import { SearchComponent } from '../../../common/search/search.component';
+import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.component';
+import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
+import { UserComponent } from '../../../common/user/user.component';
+import { DatePipe } from '@angular/common';
+import { ImageFormatPipe } from '../../../../shared/local-image';
 
 @Component({
     selector: 'classic-layout',
     templateUrl: './classic.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FuseVerticalNavigationComponent_1, RouterLink, MatIcon, MatIconButton, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
 })
 export class ClassicLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;

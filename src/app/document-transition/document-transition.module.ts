@@ -10,13 +10,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-    declarations: [
-        TrazabilityComponent
-    ],
-    imports     : [
-        RouterModule.forChild( [
+    imports: [
+        RouterModule.forChild([
             {
-                path     : '',
+                path: '',
                 component: TrazabilityComponent
             }
         ]),
@@ -26,9 +23,10 @@ import { MatButtonModule } from '@angular/material/button';
         MatIconModule,
         MatButtonModule,
         DragDropModule,
-        SharedModule
+        SharedModule,
+        TrazabilityComponent
     ],
-    exports : [
+    exports: [
         TrazabilityComponent
     ]
 })

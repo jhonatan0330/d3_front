@@ -8,8 +8,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 @Component({
     selector: 'app-seccion',
     templateUrl: './seccion.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class SeccionComponent extends BaseComponent implements OnInit {
   

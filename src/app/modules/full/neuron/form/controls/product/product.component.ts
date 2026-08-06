@@ -20,12 +20,17 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { IDynamicControl } from '../base/base.component';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { TarifaDTO } from 'app/modules/full/neuron/model/tariff.domain';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import { MatButton } from '@angular/material/button';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'form-control-product',
     templateUrl: './product.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatIcon, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatButton, DecimalPipe]
 })
 export class ProductComponent implements OnInit, AfterViewInit {
 

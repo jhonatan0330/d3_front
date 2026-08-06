@@ -14,26 +14,24 @@ import { MaterialLayoutComponent } from 'app/layout/layouts/horizontal/material/
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
-  declarations: [
-    MaterialLayoutComponent
-  ],
-  imports: [
-    RouterModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatIconModule,
-    MatMenuModule,
-    FuseNavigationModule,
-    NotificationsModule,
-    SearchModule,
-    ShortcutsModule,
-    UserModule,
-    SharedModule,
-    HomeButtonModule
-  ],
-  exports: [
-    MaterialLayoutComponent
-  ]
+    imports: [
+        RouterModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatIconModule,
+        MatMenuModule,
+        FuseNavigationModule,
+        NotificationsModule,
+        SearchModule,
+        ShortcutsModule,
+        UserModule,
+        SharedModule,
+        HomeButtonModule,
+        MaterialLayoutComponent
+    ],
+    exports: [
+        MaterialLayoutComponent
+    ]
 })
 export class MaterialLayoutModule {
 }

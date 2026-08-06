@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { LoginService } from 'app/authentication/login.service';
 
 @Component({
@@ -7,7 +7,7 @@ import { LoginService } from 'app/authentication/login.service';
     templateUrl: './tasks.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [RouterOutlet]
 })
 export class TasksComponent implements OnInit{
     constructor(

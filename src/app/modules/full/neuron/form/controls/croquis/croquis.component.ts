@@ -6,8 +6,8 @@ import {
   TemplateRef,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { firstValueFrom } from 'rxjs';
 
@@ -15,6 +15,12 @@ import { BaseComponent } from '../base/base.component';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { DocumentMessage, PedidoVentaDTO } from '../../../model/sw42.domain';
 import { ApiErrorResponse } from '../../../model/sw42.utils';
+import { MatFormField, MatLabel, MatHint } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { TitleCasePipe } from '@angular/common';
 
 interface RenderItem {
   exp: PedidoVentaDTO;
@@ -30,7 +36,7 @@ interface RenderItem {
     selector: 'app-croquis',
     templateUrl: './croquis.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatFormField, MatLabel, MatInput, CdkScrollable, MatDialogContent, MatIconButton, MatDialogClose, MatIcon, MatButton, FormsModule, ReactiveFormsModule, MatHint, TitleCasePipe]
 })
 export class CroquisComponent extends BaseComponent
   implements OnInit, AfterViewInit, OnDestroy {

@@ -15,11 +15,7 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
 import { SearchPopButtonComponent } from 'app/layout/common/search-pop/search-pop.component';
 
 @NgModule({
-    declarations: [
-        ClassyLayoutComponent,
-        SearchPopButtonComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule,
         MatButtonModule,
         MatDividerModule,
@@ -31,9 +27,11 @@ import { SearchPopButtonComponent } from 'app/layout/common/search-pop/search-po
         ShortcutsModule,
         UserModule,
         SharedModule,
-        HomeButtonModule
+        HomeButtonModule,
+        ClassyLayoutComponent,
+        SearchPopButtonComponent
     ],
-    exports     : [
+    exports: [
         ClassyLayoutComponent
     ]
 })

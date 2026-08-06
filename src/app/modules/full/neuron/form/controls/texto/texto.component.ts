@@ -1,17 +1,22 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {  PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { BarcodeFormat } from '@zxing/library';
 import Swal from 'sweetalert2';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { DireccionesComponent } from './direcciones/direcciones.component';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
     selector: 'app-texto',
     templateUrl: './texto.component.html',
     styleUrls: ['./texto.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, ZXingScannerModule, DireccionesComponent, TitleCasePipe]
 })
 export class TextoComponent extends BaseComponent implements OnInit {
   textoLargo = false;

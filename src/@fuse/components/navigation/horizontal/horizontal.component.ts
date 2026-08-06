@@ -3,6 +3,9 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
+import { FuseHorizontalNavigationBasicItemComponent } from './components/basic/basic.component';
+import { FuseHorizontalNavigationBranchItemComponent } from './components/branch/branch.component';
+import { FuseHorizontalNavigationSpacerItemComponent } from './components/spacer/spacer.component';
 
 @Component({
     selector: 'fuse-horizontal-navigation',
@@ -11,7 +14,7 @@ import { FuseUtilsService } from '@fuse/services/utils/utils.service';
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'fuseHorizontalNavigation',
-    standalone: false
+    imports: [FuseHorizontalNavigationBasicItemComponent, FuseHorizontalNavigationBranchItemComponent, FuseHorizontalNavigationSpacerItemComponent]
 })
 export class FuseHorizontalNavigationComponent implements OnChanges, OnInit, OnDestroy
 {

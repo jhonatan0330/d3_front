@@ -9,6 +9,13 @@ import { FuseNavigationService } from '@fuse/components/navigation/navigation.se
 import { FuseScrollbarDirective } from '@fuse/directives/scrollbar/scrollbar.directive';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
+import { FuseScrollbarDirective as FuseScrollbarDirective_1 } from '../../../directives/scrollbar/scrollbar.directive';
+import { FuseVerticalNavigationAsideItemComponent } from './components/aside/aside.component';
+import { FuseVerticalNavigationBasicItemComponent } from './components/basic/basic.component';
+import { FuseVerticalNavigationCollapsableItemComponent } from './components/collapsable/collapsable.component';
+import { FuseVerticalNavigationDividerItemComponent } from './components/divider/divider.component';
+import { FuseVerticalNavigationGroupItemComponent } from './components/group/group.component';
+import { FuseVerticalNavigationSpacerItemComponent } from './components/spacer/spacer.component';
 
 @Component({
     selector: 'fuse-vertical-navigation',
@@ -17,7 +24,7 @@ import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'fuseVerticalNavigation',
-    standalone: false
+    imports: [FuseScrollbarDirective_1, FuseVerticalNavigationAsideItemComponent, FuseVerticalNavigationBasicItemComponent, FuseVerticalNavigationCollapsableItemComponent, FuseVerticalNavigationDividerItemComponent, FuseVerticalNavigationGroupItemComponent, FuseVerticalNavigationSpacerItemComponent]
 })
 export class FuseVerticalNavigationComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
     /* eslint-disable @typescript-eslint/naming-convention */

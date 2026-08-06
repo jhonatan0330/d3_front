@@ -1,9 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
-import {
-    UntypedFormBuilder,
-    UntypedFormGroup,
-    Validators,
-} from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -14,13 +10,15 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { environment } from 'environments/environment';
 import { Subject, takeUntil } from 'rxjs';
+import { MatInput } from '@angular/material/input';
+import { ImageFormatPipe } from '../../../shared/local-image';
 
 
 @Component({
     selector: 'sign-in-split-screen-reversed',
     templateUrl: './sign-in.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, MatInput, ImageFormatPipe]
 })
 export class SignInSplitScreenReversedComponent implements OnInit {
 

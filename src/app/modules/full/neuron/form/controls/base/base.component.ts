@@ -40,8 +40,7 @@ export interface IDynamicControl {
     selector: 'app-base',
     templateUrl: './base.component.html',
     styleUrls: ['./base.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class BaseComponent implements OnInit, IDynamicControl {
   data: PedidoVentaCaracteristicaDTO;

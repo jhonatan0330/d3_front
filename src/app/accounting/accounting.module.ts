@@ -22,14 +22,10 @@ import { ManualFormComponent } from './manual-form/manual-form.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
-    declarations: [
-        ManualFormComponent,
-        AccountComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule.forChild([
             {
-                path     : '',
+                path: '',
                 component: AccountComponent
             }
         ]),
@@ -37,9 +33,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatIconModule,
         SharedModule,
         FuseNavigationModule,
-        MatMenuModule, 
-        MatDividerModule, 
-        NgApexchartsModule, 
+        MatMenuModule,
+        MatDividerModule,
+        NgApexchartsModule,
         MatTableModule,
         MatDatepickerModule,
         MatAutocompleteModule,
@@ -49,11 +45,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         DatePipe,
         FormsModule,
         ReactiveFormsModule,
-        MatFormFieldModule, 
+        MatFormFieldModule,
         MatInputModule,
         MatSidenavModule,
-        MatProgressSpinnerModule
-       ]
+        MatProgressSpinnerModule,
+        ManualFormComponent,
+        AccountComponent
+    ]
 })
 export class AccountingModule
 {

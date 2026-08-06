@@ -10,17 +10,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
-    declarations: [
-        MassiveComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule.forChild([
             {
-                path     : ':template',
+                path: ':template',
                 component: MassiveComponent
             },
             {
-                path     : ':template/:server',
+                path: ':template/:server',
                 component: MassiveComponent
             }
         ]),
@@ -30,9 +27,10 @@ import { MatTableModule } from '@angular/material/table';
         MatIconModule,
         MatButtonModule,
         MatTableModule,
-        SharedModule
+        SharedModule,
+        MassiveComponent
     ],
-    exports : [
+    exports: [
         MassiveComponent
     ]
 })

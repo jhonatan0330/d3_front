@@ -10,16 +10,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-    declarations: [
-        NewPasswordComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule.forChild(newPasswordRoutes),
         SharedModule,
         MatProgressBarModule,
         MatFormFieldModule,
         MatInputModule,
-        MatButtonModule
+        MatButtonModule,
+        NewPasswordComponent
     ]
 })
 export class NewPasswordModule

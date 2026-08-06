@@ -6,6 +6,10 @@ import { LoginService } from 'app/authentication/login.service';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { environment } from 'environments/environment';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { MatIconButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatDivider } from '@angular/material/divider';
 
 @Component({
     selector: 'user',
@@ -13,7 +17,7 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'user',
-    standalone: false
+    imports: [MatIconButton, MatMenuTrigger, MatIcon, MatMenu, MatDivider, MatMenuItem]
 })
 export class UserComponent implements OnInit, OnDestroy {
 

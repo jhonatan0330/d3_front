@@ -7,17 +7,15 @@ import { UserComponent } from 'app/layout/common/user/user.component';
 import { SharedModule } from 'app/shared/shared.module';
 
 @NgModule({
-    declarations: [
-        UserComponent
-    ],
-    imports     : [
+    imports: [
         MatButtonModule,
         MatDividerModule,
         MatIconModule,
         MatMenuModule,
-        SharedModule
+        SharedModule,
+        UserComponent
     ],
-    exports     : [
+    exports: [
         UserComponent
     ]
 })

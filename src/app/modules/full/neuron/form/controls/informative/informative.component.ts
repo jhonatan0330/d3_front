@@ -1,15 +1,18 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { BaseComponent } from '../base/base.component';
 import { UtilsService } from '../../../service/utils.service';
 import { ApiService } from '../../../service/api.service';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
     selector: 'app-informative',
     templateUrl: './informative.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, TitleCasePipe]
 })
 export class InformativeComponent extends BaseComponent implements OnInit {
 

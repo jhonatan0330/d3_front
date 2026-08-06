@@ -5,22 +5,19 @@ import { ImageFormatPipe } from './local-image';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  providers: [
-  ],
-  declarations:[
-    ImageFormatPipe
-  ],
-  exports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ImageFormatPipe
-  ]
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ImageFormatPipe
+    ],
+    providers: [],
+    exports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ImageFormatPipe
+    ]
 })
 export class SharedModule {
 }

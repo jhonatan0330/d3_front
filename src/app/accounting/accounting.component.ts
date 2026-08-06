@@ -1,18 +1,26 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
-import { MatDrawer } from '@angular/material/sidenav';
+import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Subject, takeUntil } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from './accounting.domain';
-import { UntypedFormControl } from '@angular/forms';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccountingService } from './accounting.service';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow } from '@angular/material/table';
 import Swal from 'sweetalert2';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { LoginService } from 'app/authentication/login.service';
 import { Router } from '@angular/router';
+import { MatFormField, MatPrefix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { NgClass, UpperCasePipe, DecimalPipe, DatePipe } from '@angular/common';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
 
 interface AccountNode {
     account: AccountDTO;
@@ -33,7 +41,7 @@ interface AccountFlatNode {
     templateUrl: './accounting.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatDrawerContainer, MatDrawer, MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, MatProgressBar, NgClass, MatDrawerContent, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow, UpperCasePipe, DecimalPipe, DatePipe]
 })
 export class AccountComponent implements OnInit, OnDestroy {
     @ViewChild('drawer') drawer: MatDrawer;

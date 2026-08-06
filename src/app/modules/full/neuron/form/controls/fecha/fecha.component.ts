@@ -1,18 +1,22 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { timer } from 'rxjs';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
 import { ApiService } from '../../../service/api.service';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker } from '@angular/material/datepicker';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
     selector: 'app-fecha',
     templateUrl: './fecha.component.html',
     styleUrls: ['./fecha.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatFormField, MatLabel, MatInput, MatDatepickerInput, FormsModule, ReactiveFormsModule, MatDatepickerToggle, MatSuffix, MatDatepicker, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker, TitleCasePipe]
 })
 export class FechaComponent extends BaseComponent implements OnInit {
   conHora = false; // Define si se pide las fechas con hora

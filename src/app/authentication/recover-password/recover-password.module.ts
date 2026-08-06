@@ -10,16 +10,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-    declarations: [
-        RecoverPasswordComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule.forChild(recoverPasswordRoutes),
         SharedModule,
         MatProgressBarModule,
         MatFormFieldModule,
         MatInputModule,
-        MatButtonModule
+        MatButtonModule,
+        RecoverPasswordComponent
     ]
 })
 export class RecoverPasswordModule

@@ -15,10 +15,7 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
 
 
 @NgModule({
-    declarations: [
-        CompactLayoutComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule,
         MatButtonModule,
         MatDividerModule,
@@ -30,9 +27,10 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         ShortcutsModule,
         UserModule,
         SharedModule,
-        HomeButtonModule
+        HomeButtonModule,
+        CompactLayoutComponent
     ],
-    exports     : [
+    exports: [
         CompactLayoutComponent
     ]
 })

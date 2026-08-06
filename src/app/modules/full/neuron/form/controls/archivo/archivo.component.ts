@@ -7,6 +7,12 @@ import { NgxImageCompressService } from 'ngx-image-compress';
 import SignaturePad from 'signature_pad';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { formatImageUrl } from 'app/shared/local-image';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { TitleCasePipe } from '@angular/common';
+import { ImageFormatPipe } from '../../../../../../shared/local-image';
 
 @Component({
     selector: 'app-archivo',
@@ -17,7 +23,7 @@ import { formatImageUrl } from 'app/shared/local-image';
     }
   `],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, MatButton, MatIcon, MatProgressBar, TitleCasePipe, ImageFormatPipe]
 })
 export class ArchivoComponent extends BaseComponent implements OnInit, AfterViewInit {
   @ViewChild('signatureCanvas') signatureCanvas!: ElementRef<HTMLCanvasElement>;

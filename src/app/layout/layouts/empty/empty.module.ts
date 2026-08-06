@@ -4,14 +4,12 @@ import { SharedModule } from 'app/shared/shared.module';
 import { EmptyLayoutComponent } from 'app/layout/layouts/empty/empty.component';
 
 @NgModule({
-    declarations: [
+    imports: [
+        RouterModule,
+        SharedModule,
         EmptyLayoutComponent
     ],
-    imports     : [
-        RouterModule,
-        SharedModule
-    ],
-    exports     : [
+    exports: [
         EmptyLayoutComponent
     ]
 })

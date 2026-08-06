@@ -10,12 +10,16 @@ import { FormComponent } from '../../form.component';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../../service/api.service';
 import { PropiedadDTO } from 'app/shared/shared.domain';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TitleCasePipe } from '@angular/common';
+import { ImageFormatPipe } from '../../../../../../shared/local-image';
 
 @Component({
     selector: 'app-vinculo',
     templateUrl: './vinculo.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatProgressBar, MatTooltip, TitleCasePipe, ImageFormatPipe]
 })
 export class VinculoComponent extends BaseComponent implements OnInit {
 

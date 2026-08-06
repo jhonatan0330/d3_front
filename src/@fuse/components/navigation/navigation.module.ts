@@ -21,7 +21,15 @@ import { FuseVerticalNavigationSpacerItemComponent } from '@fuse/components/navi
 import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/vertical/vertical.component';
 
 @NgModule({
-    declarations: [
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatIconModule,
+        MatMenuModule,
+        MatTooltipModule,
+        FuseScrollbarModule,
         FuseHorizontalNavigationBasicItemComponent,
         FuseHorizontalNavigationBranchItemComponent,
         FuseHorizontalNavigationDividerItemComponent,
@@ -35,17 +43,7 @@ import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/ver
         FuseVerticalNavigationSpacerItemComponent,
         FuseVerticalNavigationComponent
     ],
-    imports     : [
-        CommonModule,
-        RouterModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatIconModule,
-        MatMenuModule,
-        MatTooltipModule,
-        FuseScrollbarModule
-    ],
-    exports     : [
+    exports: [
         FuseHorizontalNavigationComponent,
         FuseVerticalNavigationComponent
     ]

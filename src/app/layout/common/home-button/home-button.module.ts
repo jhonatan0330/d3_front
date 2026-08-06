@@ -7,15 +7,13 @@ import { HomeButtonComponent } from './home-button.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
-    declarations: [
-        HomeButtonComponent
-    ],
     imports: [
         RouterModule,
         MatButtonModule,
         MatIconModule,
         SharedModule,
-        MatTooltipModule
+        MatTooltipModule,
+        HomeButtonComponent
     ],
     exports: [
         HomeButtonComponent

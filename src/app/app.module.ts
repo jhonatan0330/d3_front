@@ -42,72 +42,63 @@ const routerConfig: ExtraOptions = {
 };
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    SignInSplitScreenReversedComponent,
-    PersonsComponent,            
-    ContactsDetailsComponent,
-    SettingsSecurityComponent,
-    ChangePictureComponent
-  ],
-  imports: [
-    CommonModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    RouterModule.forRoot(appRoutes, routerConfig),
-
-    // Fuse, FuseConfig & FuseMockAPI
-    FuseModule,
-    FuseConfigModule.forRoot(appConfig),
-
-    // Core module of your application
-    CoreModule,
-    // Layout module of your application
-    LayoutModule,
-
-    // 3rd party modules that require global configuration via forRoot
-    SharedModule,
-
-    ReactiveFormsModule,
-    FormsModule,
-    DragDropModule,
-
-    HttpClientModule,
-
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatDialogModule,
-
-    MatSidenavModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatButtonModule,  
-  ],
-  providers: [
-    { provide: ErrorHandler, useClass: ErrorHandlerService },
-    // REQUIRED IF YOU USE JWT AUTHENTICATION
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true,
-    }, {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpErrorInterceptor,
-      multi: true,
-    },
-    { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: {
-        appearance: 'outline'
-      }
-    }
-  ],
-  bootstrap: [
-    AppComponent
-  ]
+    declarations: [AppComponent],
+    imports: [
+        CommonModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot(appRoutes, routerConfig),
+        // Fuse, FuseConfig & FuseMockAPI
+        FuseModule,
+        FuseConfigModule.forRoot(appConfig),
+        // Core module of your application
+        CoreModule,
+        // Layout module of your application
+        LayoutModule,
+        // 3rd party modules that require global configuration via forRoot
+        SharedModule,
+        ReactiveFormsModule,
+        FormsModule,
+        DragDropModule,
+        HttpClientModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatDialogModule,
+        MatSidenavModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatMenuModule,
+        MatButtonModule,
+        SignInSplitScreenReversedComponent,
+        PersonsComponent,
+        ContactsDetailsComponent,
+        SettingsSecurityComponent,
+        ChangePictureComponent,
+    ],
+    providers: [
+        { provide: ErrorHandler, useClass: ErrorHandlerService },
+        // REQUIRED IF YOU USE JWT AUTHENTICATION
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor,
+            multi: true,
+        }, {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpErrorInterceptor,
+            multi: true,
+        },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },
+        {
+            provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+            useValue: {
+                appearance: 'outline'
+            }
+        }
+    ],
+    bootstrap: [
+        AppComponent
+    ]
 })
 export class AppModule {
 }

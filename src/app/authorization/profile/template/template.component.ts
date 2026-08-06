@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { ImageFormatPipe } from '../../../shared/local-image';
 
 export enum TemplateEnum {
   TIPO_REPORTE = 'R',
@@ -15,7 +16,7 @@ export enum TemplateEnum {
     selector: 'app-template',
     templateUrl: './template.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ImageFormatPipe]
 })
 export class TemplateComponent implements OnInit {
   @Input() nombre = '';

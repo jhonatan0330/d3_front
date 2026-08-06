@@ -3,7 +3,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { AuthenticationService } from 'app/authentication/authentication.service';
 import { environment } from 'environments/environment';
@@ -11,6 +11,12 @@ import { LoginService } from 'app/authentication/login.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
+import { NgClass } from '@angular/common';
+import { MatCard } from '@angular/material/card';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { TemplateComponent } from './template/template.component';
+import { ImageFormatPipe } from '../../shared/local-image';
 
 
 interface MenuNode {
@@ -26,7 +32,7 @@ interface MenuNode {
     templateUrl: './profile.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [NgClass, MatCard, MatFormField, MatInput, FormsModule, ReactiveFormsModule, TemplateComponent, ImageFormatPipe]
 })
 export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 

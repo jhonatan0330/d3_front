@@ -14,10 +14,7 @@ import { DenseLayoutComponent } from 'app/layout/layouts/vertical/dense/dense.co
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
-    declarations: [
-        DenseLayoutComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule,
         MatButtonModule,
         MatDividerModule,
@@ -29,9 +26,10 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         ShortcutsModule,
         UserModule,
         SharedModule,
-        HomeButtonModule
+        HomeButtonModule,
+        DenseLayoutComponent
     ],
-    exports     : [
+    exports: [
         DenseLayoutComponent
     ]
 })

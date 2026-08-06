@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -12,12 +12,17 @@ import { Puesto } from './puesto';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
     selector: 'app-disponibilidad',
     templateUrl: './disponibilidad.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatIconButton, MatSuffix, MatIcon, TitleCasePipe]
 })
 export class DisponibilidadComponent extends BaseComponent implements OnInit {
   @ViewChild('canvas', { static: true }) myCanvas: ElementRef<HTMLCanvasElement>;

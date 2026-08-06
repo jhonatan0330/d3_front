@@ -14,10 +14,7 @@ import { CenteredLayoutComponent } from 'app/layout/layouts/horizontal/centered/
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
-    declarations: [
-        CenteredLayoutComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule,
         MatButtonModule,
         MatDividerModule,
@@ -29,9 +26,10 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         ShortcutsModule,
         UserModule,
         SharedModule,
-        HomeButtonModule
+        HomeButtonModule,
+        CenteredLayoutComponent
     ],
-    exports     : [
+    exports: [
         CenteredLayoutComponent
     ]
 })

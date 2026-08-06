@@ -14,10 +14,7 @@ import { ThinLayoutComponent } from 'app/layout/layouts/vertical/thin/thin.compo
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
-    declarations: [
-        ThinLayoutComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule,
         MatButtonModule,
         MatDividerModule,
@@ -29,9 +26,10 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         ShortcutsModule,
         UserModule,
         SharedModule,
-        HomeButtonModule
+        HomeButtonModule,
+        ThinLayoutComponent
     ],
-    exports     : [
+    exports: [
         ThinLayoutComponent
     ]
 })

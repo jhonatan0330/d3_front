@@ -1,15 +1,20 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { BaseComponent } from '../base/base.component';
 import { OlMapComponent } from './ol-map/ol-map.component';
+import { MatFormField, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
     selector: 'app-gps',
     templateUrl: './gps.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatFormField, MatLabel, MatIconButton, MatPrefix, MatIcon, MatInput, FormsModule, ReactiveFormsModule, MatSuffix, TitleCasePipe]
 })
 export class GpsComponent extends BaseComponent implements OnInit {
 

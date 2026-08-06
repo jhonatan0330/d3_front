@@ -11,12 +11,16 @@ import { Inject } from '@angular/core';
 import { LoginService } from 'app/authentication/login.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { ChangePictureComponent } from '../../authentication/settings/change-picture/change-picture.component';
+import { NgClass } from '@angular/common';
 
 @Component({
     selector: 'contacts-details',
     templateUrl: 'detail-person.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatIconButton, MatIcon, ChangePictureComponent, NgClass]
 })
 export class ContactsDetailsComponent implements OnInit {
 

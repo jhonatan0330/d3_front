@@ -1,16 +1,21 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BooleanInput } from '@angular/cdk/coercion';
-import { MatMenu } from '@angular/material/menu';
+import { MatMenu, MatMenuTrigger, MatMenuItem } from '@angular/material/menu';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseHorizontalNavigationComponent } from '@fuse/components/navigation/horizontal/horizontal.component';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { FuseHorizontalNavigationBasicItemComponent } from '../basic/basic.component';
+import { FuseHorizontalNavigationDividerItemComponent } from '../divider/divider.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'fuse-horizontal-navigation-branch-item',
     templateUrl: './branch.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [NgClass, MatMenuTrigger, NgTemplateOutlet, MatMenu, MatMenuItem, FuseHorizontalNavigationBasicItemComponent, FuseHorizontalNavigationDividerItemComponent, MatTooltip, MatIcon]
 })
 export class FuseHorizontalNavigationBranchItemComponent implements OnInit, OnDestroy
 {

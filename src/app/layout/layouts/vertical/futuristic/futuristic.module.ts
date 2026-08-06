@@ -14,10 +14,7 @@ import { FuturisticLayoutComponent } from 'app/layout/layouts/vertical/futuristi
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
-    declarations: [
-        FuturisticLayoutComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule,
         MatButtonModule,
         MatDividerModule,
@@ -29,9 +26,10 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         ShortcutsModule,
         UserModule,
         SharedModule,
-        HomeButtonModule
+        HomeButtonModule,
+        FuturisticLayoutComponent
     ],
-    exports     : [
+    exports: [
         FuturisticLayoutComponent
     ]
 })

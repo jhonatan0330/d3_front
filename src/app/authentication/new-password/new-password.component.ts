@@ -4,17 +4,20 @@ import {
   OnDestroy,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Validators, FormGroup, FormControl } from '@angular/forms';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
+import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import Swal from 'sweetalert2';
 import { LoginService } from '../login.service';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
 
 @Component({
     selector: 'app-new-password',
     templateUrl: './new-password.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatButton, RouterLink]
 })
 export class NewPasswordComponent implements OnInit, OnDestroy {
 

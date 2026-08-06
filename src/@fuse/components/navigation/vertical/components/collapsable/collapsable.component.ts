@@ -6,12 +6,19 @@ import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/ver
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
 import { FuseUtilsService } from '@fuse/services/utils';
+import { NgClass } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { FuseVerticalNavigationBasicItemComponent } from '../basic/basic.component';
+import { FuseVerticalNavigationDividerItemComponent } from '../divider/divider.component';
+import { FuseVerticalNavigationGroupItemComponent } from '../group/group.component';
+import { FuseVerticalNavigationSpacerItemComponent } from '../spacer/spacer.component';
 
 @Component({
     selector: 'fuse-vertical-navigation-collapsable-item',
     templateUrl: './collapsable.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [NgClass, MatTooltip, MatIcon, FuseVerticalNavigationBasicItemComponent, FuseVerticalNavigationDividerItemComponent, FuseVerticalNavigationGroupItemComponent, FuseVerticalNavigationSpacerItemComponent]
 })
 export class FuseVerticalNavigationCollapsableItemComponent implements OnInit, OnDestroy
 {

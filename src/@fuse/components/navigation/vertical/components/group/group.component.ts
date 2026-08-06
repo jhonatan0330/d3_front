@@ -4,12 +4,18 @@ import { Subject, takeUntil } from 'rxjs';
 import { FuseVerticalNavigationComponent } from '@fuse/components/navigation/vertical/vertical.component';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
+import { NgClass } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { FuseVerticalNavigationBasicItemComponent } from '../basic/basic.component';
+import { FuseVerticalNavigationCollapsableItemComponent } from '../collapsable/collapsable.component';
+import { FuseVerticalNavigationDividerItemComponent } from '../divider/divider.component';
+import { FuseVerticalNavigationSpacerItemComponent } from '../spacer/spacer.component';
 
 @Component({
     selector: 'fuse-vertical-navigation-group-item',
     templateUrl: './group.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [NgClass, MatIcon, FuseVerticalNavigationBasicItemComponent, FuseVerticalNavigationCollapsableItemComponent, FuseVerticalNavigationDividerItemComponent, FuseVerticalNavigationSpacerItemComponent]
 })
 export class FuseVerticalNavigationGroupItemComponent implements OnInit, OnDestroy
 {

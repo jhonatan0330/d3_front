@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
     DocumentoPlantillaDTO,
@@ -16,22 +16,32 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { SelectionModel } from '@angular/cdk/collections';
 import Swal from 'sweetalert2';
-import { MatDrawer } from '@angular/material/sidenav';
+import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/modules/full/neuron/form/controls/base/base.component';
 import { getComponent } from 'app/modules/full/neuron/form-helper';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatDatepickerInputEvent, MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
 import { BpmDiagramComponent, Proceso } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatFormField, MatSuffix, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import { MatProgressBar } from '@angular/material/progress-bar';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { ImageFormatPipe } from '../shared/local-image';
 
 @Component({
     selector: 'app-cruds',
     templateUrl: './cruds2.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatDrawerContainer, MatDrawer, MatIconButton, MatTooltip, MatIcon, MatButton, MatMenuTrigger, MatMenu, MatMenuItem, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatDrawerContent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatProgressBar, CurrencyPipe, DatePipe, ImageFormatPipe]
 })
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     plantilla: DocumentoPlantillaDTO; // Estructura base de la lista

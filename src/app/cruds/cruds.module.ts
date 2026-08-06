@@ -21,20 +21,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
-    declarations: [
-        Cruds2Component
-    ],
     imports: [
         RouterModule.forChild([
             {
-              path: ':type/:id',
-              component: Cruds2Component
+                path: ':type/:id',
+                component: Cruds2Component
             },
             {
-              path: ':type/:id/:server_id',
-              component: Cruds2Component
+                path: ':type/:id/:server_id',
+                component: Cruds2Component
             }
-          ]),
+        ]),
         SharedModule,
         MatButtonModule,
         MatDialogModule,
@@ -51,8 +48,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatNativeDateModule,
         MatTableModule,
         FuseNavigationModule,
-        FuseScrollbarModule
-        
+        FuseScrollbarModule,
+        Cruds2Component
     ]
 })
 export class CrudsModule {

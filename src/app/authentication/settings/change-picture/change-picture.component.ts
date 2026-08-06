@@ -1,12 +1,14 @@
 import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { LoginService } from 'app/authentication/login.service';
 import Swal from 'sweetalert2';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
     selector: 'app-change-picture',
     templateUrl: './change-picture.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatIcon, MatIconButton]
 })
 export class ChangePictureComponent {
   WIDTH = 128;

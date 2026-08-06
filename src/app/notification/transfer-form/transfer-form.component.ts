@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ChangeDetectionStrategy } from "@angular/core";
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DocumentoPlantillaDTO } from "app/modules/full/neuron/model/sw42.domain";
 import { TemplateService } from "app/modules/full/neuron/service/template.service";
@@ -9,13 +9,21 @@ import { NotificationCenterService } from 'app/notification/notification-center.
 import { ActividadDTO } from "../notification.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
 import { UsuarioDTO } from "app/authentication/authentication.domain";
+import { MatCard, MatCardContent } from "@angular/material/card";
+import { MatFormField } from "@angular/material/form-field";
+import { MatInput } from "@angular/material/input";
+import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from "@angular/material/autocomplete";
+import { MatButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { MatProgressBar } from "@angular/material/progress-bar";
+import { ImageFormatPipe } from "../../shared/local-image";
 
 @Component({
     selector: 'transfer-form',
     templateUrl: './transfer-form.component.html',
     exportAs: 'transfer-form',
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [MatCard, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatAutocompleteTrigger, MatAutocomplete, MatOption, MatButton, MatIcon, MatProgressBar, ImageFormatPipe]
 })
 export class TransferFormComponent implements OnInit {
 

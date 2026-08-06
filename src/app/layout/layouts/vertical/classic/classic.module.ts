@@ -15,10 +15,7 @@ import { ClassicLayoutComponent } from 'app/layout/layouts/vertical/classic/clas
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
-    declarations: [
-        ClassicLayoutComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule,
         MatButtonModule,
         MatDividerModule,
@@ -30,9 +27,10 @@ import { HomeButtonModule } from 'app/layout/common/home-button/home-button.modu
         ShortcutsModule,
         UserModule,
         SharedModule,
-        HomeButtonModule
+        HomeButtonModule,
+        ClassicLayoutComponent
     ],
-    exports     : [
+    exports: [
         ClassicLayoutComponent
     ]
 })

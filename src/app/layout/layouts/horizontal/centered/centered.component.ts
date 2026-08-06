@@ -8,13 +8,24 @@ import { NavigationService } from 'app/authorization/navigation/navigation.servi
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { environment } from 'environments/environment';
 import { Subject, takeUntil } from 'rxjs';
+import { FuseVerticalNavigationComponent as FuseVerticalNavigationComponent_1 } from '../../../../../@fuse/components/navigation/vertical/vertical.component';
+import { FuseHorizontalNavigationComponent } from '../../../../../@fuse/components/navigation/horizontal/horizontal.component';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { HomeButtonComponent } from '../../../common/home-button/home-button.component';
+import { SearchComponent } from '../../../common/search/search.component';
+import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.component';
+import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
+import { UserComponent } from '../../../common/user/user.component';
+import { RouterOutlet } from '@angular/router';
+import { ImageFormatPipe } from '../../../../shared/local-image';
 
 @Component({
     selector: 'centered-layout',
     templateUrl: './centered.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FuseVerticalNavigationComponent_1, FuseHorizontalNavigationComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
 })
 export class CenteredLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;

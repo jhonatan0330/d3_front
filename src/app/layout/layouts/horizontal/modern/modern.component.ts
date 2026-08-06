@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
@@ -9,13 +9,23 @@ import { environment } from 'environments/environment';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 import { SafeHtml } from '@angular/platform-browser';
+import { FuseVerticalNavigationComponent as FuseVerticalNavigationComponent_1 } from '../../../../../@fuse/components/navigation/vertical/vertical.component';
+import { FuseHorizontalNavigationComponent } from '../../../../../@fuse/components/navigation/horizontal/horizontal.component';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { HomeButtonComponent } from '../../../common/home-button/home-button.component';
+import { SearchComponent } from '../../../common/search/search.component';
+import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.component';
+import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
+import { UserComponent } from '../../../common/user/user.component';
+import { ImageFormatPipe } from '../../../../shared/local-image';
 
 @Component({
     selector: 'modern-layout',
     templateUrl: './modern.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FuseVerticalNavigationComponent_1, FuseHorizontalNavigationComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
 })
 export class ModernLayoutComponent implements OnInit, OnDestroy {
   isScreenSmall: boolean;

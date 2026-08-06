@@ -14,26 +14,24 @@ import { ModernLayoutComponent } from 'app/layout/layouts/horizontal/modern/mode
 import { HomeButtonModule } from 'app/layout/common/home-button/home-button.module';
 
 @NgModule({
-  declarations: [
-    ModernLayoutComponent
-  ],
-  imports: [
-    RouterModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatIconModule,
-    MatMenuModule,
-    FuseNavigationModule,
-    NotificationsModule,
-    SearchModule,
-    ShortcutsModule,
-    UserModule,
-    SharedModule,
-    HomeButtonModule
-  ],
-  exports: [
-    ModernLayoutComponent
-  ]
+    imports: [
+        RouterModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatIconModule,
+        MatMenuModule,
+        FuseNavigationModule,
+        NotificationsModule,
+        SearchModule,
+        ShortcutsModule,
+        UserModule,
+        SharedModule,
+        HomeButtonModule,
+        ModernLayoutComponent
+    ],
+    exports: [
+        ModernLayoutComponent
+    ]
 })
 export class ModernLayoutModule {
 }

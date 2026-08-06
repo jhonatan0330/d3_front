@@ -11,10 +11,7 @@ import { SearchComponent } from 'app/layout/common/search/search.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
-    declarations: [
-        SearchComponent
-    ],
-    imports     : [
+    imports: [
         RouterModule.forChild([]),
         MatAutocompleteModule,
         MatButtonModule,
@@ -22,16 +19,17 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
         MatIconModule,
         MatInputModule,
         MatProgressBarModule,
-        SharedModule
-    ],
-    exports     : [
+        SharedModule,
         SearchComponent
     ],
-    providers   : [
+    exports: [
+        SearchComponent
+    ],
+    providers: [
         {
-            provide   : MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
+            provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
             useFactory: (overlay: Overlay) => (): BlockScrollStrategy => overlay.scrollStrategies.block(),
-            deps      : [Overlay]
+            deps: [Overlay]
         }
     ]
 })
