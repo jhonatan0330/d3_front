@@ -1,91 +1,91 @@
 <!-- Item wrapper -->
 <div
   class="fuse-horizontal-navigation-item-wrapper"
-  [class.fuse-horizontal-navigation-item-has-subtitle]="!!item.subtitle"
-  [ngClass]="$safeNavigationMigration(item.classes?.wrapper)">
+  [class.fuse-horizontal-navigation-item-has-subtitle]="!!item().subtitle"
+  [ngClass]="$safeNavigationMigration(item().classes?.wrapper)">
 
   <!-- Item with an internal link -->
-  @if (item.link && !item.externalLink && !item.function && !item.disabled) {
+  @if (item().link && !item().externalLink && !item().function && !item().disabled) {
     <div
       class="fuse-horizontal-navigation-item"
-      [ngClass]="{'fuse-horizontal-navigation-item-active-forced': item.active}"
-      [routerLink]="[item.link]"
-      [fragment]="item.fragment ?? null"
-      [preserveFragment]="item.preserveFragment ?? false"
-      [queryParams]="item.queryParams ?? null"
-      [queryParamsHandling]="item.queryParamsHandling ?? null"
+      [ngClass]="{'fuse-horizontal-navigation-item-active-forced': item().active}"
+      [routerLink]="[item().link]"
+      [fragment]="item().fragment ?? null"
+      [preserveFragment]="item().preserveFragment ?? false"
+      [queryParams]="item().queryParams ?? null"
+      [queryParamsHandling]="item().queryParamsHandling ?? null"
       [routerLinkActive]="'fuse-horizontal-navigation-item-active'"
       [routerLinkActiveOptions]="isActiveMatchOptions"
-      [matTooltip]="item.tooltip || ''">
+      [matTooltip]="item().tooltip || ''">
       <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
     </div>
   }
 
   <!-- Item with an external link -->
-  @if (item.link && item.externalLink && !item.function && !item.disabled) {
+  @if (item().link && item().externalLink && !item().function && !item().disabled) {
     <a
       class="fuse-horizontal-navigation-item"
-      [href]="item.link"
-      [target]="item.target || '_self'"
-      [matTooltip]="item.tooltip || ''">
+      [href]="item().link"
+      [target]="item().target || '_self'"
+      [matTooltip]="item().tooltip || ''">
       <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
     </a>
   }
 
   <!-- Item with a function -->
-  @if (!item.link && item.function && !item.disabled) {
+  @if (!item().link && item().function && !item().disabled) {
     <div
       class="fuse-horizontal-navigation-item"
-      [ngClass]="{'fuse-horizontal-navigation-item-active-forced': item.active}"
-      [matTooltip]="item.tooltip || ''"
-      (click)="item.function(item)">
+      [ngClass]="{'fuse-horizontal-navigation-item-active-forced': item().active}"
+      [matTooltip]="item().tooltip || ''"
+      (click)="item().function(item())">
       <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
     </div>
   }
 
   <!-- Item with an internal link and function -->
-  @if (item.link && !item.externalLink && item.function && !item.disabled) {
+  @if (item().link && !item().externalLink && item().function && !item().disabled) {
     <div
       class="fuse-horizontal-navigation-item"
-      [ngClass]="{'fuse-horizontal-navigation-item-active-forced': item.active}"
-      [routerLink]="[item.link]"
-      [fragment]="item.fragment ?? null"
-      [preserveFragment]="item.preserveFragment ?? false"
-      [queryParams]="item.queryParams ?? null"
-      [queryParamsHandling]="item.queryParamsHandling ?? null"
+      [ngClass]="{'fuse-horizontal-navigation-item-active-forced': item().active}"
+      [routerLink]="[item().link]"
+      [fragment]="item().fragment ?? null"
+      [preserveFragment]="item().preserveFragment ?? false"
+      [queryParams]="item().queryParams ?? null"
+      [queryParamsHandling]="item().queryParamsHandling ?? null"
       [routerLinkActive]="'fuse-horizontal-navigation-item-active'"
       [routerLinkActiveOptions]="isActiveMatchOptions"
-      [matTooltip]="item.tooltip || ''"
-      (click)="item.function(item)">
+      [matTooltip]="item().tooltip || ''"
+      (click)="item().function(item())">
       <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
     </div>
   }
 
   <!-- Item with an external link and function -->
-  @if (item.link && item.externalLink && item.function && !item.disabled) {
+  @if (item().link && item().externalLink && item().function && !item().disabled) {
     <a
       class="fuse-horizontal-navigation-item"
-      [href]="item.link"
-      [target]="item.target || '_self'"
-      [matTooltip]="item.tooltip || ''"
-      (click)="item.function(item)"
+      [href]="item().link"
+      [target]="item().target || '_self'"
+      [matTooltip]="item().tooltip || ''"
+      (click)="item().function(item())"
       mat-menu-item>
       <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
     </a>
   }
 
   <!-- Item with a no link and no function -->
-  @if (!item.link && !item.function && !item.disabled) {
+  @if (!item().link && !item().function && !item().disabled) {
     <div
       class="fuse-horizontal-navigation-item"
-      [ngClass]="{'fuse-horizontal-navigation-item-active-forced': item.active}"
-      [matTooltip]="item.tooltip || ''">
+      [ngClass]="{'fuse-horizontal-navigation-item-active-forced': item().active}"
+      [matTooltip]="item().tooltip || ''">
       <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
     </div>
   }
 
   <!-- Item is disabled -->
-  @if (item.disabled) {
+  @if (item().disabled) {
     <div class="fuse-horizontal-navigation-item fuse-horizontal-navigation-item-disabled">
       <ng-container *ngTemplateOutlet="itemTemplate"></ng-container>
     </div>
@@ -97,41 +97,41 @@
 <ng-template #itemTemplate>
 
   <!-- Icon -->
-  @if (item.icon) {
+  @if (item().icon) {
     <mat-icon
       class="fuse-horizontal-navigation-item-icon"
-      [ngClass]="$safeNavigationMigration(item.classes?.icon)"
-    [svgIcon]="item.icon"></mat-icon>
+      [ngClass]="$safeNavigationMigration(item().classes?.icon)"
+    [svgIcon]="item().icon"></mat-icon>
   }
 
   <!-- Image -->
-  @if (item.image) {
-    <img class="w-7 h-7 rounded-full mr-2" [src]="item.image">
+  @if (item().image) {
+    <img class="w-7 h-7 rounded-full mr-2" [src]="item().image">
   }
 
   <!-- Title & Subtitle -->
   <div class="fuse-horizontal-navigation-item-title-wrapper">
     <div class="fuse-horizontal-navigation-item-title">
-      <span [ngClass]="$safeNavigationMigration(item.classes?.title)">
-        {{item.title}}
+      <span [ngClass]="$safeNavigationMigration(item().classes?.title)">
+        {{item().title}}
       </span>
     </div>
-    @if (item.subtitle) {
+    @if (item().subtitle) {
       <div class="fuse-horizontal-navigation-item-subtitle text-hint">
-        <span [ngClass]="$safeNavigationMigration(item.classes?.subtitle)">
-          {{item.subtitle}}
+        <span [ngClass]="$safeNavigationMigration(item().classes?.subtitle)">
+          {{item().subtitle}}
         </span>
       </div>
     }
   </div>
 
   <!-- Badge -->
-  @if (item.badge) {
+  @if (item().badge) {
     <div class="fuse-horizontal-navigation-item-badge">
       <div
         class="fuse-horizontal-navigation-item-badge-content"
-        [ngClass]="item.badge.classes">
-        {{item.badge.title}}
+        [ngClass]="item().badge.classes">
+        {{item().badge.title}}
       </div>
     </div>
   }

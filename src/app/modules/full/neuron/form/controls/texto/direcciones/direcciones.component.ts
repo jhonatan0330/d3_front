@@ -1,5 +1,5 @@
 // address-form.component.ts
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -13,7 +13,7 @@ export class DireccionesComponent implements OnInit {
 
   form: FormGroup;
 
-  @Input() direccionInicial: string = '';
+  readonly direccionInicial = input<string>('');
   @Output() direccionChange = new EventEmitter<string>();
 
   constructor() {
@@ -44,8 +44,9 @@ export class DireccionesComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    if (this.direccionInicial) {
-      const valores = this.descomponerDireccion(this.direccionInicial);
+    const direccionInicial = this.direccionInicial();
+    if (direccionInicial) {
+      const valores = this.descomponerDireccion(direccionInicial);
       this.form.patchValue(valores, { emitEvent: false });
     }
   }

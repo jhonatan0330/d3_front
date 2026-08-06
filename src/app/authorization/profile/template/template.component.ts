@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -23,43 +23,46 @@ export class TemplateComponent implements OnInit {
   private utilsService = inject(UtilsService);
   private templateService = inject(TemplateService);
 
-  @Input() nombre = '';
-  @Input() imagen = '';
-  @Input() id: string;
-  @Input() process_id: string;
-  @Input() type: TemplateEnum;
-  @Input() serverId: string;
+  readonly nombre = input('');
+  readonly imagen = input('');
+  readonly id = input<string>(undefined);
+  readonly process_id = input<string>(undefined);
+  readonly type = input<TemplateEnum>(undefined);
+  readonly serverId = input<string>(undefined);
 
   ngOnInit(): void { }
 
   showTemplate() {
-    if (this.type === TemplateEnum.TIPO_REPORTE) {
+    const type = this.type();
+    if (type === TemplateEnum.TIPO_REPORTE) {
       this.openDialog();
     } else {
       let newRoute = '';
-      if (this.type === TemplateEnum.TIPO_TABLERO) {
-        newRoute = '/process_crud/' + this.process_id;
+      if (type === TemplateEnum.TIPO_TABLERO) {
+        newRoute = '/process_crud/' + this.process_id();
       } else {
-        newRoute = '/list/' + this.id;
+        newRoute = '/list/' + this.id();
         /*if (!this.id && this.process_id) {
           newRoute = '/process_crud/' + this.process_id;
         } else {
           newRoute = '/list/' + this.id;
         }*/
       }
-      if (this.serverId) { newRoute = newRoute + '/' + this.serverId }
+      const serverId = this.serverId();
+      if (serverId) { newRoute = newRoute + '/' + serverId }
       this.router.navigate(['/list' + newRoute]);
     }
   }
 
   openDialog() {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
-    pedidoVenta.plantilla = this.id;
-    if (this.serverId) {
-      pedidoVenta.server = this.serverId
+    pedidoVenta.plantilla = this.id();
+    const serverId = this.serverId();
+    if (serverId) {
+      pedidoVenta.server = serverId
     }
     let _close2Save = false;
-    if (this.type === TemplateEnum.TIPO_REPORTE) {
+    if (this.type() === TemplateEnum.TIPO_REPORTE) {
       _close2Save = true;
     }
     this.utilsService.modalWithParams(pedidoVenta, _close2Save);

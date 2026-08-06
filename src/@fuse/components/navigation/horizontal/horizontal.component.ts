@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewEncapsulation, inject, input } from '@angular/core';
 import { ReplaySubject, Subject } from 'rxjs';
 import { FuseNavigationItem } from '@fuse/components/navigation/navigation.types';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
@@ -23,7 +23,7 @@ export class FuseHorizontalNavigationComponent implements OnChanges, OnInit, OnD
     private _fuseUtilsService = inject(FuseUtilsService);
 
     @Input() name: string = this._fuseUtilsService.randomId();
-    @Input() navigation: FuseNavigationItem[];
+    readonly navigation = input<FuseNavigationItem[]>(undefined);
 
     onRefreshed: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -53,13 +53,14 @@ export class FuseHorizontalNavigationComponent implements OnChanges, OnInit, OnD
     ngOnInit(): void
     {
         // Make sure the name input is not an empty string
-        if ( this.name === '' )
+        const name = this.name;
+        if ( name === '' )
         {
             this.name = this._fuseUtilsService.randomId();
         }
 
         // Register the navigation component
-        this._fuseNavigationService.registerComponent(this.name, this);
+        this._fuseNavigationService.registerComponent(name, this);
     }
 
     /**

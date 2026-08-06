@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, ElementRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ChangeDetectionStrategy, inject, Input } from '@angular/core';
 import { Map } from 'ol';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges, OnInit, Output, EventEmitter, HostListener, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, OnInit, Output, EventEmitter, HostListener, ChangeDetectionStrategy, inject, input } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
@@ -37,10 +37,10 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   private dialog = inject(MatDialog);
   private data = inject(MAT_DIALOG_DATA, { optional: true });
 
-  @Input() proceso: Proceso | null = null;
-  @Input() width = 600;
-  @Input() height = 400;
-  @Input() nodeRadius = 48;
+  readonly proceso = input<Proceso | null>(null);
+  readonly width = input(600);
+  readonly height = input(400);
+  readonly nodeRadius = input(48);
 
   constructor() {
     const data = this.data;
@@ -210,12 +210,13 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   private render() {
     this.nodes = [];
     this.links = [];
-    if (!this.proceso) return;
+    const proceso = this.proceso();
+    if (!proceso) return;
 
-    const cx = this.width / 2;
-    const cy = this.height / 2;
-    const rootR = this.nodeRadius;
-    this.placeNode(this.proceso, cx, cy, rootR, 0);
+    const cx = this.width() / 2;
+    const cy = this.height() / 2;
+    const rootR = this.nodeRadius();
+    this.placeNode(proceso, cx, cy, rootR, 0);
 
     // ensure parents render before children by sorting by depth (parents: small depth)
     this.nodes.sort((a, b) => (a.depth || 0) - (b.depth || 0));

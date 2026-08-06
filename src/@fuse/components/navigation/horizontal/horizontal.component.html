@@ -1,6 +1,6 @@
 <div class="fuse-horizontal-navigation-wrapper">
 
-  @for (item of navigation; track trackByFn($index, item)) {
+  @for (item of navigation(); track trackByFn($index, item)) {
     <!-- Skip the hidden items -->
     @if ((item.hidden && !item.hidden(item)) || !item.hidden) {
       <!-- Basic -->

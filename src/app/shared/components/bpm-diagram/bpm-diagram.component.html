@@ -1,5 +1,5 @@
-<div class="bpm-diagram" [style.width.px]="width" [style.height.px]="height">
-  <svg [attr.width]="width" [attr.height]="height" [attr.viewBox]="'0 0 ' + width + ' ' + height"
+<div class="bpm-diagram" [style.width.px]="width()" [style.height.px]="height()">
+  <svg [attr.width]="width()" [attr.height]="height()" [attr.viewBox]="'0 0 ' + width() + ' ' + height()"
     (mousedown)="startDrag($event)" (mousemove)="doDrag($event)" (mouseup)="endDrag()" (mouseleave)="endDrag()">
     <defs>
       <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">

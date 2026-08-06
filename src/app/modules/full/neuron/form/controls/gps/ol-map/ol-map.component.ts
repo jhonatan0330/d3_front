@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, ElementRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ChangeDetectionStrategy, inject, Input, input } from '@angular/core';
 import { Map } from 'ol';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -37,10 +37,10 @@ export class OlMapComponent implements OnInit, AfterViewInit {
 
   @Input() lat: number;
   @Input() lon: number;
-  @Input() zoom: number;
-  @Input() anchor: number[] = DEFAULT_ANCHOR;
-  @Input() icon: string = DEFAULT_ICON;
-  @Input() text: string = DEFAULT_TEXT;
+  readonly zoom = input<number>(undefined);
+  readonly anchor = input<number[]>(DEFAULT_ANCHOR);
+  readonly icon = input<string>(DEFAULT_ICON);
+  readonly text = input<string>(DEFAULT_TEXT);
 
   target: string = 'map-' + Math.random().toString(36).substring(2);
   nombre: String;
@@ -66,11 +66,11 @@ export class OlMapComponent implements OnInit, AfterViewInit {
       ],
       target: this.target,
       view: new View({
-        center: Proj.fromLonLat([this.lon, this.lat]),
+          center: Proj.fromLonLat([this.lon, this.lat]),
         zoom: 15
       }),
     });
-    this.addPoint(this.lat, this.lon);
+      this.addPoint(this.lat, this.lon);
     //this.map.on('click', handlerClick);
     //this.map.addEventListener('click', this.handlerClick2);
   }
@@ -83,9 +83,9 @@ export class OlMapComponent implements OnInit, AfterViewInit {
 
     const iconStyle: Style = new Style({
       image: new Icon({
-        anchor: this.anchor,
+        anchor: this.anchor(),
         displacement: [22, 0],
-        src: this.icon,
+        src: this.icon(),
       })
     });
 

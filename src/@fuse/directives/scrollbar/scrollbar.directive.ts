@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, inject } from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, inject, input } from '@angular/core';
 import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Platform } from '@angular/cdk/platform';
 import { debounceTime, fromEvent, Subject, takeUntil } from 'rxjs';
@@ -19,7 +19,7 @@ export class FuseScrollbarDirective implements OnChanges, OnInit, OnDestroy
     /* eslint-enable @typescript-eslint/naming-convention */
 
     @Input() fuseScrollbar: boolean = true;
-    @Input() fuseScrollbarOptions: PerfectScrollbar.Options;
+    readonly fuseScrollbarOptions = input<PerfectScrollbar.Options>(undefined);
 
     private _animation: number;
     private _options: PerfectScrollbar.Options;

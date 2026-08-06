@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostBinding, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { Subject } from 'rxjs';
@@ -24,9 +24,9 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     private templateService = inject(TemplateService);
     private utilsService = inject(UtilsService);
 
-    @Input() appearance: 'basic' | 'bar' = 'basic';
-    @Input() debounce: number = 300;
-    @Input() minLength: number = 2;
+    readonly appearance = input<'basic' | 'bar'>('basic');
+    readonly debounce = input<number>(300);
+    readonly minLength = input<number>(2);
     @Output() search: EventEmitter<any> = new EventEmitter<any>();
 
     opened: boolean = false;
@@ -45,8 +45,8 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
      */
     @HostBinding('class') get classList(): any {
         return {
-            'search-appearance-bar': this.appearance === 'bar',
-            'search-appearance-basic': this.appearance === 'basic',
+            'search-appearance-bar': this.appearance() === 'bar',
+            'search-appearance-basic': this.appearance() === 'basic',
             'search-opened': this.opened
         };
     }
@@ -134,7 +134,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
         // Escape
         if (event.code === 'Escape') {
             // If the appearance is 'bar' and the mat-autocomplete is not open, close the search
-            if (this.appearance === 'bar' && !this._matAutocomplete.isOpen) {
+            if (this.appearance() === 'bar' && !this._matAutocomplete.isOpen) {
                 this.close();
             }
         }
