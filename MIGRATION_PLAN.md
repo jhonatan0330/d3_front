@@ -205,19 +205,17 @@ npm install @bobbyquantum/ngx-editor@22   # drop-in de ngx-editor
 Esta fase es **después** de que todo funcione en Angular 22. No combinar con la migración de versión.
 
 ### 5.1 Limpieza inmediata
-- [ ] Eliminar `HttpClientModule` redundante de los 10 layout modules
-- [ ] Eliminar `PreloadAllModules` si no se usa (o justificar por qué)
-- [ ] Fix naming inconsistente (`persons.ts` → `persons.component.ts`, etc.)
+- [x] Eliminar `HttpClientModule` redundante de los 10 layout modules (solo queda el provider en `main.ts`)
+- [x] Eliminar `PreloadAllModules` (las rutas lazy cargan al navegar; menos descarga inicial)
+- [x] Fix naming inconsistente: `persons.ts`/`persons.html` → `persons.component.ts`/`.html`; `detail_persons.ts` → `detail-person.component.ts` (vía `git mv`)
 
-### 5.2 Migración a standalone (gradual, 1 componente a la vez)
-- [ ] Usar el workflow oficial en **3 fases** (`ng generate @angular/core:standalone`), con `ng build` verificado entre cada una:
-  - [ ] Fase 1: correr el schematic → seleccionar **"Convert all components, directives and pipes to standalone"**
-  - [ ] `ng build`
-  - [ ] Fase 2: correr de nuevo → seleccionar **"Remove unnecessary NgModule classes"**
-  - [ ] `ng build`
-  - [ ] Fase 3: correr de nuevo → seleccionar **"Bootstrap the project using standalone APIs"**
-  - [ ] `ng build`
-  - [ ] No tocar Neuron ni Fuse hasta el final
+### 5.2 Migración a standalone (workflow oficial en 3 fases, `ng generate @angular/core:standalone`)
+- [x] Fase 1: **convert-to-standalone** — 100 archivos (componentes/directivas/pipes a standalone, modules actualizados); limpiados 3 imports no usados (NG8113 en `vertical.component.ts`, `archivo.component.ts`, `form.component.ts`)
+- [x] `ng build` + `npx tsc --noEmit` OK
+- [x] Fase 2: **prune-ng-modules** — borrados 7 NgModule (scrollbar, navigation, shared, notification, shortcuts, user, home-button); fix barrels `public-api.ts` que aún exportaban los módulos borrados
+- [x] `ng build` + `npx tsc --noEmit` OK
+- [x] Fase 3: **standalone-bootstrap** — eliminado `app.module.ts`, `main.ts` usa `bootstrapApplication` (interceptores/error handler/date locale preservados en providers)
+- [x] `ng build` + `npx tsc --noEmit` OK (bundle inicial 2.26 MB, dentro de budget)
 
 ### 5.3 Adoption de Signals (gradual, usar schematics oficiales, no refactor manual)
 - [ ] `ng generate @angular/core:inject` — convertir constructor injection → `inject()`
