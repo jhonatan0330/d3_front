@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,6 +22,7 @@ import { ImageFormatPipe } from '../../../shared/local-image';
 })
 export class SignInSplitScreenReversedComponent implements OnInit {
     private _formBuilder = inject(UntypedFormBuilder);
+    private _cdr = inject(ChangeDetectorRef);
     loginservice = inject(LoginService);
     private route = inject(ActivatedRoute);
     private router = inject(Router);
@@ -57,6 +58,7 @@ export class SignInSplitScreenReversedComponent implements OnInit {
                     this.company.propiedades,
                     PlantillaHelper.LOGIN_HTML
                 );
+                this._cdr.markForCheck();
             });
         this.signInForm = this._formBuilder.group({
             username: ['', [Validators.required]],
