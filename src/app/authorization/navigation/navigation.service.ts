@@ -1,7 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject, } from 'rxjs';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
-import { FuseNavigationItem, FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
+import { FuseNavigationItem } from '@fuse/components/navigation';
 import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
@@ -10,8 +10,6 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
     providedIn: 'root'
 })
 export class NavigationService {
-    private _fuseNavigationService = inject(FuseNavigationService);
-
     private _navigation: ReplaySubject<Navigation> = new ReplaySubject<Navigation>(1);
 
     constructor() {
@@ -235,9 +233,6 @@ export class NavigationService {
             horizontal: [...localNavigation],
         }
         this._navigation.next(navigation);
-
-        const nav = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>('mainNavigation');
-        if (nav) { nav.refresh(); }
     }
 
 }

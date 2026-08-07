@@ -1,0 +1,5 @@
+<nav class="flex flex-1 flex-col min-w-0 overflow-y-auto px-2 pb-4">
+    @for (item of items(); track trackByFn($index, item)) {
+        <simple-nav-item [item]="item" [level]="0" (navigate)="onNavigate()"></simple-nav-item>
+    }
+</nav>

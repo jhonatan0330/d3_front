@@ -8,7 +8,7 @@ import { MatIcon } from '@angular/material/icon';
     selector: 'app-search-pop-button',
     template: `
     <button mat-icon-button (click)="openDashboard()" matTooltip="Ir al inicio">
-        <mat-icon svgIcon="home"></mat-icon>
+        <mat-icon [svgIcon]="'heroicons_outline:home'"></mat-icon>
     </button>
     `,
     changeDetection: ChangeDetectionStrategy.Eager,
