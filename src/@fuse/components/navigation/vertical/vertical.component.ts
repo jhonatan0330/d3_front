@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, HostListener, Input, OnChanges, OnDestroy, OnInit, QueryList, Renderer2, SimpleChanges, ViewChildren, ViewEncapsulation, DOCUMENT, inject, input, viewChild, output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, HostBinding, HostListener, Input, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges, ViewEncapsulation, DOCUMENT, inject, input, viewChild, viewChildren, output } from '@angular/core';
 import { animate, AnimationBuilder, AnimationPlayer, style } from '@angular/animations';
 
 import { NavigationEnd, Router } from '@angular/router';
@@ -57,6 +57,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
     readonly openedChanged = output<boolean>();
     readonly positionChanged = output<FuseVerticalNavigationPosition>();
     private readonly _navigationContentEl = viewChild<ElementRef>('navigationContent');
+    readonly fuseScrollbarDirectives = viewChildren(FuseScrollbarDirective);
 
     activeAsideItemId: string | null = null;
     onCollapsableItemCollapsed: ReplaySubject<FuseNavigationItem> = new ReplaySubject<FuseNavigationItem>(1);
@@ -71,7 +72,6 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
     private _overlay: HTMLElement;
     private _player: AnimationPlayer;
     private _scrollStrategy: ScrollStrategy;
-    private _fuseScrollbarDirectives!: QueryList<FuseScrollbarDirective>;
     private _fuseScrollbarDirectivesSubscription: Subscription;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -86,6 +86,30 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
         this._handleOverlayClick = (): void => {
             this.close();
         };
+
+        effect(() => {
+            const fuseScrollbarDirectives = this.fuseScrollbarDirectives();
+            if (fuseScrollbarDirectives.length === 0) {
+                return;
+            }
+            if (this._fuseScrollbarDirectivesSubscription) {
+                this._fuseScrollbarDirectivesSubscription.unsubscribe();
+            }
+            this._fuseScrollbarDirectivesSubscription =
+                merge(
+                    this.onCollapsableItemCollapsed,
+                    this.onCollapsableItemExpanded
+                )
+                    .pipe(
+                        takeUntil(this._unsubscribeAll),
+                        delay(250)
+                    )
+                    .subscribe(() => {
+                        fuseScrollbarDirectives.forEach((fuseScrollbarDirective) => {
+                            fuseScrollbarDirective.update();
+                        });
+                    });
+        });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -127,43 +151,6 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
         return {
             'visibility': this.opened ? 'visible' : 'hidden'
         };
-    }
-
-    /**
-     * Setter for fuseScrollbarDirectives
-     */
-    @ViewChildren(FuseScrollbarDirective)
-    set fuseScrollbarDirectives(fuseScrollbarDirectives: QueryList<FuseScrollbarDirective>) {
-        // Store the directives
-        this._fuseScrollbarDirectives = fuseScrollbarDirectives;
-
-        // Return if there are no directives
-        if (fuseScrollbarDirectives.length === 0) {
-            return;
-        }
-
-        // Unsubscribe the previous subscriptions
-        if (this._fuseScrollbarDirectivesSubscription) {
-            this._fuseScrollbarDirectivesSubscription.unsubscribe();
-        }
-
-        // Update the scrollbars on collapsable items' collapse/expand
-        this._fuseScrollbarDirectivesSubscription =
-            merge(
-                this.onCollapsableItemCollapsed,
-                this.onCollapsableItemExpanded
-            )
-                .pipe(
-                    takeUntil(this._unsubscribeAll),
-                    delay(250)
-                )
-                .subscribe(() => {
-
-                    // Loop through the scrollbars and update them
-                    fuseScrollbarDirectives.forEach((fuseScrollbarDirective) => {
-                        fuseScrollbarDirective.update();
-                    });
-                });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -374,7 +361,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
             // Otherwise
             else {
                 // Go through all the scrollbar directives
-                this._fuseScrollbarDirectives.forEach((fuseScrollbarDirective) => {
+                this.fuseScrollbarDirectives().forEach((fuseScrollbarDirective) => {
 
                     // Skip if not enabled
                     if (!fuseScrollbarDirective.isEnabled()) {

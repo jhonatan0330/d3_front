@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import {
     MatDialogRef,
     MAT_DIALOG_DATA,
@@ -63,8 +63,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private _router = inject(Router);
 
     // Variables para el control de los campos
-    @ViewChild('dynamycFormElement', { read: ViewContainerRef })
-    myForm?: ViewContainerRef;
+    readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
     formIsModified = false;
     dynamicControls: IDynamicControl[] = [];
 
@@ -632,7 +631,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
         this.plantilla.caracteristicas.forEach((_campo) => {
             const componentDynamic: Type<any> = getComponent(_campo);
-            const componentRef = this.myForm.createComponent<IDynamicControl>(
+            const componentRef = this.myForm().createComponent<IDynamicControl>(
                 componentDynamic
             );
             componentRef.instance.structure = _campo;

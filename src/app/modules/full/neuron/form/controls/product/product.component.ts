@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, Type, ViewChild, ViewContainerRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   DetallePedidoVentaDTO,
@@ -43,8 +43,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   allowEdit = false;
 
   dynamicControls: IDynamicControl[] = [];
-  @ViewChild('dynamycFormElement', { read: ViewContainerRef })
-  myForm: ViewContainerRef;
+  readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
 
   ngOnInit(): void {
     this.detallePedidoVenta = this.data.data;
@@ -107,7 +106,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
     for (let d = 0; d < this.detallePedidoVenta.documentoDetalle.caracteristicas.length; d++) {
       const _campo = this.detallePedidoVenta.documentoDetalle.caracteristicas[d];
       const componentDynamic: Type<any> = getComponent(_campo.campoDTO);
-      const componentRef = this.myForm.createComponent<IDynamicControl>(
+      const componentRef = this.myForm().createComponent<IDynamicControl>(
         componentDynamic
       );
       componentRef.instance.structure = _campo.campoDTO;

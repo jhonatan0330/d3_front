@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef, ViewEncapsulation, inject, viewChild } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -26,20 +26,17 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
 
     private readonly _shortcutsOrigin = viewChild<MatButton>('shortcutsOrigin');
     private readonly _shortcutsPanel = viewChild<TemplateRef<any>>('shortcutsPanel');
+    private readonly barSearchInput = viewChild<ElementRef>('barSearchInput');
 
-
-    @ViewChild('barSearchInput')
-    set barSearchInput(value: ElementRef) {
-        // If the value exists, it means that the search input
-        // is now in the DOM, and we can focus on the input..
-        if (value) {
-            // Give Angular time to complete the change detection cycle
-            setTimeout(() => {
-
-                // Focus to the input element
-                value.nativeElement.focus();
-            });
-        }
+    constructor() {
+        effect(() => {
+            const barSearchInput = this.barSearchInput();
+            if (barSearchInput) {
+                setTimeout(() => {
+                    barSearchInput.nativeElement.focus();
+                });
+            }
+        });
     }
 
     shortcuts: DocumentoPlantillaDTO[];

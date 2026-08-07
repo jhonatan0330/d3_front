@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostBinding, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
+import { Component, effect, ElementRef, HostBinding, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges, ViewEncapsulation, ChangeDetectionStrategy, inject, input, output, viewChild } from '@angular/core';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { Subject } from 'rxjs';
@@ -33,8 +33,20 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     isLoading: boolean = false;
     resultSets: PedidoVentaDTO[];
     searchControl: UntypedFormControl = new UntypedFormControl();
-    private _matAutocomplete: MatAutocomplete;
+    private readonly barSearchInput = viewChild<ElementRef>('barSearchInput');
+    private readonly matAutocomplete = viewChild(MatAutocomplete);
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+
+    constructor() {
+        effect(() => {
+            const barSearchInput = this.barSearchInput();
+            if (barSearchInput) {
+                setTimeout(() => {
+                    barSearchInput.nativeElement.focus();
+                });
+            }
+        });
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -49,35 +61,6 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
             'search-appearance-basic': this.appearance() === 'basic',
             'search-opened': this.opened
         };
-    }
-
-    /**
-     * Setter for bar search input
-     *
-     * @param value
-     */
-    @ViewChild('barSearchInput')
-    set barSearchInput(value: ElementRef) {
-        // If the value exists, it means that the search input
-        // is now in the DOM, and we can focus on the input..
-        if (value) {
-            // Give Angular time to complete the change detection cycle
-            setTimeout(() => {
-
-                // Focus to the input element
-                value.nativeElement.focus();
-            });
-        }
-    }
-
-    /**
-     * Setter for mat-autocomplete element reference
-     *
-     * @param value
-     */
-    @ViewChild('matAutocomplete')
-    set matAutocomplete(value: MatAutocomplete) {
-        this._matAutocomplete = value;
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -134,7 +117,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
         // Escape
         if (event.code === 'Escape') {
             // If the appearance is 'bar' and the mat-autocomplete is not open, close the search
-            if (this.appearance() === 'bar' && !this._matAutocomplete.isOpen) {
+            if (this.appearance() === 'bar' && !this.matAutocomplete()?.isOpen) {
                 this.close();
             }
         }

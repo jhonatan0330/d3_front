@@ -220,8 +220,8 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 ### 5.3 Adoption de Signals (gradual, usar schematics oficiales, no refactor manual)
 - [x] `ng generate @angular/core:inject` — constructor injection → `inject()` (~101 archivos); fix `ImageFormatPipe` con constructor opcional (`ls ?? inject(...)`) porque se instancia manualmente con `new` en estructura.ts/puesto.ts
 - [x] `ng generate @angular/core:signal-input-migration` — inputs → signal inputs (61/61). **Revierte a `@Input()` los inputs que el componente escribe**: `vertical.component.ts` (inner, name, opened, transparentOverlay), `horizontal.component.ts` (name), `scrollbar.directive.ts` (fuseScrollbar), `ol-map`/`full-map` (lat, lon). Fixes de templates e imports (TS2540)
-- [x] `ng generate @angular/core:signal-queries-migration` — queries → signal queries (19/25; 6 quedaron como `@ViewChild`). Fix de `this.video()?.nativeElement` en change-picture (variable local `videoEl`) y `this.iframe()` en visor-pdf-dialog
-- [x] `ng generate @angular/core:output-migration` — outputs → signal outputs (7/8)
+- [x] `ng generate @angular/core:signal-queries-migration` — queries → signal queries (25/25). Los 6 restantes (setters/`ViewChildren`/`ViewContainerRef` que el schematic salta) migrados a mano: `vertical.component.ts` (`viewChildren(FuseScrollbarDirective)` + `effect` para la suscripción), `search.component.ts` y `shortcuts.component.ts` (`viewChild('barSearchInput')` + `effect` para el focus, `viewChild(MatAutocomplete)`), `neuron/form/form.component.ts` y `neuron/form/controls/product/product.component.ts` (`viewChild('dynamycFormElement', { read: ViewContainerRef })` → `this.myForm()`)
+- [x] `ng generate @angular/core:output-migration` — outputs → signal outputs (8/8, verificado: 0 `@Output()`/`EventEmitter` restantes en el repo)
 - [x] `ng generate @angular/core:control-flow` — `*ngIf/*ngFor/*ngSwitch` → `@if/@for/@switch` (organization.component.html; el resto de usos están en comentarios HTML → código muerto)
 - [x] `ng build` + `npx tsc --noEmit` OK en cada subfase
 - Empezar por servicios con BehaviorSubjects (pendiente, no bloqueante)
