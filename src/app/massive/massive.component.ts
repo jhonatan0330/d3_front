@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import {
   DocumentMessage,
   DocumentoPlantillaCaracteristicaDTO,
@@ -20,6 +20,7 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadLineDTO } from './massive.domain';
@@ -41,6 +42,7 @@ export class MassiveComponent implements OnInit {
   private templateService = inject(TemplateService);
   private api = inject(ApiService);
   private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
 
   plantillaId: string;
   urlServer: string;
@@ -81,7 +83,7 @@ export class MassiveComponent implements OnInit {
   files: FileList;
 
   ngOnInit(): void {
-    this.route.params.subscribe((params: Params) => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params: Params) => {
       this.plantillaId = params.template;
       this.urlServer = params.server;
       if (this.plantillaId) {
