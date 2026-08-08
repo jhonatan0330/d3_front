@@ -1,6 +1,6 @@
 <!-- Titulo  [style]="styleSizePop"-->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex px-4 py-2 shadow-md"
-  [style]="styleSizePop" [style.color]="getColorFont()" [style.backgroundColor]="getColor()">
+  [style]="styleSizePop" [style.color]="colorFont()" [style.backgroundColor]="color()">
   <img src="{{ $safeNavigationMigration(pedido?.imagen) | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
   <!-- Texto del titulo -->
   <div class="w-full">
@@ -15,22 +15,22 @@
         }
         @if (pedido && pedido.llaveTabla) {
           <a class="cursor-pointer px-1" (click)="copyName()">
-            <mat-icon inline="true" [style.color]="getColorFont()">content_copy</mat-icon>
+            <mat-icon inline="true" [style.color]="colorFont()">content_copy</mat-icon>
           </a>
         }
       </span>
       @if (pedido && pedido.llaveTabla) {
         <a class="cursor-pointer h-6 px-1" (click)="showTrace()">
-          <mat-icon [style.color]="getColorFont()" svgIcon="heroicons_outline:clock"></mat-icon>
+          <mat-icon [style.color]="colorFont()" svgIcon="heroicons_outline:clock"></mat-icon>
         </a>
       }
       @if (!fullScreen) {
         <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()"
-        [style.color]="getColorFont()">fullscreen</mat-icon>
+        [style.color]="colorFont()">fullscreen</mat-icon>
       }
       @if (fullScreen) {
         <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()"
-        [style.color]="getColorFont()">fullscreen_exit</mat-icon>
+        [style.color]="colorFont()">fullscreen_exit</mat-icon>
       }
     </div>
     @if (pedido && pedido.llaveTabla) {
@@ -63,11 +63,11 @@
   <!-- Boton Cerrar -->
   <div>
     <mat-icon class="h-6 cursor-pointer" (click)="dialogRef.close(false)"
-    [style.color]="getColorFont()">exit_to_app</mat-icon>
+    [style.color]="colorFont()">exit_to_app</mat-icon>
   </div>
   <div>
     <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList"
-    [style.color]="getColorFont()">menu</mat-icon>
+    [style.color]="colorFont()">menu</mat-icon>
     <mat-menu #formMenuList="matMenu">
       <!-- Boton Cambiar estado -->
       @if (canChangeState) {

@@ -21,7 +21,7 @@ export class TemplateService {
   get template() {
     return this._template.asReadonly();
   }
-  private colores: PropiedadDTO[] = [];
+  private colores: PropiedadDTO[];
 
   conectionTemplates: OrganizacionDTO[];
 
@@ -55,7 +55,7 @@ export class TemplateService {
 
   setTemplates(value: DocumentoPlantillaDTO[]) {
     this._template.set(value);
-    this.colores = [];
+    this.colores = null;
     this.getColor('');
     const processToMenu = [];
     // Transform document to MenuItems
@@ -160,9 +160,9 @@ export class TemplateService {
   }
 
   clear() {
-    this.colores = [];
+    this.colores = null;
     this.setTemplates([]);
-    this._modules = [];
+    this._modules = null;
   }
   setModules(value: PropiedadDTO[]) {
     this._modules = value;

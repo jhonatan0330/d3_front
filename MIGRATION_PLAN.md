@@ -268,6 +268,161 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 | Fase 4: 20 → 22 | 2 semanas | Semana 8 |
 | **Total migración versión** | **8 semanas** | |
 | Fase 5: Modernización | Continuo | Post-migración |
+| **Fase 6: Bugs Críticos** | **1 semana** | Post-migración |
+| **Fase 7: Testing** | **2 semanas** | Post-migración |
+| **Fase 8: Modernización código** | **Continuo** | Post-migración |
+| **Fase 9: Optimizaciones** | **Baja prioridad** | Post-migración |
+
+---
+
+## Fase 6: Corrección de Bugs Críticos (1 semana)
+
+Bugs que causan errores en runtime y afectan funcionalidad visible.
+
+### 6.1 Limpiar `$safeNavigationMigration` — 11 ocurrencias en 10 archivos
+- [ ] `accounting/manual-form/manual-form.component.html:24,28` — `$safeNavigationMigration(accountingService.currentCatalog?.name)` → `accountingService.currentCatalog?.name`
+- [ ] `authorization/profile/profile.component.html:31` — `$safeNavigationMigration(company?.imagen)` → `company?.imagen`
+- [ ] `cruds/cruds2.component.html:226,449` — `$safeNavigationMigration(plantilla?.imagen)` → `plantilla?.imagen`
+- [ ] `document-transition/trazability/trazability.component.html:5` — `$safeNavigationMigration(plantilla?.imagen)` → `plantilla?.imagen`
+- [ ] `layout/common/user/user.component.html:5` — `$safeNavigationMigration(user?.imagen)` → `user?.imagen`
+- [ ] `modules/full/neuron/form/form.component.html:4` — `$safeNavigationMigration(pedido?.imagen)` → `pedido?.imagen`
+- [ ] `modules/full/neuron/form/form.component.html:266` — `$safeNavigationMigration(plantilla?.nombre)` → `plantilla?.nombre`
+- [ ] `notification/transfer-form/transfer-form.component.html:12` — `$safeNavigationMigration(user?.imagen)` → `user?.imagen`
+- [ ] `persons/detail_persons/detail-person.component.html:6` — `$safeNavigationMigration(contact?.imagen)` → `contact?.imagen`
+- [x] `authentication/sign-in/split-screen-reversed/sign-in.component.html:11` — **HECHO** (sesión 8/8/2026)
+
+**Contexto**: `safeNavigationMigration` fue inyectado automáticamente por el migrador Angular 22 (commit `a563217`) como wrapper alrededor de expresiones con optional chaining. La función **nunca se definió** en ningún archivo TypeScript del proyecto. Cada evaluación en el template lanza un error silencioso que impide el renderizado de imágenes y textos.
+
+### 6.2 Memory Leaks — `massive.component.ts`
+- [ ] Agregar `DestroyRef` + `takeUntilDestroyed()` a las suscripciones de `massive.component.ts` (suscribe a `route.params` y múltiples llamadas HTTP sin `ngOnDestroy` ni `takeUntil`)
+- [ ] Auditar suscripciones en `accounting/manual-form/manual-form.component.ts` (solo limpia 1 de múltiples)
+- [ ] Auditar `login.service.ts` — múltiples `.subscribe()` internos sin `takeUntil` o `DestroyRef` (menos crítico como singleton root)
+
+### 6.3 Suscripciones fire-and-forget sin error handler — 24 instancias
+- [ ] Agregar `{ next: ..., error: ... }` o al menos `error: () => {}` a las 24 suscripciones `.subscribe()` sin handlers en:
+  - `tasks/details/details.component.ts:105,154`
+  - `tasks/list/list.component.ts:97,132`
+  - `persons/persons.component.ts:80,103,108`
+  - `configuration-forms/flex/flex.ts:239,247`
+  - `authentication/login.service.ts:410`
+  - Y otros (ver análisis completo)
+
+### 6.4 Reemplazar `alert()` en `formula.helper.ts`
+- [ ] `formula.helper.ts:16,41` — `alert('Formula incorrecta...')` → usar `sweetalert2` (ya está en el proyecto) o retornar error
+
+### 6.5 Verificación
+- [ ] `npm run build` OK
+- [ ] Smoke test: login → imágenes de empresa/user visibles inmediatamente
+- [ ] Verificar que las imágenes de profile, cruds, notification, persons se muestran sin click previo
+
+---
+
+## Fase 7: Testing de Servicios Críticos (2 semanas)
+
+### 7.1 LoginService (`authentication/login.service.ts`)
+- [ ] Test: `checkTokenIsValid()` sin token → retorna `false`
+- [ ] Test: `checkTokenIsValid()` con token válido → llama HTTP y retorna `true`
+- [ ] Test: `signin()` success → retorna `UsuarioAutenticacionDTO`
+- [ ] Test: `signin()` error → llama `signout()`
+- [ ] Test: `authenticationOK()` → actualiza `company$` y `user$`
+- [ ] Test: `setCompany()` con datos nuevos → `company$.next()` se dispara
+- [ ] Test: `setCompany()` con datos duplicados (mismo `llaveTabla`) → retorna sin emitir
+
+### 7.2 TasksService (`tasks/tasks.service.ts`)
+- [ ] Test: `tasks()` signal inicia en `null`
+- [ ] Test: `loadTasks()` → actualiza `tasks()` signal
+- [ ] Test: `task()` signal se selecciona correctamente
+- [ ] Test: `createTask()` → agrega a `tasks()` signal
+- [ ] Test: `updateTask()` → actualiza en `tasks()` signal
+- [ ] Test: `deleteTask()` → elimina de `tasks()` signal
+
+### 7.3 TemplateService (`modules/full/neuron/service/template.service.ts`)
+- [ ] Test: `template` signal inicia vacío
+- [ ] Test: `setTemplates()` → actualiza `template` signal
+- [ ] Test: `getTemplate()` retorna el template correcto por `llaveTabla`
+- [ ] Test: `getTemplate()` retorna `null` si no existe
+
+### 7.4 Verificación
+- [ ] `npm test` → todos los tests pasan
+- [ ] `npm run build` no se afecta (specs excluidos del build)
+
+---
+
+## Fase 8: Modernización y Calidad (continuo)
+
+Mejoras de mantenibilidad y calidad de código.
+
+### 8.1 Type Safety — habilitar strict mode incremental
+- [ ] Habilitar `strictNullChecks: true` en `tsconfig.json` (manteniendo `strict: false`)
+- [ ] Corregir errores de compilación resultantes (~100+ usos de `any` detectados)
+- [ ] Habilitar `strictTemplates: true` en `tsconfig.app.json`
+- [ ] Corregir errores de template binding resultantes
+
+### 8.2 Migrar `UntypedFormBuilder` → `FormBuilder` tipado
+- [ ] `authentication/sign-in/split-screen-reversed/sign-in.component.ts` — `UntypedFormGroup` → `FormGroup<{username: FormControl<string>, password: FormControl<string>}>`
+- [ ] `tasks/details/details.component.ts` — misma migración
+- [ ] `authorization/profile/profile.component.ts` — misma migración
+
+### 8.3 Migrar NgModules restantes a rutas standalone
+- [ ] Convertir 11 NgModules (lazy wrappers) a `loadComponent` directo en rutas:
+  - `tasks/tasks.module.ts`, `cruds/cruds.module.ts`, `authorization/authorization.module.ts`
+  - `accounting/accounting.module.ts`, `massive/massive.module.ts`
+  - `document-transition/document-transition.module.ts`
+  - `modules/full/neuron/neuron.module.ts`
+  - `authentication/recover-password/recover-password.module.ts`, `authentication/new-password/new-password.module.ts`
+- [ ] Eliminar `core/core.module.ts` (singleton guard pattern → `providedIn: 'root'`)
+- [ ] Eliminar `core/icons/icons.module.ts` (mover registro de iconos a `app.config.ts` o `main.ts`)
+
+### 8.4 Migrar `ChangeDetectionStrategy.Eager` → `OnPush`
+- [ ] Componentes prioritarios (uso intensivo): `cruds2.component.ts`, `massive.component.ts`, `form.component.ts`, `base.component.ts`
+- [ ] Verificar que los signals + `effect()` existentes funcionan con OnPush
+- [ ] Eliminar llamadas manuales a `markForCheck()` donde signals las hacen innecesarias
+
+### 8.5 Migrar `ReplaySubject` → signals
+- [ ] `authorization/navigation/navigation.service.ts` — `ReplaySubject` → signal
+- [ ] `notification/notification.service.ts` — `ReplaySubject` → signal
+
+### 8.6 Eliminar console.log de producción — 29 instancias
+- [ ] `shared/plantilla-helper.ts:261-269` — 4 `console.log` de debug en cálculos
+- [ ] `modules/full/neuron/formula.helper.ts:7,26,51` — 3 `console.log`
+- [ ] `modules/full/neuron/service/template.service.ts:124` — `console.log('Color incorrecto')`
+- [ ] `modules/full/neuron/form/controls/numero/numero.component.ts:216,219`
+- [ ] `shared/error-handler.service.ts:22,26` — reemplazar por logging estructurado
+- [ ] `tasks/list/list.component.ts:123`
+
+---
+
+## Fase 9: Optimizaciones y Deuda Técnica (baja prioridad)
+
+Mejoras que no afectan funcionalidad pero mejoran mantenibilidad.
+
+### 9.1 Migrar `*ngIf`/`*ngFor` residual → `@if`/`@for`
+- [ ] `modules/full/neuron/form/controls/proceso/proceso.component.html:269` — `*ngIf` → `@if`
+- [ ] `modules/full/neuron/form/controls/proceso/proceso.component.html:274` — `*ngFor` → `@for`
+
+### 9.2 Migrar constructor injection → `inject()`
+- [ ] `shared/file-handler.service.ts:11` — `constructor(private dialog: MatDialog)` → `inject(MatDialog)`
+- [ ] `authentication/property.service.ts:15-17` — `constructor(private http, private ls)` → `inject()`
+
+### 9.3 Eliminar `setTimeout`/`setInterval` sin cleanup
+- [ ] `massive.component.ts:823` — `setTimeout` sin `clearTimeout`
+- [ ] `modules/full/neuron/form/form.component.ts:163` — `setTimeout` sin cleanup
+- [ ] `layout/common/search/search.component.ts:51` — `setTimeout` sin cleanup
+- [ ] 10 componentes de layout con `setInterval` — verificar cleanup
+
+### 9.4 Dependencias problemáticas
+- [ ] Mover `webpack-bundle-analyzer` de `dependencies` a `devDependencies`
+- [ ] Evaluar eliminar `node-xlsx` (duplicado con `xlsx`)
+- [ ] Evaluar reemplazar `perfect-scrollbar` (obsoleto) por Angular CDK scrolling
+- [ ] Evaluar `lodash` → `lodash-es` para mejor tree-shaking
+
+### 9.5 Reglas ESLint faltantes
+- [ ] Agregar regla `@typescript-eslint/no-explicit-any: warn`
+- [ ] Agregar regla `no-console: warn`
+- [ ] Reparar `npm run lint` (ver MIGRATION_PLAN 0.1a)
+
+### 9.6 CUSTOM_ELEMENTS_SCHEMA
+- [ ] Auditar `authorization/profile/profile.component.ts:33` y `authorization/authorization.module.ts:59` — ¿se necesita `CUSTOM_ELEMENTS_SCHEMA`? (probablemente por Swiper/web components)
 
 ---
 

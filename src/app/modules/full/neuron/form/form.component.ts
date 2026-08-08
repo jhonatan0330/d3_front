@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext, computed, signal } from '@angular/core';
 import {
     MatDialogRef,
     MAT_DIALOG_DATA,
@@ -78,6 +78,23 @@ export class FormComponent implements OnInit, AfterViewInit {
     plantilla?: DocumentoPlantillaDTO; // Contiene la estructura del formulario
     pedido?: PedidoVentaDTO; // Contiene la data del formulario
 
+    // Color del header: computed signals para evitar NG0100 al cargar pedido de forma asincrona
+    private readonly _pedidoColor = signal<PedidoVentaDTO | undefined>(undefined);
+    readonly colorFont = computed(() => {
+        const pedido = this._pedidoColor();
+        return pedido ? this.templateService.getColorFont(pedido.estadoExpediente) : '#000000';
+    });
+    readonly color = computed(() => {
+        const pedido = this._pedidoColor();
+        return pedido ? this.templateService.getColor(pedido.estadoExpediente) : 'transparent';
+    });
+
+    private setPedido(pedido: PedidoVentaDTO): PedidoVentaDTO {
+        this.pedido = pedido;
+        this._pedidoColor.set(pedido);
+        return pedido;
+    }
+
     esRol = false;
 
     // Variables de comportamiento
@@ -154,7 +171,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FUNCION_SQL_NEW_ANTES)) {
                 this.validacionPrevia();
             } else {
-                this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
+                this.pedido = this.setPedido(this.copiarPedidoBase(this.pedidoBase, false));
             }
         }
     }
@@ -314,7 +331,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         entity.llaveTabla = id;
         this.api.consultarDocumento(entity, this.plantilla.server).subscribe({
             next: (_value: PedidoVentaDTO) => {
-                this.pedido = _value;
+                this.pedido = this.setPedido(_value);
                 this.pedido.messages = this.pedidoBase.messages;
                 this.showForm();
             },
@@ -339,7 +356,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                     Swal.fire('Validacion', mensajeToShow, 'info');
                     this.dialogRef.close();
                 } else {
-                    this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
+                    this.pedido = this.setPedido(this.copiarPedidoBase(this.pedidoBase, false));
                     this.showForm();
                 }
             },
@@ -410,7 +427,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                     if (this.pedidoBase.llaveTabla) {
                         this.consultarDocumento(this.pedidoBase.llaveTabla);
                     } else {
-                        this.pedido = this.copiarPedidoBase(this.pedidoBase, false);
+                        this.pedido = this.setPedido(this.copiarPedidoBase(this.pedidoBase, false));
                         this.showForm();
                     }
                 }
@@ -744,16 +761,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     // Cargo en el formulario los botones de accion
-
-    getColor() {
-        if (!this.pedido) { return null; }
-        return this.templateService.getColor(this.pedido.estadoExpediente);
-    }
-
-    getColorFont() {
-        if (!this.pedido) { return null; }
-        return this.templateService.getColorFont(this.pedido.estadoExpediente);
-    }
 
     showActions() {
 
