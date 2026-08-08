@@ -17,14 +17,13 @@ import { NotificationButtonComponent } from '../../../../notification/notificati
 import { UserComponent } from '../../../common/user/user.component';
 import { SimpleNavComponent } from '../../../common/simple-nav/simple-nav.component';
 import { RouterOutlet } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { ImageFormatPipe } from '../../../../shared/local-image';
 
 @Component({
     selector: 'compact-layout',
     templateUrl: './compact.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
 })
 export class CompactLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);

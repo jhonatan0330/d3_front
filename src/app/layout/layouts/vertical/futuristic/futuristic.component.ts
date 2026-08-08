@@ -17,14 +17,13 @@ import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.componen
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
 import { SimpleNavComponent } from '../../../common/simple-nav/simple-nav.component';
 import { RouterOutlet } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { ImageFormatPipe } from '../../../../shared/local-image';
 
 @Component({
     selector: 'futuristic-layout',
     templateUrl: './futuristic.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, UserComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, RouterOutlet, DatePipe, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, UserComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, RouterOutlet, ImageFormatPipe]
 })
 export class FuturisticLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);
