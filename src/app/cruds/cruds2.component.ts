@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, inject, viewChild, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
@@ -73,8 +73,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     fControlCheck: FormControl = new FormControl(false); // Check que indica si se debe realizar una busqueda por codigo exacto
     pagina = 1; // Indica que pagina estamos buscando
     pageControl: FormControl = new FormControl('30');
-    isLoading = false;
-    isEnd = false;
+    isLoading = signal(false);
+    isEnd = signal(false);
     viewMode = 'grid-view';
     form: FormGroup = new FormGroup({});
     hasCreatePermission = false;
@@ -109,7 +109,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 this.router.navigate(['/main']);
                 return;
             }
-            this.isEnd = false;
+            this.isEnd.set(false);
             this.dataProvider = [];
             this.templatesFromProcess = [];
             this.fControlSearch.setValue('');
@@ -286,7 +286,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     }
 
     listar(_pagina: number) {
-        if (this.isLoading) {
+        if (this.isLoading()) {
             return;
         }
         const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
@@ -365,10 +365,10 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             }
         }
 
-        this.isLoading = true;
+        this.isLoading.set(true);
         if (_pagina === 1) {
             this.dataProvider = [];
-            this.isEnd = false;
+            this.isEnd.set(false);
             this.selection.clear();
             this.pagina = 1;
         }
@@ -399,13 +399,13 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 if (dataResult.length >= this.pageControl.value) {
                     this.pagina++;
                 } else {
-                    this.isEnd = true;
+                    this.isEnd.set(true);
                     this.pagina = 1;
                 }
-                this.isLoading = false;
+                this.isLoading.set(false);
             },
             error: () => {
-                this.isLoading = false;
+                this.isLoading.set(false);
             },
         });
     }
@@ -603,17 +603,17 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         if (dp) {
             // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
             if (!dp.caracteristicas) {
-                this.isLoading = true;
+                this.isLoading.set(true);
                 this.api
                     .obtenerCampos(plantillaId, dp.server)
                     .subscribe({
                         next: (plantilla: DocumentoPlantillaDTO) => {
                             plantilla.server = dp.server;
-                            this.isLoading = false;
+                            this.isLoading.set(false);
                             this.cargarCamposPlantilla(plantilla);
                         },
                         error: () => {
-                            this.isLoading = false;
+                            this.isLoading.set(false);
                         }
                     });
                 return;

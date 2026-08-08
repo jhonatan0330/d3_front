@@ -10,7 +10,7 @@
         <!-- Title -->
         <div class="p-2">
           <!-- Botones de accion en la lista -->
-          @if (!isLoading) {
+          @if (!isLoading()) {
             <div class="w-full">
               <button mat-icon-button color="primary" matTooltip="Listar" (click)="listar(1)" class="m-1">
                 <mat-icon>refresh</mat-icon>
@@ -223,7 +223,7 @@
                         <!-- Header -->
                         <div
                           class="flex flex-row flex-0 sm:items-center sm:justify-between p-3 sm:py-4 sm:px-5 border-b bg-card dark:bg-transparent">
-                          <img class="icon-size-12" src="{{ $safeNavigationMigration(plantilla?.imagen) | imageFormat }}"  (click)="openDiagram()"/>
+                          <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}"  (click)="openDiagram()"/>
                           <div class="flex-1 min-w-0">
                             <!-- Title -->
                             <div class="mt-2">
@@ -441,12 +441,12 @@
                             }
 
                             <!-- Star View-->
-                            @if (!isLoading && !isEnd && dataProvider?.length === 0) {
+                            @if (!isLoading() && !isEnd() && dataProvider?.length === 0) {
                               <div class="my-48 flex flex-col flex-auto overflow-y-auto lg:overflow-hidden dark:bg-default"
                                 >
                                 <div
                                   class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
-                                  <img class="icon-size-12" src="{{ $safeNavigationMigration(plantilla?.imagen) | imageFormat }}" />
+                                  <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}" />
                                   <a href="#">
                                     <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{
                                     plantilla?.nombre }}</h5>
@@ -468,7 +468,7 @@
                                 </div>
                               }
 
-                              @if (isEnd && dataProvider?.length === 0) {
+                              @if (isEnd() && dataProvider?.length === 0) {
                                 <div class="m-auto my-48 flex flex-col items-center justify-center"
                                   >
                                   <div
@@ -497,10 +497,10 @@
                               </div>
                               <div class="w-full px-4 py-3 bg-white border-t border-gray-200 shadow-md sm:px-6">
                                 <!-- Paginador -->
-                                @if (isLoading) {
+                                @if (isLoading()) {
                                   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
                                 }
-                                @if (!isLoading) {
+                                @if (!isLoading()) {
                                   <div class="flex justify-between w-full items-center">
                                     <div class=" flex items-center flex-col">
                                       @if (viewMode !== 'grid-view') {
@@ -523,7 +523,7 @@
                                         <option value="100">100</option>
                                       </select>
                                     </form>
-                                    @if (!isLoading && !isEnd) {
+                                    @if (!isLoading() && !isEnd()) {
                                       <button mat-raise-button tabindex="-1" (click)="listar(pagina)"
                                         class="relative inline-flex items-center px-2 py-2 text-sm 5xl:text-xl   font-medium text-gray-700 bg-white border border-gray-300 rounded-md sm:rounded-none hover:bg-gray-50 sm:rounded-r-md"
                                         data-id="pagination-next">Presiona aquí para buscar mas resultados<svg stroke="currentColor"
