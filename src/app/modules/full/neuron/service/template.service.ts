@@ -1,10 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import {
   DocumentoPlantillaDTO,
   RelacionInternaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { BehaviorSubject } from 'rxjs';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { OrganizacionDTO } from 'app/authentication/authentication.domain';
@@ -17,9 +16,11 @@ export class TemplateService {
   private ls = inject(LocalStoreService);
   private _navigationService = inject(NavigationService);
 
-  
-  template: DocumentoPlantillaDTO[] = [];
-  templates$ = new BehaviorSubject<DocumentoPlantillaDTO[]>(this.template);
+  private readonly _template = signal<DocumentoPlantillaDTO[]>([]);
+
+  get template() {
+    return this._template.asReadonly();
+  }
   private colores: PropiedadDTO[] = [];
 
   conectionTemplates: OrganizacionDTO[];
@@ -28,10 +29,11 @@ export class TemplateService {
   private _modules:PropiedadDTO[];
 
   getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO {
-    if (!this.template) { return null; }
+    const template = this.template();
+    if (!template) { return null; }
     let result = null;
     if (!urlServer) {
-      result = this.template.find((item) => id === item.llaveTabla);
+      result = template.find((item) => id === item.llaveTabla);
     } else {
       if (this.conectionTemplates) {
         const org = this.conectionTemplates.find((itemOrg) => urlServer === itemOrg.llaveTabla);
@@ -44,14 +46,15 @@ export class TemplateService {
   }
 
   getTemplateOfProcess(processId: string): DocumentoPlantillaDTO[] {
-    if (!this.template) { return null; }
-    return Object.assign([], this.template).filter(
+    const template = this.template();
+    if (!template) { return null; }
+    return Object.assign([], template).filter(
       (item) => (item.proceso && item.proceso.toLowerCase().indexOf(processId.toLowerCase()) > -1)
     );
   }
 
   setTemplates(value: DocumentoPlantillaDTO[]) {
-    this.template = value;
+    this._template.set(value);
     this.colores = [];
     this.getColor('');
     const processToMenu = [];
@@ -63,19 +66,19 @@ export class TemplateService {
       }
     });
     this._navigationService.generate(processToMenu, this._modules, value);
-    this.templates$.next(value);
   }
 
 
   getColor(stateId: string): string {
-    if (!stateId || !this.template) {
+    const template = this.template();
+    if (!stateId || !template) {
       return null;
     }
     if (!this.colores) {
       // Cargo los colores
       this.colores = [];
-      for (let x = 0; x < this.template.length; x++) {
-        this.exploreTemplateColor(this.template[x], this.colores);
+      for (let x = 0; x < template.length; x++) {
+        this.exploreTemplateColor(template[x], this.colores);
       }
     }
     const prop = this.colores.find(item => item.campo === stateId);
@@ -166,8 +169,9 @@ export class TemplateService {
   }
 
   getProceso(id: string): DocumentoPlantillaDTO {
-    if (this.template && this.template.length !== 0) {
-      return this.template.find(x => (!x.llaveTabla && (x.proceso === id || x.codigo === id)));
+    const template = this.template();
+    if (template && template.length !== 0) {
+      return template.find(x => (!x.llaveTabla && (x.proceso === id || x.codigo === id)));
     }
   }
 

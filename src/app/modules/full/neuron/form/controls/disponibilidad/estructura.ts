@@ -6,7 +6,7 @@ import {
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
-import { BehaviorSubject } from 'rxjs';
+import { signal } from '@angular/core';
 import { Puesto } from './puesto';
 import { LocalStoreService } from 'app/shared/local-store.service';
 
@@ -20,8 +20,7 @@ export class Estructura {
   isEnabled = true;
   titulo: string;
 
-  private _navItemSource = new BehaviorSubject<Puesto>(null);
-  navItem$ = this._navItemSource.asObservable();
+  readonly navItem = signal<Puesto>(null);
 
   constructor(
     private ctx: CanvasRenderingContext2D,
@@ -118,7 +117,7 @@ export class Estructura {
             this.clearUbicaciones();
           }
           element.onClick();
-          this._navItemSource.next(element);
+          this.navItem.set(element);
           break;
         }
       }

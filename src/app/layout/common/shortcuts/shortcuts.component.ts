@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementR
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -36,6 +36,22 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
                 });
             }
         });
+
+        effect(() => {
+            const templates = this._templateService.template();
+            this.shortcuts = [];
+            if (templates && templates.length) {
+                for (let i = 0; i < templates.length; i++) {
+                    const iTemplate = templates[i];
+                    if (PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PLANTILLA_ACCESO_RAPIDO)
+                        && PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+                        this.shortcuts.push(iTemplate);
+                    }
+                }
+            }
+            this.shortcutsFiltered = Object.assign([], this.shortcuts);
+            this._changeDetectorRef.markForCheck();
+        });
     }
 
     shortcuts: DocumentoPlantillaDTO[];
@@ -43,26 +59,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    ngOnInit(): void {
-
-        // Get the shortcuts
-        this._templateService.templates$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((templates: DocumentoPlantillaDTO[]) => {
-                this.shortcuts = [];
-                if (templates && templates.length) {
-                    for (let i = 0; i < templates.length; i++) {
-                        const iTemplate = templates[i];
-                        if (PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PLANTILLA_ACCESO_RAPIDO)
-                            && PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-                            this.shortcuts.push(iTemplate);
-                        }
-                    }
-                }
-                this.shortcutsFiltered = Object.assign([], this.shortcuts);
-                this._changeDetectorRef.markForCheck();
-            });
-    }
+    ngOnInit(): void { }
 
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions

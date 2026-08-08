@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal, WritableSignal } from '@angular/core';
 import { ProductComponent } from 'app/modules/full/neuron/form/controls/product/product.component';
 import {
   DocumentoPlantillaCaracteristicaDTO,
@@ -8,7 +8,6 @@ import {
 } from 'app/modules/full/neuron/model/sw42.domain';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { FormComponent } from '../../form.component';
 import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
 
@@ -23,7 +22,7 @@ export interface IDynamicControl {
   isInvisible: boolean;
   isSectionInvisible: boolean;
 
-  formIsModified: BehaviorSubject<boolean | null>;
+  formIsModified: WritableSignal<boolean | null>;
 
   adicionarListener(pField: IDynamicControl);
   actualizarDependencia(campoModificado: PedidoVentaCaracteristicaDTO);
@@ -60,7 +59,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   form: FormComponent;
   urlServer: string;
   errorMessage: string = null;
-  formIsModified: BehaviorSubject<boolean | null> = new BehaviorSubject(null);
+  formIsModified = signal<boolean | null>(null);
 
   idField: string = null;
 
@@ -159,7 +158,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
     if (!inicioCampo && this.data) {
       this.data.modificado = true;
       if (!omitirFormModified) {
-        this.formIsModified.next(true);
+        this.formIsModified.set(true);
       }
     }
     if (this.listeners && this.listeners.length !== 0) {

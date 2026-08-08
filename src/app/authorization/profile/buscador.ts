@@ -127,7 +127,7 @@ export class BuscadorComponent implements OnDestroy {
   protected readonly isLoading = signal(false);
 
   private readonly templatesWatcher = effect(() => {
-    const allTemplates = this.templateService.template;
+    const allTemplates = this.templateService.template();
     if (allTemplates && allTemplates.length > 0) {
       const items: DocumentoPlantillaDTO[] = [];
       for (const element of allTemplates) {

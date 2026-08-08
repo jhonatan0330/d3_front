@@ -8,7 +8,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { AuthenticationService } from 'app/authentication/authentication.service';
 import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { NgClass } from '@angular/common';
 import { MatCard } from '@angular/material/card';
@@ -88,6 +88,16 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     effect(() => {
       this.slides = this.loginservice.slides();
     });
+
+    effect(() => {
+      const value = this.templateService.template();
+      this.loadMenu(value);
+      if (this.tempTemplateOpen) {
+        this.openDialog(this.tempTemplateOpen, this.tempIdOpen);
+        this.tempTemplateOpen = undefined;
+        this.tempIdOpen = undefined;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -96,19 +106,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       username: ['', [Validators.required]],
       password: ['', Validators.required]
     });
-
-    this.templateService.templates$
-      .pipe((takeUntil(this._unsubscribeAll)))
-      .subscribe({
-        next: (value) => {
-          this.loadMenu(value);
-          if (this.tempTemplateOpen) {
-            this.openDialog(this.tempTemplateOpen, this.tempIdOpen);
-            this.tempTemplateOpen = undefined;
-            this.tempIdOpen = undefined;
-          }
-        }
-      });
 
       // Se esta duiplicando el llamado del check
    /* this.loginservice.checkTokenIsValid()

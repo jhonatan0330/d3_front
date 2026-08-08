@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext } from '@angular/core';
 import {
     MatDialogRef,
     MAT_DIALOG_DATA,
@@ -61,6 +61,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private ls = inject(LocalStoreService);
     private utilsService = inject(UtilsService);
     private _router = inject(Router);
+    private _injector = inject(Injector);
 
     // Variables para el control de los campos
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
@@ -644,10 +645,12 @@ export class FormComponent implements OnInit, AfterViewInit {
                     componentRef.instance.data = element;
                     element.campoDTO = _campo;
                     componentRef.instance.formIsEnabled = this.modificable;
-                    componentRef.instance.formIsModified.subscribe((x: boolean) => {
-                        if (x) {
-                            this.formIsModified = true;
-                        }
+                    runInInjectionContext(this._injector, () => {
+                        effect(() => {
+                            if (componentRef.instance.formIsModified()) {
+                                this.formIsModified = true;
+                            }
+                        });
                     });
                     break;
                 }

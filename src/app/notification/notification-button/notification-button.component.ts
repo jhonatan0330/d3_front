@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewContainerRef,  inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewContainerRef, effect, inject, viewChild } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -7,7 +7,7 @@ import { ActividadDTO } from 'app/notification/notification.types';
 import { NotificationsService } from 'app/notification/notification.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { LoginService } from 'app/authentication/login.service';
 import { MatIcon } from '@angular/material/icon';
@@ -42,6 +42,13 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+    constructor() {
+        effect(() => {
+            const templates = this.templateService.template();
+            if (templates && templates.length !== 0) { this.refresh(); }
+        });
+    }
+
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
@@ -65,11 +72,6 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
                 this._changeDetectorRef.markForCheck();
 
                 this.showMessage();
-            });
-        this.templateService.templates$
-            .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((_value: DocumentoPlantillaDTO[]) => {
-                if (_value && _value.length !== 0) { this.refresh(); }
             });
     }
 

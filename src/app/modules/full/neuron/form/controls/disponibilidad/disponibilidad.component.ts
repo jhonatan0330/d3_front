@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -30,6 +30,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
   private template = inject(TemplateService);
   private utils = inject(UtilsService);
   private dialog = inject(MatDialog);
+  private _injector = inject(Injector);
 
   readonly myCanvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
   ctx: CanvasRenderingContext2D;
@@ -96,8 +97,10 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
     this.mostrarPlano();
     // Solo al crear la estructura selecciono campos de resto lo hace el componente
     this.estructura.selectFromText(this.data.valorText, this.data.detalles);
-    this.estructura.navItem$.subscribe((puesto) => {
-      this.ajustarData(puesto);
+    runInInjectionContext(this._injector, () => {
+      effect(() => {
+        this.ajustarData(this.estructura.navItem());
+      });
     });
   }
 
