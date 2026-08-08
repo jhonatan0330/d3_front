@@ -52,15 +52,15 @@ export class UserComponent {
     }
 
     cambiarClave() {
-        this.utilService.modalUserChangePass().subscribe();
+        this.utilService.modalUserChangePass().subscribe({ error: () => {} });
     }
     
     cambiarClaveOther(pUsuario) {
-        this.utilService.modalUserChangePassOther(pUsuario).subscribe();
+        this.utilService.modalUserChangePassOther(pUsuario).subscribe({ error: () => {} });
     }
 
     goToMyAccount(pUsuario) {
-        this.utilService.modalUser(pUsuario.llaveTabla).subscribe();    
+        this.utilService.modalUser(pUsuario.llaveTabla).subscribe({ error: () => {} });    
     }
 
     downloadApk() {

@@ -77,7 +77,7 @@ export class PersonsComponent implements OnInit, OnDestroy {
                     this._contactsService.searchContacts(query)
                 )
             )
-            .subscribe();
+            .subscribe({ error: () => {} });
     }
 
     ngOnDestroy(): void {
@@ -100,12 +100,12 @@ export class PersonsComponent implements OnInit, OnDestroy {
     }
 
     filtrarPorTag(tag) {
-        this._contactsService.getContactByTag(tag.llaveTabla).subscribe();
+        this._contactsService.getContactByTag(tag.llaveTabla).subscribe({ error: () => {} });
     }
 
 
     onUsuarioClick(pUsuario: UsuarioDTO): void {
-        this.utilService.modalUser(pUsuario.llaveTabla).subscribe();
+        this.utilService.modalUser(pUsuario.llaveTabla).subscribe({ error: () => {} });
     }
 
 

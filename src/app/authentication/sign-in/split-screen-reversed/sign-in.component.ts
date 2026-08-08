@@ -135,6 +135,6 @@ export class SignInSplitScreenReversedComponent implements OnInit {
     }
 
     testPrint(){
-        this.utilsService.openPDF().subscribe();
+        this.utilsService.openPDF().subscribe({ error: () => {} });
     }
 }

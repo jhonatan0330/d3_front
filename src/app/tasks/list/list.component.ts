@@ -94,7 +94,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
             });
 
-        this._tasksService.getTasks().subscribe();
+        this._tasksService.getTasks().subscribe({ error: () => {} });
     }
 
 
@@ -129,7 +129,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
         if (task.completed) { task.completed = null }
         else { task.completed = new Date() }
 
-        this._tasksService.updateTask(task).subscribe();
+        this._tasksService.updateTask(task).subscribe({ error: () => {} });
 
         this._changeDetectorRef.markForCheck();
     }

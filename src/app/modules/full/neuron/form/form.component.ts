@@ -1119,7 +1119,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     reloadScreen(pTemplate: string) {
         this.dialogRef.close();
-        this.utilsService.modalWithParams(this.pedido, false, null, false, pTemplate).subscribe();
+        this.utilsService.modalWithParams(this.pedido, false, null, false, pTemplate).subscribe({ error: () => {} });
     }
 
 
@@ -1143,7 +1143,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     abrirUsuario(pUsuario: string) {
         this.api.searchUserByRol(pUsuario).subscribe((contact: UsuarioDTO) => {
-            this.utilsService.modalUser(contact.llaveTabla).subscribe();
+            this.utilsService.modalUser(contact.llaveTabla).subscribe({ error: () => {} });
         });
     }
 
@@ -1185,7 +1185,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             }
         }
         _doc.server = this.plantilla.server;
-        this.utilsService.modalWithParams(_doc, false).subscribe();
+        this.utilsService.modalWithParams(_doc, false).subscribe({ error: () => {} });
     }
 
     public reviewFieldsVisibility() {

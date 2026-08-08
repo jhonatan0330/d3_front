@@ -236,7 +236,7 @@ export class FlexComponent implements OnInit {
         if (!ok) {
             return; // se canceló
         }
-        this.flexService.inactivarDocumentoPlantillaCaracteristica(eliminado).subscribe();
+        this.flexService.inactivarDocumentoPlantillaCaracteristica(eliminado).subscribe({ error: () => {} });
     }
 
     async actualizarCampo() {
@@ -244,6 +244,6 @@ export class FlexComponent implements OnInit {
         if (!ok) {
             return; // se canceló
         }
-        this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campoActual).subscribe();
+        this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campoActual).subscribe({ error: () => {} });
     }
 }

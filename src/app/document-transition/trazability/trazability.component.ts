@@ -270,7 +270,7 @@ export class TrazabilityComponent implements OnInit {
         .subscribe({
           next: (value: IdResponse) => {
             if (value && value.id) {
-              this.utilsService.modalVoucher(value.id, null).subscribe();
+              this.utilsService.modalVoucher(value.id, null).subscribe({ error: () => {} });
             } else {
               this.notificationCenter.info('Comprobante', 'No se encontro comprobante para este documento');
             }
@@ -368,7 +368,7 @@ export class TrazabilityComponent implements OnInit {
   }
 
     onUsuarioClick(pUsuario): void {
-      this.utilsService.modalUser(pUsuario).subscribe();
+      this.utilsService.modalUser(pUsuario).subscribe({ error: () => {} });
   }
 
 

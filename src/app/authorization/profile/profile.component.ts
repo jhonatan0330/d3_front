@@ -81,7 +81,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       const received = (date instanceof Date) ? date : new Date(date);
       // If the received date is greater than now, show a pop-up
       if (received < now) {
-        this._utilsService.modalUserChangePass().subscribe();
+        this._utilsService.modalUserChangePass().subscribe({ error: () => {} });
       }
     });
 

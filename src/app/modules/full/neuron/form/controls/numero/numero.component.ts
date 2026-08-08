@@ -66,7 +66,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
           this.actualizar();
           this.validateErrorMessage();
         })
-      ).subscribe();
+      ).subscribe({ error: () => {} });
     }
 
     if (this.data.valorNumero !== Number(this.fControl.value.replace(/,/g, '').replace(/\s/g, ''))) {

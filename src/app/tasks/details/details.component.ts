@@ -102,7 +102,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((value) => {
                 if (this.taskForm.invalid) { return; }
                 // Update the task on the server
-                this._tasksService.updateTask(value).subscribe();
+                this._tasksService.updateTask(value).subscribe({ error: () => {} });
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -151,7 +151,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
         else { this.task.completed = new Date() }
 
         // Update the task on the server
-        this._tasksService.updateTask(this.task).subscribe();
+        this._tasksService.updateTask(this.task).subscribe({ error: () => {} });
 
         // Mark for check
         this._changeDetectorRef.markForCheck();

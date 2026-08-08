@@ -218,7 +218,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
     refresh() {
         if (this._jwtAuth.user() && this._jwtAuth.user().llaveTabla) {
-            this._notificationsService.getAll().subscribe();
+            this._notificationsService.getAll().subscribe({ error: () => {} });
         }
     }
 

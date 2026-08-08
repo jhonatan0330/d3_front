@@ -407,7 +407,7 @@ export class LoginService {
     if (organization && organization.publicToken) {
       this.token = organization.publicToken;
       this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
-      this.checkTokenIsValid().subscribe();
+      this.checkTokenIsValid().subscribe({ error: () => {} });
       //Si no coloco esto se va a crear un ciclo infintio solicitando el token
       //if (!this.isOpenPopOfAuthenticate) { 
 

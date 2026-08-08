@@ -80,6 +80,6 @@ export class InformativeComponent extends BaseComponent implements OnInit {
     pedidoVenta.plantilla = p.plantilla;
     pedidoVenta.llaveTabla = p.llaveTabla;
     pedidoVenta.server = this.urlServer;
-    this.utilsService.modalWithParams(pedidoVenta, false).subscribe();
+    this.utilsService.modalWithParams(pedidoVenta, false).subscribe({ error: () => {} });
   }
 }
