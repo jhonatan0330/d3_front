@@ -18,7 +18,6 @@ import { FuseModule } from '@fuse';
 import { FuseConfigModule } from '@fuse/services/config';
 import { appConfig } from 'app/core/config/app.config';
 import { CoreModule } from 'app/core/core.module';
-import { LayoutModule } from 'app/layout/layout.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -51,9 +50,7 @@ bootstrapApplication(AppComponent, {
         // Fuse, FuseConfig & FuseMockAPI
         FuseModule, FuseConfigModule.forRoot(appConfig), 
         // Core module of your application
-        CoreModule, 
-        // Layout module of your application
-        LayoutModule, ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
+        CoreModule, ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
         provideHttpClient(withInterceptors([fuseLoadingInterceptor, tokenInterceptor, httpErrorInterceptor])),
         { provide: ErrorHandler, useClass: ErrorHandlerService },
         { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },

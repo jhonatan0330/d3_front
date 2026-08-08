@@ -1,6 +1,7 @@
 import { Component, effect, ElementRef, HostBinding, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges,  ChangeDetectionStrategy, inject, input, output, viewChild } from '@angular/core';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
+import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY, MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
+import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { Subject } from 'rxjs';
 import Swal from 'sweetalert2';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -16,7 +17,14 @@ import { MatProgressBar } from '@angular/material/progress-bar';
     templateUrl: './search.component.html',
     exportAs: 'fuseSearch',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatIconButton, MatIcon, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatProgressBar, MatAutocomplete, MatOption]
+    imports: [MatIconButton, MatIcon, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatProgressBar, MatAutocomplete, MatOption],
+    providers: [
+        {
+            provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
+            useFactory: (overlay: Overlay) => (): BlockScrollStrategy => overlay.scrollStrategies.block(),
+            deps: [Overlay]
+        }
+    ]
 })
 export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     private api = inject(ApiService);
