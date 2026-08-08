@@ -30,10 +30,9 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 ## Architecture
 
 ### Module layout
-- `src/main.ts` — entry, NgModule bootstrap (zone.js-based).
-- `src/app/app.module.ts` — root module; provides interceptors via `HTTP_INTERCEPTORS`, uses `PreloadAllModules` (legacy, do not modernize during the version migration).
+- `src/main.ts` — entry, `bootstrapApplication` con `provideZonelessChangeDetection()` (zoneless).
 - `src/app/app.routing.ts` — all routes. Admin section guarded by `AuthGuard`; lazy-loaded modules: `authorization` (Profile), `cruds`, `tasks`, `neuron`, `massive`, `accounting`, `recover-password`, `new-password`.
-- `src/@fuse/` — FuseAdmin template (keep as-is during migration). Contains `FuseModule`, navigation components, `scrollbar` directive, and services (config, loading, media-watcher, platform, utils). Style entry points live here (`tailwind.scss`, `themes.scss`, `main.scss`).
+- `src/@fuse/` — FuseAdmin template (keep as-is during migration). Contains `FuseModule`, servicios (config, loading, media-watcher, platform), y los style entry points (`tailwind.scss`, `themes.scss`, `main.scss`). La navegación de Fuse fue reemplazada: **todos los layouts usan `mat-sidenav` + `simple-nav`** (`src/app/layout/common/simple-nav/`); de `@fuse/components/navigation` solo queda `navigation.types.ts` (tipo `FuseNavigationItem`).
 - `src/app/modules/full/neuron/` — **critical, complex** dynamic-forms engine (~16 dynamic control types under `form/controls/`). Treat as high-risk; migrate last and with care.
 - Other domains: `accounting`, `authentication`, `authorization`, `configuration-forms`, `cruds`, `document-transition`, `layout`, `massive`, `notification`, `persons`, `shared`, `tasks`.
 
@@ -57,7 +56,5 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 - Known deprecated APIs currently in use (fix only as the plan directs):
   - `throwError(error)` (lazy arg) in `login.service.ts` and `shared/error.interceptor.ts`
   - `ComponentFactoryResolver` in `cruds2.component.ts`, `neuron/form/form.component.ts`, `neuron/form/controls/product/product.component.ts`
-  - `HTTP_INTERCEPTORS` in `app.module.ts` and `@fuse/services/loading/loading.module.ts`
-  - `Router.isActive(link, boolean)` in `@fuse` navigation components
 - Third-party risk packages: `@magloft/material-carousel` (abandoned), `ngx-editor` (unmaintained, v19 beta is latest), `ng-apexcharts`/`apexcharts` (needs major bump). Do not bump these outside the plan.
-- Recently removed from the codebase (do not recreate unless asked): the `gps` module and several `@fuse` sub-features (drawer, fullscreen, animations, `scroll-reset` directive, `find-by-key` pipe).
+- Recently removed from the codebase (do not recreate unless asked): the `gps` module and several `@fuse` sub-features (drawer, fullscreen, animations, `scroll-reset` directive, `find-by-key` pipe, navigation components, `scrollbar` directive, `utils` service).
