@@ -46,17 +46,3 @@ export interface FuseNavigationItem
     children?: FuseNavigationItem[];
     meta?: any;
 }
-
-export type FuseVerticalNavigationAppearance =
-    | 'default'
-    | 'compact'
-    | 'dense'
-    | 'thin';
-
-export type FuseVerticalNavigationMode =
-    | 'over'
-    | 'side';
-
-export type FuseVerticalNavigationPosition =
-    | 'left'
-    | 'right';

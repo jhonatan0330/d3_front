@@ -2,13 +2,11 @@ import { NgModule, inject } from '@angular/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { FuseMediaWatcherModule } from '@fuse/services/media-watcher/media-watcher.module';
 import { FusePlatformModule } from '@fuse/services/platform/platform.module';
-import { FuseUtilsModule } from '@fuse/services/utils/utils.module';
 
 @NgModule({
     imports  : [
         FuseMediaWatcherModule,
-        FusePlatformModule,
-        FuseUtilsModule
+        FusePlatformModule
     ],
     providers: [
         {

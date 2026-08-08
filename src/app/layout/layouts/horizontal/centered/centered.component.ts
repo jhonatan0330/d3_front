@@ -1,6 +1,5 @@
-import { Component, effect, OnDestroy, OnInit,  ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit,  ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
-import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
@@ -8,15 +7,15 @@ import { NavigationService } from 'app/authorization/navigation/navigation.servi
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { environment } from 'environments/environment';
 import { Subject, takeUntil } from 'rxjs';
-import { FuseVerticalNavigationComponent as FuseVerticalNavigationComponent_1 } from '../../../../../@fuse/components/navigation/vertical/vertical.component';
-import { FuseHorizontalNavigationComponent } from '../../../../../@fuse/components/navigation/horizontal/horizontal.component';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { HomeButtonComponent } from '../../../common/home-button/home-button.component';
 import { SearchComponent } from '../../../common/search/search.component';
 import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
 import { UserComponent } from '../../../common/user/user.component';
+import { SimpleNavComponent } from '../../../common/simple-nav/simple-nav.component';
 import { RouterOutlet } from '@angular/router';
 import { ImageFormatPipe } from '../../../../shared/local-image';
 
@@ -24,19 +23,19 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'centered-layout',
     templateUrl: './centered.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FuseVerticalNavigationComponent_1, FuseHorizontalNavigationComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
 })
 export class CenteredLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);
     private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
-    private _fuseNavigationService = inject(FuseNavigationService);
     private _navigationService = inject(NavigationService);
 
     isScreenSmall: boolean;
+    sidenavOpened = false;
     navigation: Navigation;
     user: UsuarioDTO;
     company: OrganizacionDTO;
-    time = new Date();
+    time = signal(new Date());
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     headerSection: SafeHtml[];
@@ -80,11 +79,14 @@ export class CenteredLayoutComponent implements OnInit, OnDestroy {
 
                 // Check if the screen is small
                 this.isScreenSmall = !matchingAliases.includes('md');
+
+                // Open the sidenav on larger screens, close it on small screens
+                this.sidenavOpened = !this.isScreenSmall;
             });
 
         // Reloj
         setInterval(() => {
-            this.time = new Date();
+            this.time.set(new Date());
         }, 1000);
     }
 
@@ -94,13 +96,14 @@ export class CenteredLayoutComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    toggleNavigation(name: string): void {
-        // Get the navigation
-        const navigation = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(name);
+    toggleNavigation(): void {
+        // Toggle the opened status of the sidenav
+        this.sidenavOpened = !this.sidenavOpened;
+    }
 
-        if (navigation) {
-            // Toggle the opened status
-            navigation.toggle();
+    closeNavOnSmall(): void {
+        if (this.isScreenSmall) {
+            this.sidenavOpened = false;
         }
     }
 

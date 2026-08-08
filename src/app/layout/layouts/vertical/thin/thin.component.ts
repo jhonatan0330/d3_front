@@ -1,38 +1,38 @@
 import { Component, effect, OnDestroy, OnInit,  ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { NavigationService } from 'app/authorization/navigation/navigation.service';
 import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { SafeHtml } from '@angular/platform-browser';
-import { FuseVerticalNavigationComponent as FuseVerticalNavigationComponent_1 } from '../../../../../@fuse/components/navigation/vertical/vertical.component';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { HomeButtonComponent } from '../../../common/home-button/home-button.component';
 import { SearchComponent } from '../../../common/search/search.component';
 import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
 import { UserComponent } from '../../../common/user/user.component';
+import { SimpleNavComponent } from '../../../common/simple-nav/simple-nav.component';
 import { RouterOutlet } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { ImageFormatPipe } from '../../../../shared/local-image';
 
 @Component({
     selector: 'thin-layout',
     templateUrl: './thin.component.html',
-
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FuseVerticalNavigationComponent_1, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
 })
 export class ThinLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);
     private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
-    private _fuseNavigationService = inject(FuseNavigationService);
     private _navigationService = inject(NavigationService);
 
     isScreenSmall: boolean;
+    sidenavOpened = false;
     navigation: Navigation;
     user: UsuarioDTO;
     company: OrganizacionDTO;
@@ -80,6 +80,9 @@ export class ThinLayoutComponent implements OnInit, OnDestroy {
 
                 // Check if the screen is small
                 this.isScreenSmall = !matchingAliases.includes('md');
+
+                // Open the sidenav on larger screens, close it on small screens
+                this.sidenavOpened = !this.isScreenSmall;
             });
 
         // Reloj
@@ -94,22 +97,14 @@ export class ThinLayoutComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
+    toggleNavigation(): void {
+        // Toggle the opened status of the sidenav
+        this.sidenavOpened = !this.sidenavOpened;
+    }
 
-    /**
-     * Toggle navigation
-     *
-     * @param name
-     */
-    toggleNavigation(name: string): void {
-        // Get the navigation
-        const navigation = this._fuseNavigationService.getComponent<FuseVerticalNavigationComponent>(name);
-
-        if (navigation) {
-            // Toggle the opened status
-            navigation.toggle();
+    closeNavOnSmall(): void {
+        if (this.isScreenSmall) {
+            this.sidenavOpened = false;
         }
     }
 

@@ -1,94 +1,87 @@
-<!-- Navigation -->
-@if (isScreenSmall) {
-  <fuse-vertical-navigation class="dark bg-gray-900 print:hidden" [mode]="'over'" [name]="'mainNavigation'"
-    [navigation]="$safeNavigationMigration(navigation?.default)" [opened]="false">
-    <!-- Navigation header hook -->
-    <ng-container fuseVerticalNavigationContentHeader>
-      <!-- Logo -->
-      <div class="flex items-center justify-center h-28 pt-5 pb-5 px-8">
-        @if (company?.imagen) {
-          <img class="h-16 w-auto max-w-xs object-contain px-2"
-            src="{{ $safeNavigationMigration(company?.imagen) | imageFormat }}" alt="Logo image" />
-        }
-      </div>
-    </ng-container>
-  </fuse-vertical-navigation>
-}
+<mat-sidenav-container class="h-screen w-full overflow-hidden print:hidden">
 
-<!-- Wrapper -->
-<div class="flex flex-col flex-auto items-center w-full min-w-0 bg-gray-200 dark:bg-card">
+    <!-- Navigation -->
+    <mat-sidenav class="dark bg-gray-900 w-80" [mode]="isScreenSmall ? 'over' : 'side'" [(opened)]="sidenavOpened">
+        <div class="flex h-full flex-col overflow-hidden">
 
-
-  <!-- Header -->
-  <div
-    class="relative flex flex-col flex-0 justify-center w-full h-16 sm:h-20 md:h-36 overflow-hidden z-49 shadow dark:shadow-none print:hidden">
-    <!-- Top bar -->
-    <div class="relative dark flex flex-auto justify-center w-full px-4 md:px-8 bg-gray-800 dark:bg-gray-900">
-      <div class="flex items-center w-full max-w-360 h-16 sm:h-20">
-        <!-- Logo -->
-        @if (!isScreenSmall) {
-          <div class="flex items-center">
             <!-- Logo -->
-            <div class="hidden lg:flex flex-col items-center">
-              @if (company?.imagen) {
-                <img class="h-12 w-auto max-w-xs object-contain px-2"
-                  src="{{ $safeNavigationMigration(company?.imagen) | imageFormat }}" alt="Logo image" />
-              }
+            <div class="flex items-center justify-center h-28 pt-5 pb-5 px-8">
+                @if (company?.imagen) {
+                    <img class="h-16 w-auto max-w-xs object-contain px-2" src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+                }
             </div>
-          </div>
-        }
-        <!-- Navigation toggle button -->
-        @if (isScreenSmall) {
-          <button mat-icon-button (click)="toggleNavigation('mainNavigation')">
-            <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-          </button>
-        }
-        <!-- Components -->
-        <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
-          <app-home-button></app-home-button>
-          <search [appearance]="'bar'"></search>
-          <shortcuts></shortcuts>
-          <notifications></notifications>
-          <user></user>
+
+            <!-- Navigation items -->
+            <simple-nav [items]="navigation?.default ?? []" (navigate)="closeNavOnSmall()"></simple-nav>
+
+            <!-- Navigation footer -->
+            <div class="flex flex-0 items-center justify-center h-16 pr-6 pl-2 mt-2 mb-4 opacity-12"></div>
         </div>
-      </div>
-    </div>
-    <!-- Bottom bar -->
-    @if (!isScreenSmall) {
-      <div class="flex flex-auto justify-center px-4 md:px-8 bg-card dark:bg-gray-700">
-        <div class="relative flex items-center w-full max-w-360 h-16">
-          <fuse-horizontal-navigation class="-mx-4" [name]="'mainNavigation'"
-          [navigation]="$safeNavigationMigration(navigation?.horizontal)"></fuse-horizontal-navigation>
+    </mat-sidenav>
+
+    <!-- Main content -->
+    <mat-sidenav-content>
+        <div class="flex flex-col flex-auto items-center w-full min-w-0 bg-gray-200 dark:bg-card">
+
+            <!-- Header -->
+            <div class="relative flex flex-col flex-0 justify-center w-full h-16 sm:h-20 md:h-36 overflow-hidden z-49 shadow dark:shadow-none print:hidden">
+                <!-- Top bar -->
+                <div class="relative dark flex flex-auto justify-center w-full px-4 md:px-8 bg-gray-800 dark:bg-gray-900">
+                    <div class="flex items-center w-full max-w-360 h-16 sm:h-20">
+                        <!-- Logo -->
+                        @if (!isScreenSmall) {
+                            <div class="flex items-center">
+                                <div class="hidden lg:flex flex-col items-center">
+                                    @if (company?.imagen) {
+                                        <img class="h-12 w-auto max-w-xs object-contain px-2" src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+                                    }
+                                </div>
+                            </div>
+                        }
+                        <!-- Navigation toggle button -->
+                        <button mat-icon-button (click)="toggleNavigation()">
+                            <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                        </button>
+                        <!-- Components -->
+                        <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+                            <app-home-button></app-home-button>
+                            <search [appearance]="'bar'"></search>
+                            <shortcuts></shortcuts>
+                            <notifications></notifications>
+                            <user></user>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (headerSection && headerSection.length !== 0) {
+                <div class="w-full">
+                    @for (iHeader of headerSection; track iHeader) {
+                        <div [innerHTML]="iHeader"></div>
+                    }
+                </div>
+            }
+
+            <!-- Content -->
+            <div class="flex flex-auto justify-center w-full sm:p-6 md:p-8">
+                <div class="flex flex-col flex-auto w-full sm:max-w-360 sm:shadow-lg sm:rounded-lg sm:overflow-hidden bg-default">
+                    <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
+                    Otherwise, layout changes won't be registered and the view won't be updated! -->
+                    @if (true) {
+                        <router-outlet></router-outlet>
+                    }
+                </div>
+            </div>
+
+            <!-- Footer -->
+            @if (landing && landing.length !== 0) {
+                <div class="w-full">
+                    @for (iFooter of landing; track iFooter) {
+                        <div [innerHTML]="iFooter" class="w-full"></div>
+                    }
+                </div>
+            }
         </div>
-      </div>
-    }
-  </div>
+    </mat-sidenav-content>
 
-  @if (headerSection && headerSection.length!==0) {
-    <div class="w-full">
-      @for (iHeader of headerSection; track iHeader) {
-        <div [innerHTML]="iHeader"></div>
-      }
-    </div>
-  }
-
-  <!-- Content -->
-  <div class="flex flex-auto justify-center w-full sm:p-6 md:p-8">
-    <div class="flex flex-col flex-auto w-full sm:max-w-360 sm:shadow-lg sm:rounded-lg sm:overflow-hidden bg-default">
-      <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
-      Otherwise, layout changes won't be registered and the view won't be updated! -->
-      @if (true) {
-        <router-outlet></router-outlet>
-      }
-    </div>
-  </div>
-
-  <!-- footer -->
-  @if (landing && landing.length!==0) {
-    <div class="w-full">
-      @for (iFooter of landing; track iFooter) {
-        <div [innerHTML]="iFooter" class="w-full"></div>
-      }
-    </div>
-  }
-</div>
+</mat-sidenav-container>

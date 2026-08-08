@@ -1,80 +1,78 @@
-<!-- Navigation -->
-<fuse-vertical-navigation class="dark bg-indigo-800 text-white print:hidden" [mode]="isScreenSmall ? 'over' : 'side'"
-  [name]="'mainNavigation'" [navigation]="$safeNavigationMigration(navigation?.futuristic)" [opened]="!isScreenSmall && user ">
-  <!-- Navigation header hook -->
-  <ng-container fuseVerticalNavigationHeader>
-    <!-- Logo -->
-    <div class="flex items-center h-20 px-4 py-2">
-      @if (company?.imagen) {
-        <img class="w-auto max-h-full mx-2" src="{{ $safeNavigationMigration(company?.imagen) | imageFormat }}"
-          alt="Logo image" />
-      }
-    </div>
-    <div class="flex flex-col items-center justify-center px-2 text-gray-500">
-      <span class="text-xxs">{{ time() | date : "medium" }} {{ currentApplicationVersion }} </span>
-    </div>
-  </ng-container>
-  <!-- Navigation footer hook -->
-  <ng-container fuseVerticalNavigationFooter>
-    <!-- User -->
-    <div class="flex items-center w-full px-6 py-8 border-t">
-      <user></user>
-      <div class="flex flex-col w-full ml-4 overflow-hidden">
-        <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden leading-normal text-current opacity-80">
-          {{user?.nombre}}
+<!-- Sidenav container -->
+<mat-sidenav-container class="h-screen w-full overflow-hidden print:hidden">
+
+    <!-- Navigation -->
+    <mat-sidenav class="dark bg-indigo-800 text-white w-80" [mode]="isScreenSmall ? 'over' : 'side'" [(opened)]="sidenavOpened">
+        <div class="flex h-full flex-col overflow-hidden">
+
+            <!-- Logo -->
+            <div class="flex items-center h-20 px-4 py-2">
+                @if (company?.imagen) {
+                    <img class="w-auto max-h-full mx-2" src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+                }
+            </div>
+
+            <!-- Navigation items -->
+            <simple-nav [items]="navigation?.futuristic ?? []" (navigate)="closeNavOnSmall()"></simple-nav>
+
+            <!-- Navigation footer -->
+            <div class="flex items-center w-full px-6 py-8 border-t">
+                <user></user>
+                <div class="flex flex-col w-full ml-4 overflow-hidden">
+                    <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden leading-normal text-current opacity-80">
+                        {{ user?.nombre }}
+                    </div>
+                </div>
+            </div>
         </div>
-        <div
-          class="w-full mt-0.5 whitespace-nowrap text-sm text-ellipsis overflow-hidden leading-normal text-current opacity-50">
-          correo
+    </mat-sidenav>
+
+    <!-- Main content -->
+    <mat-sidenav-content>
+        <div class="flex flex-col flex-auto w-full min-w-0 h-full">
+
+            <!-- Header -->
+            <div class="relative flex flex-0 items-center w-full h-16 px-4 md:px-6 z-49 shadow bg-transparent">
+                <!-- Navigation toggle button -->
+                <button class="mr-2" mat-icon-button (click)="toggleNavigation()">
+                    <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                </button>
+                <!-- Components -->
+                <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+                    <app-home-button></app-home-button>
+                    <search [appearance]="'bar'"></search>
+                    <shortcuts></shortcuts>
+                    <notifications></notifications>
+                    <user></user>
+                </div>
+            </div>
+
+            @if (headerSection && headerSection.length !== 0) {
+                <div class="w-full">
+                    @for (iHeader of headerSection; track iHeader) {
+                        <div [innerHTML]="iHeader"></div>
+                    }
+                </div>
+            }
+
+            <!-- Content -->
+            <div class="flex flex-col flex-auto min-h-0">
+                <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
+                Otherwise, layout changes won't be registered and the view won't be updated! -->
+                @if (true) {
+                    <router-outlet></router-outlet>
+                }
+            </div>
+
+            <!-- Footer -->
+            @if (landing && landing.length !== 0) {
+                <div class="w-full">
+                    @for (iFooter of landing; track iFooter) {
+                        <div [innerHTML]="iFooter" class="w-full"></div>
+                    }
+                </div>
+            }
         </div>
-      </div>
-    </div>
-  </ng-container>
-</fuse-vertical-navigation>
+    </mat-sidenav-content>
 
-<!-- Wrapper -->
-<div class="flex flex-col flex-auto w-full min-w-0">
-
-  <!-- Header -->
-  <div
-    class="relative flex flex-0 items-center w-full h-16 px-4 md:px-6 z-49 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent print:hidden">
-    <!-- Navigation toggle button -->
-    <button class="mr-2" mat-icon-button (click)="toggleNavigation('mainNavigation')">
-      <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-    </button>
-    <!-- Components -->
-    <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
-      <app-home-button></app-home-button>
-      <search [appearance]="'bar'"></search>
-      <shortcuts></shortcuts>
-      <notifications></notifications>
-      <user></user>
-    </div>
-  </div>
-
-  @if (headerSection && headerSection.length!==0) {
-    <div class="w-full">
-      @for (iHeader of headerSection; track iHeader) {
-        <div [innerHTML]="iHeader"></div>
-      }
-    </div>
-  }
-
-  <!-- Content -->
-  <div class="flex flex-col flex-auto">
-    <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
-    Otherwise, layout changes won't be registered and the view won't be updated! -->
-    @if (true) {
-      <router-outlet></router-outlet>
-    }
-  </div>
-
-  <!-- footer -->
-  @if (landing && landing.length!==0) {
-    <div class="w-full">
-      @for (iFooter of landing; track iFooter) {
-        <div [innerHTML]="iFooter" class="w-full"></div>
-      }
-    </div>
-  }
-</div>
+</mat-sidenav-container>
