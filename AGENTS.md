@@ -6,9 +6,9 @@ Guidance for AI agents and developers working in this repository.
 
 - **Name**: SW42 ("Asistant project IA")
 - **Type**: Angular SPA (admin/business app) built on the **FuseAdmin** template
-- **Current stack**: Angular **17.3.12**, TypeScript 5.4.5, Tailwind CSS 3.4.7, RxJS 7.8.0, SCSS
+- **Current stack**: Angular **22.1.0**, TypeScript 6.0.3, Tailwind CSS 3.4.7, RxJS 7.8.2, SCSS
 - **Target**: Angular **22** (see `MIGRATION_PLAN.md` for the migration roadmap — it is the source of truth for the upgrade)
-- **Build system**: NgModule-based app (NOT standalone). Bootstrap via `platformBrowserDynamic().bootstrapModule(AppModule)` in `src/main.ts`.
+- **Build system**: Standalone components, bootstrap via `bootstrapApplication` in `src/main.ts` (zone.js-based; zoneless es decisión futura de Fase 5).
 
 ## Commands
 
@@ -18,8 +18,9 @@ npm run build        # ng build --build-optimizer (production)
 npm run build:stats  # ng build --stats-json (bundle analysis)
 npm run watch        # ng build --watch --configuration development
 npm run analyze      # webpack-bundle-analyzer on dist/fuse/stats.json
-npm run lint         # ng lint (ESLint, @angular-eslint)
-npm test             # ng test  -- currently BROKEN, see Testing below
+npm run lint         # ng lint (ESLint, @angular-eslint) -- actualmente roto, ver MIGRATION_PLAN 0.1a
+npm test             # vitest run (Vitest, ver Testing abajo)
+npm run test:watch   # vitest (modo watch)
 ```
 
 Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
@@ -44,8 +45,10 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 
 ## Testing
 
-- **There are currently no unit tests**: zero `*.spec.ts` files and no `src/test.ts`.
-- `angular.json` still wires the Karma builder (`src/test.ts` main file), so `npm test` **fails**. Do not assume tests exist or will pass; use `npm run build` as the primary verification.
+- **Vitest** (montado en Fase 5.5, runner primario): config en `vitest.config.ts` (`@analogjs/vite-plugin-angular` + aliases `@fuse`/`app`/`environments` para resolver el `baseUrl`), setup en `src/test-setup.ts` (zone.js + `BrowserDynamicTestingModule`), tipos en `tsconfig.spec.json`.
+- Comandos: `npm test` (una pasada) y `npm run test:watch`.
+- Primeras suites: `src/app/shared/plantilla-helper.spec.ts` y `src/app/shared/local-image.spec.ts` (18 tests). Los specs quedan excluidos del build de la app.
+- Verificación principal tras editar código: `npm run build` (y `npx tsc -p tsconfig.app.json --noEmit`).
 
 ## Migration Status & Constraints
 

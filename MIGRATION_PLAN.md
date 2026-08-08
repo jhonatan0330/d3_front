@@ -235,7 +235,7 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 - [ ] Decidir migración a **zoneless** (`provideZonelessChangeDetection()`): evaluar usos de `NgZone`/zone.js; opcional y solo cuando la versión esté estable
 
 ### 5.5 Testing framework
-- [ ] No hay suite que migrar (cero tests). Si se quieren tests, **montar Vitest desde cero** (runner primario en Angular 21+): configurar Vitest y escribir una primera suite sobre un módulo pequeño
+- [x] No había suite que migrar (cero tests). **Vitest montado desde cero** (runner primario en Angular 21+): `@analogjs/vitest-angular@2.6.4` + `vitest@4.1.10` + `jsdom` + `@types/node`; `vitest.config.ts` con `@analogjs/vite-plugin-angular` y aliases `@fuse`/`app`/`environments` (baseUrl no lo resuelve Vite); `src/test-setup.ts` (zone.js vía `setup-zone` + `BrowserDynamicTestingModule`); `tsconfig.spec.json`; scripts `test`/`test:watch` en `package.json`. Primera suite sobre `shared/` (`plantilla-helper.spec.ts` 12 tests + `local-image.spec.ts` 6 tests, incluye un host component standalone con el pipe `imageFormat`). `npm test` → 18/18 OK; `ng build` no se ve afectado (specs excluidos del build)
 
 ---
 
