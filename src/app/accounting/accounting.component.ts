@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit,  ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Subject, takeUntil } from 'rxjs';
@@ -39,7 +39,6 @@ interface AccountFlatNode {
 @Component({
     selector: 'accounting',
     templateUrl: './accounting.component.html',
-    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatDrawerContainer, MatDrawer, MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, MatProgressBar, NgClass, MatDrawerContent, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow, UpperCasePipe, DecimalPipe, DatePipe]
 })

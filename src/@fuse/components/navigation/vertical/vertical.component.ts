@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, HostBinding, HostListener, Input, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges, ViewEncapsulation, DOCUMENT, inject, input, viewChild, viewChildren, output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, HostBinding, HostListener, Input, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges,  DOCUMENT, inject, input, viewChild, viewChildren, output } from '@angular/core';
 import { animate, AnimationBuilder, AnimationPlayer, style } from '@angular/animations';
 
 import { NavigationEnd, Router } from '@angular/router';
@@ -21,7 +21,6 @@ import { FuseVerticalNavigationSpacerItemComponent } from './components/spacer/s
     selector: 'fuse-vertical-navigation',
     templateUrl: './vertical.component.html',
     styleUrls: ['./vertical.component.scss'],
-    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'fuseVerticalNavigation',
     imports: [FuseScrollbarDirective_1, FuseVerticalNavigationAsideItemComponent, FuseVerticalNavigationBasicItemComponent, FuseVerticalNavigationCollapsableItemComponent, FuseVerticalNavigationDividerItemComponent, FuseVerticalNavigationGroupItemComponent, FuseVerticalNavigationSpacerItemComponent]

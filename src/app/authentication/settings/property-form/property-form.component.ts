@@ -7,8 +7,7 @@ import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 
 @Component({
     selector: 'core-property-form',
-    templateUrl: './property-form.component.html',
-    encapsulation: ViewEncapsulation.None
+    templateUrl: './property-form.component.html'
 })
 export class PropertyForm implements OnInit {
     form: UntypedFormGroup;

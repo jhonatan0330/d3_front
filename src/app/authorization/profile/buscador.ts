@@ -29,12 +29,12 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
     <div class="flex flex-col h-full max-h-[90vh] overflow-hidden">
       <div class="flex justify-end p-2">
         <button matIconButton mat-dialog-close>
-          <mat-icon svgIcon="x" />
+          <mat-icon>exit_to_app</mat-icon>
         </button>
       </div>
       <div class="flex-1 overflow-y-auto">
         <div class="flex flex-col max-w-2xl mx-auto w-full px-4 py-6 gap-y-4">
-          @if (loginService.user; as userData) {
+          @if (loginService.user(); as userData) {
             <div class="flex items-center gap-x-3 px-1 pb-2">
               <img
                 class="size-10 rounded-full object-cover"

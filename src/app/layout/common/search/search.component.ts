@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, HostBinding, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges, ViewEncapsulation, ChangeDetectionStrategy, inject, input, output, viewChild } from '@angular/core';
+import { Component, effect, ElementRef, HostBinding, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges,  ChangeDetectionStrategy, inject, input, output, viewChild } from '@angular/core';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { Subject } from 'rxjs';
@@ -14,7 +14,6 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 @Component({
     selector: 'search',
     templateUrl: './search.component.html',
-    encapsulation: ViewEncapsulation.None,
     exportAs: 'fuseSearch',
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatIconButton, MatIcon, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatProgressBar, MatAutocomplete, MatOption]

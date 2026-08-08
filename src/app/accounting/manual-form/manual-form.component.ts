@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit,  ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountingService } from '../accounting.service';
@@ -22,7 +22,6 @@ import { AsyncPipe, CurrencyPipe } from '@angular/common';
 @Component({
     selector: 'account-manual-form',
     templateUrl: './manual-form.component.html',
-    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatIconButton, MatIcon, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatAutocompleteTrigger, MatButton, MatProgressSpinner, MatAutocomplete, MatOption, AsyncPipe, CurrencyPipe]
 })
