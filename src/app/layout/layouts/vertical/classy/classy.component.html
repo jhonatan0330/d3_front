@@ -36,7 +36,7 @@
                     <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center text-md leading-normal font-medium text-white/70">
                         {{ user?.correo }}
                     </div>
-                    <span class="text-xs text-white/50">{{ time | date : "medium" }}</span>
+                    <span class="text-xs text-white/50">{{ time() | date : "medium" }}</span>
                     <span class="text-xs text-white/50">{{ currentApplicationVersion }}</span>
                 </div>
             </div>

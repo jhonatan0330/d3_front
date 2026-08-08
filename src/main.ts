@@ -1,5 +1,4 @@
-import { enableProdMode, provideZoneChangeDetection, ErrorHandler, importProvidersFrom } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { enableProdMode, provideZonelessChangeDetection, ErrorHandler, importProvidersFrom } from '@angular/core';
 import 'swiper/element/bundle';
 import { environment } from 'environments/environment';
 
@@ -47,6 +46,7 @@ if ( environment.production )
 
 bootstrapApplication(AppComponent, {
     providers: [
+        provideZonelessChangeDetection(),
         importProvidersFrom(CommonModule, BrowserModule, BrowserAnimationsModule, RouterModule.forRoot(appRoutes, routerConfig), 
         // Fuse, FuseConfig & FuseMockAPI
         FuseModule, FuseConfigModule.forRoot(appConfig), 

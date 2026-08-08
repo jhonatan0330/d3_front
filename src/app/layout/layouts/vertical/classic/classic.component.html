@@ -37,7 +37,7 @@
           class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center text-md leading-normal font-medium text-secondary">
           {{ user?.correo }}
         </div>
-        <span class="text-xs">{{ time | date : "medium" }}</span>
+        <span class="text-xs">{{ time() | date : "medium" }}</span>
         <span class="text-xs">{{ currentApplicationVersion }}</span>
       </div>
     </div>

@@ -8,7 +8,7 @@ Guidance for AI agents and developers working in this repository.
 - **Type**: Angular SPA (admin/business app) built on the **FuseAdmin** template
 - **Current stack**: Angular **22.1.0**, TypeScript 6.0.3, Tailwind CSS 3.4.7, RxJS 7.8.2, SCSS
 - **Target**: Angular **22** (see `MIGRATION_PLAN.md` for the migration roadmap — it is the source of truth for the upgrade)
-- **Build system**: Standalone components, bootstrap via `bootstrapApplication` in `src/main.ts` (zone.js-based; zoneless es decisión futura de Fase 5).
+- **Build system**: Standalone components, bootstrap via `bootstrapApplication` in `src/main.ts` (**zoneless**, `provideZonelessChangeDetection()`; zone.js eliminado en Fase 5.4).
 
 ## Commands
 
@@ -45,7 +45,7 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 
 ## Testing
 
-- **Vitest** (montado en Fase 5.5, runner primario): config en `vitest.config.ts` (`@analogjs/vite-plugin-angular` + aliases `@fuse`/`app`/`environments` para resolver el `baseUrl`), setup en `src/test-setup.ts` (zone.js + `BrowserDynamicTestingModule`), tipos en `tsconfig.spec.json`.
+- **Vitest** (montado en Fase 5.5, runner primario): config en `vitest.config.ts` (`@analogjs/vite-plugin-angular` + aliases `@fuse`/`app`/`environments` para resolver el `baseUrl`), setup en `src/test-setup.ts` (**zoneless**: `setupTestBed({ zoneless: true })` de `@analogjs/vitest-angular/setup-testbed`), tipos en `tsconfig.spec.json`.
 - Comandos: `npm test` (una pasada) y `npm run test:watch`.
 - Primeras suites: `src/app/shared/plantilla-helper.spec.ts` y `src/app/shared/local-image.spec.ts` (18 tests). Los specs quedan excluidos del build de la app.
 - Verificación principal tras editar código: `npm run build` (y `npx tsc -p tsconfig.app.json --noEmit`).

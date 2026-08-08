@@ -188,7 +188,7 @@ npm install @bobbyquantum/ngx-editor@22   # drop-in de ngx-editor
 
 ### 4.5 Verificación final
 - [x] Build completo sin warnings críticos (solo los ya documentados: non-ESM de geotiff/sweetalert2/file-saver y splash-screen.css ausente) + `npx tsc -p tsconfig.app.json --noEmit` limpio
-- [ ] Todos los tests pasando — **N/A**: no existe suite (`*.spec.ts`/`src/test.ts`); montar Vitest es Fase 5.5
+- [x] Todos los tests pasando — 18/18 con Vitest (Fase 5.5)
 - [ ] Smoke test de todas las funcionalidades:
   - [x] Login / autenticación — **confirmado por el usuario** (8/8/2026)
   - [ ] Neuron (forms dinámicos, controles GPS/Mapa con OpenLayers)
@@ -232,10 +232,10 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 - [x] Aplicar a `TokenInterceptor`, `HttpErrorInterceptor`, `FuseLoadingInterceptor`
 - [x] Eliminado `FuseLoadingModule` (solo existía para el interceptor); `main.ts` usa `provideHttpClient(withInterceptors([fuseLoadingInterceptor, tokenInterceptor, httpErrorInterceptor]))`; helper functions de token interceptor pasadas a top-level
 - [x] `ng build` + `npx tsc --noEmit` OK
-- [ ] Decidir migración a **zoneless** (`provideZonelessChangeDetection()`): evaluar usos de `NgZone`/zone.js; opcional y solo cuando la versión esté estable
+- [x] Decidir migración a **zoneless** (`provideZonelessChangeDetection()`): **DECIDIDO y APLICADO** — 0 usos de `NgZone`/`runOutsideAngular`/`onStable` en `src`; eliminado `zone.js` de dependencias y del polyfill de `angular.json`; `main.ts` bootstrap con `provideZonelessChangeDetection()`. Relojes de 7 layouts (vertical thin/classic/futuristic/classy/dense/compact + horizontal modern) migrados a `signal` (campo `time` + `time()` en templates) para que el tick del `setInterval` dispare CD; los 4 relojes sin binding (centered/enterprise/material, user) quedan como campos inertes (no afectan). **Pendiente**: smoke test runtime en zona real (riesgo: `setTimeout`/`subscribe` que escriban props planas sin scheduler, p.ej. `massive.component.ts:823`); mitigación de diagnóstico: `provideCheckNoChangesConfig({ exhaustive: true })`
 
 ### 5.5 Testing framework
-- [x] No había suite que migrar (cero tests). **Vitest montado desde cero** (runner primario en Angular 21+): `@analogjs/vitest-angular@2.6.4` + `vitest@4.1.10` + `jsdom` + `@types/node`; `vitest.config.ts` con `@analogjs/vite-plugin-angular` y aliases `@fuse`/`app`/`environments` (baseUrl no lo resuelve Vite); `src/test-setup.ts` (zone.js vía `setup-zone` + `BrowserDynamicTestingModule`); `tsconfig.spec.json`; scripts `test`/`test:watch` en `package.json`. Primera suite sobre `shared/` (`plantilla-helper.spec.ts` 12 tests + `local-image.spec.ts` 6 tests, incluye un host component standalone con el pipe `imageFormat`). `npm test` → 18/18 OK; `ng build` no se ve afectado (specs excluidos del build)
+- [x] No había suite que migrar (cero tests). **Vitest montado desde cero** (runner primario en Angular 21+): `@analogjs/vitest-angular@2.6.4` + `vitest@4.1.10` + `jsdom` + `@types/node`; `vitest.config.ts` con `@analogjs/vite-plugin-angular` y aliases `@fuse`/`app`/`environments` (baseUrl no lo resuelve Vite); `src/test-setup.ts` (zoneless vía `setupTestBed({ zoneless: true })` de `@analogjs/vitest-angular/setup-testbed` — migrado en 5.4 al eliminar `zone.js`); `tsconfig.spec.json`; scripts `test`/`test:watch` en `package.json`. Primera suite sobre `shared/` (`plantilla-helper.spec.ts` 12 tests + `local-image.spec.ts` 6 tests, incluye un host component standalone con el pipe `imageFormat`). `npm test` → 18/18 OK; `ng build` no se ve afectado (specs excluidos del build)
 
 ---
 

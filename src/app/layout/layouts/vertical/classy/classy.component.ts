@@ -1,4 +1,4 @@
-import { Component, effect, OnDestroy, OnInit,  ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit,  ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
@@ -37,7 +37,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
     navigation: Navigation;
     user: UsuarioDTO;
     company: OrganizacionDTO;
-    time = new Date();
+    time = signal(new Date());
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     headerSection: SafeHtml[];
@@ -87,7 +87,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
 
         // Reloj
         setInterval(() => {
-            this.time = new Date();
+            this.time.set(new Date());
         }, 1000);
     }
 
