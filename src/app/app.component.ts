@@ -23,10 +23,10 @@ export class AppComponent implements OnInit {
 
   changePageTitle() {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((routeChange) => {
-      if (!this.jwtAut || !this.jwtAut.company || !this.jwtAut.company.nombre) {
+      if (!this.jwtAut || !this.jwtAut.company() || !this.jwtAut.company().nombre) {
         this.title.setTitle("d3-apps.com");
       } else {
-        this.title.setTitle(this.jwtAut.company.nombre);
+        this.title.setTitle(this.jwtAut.company().nombre);
       }
     });
   }

@@ -224,7 +224,7 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 - [x] `ng generate @angular/core:output-migration` — outputs → signal outputs (8/8, verificado: 0 `@Output()`/`EventEmitter` restantes en el repo)
 - [x] `ng generate @angular/core:control-flow` — `*ngIf/*ngFor/*ngSwitch` → `@if/@for/@switch` (organization.component.html; el resto de usos están en comentarios HTML → código muerto)
 - [x] `ng build` + `npx tsc --noEmit` OK en cada subfase
-- Empezar por servicios con BehaviorSubjects (pendiente, no bloqueante)
+- [x] Servicios con `BehaviorSubject` → signals (manual): `tasks.service.ts` (`task`/`tasks`), `contact.services.ts` (`contact`/`contacts`), `login.service.ts` (6: `user`/`company`/`slides`/`landing`/`headerSection`/`date`). Consumidores a `effect()`/`computed()`/señales en template (`tasks/list`+`tasks/details`, `persons`, `profile`, `sign-in`, `user`, `layout`, 12 layouts, `change-picture` escritor, `notification-button`/`app` lectores). **Pendientes** (neuron): `neuron/service/template.service.ts` (`templates$`), `neuron/form/controls/base/base.component.ts` (`formIsModified`), `neuron/form/controls/disponibilidad/estructura.ts` (`_navItemSource`)
 - Neuron es el último en migrar (muy complejo) — pendiente
 
 ### 5.4 Migración de interceptores

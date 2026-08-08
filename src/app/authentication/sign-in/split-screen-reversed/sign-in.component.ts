@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, effect, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,6 @@ import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { environment } from 'environments/environment';
-import { Subject, takeUntil } from 'rxjs';
 import { MatInput } from '@angular/material/input';
 import { ImageFormatPipe } from '../../../shared/local-image';
 
@@ -35,31 +34,32 @@ export class SignInSplitScreenReversedComponent implements OnInit {
     isLoading = false;
     company: OrganizacionDTO;
     currentApplicationVersion = environment.appVersion;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
     logo: SafeHtml;
+
+
+    constructor() {
+        effect(() => {
+            const company = this.loginservice.company();
+            if (!company || !company.llaveTabla) {
+                this.company = undefined;
+                return;
+            }
+            this.company = company;
+            this.templateNewUser = PlantillaHelper.buscarValor(
+                this.company.propiedades,
+                PlantillaHelper.PLANTILLA_NUEVO_USUARIO
+            );
+            this.logo = PlantillaHelper.buscarValor(
+                this.company.propiedades,
+                PlantillaHelper.LOGIN_HTML
+            );
+            this._cdr.markForCheck();
+        });
+    }
 
 
     ngOnInit(): void {
 
-        // Subscribe to the company
-        this.loginservice.company$
-            .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((company: OrganizacionDTO) => {
-                if (!company || !company.llaveTabla) {
-                    this.company = undefined;
-                    return;
-                }
-                this.company = company;
-                this.templateNewUser = PlantillaHelper.buscarValor(
-                    this.company.propiedades,
-                    PlantillaHelper.PLANTILLA_NUEVO_USUARIO
-                );
-                this.logo = PlantillaHelper.buscarValor(
-                    this.company.propiedades,
-                    PlantillaHelper.LOGIN_HTML
-                );
-                this._cdr.markForCheck();
-            });
         this.signInForm = this._formBuilder.group({
             username: ['', [Validators.required]],
             password: ['', Validators.required]
@@ -68,13 +68,6 @@ export class SignInSplitScreenReversedComponent implements OnInit {
             .subscribe((result: boolean) => {
                 if (!result) { this.loginservice.getUrlServices(); }
             });
-    }
-
-
-    ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
     }
 
 

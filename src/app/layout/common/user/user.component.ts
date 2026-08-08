@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation, inject } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect,  inject } from '@angular/core';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { LoginService } from 'app/authentication/login.service';
@@ -14,12 +13,11 @@ import { MatDivider } from '@angular/material/divider';
 @Component({
     selector: 'user',
     templateUrl: './user.component.html',
-    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'user',
     imports: [MatIconButton, MatMenuTrigger, MatIcon, MatMenu, MatDivider, MatMenuItem]
 })
-export class UserComponent implements OnInit, OnDestroy {
+export class UserComponent {
     private _changeDetectorRef = inject(ChangeDetectorRef);
     jwtAuth = inject(LoginService);
     private apiService = inject(ApiService);
@@ -30,21 +28,14 @@ export class UserComponent implements OnInit, OnDestroy {
     user: UsuarioDTO;
     time = new Date();
     currentApplicationVersion = environment.appVersion;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    ngOnInit(): void {
-        this.jwtAuth.user$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((user: UsuarioDTO) => {
-                this.user = user;
-                this._changeDetectorRef.markForCheck();
-            });
+    constructor() {
+        effect(() => {
+            this.user = this.jwtAuth.user();
+            this._changeDetectorRef.markForCheck();
+        });
     }
 
-    ngOnDestroy(): void {
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-    }
 
 
     signOut(): void {

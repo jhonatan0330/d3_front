@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Renderer2, ViewEncapsulation, DOCUMENT, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit, Renderer2,  DOCUMENT, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { combineLatest, filter, map, Subject, takeUntil } from 'rxjs';
@@ -8,7 +8,6 @@ import { FusePlatformService } from '@fuse/services/platform';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
 import { LoginService } from 'app/authentication/login.service';
-import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { EmptyLayoutComponent } from './layouts/empty/empty.component';
 import { CenteredLayoutComponent } from './layouts/horizontal/centered/centered.component';
@@ -26,7 +25,6 @@ import { ThinLayoutComponent } from './layouts/vertical/thin/thin.component';
     selector: 'layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
-    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [EmptyLayoutComponent, CenteredLayoutComponent, EnterpriseLayoutComponent, MaterialLayoutComponent, ModernLayoutComponent, ClassicLayoutComponent, ClassyLayoutComponent, CompactLayoutComponent, DenseLayoutComponent, FuturisticLayoutComponent, ThinLayoutComponent]
 })
@@ -46,19 +44,21 @@ export class LayoutComponent implements OnInit, OnDestroy {
     theme: string;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
-    ngOnInit(): void {
-        this._userService.company$
-            .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((company: OrganizacionDTO) => {
-                if(company) { 
-                    if(this.config){
-                        let layoutCompany: string = PlantillaHelper.buscarValor(company.propiedades, PlantillaHelper.LAYOUT_APP);
-                        if (!layoutCompany) { layoutCompany = 'classy'; }
-                        this.config.layout = layoutCompany as Layout; 
-                        this._updateLayout();
-                    } 
+    constructor() {
+        effect(() => {
+            const company = this._userService.company();
+            if (company) {
+                if (this.config) {
+                    let layoutCompany: string = PlantillaHelper.buscarValor(company.propiedades, PlantillaHelper.LAYOUT_APP);
+                    if (!layoutCompany) { layoutCompany = 'classy'; }
+                    this.config.layout = layoutCompany as Layout;
+                    this._updateLayout();
                 }
-            });
+            }
+        });
+    }
+
+    ngOnInit(): void {
         // Set the theme and scheme based on the configuration
         combineLatest([
             this._fuseConfigService.config$,

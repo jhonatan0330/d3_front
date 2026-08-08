@@ -17,13 +17,13 @@
               Usuarios
             </div>
             <div class="text-secondary ml-0.5 font-medium">
-              @if (contactsCount > 0) {
+              @if (contactsCount() > 0) {
                 <span>
-                  {{ contactsCount }}
+                  {{ contactsCount() }}
                 </span>
               }
               {{
-              contactsCount
+              contactsCount()
               | i18nPlural
               : {
               '=0': 'No hay',
@@ -70,7 +70,7 @@
         </div>
         <!-- Contacts list -->
         <div class="relative">
-          @if (contacts$ | async; as contacts) {
+          @if (contacts(); as contacts) {
             @if (contacts.length > 0) {
               @for (contact of contacts; track trackByFn(i, contact); let i = $index) {
                 <!-- Group -->

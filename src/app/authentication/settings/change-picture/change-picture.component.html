@@ -2,9 +2,9 @@
 <div class="absolute flex flex-auto items-end -mt-16 right-6">
   <!-- Avatar -->
   <div class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
-    @if (jwtAuth.user && jwtAuth.user.imagen) {
+    @if (jwtAuth.user() && jwtAuth.user().imagen) {
       <img class="absolute rounded-full object-cover w-32 h-32"
-        [src]="jwtAuth.user && jwtAuth.user.imagen">
+        [src]="jwtAuth.user() && jwtAuth.user().imagen">
     }
     <video  #video id="video" [style.display]="isTakingPicture?'block':'none'" class="absolute rounded-full w-32 h-32"></video>
     <canvas #canvas id="canvas" [style.display]="isReviewingPicture?'block':'none'" class="absolute rounded-full w-32 h-32"></canvas>

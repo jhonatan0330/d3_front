@@ -110,8 +110,7 @@ export class ChangePictureComponent {
     this.submitted = true;
     this.jwtAuth.changePictureUser(internalFile, null).subscribe({
       next: (data) => {
-        this.jwtAuth.user = data;
-        this.jwtAuth.user$.next(this.jwtAuth.user);
+        this.jwtAuth.user.set(data);
         this.submitted = false;
         this.isReviewingPicture = false;
         this.isTakingPicture = false;

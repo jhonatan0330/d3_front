@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import {
-    BehaviorSubject,
     catchError,
     debounceTime,
     map,
@@ -19,20 +18,16 @@ export class ContactsService {
     private ls = inject(LocalStoreService);
 
     // Private
-    private _contact: BehaviorSubject<UsuarioDTO | null> = new BehaviorSubject(
-        null
-    );
-    private _contacts: BehaviorSubject<UsuarioDTO[] | null> = new BehaviorSubject(
-        null
-    );
+    private readonly _contact = signal<UsuarioDTO | null>(null);
+    private readonly _contacts = signal<UsuarioDTO[] | null>(null);
 
 
-    get contact$(): Observable<UsuarioDTO> {
-        return this._contact.asObservable();
+    get contact() {
+        return this._contact.asReadonly();
     }
 
-    get contacts$(): Observable<UsuarioDTO[]> {
-        return this._contacts.asObservable();
+    get contacts() {
+        return this._contacts.asReadonly();
     }
 
     searchTags(): Observable<RolAccesoFilterDTO[]> {
@@ -58,13 +53,13 @@ export class ContactsService {
             { estado: 'A' }
         ).pipe(
             tap((contacts) => {
-                this._contacts.next(contacts);
+                this._contacts.set(contacts);
             })
         );
     }
 
     clearContacts(): void {
-        this._contacts.next([]);
+        this._contacts.set([]);
     }
 
     searchContacts(query: string): Observable<UsuarioDTO[]> {
@@ -75,7 +70,7 @@ export class ContactsService {
             switchMap((contacts) => {
                 // Si se encontraron contactos con la identificación, los retorna
                 if (contacts.length > 0) {
-                    this._contacts.next(contacts); // Actualiza el Subject
+                    this._contacts.set(contacts); // Actualiza el signal
                     return of(contacts); // Devuelve los contactos encontrados
                 } else {
                     // Si no hay resultados, se realiza la búsqueda general
@@ -89,7 +84,7 @@ export class ContactsService {
                                 c.nombre?.toLowerCase().includes(query.toLowerCase())
                             )
                         ),
-                        tap((filtered) => this._contacts.next(filtered)) // Actualiza el Subject con los filtrados
+                        tap((filtered) => this._contacts.set(filtered)) // Actualiza el signal con los filtrados
                     );
                 }
             }),
@@ -109,7 +104,7 @@ export class ContactsService {
                 filtroParametro: 'A'
             }
         ).pipe(
-            tap((contacts) => this._contacts.next(contacts))
+            tap((contacts) => this._contacts.set(contacts))
         );
     }
 
@@ -117,7 +112,7 @@ export class ContactsService {
         return this._httpClient.get<UsuarioDTO>(
             this.ls.getUrlAccess('/user/' + query)
         ).pipe(
-            tap((contacts) => this._contact.next(contacts))
+            tap((contacts) => this._contact.set(contacts))
         );
     }
 

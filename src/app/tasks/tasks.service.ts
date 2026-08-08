@@ -1,6 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map, Observable,  switchMap, take, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
 import { IdResponse } from 'app/modules/full/neuron/model/sw42.utils';
 import { LocalStoreService } from 'app/shared/local-store.service';
@@ -13,8 +13,8 @@ export class TasksService {
     private ls = inject(LocalStoreService);
 
     // Private
-    private _task: BehaviorSubject<Task | null> = new BehaviorSubject(null);
-    private _tasks: BehaviorSubject<Task[] | null> = new BehaviorSubject(null);
+    private readonly _task = signal<Task | null>(null);
+    private readonly _tasks = signal<Task[] | null>(null);
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -23,15 +23,15 @@ export class TasksService {
     /**
      * Getter for task
      */
-    get task$(): Observable<Task> {
-        return this._task.asObservable();
+    get task() {
+        return this._task.asReadonly();
     }
 
     /**
      * Getter for tasks
      */
-    get tasks$(): Observable<Task[]> {
-        return this._tasks.asObservable();
+    get tasks() {
+        return this._tasks.asReadonly();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -46,13 +46,13 @@ export class TasksService {
             this.ls.getUrlAccess('/task/', _server)
         ).pipe(
             tap((response) => {
-                this._tasks.next(response);
+                this._tasks.set(response);
             })
         );
     }
 
     selectTask(_task:Task){
-        this._task.next(_task);
+        this._task.set(_task);
     }
 
     /**
@@ -90,18 +90,14 @@ export class TasksService {
             priority: 1,
             order: 0
         }
-        return this.tasks$.pipe(
-            take(1),
-            switchMap(tasks =>
-                this._httpClient.post<IdResponse>(
-                    this.ls.getUrlAccess('/task/create', _server), task
-                ).pipe(
-                    map((idTask) => {
-                        task.key = idTask.id;
-                        this._tasks.next([task, ...tasks]);
-                        return idTask.id;
-                    })
-                ))
+        return this._httpClient.post<IdResponse>(
+            this.ls.getUrlAccess('/task/create', _server), task
+        ).pipe(
+            map((idTask) => {
+                task.key = idTask.id;
+                this._tasks.update(tasks => [task, ...(tasks ?? [])]);
+                return idTask.id;
+            })
         );
     }
 
@@ -123,17 +119,13 @@ export class TasksService {
      * @param id
      */
     deleteTask(id: string, _server: string = null): Observable<IdResponse> {
-        return this.tasks$.pipe(
-            take(1),
-            switchMap(tasks =>
-                this._httpClient.post<IdResponse>(
-                    this.ls.getUrlAccess('/task/delete/' + id, _server), null
-                ).pipe(
-                    map((idTask) => {
-                        this._tasks.next(tasks.filter((item)=>{ return item.key !== idTask.id}));
-                        return idTask;
-                    })
-                ))
+        return this._httpClient.post<IdResponse>(
+            this.ls.getUrlAccess('/task/delete/' + id, _server), null
+        ).pipe(
+            map((idTask) => {
+                this._tasks.update(tasks => (tasks ?? []).filter((item) => item.key !== idTask.id));
+                return idTask;
+            })
         );
     }
 }

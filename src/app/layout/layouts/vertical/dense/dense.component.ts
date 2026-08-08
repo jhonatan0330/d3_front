@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit,  ChangeDetectionStrategy, inject } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { FuseNavigationService, FuseVerticalNavigationComponent } from '@fuse/components/navigation';
@@ -22,7 +22,6 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
 @Component({
     selector: 'dense-layout',
     templateUrl: './dense.component.html',
-    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FuseVerticalNavigationComponent_1, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
 })
@@ -47,45 +46,32 @@ export class DenseLayoutComponent implements OnInit, OnDestroy {
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
+    constructor() {
+        effect(() => {
+            const user = this._loginService.user();
+            this.user = (user && user.llaveTabla) ? user : undefined;
+        });
+
+        effect(() => {
+            const company = this._loginService.company();
+            this.company = (company && company.llaveTabla) ? company : undefined;
+        });
+
+        effect(() => {
+            this.headerSection = this._loginService.headerSection();
+        });
+
+        effect(() => {
+            this.landing = this._loginService.landing();
+        });
+    }
+
     ngOnInit(): void {
         // Subscribe to navigation data
         this._navigationService.navigation$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe((navigation: Navigation) => {
                 this.navigation = navigation;
-            });
-
-        // Subscribe to the user
-        this._loginService.user$
-            .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((user: UsuarioDTO) => {
-                if (!user || !user.llaveTabla) {
-                    this.user = undefined;
-                    return;
-                }
-                this.user = user;
-            });
-
-        // Subscribe to the company
-        this._loginService.company$
-            .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((company: OrganizacionDTO) => {
-                if (!company || !company.llaveTabla) {
-                    this.company = undefined;
-                    return;
-                }
-                this.company = company;
-            });
-        this._loginService.headerSection$
-            .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((_header: []) => {
-                this.headerSection = _header;
-            });
-
-        this._loginService.landing$
-            .pipe((takeUntil(this._unsubscribeAll)))
-            .subscribe((_landing: []) => {
-                this.landing = _landing;
             });
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$

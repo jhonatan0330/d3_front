@@ -1,6 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import {
-    ChangeDetectorRef,
     OnDestroy,
     OnInit,
 } from '@angular/core';
@@ -37,7 +36,6 @@ import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 })
 export class PersonsComponent implements OnInit, OnDestroy {
     private _activatedRoute = inject(ActivatedRoute);
-    private _changeDetectorRef = inject(ChangeDetectorRef);
     private _jwt = inject(LoginService);
     private _contactsService = inject(ContactsService);
     private _router = inject(Router);
@@ -45,9 +43,9 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
 
 
-    contacts$: Observable<UsuarioDTO[]>;
+    readonly contacts = this._contactsService.contacts;
 
-    contactsCount: number = 0;
+    contactsCount = computed(() => this._contactsService.contacts()?.length ?? 0);
     contactsTableColumns: string[] = ['name', 'email', 'phoneNumber', 'job'];
     drawerMode: 'side' | 'over';
     searchInputControl: UntypedFormControl = new UntypedFormControl();
@@ -62,20 +60,8 @@ export class PersonsComponent implements OnInit, OnDestroy {
             this._router.navigate(['/main']);
             return;
         }
-        // Get the contacts
-        this._contactsService.contacts$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((contacts: UsuarioDTO[]) => {
-                // Update the counts
-                if (contacts) this.contactsCount = contacts.length;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
 
             this._contactsService.clearContacts();
-        this.contacts$ = this._contactsService.contacts$;
-
 
         this.tags$ = this._contactsService.searchTags();
 

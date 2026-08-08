@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewEncapsulation, inject, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit,  inject, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
@@ -17,7 +17,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
 @Component({
     selector: 'tasks-details',
     templateUrl: './details.component.html',
-    encapsulation: ViewEncapsulation.None,
+
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatMenuModule, MatInputModule]
 })
@@ -46,6 +46,27 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+    constructor() {
+        effect(() => {
+            const task = this._tasksService.task();
+
+            // Open the drawer in case it is closed
+            this._tasksListComponent.matDrawer().open();
+
+            // Get the task
+            this.task = task ?? this.task;
+
+            if (task) {
+                // Patch values to the form from the task
+                this.taskForm.patchValue(task, { emitEvent: false });
+            }
+
+            if (!task) this.closeDrawer();
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });
+    }
+
     ngOnInit(): void {
         // Open the drawer
         this._tasksListComponent.matDrawer().open();
@@ -61,25 +82,6 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             priority: [0],
             order: [0]
         });
-
-        // Get the task
-        this._tasksService.task$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((task: Task) => {
-
-                // Open the drawer in case it is closed
-                this._tasksListComponent.matDrawer().open();
-
-                // Get the task
-                this.task = task;
-
-                // Patch values to the form from the task
-                this.taskForm.patchValue(task, { emitEvent: false });
-
-                if (!task) this.closeDrawer();
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
 
         // Update task when there is a value change on the task form
         this.taskForm.valueChanges

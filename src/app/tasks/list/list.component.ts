@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation, DOCUMENT, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, OnDestroy, OnInit,  DOCUMENT, inject, viewChild } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragPreview, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
-import { filter, fromEvent, Subject, take, takeUntil } from 'rxjs';
+import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksService } from 'app/tasks/tasks.service';
@@ -16,7 +16,7 @@ import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 @Component({
     selector: 'tasks-list',
     templateUrl: './list.component.html',
-    encapsulation: ViewEncapsulation.None,
+
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [MatDrawerContainer, MatDrawer, RouterOutlet, MatDrawerContent, MatButton, MatTooltip, MatIcon, CdkDropList, CdkDrag, NgClass, CdkDragPreview, CdkDragHandle, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, DatePipe]
 })
@@ -31,7 +31,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     readonly matDrawer = viewChild<MatDrawer>('matDrawer');
 
     drawerMode: 'side' | 'over';
-    selectedTask: Task;
+    selectedTask: Task | null;
     tasks: Task[];
     tasksCount: any = {
         completed: 0,
@@ -40,34 +40,30 @@ export class TasksListComponent implements OnInit, OnDestroy {
     };
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
+    constructor() {
+        effect(() => {
+            const tasks = this._tasksService.tasks() ?? [];
+            this.tasks = tasks;
+
+            // Update the counts
+            this.tasksCount.total = tasks.length;
+            this.tasksCount.completed = tasks.filter(task => task.completed).length;
+            this.tasksCount.incomplete = this.tasksCount.total - this.tasksCount.completed;
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });
+
+        effect(() => {
+            this.selectedTask = this._tasksService.task() ?? null;
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });
+    }
+
 
     ngOnInit(): void {
-
-        // Get the tasks
-        this._tasksService.tasks$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((tasks: Task[]) => {
-                this.tasks = tasks;
-                if (!this.tasks) this.tasks = [];
-                // Update the counts
-                this.tasksCount.total = this.tasks.length;
-                this.tasksCount.completed = this.tasks.filter(task => task.completed).length;
-                this.tasksCount.incomplete = this.tasksCount.total - this.tasksCount.completed;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-
-            });
-
-        // Get the task
-        this._tasksService.task$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((task: Task) => {
-                this.selectedTask = task;
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
 
         this._fuseMediaWatcherService.onMediaQueryChange$('(min-width: 1440px)')
             .pipe(takeUntil(this._unsubscribeAll))
@@ -119,13 +115,12 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
     createTask(): void {
         this._tasksService.createTask("").subscribe((id) => {
-            this._tasksService.tasks$.pipe(take(1)).subscribe((tasks) => {
-                const task = tasks.find((t) => t.key === id);
-                if (task) {
-                    this._tasksService.selectTask(task);
-                    this.selectTask(task);
-                } else console.log("no se encontro nueva tarea");
-            });
+            const tasks = this._tasksService.tasks() ?? [];
+            const task = tasks.find((t) => t.key === id);
+            if (task) {
+                this._tasksService.selectTask(task);
+                this.selectTask(task);
+            } else console.log("no se encontro nueva tarea");
         });
     }
 

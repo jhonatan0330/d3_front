@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy, AfterViewInit, Renderer2, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, effect, OnInit,  OnDestroy, AfterViewInit,  ChangeDetectionStrategy, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -10,7 +10,6 @@ import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { Subject, takeUntil } from 'rxjs';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
-import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { NgClass } from '@angular/common';
 import { MatCard } from '@angular/material/card';
 import { MatFormField } from '@angular/material/form-field';
@@ -30,8 +29,8 @@ interface MenuNode {
 @Component({
     selector: 'profile',
     templateUrl: './profile.component.html',
-    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     imports: [NgClass, MatCard, MatFormField, MatInput, FormsModule, ReactiveFormsModule, TemplateComponent, ImageFormatPipe]
 })
 export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -64,46 +63,39 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   tempTemplateOpen;
   tempIdOpen;
 
+  constructor() {
+    effect(() => {
+      const company = this.loginservice.company();
+      this.company = (company && company.llaveTabla) ? company : undefined;
+    });
+
+    effect(() => {
+      const user = this.loginservice.user();
+      this.user = (user && user.llaveTabla) ? user : undefined;
+    });
+
+    effect(() => {
+      const date = this.loginservice.date();
+      if (!date) { return; }
+      const now = new Date();
+      const received = (date instanceof Date) ? date : new Date(date);
+      // If the received date is greater than now, show a pop-up
+      if (received < now) {
+        this._utilsService.modalUserChangePass().subscribe();
+      }
+    });
+
+    effect(() => {
+      this.slides = this.loginservice.slides();
+    });
+  }
+
   ngOnInit(): void {
 
     this.signInForm = this._formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required]
     });
-
-    this.loginservice.company$
-      .pipe((takeUntil(this._unsubscribeAll)))
-      .subscribe((company: OrganizacionDTO) => {
-        if (!company || !company.llaveTabla) {
-          this.company = undefined;
-          return;
-        }
-        this.company = company;
-      });
-
-    // Subscribe to the user service
-    this.loginservice.user$
-      .pipe((takeUntil(this._unsubscribeAll)))
-      .subscribe((user: UsuarioDTO) => {
-        if (!user || !user.llaveTabla) {
-          this.user = undefined;
-          return;
-        }
-        this.user = user;
-      });
-
-    // Subscribe to date changes from LoginService
-    this.loginservice.getDate$()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((date: Date | null) => {
-        if (!date) { return; }
-        const now = new Date();
-        const received = (date instanceof Date) ? date : new Date(date);
-        // If the received date is greater than now, show a pop-up
-        if (received < now) {
-          this._utilsService.modalUserChangePass().subscribe();
-        }
-      });
 
     this.templateService.templates$
       .pipe((takeUntil(this._unsubscribeAll)))
@@ -123,15 +115,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((result: boolean) => {
         if (!result) { this.loginservice.getUrlServices(); }
       });*/
-
-    this.loginservice.slides$
-      .pipe((takeUntil(this._unsubscribeAll)))
-      .subscribe((_slides: []) => {
-        this.slides = _slides;
-      });
-
-
-
   }
 
 

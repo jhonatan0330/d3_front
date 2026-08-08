@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewContainerRef, ViewEncapsulation, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewContainerRef,  inject, viewChild } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -18,7 +18,7 @@ import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
 @Component({
     selector: 'notifications',
     templateUrl: './notification-button.component.html',
-    encapsulation: ViewEncapsulation.None,
+
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'notifications',
     imports: [MatIconButton, MatIcon, MatTooltip, NgClass, DecimalPipe, DatePipe]
@@ -215,7 +215,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     }
 
     refresh() {
-        if (this._jwtAuth.user && this._jwtAuth.user.llaveTabla) {
+        if (this._jwtAuth.user() && this._jwtAuth.user().llaveTabla) {
             this._notificationsService.getAll().subscribe();
         }
     }
@@ -224,7 +224,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
         if (this.notifications && this.notifications.length !== 0) {
             const sinleer = this.notifications.filter(x => !x.fechaLeido);
             if (sinleer && sinleer.length !== 0) {
-                if (!PlantillaHelper.buscarPropiedad(this._jwtAuth.company.propiedades, PlantillaHelper.FORCE_NOTIFICATION)) {
+                if (!PlantillaHelper.buscarPropiedad(this._jwtAuth.company().propiedades, PlantillaHelper.FORCE_NOTIFICATION)) {
                     this.readActivity(sinleer[0]);
                 }
             }

@@ -1,8 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, catchError } from 'rxjs/operators';
-import { of, BehaviorSubject, throwError, Observable } from 'rxjs';
+import { of, throwError, Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -32,29 +32,23 @@ export class LoginService {
   token: string;
   urlService: string;
   private isAuthenticated = false;
-  user: UsuarioDTO = new UsuarioDTO();
-  user$ = new BehaviorSubject<UsuarioDTO>(this.user);
+  readonly user = signal<UsuarioDTO>(new UsuarioDTO());
   returnPath: string;
-  company: OrganizacionDTO = new OrganizacionDTO();
-  company$ = new BehaviorSubject<OrganizacionDTO>(this.company);
+  readonly company = signal<OrganizacionDTO>(new OrganizacionDTO());
   isAdmin = false;
   isReader = false;
   //isPublicUser = true;
 
-  slides: string[] = [];
-  slides$ = new BehaviorSubject<string[]>(this.slides);
+  readonly slides = signal<string[]>([]);
 
-  // Fecha observable: notifica cambios de fecha a otros componentes
-  private _date: Date = null;
-  private _date$ = new BehaviorSubject<Date | null>(this._date);
+  // Fecha signal: notifica cambios de fecha a otros componentes
+  private readonly _date = signal<Date | null>(null);
 
 
 
-  landing: SafeHtml[] = [];
-  landing$ = new BehaviorSubject<SafeHtml[]>(this.landing);
+  readonly landing = signal<SafeHtml[]>([]);
 
-  headerSection: SafeHtml[] = [];
-  headerSection$ = new BehaviorSubject<SafeHtml[]>(this.headerSection);
+  readonly headerSection = signal<SafeHtml[]>([]);
 
   constructor() {
     this.route.queryParams.subscribe(
@@ -65,23 +59,20 @@ export class LoginService {
   // Public API for date notifications
   setDate(date: Date | string | null) {
     if (!date) {
-      this._date = null;
-      this._date$.next(null);
+      this._date.set(null);
       return;
     }
     const newDate = (date instanceof Date) ? date : new Date(date);
-    this._date = newDate;
-    this._date$.next(this._date);
+    this._date.set(newDate);
   }
 
   clearDate() {
-    this._date = null;
-    this._date$.next(null);
+    this._date.set(null);
   }
 
-  // Observable to subscribe from components
-  getDate$(): Observable<Date | null> {
-    return this._date$.asObservable();
+  // Signal to read from components
+  get date() {
+    return this._date.asReadonly();
   }
 
 
@@ -135,26 +126,25 @@ export class LoginService {
       }
     }
 
-    if (this.company && this.company.llaveTabla === _company?.llaveTabla) {
+    if (this.company() && this.company().llaveTabla === _company?.llaveTabla) {
       // se presentaba un bug en los modulos 
-      this.company.propiedades = _company.propiedades;
+      this.company().propiedades = _company.propiedades;
       //Evito que se vuelva a consultar los template coverad
       return;
     }
 
-    this.company = _company;
-    this.company$.next(this.company);
+    this.company.set(_company);
   }
 
   private getCarrousel(_company: OrganizacionDTO) {
-    this.slides = [];
-    this.landing = [];
-    this.headerSection = [];
+    let slides: string[] = [];
+    let landing: SafeHtml[] = [];
+    let headerSection: SafeHtml[] = [];
     if (_company.propiedades) {
       const backImages = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.COVERAGE_IMAGE);
       if (backImages) {
         backImages.forEach(element => {
-          this.slides.push(element.valor);
+          slides.push(element.valor);
         });
       }
 
@@ -164,10 +154,7 @@ export class LoginService {
         this.apiService.listarDocumentos(entity, null).subscribe({
           next: (dataResult: PedidoVentaDTO[]) => {
             if (dataResult) {
-              dataResult.forEach(element => {
-                this.slides.push(element.imagen);
-                this.slides$.next(this.slides);
-              });
+              this.slides.update(current => [...current, ...dataResult.map(element => element.imagen)]);
             }
           },
           error: () => {
@@ -178,21 +165,21 @@ export class LoginService {
       const _iHeaders = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.LANDING_PAGE);
       if (_iHeaders && _iHeaders.length !== 0) {
         _iHeaders.forEach((element: PropiedadDTO) => {
-          this.landing.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
+          landing.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
         });
       }
       const _iFooters = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.HEADER_PAGE);
       if (_iFooters && _iFooters.length !== 0) {
-        this.headerSection = [];
+        headerSection = [];
         _iFooters.forEach((element: PropiedadDTO) => {
-          this.headerSection.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
+          headerSection.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
         });
       }
 
     }
-    this.slides$.next(this.slides);
-    this.landing$.next(this.landing);
-    this.headerSection$.next(this.headerSection);
+    this.slides.set(slides);
+    this.landing.set(landing);
+    this.headerSection.set(headerSection);
 
   }
 
@@ -254,7 +241,7 @@ export class LoginService {
         timerProgressBar: true
       })
     }
-    if (!this.user) { return; }
+    if (!this.user()) { return; }
     this.apiService.listarPlantillas("USER")
       .subscribe((templates) => {
         this.templateService.setTemplates(templates);
@@ -276,7 +263,7 @@ export class LoginService {
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
     const autenticacion: UsuarioAutenticacionDTO = new UsuarioAutenticacionDTO();
     autenticacion.llaveTabla = autorizacion;
-    autenticacion.usuario = this.user.llaveTabla;
+    autenticacion.usuario = this.user().llaveTabla;
     autenticacion.claveAnterior = oldPwd;
     autenticacion.clave = newPwd;
     return this.http
@@ -341,18 +328,17 @@ export class LoginService {
     if (authDTO) {
       this.isAuthenticated = true;
       this.token = authDTO.token;
-      this.user = authDTO.usuarioDTO;
+      this.user.set(authDTO.usuarioDTO);
     } else {
       this.isAuthenticated = false;
       this.token = null;
-      this.user = null;
+      this.user.set(null);
     }
 
 
 
-    this.user$.next(this.user);
     this.ls.setItem(LocalConstants.JWT_TOKEN, this.token);
-    this.ls.setItem(LocalConstants.APP_USER, this.user);
+    this.ls.setItem(LocalConstants.APP_USER, this.user());
   }
 
   setConfUrl(url: string) {
@@ -384,8 +370,8 @@ export class LoginService {
   }
 
   getUrlServices() {
-    if (this.company && this.company.llaveTabla) {
-      this.configureOrganization(this.company);
+    if (this.company() && this.company().llaveTabla) {
+      this.configureOrganization(this.company());
       return;
     }
     this.getURL().subscribe({
@@ -431,8 +417,8 @@ export class LoginService {
 
   validateAccessModule(pModuleKey: string): boolean {
     
-        if (this.company) {
-            const _modules = PlantillaHelper.buscarValorMultiple(this.company.propiedades, PlantillaHelper.APP_MODULES);
+        if (this.company()) {
+            const _modules = PlantillaHelper.buscarValorMultiple(this.company().propiedades, PlantillaHelper.APP_MODULES);
             if (_modules) {
                 for (let index = 0; index < _modules.length; index++) {
                     const element = _modules[index];
