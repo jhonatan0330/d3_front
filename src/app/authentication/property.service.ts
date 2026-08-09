@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { Observable } from 'rxjs';
@@ -8,14 +8,11 @@ import { PropiedadDTO, PropiedadValorDefinidoDTO } from 'app/shared/shared.domai
     providedIn: 'root'
 })
 export class PropertyService {
+    private http = inject(HttpClient);
+    private ls = inject(LocalStoreService);
 
     selectedProperty: PropiedadDTO;
     selectedType: PropiedadValorDefinidoDTO;
-
-    constructor(
-        private http: HttpClient,
-        private ls: LocalStoreService) {
-    }
 
     getProperties(type: string, field: string): Observable<PropiedadDTO[]> {
         return this.http.get<PropiedadDTO[]>(

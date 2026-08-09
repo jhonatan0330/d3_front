@@ -1,5 +1,5 @@
 // file-handler.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { VisorPdfDialogComponent } from './components/visor-pdf-dialog/visor-pdf-dialog.component';
@@ -7,8 +7,7 @@ import { VisorPdfDialogComponent } from './components/visor-pdf-dialog/visor-pdf
 
 @Injectable({ providedIn: 'root' })
 export class FileHandlerService {
-
-  constructor(private dialog: MatDialog) {}
+  private dialog = inject(MatDialog);
 
   handleResponse(response: HttpResponse<Blob>) {
     const contentType = response.headers.get('Content-Type') || '';

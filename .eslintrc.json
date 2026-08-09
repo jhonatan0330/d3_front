@@ -71,6 +71,8 @@
                     }
                 ],
                 "no-underscore-dangle": "off",
+                "no-console": "warn",
+                "@typescript-eslint/no-explicit-any": "warn",
                 "object-shorthand": "off",
                 "quote-props": [
                     "error",
