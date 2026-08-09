@@ -64,15 +64,13 @@ export class FuturisticLayoutComponent implements OnInit, OnDestroy {
         effect(() => {
             this.landing = this._loginService.landing();
         });
+
+        effect(() => {
+            this.navigation = this._navigationService.navigation;
+        });
     }
 
     ngOnInit(): void {
-        // Subscribe to navigation data
-        this._navigationService.navigation$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((navigation: Navigation) => {
-                this.navigation = navigation;
-            });
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))

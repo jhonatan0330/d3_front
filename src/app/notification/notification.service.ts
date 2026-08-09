@@ -1,6 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal, WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, ReplaySubject, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -14,7 +14,7 @@ export class NotificationsService {
   private ls = inject(LocalStoreService);
   private templateService = inject(TemplateService);
 
-  private _notifications: ReplaySubject<ActividadDTO[]> = new ReplaySubject<ActividadDTO[]>(1);
+  private _notifications: WritableSignal<ActividadDTO[]> = signal([]);
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
@@ -23,8 +23,8 @@ export class NotificationsService {
   /**
    * Getter for notifications
    */
-  get notifications$(): Observable<ActividadDTO[]> {
-    return this._notifications.asObservable();
+  get notifications(): ActividadDTO[] {
+    return this._notifications();
   }
 
   // -----------------------------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ export class NotificationsService {
       this.ls.getUrlAccess('/notification/getNotifications', _server)
     ).pipe(
       tap((notifications) => {
-        this._notifications.next(notifications);
+        this._notifications.set(notifications);
         this.getNotificationsFromOtherServers(notifications);
       })
     );
@@ -54,8 +54,7 @@ export class NotificationsService {
             this.http.get<ActividadDTO[]>(
               this.ls.getUrlAccess('/notification/getNotifications', element.llaveTabla)
             ).subscribe((notifications) => {
-                notificationMain = notificationMain.concat(notifications);
-                this._notifications.next(notificationMain);
+                this._notifications.set(notificationMain.concat(notifications));
               });
           }
           
@@ -64,7 +63,7 @@ export class NotificationsService {
   }
 
   clear(){
-    this._notifications.next([]);
+    this._notifications.set([]);
   }
 
   readActivity(actividad: ActividadDTO, _server: string = null): Observable<ActividadDTO> {

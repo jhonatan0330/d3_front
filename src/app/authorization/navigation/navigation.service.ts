@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, } from 'rxjs';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { FuseNavigationItem } from '@fuse/components/navigation';
 import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
@@ -10,14 +9,14 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
     providedIn: 'root'
 })
 export class NavigationService {
-    private _navigation: ReplaySubject<Navigation> = new ReplaySubject<Navigation>(1);
+    private _navigation: WritableSignal<Navigation> = signal(null);
 
     constructor() {
         this.generate(null, null, null);
     }
 
-    get navigation$(): Observable<Navigation> {
-        return this._navigation.asObservable();
+    get navigation(): Navigation {
+        return this._navigation();
     }
 
     generate(process: DocumentoPlantillaDTO[], modules: PropiedadDTO[], templates: DocumentoPlantillaDTO[]) {
@@ -232,7 +231,7 @@ export class NavigationService {
 
             horizontal: [...localNavigation],
         }
-        this._navigation.next(navigation);
+        this._navigation.set(navigation);
     }
 
 }

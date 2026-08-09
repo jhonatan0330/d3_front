@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { Subject, takeUntil } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
 import { NotificationsService } from 'app/notification/notification.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -40,12 +39,18 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     pastTimeCount: number = 0;
     isOpen = false;
     private _overlayRef: OverlayRef;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     constructor() {
         effect(() => {
             const templates = this.templateService.template();
             if (templates && templates.length !== 0) { this.refresh(); }
+        });
+
+        effect(() => {
+            this.notifications = this._notificationsService.notifications;
+            this._calculateUnreadCount();
+            this._changeDetectorRef.markForCheck();
+            this.showMessage();
         });
     }
 
@@ -57,32 +62,12 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        // Subscribe to notification changes
-        this._notificationsService.notifications$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((notifications: ActividadDTO[]) => {
-
-                // Load the notifications
-                this.notifications = notifications;
-
-                // Calculate the unread count
-                this._calculateUnreadCount();
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-
-                this.showMessage();
-            });
     }
 
     /**
      * On destroy
      */
     ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-
         // Dispose the overlay
         if (this._overlayRef) {
             this._overlayRef.dispose();
