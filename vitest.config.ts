@@ -10,6 +10,7 @@ export default defineConfig(() => ({
       '@fuse': resolve(process.cwd(), 'src/@fuse'),
       'app': resolve(process.cwd(), 'src/app'),
       'environments': resolve(process.cwd(), 'src/environments'),
+      'config': resolve(process.cwd(), 'src/config.ts'),
     },
   },
   test: {
