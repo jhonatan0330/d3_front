@@ -3,6 +3,7 @@ import { LayoutComponent } from 'app/layout/layout.component';
 import { AuthGuard } from './authentication/authentication.guard';
 import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
 import { PersonsComponent } from './persons/persons.component';
+import { CanDeactivateTasksDetails } from './tasks/tasks.guards';
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -20,8 +21,8 @@ export const appRoutes: Route[] = [
     },
     children: [
       { path: 'sign-in', component: SignInSplitScreenReversedComponent},
-      { path: 'sessions/recover', loadChildren: () => import('app/authentication/recover-password/recover-password.module').then(m => m.RecoverPasswordModule) },
-      { path: 'sessions/new/:id', loadChildren: () => import('app/authentication/new-password/new-password.module').then(m => m.NewPasswordModule) },
+      { path: 'sessions/recover', loadComponent: () => import('app/authentication/recover-password/recover-password.component').then(m => m.RecoverPasswordComponent) },
+      { path: 'sessions/new/:id', loadComponent: () => import('app/authentication/new-password/new-password.component').then(m => m.NewPasswordComponent) },
     ]
   },
    // Admin routes
@@ -30,12 +31,18 @@ export const appRoutes: Route[] = [
     canActivate: [AuthGuard],
     component: LayoutComponent,
     children: [
-      { path: 'main', loadChildren: () => import('app/authorization/authorization.module').then(m => m.ProfileModule) },
-      { path: 'list', loadChildren: () => import('app/cruds/cruds.module').then(m => m.CrudsModule) },
-      { path: 'tasks', loadChildren: () => import('app/tasks/tasks.module').then(m => m.TasksModule) },
-      { path: 'noseperolodejopormodule', loadChildren: () => import('app/modules/full/neuron/neuron.module').then(m => m.NeuronModule) },
-      { path: 'massive', loadChildren: () => import('app/massive/massive.module').then(m => m.MassiveModule) },
-      { path: 'account', loadChildren: () => import('app/accounting/accounting.module').then(m => m.AccountingModule) },
+      { path: 'main', loadComponent: () => import('app/authorization/profile/profile.component').then(m => m.ProfileComponent) },
+      { path: 'main/:type', loadComponent: () => import('app/authorization/profile/profile.component').then(m => m.ProfileComponent) },
+      { path: 'main/:type/:id', loadComponent: () => import('app/authorization/profile/profile.component').then(m => m.ProfileComponent) },
+      { path: 'list/:type/:id', loadComponent: () => import('app/cruds/cruds2.component').then(m => m.Cruds2Component) },
+      { path: 'list/:type/:id/:server_id', loadComponent: () => import('app/cruds/cruds2.component').then(m => m.Cruds2Component) },
+      { path: 'tasks', redirectTo: 'tasks/list', pathMatch: 'full' },
+      { path: 'tasks/list', loadComponent: () => import('app/tasks/list/list.component').then(m => m.TasksListComponent) },
+      { path: 'tasks/:id', loadComponent: () => import('app/tasks/details/details.component').then(m => m.TasksDetailsComponent), canDeactivate: [CanDeactivateTasksDetails] },
+      { path: 'noseperolodejopormodule/form', loadComponent: () => import('app/modules/full/neuron/form/form.component').then(m => m.FormComponent) },
+      { path: 'massive/:template', loadComponent: () => import('app/massive/massive.component').then(m => m.MassiveComponent) },
+      { path: 'massive/:template/:server', loadComponent: () => import('app/massive/massive.component').then(m => m.MassiveComponent) },
+      { path: 'account', loadComponent: () => import('app/accounting/accounting.component').then(m => m.AccountComponent) },
       { path: 'persons', component: PersonsComponent },
       { path: '**', redirectTo: 'main' },
     ]

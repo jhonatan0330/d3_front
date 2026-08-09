@@ -1,4 +1,6 @@
-import { enableProdMode, provideZonelessChangeDetection, ErrorHandler, importProvidersFrom } from '@angular/core';
+import { enableProdMode, provideZonelessChangeDetection, ErrorHandler, importProvidersFrom, provideAppInitializer, inject } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material/icon';
 import 'swiper/element/bundle';
 import { environment } from 'environments/environment';
 
@@ -17,7 +19,6 @@ import { appRoutes } from 'app/app.routing';
 import { FuseModule } from '@fuse';
 import { FuseConfigModule } from '@fuse/services/config';
 import { appConfig } from 'app/core/config/app.config';
-import { CoreModule } from 'app/core/core.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -28,6 +29,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { AppComponent } from './app/app.component';
+
+function registerIcons(): void {
+    const registry = inject(MatIconRegistry);
+    const sanitizer = inject(DomSanitizer);
+    registry.addSvgIconSetInNamespace('heroicons_outline', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/heroicons-outline.svg'));
+}
 
 const routerConfig: ExtraOptions = {
   scrollPositionRestoration: 'enabled',
@@ -46,11 +53,11 @@ if ( environment.production )
 bootstrapApplication(AppComponent, {
     providers: [
         provideZonelessChangeDetection(),
+        provideAppInitializer(registerIcons),
         importProvidersFrom(CommonModule, BrowserModule, BrowserAnimationsModule, RouterModule.forRoot(appRoutes, routerConfig), 
         // Fuse, FuseConfig & FuseMockAPI
         FuseModule, FuseConfigModule.forRoot(appConfig), 
-        // Core module of your application
-        CoreModule, ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
+        ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
         provideHttpClient(withInterceptors([fuseLoadingInterceptor, tokenInterceptor, httpErrorInterceptor])),
         { provide: ErrorHandler, useClass: ErrorHandlerService },
         { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },
