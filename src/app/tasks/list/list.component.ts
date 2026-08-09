@@ -120,7 +120,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
             if (task) {
                 this._tasksService.selectTask(task);
                 this.selectTask(task);
-            } else console.log("no se encontro nueva tarea");
+            }
         });
     }
 

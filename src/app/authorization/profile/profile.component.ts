@@ -3,7 +3,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { AuthenticationService } from 'app/authentication/authentication.service';
 import { environment } from 'environments/environment';
@@ -39,18 +39,18 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private _utilsService = inject(UtilsService);
-  private _formBuilder = inject(UntypedFormBuilder);
+  private _formBuilder = inject(FormBuilder);
   loginservice = inject(LoginService);
 
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   currentApplicationVersion = environment.appVersion;
-  signInForm: UntypedFormGroup;
+  signInForm: FormGroup;
 
   modules: DocumentoPlantillaDTO[] = [];
   filteredReports: DocumentoPlantillaDTO[] = [];
   filteredModules: MenuNode[] = [];
-  filterControl: UntypedFormControl = new UntypedFormControl();
+  filterControl: FormControl = new FormControl();
   isLoading = false;
 
   activeTab: 'menu' | 'metrics' = 'menu';

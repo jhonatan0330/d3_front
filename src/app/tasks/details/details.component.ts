@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit,  inject, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { debounceTime, filter, Subject, takeUntil, tap } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
@@ -23,7 +23,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
 })
 export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
-    private _formBuilder = inject(UntypedFormBuilder);
+    private _formBuilder = inject(FormBuilder);
     private _router = inject(Router);
     private _tasksListComponent = inject(TasksListComponent);
     private _tasksService = inject(TasksService);
@@ -32,7 +32,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly _titleField = viewChild<ElementRef>('titleField');
 
     task: Task;
-    taskForm: UntypedFormGroup;
+    taskForm: FormGroup;
     public editor: Editor;
     toolbar: Toolbar = [
     ['bold', 'italic'],

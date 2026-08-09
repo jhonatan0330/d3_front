@@ -258,15 +258,11 @@ export class MVCTranslate {
       } else {
         posOperator = text.indexOf('*');
         if (posOperator !== -1) {
-          console.log('Operacion * :' + text);
           leftOperator = Number(text.substring(0, posOperator));
-          console.log('left :' + leftOperator.toFixed(8));
           righOperator = Number(
             text.substring(posOperator + 1, text.length)
           );
-          console.log('rigth :' + righOperator.toString());
           text = (leftOperator * righOperator).toFixed(8);
-          console.log('Result :' + text);
         } else {
           posOperator = text.indexOf('/');
           if (posOperator !== -1) {

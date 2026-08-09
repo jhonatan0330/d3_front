@@ -213,10 +213,8 @@ export class NumeroComponent extends BaseComponent implements OnInit {
             let nuevoValor = diccionario.get(key);
             if (!nuevoValor) { nuevoValor = 0; }
             textoCalculado = textoCalculado.split(iterable.campoDTO.codigo + '_' + key).join(nuevoValor.toFixed(8));
-            console.log('Codigo: ' + iterable.campoDTO.codigo + '_' + key + ' \t Valor:' + nuevoValor.toFixed(8));
           }
           textoCalculado = textoCalculado.split(iterable.campoDTO.codigo).join(valorNumero.toString());
-          console.log('Codigo: ' + iterable.campoDTO.codigo + ' \t Valor:' + valorNumero.toFixed(8));
         }
       }
     }

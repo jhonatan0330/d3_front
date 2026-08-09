@@ -19,12 +19,9 @@ export class ErrorHandlerService extends ErrorHandler {
 
         this.errorCount = this.errorCount + 1;
         if (this.errorCount % increment === 0) {
-            console.log(`errorHandler() was called ${this.errorCount} times.`);
             super.handleError(error);
 
             if (this.errorCount === max) {
-                console.log(`Preventing recursive error after ${this.errorCount} recursive errors.`);
-
                 const appRef = this.injector.get(ApplicationRef);
                 appRef.tick();
             }

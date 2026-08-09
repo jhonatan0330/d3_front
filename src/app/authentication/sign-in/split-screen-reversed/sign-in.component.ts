@@ -1,5 +1,5 @@
 import { Component, effect, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -20,7 +20,7 @@ import { ImageFormatPipe } from '../../../shared/local-image';
     imports: [FormsModule, ReactiveFormsModule, MatInput, ImageFormatPipe]
 })
 export class SignInSplitScreenReversedComponent implements OnInit {
-    private _formBuilder = inject(UntypedFormBuilder);
+    private _formBuilder = inject(FormBuilder);
     private _cdr = inject(ChangeDetectorRef);
     loginservice = inject(LoginService);
     private route = inject(ActivatedRoute);
@@ -30,7 +30,7 @@ export class SignInSplitScreenReversedComponent implements OnInit {
 
     templateNewUser: string;
 
-    signInForm: UntypedFormGroup;
+    signInForm: FormGroup;
     isLoading = false;
     company: OrganizacionDTO;
     currentApplicationVersion = environment.appVersion;

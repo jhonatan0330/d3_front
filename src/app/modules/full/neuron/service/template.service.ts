@@ -121,7 +121,7 @@ export class TemplateService {
     const color2 = this.getColor(stateId);
     if (!color2) return color3;
     // read the colors and transform them into rgb format
-    if (color2.length != 7) { console.log('Color incorrecto' + color2); }
+    if (color2.length != 7) { }
 
     const color1rgb = this.hexToRgb(color1);
     const color2rgb = this.hexToRgb(color2);
