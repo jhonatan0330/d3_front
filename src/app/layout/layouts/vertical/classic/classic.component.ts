@@ -39,6 +39,7 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
     time = signal(new Date());
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private _clockInterval: ReturnType<typeof setInterval>;
     headerSection: SafeHtml[];
     landing: SafeHtml[];
 
@@ -87,12 +88,13 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
             });
 
         // Reloj
-        setInterval(() => {
+        this._clockInterval = setInterval(() => {
             this.time.set(new Date());
         }, 1000);
     }
 
     ngOnDestroy(): void {
+        clearInterval(this._clockInterval);
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
