@@ -40,7 +40,7 @@ import { ImageFormatPipe } from '../shared/local-image';
 @Component({
     selector: 'app-cruds',
     templateUrl: './cruds2.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [MatDrawerContainer, MatDrawer, MatIconButton, MatTooltip, MatIcon, MatButton, MatMenuTrigger, MatMenu, MatMenuItem, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatDrawerContent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatProgressBar, CurrencyPipe, DatePipe, ImageFormatPipe]
 })
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {

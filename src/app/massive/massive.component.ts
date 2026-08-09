@@ -33,7 +33,7 @@ import { NgClass } from '@angular/common';
 @Component({
     selector: 'app-massive',
     templateUrl: './massive.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [MatButton, MatIcon, FormsModule, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, NgClass, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
 })
 export class MassiveComponent implements OnInit {

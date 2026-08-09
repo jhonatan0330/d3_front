@@ -49,7 +49,7 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
 @Component({
     selector: 'app-form',
     templateUrl: './form.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CdkDrag, CdkDragHandle, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, MatCard, MatProgressBar, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatAutocompleteTrigger, MatAutocomplete, MatOption, MatButton, MatTooltip, SlicePipe, TitleCasePipe, CurrencyPipe, DatePipe, ImageFormatPipe]
 })
 export class FormComponent implements OnInit, AfterViewInit {
