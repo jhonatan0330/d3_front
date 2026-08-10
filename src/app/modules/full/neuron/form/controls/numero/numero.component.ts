@@ -276,16 +276,16 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         filtro.campoDTO = this.structure;
         filtro.campo = this.structure.llaveTabla;
         filtro.documento = campoFiltro.documento;
-        this.isLoading = true;
+        this.isLoading.set(true);
         this.api
           .consultarDatosBase(filtro, this.urlServer)
           .subscribe({
             next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
               this.fControl.setValue(this.numberToInput(_value.valorNumeroMax));
-              this.isLoading = false;
+              this.isLoading.set(false);
             },
             error: () => {
-              this.isLoading = false;
+              this.isLoading.set(false);
             }
           });
       }
@@ -338,7 +338,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   }
 
   send2Server(): boolean {
-    if (this.isLoading) { return false; }
+    if (this.isLoading()) { return false; }
 
     this.errorMessage = null!;
     if (this.required && !this.data.valorNumero && !this.isInvisible) {

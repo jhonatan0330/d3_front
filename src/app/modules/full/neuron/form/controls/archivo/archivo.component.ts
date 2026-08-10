@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ChangeDetectionStrategy, inject, viewChild, signal, effect } from '@angular/core';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
@@ -25,13 +25,13 @@ import { ImageFormatPipe } from '../../../../../../shared/local-image';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule, MatButton, MatIcon, MatProgressBar, TitleCasePipe, ImageFormatPipe]
 })
-export class ArchivoComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class ArchivoComponent extends BaseComponent implements OnInit {
   private api = inject(ApiService);
   private imageCompress = inject(NgxImageCompressService);
   private ls = inject(LocalStoreService);
 
-  readonly signatureCanvas = viewChild.required<ElementRef<HTMLCanvasElement>>('signatureCanvas');
-  signaturePad!: SignaturePad;
+  readonly signatureCanvas = viewChild<ElementRef<HTMLCanvasElement>>('signatureCanvas');
+  signaturePad?: SignaturePad;
 
   static SEPARADOR = ';;';
 
@@ -42,7 +42,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   porcentajeCalidad: number | undefined;
   source: string | null;
   filtroExtension: string;
-  isEnd = false;
+  isEnd = signal(false);
   files: any[] = [];
 
   // PreviewImage
@@ -50,10 +50,23 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   currentIndex: number;
 
   //load url
-  allowUrlTextFromUser = false;
-  isLoadingUrl = false;
+  allowUrlTextFromUser = signal(false);
+  isLoadingUrl = signal(false);
   urlText = '';
 
+  constructor() {
+    super();
+    effect(() => {
+        const canvas = this.signatureCanvas();
+
+        if (!canvas || this.signaturePad) {
+            return;
+        }
+
+        this.signaturePad = new SignaturePad(canvas.nativeElement);
+        this.resizeCanvas();
+    });
+  }
   ngOnInit(): void {
     super.ngOnInit();
 
@@ -62,8 +75,8 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
     }
     this.multipleFiles =
       this.obtenerPropiedad(PlantillaHelper.MULTIPLE_FILE) != null;
-    this.allowUrlTextFromUser =
-      this.obtenerPropiedad(PlantillaHelper.ARCHIVO_URL_USUARIO) != null;
+    this.allowUrlTextFromUser.set(
+      this.obtenerPropiedad(PlantillaHelper.ARCHIVO_URL_USUARIO) != null);
     this.firma = this.obtenerPropiedad(PlantillaHelper.ARCHIVO_FIRMA) != null;
     this.validateOrientation = this.obtenerValor(
       PlantillaHelper.VALIDATE_ORIENTATION
@@ -102,28 +115,27 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
     this.actualizarVista();
   }
 
-  ngAfterViewInit(): void {
-    const signatureCanvas = this.signatureCanvas();
-    if (signatureCanvas) {
-      this.signaturePad = new SignaturePad(signatureCanvas.nativeElement);
-      this.resizeCanvas();
-    }
-  }
 
   @HostListener('window:resize')
   onResize() {
     this.resizeCanvas();
   }
 
-  resizeCanvas() {
+resizeCanvas(): void {
     const signatureCanvas = this.signatureCanvas();
-    if (!signatureCanvas) return;
+
+    if (!signatureCanvas) {
+        return;
+    }
+
     const canvas = signatureCanvas.nativeElement;
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
+
     canvas.width = canvas.offsetWidth * ratio;
     canvas.height = canvas.offsetHeight * ratio;
-    canvas.getContext('2d')!.scale(ratio, ratio);
-  }
+
+    canvas.getContext('2d')?.scale(ratio, ratio);
+}
 
   handleFileInput(files: FileList) {
     // En caso que no escoja nada
@@ -282,7 +294,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
     };
     this.files.push(item);
     if (!this.multipleFiles) {
-      this.isEnd = true;
+      this.isEnd.set(true);
     }
     return item;
   }
@@ -325,7 +337,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
           // this.uploadFileToActivity();
         },
         (error) => {
-          this.isLoading = false;
+          this.isLoading.set(false);
           this.files[this.currentIndex].message = error;
           alert(error);
         }
@@ -355,7 +367,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
 
   actualizarVista() {
     this.files = [];
-    this.isEnd = false;
+    this.isEnd.set(false);
     if (this.source) {
       const items: string[] = this.source.split(ArchivoComponent.SEPARADOR);
       for (let i = 0; i < items.length; i++) {
@@ -370,7 +382,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
         }
       }
       if (!this.multipleFiles) {
-        this.isEnd = true;
+        this.isEnd.set(true);
       }
     }
   }
@@ -398,19 +410,26 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
       }
       this.actualizar();
     }
-    this.isEnd = false;
+    this.isEnd.set(false);
   }
 
   clearSignature() {
-    this.signaturePad.clear();
+    this.signaturePad?.clear();
   }
 
-  takeSignature() {
-    this.addFileToTable('Signature', this.signaturePad.toDataURL(), null);
+  takeSignature(): void {
+    if (!this.signaturePad) {
+        return;
+    }
+
+    this.addFileToTable(
+        'Signature',
+        this.signaturePad.toDataURL(),
+        null
+    );
+
     this.clearSignature();
-    // this.addFileToTable('Signature' , this.b64toFile(this.signaturePad.toDataURL()));
-    // this.uploadFileToActivity(this.b64toFile(this.signaturePad.toDataURL()));
-  }
+}
 
   b64toFile(dataURI): File {
     // cast to a File
@@ -434,13 +453,13 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   }
 
   onClickLoadUrl() {
-    if (this.isLoadingUrl) {
+    if (this.isLoadingUrl()) {
       this.source = this.urlText;
       this.actualizarVista();
       this.actualizar();
     }
-    this.isLoading = !this.isLoadingUrl;
-    this.isLoadingUrl = !this.isLoadingUrl;
+    this.isLoading.set(!this.isLoadingUrl);
+    this.isLoadingUrl.set(!this.isLoadingUrl);
   }
 
   isImage(url) {

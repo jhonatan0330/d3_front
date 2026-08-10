@@ -1,11 +1,11 @@
 <div [style.display]="(isInvisible || isSectionInvisible) ? 'none' : 'block'" class="mx-0">
   <div class="py-1 flex">
-    @if (isLoadingUrl && allowUrlTextFromUser) {
+    @if (isLoadingUrl() && allowUrlTextFromUser()) {
       <input [id]="structure.llaveTabla" [(ngModel)]="urlText"
         class="w-full" />
     }
-    @if (isEnabled && !isEnd && !isLoading) {
-      <button mat-flat-button color="accent" [disabled]="isLoading"
+    @if (isEnabled && !isEnd() && !isLoading()) {
+      <button mat-flat-button color="accent" [disabled]="isLoading()"
         (click)="onClickExternal()" class="w-full">
         <mat-icon svgIcon="heroicons_outline:paper-clip"></mat-icon>
         {{ structure.nombre | titlecase }}
@@ -21,23 +21,23 @@
           />
         </button>
       }
-      @if (isEnabled && !isEnd && allowUrlTextFromUser) {
+      @if (isEnabled && !isEnd && allowUrlTextFromUser()) {
         <button mat-flat-button color="accent" class="ml-1"
           (click)="onClickLoadUrl()">
-          @if (!isLoadingUrl) {
+          @if (!isLoadingUrl()) {
             <mat-icon svgIcon="heroicons_outline:pencil-square"></mat-icon>
           }
-          @if (isLoadingUrl) {
+          @if (isLoadingUrl()) {
             <mat-icon svgIcon="heroicons_outline:check"></mat-icon>
           }
         </button>
       }
     </div>
-    @if (isLoading) {
+    @if (isLoading()) {
       <mat-progress-bar color="primary" class="full-width" mode="indeterminate"></mat-progress-bar>
     }
     <!-- Firma -->
-    @if (firma && isEnabled && !isEnd) {
+    @if (firma && isEnabled && !isEnd()) {
       <div class="p-1 text-center">
         <canvas #signatureCanvas class="w-full h-64 border"></canvas>
         <button mat-raised-button (click)="takeSignature()" tabindex="-1">

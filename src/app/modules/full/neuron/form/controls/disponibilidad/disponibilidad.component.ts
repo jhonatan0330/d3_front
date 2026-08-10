@@ -77,14 +77,14 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
       filtro.documento = campoFiltro.documento;
       filtro.dependientes = this.data.dependientes;
 
-      this.isLoading = true;
+      this.isLoading.set(true);
       this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
         next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
-          this.isLoading = false;
+          this.isLoading.set(false);
           this.consultaExitosaDatosBase(_value);
         },
         error: () => {
-          this.isLoading = false;
+          this.isLoading.set(false);
         },
       });
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, viewChild, signal } from '@angular/core';
 import { FormControl, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import {
@@ -88,8 +88,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   fControlCheck: FormControl; // Check que indica si se debe realizar una busqueda por codigo exacto
   pagina = 1; // Indica que pagina estamos buscando
   cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
-  isLoadingList = false;
-  isEndList = true;
+  isLoadingList = signal(false);
+  isEndList = signal(true);
   dataProvider: PedidoVentaDTO[]; // Conjunto de documentos a visualizar
 
   showFilterState = false;
@@ -237,14 +237,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   showAlertSelectedProcess() {
     if (!this.alertar || !this.proceso || !this.proceso.caracteristicas || this.proceso.caracteristicas.length === 0) return;
-    if (this.isLoadingList) return;
+    if (this.isLoadingList()) return;
     if (!this.relacionesAlerta) {
       const rel: RelacionInternaDTO[] = this.templateService.getPropertyRelation(this.alertar.llaveTabla)!;
       if (rel && rel.length !== 0) {
         this.relacionesAlerta = rel;
         this.showAlertSelectedProcess();
       } else {
-        this.isLoadingList = true;
+        this.isLoadingList.set(true);
         const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
         filtro.estado = StatesEnum.ACTIVE;
         filtro.propiedad = this.alertar.llaveTabla;
@@ -255,12 +255,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             } else {
               this.relacionesAlerta = value;
               this.templateService.addRelations(this.relacionesAlerta)
-              this.isLoadingList = false;
+              this.isLoadingList.set(false);
               this.showAlertSelectedProcess();
             }
           },
           error: () => {
-            this.isLoadingList = false;
+            this.isLoadingList.set(false);
           },
         });
       }
@@ -517,7 +517,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   procesarCampo(campoFiltro: PedidoVentaCaracteristicaFilterDTO) {
-    if (this.isLoading) {
+    if (this.isLoading()) {
       return;
     }
     this.errorMessage = null!;
@@ -602,14 +602,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       filtro.valorOpcion = campoFiltro.valorOpcion; // 3 Consultar un dato seleccionado
       filtro.valorAuxiliar = campoFiltro.valorAuxiliar;
     }
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.consultaExitosaDatosBase(_value);
       },
       error: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         if (this.readQR) {
           this.fControl.setValue(null);
         }
@@ -1023,7 +1023,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   gestionarKeyUpTexto() {
-    if (this.isLoading || this.isLoadingList) { return; }
+    if (this.isLoading() || this.isLoadingList()) { return; }
     if (this.isEnabled) {
       /*if (this.filteredDocuments && this.filteredDocuments.length === 1) {
         this.fControl.setValue(this.filteredDocuments[0]);
@@ -1097,7 +1097,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             this.createNewDocument(_plantilla, _property);
           },
           error: () => {
-            this.isLoadingList = false;
+            this.isLoadingList.set(false);
           },
         });
         return;
@@ -1128,7 +1128,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
             filtro.estado = StatesEnum.ACTIVE;
             filtro.propiedad = dependentIterato.llaveTabla;
-            this.isLoadingList = true;
+            this.isLoadingList.set(true);
             this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
               next: (value: RelacionInternaDTO[]) => {
                 if (!value || value.length === 0) {
@@ -1142,11 +1142,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
                   value.push(ri);
                 }
                 this.templateService.addRelations(value);
-                this.isLoadingList = false;
+                this.isLoadingList.set(false);
                 this.createNewDocument(_plantilla, _property);
               },
               error: () => {
-                this.isLoadingList = false;
+                this.isLoadingList.set(false);
               },
             });
             return;
@@ -1180,7 +1180,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
         filtro.estado = StatesEnum.ACTIVE;
         filtro.propiedad = _property;
-        this.isLoadingList = true;
+        this.isLoadingList.set(true);
         this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
           next: (value: RelacionInternaDTO[]) => {
             if (!value || value.length === 0) {
@@ -1194,11 +1194,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               value.push(ri);
             }
             this.templateService.addRelations(value);
-            this.isLoadingList = false;
+            this.isLoadingList.set(false);
             this.createNewDocument(_plantilla, _property);
           },
           error: () => {
-            this.isLoadingList = false;
+            this.isLoadingList.set(false);
           },
         });
         return;
@@ -1359,7 +1359,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   //// COPIADO  De LIST
   listar(_pagina: number) {
-    if (this.isLoadingList || this.isLoading) {
+    if (this.isLoadingList() || this.isLoading()) {
       return;
     }
     const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
@@ -1467,7 +1467,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     // Paginacion
     if (_pagina === 1) {
       this.dataProvider = [];
-      this.isEndList = false;
+      this.isEndList.set(false);
     }
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;
@@ -1481,7 +1481,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (entity.estado === '') { entity.estado = entity.estado + ";" + StatesEnum.ACTIVE; }
     }
     entity.estadoExpediente = null!;
-    this.isLoadingList = true;
+    this.isLoadingList.set(true);
     this.api.listarDocumentos(entity, this.urlServer).subscribe({
       next: (dataResult: PedidoVentaDTO[]) => {
         if (this.pagina === 1) {
@@ -1492,10 +1492,10 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         if (dataResult.length === this.cantidadPagina) {
           this.pagina++;
         } else {
-          this.isEndList = true;
+          this.isEndList.set(true);
           this.pagina = 1;
         }
-        this.isLoadingList = false;
+        this.isLoadingList.set(false);
         this.limpiarRepetidos();
         if (this.fControlCheck) {
           if (this.fControlCheck.value) {
@@ -1520,7 +1520,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.labelSearch = this.generateLabelToList(this.dataProvider);
       },
       error: () => {
-        this.isLoadingList = false;
+        this.isLoadingList.set(false);
         if (this.fControlCheck) {
           this.fControlSearch.setValue(null);
         }
@@ -1605,7 +1605,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   send2Server(): boolean {
-    if (this.isLoading) {
+    if (this.isLoading()) {
       return false;
     }
     // Valido obligatoriedad

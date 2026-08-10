@@ -31,7 +31,7 @@ interface MenuNode {
     templateUrl: './profile.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [NgClass, MatCard, MatFormField, MatInput, FormsModule, ReactiveFormsModule, TemplateComponent, ImageFormatPipe]
+    imports: [MatCard, MatFormField, MatInput, FormsModule, ReactiveFormsModule, TemplateComponent, ImageFormatPipe]
 })
 export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   private templateService = inject(TemplateService);
@@ -52,8 +52,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   filteredModules: MenuNode[] = [];
   filterControl: FormControl = new FormControl();
   isLoading = false;
-
-  activeTab: 'menu' | 'metrics' = 'menu';
 
   slides: string[] = [];
 

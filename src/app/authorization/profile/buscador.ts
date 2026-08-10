@@ -5,13 +5,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { ImageFormatPipe } from 'app/shared/local-image';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { LoginService } from 'app/authentication/login.service';
 import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { ImageFormatPipe } from 'app/shared/local-image';
 
 
 @Component({
@@ -22,7 +22,8 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
         MatIconModule,
         MatButtonModule,
         MatDialogModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        ImageFormatPipe
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
     template: `

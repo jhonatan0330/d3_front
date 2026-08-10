@@ -105,14 +105,14 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     const nFilter: PedidoVentaCaracteristicaFilterDTO =
       this.transformPVCtoFilter(this.data);
     nFilter.valorOpcion = null as any;
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.consultaExitosaDatosBase(_value);
       },
       error: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
@@ -167,7 +167,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
   }
 
   send2Server(): boolean {
-    if (this.isLoading) {
+    if (this.isLoading()) {
       return false;
     }
     this.errorMessage = null as any;

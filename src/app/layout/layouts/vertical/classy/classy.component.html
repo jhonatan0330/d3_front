@@ -8,7 +8,7 @@
             <!-- App Logo -->
             <a [routerLink]="'/main'" class="flex items-center justify-center h-16 p-1" (click)="closeNavOnSmall()">
                 @if (company?.imagen) {
-                    <img src="{{ company?.imagen | imageFormat }}" class="h-full" />
+                    <img src="{{ company.imagen | imageFormat }}" class="h-full" />
                 }
             </a>
 

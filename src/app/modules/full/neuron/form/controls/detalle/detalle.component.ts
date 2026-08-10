@@ -185,7 +185,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   searchQuicly() {
-    if (this.isLoading || !this.isEnabled) { return; }
+    if (this.isLoading() || !this.isEnabled) { return; }
     this.errorToFilter = null;
     if (this.relatedFields || !this.autoload) {
       for (let i = 0; i < this.data.dependientes.length; i++) {
@@ -200,7 +200,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   searchAsincronous() {
-    if (this.isLoading) { return; }
+    if (this.isLoading()) { return; }
     this.errorToFilter = null;
     if (this.relatedFields || !this.autoload) {
       if (this.fControl.value !== undefined && this.fControl.value!.length === 0) {
@@ -215,10 +215,10 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     // Consulta los productos disponibles para el campo
     const nFilter: PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
     nFilter.filtroParametro = this.fControl.value!;
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         // En caso que sea la primera vez carga la info al campo
         if (this.autoload && !this.productosDisponibles && !this.relatedFields) {
           this.loadInfo(_value);
@@ -237,7 +237,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         }
       },
       error: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
@@ -369,15 +369,15 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       nFilter.dependientes = this.data.dependientes;
       nFilter.llaveTabla = item.llaveTabla;
       nFilter.filtroParametro = item.productoCodigo;
-      this.isLoading = true;
+      this.isLoading.set(true);
       this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
         next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
-          this.isLoading = false;
+          this.isLoading.set(false);
           item.tarifas = _value.campoDTO.productos[0].detallePlantilla.tarifas;
           this.modificarDetallePedido(item);
         },
         error: () => {
-          this.isLoading = false;
+          this.isLoading.set(false);
         },
       });
     } else {

@@ -27,13 +27,14 @@
                   <mat-icon>apps</mat-icon>
                 </button>
               }
-              @if (viewMode !== 'grid-view' && plantilla.reportes) {
+              @if (plantilla?.reportes) {
+              @if (viewMode !== 'grid-view') {
                 <div class="py-1">
                   <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="userMenuList">
                     <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Imprimir
                   </button>
                   <mat-menu #userMenuList="matMenu">
-                    @for (r of plantilla.reportes; track r) {
+                    @for (r of plantilla.reportes; track r.llaveTabla) {
                       <button mat-menu-item
                         (click)="showReport(r, null!)">
                         <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
@@ -43,6 +44,7 @@
                   </mat-menu>
                 </div>
               }
+            }
               @if (reportForms) {
                 <div class="py-1">
                   <button mat-flat-button color="accent" class="w-full"
@@ -51,7 +53,7 @@
                   </button>
                   <mat-menu #reportFormMenuList="matMenu">
                     @for (rf of reportForms; track rf) {
-                      <button mat-menu-item (click)="openDialog(rf.valor, plantilla.server)">
+                      <button mat-menu-item (click)="openDialog(rf.valor, plantilla?.server)">
                         <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
                         <span>{{ rf.texto }}</span>
                       </button>
@@ -155,7 +157,7 @@
                       <form [formGroup]="form">
                         @if (plantilla?.estados ) {
                           <div>
-                            @for (_estado of plantilla.estados; track _estado) {
+                            @for (_estado of plantilla.estados; track _estado.llaveTabla) {
                               <div class="p-0.5 w-full flex">
                                 <label class="text-sm w-full px-2">
                                   <input class="mx-2 py-1" type="checkbox"
@@ -275,24 +277,26 @@
                                           </a>
                                         }
                                       </div>
-                                      @if (plantilla.reportes && plantilla.reportes.length!==0) {
-                                        <div>
-                                          @if (iDocument.llaveTabla) {
-                                            <button mat-icon-button [matMenuTriggerFor]="userMenu"
-                                              >
-                                              <mat-icon>more_vert</mat-icon>
-                                            </button>
-                                          }
-                                          <mat-menu #userMenu="matMenu">
-                                            @for (r of plantilla.reportes; track r) {
-                                              <button mat-menu-item
-                                                (click)="showReport(r, iDocument)">
-                                                <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
-                                                <span>{{ r.nombre }}</span>
+                                      @if (plantilla?.reportes ) {
+                                        @if (plantilla.reportes.length!==0) {
+                                          <div>
+                                            @if (iDocument.llaveTabla) {
+                                              <button mat-icon-button [matMenuTriggerFor]="userMenu"
+                                                >
+                                                <mat-icon>more_vert</mat-icon>
                                               </button>
                                             }
-                                          </mat-menu>
-                                        </div>
+                                            <mat-menu #userMenu="matMenu">
+                                              @for (r of plantilla.reportes; track r) {
+                                                <button mat-menu-item
+                                                  (click)="showReport(r, iDocument)">
+                                                  <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
+                                                  <span>{{ r.nombre }}</span>
+                                                </button>
+                                              }
+                                            </mat-menu>
+                                          </div>
+                                        }
                                       }
                                     </div>
                                     <!-- <mat-divider></mat-divider> -->
@@ -314,11 +318,11 @@
                                       >
                                       @for (f of iDocument.caracteristicas; track f) {
                                         <div class="flex items-center" >
-                                          <small [id]="'css' + plantilla.codigo+  f.campoDTO.codigo + '-0'"
+                                          <small [id]="'css' + plantilla?.codigo+  f.campoDTO.codigo + '-0'"
                                             class="whitespace-nowrap font-extralight mr-2">{{ f.campoDTO.nombre
                                           }}</small>
                                           @if (f.valorText) {
-                                            <div [id]="'css' + plantilla.codigo + f.campoDTO.codigo +'-1'"
+                                            <div [id]="'css' + plantilla?.codigo + f.campoDTO.codigo +'-1'"
                                               class="text-right w-full truncate text-md">
                                               @if (!f.valorText.startsWith('http')) {
                                                 <div class="line-clamp-1"
@@ -441,7 +445,7 @@
                             }
 
                             <!-- Star View-->
-                            @if (!isLoading() && !isEnd() && dataProvider?.length === 0) {
+                            @if (!isLoading() && !isEnd() && dataProvider.length === 0) {
                               <div class="my-48 flex flex-col flex-auto overflow-y-auto lg:overflow-hidden dark:bg-default"
                                 >
                                 <div
@@ -468,7 +472,7 @@
                                 </div>
                               }
 
-                              @if (isEnd() && dataProvider?.length === 0) {
+                              @if (isEnd() && dataProvider.length === 0) {
                                 <div class="m-auto my-48 flex flex-col items-center justify-center"
                                   >
                                   <div
@@ -504,7 +508,7 @@
                                   <div class="flex justify-between w-full items-center">
                                     <div class=" flex items-center flex-col">
                                       @if (viewMode !== 'grid-view') {
-                                        <div>Seleccionados : {{ this.selection?.selected.length }}
+                                        <div>Seleccionados : {{ this.selection.selected.length }}
                                         </div>
                                       }
                                       <div class="flex items-center">
@@ -512,7 +516,7 @@
                                           <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                                         </button>
                                         <span class="font-medium dark:text-white">Total :</span> {{
-                                        dataProvider?.length }}
+                                        dataProvider.length }}
                                       </div>
                                     </div>
                                     <form class="w-20">

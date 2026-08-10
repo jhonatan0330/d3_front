@@ -79,13 +79,13 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
       Swal.fire('', 'Selecciona un valor a buscar', 'info')
       return;
     }
-    this.isLoading = true;
+    this.isLoading.set(true);
     const nFilter:PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
     nFilter.filtroParametro = this.fControl.value!;
     this.fControl.setValue('');
     this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.productosDisponibles = Object.assign([], _value.campoDTO.productos);
           if (this.productosDisponibles.length === 0) {
             Swal.fire ('Sin resultados', 'No encontramos resultados por el filtro' + this.fControl.value,  'info');
@@ -94,7 +94,7 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
           }
       },
       error: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }

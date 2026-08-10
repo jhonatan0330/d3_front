@@ -61,10 +61,10 @@ export class GpsMapComponent extends BaseComponent implements OnInit {
     filtro.documento = campoFiltro.documento;
     filtro.dependientes = this.data.dependientes;
 
-    this.isLoading = true;
+    this.isLoading.set(true) ;
     this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
 
         const pv= new PedidoVentaDTO();
       pv.nombre = 'HOla';
@@ -87,7 +87,7 @@ export class GpsMapComponent extends BaseComponent implements OnInit {
         });
       },
       error: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }

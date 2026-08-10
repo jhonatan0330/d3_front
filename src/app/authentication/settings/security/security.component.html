@@ -5,12 +5,12 @@
     <!-- Section -->
     <div class="w-full text-center sm:text-left">
       <div class="text-xl font-semibold">Cambie su clave</div>
-      @if (!data?.key) {
+      @if (!data.key) {
         <div class="text-secondary text-sm sm:text-base">
           Recuerda cambiar tu clave constantemente!
         </div>
       }
-      @if (data?.key) {
+      @if (data.key) {
         <div class="text-secondary text-sm sm:text-base">
           Recuerda comentarle al usuario sobre el cambio!
         </div>

@@ -15,7 +15,7 @@ import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autoc
     templateUrl: './shortcuts.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'shortcuts',
-    imports: [MatIconButton, MatIcon, MatAutocompleteTrigger, MatAutocomplete]
+    imports: [MatIconButton, MatIcon, MatAutocompleteTrigger]
 })
 export class ShortcutsComponent implements OnInit, OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);

@@ -51,7 +51,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   required = true;
   isEnabled = true;
   formIsEnabled = true;
-  isLoading = false;
+  isLoading = signal(false);
   help = 'x';
   isInvisible = false;
   isSectionInvisible = false;

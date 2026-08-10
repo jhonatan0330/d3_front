@@ -54,7 +54,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
     private dialog = inject(MatDialog);
 
-    plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
+    plantilla: DocumentoPlantillaDTO| null = null; // Estructura base de la lista
     templatesFromProcess: DocumentoPlantillaDTO[];
     tableroId: string;
     procesoId: string | null;
@@ -269,11 +269,11 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         this.openDialog(this.plantilla.llaveTabla, this.plantilla.server);
     }
 
-    openDialog(template: string, server: string) {
+    openDialog(template: string, server: string | undefined) {
         if (!template) { return; }
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = template;
-        pedidoVenta.server = server;
+        if(server)pedidoVenta.server = server;
         this.utilsService.modalWithParams(pedidoVenta);
     }
 
@@ -334,7 +334,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
         }
 
-        if (this.plantilla.estados && !this.fControlCheck.value) {
+        if (this.plantilla?.estados && !this.fControlCheck.value) {
             entity.estadoExpediente = '';
 
             for (let i = 0; i < Object.keys(this.form.controls).length; i++) {
@@ -387,7 +387,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             });
         }
 
-        this.api.listarDocumentos(entity, this.plantilla.server).subscribe({
+        if(this.plantilla){
+            this.api.listarDocumentos(entity, this.plantilla.server).subscribe({
             next: (dataResult: PedidoVentaDTO[]) => {
                 if (!dataResult) {
                     dataResult = [];
@@ -409,6 +410,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 this.isLoading.set(false);
             },
         });
+        }
+        
     }
 
     /** Whether the number of selected elements matches the total number of rows. */
@@ -458,7 +461,9 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = pDocument.plantilla;
         pedidoVenta.llaveTabla = pDocument.llaveTabla;
-        pedidoVenta.server = this.plantilla.server;
+        if (this.plantilla) {
+            pedidoVenta.server = this.plantilla.server;
+        }
         this.utilsService.modalWithParams(pedidoVenta, false);
     }
 
@@ -555,7 +560,9 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 );
                 componentRef.instance.structure = _campo;
                 componentRef.instance.parent = filterDocument
-                componentRef.instance.urlServer = this.plantilla.server;
+                if(this.plantilla) {
+                    componentRef.instance.urlServer = this.plantilla?.server;
+                }
                 const uc: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
                 uc.campo = _campo.llaveTabla;
                 componentRef.instance.data = uc;
@@ -563,8 +570,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             }
         });
         // Colocar listener de Dependientes
-        for (let j = 0; j < this.plantilla.caracteristicas.length; j++) {
-            const iBase = this.plantilla.caracteristicas[j];
+        for (let j = 0; j < this.plantilla?.caracteristicas.length; j++) {
+            const iBase = this.plantilla?.caracteristicas[j];
             const codigoDepende: PropiedadDTO[] | null = PlantillaHelper.buscarValorMultipleFromManyKeys(
                 iBase.propiedades,
                 [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA, PlantillaHelper.UPDATE_INFORMATIVE_FIELD]
@@ -636,7 +643,9 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             dp.caracteristicas = value.caracteristicas;
             this.templateService.getTemplate(value.llaveTabla, value.server)!.caracteristicas =
                 value.caracteristicas;
-            this.plantilla.caracteristicas = value.caracteristicas;
+            if(this.plantilla) {
+                this.plantilla.caracteristicas = value.caracteristicas;
+            }
             this.showFields();
         } else {
             console.error('No se encuentra cargada la plantilla en memoria');

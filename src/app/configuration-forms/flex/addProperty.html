@@ -21,7 +21,7 @@
   @if (def) {
     <!-- ===== Rol / Rol Excluyente ===== -->
     <!-- Solo si def.pideRol === true -->
-    @if (def?.pideRol) {
+    @if (def.pideRol) {
       <div>
         <label class="block text-sm font-semibold mb-1">Rol</label>
         <select
@@ -45,7 +45,7 @@
     }
     <!-- ===== Usuario / Usuario Excluyente ===== -->
     <!-- Solo si def.pideUsuario === true -->
-    @if (def?.pideUsuario) {
+    @if (def.pideUsuario) {
       <div class="relative">
         <label class="block text-sm font-semibold mb-1">Usuario</label>
         <input type="text"
@@ -54,7 +54,7 @@
           (blur)="filtrarUsuarios(filtroUsuario)"
           placeholder="Buscar usuario..."
           class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          @if (filtroUsuario && usuarios?.length > 0 && buscandoUsuario) {
+          @if (filtroUsuario && usuarios.length > 0 && buscandoUsuario) {
             <ul
               class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full max-h-48 overflow-y-auto shadow">
               @for (user of usuarios; track user) {
@@ -66,7 +66,7 @@
               }
             </ul>
           }
-          @if (filtroUsuario && usuarios?.length === 0 && buscandoUsuario) {
+          @if (filtroUsuario && usuarios.length === 0 && buscandoUsuario) {
             <p class="text-xs text-gray-500 italic mt-1">
               No se encontraron usuarios.
             </p>
@@ -80,7 +80,7 @@
             (blur)="filtrarUsuarios(filtroUsuarioExcluyente)"
             placeholder="Buscar usuario..."
             class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            @if (filtroUsuarioExcluyente && usuarios?.length > 0 && buscandoUsuarioExcluyente) {
+            @if (filtroUsuarioExcluyente && usuarios.length > 0 && buscandoUsuarioExcluyente) {
               <ul
                 class="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full max-h-48 overflow-y-auto shadow">
                 @for (user of usuarios; track user) {
@@ -92,7 +92,7 @@
                 }
               </ul>
             }
-            @if (filtroUsuarioExcluyente && usuarios?.length === 0 && buscandoUsuarioExcluyente) {
+            @if (filtroUsuarioExcluyente && usuarios.length === 0 && buscandoUsuarioExcluyente) {
               <p
                 class="text-xs text-gray-500 italic mt-1">
                 No se encontraron usuarios.
@@ -102,7 +102,7 @@
         }
         <!-- ===== Fechas ===== -->
         <!-- Solo si def.pideFechas === true -->
-        @if (def?.pideFechas) {
+        @if (def.pideFechas) {
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-sm font-semibold mb-1">Fecha inicial</label>
@@ -120,7 +120,7 @@
             }
             <!-- ===== Tiempo de bloqueo ===== -->
             <!-- Solo si def.pideTiempoBloqueo === true -->
-            @if (def?.pideTiempoBloqueo) {
+            @if (def.pideTiempoBloqueo) {
               <div>
                 <label class="block text-sm font-semibold mb-1">Tiempo de bloqueo</label>
                 <input type="number" min="0" step="1"
@@ -131,7 +131,7 @@
               }
               <!-- ===== Valor ===== -->
               <!-- Solo si NO necesitaDesarrollo, NO propiedadBoolean -->
-              @if (!def?.necesitaDesarrollo && !def?.propiedadBoolean) {
+              @if (!def.necesitaDesarrollo && !def.propiedadBoolean) {
                 <div>
                   <label class="block text-sm font-semibold mb-1">Valor</label>
                   <textarea
@@ -143,7 +143,7 @@
               }
               <!-- ===== Texto ===== -->
               <!-- Solo si NO necesitaDesarrollo, NO propiedadBoolean y NO textOculto -->
-              @if (!def?.necesitaDesarrollo && !def?.propiedadBoolean && !def?.textOculto) {
+              @if (!def.necesitaDesarrollo && !def.propiedadBoolean && !def.textOculto) {
                 <div>
                   <label class="block text-sm font-semibold mb-1">Texto</label>
                   <input type="text"
@@ -181,7 +181,7 @@
                       </button>
                     </div>
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
-                      @if (propiedadesRelacion?.length > 0) {
+                      @if (propiedadesRelacion.length > 0) {
                         <div class="grid grid-cols-1 gap-3">
                           @for (prop of propiedadesRelacion; track prop) {
                             <div

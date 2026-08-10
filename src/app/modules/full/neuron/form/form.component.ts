@@ -69,10 +69,10 @@ export class FormComponent implements OnInit, AfterViewInit {
     dynamicControls: IDynamicControl[] = [];
 
     // flags
-    submitted = false;
-    modificable = false;
+    submitted = signal(false);
+    modificable = signal(false);
     instruccionCrear?: string;
-    fullScreen = false;
+    fullScreen = signal(false);
 
     pedidoBase?: PedidoVentaDTO; // Lo uso para guardar lo que recibi para crear el formulario
     plantilla?: DocumentoPlantillaDTO; // Contiene la estructura del formulario
@@ -95,7 +95,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         return pedido;
     }
 
-    esRol = false;
+    esRol = signal(false);
 
     // Variables de comportamiento
     identificadorInicial?: string; // La use para llenar el campo inicial
@@ -115,21 +115,21 @@ export class FormComponent implements OnInit, AfterViewInit {
     reportes: ReporteBaseDTO[] = [];
 
 
-    canMassive = false;
-    canTransfer = false;
-    canDuplicate = false;
-    hasVoucher = false;
+    canMassive = signal(false);
+    canTransfer = signal(false);
+    canDuplicate = signal(false);
+    hasVoucher = signal(false);
 
 
     // Cambiar estado
-    canChangeState = false;
-    isChangeState = false;
-    changeStateIsLoading = false;
+    canChangeState = signal(false);
+    isChangeState = signal(false);
+    changeStateIsLoading = signal(false);
     changeStateForm = new FormGroup({
         estadoFinal: new FormControl<any>('', { validators: Validators.required }),
         motivo: new FormControl('', { validators: Validators.required }),
     });
-    isLoading = false;
+    isLoading = signal(false);
 
     private CAMPO_POSIBLE_MENOR_PRIORIDAD = '__*__';
 
@@ -187,19 +187,18 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     submit() {
-        if (this.submitted) {
+        if (this.submitted()) {
             return;
         }
-        if (!this.modificable) {
+        if (!this.modificable()) {
             return;
         }
-        
-        this.submitted = true;
+        this.submitted = signal(true);
         // La variable modificado me indica si el usuario hizo cambios a los datos
         for (let i = 0; i < this.dynamicControls.length; i++) {
             const element = this.dynamicControls[i];
             if (!element.send2Server()) {
-                this.submitted = false;
+                this.submitted = signal(false) ;
                 return;
             }
         }
@@ -221,7 +220,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         // this.plantillaTransicionSiguiente = item.plantilla;
         if (this.pedido!.llaveTabla && !modificado) {
             alert('No se ha realizado ninguna modificacion');
-            this.submitted = false;
+            this.submitted.set(false);
             return;
         }
         this.pedidoBase!.messages = [];
@@ -239,7 +238,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                         this.openManager(dataResult);
                     },
                     error: () => {
-                        this.submitted = false;
+                        this.submitted.set(false);
                     },
                 });
         }
@@ -296,7 +295,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 this.showReport(_report);
             }
         }
-        this.submitted = false;
+        this.submitted.set(false);
 
         if (successFullText) {
             // Aqui va los cambios de variables
@@ -384,17 +383,17 @@ export class FormComponent implements OnInit, AfterViewInit {
             }
             // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
             if (!dp.caracteristicas) {
-                this.isLoading = true;
+                this.isLoading = signal(true);
                 this.api
                     .obtenerCampos(plantillaId, dp.server)
                     .subscribe({
                         next: (plantilla: DocumentoPlantillaDTO) => {
                             plantilla.server = dp.server;
-                            this.isLoading = false;
+                            this.isLoading.set(false);
                             this.cargarCamposPlantilla(plantilla);
                         },
                         error: () => {
-                            this.isLoading = false;
+                            this.isLoading.set(false);
                             this.dialogRef.close();
                         }
                     });
@@ -594,23 +593,23 @@ export class FormComponent implements OnInit, AfterViewInit {
                     PlantillaHelper.PLANTILLA_OCULTAR_GUARDAR
                 )
             ) {
-                this.modificable = true;
+                this.modificable.set(true);
                 this.formIsModified = true;
             }
         } else {
-            this.modificable = !PlantillaHelper.isEmpty(
+            this.modificable.set( !PlantillaHelper.isEmpty(
                 this.plantilla.propiedades,
                 PlantillaHelper.PERMISO_PLANTILLA_MODIFICAR
-            );
+            ));
             if (this.modificable && this.pedido.estadoExpediente) {
                 if (this.plantilla.estados && this.plantilla.estados.length !== 0) {
                     for (let i = 0; i < this.plantilla.estados.length; i++) {
                         const estadoModificable = this.plantilla.estados[i];
                         if (estadoModificable.llaveTabla === this.pedido.estadoExpediente) {
-                            this.modificable = !PlantillaHelper.isEmpty(
+                            this.modificable.set( !PlantillaHelper.isEmpty(
                                 estadoModificable.propiedades,
                                 PlantillaHelper.MODIFICABLE
-                            );
+                            ));
                             break;
                         }
                     }
@@ -664,7 +663,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 if (element.campo === _campo.llaveTabla) {
                     componentRef.instance.data = element;
                     element.campoDTO = _campo;
-                    componentRef.instance.formIsEnabled = this.modificable;
+                    componentRef.instance.formIsEnabled = this.modificable();
                     runInInjectionContext(this._injector, () => {
                         effect(() => {
                             if (componentRef.instance.formIsModified()) {
@@ -717,11 +716,11 @@ export class FormComponent implements OnInit, AfterViewInit {
 
 
         if (this._jwt.isAdmin) {
-            this.esRol = !PlantillaHelper.isEmpty(this.plantilla!.propiedades, PlantillaHelper.PLANTILLA_TIPO_ROL);
+            this.esRol.set(!PlantillaHelper.isEmpty(this.plantilla!.propiedades, PlantillaHelper.PLANTILLA_TIPO_ROL));
         }
-        this.canMassive = !PlantillaHelper.isEmpty(this.plantilla!.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA);
+        this.canMassive.set(!PlantillaHelper.isEmpty(this.plantilla!.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA));
         if (this.pedido!.llaveTabla) {
-            this.hasVoucher = !PlantillaHelper.isEmpty(this.plantilla!.propiedades, PlantillaHelper.TEMPLATE_VOUCHER);
+            this.hasVoucher.set(!PlantillaHelper.isEmpty(this.plantilla!.propiedades, PlantillaHelper.TEMPLATE_VOUCHER));
             if (!this.pedido!.estadoExpediente) {
                 // Solo se pueden anular los que estan en estado activo y que no son de un proceso
                 if (this.pedido!.estado === StatesEnum.ACTIVE) {
@@ -750,14 +749,14 @@ export class FormComponent implements OnInit, AfterViewInit {
                     }
                 }
             } else {
-                this.canTransfer = !PlantillaHelper.isEmpty(
+                this.canTransfer.set(!PlantillaHelper.isEmpty(
                     this.plantilla!.propiedades,
                     PlantillaHelper.PERMISO_PLANTILLA_TRANSFERIR
-                );
-                this.canChangeState = !PlantillaHelper.isEmpty(
+                ));
+                this.canChangeState.set(!PlantillaHelper.isEmpty(
                     this.plantilla!.propiedades,
                     PlantillaHelper.PERMISO_PLANTILLA_CAMBIAR_ESTADO
-                );
+                ));
                 this.showActions();
             }
         }
@@ -988,7 +987,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     showMassive() {
-        if (this.canMassive) {
+        if (this.canMassive()) {
             let redirect = 'massive/' + this.plantilla!.llaveTabla;
             if (this.plantilla!.server) { redirect = redirect + '/' + this.plantilla!.server; }
             this._router.navigateByUrl(redirect);
@@ -998,7 +997,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
 
     showTransfer() {
-        if (this.canTransfer) {
+        if (this.canTransfer()) {
             this.utilsService.modalTransfer(this.pedido!.llaveTabla, this.pedido!.estadoExpediente, this.pedido!.plantilla, this.plantilla!.server)
                 .subscribe((res) => {
                     if (res && this.dialogRef) {
@@ -1013,11 +1012,11 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     showChangeState() {
-        if (this.canChangeState) {
-            if (this.isChangeState) {
-                this.isChangeState = false;
+        if (this.canChangeState()) {
+            if (this.isChangeState()) {
+                this.isChangeState.set(false);
             } else {
-                this.isChangeState = true;
+                this.isChangeState.set(true);
             }
         }
     }
@@ -1030,7 +1029,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     changeState() {
-        if (this.canChangeState) {
+        if (this.canChangeState()) {
             const formData = this.changeStateForm!.value;
             if (!formData.estadoFinal || !formData.estadoFinal.llaveTabla) {
                 Swal.fire('Nuevo estado', 'Selecciona el nuevo responsable', 'info');
@@ -1039,13 +1038,13 @@ export class FormComponent implements OnInit, AfterViewInit {
                 ajuste.documento = this.pedido!.llaveTabla;
                 ajuste.estadoFinal = formData.estadoFinal!.llaveTabla!;
                 ajuste.motivo = formData.motivo!;
-                this.changeStateIsLoading = true;
+                this.changeStateIsLoading.set(true);
                 this.api.ajustarEstado(ajuste, this.plantilla!.server).subscribe({
                     next: () => {
                         this.dialogRef.close(this.pedido);
-                        this.changeStateIsLoading = false;
+                        this.changeStateIsLoading.set(false);
                     },
-                    error: () => { this.changeStateIsLoading = false; }
+                    error: () => { this.changeStateIsLoading.set(false); }
                 });
             }
         }
@@ -1110,7 +1109,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     toogleScreen() {
-        this.fullScreen = !this.fullScreen;
+        this.fullScreen.set(!this.fullScreen());
         this.getSizePop();
     }
 
@@ -1121,7 +1120,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
 
     getSizePop() {
-        if (this.fullScreen) {
+        if (this.fullScreen()) {
             this.styleSizePop = 'width: 98vw;';
         } else {
             this.styleSizePop = '';

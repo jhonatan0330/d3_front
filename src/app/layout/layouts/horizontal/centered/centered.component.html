@@ -7,12 +7,12 @@
             <!-- Logo -->
             <div class="flex items-center justify-center h-28 pt-5 pb-5 px-8">
                 @if (company?.imagen) {
-                    <img class="h-16 w-auto max-w-xs object-contain px-2" src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+                    <img class="h-16 w-auto max-w-xs object-contain px-2" src="{{ company.imagen | imageFormat }}" alt="Logo image" />
                 }
             </div>
 
             <!-- Navigation items -->
-            <simple-nav [items]="navigation?.default ?? []" (navigate)="closeNavOnSmall()"></simple-nav>
+            <simple-nav [items]="navigation.default" (navigate)="closeNavOnSmall()"></simple-nav>
 
             <!-- Navigation footer -->
             <div class="flex flex-0 items-center justify-center h-16 pr-6 pl-2 mt-2 mb-4 opacity-12"></div>
@@ -33,7 +33,7 @@
                         <div class="flex items-center mx-2 lg:mr-8">
                             <div class="hidden lg:flex">
                                 @if (company?.imagen) {
-                                    <img class="h-12 w-auto max-w-xs object-contain px-2" src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+                                    <img class="h-12 w-auto max-w-xs object-contain px-2" src="{{ company.imagen | imageFormat }}" alt="Logo image" />
                                 }
                             </div>
                         </div>

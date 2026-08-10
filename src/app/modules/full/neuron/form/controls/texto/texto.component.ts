@@ -118,7 +118,7 @@ export class TextoComponent extends BaseComponent implements OnInit {
   }
 
   send2Server(): boolean {
-    if (this.isLoading) { return false; }
+    if (this.isLoading()) { return false; }
     
     this.errorMessage = null!;
     if (this.required && !this.data.valorText && !this.isInvisible){

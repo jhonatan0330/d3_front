@@ -62,7 +62,7 @@ export class SeccionComponent extends BaseComponent implements OnInit {
         filtro.campoDTO = this.structure;
         filtro.campo = this.structure.llaveTabla;
         filtro.documento = campoFiltro.documento;
-          this. isLoading = true;
+        this.isLoading.set(true);
         this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
               next:(_value: PedidoVentaCaracteristicaFilterDTO) => {
                 if(_value.valorNumeroMax && _value.valorNumeroMax === 1) {
@@ -71,10 +71,10 @@ export class SeccionComponent extends BaseComponent implements OnInit {
               this.isInvisible = true;
             }
                 this.form.reviewFieldsVisibility();
-            this.isLoading = false;
+            this.isLoading.set(false);
           },
               error:()=>{
-            this.isLoading = false;
+            this.isLoading.set(false);
           }
         });
       }

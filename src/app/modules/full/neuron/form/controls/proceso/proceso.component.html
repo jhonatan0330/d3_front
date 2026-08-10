@@ -1,4 +1,4 @@
-@if (isLoading) {
+@if (isLoading()) {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 }
 @if (messageHTML) {
@@ -133,14 +133,14 @@
   @if (tipoMultiple) {
     <div class="pb-1" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
       <!-- Titulo y boton buscar -->
-      @if (!isLoading) {
+      @if (!isLoading()) {
         <div>
           <div class="flex justify-between items-center w-full mb-1 gap-1">
             <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))"
               [matBadge]="data.valorText" matBadgeColor="primary" class="w-full">
               {{ structure.nombre | titlecase }}
             </button>
-            @if (acciones && formIsEnabled && data?.expedientes) {
+            @if (acciones && formIsEnabled && data.expedientes) {
               <button mat-raised-button color="accent" [matMenuTriggerFor]="clickHoverMenu"
                 #clickHoverMenuTrigger="matMenuTrigger"
                 (click)="sendCreate()" tabindex="-1">
@@ -164,7 +164,7 @@
       }
       <!-- Lista de seleccionados (Expedientes) -->
       <div class="flex flex-wrap p-1 w-full">
-        @for (d of data?.expedientes; track d) {
+        @for (d of data.expedientes; track d.llaveTabla) {
           <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
             <mat-card class="p-0 rounded h-full">
               <mat-card-title class="p-1 rounded mb-0">
@@ -213,7 +213,7 @@
               <mat-card-content class="p-1">
                 @if (d.caracteristicas && d.caracteristicas.length !== 0) {
                   <div>
-                    @for (f of d.caracteristicas; track f) {
+                    @for (f of d.caracteristicas; track f.llaveTabla) {
                       <div class="flex justify-between">
                         <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
                         @if (f.valorText) {
@@ -376,14 +376,14 @@
                   </mat-card>
                 </div>
               }
-              @if (!isLoadingList && !isEndList) {
+              @if (!isLoadingList() && !isEndList()) {
                 <button mat-flat-button color="accent" (click)="listar(pagina)" tabindex="-1" class="w-full"
                   >
                   <mat-icon>refresh</mat-icon> Mas resultados {{ labelSearch }}
                 </button>
               }
             </div>
-            @if (isLoadingList) {
+            @if (isLoadingList()) {
               <mat-progress-bar mode="indeterminate"></mat-progress-bar>
             }
           </div>
@@ -392,7 +392,7 @@
           <div class="pb-1">
             <!-- Titulo y boton buscar -->
             <div class="text-center">
-              @if (!isLoading) {
+              @if (!isLoading()) {
                 <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))"
                   class="w-full">
                   {{ structure.nombre | titlecase }}

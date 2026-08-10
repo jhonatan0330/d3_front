@@ -1,4 +1,4 @@
-@if (isLoading) {
+@if (isLoading()) {
   <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
 }
 <!-- Input de productos -->
@@ -58,7 +58,7 @@
   }
   <!-- Tablas de escogidos -->
   <div class="w-full" style="overflow: auto">
-    @if (data.detalles?.length && !unicoProducto) {
+    @if (data.detalles &&data.detalles.length && !unicoProducto) {
       <table mat-table class="w-full bg-default"
         [dataSource]="data.detalles">
         <!-- Columnas -->

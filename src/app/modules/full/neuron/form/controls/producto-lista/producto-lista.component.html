@@ -1,4 +1,4 @@
-@if (isLoading) {
+@if (isLoading()) {
   <mat-progress-bar
     color="primary"
     mode="indeterminate"
@@ -66,7 +66,7 @@
       }
       <!-- Tablas de escogidos -->
       <div class="full-width" style="overflow: auto">
-        @if (data.productosExclusivos?.length && !usuarioRol) {
+        @if (data.productosExclusivos.length && !usuarioRol) {
           <table
             mat-table
             class="cart-table default-bg mat-elevation-z1"

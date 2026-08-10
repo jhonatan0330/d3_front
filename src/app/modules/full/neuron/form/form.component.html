@@ -24,11 +24,11 @@
           <mat-icon [style.color]="colorFont()" svgIcon="heroicons_outline:clock"></mat-icon>
         </a>
       }
-      @if (!fullScreen) {
+      @if (!fullScreen()) {
         <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()"
         [style.color]="colorFont()">fullscreen</mat-icon>
       }
-      @if (fullScreen) {
+      @if (fullScreen()) {
         <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()"
         [style.color]="colorFont()">fullscreen_exit</mat-icon>
       }
@@ -70,19 +70,19 @@
     [style.color]="colorFont()">menu</mat-icon>
     <mat-menu #formMenuList="matMenu">
       <!-- Boton Cambiar estado -->
-      @if (canChangeState) {
+      @if (canChangeState()) {
         <button mat-menu-item (click)="showChangeState()" tabindex="-1">
           <mat-icon>swap_horiz</mat-icon>Cambiar estado
         </button>
       }
       <!-- Boton transferir -->
-      @if (canTransfer) {
+      @if (canTransfer()) {
         <button mat-menu-item (click)="showTransfer()" tabindex="-1">
           <mat-icon>transfer_within_a_station</mat-icon>Transferir
         </button>
       }
       <!-- Boton carga masiva -->
-      @if (canMassive) {
+      @if (canMassive()) {
         <button mat-menu-item (click)="showMassive()" tabindex="-1">
           <mat-icon>cloud_upload</mat-icon> Carga Masiva
         </button>
@@ -111,7 +111,7 @@
         </button>
       }
       <!-- Boton Usuario -->
-      @if (pedido && pedido.llaveTabla && esRol) {
+      @if (pedido && pedido.llaveTabla && esRol()) {
         <button mat-menu-item (click)="abrirUsuario(pedido.llaveTabla)">
           <mat-icon>person</mat-icon>
           <span>Usuario Rol</span>
@@ -130,7 +130,7 @@
 <!-- -->
 <div class="flex flex-col bg-white dark:bg-gray-900 max-h-[70vh]">
   <!-- Overlay con spinner -->
-  @if (submitted) {
+  @if (submitted()) {
     <div class="absolute inset-0 bg-white bg-opacity-70 z-10 flex items-center justify-center">
       <div class="text-center">
         <svg class="animate-spin h-6 w-6 text-gray-600 mx-auto mb-2" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -144,9 +144,9 @@
   }
   <div class="px-4 overflow-x-hidden">
     <!-- Cambiar estado del documento -->
-    @if (isChangeState) {
+    @if (isChangeState()) {
       <mat-card class="p-2">
-        @if (changeStateIsLoading) {
+        @if (changeStateIsLoading()) {
           <mat-progress-bar class="w-full" mode="indeterminate"></mat-progress-bar>
         }
           <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
@@ -169,7 +169,7 @@
                 placeholder="Motivo" required></textarea>
               </mat-form-field>
             </div>
-            @if (!changeStateIsLoading) {
+            @if (!changeStateIsLoading()) {
               <button mat-raised-button class="mat-primary w-full" [disabled]="changeStateForm.invalid"
                 >
                 Cambiar estado
@@ -207,11 +207,11 @@
       <!-- Acciones  -->
       @if (pedido && pedido.llaveTabla) {
         <div class="w-full">
-          @if (isLoading) {
+          @if (isLoading()) {
             <mat-progress-bar mode="indeterminate"></mat-progress-bar>
           }
           <!-- Acciones -->
-          @if (!isLoading) {
+          @if (!isLoading()) {
             <div class="p-1 w-full justify-between flex flex-wrap">
               <!-- Botones de transiciones -->
               @for (t of transiciones; track t) {
@@ -255,12 +255,12 @@
       </div>
     </div>
     <!-- Boton de guardar -->
-    @if (modificable) {
+    @if (modificable()) {
       <div class="pt-1 px-4 pb-4">
-        @if (submitted) {
+        @if (submitted()) {
           <mat-progress-bar class="w-full" mode="indeterminate"></mat-progress-bar>
         }
-        @if (!submitted) {
+        @if (!submitted()) {
           <div>
             <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified">
               <mat-icon>save</mat-icon> Guardar {{ plantilla?.nombre | titlecase }}

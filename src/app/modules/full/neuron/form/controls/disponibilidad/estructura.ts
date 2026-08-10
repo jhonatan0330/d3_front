@@ -45,7 +45,10 @@ export class Estructura {
   draw() {
     this.ctx.clearRect(0, 0, this.ancho, this.alto);
     const loadedImage = new Image();
-    loadedImage.src = new ImageFormatPipe(this.ls).transform(this.imagenFondo);
+    const imageUrl = new ImageFormatPipe(this.ls).transform(this.imagenFondo);
+    if(imageUrl) {
+      loadedImage.src = imageUrl;
+    }
     loadedImage.onload = () => {
       this.ctx.canvas.width = loadedImage.width;
       this.ctx.canvas.height = loadedImage.height;

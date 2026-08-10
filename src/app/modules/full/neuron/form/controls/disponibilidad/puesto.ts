@@ -36,7 +36,10 @@ export class Puesto {
   draw() {
     this.ctx.clearRect(this.x, this.y, this.ancho, this.alto);
     const render = new Image();
-    render.src = new ImageFormatPipe(this.ls).transform(this.imagen);
+    const imageUrl = new ImageFormatPipe(this.ls).transform(this.imagen);
+    if(imageUrl) {
+      render.src = imageUrl;
+    }
     render.onload = () => {
       this.ctx.drawImage(render, this.x, this.y);
       this.ancho = render.width;

@@ -34,7 +34,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
 
     isScreenSmall: boolean;
     sidenavOpened = false;
-    navigation: Navigation;
+    navigation: Navigation| null = null;
     user: UsuarioDTO | undefined;
     company: OrganizacionDTO | undefined;
     time = signal(new Date());

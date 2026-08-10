@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="flex justify-between items-center mb-6 gap-4">
     <div class="flex items-center flex-wrap justify-center sm:justify-start">
-      <div class="text-xl font-bold">{{ field?.nombre || 'Detalle de plantila' }}</div>
+      <div class="text-xl font-bold">{{ field.nombre || 'Detalle de plantila' }}</div>
       <button [disabled]="editarDisabled" (click)="!editarDisabled && editarCampo()"
         [ngClass]="{'opacity-50 hover:bg-blue-600': editarDisabled, 'bg-blue-500 text-white hover:bg-blue-600': !editarDisabled}"
         class="px-3 py-1 rounded">
@@ -10,7 +10,7 @@
       </button>
     </div>
     <div class="flex items-center gap-2">
-      @if (field?.imagen) {
+      @if (field.imagen) {
         <img [src]="field.imagen" alt="Imagen del campo" class="h-10 object-cover rounded-lg" />
       }
       <button mat-icon-button aria-label="Cerrar" (click)="close()" class="ml-2 bg-transparent">
@@ -37,7 +37,7 @@
       </div>
 
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-3 sm:p-4 overflow-y-auto">
-        @if (propiedadesCampo?.length > 0) {
+        @if (propiedadesCampo.length > 0) {
           <div class="grid grid-cols-1 gap-3">
             @for (prop of propiedadesCampo; track prop) {
               <div (click)="listarRelacionesPropiedad(prop)"

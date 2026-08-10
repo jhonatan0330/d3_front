@@ -275,17 +275,17 @@ export class VinculoComponent extends BaseComponent implements OnInit {
       }
       // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
       if (!dp.caracteristicas) {
-        this.isLoading = true;
+        this.isLoading.set(true);
         this.api
           .obtenerCampos(plantillaId, dp.server)
           .subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
               plantilla.server = dp.server;
-              this.isLoading = false;
+              this.isLoading.set(false);
               this.cargarCamposPlantilla(plantilla);
             },
             error: () => {
-              this.isLoading = false;
+              this.isLoading.set(false);
               this.dialogRef.close();
             }
           });

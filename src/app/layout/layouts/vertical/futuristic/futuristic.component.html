@@ -8,12 +8,12 @@
             <!-- Logo -->
             <div class="flex items-center h-20 px-4 py-2">
                 @if (company?.imagen) {
-                    <img class="w-auto max-h-full mx-2" src="{{ company?.imagen | imageFormat }}" alt="Logo image" />
+                    <img class="w-auto max-h-full mx-2" src="{{ company.imagen | imageFormat }}" alt="Logo image" />
                 }
             </div>
 
             <!-- Navigation items -->
-            <simple-nav [items]="navigation?.futuristic ?? []" (navigate)="closeNavOnSmall()"></simple-nav>
+            <simple-nav [items]="navigation.futuristic" (navigate)="closeNavOnSmall()"></simple-nav>
 
             <!-- Navigation footer -->
             <div class="flex items-center w-full px-6 py-8 border-t">
