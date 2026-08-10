@@ -8,13 +8,14 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { MatIcon } from '@angular/material/icon';
+import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
 
 @Component({
     selector: 'shortcuts',
     templateUrl: './shortcuts.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'shortcuts',
-    imports: [MatIconButton, MatIcon]
+    imports: [MatIconButton, MatIcon, MatAutocompleteTrigger, MatAutocomplete]
 })
 export class ShortcutsComponent implements OnInit, OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
@@ -26,6 +27,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     private readonly _shortcutsOrigin = viewChild<MatButton>('shortcutsOrigin');
     private readonly _shortcutsPanel = viewChild<TemplateRef<any>>('shortcutsPanel');
     private readonly barSearchInput = viewChild<ElementRef>('barSearchInput');
+    readonly matAutocomplete = viewChild<MatAutocomplete>('matAutocomplete');
 
     constructor() {
         effect(() => {
@@ -127,7 +129,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
             this.shortcutsFiltered = Object.assign([], this.shortcuts);
         } // when nothing has typed
         this.shortcutsFiltered = Object.assign([], this.shortcuts).filter(
-            (item) => item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
+            (item: DocumentoPlantillaDTO) => item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
         );
     }
 
@@ -154,7 +156,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
             backdropClass: 'fuse-backdrop-on-mobile',
             scrollStrategy: this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
-                .flexibleConnectedTo(this._shortcutsOrigin()._elementRef.nativeElement)
+                .flexibleConnectedTo(this._shortcutsOrigin()!._elementRef.nativeElement)
                 .withLockedPosition(true)
                 .withPush(true)
                 .withPositions([

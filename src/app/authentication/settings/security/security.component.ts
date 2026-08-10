@@ -9,12 +9,13 @@ import { MatFormField, MatLabel, MatPrefix } from '@angular/material/form-field'
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
     selector: 'settings-security',
     templateUrl: './security.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatIcon, MatPrefix, MatInput, MatButton]
+    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatIcon, MatPrefix, MatInput, MatButton, MatProgressBar]
 })
 export class SettingsSecurityComponent implements OnInit {
     data = inject<{
@@ -57,7 +58,7 @@ export class SettingsSecurityComponent implements OnInit {
 
         if (this.data?.key) {
 
-            this.jwtAuth.changePwdOther(this.data.key.llaveTabla, signinData.oldPwd, signinData.newPwd, null).subscribe({
+            this.jwtAuth.changePwdOther(this.data.key.llaveTabla, signinData.oldPwd, signinData.newPwd, null!).subscribe({
                 next: () => {
                     this.isLoading = false;
                     Swal.fire(
@@ -71,7 +72,7 @@ export class SettingsSecurityComponent implements OnInit {
                 },
             });
         } else {
-            this.jwtAuth.changePwd(signinData.oldPwd, signinData.newPwd, null).subscribe({
+            this.jwtAuth.changePwd(signinData.oldPwd, signinData.newPwd, null!).subscribe({
                 next: () => {
                     this.isLoading = false;
                     Swal.fire(

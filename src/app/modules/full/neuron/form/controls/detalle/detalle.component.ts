@@ -51,7 +51,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   autoload = false; // Indica que la fuente de datos se va a cargar en memoria
   titleCantity = 'Cantidad';
   busquedaSinTexto = false;
-  errorToFilter = null;
+  errorToFilter: string | null = null;
   renderVisible = false;
 
   productosDisponibles: ProductoDTO[];
@@ -122,7 +122,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       for (const item of this.productosDisponibles) {
         if (!map.has(item.categoria)) {
           map.set(item.categoria, true);    // set any value to Map
-          const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(item.categoria, null);
+          const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(item.categoria, null!)!;
           if (dp) { this.categories.push(dp); }
         }
       }
@@ -149,7 +149,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   filterProducts() {
     if (this.relatedFields) { return; }
-    let valorFiltro: string = this.fControl.value;
+    let valorFiltro: string = this.fControl.value!;
     if (valorFiltro) {
       valorFiltro = valorFiltro.toUpperCase();
       if (this.unicoProducto && this.data.detalles && this.data.detalles.length === 1) {
@@ -203,7 +203,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     if (this.isLoading) { return; }
     this.errorToFilter = null;
     if (this.relatedFields || !this.autoload) {
-      if (this.fControl.value !== undefined && this.fControl.value.length === 0) {
+      if (this.fControl.value !== undefined && this.fControl.value!.length === 0) {
         this.errorToFilter = 'Por favor coloca un valor en el campo de busqueda';
         return;
       }
@@ -214,7 +214,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   listarProductosAsincronos() {
     // Consulta los productos disponibles para el campo
     const nFilter: PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
-    nFilter.filtroParametro = this.fControl.value;
+    nFilter.filtroParametro = this.fControl.value!;
     this.isLoading = true;
     this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
@@ -247,8 +247,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     // Copia toda la informacion a las variables del campo
     this.productosDisponibles = Object.assign([], _value.campoDTO.productos);
     const plantillaBase = this.templateService.getTemplate(this.structure.plantilla, this.urlServer);
-    for (let i = 0; i < plantillaBase.caracteristicas.length; i++) {
-      const iCampo = plantillaBase.caracteristicas[i];
+    for (let i = 0; i < plantillaBase!.caracteristicas.length; i++) {
+      const iCampo = plantillaBase!.caracteristicas[i];
       if (iCampo.llaveTabla === this.structure.llaveTabla) {
         iCampo.productos = _value.campoDTO.productos;
         break;
@@ -506,10 +506,10 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     if (pItem.cantidad === 0) pItem.cantidad = 1;
     pItem.valorUnitario = this.cantidadTarifario(pItem, PlantillaHelper.PRODUCTO_CAMPO_VALOR_UNITARIO);
     pItem.valorTotal = this.cantidadTarifario(pItem, PlantillaHelper.PRODUCTO_CAMPO_TOTAL);
-    pItem.valorSubtotal = undefined;
+    pItem.valorSubtotal = undefined!;
   }
 
-  actualizarDetalles(producto: ProductoDTO) {
+  actualizarDetalles(producto: ProductoDTO | null) {
     let valorNumero = 0;
     for (let i = 0; i < this.data.detalles.length; i++) {
       const detalle = this.data.detalles[i];

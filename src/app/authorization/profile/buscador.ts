@@ -183,7 +183,7 @@ export class BuscadorComponent implements OnDestroy {
     this.isLoading.set(true);
     const entitySearch = new PedidoVentaFilterDTO();
     entitySearch.nombre = texto;
-    this.apiService.listarDocumentos(entitySearch, null).subscribe({
+    this.apiService.listarDocumentos(entitySearch, null!).subscribe({
       next: (value: PedidoVentaDTO[]) => {
         this.isLoading.set(false);
         if (!value || value.length === 0) return;
@@ -219,7 +219,7 @@ export class BuscadorComponent implements OnDestroy {
     this.searchControl.setValue('');
     this.filteredTemplates.set([]);
     this.searchResults.set([]);
-    if (this.templateService.getTemplate(doc.plantilla, null)) {
+    if (this.templateService.getTemplate(doc.plantilla, null!)) {
       this.utilsService.modalWithParams(doc, false);
     }
   }

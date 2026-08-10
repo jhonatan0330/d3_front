@@ -30,8 +30,8 @@ export class VinculoComponent extends BaseComponent implements OnInit {
 
   proceso: PedidoVentaDTO; // Contiene el documento seleccionado
 
-  auxPlantillaProxima: string; // LAs transiciones aveces no tienen cargados los campos y se encesitan
-  documentToTransition: PedidoVentaDTO;
+  auxPlantillaProxima: string | null; // LAs transiciones aveces no tienen cargados los campos y se encesitan
+  documentToTransition: PedidoVentaDTO | null;
   transiciones: ProcesoTransicionDTO[] = []; // Lista de botones
 
   plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
@@ -60,8 +60,8 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   getTransitionsOfTemplate(template: string, pState: string, pDocumentTransition: PedidoVentaDTO) {
 
     const pTemplate: DocumentoPlantillaDTO = this.templateService.getTemplate(
-      template, null
-    );
+      template, null!
+    )!;
     if (!pTemplate || !pTemplate.estados || pTemplate.estados.length === 0) return;
 
     this.plantilla = pTemplate;
@@ -76,7 +76,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
         for (let j = 0; j < _stateElement.transiciones.length; j++) {
           const _transition = _stateElement.transiciones[j];
           if (_transition.plantilla) {
-            const _templateTransition: DocumentoPlantillaDTO = this.templateService.getTemplate(_transition.plantilla, pTemplate.server);
+            const _templateTransition: DocumentoPlantillaDTO = this.templateService.getTemplate(_transition.plantilla, pTemplate.server)!;
             if (_templateTransition && !PlantillaHelper.isEmpty(_templateTransition.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
               const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
               _newtransicion.imagen = _templateTransition.imagen;
@@ -131,8 +131,8 @@ export class VinculoComponent extends BaseComponent implements OnInit {
 
   organizarDocumentoProceso(pNextTemplate: string,) {
     const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
-      this.proceso.plantilla, null
-    );
+      this.proceso.plantilla, null!
+    )!;
     // Debo cargar los campos tambien de la plantilla del documento
     if (!dp.caracteristicas) {
       this.auxPlantillaProxima = pNextTemplate;
@@ -161,13 +161,13 @@ export class VinculoComponent extends BaseComponent implements OnInit {
     }*/
     this.auxPlantillaProxima = pNextTemplate;
     this.documentToTransition = pDocument;
-    const _nextTemplate: DocumentoPlantillaDTO = this.cargarPlantilla(pNextTemplate, this.plantilla.server);
+    const _nextTemplate: DocumentoPlantillaDTO = this.cargarPlantilla(pNextTemplate, this.plantilla.server)!;
     if (!_nextTemplate) return;
     // Se supone que la carga asincrona
     const _doc: PedidoVentaDTO = new PedidoVentaDTO();
     _doc.plantilla = pNextTemplate;
     const camposPosibles: DocumentoPlantillaCaracteristicaDTO[] = [];
-    let textoCampoPosible: string;
+    let textoCampoPosible: string | null;
 
     // Valido que existan caracteristicas con el mismo codigo y lo modifico
     if (_nextTemplate.caracteristicas) {
@@ -181,7 +181,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
               if (!_doc.caracteristicas) {
                 _doc.caracteristicas = [];
               }
-              campoDoc.principal = null;
+              campoDoc.principal = null!;
               _doc.caracteristicas.push(campoDoc);
               break;
             }
@@ -244,10 +244,10 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   }
 
   // Solo lo uso en crear plantilla siguiente asi que puedo ver como optimizar despues
-  validateIsPossibleField(campo: DocumentoPlantillaCaracteristicaDTO, plantilla: string): string {
+  validateIsPossibleField(campo: DocumentoPlantillaCaracteristicaDTO, plantilla: string): string | null {
     if (!campo || campo.formato !== DocumentoPlantillaCaracteristicaEnum.PROCESO) return null;
 
-    const propAuxiliarTemplates: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(campo.propiedades, PlantillaHelper.PLANTILLA_AUXILIAR);
+    const propAuxiliarTemplates: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(campo.propiedades, PlantillaHelper.PLANTILLA_AUXILIAR)!;
     if (!propAuxiliarTemplates || propAuxiliarTemplates.length === 0) {
       return this.CAMPO_POSIBLE_MENOR_PRIORIDAD; // necesito identificarle cual es el codigo y avece era un vacio
     }
@@ -261,10 +261,10 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   }
 
   // Consulto de las plantillas generales la plantilla
-  cargarPlantilla(plantillaId: string, urlServer: string): DocumentoPlantillaDTO {
+  cargarPlantilla(plantillaId: string, urlServer: string): DocumentoPlantillaDTO | undefined {
     const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
       plantillaId, urlServer
-    );
+    )!;
     if (dp) {
       if (!this.proceso.llaveTabla && PlantillaHelper.isEmpty(dp.propiedades,
         PlantillaHelper.PERMISO_PLANTILLA_CREAR
@@ -306,10 +306,10 @@ export class VinculoComponent extends BaseComponent implements OnInit {
     // Falta hacer que se reemplace la plantilla en el array general       :(
     const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
       value.llaveTabla, value.server
-    );
+    )!;
     if (dp) {
       dp.caracteristicas = value.caracteristicas;
-      this.templateService.getTemplate(value.llaveTabla, value.server).caracteristicas =
+      this.templateService.getTemplate(value.llaveTabla, value.server)!.caracteristicas =
         value.caracteristicas;
       // SettingsManager.getInstance().setSetting("DP_" + value.llaveTabla, dp);
 
@@ -327,12 +327,12 @@ export class VinculoComponent extends BaseComponent implements OnInit {
         }*/
       } else {
         if (this.documentToTransition) {
-          this.crearPlantilla(this.auxPlantillaProxima, this.documentToTransition);
+          this.crearPlantilla(this.auxPlantillaProxima!, this.documentToTransition);
           this.auxPlantillaProxima = null;
           this.documentToTransition = null;
         }
         else {
-          this.organizarDocumentoProceso(this.auxPlantillaProxima);
+          this.organizarDocumentoProceso(this.auxPlantillaProxima!);
         }
         // asumo que es una transicion
       }

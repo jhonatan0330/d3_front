@@ -23,7 +23,7 @@
         <mat-form-field class="w-full">
           <mat-label>Contraseña actual</mat-label>
           <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
-          <input [formControl]="securityForm.controls['oldPwd']" type="password" matInput>
+          <input [formControl]="$any(securityForm.controls['oldPwd'])" type="password" matInput>
         </mat-form-field>
       </div>
       <!-- New password -->
@@ -31,7 +31,7 @@
         <mat-form-field class="w-full">
           <mat-label>Nueva contraseña</mat-label>
           <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
-          <input [formControl]="securityForm.controls['newPwd']" type="password" matInput>
+          <input [formControl]="$any(securityForm.controls['newPwd'])" type="password" matInput>
         </mat-form-field>
       </div>
       <!-- Repeat password -->
@@ -39,7 +39,7 @@
         <mat-form-field class="w-full">
           <mat-label>Repetir contraseña</mat-label>
           <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:key'" matPrefix></mat-icon>
-          <input [formControl]="securityForm.controls['repeatPwd']" type="password" matInput>
+          <input [formControl]="$any(securityForm.controls['repeatPwd'])" type="password" matInput>
         </mat-form-field>
       </div>
     </div>

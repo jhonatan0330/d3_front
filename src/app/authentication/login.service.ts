@@ -122,7 +122,7 @@ export class LoginService {
       if (_company.propiedades) {
         this.isAdmin = !PlantillaHelper.isEmpty(_company.propiedades, PlantillaHelper.APP_ADMIN);
         this.isReader = !PlantillaHelper.isEmpty(_company.propiedades, PlantillaHelper.APP_READER);
-        this.templateService.setModules(PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.APP_MODULES));
+        this.templateService.setModules(PlantillaHelper.buscarValorMultiple(_company.propiedades!, PlantillaHelper.APP_MODULES)!);
       }
     }
 
@@ -151,7 +151,7 @@ export class LoginService {
       if (PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE) && this.isAuthenticated) {
         const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
         entity.plantilla = PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE);
-        this.apiService.listarDocumentos(entity, null).subscribe({
+        this.apiService.listarDocumentos(entity, null!).subscribe({
           next: (dataResult: PedidoVentaDTO[]) => {
             if (dataResult) {
               this.slides.update(current => [...current, ...dataResult.map(element => element.imagen)]);
@@ -210,7 +210,7 @@ export class LoginService {
         map((profile: UsuarioAutenticacionDTO) => {
           // Cuando ingreso todavia no tengo organizacion
           //if (!this.company) { 
-          this.signin(null, null, tokenLocal).subscribe({
+          this.signin(null!, null!, tokenLocal)!.subscribe({
             next: (data:UsuarioAutenticacionDTO) => {
               this.authenticationOK(data);
             }
@@ -250,7 +250,7 @@ export class LoginService {
 
   signout() {
 
-    this.setUserAndToken(null, null);
+    this.setUserAndToken(null!, null!);
     this.templateService.clear();
     this.notificationService.clear();
     this.dialog.closeAll();
@@ -331,8 +331,8 @@ export class LoginService {
       this.user.set(authDTO.usuarioDTO);
     } else {
       this.isAuthenticated = false;
-      this.token = null;
-      this.user.set(null);
+      this.token = null as any;
+      this.user.set(null as any);
     }
 
 

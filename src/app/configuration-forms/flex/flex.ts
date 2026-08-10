@@ -54,7 +54,7 @@ export class FlexComponent implements OnInit {
         this.nuevoCampo = new DocumentoPlantillaCaracteristicaDTO();
         this.nuevoCampo.formato = 'T';
         this.nuevoCampo.plantilla = this.data.template;
-        this.flexService.getTemplate(this.data.template, null).subscribe((_returnedTemplate) => {
+        this.flexService.getTemplate(this.data.template, null!).subscribe((_returnedTemplate) => {
             this.plantilla = _returnedTemplate;
             this.isLoading = false;
             this.getFields();
@@ -230,7 +230,7 @@ export class FlexComponent implements OnInit {
     }
 
     private async deleteField(){
-        const eliminado = this.campos.splice(this.draggedIndex, 1)[0];
+        const eliminado = this.campos.splice(this.draggedIndex!, 1)[0];
             // eliminar en backend:
         const ok = await this.confirmar();
         if (!ok) {

@@ -4,8 +4,8 @@
   }
   <mat-label>{{ structure.nombre | titlecase }}</mat-label>
   <input type="text" matInput [formControl]="fControl" [matAutocomplete]="auto"
-    [id]="idField"
-    [name]="structure.llaveTabla"
+    [id]="idField!"
+    [name]="structure.llaveTabla!"
     [required]="required"
     [readonly]="!isEnabled">
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">

@@ -20,7 +20,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   private loginService = inject(LoginService);
 
 
-  recoverForm: FormGroup;
+  recoverForm: FormGroup<{ first: FormControl<string | null>, second: FormControl<string | null> }>;
   errorMsg = '';
   autorizationId: string;
   
@@ -59,7 +59,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
     }
 
 
-    this.loginService.changePwd(signinData.clave, signinData.first, this.autorizationId).subscribe({
+    this.loginService.changePwd(signinData.first!, signinData.first!, this.autorizationId).subscribe({
       next: () => {
         this.loginService.signout();
         Swal.fire('Todo perfecto', 'Tu nueva clave se ha confirmado, agradecemos tu paciencia, mejoramos para cuidar tu seguridad.','info');

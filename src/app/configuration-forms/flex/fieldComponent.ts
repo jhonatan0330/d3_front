@@ -7,6 +7,7 @@ import {
     DocumentoPlantillaCaracteristicaDTO,
     propiedadCampo,
     PropiedadCampoDTO,
+    RelacionInternaDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
 import Swal from 'sweetalert2';
 import { FlexService } from '../flex.service';
@@ -64,7 +65,7 @@ export class FieldComponent implements OnInit {
     cargarCampo(): void {
         this.isLoading = true;
 
-        this.flexService.getField(this.data.template, null).subscribe({
+        this.flexService.getField(this.data.template, null!).subscribe({
             next: (resp) => {
                 this.field = resp;
                 this.listarPropiedadesCampo();
@@ -84,7 +85,7 @@ export class FieldComponent implements OnInit {
             return;
         }
 
-        this.flexService.listarConsultaPropiedad(this.field.llaveTabla, null).subscribe({
+        this.flexService.listarConsultaPropiedad(this.field.llaveTabla, null!).subscribe({
             next: (props) => {
                 this.propiedadesCampo = props;
             },
@@ -99,15 +100,16 @@ export class FieldComponent implements OnInit {
         this.utilsService.fieldEditModalFlex(this.field.llaveTabla);
     }
 
-    editarPropiedad(pPropiedad?: PropiedadCampoDTO): void {
+    editarPropiedad(pPropiedad?: propiedadCampo): void {
         const _a = new PropiedadValorDefinidoDTO();
+        const pdto = pPropiedad as PropiedadCampoDTO;
         if (this.tipo === 'Plantilla') {
             _a.origen = 'L';
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pPropiedad);
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pdto);
         } else {
             _a.origen = 'C';
             _a.origenCategoria = this.field.formato;
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pPropiedad);
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pdto);
         }
     }
 
@@ -130,6 +132,8 @@ export class FieldComponent implements OnInit {
     toggleExpandido(): void {
         this.expandido = !this.expandido;
     }
+
+    listarRelacionesPropiedad(prop: propiedadCampo): void {}
 
     eliminarPropiedad(pPropiedad: any): void {
         Swal.fire({

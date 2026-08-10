@@ -37,7 +37,7 @@ export class OlMapComponent implements OnInit, AfterViewInit {
 
   @Input() lat: number;
   @Input() lon: number;
-  readonly zoom = input<number>(undefined);
+  readonly zoom = input<number | undefined>(undefined);
   readonly anchor = input<number[]>(DEFAULT_ANCHOR);
   readonly icon = input<string>(DEFAULT_ICON);
   readonly text = input<string>(DEFAULT_TEXT);

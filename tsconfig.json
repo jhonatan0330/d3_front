@@ -5,6 +5,7 @@
       "baseUrl": "./src",
       "ignoreDeprecations": "6.0",
       "strict": false,
+      "strictNullChecks": true,
       "outDir": "./dist/out-tsc",
       "sourceMap": true,
       "declaration": false,

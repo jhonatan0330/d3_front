@@ -3,12 +3,13 @@ import { LoginService } from 'app/authentication/login.service';
 import Swal from 'sweetalert2';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
     selector: 'app-change-picture',
     templateUrl: './change-picture.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatIcon, MatIconButton]
+    imports: [MatIcon, MatIconButton, MatProgressBar]
 })
 export class ChangePictureComponent {
   jwtAuth = inject(LoginService);
@@ -51,7 +52,7 @@ export class ChangePictureComponent {
 
   capture() {
     // set canvas size to actual video size
-    const _video = this.video().nativeElement;
+    const _video = this.video()!.nativeElement;
     let widthSquare = this.WIDTH;
     let xStart = 0;
     let yStart = 0;
@@ -68,7 +69,7 @@ export class ChangePictureComponent {
       }
     }
 
-    const _canvas = this.canvas().nativeElement;
+    const _canvas = this.canvas()!.nativeElement;
     _canvas.width = widthSquare;
     _canvas.height = widthSquare;
 
@@ -108,7 +109,7 @@ export class ChangePictureComponent {
 
   submitFile(internalFile: File) {
     this.submitted = true;
-    this.jwtAuth.changePictureUser(internalFile, null).subscribe({
+    this.jwtAuth.changePictureUser(internalFile, null as any).subscribe({
       next: (data) => {
         this.jwtAuth.user.set(data);
         this.submitted = false;
@@ -164,7 +165,7 @@ export class ChangePictureComponent {
       return;
     }
     for (let j = 0; j < files.length; j++) {
-      const iFile: File = files.item(j);
+      const iFile: File = files.item(j)!;
       this.submitFile(iFile);
     }
   }

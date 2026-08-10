@@ -190,7 +190,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
         const entitySearch: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
         entitySearch.nombre = texto;
         this.isLoading = true;
-        this.api.listarDocumentos(entitySearch, null).subscribe({
+        this.api.listarDocumentos(entitySearch, null!).subscribe({
           next: (_value: PedidoVentaDTO[]) => {
             this.isLoading = false;
             this.resultSets = [];
@@ -213,7 +213,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     openDocument(_doc: PedidoVentaDTO) {
-        if (this.templateService.getTemplate(_doc.plantilla, null)) {
+        if (this.templateService.getTemplate(_doc.plantilla, null!)) {
             this.utilsService.modalWithParams(
                 _doc,
                 false
@@ -225,7 +225,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
 
     autoCompleteDisplay(item: PedidoVentaDTO): string {
         if (!item) {
-          return;
+          return '';
         }
         if (item.descripcion) {
           return item.descripcion;

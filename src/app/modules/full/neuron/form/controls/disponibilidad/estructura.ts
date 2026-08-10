@@ -20,7 +20,7 @@ export class Estructura {
   isEnabled = true;
   titulo: string;
 
-  readonly navItem = signal<Puesto>(null);
+  readonly navItem = signal<Puesto | null>(null);
 
   constructor(
     private ctx: CanvasRenderingContext2D,
@@ -55,7 +55,7 @@ export class Estructura {
       for (let index = 0; index < this.ubicaciones.length; index++) {
         this.ubicaciones[index].draw();
       }
-      this.seleccionados = null;
+      this.seleccionados = null!;
       this.cantidad = 0;
     };
     loadedImage.onerror = () =>{
@@ -66,7 +66,7 @@ export class Estructura {
       for (let index = 0; index < this.ubicaciones.length; index++) {
         this.ubicaciones[index].draw();
       }
-      this.seleccionados = null;
+      this.seleccionados = null!;
       this.cantidad = 0;
     }
   }
@@ -81,7 +81,7 @@ export class Estructura {
             const componenteTexto = this.ubicaciones[k];
             if (componenteTexto.nombre === iData) {
               if (this.isEnabled) {
-                componenteTexto.dto.llaveTabla = null;
+                componenteTexto.dto.llaveTabla = null!;
               }
               componenteTexto.onClick();
               if(products){

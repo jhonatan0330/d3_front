@@ -57,8 +57,8 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
   slides: string[] = [];
 
-  user: UsuarioDTO;
-  company: OrganizacionDTO;
+  user: UsuarioDTO | undefined;
+  company: OrganizacionDTO | undefined;
 
   tempTemplateOpen;
   tempIdOpen;
@@ -157,7 +157,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     let value: string = this.filterControl.value;
     if (!value) { value = ''; }
     if (value.endsWith(' ')) { value = value.substring(0, value.length - 1); }
-    const _moduleFilter  = Object.assign([], this.modules).filter(
+    const _moduleFilter: DocumentoPlantillaDTO[]  = [...this.modules].filter(
       (item) => (
         ((item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1) || (item.codigo && item.codigo.toLowerCase() === value.toLowerCase()))
         && (item.estado && item.estado.indexOf('P') > -1))
@@ -166,7 +166,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     _moduleFilter.forEach((_iFilterModule)=>{
       let _flagFind = false;
       this.filteredModules.forEach((_iFilterMenu)=>{
-        if(_iFilterMenu.sectionKey === PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU).valor){
+        if(_iFilterMenu.sectionKey === PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)?.valor){
           if(!_iFilterMenu.children) _iFilterMenu.children = [];
           _iFilterMenu.children.push(_iFilterModule);
           _flagFind = true;
@@ -174,8 +174,8 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       });
       if(!_flagFind){
         this.filteredModules.push({
-          section: PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU).texto,
-          sectionKey: PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU).valor,
+          section: PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)!.texto,
+          sectionKey: PlantillaHelper.buscarPropiedad( _iFilterModule.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)!.valor,
           children:[_iFilterModule],
           visible: (value || this.filteredModules.length===0)?true:false,
           image: _iFilterModule.imagen
@@ -183,7 +183,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    this.filteredReports = Object.assign([], this.modules).filter(
+    this.filteredReports = [...this.modules].filter(
       (item) => (item.nombre && item.nombre.toLowerCase().indexOf(value.toLowerCase()) > -1
         && (item.estado && item.estado.indexOf('R') > -1))
     );
@@ -193,7 +193,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     this.route.params.subscribe((params: Params) => {
       const type = params.type;
       if (type) {
-        const plantilla = this.templateService.getTemplate(type, null);
+        const plantilla = this.templateService.getTemplate(type, null!);
         if (plantilla) {
           this.openDialog(type, params.id)
         } else {
@@ -205,7 +205,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private openDialog(_type, _id) {
-    const plantilla = this.templateService.getTemplate(_type, null);
+    const plantilla = this.templateService.getTemplate(_type, null!);
     if (plantilla) {
       const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
       pedidoVenta.plantilla = plantilla.llaveTabla;
@@ -228,7 +228,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectFirst() {
     if (this.filteredModules && this.filteredModules.length != 0) {
-      let newRoute = '/list/' + this.filteredModules[0].children[0].llaveTabla;
+      let newRoute = '/list/' + this.filteredModules[0].children![0].llaveTabla;
       this.router.navigate(['/list' + newRoute]);
       this.filterControl.setValue(null);
       this.filterItem();

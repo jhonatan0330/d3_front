@@ -31,7 +31,7 @@ export class AddPropertyComponent {
     usuarios: UsuarioDTO[];
 
     propiedadesRelacion: RelacionInternaDTO[] = [];
-    def: PropiedadValorDefinidoDTO = null;
+    def: PropiedadValorDefinidoDTO | null = null;
 
     filtroUsuario = '';
     filtroUsuarioExcluyente = '';
@@ -41,7 +41,7 @@ export class AddPropertyComponent {
     private debounceTimer: any;
 
     onPropiedadValorChange(llaveSeleccionada: string): void {
-        this.def = this.propiedadValores.find(p => p.llaveTabla === llaveSeleccionada);
+        this.def = this.propiedadValores.find(p => p.llaveTabla === llaveSeleccionada)!;
         if (this.def.pideRol) {
             this.buscarRoles();
         }
@@ -87,10 +87,10 @@ export class AddPropertyComponent {
         const _a = new PropiedadValorDefinidoDTO();
         _a.origen = this.propiedad.tipo;
         _a.origenCategoria = this.data.tipo.origenCategoria;
-        this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null)
+        this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null!)
             .subscribe(p => {
                 this.propiedadValores = p;
-                this.def = this.propiedadValores.find(p => p.llaveTabla === this.propiedad.propiedadValor);
+                this.def = this.propiedadValores.find(p => p.llaveTabla === this.propiedad.propiedadValor)!;
                 if (this.def.pideRol) {
                     this.buscarRoles();
                 }
@@ -101,8 +101,8 @@ export class AddPropertyComponent {
         this.flexService.listarConsultaRolAcceso().subscribe(p => {
             this.roles = p;
             if(!this.propiedad.llaveTabla){
-                this.propiedad.rol = null;
-                this.propiedad.rolExcluyente = null;
+                this.propiedad.rol = null as any;
+                this.propiedad.rolExcluyente = null as any;
             }
         })
     }
@@ -163,6 +163,10 @@ export class AddPropertyComponent {
 
 
 
+    editarRelacion(prop: RelacionInternaDTO): void {}
+
+    eliminarRelacion(prop: RelacionInternaDTO): void {}
+
     listarRelacionesPropiedad(): void {
         if (!this.propiedad.key) return;
         const prop = this.propiedad;
@@ -170,7 +174,7 @@ export class AddPropertyComponent {
         filtro.propiedad = prop.llaveTabla;
         filtro.estado = prop.estado;
 
-        this.flexService.relacionesPropiedad(filtro, null).subscribe({
+        this.flexService.relacionesPropiedad(filtro, null!).subscribe({
             next: (rels) => {
                 this.propiedadesRelacion = rels;
             },

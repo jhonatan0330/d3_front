@@ -31,7 +31,7 @@ export class AddFieldComponent {
         if (this.data.campo) {
             this.campo = this.data.campo;
         } else {
-            this.flexService.getField(this.data.template, null) //datos del campo antiguo
+            this.flexService.getField(this.data.template, null!) //datos del campo antiguo
                 .subscribe(p => {
                     this.campo = p;
                 });

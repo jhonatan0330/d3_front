@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, DestroyRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {
   DocumentMessage,
   DocumentoPlantillaCaracteristicaDTO,
@@ -34,7 +34,8 @@ import { NgClass } from '@angular/common';
     selector: 'app-massive',
     templateUrl: './massive.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatButton, MatIcon, FormsModule, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, NgClass, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow]
+    imports: [MatButton, MatIcon, FormsModule, MatProgressBar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, NgClass, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MassiveComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -50,7 +51,7 @@ export class MassiveComponent implements OnInit {
   plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
 
   canMassive = false;
-  failedDocuments = [];
+  failedDocuments: PedidoVentaDTO[] = [];
   inicio: Date;
   cantidadProcesada: number;
 
@@ -73,7 +74,7 @@ export class MassiveComponent implements OnInit {
 
   fieldIdInTemplateSecondary: DocumentoPlantillaCaracteristicaDTO;
 
-  dataSource = new MatTableDataSource([]);
+  dataSource = new MatTableDataSource<LoadLineDTO>([]);
   displayedColumns: string[] = [];
   titleColumns: string[] = [];
   fTiempoEspera: number = 0;
@@ -90,7 +91,7 @@ export class MassiveComponent implements OnInit {
         this.plantilla = this.templateService.getTemplate(
           this.plantillaId,
           this.urlServer
-        );
+        )!;
         this.startForm();
       } else {
         this.router.navigate(['/main']);
@@ -124,7 +125,7 @@ export class MassiveComponent implements OnInit {
           getFieldFromTemplate(
             this.plantilla,
             propertyLoadMassiveMultiple.valor
-          );
+          )!;
         const crudProperty: string = PlantillaHelper.buscarValor(
           fieldMultiple.propiedades,
           PlantillaHelper.PROCESO_ACCIONES
@@ -139,7 +140,7 @@ export class MassiveComponent implements OnInit {
         }
 
         const template: DocumentoPlantillaDTO =
-          this.templateService.getTemplate(crudProperty, null);
+          this.templateService.getTemplate(crudProperty, null!)!;
 
         if (!template.caracteristicas) {
           this.isProcessing = true;
@@ -150,7 +151,7 @@ export class MassiveComponent implements OnInit {
               this.templateService.getTemplate(
                 plantilla.llaveTabla,
                 plantilla.server
-              ).caracteristicas = plantilla.caracteristicas;
+              )!.caracteristicas = plantilla.caracteristicas;
             },
             error: () => {
               this.isProcessing = false;
@@ -170,7 +171,7 @@ export class MassiveComponent implements OnInit {
       const dbProperty: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(
         element.propiedades,
         PlantillaHelper.PLANTILLA_AUXILIAR
-      );
+      )!;
       if (dbProperty) {
         for (let j = 0; j < dbProperty.length; j++) {
           const elementProperty = dbProperty[j];
@@ -251,7 +252,7 @@ export class MassiveComponent implements OnInit {
       Swal.fire('', error.message, 'error');
       this.isLoading = false;
     }
-    return null;
+    return '';
   }
 
   generateXMLBaseExcel(): string {
@@ -271,7 +272,7 @@ export class MassiveComponent implements OnInit {
       Swal.fire('', error.message, 'error');
       this.isLoading = false;
     }
-    return null;
+    return '';
   }
 
   //tambien esta en tipo numero toca centralizarla
@@ -305,14 +306,14 @@ export class MassiveComponent implements OnInit {
     }
     const template = this.templateService.getTemplate(
       this.fieldIdInTemplateSecondary.plantilla,
-      null
-    );
+      null!
+    )!;
     this.validateCamposPlantilla(template);
     for (let i = 0; i < files.length; i++) {
       this.lblCarga = 'CARGANDO XML MULTIPLE ' + '<--' + this.lblCarga;
       const reader = new FileReader();
       reader.onload = () => {
-        this.onDataLoaded(reader.result.toString(), template, 1);
+        this.onDataLoaded(reader.result!.toString(), template, 1);
       };
       reader.readAsText(files[i]);
     }
@@ -338,7 +339,7 @@ export class MassiveComponent implements OnInit {
       const fileUpload = files[i];
       if (fileUpload.name.endsWith('.xml')) {
         reader.onload = () => {
-          this.onDataLoaded(reader.result.toString(), this.plantilla, 1);
+          this.onDataLoaded(reader.result!.toString(), this.plantilla, 1);
         };
         reader.readAsText(fileUpload);
       } else {
@@ -452,7 +453,7 @@ export class MassiveComponent implements OnInit {
   }
 
   generateVO(source, template: DocumentoPlantillaDTO): LoadLineDTO[] {
-    if (!template || !template.caracteristicas) return;
+    if (!template || !template.caracteristicas) return [];
     let documentosNewsFromXML: LoadLineDTO[] = [];
     let pedido: PedidoVentaDTO;
     let indexInicialProcesar = 0;
@@ -495,7 +496,7 @@ export class MassiveComponent implements OnInit {
             if (this.formatStringXML(iCampo.nombre) === nombreCampoXML) {
               campo.valorText = camposTexto[j].textContent;
               if(campo.valorText) {campo.valorText = campo.valorText.trim();}
-              campo = procesarXMLBase(campo);
+              campo = procesarXMLBase(campo)!;
               break;
             }
           }
@@ -507,7 +508,7 @@ export class MassiveComponent implements OnInit {
                 campo.valorText = source[i][j].toString();
                 if(campo.valorText) {campo.valorText = campo.valorText.trim();}
               }
-              campo = procesarXMLBase(campo);
+              campo = procesarXMLBase(campo)!;
               break;
             }
           }
@@ -516,7 +517,7 @@ export class MassiveComponent implements OnInit {
         if (!campo) {
           this.mensajeValidacion(pedido, i);
           this.isLoading = false;
-          return;
+          return [];
         }
 
         if (
@@ -774,7 +775,7 @@ export class MassiveComponent implements OnInit {
             detalle + '\n      ' + iCampo.campoDTO.nombre + ' : ' + valorTexto;
             if(iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO){
               if(iCampo.valorText && iCampo.valorText ==='SIN CARGAR'){
-                iCampo.valorText = null;
+                iCampo.valorText = null as unknown as string;
               }
               if(iCampo.valorText && this.files && !iCampo.valorText.startsWith('http')){
                 for (let j = 0; j < this.files.length; j++) {
@@ -812,9 +813,9 @@ export class MassiveComponent implements OnInit {
             toast: true,
             didOpen: () => {
               Swal.showLoading();
-              const timer = Swal.getPopup().querySelector("b");
+              const timer = Swal.getPopup()!.querySelector("b");
               timerInterval = setInterval(() => {
-                timer.textContent = `${Swal.getTimerLeft()}`;
+                timer!.textContent = `${Swal.getTimerLeft()}`;
               }, 100);
             },
             willClose: () => {
@@ -975,8 +976,8 @@ export class MassiveComponent implements OnInit {
     this.camposConsultar = [];
 
     this.dataSource.data = [];
-    this.documentosGenerados = undefined;
-    this.documentosGeneradosMultiple = undefined;
+    this.documentosGenerados = undefined as any;
+    this.documentosGeneradosMultiple = undefined as any;
 
     this.inicialCamposConsultar = 0;
     this.isUpdate = false;

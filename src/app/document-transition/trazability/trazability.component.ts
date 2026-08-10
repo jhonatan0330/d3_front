@@ -87,12 +87,12 @@ export class TrazabilityComponent implements OnInit {
     } else {
       this.selectedTrace.setValue(selected.filter(v => v !== value));
     }
-    if (this.selectedTrace.value.find((item) => item === '0')) {
+    if (this.selectedTrace.value!.find((item) => item === '0')) {
       this.textDropDown = 'Todos';
     } else {
       this.textDropDown = '';
       for (const opt of this.optionsTrace) {
-        if (this.selectedTrace.value.find((item) => item === opt.value)) { this.textDropDown += (opt.viewValue + ','); };
+        if (this.selectedTrace.value!.find((item) => item === opt.value)) { this.textDropDown += (opt.viewValue + ','); };
       }
       this.textDropDown = this.textDropDown.slice(0, -1); // Eliminar la última coma
     }
@@ -102,7 +102,7 @@ export class TrazabilityComponent implements OnInit {
   ngOnInit(): void {
     this.plantilla = this.templateService.getTemplate(
       this.data.template, this.data.server
-    );
+    )!;
     this.documentName = this.data.documentName;
     this.documentState = this.data.documentState;
     this.state = this.data.state;
@@ -115,12 +115,12 @@ export class TrazabilityComponent implements OnInit {
       return;
     }
 
-    this.vouchersTemplate = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.TEMPLATE_VOUCHER);
+    this.vouchersTemplate = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.TEMPLATE_VOUCHER)!;
 
 
 
     // Colocar los valores iniciales de la consulta historica
-    const checksHistorial: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_HISTORIAL_ACTIVO);
+    const checksHistorial: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_HISTORIAL_ACTIVO)!;
     if (checksHistorial && checksHistorial.length != 0) {
       const initialOptions = ['1'];
       for (let i = 0; i < checksHistorial.length; i++) {
@@ -172,15 +172,15 @@ export class TrazabilityComponent implements OnInit {
     const entity: DocumentoRelacionGestorFilterDTO = new DocumentoRelacionGestorFilterDTO();
     entity.documentoPrincipal = this.data.document;
 
-    const doc: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[0].value) ? '1' : '0';
-    const asg: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[1].value) ? '1' : '0';
-    const msj: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[2].value) ? '1' : '0';
-    const inv: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[3].value) ? '1' : '0';
-    const val: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[4].value) ? '1' : '0';
-    const rep: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[5].value) ? '1' : '0';
-    const api: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[6].value) ? '1' : '0';
-    const loc: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[7].value) ? '1' : '0';
-    const cct: string = this.selectedTrace.value.find((item) => item === this.optionsTrace[8].value) ? '1' : '0';
+    const doc: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[0].value) ? '1' : '0';
+    const asg: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[1].value) ? '1' : '0';
+    const msj: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[2].value) ? '1' : '0';
+    const inv: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[3].value) ? '1' : '0';
+    const val: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[4].value) ? '1' : '0';
+    const rep: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[5].value) ? '1' : '0';
+    const api: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[6].value) ? '1' : '0';
+    const loc: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[7].value) ? '1' : '0';
+    const cct: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[8].value) ? '1' : '0';
     entity.estado = doc + asg + msj + inv + val + rep + api + loc + cct;
    // if (this.selectedTrace.value.find((item) => item === this.optionsTrace[0].value)) { entity.estado = '1111111111'; }
 
@@ -270,7 +270,7 @@ export class TrazabilityComponent implements OnInit {
         .subscribe({
           next: (value: IdResponse) => {
             if (value && value.id) {
-              this.utilsService.modalVoucher(value.id, null).subscribe({ error: () => {} });
+              this.utilsService.modalVoucher(value.id, null!).subscribe({ error: () => {} });
             } else {
               this.notificationCenter.info('Comprobante', 'No se encontro comprobante para este documento');
             }
@@ -316,7 +316,7 @@ export class TrazabilityComponent implements OnInit {
     }
   }
 
-  isSameDay(current: string, pIndex: number): boolean {
+  isSameDay(current: string | Date, pIndex: number): boolean {
 
     if( pIndex === 0 || !this.dataProvider || this.dataProvider.length === 0) {
       return false;
@@ -330,7 +330,7 @@ export class TrazabilityComponent implements OnInit {
   }
 
 
-  getRelativeFormat(date: string): string {
+  getRelativeFormat(date: string | Date): string {
     const fecha = new Date(date);
     const hoy = new Date();
 

@@ -40,7 +40,7 @@ export class AccountingService {
         return this.http.get<ResultMapDTO[]>(this.ls.getUrlAccess('/acc/plan/balance/' + catalogId));
     }
 
-    getAccounts(catalogId: string, nameFilter: string = null): Observable<AccountDTO[]> {
+    getAccounts(catalogId: string, nameFilter: string | null = null): Observable<AccountDTO[]> {
         let params = '';
         if (nameFilter) { params = params + 'filter=' + nameFilter; }
         if (params.length !== 0) params = '?' + params;

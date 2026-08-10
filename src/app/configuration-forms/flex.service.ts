@@ -28,7 +28,7 @@ export class FlexService {
         );
     }
 
-    getFields(pTemplateKey: string, _server: string = null): Observable<DocumentoPlantillaCaracteristicaDTO[]> {
+    getFields(pTemplateKey: string, _server: string | undefined = undefined): Observable<DocumentoPlantillaCaracteristicaDTO[]> {
         const _payload = {
             estado: 'A',
             plantilla: pTemplateKey
@@ -41,21 +41,21 @@ export class FlexService {
 
     guardarDocumentoPlantillaCaracteristica(pTemplate: DocumentoPlantillaCaracteristicaDTO) : Observable<DocumentoPlantillaCaracteristicaDTO> {
         return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
-            this.ls.getUrlAccess('/flex/guardarDocumentoPlantillaCaracteristica', null),
+            this.ls.getUrlAccess('/flex/guardarDocumentoPlantillaCaracteristica', undefined),
             pTemplate
         );
     }
 
     inactivarDocumentoPlantillaCaracteristica(pTemplate: DocumentoPlantillaCaracteristicaDTO) : Observable<DocumentoPlantillaCaracteristicaDTO> {
         return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
-            this.ls.getUrlAccess('/flex/inactivarDocumentoPlantillaCaracteristica', null),
+            this.ls.getUrlAccess('/flex/inactivarDocumentoPlantillaCaracteristica', undefined),
             pTemplate
         );
     }
 
     actualizarDocumentoPlantillaCaracteristica(pTemplate: DocumentoPlantillaCaracteristicaDTO) : Observable<DocumentoPlantillaCaracteristicaDTO> {
         return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
-            this.ls.getUrlAccess('/flex/actualizarDocumentoPlantillaCaracteristica', null),
+            this.ls.getUrlAccess('/flex/actualizarDocumentoPlantillaCaracteristica', undefined),
             pTemplate
         );
     }
@@ -72,14 +72,14 @@ export class FlexService {
     }
     addProperty(pTemplate: PropiedadCampoDTO){
         return this.http.post(
-            this.ls.getUrlAccess('/flex/guardarPropiedad', null),
+            this.ls.getUrlAccess('/flex/guardarPropiedad', undefined),
             pTemplate
         );
     }
 
     changeProperty(pTemplate: PropiedadCampoDTO){
         return this.http.post(
-            this.ls.getUrlAccess('/flex/actualizarPropiedad', null),
+            this.ls.getUrlAccess('/flex/actualizarPropiedad', undefined),
             pTemplate
         );
     }
@@ -111,7 +111,7 @@ export class FlexService {
             estado: 'A'
         };
         return this.http.post<RolAccesoFilterDTO[]>(
-            this.ls.getUrlAccess('/flex/listarConsultaRolAcceso', null),
+            this.ls.getUrlAccess('/flex/listarConsultaRolAcceso', undefined),
             payload
         );
     }
@@ -122,14 +122,14 @@ export class FlexService {
             filtroParametro: pFiltro
         };
         return this.http.post<UsuarioDTO[]>(
-            this.ls.getUrlAccess('/flex/listarRolUsuario', null),
+            this.ls.getUrlAccess('/flex/listarRolUsuario', undefined),
             payload
         );
     }
 
     inactivarPropiedad(pPropiedad: PropiedadCampoDTO,): Observable<PropiedadCampoDTO[]> {
         return this.http.post<PropiedadCampoDTO[]>(
-            this.ls.getUrlAccess('/flex/inactivarPropiedad', null),
+            this.ls.getUrlAccess('/flex/inactivarPropiedad', undefined),
             pPropiedad
         );
     }

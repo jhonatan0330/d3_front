@@ -105,11 +105,11 @@ export class AccountComponent implements OnInit, OnDestroy {
                 }
             });
         this.getCatalogs();
-        this.accountingService.currentCatalog = null;
+        this.accountingService.currentCatalog = null!;
     }
 
     toggleDrawer(): void {
-        this.drawer().toggle();
+        this.drawer()!.toggle();
     }
 
     ngOnDestroy(): void {
@@ -187,7 +187,7 @@ export class AccountComponent implements OnInit, OnDestroy {
             return;
         }
         this.accountingService.currentCatalog = catalog;
-        this.drawer().close();
+        this.drawer()!.close();
         this.getAccounts();
         this.getBalance();
         this.getVouchers();
@@ -248,9 +248,13 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
 
+    trackByFn(index: number, item: any): any {
+        return item.key || index;
+    }
+
     openManualForm(): void {
         if (!this.accountingService.currentCatalog) { return; }
-        this.utilsService.modalVoucher(null, this.accountingService.currentCatalog.key)
+        this.utilsService.modalVoucher(null!, this.accountingService.currentCatalog.key)
             .subscribe(() => { this.getBalance(); this.getVouchers(); });
     }
 }

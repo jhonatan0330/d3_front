@@ -34,7 +34,7 @@ export class NotificationsService {
   /**
    * Get all notifications
    */
-  getAll(_server: string = null): Observable<ActividadDTO[]> {
+  getAll(_server: string = null!): Observable<ActividadDTO[]> {
     return this.http.get<ActividadDTO[]>(
       this.ls.getUrlAccess('/notification/getNotifications', _server)
     ).pipe(
@@ -66,7 +66,7 @@ export class NotificationsService {
     this._notifications.set([]);
   }
 
-  readActivity(actividad: ActividadDTO, _server: string = null): Observable<ActividadDTO> {
+  readActivity(actividad: ActividadDTO, _server: string = null!): Observable<ActividadDTO> {
     return this.http.post<ActividadDTO>(
       this.ls.getUrlAccess('/notification/readActivity', _server),
       actividad

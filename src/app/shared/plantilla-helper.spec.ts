@@ -13,8 +13,8 @@ describe('PlantillaHelper', () => {
     expect(found!.valor).toBe('#ff0000');
   });
 
-  it('buscarPropiedad returns undefined when the key is absent', () => {
-    expect(PlantillaHelper.buscarPropiedad(props, 'NO_EXISTE')).toBeUndefined();
+  it('buscarPropiedad returns null when the key is absent', () => {
+    expect(PlantillaHelper.buscarPropiedad(props, 'NO_EXISTE')).toBeNull();
   });
 
   it('buscarPropiedad returns null for undefined properties', () => {

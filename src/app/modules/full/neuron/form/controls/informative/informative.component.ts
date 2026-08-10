@@ -28,7 +28,7 @@ export class InformativeComponent extends BaseComponent implements OnInit {
         this.fControl.setValue(this.data.valorText);
       } else{
         if(!this.data.principal){
-          this.procesarCampo(null);
+          this.procesarCampo(null!);
         }
       }
     }
@@ -40,7 +40,7 @@ export class InformativeComponent extends BaseComponent implements OnInit {
   actualizar(): void {
     const nuevoValor = this.fControl.value;
     if (this.data.valorText !== nuevoValor) {
-      this.data.valorText = nuevoValor;
+      this.data.valorText = nuevoValor!;
       //Me estaba colocando los formularios como modificados pero no tenian valor
       if(nuevoValor) {this.avisarModificacion();}
     }
@@ -48,7 +48,7 @@ export class InformativeComponent extends BaseComponent implements OnInit {
 
   procesarCampo(campoFiltro: PedidoVentaCaracteristicaFilterDTO): void {
     if(!this.data.dependientes || this.data.dependientes.length===0) {return;}
-    let filterVerification:string = null;
+    let filterVerification:string = null!;
     for (let i = 0; i < this.data.dependientes.length; i++) {
       const iDependent = this.data.dependientes[i];
       if(iDependent.valorOpcion) { filterVerification = iDependent.valorOpcion; }

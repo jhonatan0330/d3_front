@@ -63,15 +63,15 @@
                     <div class="flex justify-between w-full sm:w-1/2 gap-1">
                       <mat-form-field>
                         <mat-label>Débito</mat-label>
-                        <input matInput currencyMask formControlName="positive" placeholder="Debito"
+                        <input matInput formControlName="positive" placeholder="Debito"
                           id="{{'debit'+i}}"
-                          [options]="{ precision: 0, allowNegative: false, decimal: ',', thousands: '.'}" />
+                          />
                         </mat-form-field>
                         <mat-form-field>
                           <mat-label>Crédito</mat-label>
-                          <input matInput currencyMask formControlName="negative" placeholder="Credito"
+                          <input matInput formControlName="negative" placeholder="Credito"
                             id="{{'credit'+i}}"
-                            [options]="{ precision: 0, allowNegative: false, decimal: ',', thousands: '.'}" />
+                            />
                           </mat-form-field>
                         </div>
                       </div>

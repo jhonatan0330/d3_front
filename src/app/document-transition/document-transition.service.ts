@@ -38,14 +38,14 @@ export class DocumentTransitionService {
   }
 
   getVoucherOfDocument(pPrepareVoucher: VoucherPrepareRequest): Observable<IdResponse> {
-    return this.http.post<IdResponse>(this.ls.getUrlAccess('/acc/voucher/document',null),
+    return this.http.post<IdResponse>(this.ls.getUrlAccess('/acc/voucher/document', undefined),
       pPrepareVoucher
     );
   }
 
   generateVoucher(pPrepareVoucher: VoucherPrepareRequest): Observable<IdResponse> {
     return this.http.post<IdResponse>(
-      this.ls.getUrlAccess('/acc/voucher/generate-voucher', null),
+      this.ls.getUrlAccess('/acc/voucher/generate-voucher', undefined),
       pPrepareVoucher
     );
   }

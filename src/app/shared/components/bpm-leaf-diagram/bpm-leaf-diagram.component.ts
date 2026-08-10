@@ -51,7 +51,7 @@ export class BpmLeafDiagramComponent implements OnInit {
   ngOnInit(): void {
     if (!this.procesoId) return;
     // fetch latest version of the process (template) using API
-    this.api.obtenerCampos(this.procesoId, this.server).subscribe({
+    this.api.obtenerCampos(this.procesoId, this.server ?? '').subscribe({
       next: (tpl) => {
         // tpl.estados and tpl.transiciones expected
         const anyTpl: any = tpl as any;

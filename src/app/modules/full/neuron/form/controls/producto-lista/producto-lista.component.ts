@@ -31,7 +31,10 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
   productosDisponibles: ProductoDTO[];
   productosFiltrados: ProductoDTO[];
   usuarioRol: UsuarioRolProductoDTO;
-  promoForm: FormGroup;
+  promoForm = new FormGroup({
+    nombre: new FormControl(''),
+    cantidad: new FormControl(0)
+  });
   displayedColumns: string[] = [
     'producto', 'personalizado', 'promocion'
   ];
@@ -78,7 +81,7 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
     }
     this.isLoading = true;
     const nFilter:PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
-    nFilter.filtroParametro = this.fControl.value;
+    nFilter.filtroParametro = this.fControl.value!;
     this.fControl.setValue('');
     this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
@@ -101,10 +104,7 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
       return;
     }
 
-    this.promoForm = new FormGroup({
-      nombre: new FormControl(''),
-      cantidad: new FormControl(0)
-    });
+    this.promoForm.reset({ nombre: '', cantidad: 0 });
     this.usuarioRol = new UsuarioRolProductoDTO();
     this.usuarioRol.producto = producto.llaveTabla;
     this.usuarioRol.productoNombre = producto.nombre;
@@ -119,12 +119,12 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
     // vc.usuarioRolProducto.estado = MVCConstant.ESTADO_ACTIVO;
     const promoData = this.promoForm.value;
     this.usuarioRol.estado = 'A';
-    this.usuarioRol.nombre = promoData.nombre;
-    this.usuarioRol.cantidadPromocion = promoData.cantidad;
+    this.usuarioRol.nombre = promoData.nombre!;
+    this.usuarioRol.cantidadPromocion = promoData.cantidad!;
     this.data.productosExclusivos.push(this.usuarioRol);
-    this.usuarioRol = undefined;
-    this.productosDisponibles = undefined;
-    this.productosFiltrados = undefined;
+    this.usuarioRol = undefined!;
+    this.productosDisponibles = undefined!;
+    this.productosFiltrados = undefined!;
     this.avisarModificacion();
   }
 

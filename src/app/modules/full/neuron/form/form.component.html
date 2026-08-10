@@ -1,7 +1,7 @@
 <!-- Titulo  [style]="styleSizePop"-->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex px-4 py-2 shadow-md"
   [style]="styleSizePop" [style.color]="colorFont()" [style.backgroundColor]="color()">
-  <img src="{{ pedido?.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
+  <img src="{{ (pedido?.imagen ?? '') | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
   <!-- Texto del titulo -->
   <div class="w-full">
     <div class="w-full flex sm:flex">
@@ -149,13 +149,13 @@
         @if (changeStateIsLoading) {
           <mat-progress-bar class="w-full" mode="indeterminate"></mat-progress-bar>
         }
-        <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
+          <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
           <div>
             <mat-form-field class="w-full">
               <input matInput name="estadoFinal" [matAutocomplete]="auto"
                 [formControl]="changeStateForm.controls['estadoFinal']" placeholder="Nuevo estado" required />
                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayChangeState">
-                  @for (newState of plantilla.estados; track newState) {
+                  @for (newState of plantilla!.estados; track newState) {
                     <mat-option [value]="newState">
                       <span>{{ newState.nombre }}</span>
                     </mat-option>

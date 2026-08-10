@@ -20,14 +20,14 @@
         onclick="simpleUploadXML.click();">
         <mat-icon class="mr-2">cloud_upload</mat-icon> 2. Cargar
         <input id="simpleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
-          (click)="$event.target.value = ''" (change)="handleFileInput($event.target.files)" />
+          (click)="$event.target.value = ''" (change)="handleFileInput($event.target.files!)" />
         </button>
         @if (fieldIdInTemplateSecondary && documentosGenerados) {
           <button mat-flat-button color="accent" class="m-2" onclick="multipleUploadXML.click();"
             [disabled]="isLoading || isProcessing">
             <mat-icon class="mr-2">cloud_upload</mat-icon> Cargar Multiple
             <input id="multipleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
-              (click)="$event.target.value = ''" (change)="handleFileInputMultiple($event.target.files)" />
+              (click)="$event.target.value = ''" (change)="handleFileInputMultiple($event.target.files!)" />
             </button>
           }
 
@@ -43,10 +43,10 @@
           <label><input class="m-2" type="checkbox" [(ngModel)]="skipSelected" />No detenerse cuando encuentre errores</label>
         </div>
 
-        <mat-progress-bar [mode]="isLoading ? 'indeterminate' : ''" class="w-full">Validando Datos</mat-progress-bar>
+        <mat-progress-bar [mode]="isLoading ? 'indeterminate' : 'query'" class="w-full">Validando Datos</mat-progress-bar>
         {{ lblCarga }}
         {{ lblTipoProceso }}
-        <mat-progress-bar [mode]="isLoading ? 'indeterminate' : ''" class="w-full"></mat-progress-bar>
+        <mat-progress-bar [mode]="isLoading ? 'indeterminate' : 'query'" class="w-full"></mat-progress-bar>
         <div class="w-full">
           <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading || !isValidate || isProcessing "
             (click)="startLoad()">
@@ -67,10 +67,10 @@
 
         <input [id]="'_file'" type="file" webkitdirectory directory multiple
           (click)="$event.target.value = '';$event.stopPropagation();" [disabled]="isProcessing"
-          (change)="handleFileInputToLoadArchivo($event.target.files)" />
+          (change)="handleFileInputToLoadArchivo($event.target.files!)" />
 
         </div>
-        <mat-progress-bar [mode]="isProcessing ? 'indeterminate' : ''" class="w-full"></mat-progress-bar>
+        <mat-progress-bar [mode]="isProcessing ? 'indeterminate' : 'query'" class="w-full"></mat-progress-bar>
         <span class="w-full">{{ lblProcesar }}</span>
         <div class="w-full">
           @for (iDocument of failedDocuments; track iDocument) {

@@ -44,7 +44,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
       this.disponibles = this.structure.documentos;
       this.asignarValorInicial();
     } else {
-      this.procesarCampo(null);
+      this.procesarCampo(null!);
     }
     this.fControl.valueChanges.subscribe((value) => {
       this.actualizar();
@@ -94,8 +94,8 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
       }
     } else {
       if (this.data.valorOpcion) {
-        this.data.valorOpcion = null;
-        this.data.principal = null;
+        this.data.valorOpcion = null as any;
+        this.data.principal = null as any;
         this.avisarModificacion();
       }
     }
@@ -104,7 +104,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
   procesarCampo(campoFiltro: PedidoVentaCaracteristicaFilterDTO) {
     const nFilter: PedidoVentaCaracteristicaFilterDTO =
       this.transformPVCtoFilter(this.data);
-    nFilter.valorOpcion = null;
+    nFilter.valorOpcion = null as any;
     this.isLoading = true;
     this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
@@ -122,7 +122,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     this.asignarValorInicial(); // Se hace antes del validar porque no aparecian la primera ve<
     // Consulto la plantilla para actualizarla y no tener que volver a consultarla
     const plantillaBase: DocumentoPlantillaDTO =
-      this.templateService.getTemplate(this.structure.plantilla, this.urlServer);
+      this.templateService.getTemplate(this.structure.plantilla, this.urlServer)!;
 
     for (let i = 0; i < plantillaBase.caracteristicas.length; i++) {
       const iCampo = plantillaBase.caracteristicas[i];
@@ -170,7 +170,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     if (this.isLoading) {
       return false;
     }
-    this.errorMessage = null;
+    this.errorMessage = null as any;
     this.required = PlantillaHelper.isEmpty(this.structure.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL);
 
     if (this.required	&& !this.data.valorOpcion && !this.data.valorText) {
@@ -181,7 +181,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     }
 
     if (this.errorMessage) {
-      const input = document.getElementById(this.idField) as HTMLInputElement;
+      const input = document.getElementById(this.idField!) as HTMLInputElement;
       if (input) { input.focus();  }
       return false;
     }

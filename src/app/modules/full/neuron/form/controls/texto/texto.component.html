@@ -5,9 +5,9 @@
   <mat-label>{{structure.nombre | titlecase }} </mat-label>
   @if (!textoLargo) {
     <input matInput
-      [id]="idField"
+      [id]="idField!"
       [formControl]="fControl"
-      [name]="structure.llaveTabla"
+      [name]="structure.llaveTabla!"
       [required]="required"
       [readonly]="!isEnabled || formatText==='D'"
       autocomplete="off" />
@@ -25,5 +25,5 @@
   </div>
 }
 @if (isEnabled && formatText==='D') {
-  <app-direccion-form [direccionInicial]="fControl.value" (direccionChange)="onDireccionChange($event)"></app-direccion-form>
+  <app-direccion-form [direccionInicial]="fControl.value!" (direccionChange)="onDireccionChange($event)"></app-direccion-form>
 }

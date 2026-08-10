@@ -119,7 +119,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
             backdropClass: 'fuse-backdrop-on-mobile',
             scrollStrategy: this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
-                .flexibleConnectedTo(this._notificationsOrigin()._elementRef.nativeElement)
+                .flexibleConnectedTo(this._notificationsOrigin()!._elementRef.nativeElement)
                 .withLockedPosition(true)
                 .withPush(true)
                 .withPositions([

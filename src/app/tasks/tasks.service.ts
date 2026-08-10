@@ -41,7 +41,7 @@ export class TasksService {
     /**
      * Get tasks
      */
-    getTasks(_server: string = null): Observable<Task[]> {
+    getTasks(_server: string | undefined = undefined): Observable<Task[]> {
         return this._httpClient.get<Task[]>(
             this.ls.getUrlAccess('/task/', _server)
         ).pipe(
@@ -69,7 +69,7 @@ export class TasksService {
     /**
      * Get task by id
      */
-    getTaskById(id: string, _server: string = null): Observable<Task> {
+    getTaskById(id: string, _server: string | undefined = undefined): Observable<Task> {
         return this._httpClient.get<Task>(
             this.ls.getUrlAccess('/task/' + id, _server)
         );
@@ -80,8 +80,8 @@ export class TasksService {
      *
      * @param type
      */
-    createTask(title: string, _server: string = null): Observable<string> {
-        const task: Task = {
+    createTask(title: string, _server: string | undefined = undefined): Observable<string> {
+        const task = {
             title: title,
             key: null,
             notes: null,
@@ -89,7 +89,7 @@ export class TasksService {
             dueDate: null,
             priority: 1,
             order: 0
-        }
+        } as unknown as Task;
         return this._httpClient.post<IdResponse>(
             this.ls.getUrlAccess('/task/create', _server), task
         ).pipe(
@@ -107,7 +107,7 @@ export class TasksService {
      * @param id
      * @param task
      */
-    updateTask(task: Task, _server: string = null): Observable<IdResponse> {
+    updateTask(task: Task, _server: string | undefined = undefined): Observable<IdResponse> {
         return this._httpClient.post<IdResponse>(
             this.ls.getUrlAccess('/task/update', _server), task
         );
@@ -118,7 +118,7 @@ export class TasksService {
      *
      * @param id
      */
-    deleteTask(id: string, _server: string = null): Observable<IdResponse> {
+    deleteTask(id: string, _server: string | undefined = undefined): Observable<IdResponse> {
         return this._httpClient.post<IdResponse>(
             this.ls.getUrlAccess('/task/delete/' + id, _server), null
         ).pipe(

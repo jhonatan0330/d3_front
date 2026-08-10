@@ -57,7 +57,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
     templatesFromProcess: DocumentoPlantillaDTO[];
     tableroId: string;
-    procesoId: string;
+    procesoId: string | null;
 
     // Variables para sincronizar con la vista
     dataProvider: PedidoVentaDTO[] = []; // Conjunto de documentos a visualizar
@@ -79,6 +79,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     form: FormGroup = new FormGroup({});
     hasCreatePermission = false;
     reportForms: PropiedadDTO[];
+    filteredReports: any[] = [];
 
     // textoInicial: string; // Usado para colocar el texto incial de los fomrularios nuevos, ejemplo un cliente buscado no encontrado
     // campoHerencia: string; // Usado para enviar el id del campo que tiene herencia
@@ -116,7 +117,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.procesoId = null;
             //const serverUrl = this.templateService.getUrl4Id(params.server_id);
             if (propType === 'list') {
-                this.plantilla = this.templateService.getTemplate(params.id, params.server_id);
+                this.plantilla = this.templateService.getTemplate(params.id, params.server_id)!;
                 if (!this.plantilla) {
                     this.router.navigate(['/main']);
                     return;
@@ -124,9 +125,9 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             } else if (propType === 'process_crud') {
                 this.procesoId = params.id;
                 if (this.procesoId) {
-                    this.plantilla = this.templateService.getProceso(this.procesoId);
+                    this.plantilla = this.templateService.getProceso(this.procesoId)!;
                     if(this.plantilla && this.plantilla.proceso){
-                        this.templatesFromProcess = this.templateService.getTemplateOfProcess(this.procesoId)
+                        this.templatesFromProcess = this.templateService.getTemplateOfProcess(this.procesoId)!
                         .filter((item) => item.propiedades &&
                             PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)
                             && PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PLANTILLA_INICIA_PROCESO)
@@ -153,7 +154,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.reportForms = PlantillaHelper.buscarValorMultiple(
                 this.plantilla.propiedades,
                 PlantillaHelper.REPORT_MODULE_REFERENCE
-            );
+            ) ?? [];
             if (!this.solicitarFechas && this.templatesFromProcess) {
                 for (let i = 0; i < this.templatesFromProcess.length; i++) {
                     const iTemplateFromService = this.templatesFromProcess[i];
@@ -253,7 +254,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
        */
     toggleDrawer(): void {
         // Toggle the drawer
-        this.drawer().toggle();
+        this.drawer()!.toggle();
     }
 
     /*removeColumn(pColumn: string) {
@@ -296,7 +297,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         if (this.tableroId) {
             entity.campoPropiedad = this.tableroId;
         }
-        entity.proceso = this.procesoId;
+        entity.proceso = this.procesoId!;
         if (this.fControlCheck.value) {
             if (!this.fControlSearch.value) {
                 Swal.fire({
@@ -307,9 +308,9 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 return;
             }
             entity.nombre = this.fControlSearch.value;
-            entity.filtroParametro = null;
+            entity.filtroParametro = null!;
         } else {
-            entity.nombre = null;
+            entity.nombre = null!;
             entity.filtroParametro = this.fControlSearch.value;
             if (this.solicitarFechas && (!this.fCDateStart.value || !this.fCDateEnd.value)) {
                 Swal.fire({
@@ -348,17 +349,17 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             } else {
                 if (entity.estadoExpediente === ';A') {
                     entity.estado = StatesEnum.ACTIVE;
-                    entity.estadoExpediente = null;
+                    entity.estadoExpediente = null!;
                 } else {
                     if (entity.estadoExpediente === ';I') {
                         entity.estado = StatesEnum.INACTIVE;
-                        entity.estadoExpediente = null;
+                        entity.estadoExpediente = null!;
                     } else {
                         if (entity.estadoExpediente === ';A;I') {
-                            entity.estado = null;
-                            entity.estadoExpediente = null;
+                            entity.estado = null!;
+                            entity.estadoExpediente = null!;
                         } else {
-                            entity.estado = null;
+                            entity.estado = null!;
                         }
                     }
                 }
@@ -540,7 +541,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         //Cuando es tipo proceso no puedo encontrar los campos de todas las plantillas
         if (this.plantilla.estado === 'T') { return; }
         if (!this.plantilla.caracteristicas) {
-            this.cargarPlantilla(this.plantilla.llaveTabla, null);
+            this.cargarPlantilla(this.plantilla.llaveTabla, null!);
             return;
         }
         const filterDocument = new PedidoVentaDTO;
@@ -549,7 +550,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.MULTIPLE)
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)) {
                 const componentDynamic: Type<any> = getComponent(_campo);
-                const componentRef = this.myForm().createComponent<IDynamicControl>(
+                const componentRef = this.myForm()!.createComponent<IDynamicControl>(
                     componentDynamic
                 );
                 componentRef.instance.structure = _campo;
@@ -564,7 +565,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         // Colocar listener de Dependientes
         for (let j = 0; j < this.plantilla.caracteristicas.length; j++) {
             const iBase = this.plantilla.caracteristicas[j];
-            const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultipleFromManyKeys(
+            const codigoDepende: PropiedadDTO[] | null = PlantillaHelper.buscarValorMultipleFromManyKeys(
                 iBase.propiedades,
                 [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA, PlantillaHelper.UPDATE_INFORMATIVE_FIELD]
             );
@@ -599,7 +600,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     cargarPlantilla(plantillaId: string, urlServer: string): DocumentoPlantillaDTO {
         const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
             plantillaId, urlServer
-        );
+        )!;
         if (dp) {
             // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
             if (!dp.caracteristicas) {
@@ -616,13 +617,13 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                             this.isLoading.set(false);
                         }
                     });
-                return;
+                return null!;
             } else {
                 return dp;
             }
         } else {
             Swal.fire('Autorizacion', 'No tienes permisos para ver este documento.', 'info');
-            return;
+            return null!;
         }
     }
 
@@ -630,10 +631,10 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     cargarCamposPlantilla(value: DocumentoPlantillaDTO) {
         const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
             value.llaveTabla, value.server
-        );
+        )!;
         if (dp) {
             dp.caracteristicas = value.caracteristicas;
-            this.templateService.getTemplate(value.llaveTabla, value.server).caracteristicas =
+            this.templateService.getTemplate(value.llaveTabla, value.server)!.caracteristicas =
                 value.caracteristicas;
             this.plantilla.caracteristicas = value.caracteristicas;
             this.showFields();

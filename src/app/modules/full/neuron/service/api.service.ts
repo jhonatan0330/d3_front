@@ -25,7 +25,7 @@ export class ApiService {
     private ls = inject(LocalStoreService);
 
 
-    listarPlantillas(pProfile: string, pServer: string = null): Observable<DocumentoPlantillaDTO[]> {
+    listarPlantillas(pProfile: string, pServer: string = null!): Observable<DocumentoPlantillaDTO[]> {
         return this.http.get<DocumentoPlantillaDTO[]>(
             this.ls.getUrlAccess('/template/getTemplates/'+ pProfile, pServer)
         );
@@ -101,7 +101,7 @@ export class ApiService {
 
     verificarToken(usuario: UsuarioAutenticacionDTO): Observable<UsuarioAutenticacionDTO> {
         return this.http.post<UsuarioAutenticacionDTO>(
-            this.ls.getUrlAccess('/user/dfa', null), usuario);
+            this.ls.getUrlAccess('/user/dfa', undefined), usuario);
 
     }
 
@@ -183,7 +183,7 @@ export class ApiService {
         );
     }
 
-    getMessageInFiledProccess(property: String, value: String, _server: string = null): Observable<IdResponse> {
+    getMessageInFiledProccess(property: String, value: String, _server: string = null!): Observable<IdResponse> {
         const endpoint = this.ls.getUrlAccess('/rest/getMessageToProcessField/' + property + '/' + value, _server);
         return this.http.get<IdResponse>(endpoint);
     }

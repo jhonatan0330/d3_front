@@ -4,7 +4,7 @@ export class FormulaHelper {
   static calcular(formula: string): number {
     formula = formula.replaceAll("+-","-");
     formula = formula.replaceAll("--","+");
-    let result: number;
+    let result!: number;
 
     const parentesisCierra = formula.indexOf(')');
     if (parentesisCierra !== -1) {

@@ -32,11 +32,11 @@ export class TransferFormComponent implements OnInit {
   private templateService = inject(TemplateService);
 
 
-  plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
+  plantilla: DocumentoPlantillaDTO | null | undefined;
   isTransfering = false;
-  transferForm: FormGroup = new FormGroup({
-    responsable: new FormControl('', Validators.required),
-    comentario: new FormControl('', Validators.required),
+  transferForm = new FormGroup({
+    responsable: new FormControl('', { validators: Validators.required, nonNullable: true }),
+    comentario: new FormControl('', { validators: Validators.required, nonNullable: true }),
   });
   users: UsuarioDTO[] = [];
 
@@ -52,7 +52,7 @@ export class TransferFormComponent implements OnInit {
       return;
     }
 
-    let rolPropiedad: PropiedadDTO;
+    let rolPropiedad: PropiedadDTO | null;
     for (let i = 0; i < this.plantilla.estados.length; i++) {
       const estadoModificable = this.plantilla.estados[i];
       if (estadoModificable.llaveTabla === this.data.state) {
@@ -73,13 +73,13 @@ export class TransferFormComponent implements OnInit {
     const filter: ActividadDTO = new ActividadDTO();
     filter.documento = this.data.document;
     this.isTransfering = true;
-    this.notificationService.usersToTransfer(filter, this.plantilla.server).subscribe({
+    this.notificationService.usersToTransfer(filter, this.plantilla!.server).subscribe({
       next: (value) => {
         this.isTransfering = false;
         this.users = value;
         if (!value || value.length ===0) {
           const notificationCenter = new NotificationCenterService();
-          notificationCenter.warn('No users', 'No tenemos usuarios en el rol ' + rolPropiedad.texto + ' al cual puedas realizar la transferencia del documento');
+          notificationCenter.warn('No users', 'No tenemos usuarios en el rol ' + rolPropiedad!.texto + ' al cual puedas realizar la transferencia del documento');
           this.dialogRef.close(false);
           return;
         }       
@@ -91,7 +91,7 @@ export class TransferFormComponent implements OnInit {
   }
 
   transfer() {
-    const transferData = this.transferForm.value;
+    const transferData = this.transferForm.value as any;
     if (!transferData.responsable || !transferData.responsable.llaveTabla) {
       const notificationCenter = new NotificationCenterService();
       notificationCenter.info('Responsable', 'Selecciona el nuevo responsable');
@@ -101,7 +101,7 @@ export class TransferFormComponent implements OnInit {
       reasignacion.responsable = transferData.responsable.llaveTabla;
       reasignacion.comentario = transferData.comentario;
       this.isTransfering = true;
-      this.notificationService.transfer(reasignacion, this.plantilla.server).subscribe({
+      this.notificationService.transfer(reasignacion, this.plantilla!.server).subscribe({
         next: () => {
           this.dialogRef.close(true);
           this.isTransfering = false;

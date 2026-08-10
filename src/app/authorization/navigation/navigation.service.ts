@@ -9,10 +9,10 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
     providedIn: 'root'
 })
 export class NavigationService {
-    private _navigation: WritableSignal<Navigation> = signal(null);
+    private _navigation: WritableSignal<Navigation> = signal(null!);
 
     constructor() {
-        this.generate(null, null, null);
+        this.generate(null!, null!, null!);
     }
 
     get navigation(): Navigation {

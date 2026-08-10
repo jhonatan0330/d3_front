@@ -25,10 +25,10 @@ export class TemplateComponent implements OnInit {
 
   readonly nombre = input('');
   readonly imagen = input('');
-  readonly id = input<string>(undefined);
-  readonly process_id = input<string>(undefined);
-  readonly type = input<TemplateEnum>(undefined);
-  readonly serverId = input<string>(undefined);
+  readonly id = input<string>(undefined as any);
+  readonly process_id = input<string>(undefined as any);
+  readonly type = input<TemplateEnum>(undefined as any);
+  readonly serverId = input<string>(undefined as any);
 
   ngOnInit(): void { }
 

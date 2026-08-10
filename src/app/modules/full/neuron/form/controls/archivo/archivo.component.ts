@@ -39,11 +39,11 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   validateOrientation: string;
   firma = false;
   maximoSize: number;
-  porcentajeCalidad: number;
-  source: string;
+  porcentajeCalidad: number | undefined;
+  source: string | null;
   filtroExtension: string;
   isEnd = false;
-  files = [];
+  files: any[] = [];
 
   // PreviewImage
   selectedFiles: FileList;
@@ -133,7 +133,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
 
     if (this.maximoSize) {
       for (let j = 0; j < files.length; j++) {
-        const iFile: File = files.item(j);
+        const iFile: File = files.item(j)!;
         if (iFile.size / 1024 > this.maximoSize) {
           Swal.fire(
             'Espacio maximo superado.',
@@ -204,7 +204,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
     if (!this.selectedFiles || this.selectedFiles.length <= this.currentIndex) {
       return;
     }
-    const iFile: File = this.selectedFiles.item(this.currentIndex);
+    const iFile: File = this.selectedFiles.item(this.currentIndex)!;
     this.currentIndex = this.currentIndex + 1;
     if (iFile.type.match(/image\/*/)) {
       var reader = new FileReader();
@@ -347,7 +347,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
       }
     }
     if (this.data.valorText !== this.source) {
-      this.data.valorText = this.source;
+      this.data.valorText = this.source!;
       this.avisarModificacion();
       // this.actualizarVista();
     }
@@ -430,7 +430,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit, AfterView
   }
 
   onClickExternal() {
-    document.getElementById(this.structure.llaveTabla + '_file').click();
+    document.getElementById(this.structure.llaveTabla + '_file')?.click();
   }
 
   onClickLoadUrl() {

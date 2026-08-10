@@ -58,10 +58,10 @@ export class BaseComponent implements OnInit, IDynamicControl {
   productForm: ProductComponent;
   form: FormComponent;
   urlServer: string;
-  errorMessage: string = null;
+  errorMessage: string | null = null;
   formIsModified = signal<boolean | null>(null);
 
-  idField: string = null;
+  idField: string | null = null;
 
   _structure: DocumentoPlantillaCaracteristicaDTO;
   get structure(): DocumentoPlantillaCaracteristicaDTO {
@@ -113,7 +113,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   }
 
   getValorTexto(): String {
-    return this.data == null ? null : this.data.valorText;
+    return this.data == null ? (null as any) : this.data.valorText;
   }
 
   getValorNumero(): number {
@@ -220,14 +220,14 @@ export class BaseComponent implements OnInit, IDynamicControl {
   }
 
   obtenerPropiedad(key: string): PropiedadDTO {
-    return PlantillaHelper.buscarPropiedad(this.structure.propiedades, key);
+    return PlantillaHelper.buscarPropiedad(this.structure.propiedades, key)!;
   }
 
   obtenerTexto(key: string): String {
     const prop: PropiedadDTO = PlantillaHelper.buscarPropiedad(
       this.structure.propiedades,
       key
-    );
+    )!;
     if (prop) {
       return prop.texto;
     }
@@ -235,7 +235,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
   }
 
   obtenerValorMultiple(key: string): PropiedadDTO[] {
-    return PlantillaHelper.buscarValorMultiple(this.structure.propiedades, key);
+    return PlantillaHelper.buscarValorMultiple(this.structure.propiedades, key)!;
   }
 
   transformPVCtoFilter(

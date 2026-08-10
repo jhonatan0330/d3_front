@@ -163,7 +163,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
     let fecha: Date;
     if (this.dateFrom.value && this.dateFrom.value.length != 0) { fecha = new Date(this.dateFrom.value); }
-    else { fecha = null; }
+    else { fecha = null as any; }
     let hour = 0;
     let minute = 0;
     if (this.timeFrom && this.timeFrom.value) {
@@ -172,8 +172,8 @@ export class FechaComponent extends BaseComponent implements OnInit {
     }
     if (!fecha) {
       if (this.data.valorFecha) {
-        this.data.valorFecha = null;
-        this.data.valorText = null;
+        this.data.valorFecha = null as any;
+        this.data.valorText = null as any;
         this.avisarModificacion();
       }
     } else {
@@ -210,9 +210,9 @@ export class FechaComponent extends BaseComponent implements OnInit {
         this.data.valorAuxiliar = 'R';
       }
     } else {
-      this.data.valorFecha = undefined;
-      this.data.valorNumero = undefined;
-      this.data.valorAuxiliar = undefined;
+      this.data.valorFecha = undefined as any;
+      this.data.valorNumero = undefined as any;
+      this.data.valorAuxiliar = undefined as any;
     }
   }
 
@@ -307,7 +307,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
   send2Server(): boolean {
 
-    this.errorMessage = null;
+    this.errorMessage = null as any;
     if (this.data.modificado && this.data?.valorFecha) {
 
       const fechaActual = new Date();
@@ -344,7 +344,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
     }
 
     if (this.errorMessage) {
-      const input = document.getElementById(this.idField) as HTMLInputElement;
+      const input = document.getElementById(this.idField!) as HTMLInputElement;
       if (input) { input.focus(); }
       return false;
     }

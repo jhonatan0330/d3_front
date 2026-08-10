@@ -11,7 +11,7 @@ import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
-export function getFieldFromTemplate(template: DocumentoPlantillaDTO, fieldId: String): DocumentoPlantillaCaracteristicaDTO {
+export function getFieldFromTemplate(template: DocumentoPlantillaDTO, fieldId: String): DocumentoPlantillaCaracteristicaDTO | null {
   if (!template || !template.caracteristicas) return null;
   for (let index = 0; index < template.caracteristicas.length; index++) {
     const element = template.caracteristicas[index];
@@ -43,7 +43,7 @@ export function getXMLBase(
 
 export function procesarXMLBase(
   pCampo: PedidoVentaCaracteristicaDTO
-): PedidoVentaCaracteristicaDTO {
+): PedidoVentaCaracteristicaDTO | null {
   const result: PedidoVentaCaracteristicaDTO = pCampo;
   switch (pCampo.campoDTO.formato) {
     case DocumentoPlantillaCaracteristicaEnum.FECHA:

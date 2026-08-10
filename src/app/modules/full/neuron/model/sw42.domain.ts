@@ -52,6 +52,9 @@ export class DocumentoPlantillaCaracteristicaDTO extends BasicParamDTO {
     imagen: string;
     productos: ProductoDTO[];
     documentos: PedidoVentaDTO[];
+    mostrarSelectorFormato?: boolean;
+    editando?: boolean;
+    _editValue?: string;
 }
 
 export class propiedadCampo extends BasicDTO {
@@ -65,6 +68,7 @@ export class propiedadCampo extends BasicDTO {
     propiedadValor:string;
     tipo:string;
     valor:number;
+    texto?: string;
 }
 
 export class PropiedadCampoDTO extends propiedadCampo {
@@ -190,6 +194,7 @@ export class RelacionInternaDTO extends BasicDTO {
     campo: string;
     campoNombre: string;
     auxiliar: string;
+    fechaInicio?: string;
 }
 
 export class DetallePedidoVentaDTO extends BasicParamDTO {

@@ -51,7 +51,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             const task = this._tasksService.task();
 
             // Open the drawer in case it is closed
-            this._tasksListComponent.matDrawer().open();
+            this._tasksListComponent.matDrawer()!.open();
 
             // Get the task
             this.task = task ?? this.task;
@@ -69,7 +69,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit(): void {
         // Open the drawer
-        this._tasksListComponent.matDrawer().open();
+        this._tasksListComponent.matDrawer()!.open();
 
         this.editor = new Editor();
 
@@ -115,20 +115,20 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe(() => {
                 // Focus on the title field
-                this._titleField().nativeElement.focus();
+                this._titleField()!.nativeElement.focus();
             });
     }
 
     ngAfterViewInit(): void {
         // Listen for matDrawer opened change
-        this._tasksListComponent.matDrawer().openedChange
+        this._tasksListComponent.matDrawer()!.openedChange
             .pipe(
                 takeUntil(this._unsubscribeAll),
                 filter(opened => opened)
             )
             .subscribe(() => {
                 // Focus on the title element
-                this._titleField().nativeElement.focus();
+                this._titleField()!.nativeElement.focus();
             });
     }
 
@@ -141,13 +141,13 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     closeDrawer(): Promise<MatDrawerToggleResult> {
-        return this._tasksListComponent.matDrawer().close();
+        return this._tasksListComponent.matDrawer()!.close();
     }
 
 
     toggleCompleted(): void {
 
-        if (this.task.completed) { this.task.completed = null }
+        if (this.task.completed) { this.task.completed = null as any }
         else { this.task.completed = new Date() }
 
         // Update the task on the server
@@ -159,7 +159,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     setTaskPriority(priority): void {
         // Set the value
-        this.taskForm.get('priority').setValue(priority);
+        this.taskForm.get('priority')!.setValue(priority);
     }
 
     isOverdue(): boolean {

@@ -42,7 +42,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     super.ngOnInit();
     this.multiple = !this.isEmpty(this.obtenerValor(PlantillaHelper.MULTIPLE_SELECCION));
-    this.ctx = this.myCanvas().nativeElement.getContext('2d');
+    this.ctx = this.myCanvas()!.nativeElement.getContext('2d')!;
     this.fControl.setValue(this.data.valorText);
   }
 
@@ -99,7 +99,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
     this.estructura.selectFromText(this.data.valorText, this.data.detalles);
     runInInjectionContext(this._injector, () => {
       effect(() => {
-        this.ajustarData(this.estructura.navItem());
+        this.ajustarData(this.estructura.navItem()!);
       });
     });
   }
@@ -138,7 +138,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
   }
 
   addLocation(puesto: Puesto, producto: ProductoDTO): DetallePedidoVentaDTO {
-    if (!producto || !puesto) { return; }
+    if (!producto || !puesto) { return undefined!; }
 
     const copyDetalle: DetallePedidoVentaDTO = new DetallePedidoVentaDTO();
     copyDetalle.productoCodigo = producto.detallePlantilla.productoCodigo;
@@ -204,7 +204,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
       this.data.detalles.splice(index, 1);
       this.data.detalles = Object.assign([], this.data.detalles); // Para que se refresque la lista
     }
-    location.detalle = null;
+    location.detalle = null!;
   }
 
 }

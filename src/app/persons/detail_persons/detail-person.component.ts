@@ -31,6 +31,7 @@ export class ContactsDetailsComponent implements OnInit {
 
     public contact: UsuarioDTO = new UsuarioDTO();
     isSameUser: boolean;
+    defaultimagen = '';
 
     tags: RolAccesoFilterDTO[];
     permisos: PermisosDTO[];
@@ -57,7 +58,6 @@ export class ContactsDetailsComponent implements OnInit {
         const componente = new PedidoVentaDTO;
         componente.llaveTabla = tag.codigo;
         componente.plantilla = tag.plantilla;
-        componente.server = undefined;
         this.utilService.modalWithParams(componente);
     }
 

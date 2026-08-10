@@ -74,7 +74,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     }
   }
 
-  onEnter(event: KeyboardEvent) {
+  onEnter(event: Event) {
     const input = event.target as HTMLInputElement;
     this.fControl.setValue(this.numberToInput(Number(input.value)));
   }
@@ -309,7 +309,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   }
 
   validateErrorMessage() {
-    this.errorMessage = null;
+    this.errorMessage = null!;
     if (this.formulaMaximum) {
       const textoMaximum = this.formulaReplaceDependents(this.formulaMaximum.valor);
       const resultadoMaximum = FormulaHelper.calcular(textoMaximum);
@@ -340,13 +340,13 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   send2Server(): boolean {
     if (this.isLoading) { return false; }
 
-    this.errorMessage = null;
+    this.errorMessage = null!;
     if (this.required && !this.data.valorNumero && !this.isInvisible) {
       this.errorMessage = "En la plantilla " + this._structure.plantillaNombre + " es obligatorio registrar el campo " + this._structure.nombre + ")"
     }
 
     if (this.errorMessage) {
-      const input = document.getElementById(this.idField) as HTMLInputElement;
+      const input = document.getElementById(this.idField!) as HTMLInputElement;
       if (input) { input.focus(); }
       return false;
     }

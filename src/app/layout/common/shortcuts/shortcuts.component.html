@@ -27,7 +27,7 @@
       <div class="ml-auto">
         <input
           class="w-full"
-          [matAutocomplete]="matAutocomplete"
+          [matAutocomplete]="$any(matAutocomplete)"
           [placeholder]="'Search...'"
           (input)="filterItem(barSearchInput.value)"
           (keydown)="onKeydown($event)"

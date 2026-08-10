@@ -34,9 +34,9 @@ export class ProductComponent implements OnInit, AfterViewInit {
   server: string;
 
   campoMinima: string;
-  campoValorUnitario: PropiedadDTO;
-  campoCantidad2Tarifario: string;
-  campoTotal: PropiedadDTO;
+  campoValorUnitario: PropiedadDTO | null;
+  campoCantidad2Tarifario: string | null;
+  campoTotal: PropiedadDTO | null;
 
   inventories: ProductoInventarioDTO[];
   isLoading = false; // ayuda a mostrar la barra de progreso en las busqueas
@@ -106,7 +106,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
     for (let d = 0; d < this.detallePedidoVenta.documentoDetalle.caracteristicas.length; d++) {
       const _campo = this.detallePedidoVenta.documentoDetalle.caracteristicas[d];
       const componentDynamic: Type<any> = getComponent(_campo.campoDTO);
-      const componentRef = this.myForm().createComponent<IDynamicControl>(
+      const componentRef = this.myForm()!.createComponent<IDynamicControl>(
         componentDynamic
       );
       componentRef.instance.structure = _campo.campoDTO;
@@ -134,7 +134,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
       const codigoDepende: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(
         iBase.propiedades,
         PlantillaHelper.DEPENDE
-      );
+      )!;
       if (codigoDepende) {
         let iCampoDependiente; // Identifico el campo dependiente
         for (let index = 0; index < this.dynamicControls.length; index++) {
@@ -185,8 +185,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
       this.detallePedidoVenta.cantidad = 1;
     }
 
-    let tarifa: TarifaDTO = this.escogerTarifa(null);
-    let stepValorUnitario: IDynamicControl = null;
+    let tarifa: TarifaDTO = this.escogerTarifa(null!);
+    let stepValorUnitario: IDynamicControl | null = null;
     let valorUnitario = tarifa.valor;
 
     // paso esto arriba para que se actualicen campos antes de que calcule
@@ -271,7 +271,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
       if (!this.campoValorUnitario) {
         this.montos = true;
       }
-      let tarifariosUsadosOtrosCampos: string[];
+      let tarifariosUsadosOtrosCampos: string[] | undefined;
       if (
         this.detallePedidoVenta.documentoDetalle.caracteristicas &&
         this.detallePedidoVenta.documentoDetalle.caracteristicas.length !== 0

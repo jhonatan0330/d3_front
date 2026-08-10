@@ -40,7 +40,7 @@ export class GpsComponent extends BaseComponent implements OnInit {
   actualizar(): void {
     const nuevoValor = this.fControl.value;
     if (this.data.valorText !== nuevoValor) {
-      this.data.valorText = nuevoValor;
+      this.data.valorText = nuevoValor!;
       this.avisarModificacion();
       if (this.data.valorText) { this.showMap(); }
     }

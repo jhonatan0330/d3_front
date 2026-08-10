@@ -24,7 +24,7 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
   readonly progressBar = viewChild(MatProgressBar);
   readonly submitButton = viewChild(MatButton);
 
-  recoverForm: FormGroup;
+  recoverForm: FormGroup<{ identificacion: FormControl<string | null>, correo: FormControl<string | null> }>;
   errorMsg = '';
   
   private _unsubscribeAll: Subject<any>;
@@ -49,18 +49,18 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
   signin() {
     const signinData = this.recoverForm.value;
 
-    this.submitButton().disabled = true;
-    this.progressBar().mode = 'indeterminate';
+    this.submitButton()!.disabled = true;
+    this.progressBar()!.mode = 'indeterminate';
 
-    this.loginService.recoverPassword(signinData.identificacion, signinData.correo).subscribe({
+    this.loginService.recoverPassword(signinData.identificacion!, signinData.correo!).subscribe({
       next: () => {
         this.loginService.signout();
         Swal.fire('Revisa tu correo', 'Hemos enviado un mensaje a tu correo electronico, hay puedes obtener el link para crear una clave y tambien tendras el codigo de seguridad.','info');
         this.router.navigateByUrl('main');
       },
       error: () => {
-        this.submitButton().disabled = false;
-        this.progressBar().mode = 'determinate';
+        this.submitButton()!.disabled = false;
+        this.progressBar()!.mode = 'determinate';
       }
     });
   }

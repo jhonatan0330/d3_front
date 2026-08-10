@@ -42,12 +42,12 @@ export class ManualFormComponent implements OnInit {
     public debitValue: number = 0;
     public differenceValue: number = 0;
     public codigoComprobante = '';
-    private creditValue: number = 0;
+    public creditValue: number = 0;
 
 
     private key: string;
     private subscription: Subscription;
-    botonAccion: string = "Guardar";
+    botonAccion: string | undefined = "Guardar";
 
     private catalog: CatalogDTO;
     public referencesActive: boolean = false;
@@ -115,11 +115,11 @@ export class ManualFormComponent implements OnInit {
 
         this.timeFrom.valueChanges.subscribe({
             next: () => {
-                let dateFact: Date = this.form.get('header').get('factDate').value;
+                let dateFact: Date = this.form.get('header')!.get('factDate')!.value;
                 dateFact.setHours(this.timeFrom.value.substring(0, 2));
                 dateFact.setMinutes(this.timeFrom.value.substring(3, 5));
                 dateFact.setSeconds(0);
-                this.form.get('header').get('factDate').setValue(dateFact);
+                this.form.get('header')!.get('factDate')!.setValue(dateFact);
             },
         });
     }
@@ -168,12 +168,12 @@ export class ManualFormComponent implements OnInit {
             return;
         }
 
-        if (!this.form.get('header').get('concept').value) {
+        if (!this.form.get('header')!.get('concept')!.value) {
             this.notificationCenter.info('Completa el comprobante', 'Que no se te olvide la fecha');
             return;
         }
 
-        if (!this.form.get('header').get('factDate').value) {
+        if (!this.form.get('header')!.get('factDate')!.value) {
             this.notificationCenter.info('Completa el comprobante', 'Que no se te olvide la fecha');
             return;
         }
@@ -269,37 +269,37 @@ export class ManualFormComponent implements OnInit {
             references: this.createreferenceArray(manualaccount.references)
         });
 
-        if (manualaccount.line.positive && group.get('line').get('negative').enabled) {
-            group.get('line').get('negative').disable();
+        if (manualaccount.line.positive && group.get('line')!.get('negative')!.enabled) {
+            group.get('line')!.get('negative')!.disable();
         }
-        if (manualaccount.line.negative && group.get('line').get('positive').enabled) {
-            group.get('line').get('positive').disable();
+        if (manualaccount.line.negative && group.get('line')!.get('positive')!.enabled) {
+            group.get('line')!.get('positive')!.disable();
         }
 
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
 
-        group.get('line').get('accountDTO').valueChanges.subscribe(
+        group.get('line')!.get('accountDTO')!.valueChanges.subscribe(
             (value) => {
                 if (!value || !value.key) {
-                    group.get('line').get('accountName').setValue('');
-                    group.get('line').get('account').setValue('');
+                    group.get('line')!.get('accountName')!.setValue('');
+                    group.get('line')!.get('account')!.setValue('');
                     return;
                 }
                 const account = this.accountingService.currentCatalog.accounts.find(item => item.key === value.key);
                 if (!account) {
-                    group.get('line').get('accountName').setValue('');
-                    group.get('line').get('account').setValue('');
-                    if (!value.key && value.indexOf("|") !== -1) group.get('line').get('accountDTO').setValue('');
+                    group.get('line')!.get('accountName')!.setValue('');
+                    group.get('line')!.get('account')!.setValue('');
+                    if (!value.key && value.indexOf("|") !== -1) group.get('line')!.get('accountDTO')!.setValue('');
                     return;
                 }
-                group.get('line').get('account').setValue(account.key);
-                group.get('line').get('accountName').setValue(account.code + ' | ' + account.name);
+                group.get('line')!.get('account')!.setValue(account.key);
+                group.get('line')!.get('accountName')!.setValue(account.code + ' | ' + account.name);
             }
         )
 
-        group.get('line').get('positive').valueChanges
+        group.get('line')!.get('positive')!.valueChanges
             .pipe(
                 startWith(manualaccount.line.positive),
                 pairwise())
@@ -308,17 +308,17 @@ export class ManualFormComponent implements OnInit {
                     selectedValue *= 1;
                     this.debitValue -= prevValue;
                     this.debitValue += selectedValue;
-                    this.form.get('header').get('value').setValue(this.debitValue);
+                    this.form.get('header')!.get('value')!.setValue(this.debitValue);
                     this.differenceValue = this.debitValue - this.creditValue;
                     if (selectedValue !== 0) {
-                        group.get('line').get('negative').disable({ emitEvent: false });
+                        group.get('line')!.get('negative')!.disable({ emitEvent: false });
                     } else {
-                        if (!group.get('line').get('negative').enabled) { group.get('line').get('negative').enable({ emitEvent: false }); }
+                        if (!group.get('line')!.get('negative')!.enabled) { group.get('line')!.get('negative')!.enable({ emitEvent: false }); }
                     }
                 }
             );
 
-        group.get('line').get('negative').valueChanges
+        group.get('line')!.get('negative')!.valueChanges
             .pipe(
                 startWith(manualaccount.line.negative),
                 pairwise())
@@ -329,18 +329,18 @@ export class ManualFormComponent implements OnInit {
                     this.creditValue += selectedValue;
                     this.differenceValue = this.debitValue - this.creditValue;
                     if (selectedValue !== 0) {
-                        group.get('line').get('positive').disable({ emitEvent: false });
+                        group.get('line')!.get('positive')!.disable({ emitEvent: false });
                     } else {
-                        if (!group.get('line').get('positive').enabled) { group.get('line').get('positive').enable({ emitEvent: false }); }
+                        if (!group.get('line')!.get('positive')!.enabled) { group.get('line')!.get('positive')!.enable({ emitEvent: false }); }
                     }
                 }
             );
 
         if (this.differenceValue !== 0) {
             if (this.differenceValue > 0) {
-                group.get('line').get('negative').setValue(this.differenceValue);
+                group.get('line')!.get('negative')!.setValue(this.differenceValue);
             } else {
-                group.get('line').get('positive').setValue(this.differenceValue * -1);
+                group.get('line')!.get('positive')!.setValue(this.differenceValue * -1);
             }
         }
 
@@ -351,7 +351,7 @@ export class ManualFormComponent implements OnInit {
                 }
             });
 
-        this.filteredOptions = group.get('line').get('accountDTO').valueChanges.pipe(
+        this.filteredOptions = group.get('line')!.get('accountDTO')!.valueChanges.pipe(
             startWith(''),
             map(value => this.filterAccount(value))
         );
@@ -376,7 +376,7 @@ export class ManualFormComponent implements OnInit {
 
     getReports() {
         if (!this.catalog) return;
-        const _template = this.templateService.getTemplate(this.catalog.template, null);
+        const _template = this.templateService.getTemplate(this.catalog.template, null!);
         if (!_template || !_template.reportes || _template.reportes.length === 0) return;
         for (let i = 0; i < _template.reportes.length; i++) {
             this.reportes.push(_template.reportes[i]);

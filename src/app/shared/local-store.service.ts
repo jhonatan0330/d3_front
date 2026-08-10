@@ -29,7 +29,7 @@ export class LocalStoreService {
   public getItem(key: string) {
     const value = this.ls.getItem(key);
     try {
-      return JSON.parse(value);
+      return JSON.parse(value!);
     } catch (e) {
       return null;
     }
@@ -39,20 +39,20 @@ export class LocalStoreService {
     this.ls.clear();
   }
 
-  getUrlAccess(endpoint: string, server: string  = null): string {
+  getUrlAccess(endpoint: string, server: string | null = null): string {
     if (!endpoint.startsWith('/')) {
       endpoint = '/' + endpoint;
     }
-    let url: String = this.getUrl4Id( server);
+    let url: String | null = this.getUrl4Id( server);
     if(!url){
        url = this.getItem(LocalConstants.URL_CONF);
     }
-    const result = url.concat(endpoint.toString());
+    const result = url!.concat(endpoint.toString());
     return result;
     // return 'http://localhost:8080/sw42/' +  endpoint;
   }
 
-  private getUrl4Id(id: string): string {
+  private getUrl4Id(id: string | null): string | null {
     const otherSystems = this.getItem(LocalConstants.SERVERS);
     if (!id || !otherSystems) { return null; }
     const org = otherSystems.find(item => id === item.llaveTabla);

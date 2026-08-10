@@ -12,6 +12,7 @@ export class UsuarioDTO extends BasicDTO {
   correo: string;
   usuarioRol: string;
   telefono: string;
+  codigo?: string;
 }
 
 export class RolAccesoFilterDTO extends BasicFilterDTO {

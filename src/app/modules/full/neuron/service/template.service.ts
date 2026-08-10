@@ -21,17 +21,17 @@ export class TemplateService {
   get template() {
     return this._template.asReadonly();
   }
-  private colores: PropiedadDTO[];
+  private colores: PropiedadDTO[] | null;
 
   conectionTemplates: OrganizacionDTO[];
 
   private propiedadesConRelaciones: RelacionInternaDTO[];
-  private _modules:PropiedadDTO[];
+  private _modules: PropiedadDTO[] | null;
 
-  getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO {
+  getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO | null | undefined {
     const template = this.template();
     if (!template) { return null; }
-    let result = null;
+    let result: DocumentoPlantillaDTO | null | undefined = null;
     if (!urlServer) {
       result = template.find((item) => id === item.llaveTabla);
     } else {
@@ -45,10 +45,10 @@ export class TemplateService {
     return result;
   }
 
-  getTemplateOfProcess(processId: string): DocumentoPlantillaDTO[] {
+  getTemplateOfProcess(processId: string): DocumentoPlantillaDTO[] | null {
     const template = this.template();
     if (!template) { return null; }
-    return Object.assign([], template).filter(
+    return (Object.assign([] as DocumentoPlantillaDTO[], template)).filter(
       (item) => (item.proceso && item.proceso.toLowerCase().indexOf(processId.toLowerCase()) > -1)
     );
   }
@@ -57,7 +57,7 @@ export class TemplateService {
     this._template.set(value);
     this.colores = null;
     this.getColor('');
-    const processToMenu = [];
+    const processToMenu: DocumentoPlantillaDTO[] = [];
     // Transform document to MenuItems
     value.forEach((element) => {
       if (!element.llaveTabla) {
@@ -65,11 +65,11 @@ export class TemplateService {
         processToMenu.push(element);
       }
     });
-    this._navigationService.generate(processToMenu, this._modules, value);
+    this._navigationService.generate(processToMenu, this._modules!, value);
   }
 
 
-  getColor(stateId: string): string {
+  getColor(stateId: string): string | null {
     const template = this.template();
     if (!stateId || !template) {
       return null;
@@ -123,8 +123,8 @@ export class TemplateService {
     // read the colors and transform them into rgb format
     if (color2.length != 7) { }
 
-    const color1rgb = this.hexToRgb(color1);
-    const color2rgb = this.hexToRgb(color2);
+    const color1rgb = this.hexToRgb(color1)!;
+    const color2rgb = this.hexToRgb(color2)!;
 
     // calculate the relative luminance
     const color1luminance = this.luminance(color1rgb.r, color1rgb.g, color1rgb.b);
@@ -168,7 +168,7 @@ export class TemplateService {
     this._modules = value;
   }
 
-  getProceso(id: string): DocumentoPlantillaDTO {
+  getProceso(id: string): DocumentoPlantillaDTO | undefined {
     const template = this.template();
     if (template && template.length !== 0) {
       return template.find(x => (!x.llaveTabla && (x.proceso === id || x.codigo === id)));
@@ -180,7 +180,7 @@ export class TemplateService {
     this.propiedadesConRelaciones = this.propiedadesConRelaciones.concat(relations);
   }
 
-  getPropertyRelation(propiedad: string): RelacionInternaDTO[] {
+  getPropertyRelation(propiedad: string): RelacionInternaDTO[] | undefined {
     if (!this.propiedadesConRelaciones) return;
     return this.propiedadesConRelaciones.filter(x => (x.propiedad && x.propiedad === propiedad));
   }

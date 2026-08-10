@@ -30,9 +30,9 @@ export class SignInSplitScreenReversedComponent implements OnInit {
 
     templateNewUser: string;
 
-    signInForm: FormGroup;
+    signInForm!: FormGroup;
     isLoading = false;
-    company: OrganizacionDTO;
+    company: OrganizacionDTO | undefined;
     currentApplicationVersion = environment.appVersion;
     logo: SafeHtml;
 
@@ -80,7 +80,8 @@ export class SignInSplitScreenReversedComponent implements OnInit {
         this.signInForm.disable();
         this.isLoading = true;
         // Sign in
-        this.loginservice.signin(this.signInForm.value.username, this.signInForm.value.password, null)
+        const formValue = this.signInForm.value as any;
+        this.loginservice.signin(formValue.username, formValue.password, null!)!
             .subscribe({
                 next: (_val: UsuarioAutenticacionDTO) => {
                     this.isLoading = false;

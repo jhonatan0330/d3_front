@@ -517,7 +517,7 @@ export class CroquisComponent extends BaseComponent
 
   private async uploadFile(file: File): Promise<ApiErrorResponse> {
     try {
-      const resp = await firstValueFrom(this.api.uploadFile(file, null));
+      const resp = await firstValueFrom(this.api.uploadFile(file, null!));
       return resp;
     } catch (error) {
       return error as ApiErrorResponse;

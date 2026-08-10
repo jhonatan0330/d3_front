@@ -35,7 +35,7 @@
                   <mat-menu #userMenuList="matMenu">
                     @for (r of plantilla.reportes; track r) {
                       <button mat-menu-item
-                        (click)="showReport(r, null)">
+                        (click)="showReport(r, null!)">
                         <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
                         <span>{{ r.nombre }}</span>
                       </button>
@@ -51,7 +51,7 @@
                   </button>
                   <mat-menu #reportFormMenuList="matMenu">
                     @for (rf of reportForms; track rf) {
-                      <button mat-menu-item (click)="openDialog(rf.valor)">
+                      <button mat-menu-item (click)="openDialog(rf.valor, plantilla.server)">
                         <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
                         <span>{{ rf.texto }}</span>
                       </button>
@@ -110,7 +110,7 @@
                       <input matInput [matDatepicker]="pickerFrom" [formControl]="fCDateStart"
                         (dateChange)="cambioFecha('start', '', $event)" autocomplete="off" />
                         <mat-datepicker-toggle matSuffix [for]="pickerFrom"
-                        tabIndex="-1"></mat-datepicker-toggle>
+                        [tabIndex]="-1"></mat-datepicker-toggle>
                         <mat-datepicker #pickerFrom></mat-datepicker>
                       </mat-form-field>
                       @if (fCDateStart.value) {
@@ -126,7 +126,7 @@
                         <input matInput [matDatepicker]="pickerTo" [formControl]="fCDateEnd"
                           (dateChange)="cambioFecha('end', '', $event)" autocomplete="off" />
                           <mat-datepicker-toggle matSuffix [for]="pickerTo"
-                          tabIndex="-1"></mat-datepicker-toggle>
+                          [tabIndex]="-1"></mat-datepicker-toggle>
                           <mat-datepicker #pickerTo></mat-datepicker>
                         </mat-form-field>
                         @if (fCDateEnd.value) {
@@ -180,7 +180,7 @@
                               <input matInput [matDatepicker]="pickerFromR" [formControl]="fRegistroDateStart"
                                 (dateChange)="cambioFecha('start', 'registro', $event)" autocomplete="off" />
                                 <mat-datepicker-toggle matSuffix [for]="pickerFromR"
-                                tabIndex="-1"></mat-datepicker-toggle>
+                                [tabIndex]="-1"></mat-datepicker-toggle>
                                 <mat-datepicker #pickerFromR></mat-datepicker>
                               </mat-form-field>
                               <mat-form-field class="w-52">
@@ -194,7 +194,7 @@
                                 <input matInput [matDatepicker]="pickerToR" [formControl]="fRegistroDateEnd"
                                   (dateChange)="cambioFecha('end', 'registro', $event)" autocomplete="off" />
                                   <mat-datepicker-toggle matSuffix [for]="pickerToR"
-                                  tabIndex="-1"></mat-datepicker-toggle>
+                                  [tabIndex]="-1"></mat-datepicker-toggle>
                                   <mat-datepicker #pickerToR></mat-datepicker>
                                 </mat-form-field>
                                 <mat-form-field class="w-52">

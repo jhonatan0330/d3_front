@@ -126,7 +126,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
     toggleCompleted(task: Task): void {
 
-        if (task.completed) { task.completed = null }
+        if (task.completed) { (task as any).completed = null }
         else { task.completed = new Date() }
 
         this._tasksService.updateTask(task).subscribe({ error: () => {} });

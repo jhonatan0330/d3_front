@@ -166,18 +166,18 @@ export class PlantillaHelper {
   static buscarPropiedad(
     propiedades: PropiedadDTO[],
     key: string
-  ): PropiedadDTO {
+  ): PropiedadDTO | null {
     if (propiedades) {
       return propiedades.find(function (property: PropiedadDTO) {
         return property.key === key;
-      });
+      }) ?? null;
     } else {
       return null;
     }
   }
 
   static buscarValor(propiedades: PropiedadDTO[], key: string): string {
-    const p: PropiedadDTO = PlantillaHelper.buscarPropiedad(propiedades, key);
+    const p: PropiedadDTO | null = PlantillaHelper.buscarPropiedad(propiedades, key);
     if (p) {
       return p.valor;
     }
@@ -187,7 +187,7 @@ export class PlantillaHelper {
   static buscarValorMultipleFromManyKeys(
     propiedades: PropiedadDTO[],
     keys: string[]
-  ): PropiedadDTO[] {
+  ): PropiedadDTO[] | null {
     if (propiedades == null || propiedades.length === 0) {
       return null;
     }
@@ -209,7 +209,7 @@ export class PlantillaHelper {
   static buscarValorMultiple(
     propiedades: PropiedadDTO[],
     key: string
-  ): PropiedadDTO[] {
+  ): PropiedadDTO[] | null {
     if (key == null) { return null;}
     return this.buscarValorMultipleFromManyKeys(propiedades,[key]);
   }
@@ -395,32 +395,32 @@ export class MVCTranslate {
 }
  export class FieldHelper {
   
-  static getValueDate(document: PedidoVentaDTO, code:string): Date {
-		const field: PedidoVentaCaracteristicaDTO = FieldHelper.getField(document, code);
+  static getValueDate(document: PedidoVentaDTO, code:string): Date | null {
+		const field: PedidoVentaCaracteristicaDTO | null = FieldHelper.getField(document, code);
 		if (field==null) return null;
 		return field.valorFecha;
 	}
 
-	static getValueText(document: PedidoVentaDTO, code:string): string {
-		const field: PedidoVentaCaracteristicaDTO = FieldHelper.getField(document, code);
+	static getValueText(document: PedidoVentaDTO, code:string): string | null {
+		const field: PedidoVentaCaracteristicaDTO | null = FieldHelper.getField(document, code);
 		if (field==null) return null;
 		return field.valorText;
 	}
 	
-	static getValueOption(document: PedidoVentaDTO, code:string): string {
-		const field: PedidoVentaCaracteristicaDTO = FieldHelper.getField(document, code);
+	static getValueOption(document: PedidoVentaDTO, code:string): string | null {
+		const field: PedidoVentaCaracteristicaDTO | null = FieldHelper.getField(document, code);
 		if (field==null) return null;
 		return field.valorOpcion;
 	}
 	
-	static getValueBool(document: PedidoVentaDTO, code:string):boolean {
-		const field: PedidoVentaCaracteristicaDTO = FieldHelper.getField(document, code);
+	static getValueBool(document: PedidoVentaDTO, code:string): boolean | null {
+		const field: PedidoVentaCaracteristicaDTO | null = FieldHelper.getField(document, code);
 		if (field==null) return null;
 		if (!field.valorNumero) return false;
 		return (field.valorNumero===1);
 	}
 	
-	static getField(document: PedidoVentaDTO, code:String): PedidoVentaCaracteristicaDTO {
+	static getField(document: PedidoVentaDTO, code:String): PedidoVentaCaracteristicaDTO | null {
 		if(document==null)	return null;
 		if(!document.caracteristicas || document.caracteristicas.length==0) return null;
 

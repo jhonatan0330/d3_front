@@ -33,8 +33,8 @@ export class EnterpriseLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;
     sidenavOpened = false;
     navigation: Navigation;
-    user: UsuarioDTO;
-    company: OrganizacionDTO;
+    user: UsuarioDTO | undefined;
+    company: OrganizacionDTO | undefined;
     time = signal(new Date());
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();

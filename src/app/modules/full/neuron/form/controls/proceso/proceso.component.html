@@ -9,8 +9,8 @@
   <mat-form-field class="w-full"
     [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
     <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-    <input matInput [id]="idField" [matAutocomplete]="auto" [formControl]="fControl" [required]="required"
-      [readonly]="!isEnabled" (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [inputmode]="inputModeText"
+    <input matInput [id]="idField!" [matAutocomplete]="auto" [formControl]="fControl" [required]="required"
+      [readonly]="!isEnabled" (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [attr.inputmode]="inputModeText"
       translate="no" (focusout)="gestionarKeyUpTextoFocusOut()"
       [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
       @if (proceso && linkExternal) {

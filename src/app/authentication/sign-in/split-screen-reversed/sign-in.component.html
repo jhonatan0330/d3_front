@@ -8,7 +8,7 @@
     <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
       <!-- Logo -->
       <div class="text-center p-4">
-        <img class="m-auto" src="{{ company?.imagen | imageFormat }}" alt="">
+        <img class="m-auto" src="{{ $any(company?.imagen) | imageFormat }}" alt="">
       </div>
 
       <!-- Title -->
@@ -25,7 +25,7 @@
       <div class="mb-5">
         <label for="username"
         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Usuario*</label>
-        <input matInput id="username" [formControl]="signInForm.controls['username']" value="" autocomplete="username"
+        <input matInput id="username" [formControl]="$any(signInForm.controls['username'])" value="" autocomplete="username"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           @if (signInForm.controls['username'].hasError('required') && signInForm.controls['username'].touched) {
             <small
@@ -36,7 +36,7 @@
         <div class="mb-5">
           <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Clave de
           acceso*</label>
-          <input type="password" id="password" matInput [formControl]="signInForm.controls['password']"
+          <input type="password" id="password" matInput [formControl]="$any(signInForm.controls['password'])"
             autocomplete="new-password" value=""
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             @if (signInForm.controls['password'].hasError('required') && signInForm.controls['password'].touched) {

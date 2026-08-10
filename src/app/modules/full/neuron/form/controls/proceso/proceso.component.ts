@@ -106,12 +106,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX];
 
   inputModeText = 'text';
-  errorMessage: string = null;
+  errorMessage: string = null!;
   messageHTML: SafeHtml;
 
   autoCompleteDisplay(item: PedidoVentaDTO): string {
     if (!item) {
-      return;
+      return '';
     }
     if (item.descripcion) {
       return item.descripcion;
@@ -125,7 +125,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     // Reuno las variables necesarias para el componente
     this.plantilla = this.templateService.getTemplate(
       this.obtenerValor(PlantillaHelper.PLANTILLA_AUXILIAR), this.urlServer
-    );
+    )!;
     this.herencia = this.obtenerPropiedad(PlantillaHelper.CAMPO_HEREDADO);
     this.alertar = this.obtenerPropiedad(PlantillaHelper.ALERTAR_CAMPO_PROCESO);
     this.multiple = !this.isEmpty(this.obtenerValor(PlantillaHelper.MULTIPLE));
@@ -137,7 +137,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.procesoValor = this.obtenerValor(PlantillaHelper.PROCESO_VALOR);
     if (!this.form) { // Esto es para los filtros
       this.autoload = false;
-      this.acciones = null;
+      this.acciones = null!;
     } else {
       this.acciones = this.obtenerValorMultiple(PlantillaHelper.PROCESO_ACCIONES);
       if (this.acciones && this.acciones.length !== 0) {
@@ -149,7 +149,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         }
         //Para que no se vea el + en el combo
-        if (this.acciones.length === 0) { this.acciones = null; }
+        if (this.acciones.length === 0) { this.acciones = null!; }
       }
     }
     this.tipoCombo = !this.multiple && this.autoload;
@@ -164,7 +164,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }*/
     if (this.plantilla) {
       this.solicitarFechas = !PlantillaHelper.isEmpty(
-        this.templateService.getTemplate(this.plantilla.llaveTabla, this.urlServer).propiedades,
+        this.templateService.getTemplate(this.plantilla.llaveTabla, this.urlServer)!.propiedades,
         PlantillaHelper.FORM_SOLICITAR_FECHAS
       );
     }
@@ -185,7 +185,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (value) {
         if (value.llaveTabla) {
           this.proceso = value;
-          this.filteredDocuments = null;
+          this.filteredDocuments = null!;
           this.showAlertSelectedProcess();
           const _pHTML = this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL)
           if (_pHTML) {
@@ -198,7 +198,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             });
           }
         } else {
-          this.proceso = null;
+          this.proceso = null!;
           let filterValue: string = value.toLowerCase();
           if (filterValue === '*') { filterValue = ''; }
           if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length - 1); }
@@ -223,7 +223,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         }
       } else {
-        this.proceso = null;
+        this.proceso = null!;
         if (this.fControl.touched) { this.filteredDocuments = this.disponibles; }
       }
       this.actualizar();
@@ -239,7 +239,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (!this.alertar || !this.proceso || !this.proceso.caracteristicas || this.proceso.caracteristicas.length === 0) return;
     if (this.isLoadingList) return;
     if (!this.relacionesAlerta) {
-      const rel: RelacionInternaDTO[] = this.templateService.getPropertyRelation(this.alertar.llaveTabla);
+      const rel: RelacionInternaDTO[] = this.templateService.getPropertyRelation(this.alertar.llaveTabla)!;
       if (rel && rel.length !== 0) {
         this.relacionesAlerta = rel;
         this.showAlertSelectedProcess();
@@ -463,7 +463,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     } else {
       if (this.tipoTexto) {
         //Sucede que los combo no se calculaban al cambiar, recibo de pago de trustmetrans refefuente
-        if(this.proceso==null) this.setValorNumero(null);
+        if(this.proceso==null) this.setValorNumero(null!);
         this.actualizarTexto();
       } else {
         let valorNumero = 0;
@@ -520,7 +520,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (this.isLoading) {
       return;
     }
-    this.errorMessage = null;
+    this.errorMessage = null!;
     // Nunca deberia ser nulo
     if (!campoFiltro) {
       alert('No deberia ser null la respuesta del servidor');
@@ -578,7 +578,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         // en fseta me dicuenta que al retirar un turno del RC se calculaba la caja vacia, entonces decidi bloquearlo
         if (bCampoRequerido && (this.isEnabled || this.required)) {
           this.errorMessage = 'Selecciona una opcion del campo ' + iDepen.campoDTO.nombre;
-          this.actualizarDataProvider(null);
+          this.actualizarDataProvider(null!);
           this.fControl.setValue(null);
           return;
         }
@@ -867,9 +867,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
     } else {
       if (this.data.valorOpcion) {
-        this.data.valorOpcion = null;
-        this.data.principal = null;
-        this.data.valorText = null;
+        this.data.valorOpcion = null!;
+        this.data.principal = null!;
+        this.data.valorText = null!;
         if (avisar) {
           this.avisarModificacion();
         }
@@ -881,7 +881,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     // Si hay dependientes no debo actualizar la plantilla
     if (this.relatedFields) {
       // Para que se actualice despues de las notificaciones de los listener
-      this.proceso = null;
+      this.proceso = null!;
       this.actualizarDataProvider(pCampo.campoDTO.documentos);
     } else {
       // Esto solo es un peque ciclo para el autoload
@@ -890,7 +890,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         // Consulto la plantilla para actualizarla y no tener que volver a consultarla
         const plantillaBase: DocumentoPlantillaDTO = this.templateService.getTemplate(
           this.structure.plantilla, this.urlServer
-        );
+        )!;
         let flagDetalle = false;
 
         for (let i = 0; i < plantillaBase.caracteristicas.length; i++) {
@@ -954,7 +954,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
           this.proceso = this.encontrarProcesoBase(procesoEncontrar);
           this.actualizarCombo(false);
-          this.keyInicial = null; // Lo coloco nuloo porque solo debe servir ene l iniciar
+          this.keyInicial = null!; // Lo coloco nuloo porque solo debe servir ene l iniciar
         } else {
           if (this.disponibles.length === 0) {
             this.sendCreate();
@@ -984,7 +984,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
       }
     }
-    return null;
+    return null!;
   }
 
   actualizarDataProvider(documentos: PedidoVentaDTO[]) {
@@ -1011,7 +1011,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
       }
     } else {
-      this.disponibles = null;
+      this.disponibles = null!;
       this.fControl.updateValueAndValidity();
     }
   }
@@ -1083,7 +1083,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         }
         if (borrarRelaciones) {
-          this.relacionesHerencia = undefined;
+          this.relacionesHerencia = undefined!;
         }
       }
       if (!this.relacionesHerencia) {
@@ -1155,7 +1155,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
         for (let i = 0; i < this.relatedFields.length; i++) {
           const dependentIterator = this.relatedFields[i];
-          const relations = this.templateService.getPropertyRelation(dependentIterator.llaveTabla);
+          const relations = this.templateService.getPropertyRelation(dependentIterator.llaveTabla)!;
           for (let k = 0; k < relations.length; k++) {
             const iRelation = relations[k];
             if (iRelation.plantilla === _plantilla) {
@@ -1294,9 +1294,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
     } else {
       if (this.data.valorOpcion) {
-        this.data.valorOpcion = null;
-        this.data.principal = null;
-        this.data.valorText = null;
+        this.data.valorOpcion = null!;
+        this.data.principal = null!;
+        this.data.valorText = null!;
         // if(txtProceso!=null) txtProceso.text = null;
         this.avisarModificacion();
       }
@@ -1307,7 +1307,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     // Este es el flujo normal
     if (pCampo != null && pCampo.campoDTO != null) {
       if (this.isEnabled) {
-        this.data.valorOpcion = null; // PAra que me actualice el que acaba de llegar
+        this.data.valorOpcion = null!; // PAra que me actualice el que acaba de llegar
       }
       // Si es adicional lo muestro en una lista aparte
       this.actualizarDataProvider(pCampo.campoDTO.documentos);
@@ -1323,7 +1323,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           if (this.disponibles.length === 1) {
             this.proceso = this.disponibles[0];
             if (!this.data.documento) {
-              this.data.valorOpcion = null;
+              this.data.valorOpcion = null!;
             }
             this.actualizar();
             if (!this.acabadoCrear) {
@@ -1373,9 +1373,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
         entity.nombre = this.fControlSearch.value;
         entity.estado = StatesEnum.ACTIVE + ";" + StatesEnum.INACTIVE + ";" + StatesEnum.FINALIZADO;
-        entity.filtroParametro = null;
+        entity.filtroParametro = null!;
       } else {
-        entity.nombre = null;
+        entity.nombre = null!;
         entity.filtroParametro = this.fControlSearch.value;
         if (this.fControlDateStart.value) {
           const startDate = new Date(this.fControlDateStart.value);
@@ -1480,7 +1480,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (this.fCheckFinalizado && this.fCheckFinalizado.value) { entity.estado = entity.estado + ";" + StatesEnum.FINALIZADO; }
       if (entity.estado === '') { entity.estado = entity.estado + ";" + StatesEnum.ACTIVE; }
     }
-    entity.estadoExpediente = null;
+    entity.estadoExpediente = null!;
     this.isLoadingList = true;
     this.api.listarDocumentos(entity, this.urlServer).subscribe({
       next: (dataResult: PedidoVentaDTO[]) => {
@@ -1529,7 +1529,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
   // Para la interfaz
   getColor(pEstado: string): string {
-    return this.templateService.getColor(pEstado);
+    return this.templateService.getColor(pEstado)!;
   }
 
   getColorFont(pEstado: string) {
@@ -1609,12 +1609,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       return false;
     }
     // Valido obligatoriedad
-    this.errorMessage = null;
+    this.errorMessage = null!;
     if (this.required && !this.multiple && !this.herencia && !this.data.valorOpcion && this.isEnabled && !this.isInvisible) {
       this.errorMessage = "En la plantilla " + this._structure.plantillaNombre + " es obligatorio registrar el campo " + this._structure.nombre + ")"
     }
     if (this.errorMessage) {
-      const input = document.getElementById(this.idField) as HTMLInputElement;
+      const input = document.getElementById(this.idField!) as HTMLInputElement;
       if (input) { input.focus(); }
       return false;
     }
