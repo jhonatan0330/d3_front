@@ -280,15 +280,15 @@ Esta fase es **después** de que todo funcione en Angular 22. No combinar con la
 Bugs que causan errores en runtime y afectan funcionalidad visible.
 
 ### 6.1 Limpiar `$safeNavigationMigration` — 11 ocurrencias en 10 archivos
-- [ ] `accounting/manual-form/manual-form.component.html:24,28` — `$safeNavigationMigration(accountingService.currentCatalog?.name)` → `accountingService.currentCatalog?.name`
-- [ ] `authorization/profile/profile.component.html:31` — `$safeNavigationMigration(company?.imagen)` → `company?.imagen`
-- [ ] `cruds/cruds2.component.html:226,449` — `$safeNavigationMigration(plantilla?.imagen)` → `plantilla?.imagen`
-- [ ] `document-transition/trazability/trazability.component.html:5` — `$safeNavigationMigration(plantilla?.imagen)` → `plantilla?.imagen`
-- [ ] `layout/common/user/user.component.html:5` — `$safeNavigationMigration(user?.imagen)` → `user?.imagen`
-- [ ] `modules/full/neuron/form/form.component.html:4` — `$safeNavigationMigration(pedido?.imagen)` → `pedido?.imagen`
-- [ ] `modules/full/neuron/form/form.component.html:266` — `$safeNavigationMigration(plantilla?.nombre)` → `plantilla?.nombre`
-- [ ] `notification/transfer-form/transfer-form.component.html:12` — `$safeNavigationMigration(user?.imagen)` → `user?.imagen`
-- [ ] `persons/detail_persons/detail-person.component.html:6` — `$safeNavigationMigration(contact?.imagen)` → `contact?.imagen`
+- [x] `accounting/manual-form/manual-form.component.html:24,28` — `$safeNavigationMigration(accountingService.currentCatalog?.name)` → `accountingService.currentCatalog?.name`
+- [x] `authorization/profile/profile.component.html:31` — `$safeNavigationMigration(company?.imagen)` → `company?.imagen`
+- [x] `cruds/cruds2.component.html:226,449` — `$safeNavigationMigration(plantilla?.imagen)` → `plantilla?.imagen`
+- [x] `document-transition/trazability/trazability.component.html:5` — `$safeNavigationMigration(plantilla?.imagen)` → `plantilla?.imagen`
+- [x] `layout/common/user/user.component.html:5` — `$safeNavigationMigration(user?.imagen)` → `user?.imagen`
+- [x] `modules/full/neuron/form/form.component.html:4` — `$safeNavigationMigration(pedido?.imagen)` → `pedido?.imagen`
+- [x] `modules/full/neuron/form/form.component.html:266` — `$safeNavigationMigration(plantilla?.nombre)` → `plantilla?.nombre`
+- [x] `notification/transfer-form/transfer-form.component.html:12` — `$safeNavigationMigration(user?.imagen)` → `user?.imagen`
+- [x] `persons/detail_persons/detail-person.component.html:6` — `$safeNavigationMigration(contact?.imagen)` → `contact?.imagen`
 - [x] `authentication/sign-in/split-screen-reversed/sign-in.component.html:11` — **HECHO** (sesión 8/8/2026)
 
 **Contexto**: `safeNavigationMigration` fue inyectado automáticamente por el migrador Angular 22 (commit `a563217`) como wrapper alrededor de expresiones con optional chaining. La función **nunca se definió** en ningún archivo TypeScript del proyecto. Cada evaluación en el template lanza un error silencioso que impide el renderizado de imágenes y textos.

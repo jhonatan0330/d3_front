@@ -168,10 +168,10 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     deleteTask(): void {
-        this._tasksService.deleteTask(this.task.key).subscribe(() => {
+        this._tasksService.deleteTask(this.task.key).subscribe({ next: () => {
             this.closeDrawer();
             this._changeDetectorRef.markForCheck();
-        });
+        }, error: () => {} });
     }
 
     trackByFn(index: number, item: any): any {

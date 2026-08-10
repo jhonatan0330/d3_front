@@ -247,7 +247,8 @@ export class TrazabilityComponent implements OnInit {
     this._traceService.getTraceFields(_gestor.documentoPrincipal, _gestor.transaccion, this.plantilla.server).subscribe({
       next: (_dataResult: PedidoVentaCaracteristicaDTO[]) => {
         _gestor.campos = _dataResult;
-      }
+      },
+      error: () => {}
     });
   }
 

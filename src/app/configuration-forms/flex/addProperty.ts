@@ -88,23 +88,23 @@ export class AddPropertyComponent {
         _a.origen = this.propiedad.tipo;
         _a.origenCategoria = this.data.tipo.origenCategoria;
         this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null!)
-            .subscribe(p => {
+            .subscribe({ next: p => {
                 this.propiedadValores = p;
                 this.def = this.propiedadValores.find(p => p.llaveTabla === this.propiedad.propiedadValor)!;
                 if (this.def.pideRol) {
                     this.buscarRoles();
                 }
 
-            });
+            }, error: () => {} });
     }
     buscarRoles() {
-        this.flexService.listarConsultaRolAcceso().subscribe(p => {
+        this.flexService.listarConsultaRolAcceso().subscribe({ next: p => {
             this.roles = p;
             if(!this.propiedad.llaveTabla){
                 this.propiedad.rol = null as any;
                 this.propiedad.rolExcluyente = null as any;
             }
-        })
+        }, error: () => {} })
     }
 
     guardarPropiedad() {
@@ -143,9 +143,9 @@ export class AddPropertyComponent {
         }
     }
     filtrarUsuarios(pFiltro) {
-        this.flexService.listarRolUsuario(pFiltro).subscribe(p => {
+        this.flexService.listarRolUsuario(pFiltro).subscribe({ next: p => {
             this.usuarios = p;
-        })
+        }, error: () => {} })
     }
 
     seleccionarUsuario(pUser: UsuarioDTO) {

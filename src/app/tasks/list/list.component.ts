@@ -114,14 +114,14 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
 
     createTask(): void {
-        this._tasksService.createTask("").subscribe((id) => {
+        this._tasksService.createTask("").subscribe({ next: (id) => {
             const tasks = this._tasksService.tasks() ?? [];
             const task = tasks.find((t) => t.key === id);
             if (task) {
                 this._tasksService.selectTask(task);
                 this.selectTask(task);
             }
-        });
+        }, error: () => {} });
     }
 
     toggleCompleted(task: Task): void {
@@ -151,10 +151,10 @@ export class TasksListComponent implements OnInit, OnDestroy {
     }
 
     deleteTask(_task: Task): void {
-        this._tasksService.deleteTask(_task.key).subscribe(() => {
+        this._tasksService.deleteTask(_task.key).subscribe({ next: () => {
             this._router.navigate(['./'], { relativeTo: this._activatedRoute });
             this._changeDetectorRef.markForCheck();
-        });
+        }, error: () => {} });
     }
     
 }

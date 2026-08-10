@@ -193,7 +193,8 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
             this._notificationsService.readActivity(actividad).subscribe({
                 next: () => {
                     this.openDocument(actividad);
-                }
+                },
+                error: () => {}
             });
         } else {
             this.openDocument(actividad);

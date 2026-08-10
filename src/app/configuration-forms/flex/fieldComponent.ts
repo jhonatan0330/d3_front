@@ -117,15 +117,15 @@ export class FieldComponent implements OnInit {
         const _a = new PropiedadValorDefinidoDTO();
         if (this.tipo === 'Plantilla') {
             _a.origen = 'L';
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe(response => {
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe({ next: response => {
                 if (response) this.listarPropiedadesCampo();
-            });
+            }, error: () => {} });
         } else {
             _a.origen = 'C';
             _a.origenCategoria = this.field.formato;
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe(response => {
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe({ next: response => {
                 if (response) this.listarPropiedadesCampo();
-            });
+            }, error: () => {} });
         }
     }
 

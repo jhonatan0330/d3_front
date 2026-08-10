@@ -39,10 +39,10 @@ export class ContactsDetailsComponent implements OnInit {
     ngOnInit(): void {
 
 
-        this._contactsService.getContactById(this.data.key).subscribe((contact: UsuarioDTO) => {
+        this._contactsService.getContactById(this.data.key).subscribe({ next: (contact: UsuarioDTO) => {
             this.contact = contact;
             this.isSameUser = (this.jwtAuth.getUser().llaveTabla === contact.llaveTabla);
-        });
+        }, error: () => {} });
     }
 
 

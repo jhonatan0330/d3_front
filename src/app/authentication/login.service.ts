@@ -213,7 +213,8 @@ export class LoginService {
           this.signin(null!, null!, tokenLocal)!.subscribe({
             next: (data:UsuarioAutenticacionDTO) => {
               this.authenticationOK(data);
-            }
+            },
+            error: () => {}
           }
           );
           return profile;
@@ -243,9 +244,9 @@ export class LoginService {
     }
     if (!this.user()) { return; }
     this.apiService.listarPlantillas("USER")
-      .subscribe((templates) => {
+      .subscribe({ next: (templates) => {
         this.templateService.setTemplates(templates);
-      });
+      }, error: () => {} });
   }
 
   signout() {

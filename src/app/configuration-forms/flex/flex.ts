@@ -54,19 +54,19 @@ export class FlexComponent implements OnInit {
         this.nuevoCampo = new DocumentoPlantillaCaracteristicaDTO();
         this.nuevoCampo.formato = 'T';
         this.nuevoCampo.plantilla = this.data.template;
-        this.flexService.getTemplate(this.data.template, null!).subscribe((_returnedTemplate) => {
+        this.flexService.getTemplate(this.data.template, null!).subscribe({ next: (_returnedTemplate) => {
             this.plantilla = _returnedTemplate;
             this.isLoading = false;
             this.getFields();
-        });
+        }, error: () => {} });
     }
 
     getFields() {
         this.isLoading = true;
-        this.flexService.getFields(this.plantilla.llaveTabla).subscribe((_returnedFields) => {
+        this.flexService.getFields(this.plantilla.llaveTabla).subscribe({ next: (_returnedFields) => {
             this.campos = _returnedFields;
             this.isLoading = false;
-        });
+        }, error: () => {} });
     }
 
     onClickCampo(campoId: string) {
@@ -87,11 +87,11 @@ export class FlexComponent implements OnInit {
 
     agregarCampo(): void {
         //this.utilsService.fieldAddModalFlex(this.data.template, this.nuevoCampo);
-        this.flexService.guardarDocumentoPlantillaCaracteristica(this.nuevoCampo).subscribe(p => {
+        this.flexService.guardarDocumentoPlantillaCaracteristica(this.nuevoCampo).subscribe({ next: p => {
                 //this.nuevoCampo = p;
                 this.nuevoCampo.nombre = '';
                 this.getFields();
-            });
+            }, error: () => {} });
     }
 
     onNuevoNombreChange(valor: string) {
@@ -188,9 +188,9 @@ export class FlexComponent implements OnInit {
         item.orden = to + 1;
 
         this.onDragEnd();
-        this.flexService.actualizarDocumentoPlantillaCaracteristica(item).subscribe(p => {
+        this.flexService.actualizarDocumentoPlantillaCaracteristica(item).subscribe({ next: p => {
             //this.campo = p;
-        });
+        }, error: () => {} });
     }
 
     // === Caneca de basura ===

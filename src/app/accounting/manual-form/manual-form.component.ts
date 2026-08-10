@@ -69,10 +69,10 @@ export class ManualFormComponent implements OnInit {
 
         if (this.data) {
             if (this.data.catalogId) {
-                this.accountingService.getCatalog(this.data.catalogId).subscribe((catalog) => {
+                this.accountingService.getCatalog(this.data.catalogId).subscribe({ next: (catalog) => {
                     this.catalog = catalog;
                     this.getReports();
-                });
+                }, error: () => {} });
                 this.botonAccion = "Actualizar";
             } else {
                 this.botonAccion = undefined;
@@ -81,7 +81,7 @@ export class ManualFormComponent implements OnInit {
             if (this.key) {
                 this.loading = true;
                 this.accountingService.getVoucher(this.data.key)
-                    .subscribe(x => {
+                    .subscribe({ next: x => {
                         if (!x) { return; }
                         this.form = this._formBuilder.group({
                             header: this._formBuilder.group(x.header),
@@ -103,7 +103,7 @@ export class ManualFormComponent implements OnInit {
                         this.differenceValue = this.debitValue - this.creditValue;
                         if (this.data.catalogId) { this.recordsArray.push(this.createRecord(new VoucherLine())); }
                         this.loading = false;
-                    });
+                    }, error: () => {} });
             } else{
                 this.recordsArray.push(this.createRecord(new VoucherLine()));
             }

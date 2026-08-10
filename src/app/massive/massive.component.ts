@@ -144,7 +144,7 @@ export class MassiveComponent implements OnInit {
 
         if (!template.caracteristicas) {
           this.isProcessing = true;
-          this.api.obtenerCampos(crudProperty, template.server).subscribe({
+          this.api.obtenerCampos(crudProperty, template.server).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
               this.isProcessing = false;
               this.loadFiledInMultipleTemplate(plantilla);
@@ -669,6 +669,7 @@ export class MassiveComponent implements OnInit {
         this.isProcessing = true;
         this.api
           .validarTipoProcesoCarga(currentCampo, template.server)
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next:(value: DocumentoPlantillaCaracteristicaDTO)=>{
               this.isProcessing = false;
@@ -781,7 +782,7 @@ export class MassiveComponent implements OnInit {
                 for (let j = 0; j < this.files.length; j++) {
                   if(this.files[j].name === iCampo.valorText){
                     this.isProcessing = true;
-                    this.api.uploadFile(this.files[j], this.urlServer).subscribe({
+                    this.api.uploadFile(this.files[j], this.urlServer).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                       next: (value) => {
                         iCampo.valorText = value.message;
                         this.procesarDocumentos();
@@ -826,6 +827,7 @@ export class MassiveComponent implements OnInit {
         setTimeout(() => {
           this.api
             .saveByMassive(this.currentPedido, this.plantilla.server, Date.now().toString())
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
               next: (value: PedidoVentaDTO) => {
                 this.isProcessing = false;
@@ -910,6 +912,7 @@ export class MassiveComponent implements OnInit {
             this.isProcessing = true;
             this.api
               .saveByMassive(element.document, this.plantilla.server, Date.now().toString())
+              .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe({
                 next: (resultDocument: PedidoVentaDTO) => {
                   this.isProcessing = false;

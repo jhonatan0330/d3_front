@@ -72,7 +72,8 @@ export class SettingsOrganizationComponent {
     this.propertyService.getProperties('O', this.organization.llaveTabla).subscribe({
       next: (value: PropiedadDTO[]) => {
         this.properties = value;
-      }
+      },
+      error: () => {}
     });
   }
 
@@ -80,7 +81,8 @@ export class SettingsOrganizationComponent {
     this.propertyService.getTypes('O', this.fControl.value).subscribe({
       next: (value: PropiedadValorDefinidoDTO[]) => {
         this.types = value;
-      }
+      },
+      error: () => {}
     });
   }
 

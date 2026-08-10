@@ -32,9 +32,9 @@ export class AddFieldComponent {
             this.campo = this.data.campo;
         } else {
             this.flexService.getField(this.data.template, null!) //datos del campo antiguo
-                .subscribe(p => {
+                .subscribe({ next: p => {
                     this.campo = p;
-                });
+                }, error: () => {} });
         }
     }
 
@@ -43,15 +43,15 @@ export class AddFieldComponent {
     actualizarCampo(): void {
 
         if (this.campo.llaveTabla) {
-            this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campo).subscribe(p => {
+            this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campo).subscribe({ next: p => {
                 this.campo = p;
                 this.dialogRef.close(p);
-            });
+            }, error: () => {} });
         } else {
-            this.flexService.guardarDocumentoPlantillaCaracteristica(this.campo).subscribe(p => {
+            this.flexService.guardarDocumentoPlantillaCaracteristica(this.campo).subscribe({ next: p => {
                 this.campo = p;
                 this.dialogRef.close(p);
-            });
+            }, error: () => {} });
         }
 
     }

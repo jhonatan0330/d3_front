@@ -1139,9 +1139,9 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     abrirUsuario(pUsuario: string) {
-        this.api.searchUserByRol(pUsuario).subscribe((contact: UsuarioDTO) => {
+        this.api.searchUserByRol(pUsuario).subscribe({ next: (contact: UsuarioDTO) => {
             this.utilsService.modalUser(contact.llaveTabla).subscribe({ error: () => {} });
-        });
+        }, error: () => {} });
     }
 
     flex() {

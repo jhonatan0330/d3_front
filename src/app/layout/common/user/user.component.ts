@@ -47,7 +47,8 @@ export class UserComponent {
         this.apiService.listarPlantillas(pProfile).subscribe({
             next: (value) => {
                 this.templateService.setTemplates(value);
-            }
+            },
+            error: () => {}
         });
     }
 

@@ -111,10 +111,10 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
     cambiar_clave(pUsuario: UsuarioDTO) {
         //this.utilService.modalUserChangePassOther(pUsuario).subscribe();
-        this._jwt.recoverPassword(pUsuario.identificacion, pUsuario.correo).subscribe(() => {
+        this._jwt.recoverPassword(pUsuario.identificacion, pUsuario.correo).subscribe({ next: () => {
             const notificationCenter = new NotificationCenterService();
             notificationCenter.success('Correo Enviado', 'Revisa el correo ' + pUsuario.correo + '.');
-        });
+        }, error: () => {} });
 
     }
 }
