@@ -22,7 +22,7 @@ import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
     exportAs: 'notifications',
     imports: [MatIconButton, MatIcon, MatTooltip, NgClass, DecimalPipe, DatePipe]
 })
-export class NotificationButtonComponent implements OnInit, OnDestroy {
+export class NotificationButtonComponent implements  OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
     private _notificationsService = inject(NotificationsService);
     private _overlay = inject(Overlay);
@@ -58,11 +58,6 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * On init
-     */
-    ngOnInit(): void {
-    }
 
     /**
      * On destroy
@@ -103,7 +98,10 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
     }
 
     closePanel(): void {
-        this._overlayRef.detach();
+        if (this._overlayRef?.hasAttached()) {
+            this._overlayRef.detach();
+        }
+
         this.isOpen = false;
     }
 
@@ -152,8 +150,7 @@ export class NotificationButtonComponent implements OnInit, OnDestroy {
 
         // Detach the overlay from the portal on backdrop click
         this._overlayRef.backdropClick().subscribe(() => {
-            this._overlayRef.detach();
-            this.isOpen = false;
+            this.closePanel();
         });
     }
 

@@ -10,12 +10,12 @@ import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { Subject } from 'rxjs';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
-import { NgClass } from '@angular/common';
 import { MatCard } from '@angular/material/card';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TemplateComponent } from './template/template.component';
 import { ImageFormatPipe } from '../../shared/local-image';
+import { register } from 'swiper/element';
 
 
 interface MenuNode {
@@ -25,6 +25,8 @@ interface MenuNode {
     visible: boolean;
     image: string;
 }
+
+register();
 
 @Component({
     selector: 'profile',

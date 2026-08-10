@@ -109,7 +109,7 @@
               notification.documentoDTO.caracteristicas.length !== 0
               ) {
               <div class="w-full pl-4">
-                @for (f of notification.documentoDTO.caracteristicas; track f) {
+                @for (f of notification.documentoDTO.caracteristicas; track f.llaveTabla) {
                   <div class="flex text-secondary text-xs"
                     >
                     <div class="font-semibold">{{ f.campoDTO.nombre }}</div>

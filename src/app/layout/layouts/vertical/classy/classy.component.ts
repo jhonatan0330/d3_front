@@ -25,15 +25,15 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'classy-layout',
     templateUrl: './classy.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, RouterLink, MatIcon, MatIconButton, HomeButtonComponent, SearchComponent, SearchPopButtonComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, RouterLink, MatIcon, MatIconButton, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);
     private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
     private _navigationService = inject(NavigationService);
 
-    isScreenSmall: boolean;
-    sidenavOpened = false;
+    isScreenSmall = signal(false);
+    sidenavOpened = signal(false);
     navigation: Navigation| null = null;
     user: UsuarioDTO | undefined;
     company: OrganizacionDTO | undefined;
@@ -70,20 +70,22 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
         effect(() => {
             this.navigation = this._navigationService.navigation;
         });
-    }
 
-    ngOnInit(): void {
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({ matchingAliases }) => {
                 // Check if the screen is small
-                this.isScreenSmall = !matchingAliases.includes('md');
+                this.isScreenSmall.set(!matchingAliases.includes('md'));
 
                 // Open the sidenav on larger screens, close it on small screens
-                this.sidenavOpened = !this.isScreenSmall;
+                this.sidenavOpened.set(!this.isScreenSmall());
             });
 
+    }
+
+    ngOnInit(): void {
+        
         // Reloj
         this._clockInterval = setInterval(() => {
             this.time.set(new Date());
@@ -100,12 +102,12 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
 
     toggleNavigation(): void {
         // Toggle the opened status of the sidenav
-        this.sidenavOpened = !this.sidenavOpened;
+        this.sidenavOpened.update((value) => !value);
     }
 
     closeNavOnSmall(): void {
-        if (this.isScreenSmall) {
-            this.sidenavOpened = false;
+        if (this.isScreenSmall()) {
+            this.sidenavOpened.set(false);
         }
     }
 }

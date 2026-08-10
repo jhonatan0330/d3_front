@@ -2,7 +2,8 @@
 <mat-sidenav-container class="h-screen w-full overflow-hidden print:hidden">
 
     <!-- Navigation -->
-    <mat-sidenav class="dark bg-gray-900 w-80" [mode]="isScreenSmall ? 'over' : 'side'" [(opened)]="sidenavOpened">
+    <mat-sidenav class="dark bg-gray-900 w-80" [mode]="isScreenSmall() ? 'over' : 'side'" [opened]="sidenavOpened()"
+(openedChange)="sidenavOpened.set($event)">
         <div class="flex h-full flex-col overflow-hidden">
 
             <!-- App Logo -->
@@ -62,7 +63,7 @@
                 <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
                     <app-home-button></app-home-button>
                     <search [appearance]="'bar'"></search>
-                    <app-search-pop-button></app-search-pop-button>
+                    <!--app-search-pop-button></app-search-pop-button-->
                     <shortcuts></shortcuts>
                     <notifications></notifications>
                     <user></user>

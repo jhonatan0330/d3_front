@@ -8,14 +8,13 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { MatIcon } from '@angular/material/icon';
-import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
 
 @Component({
     selector: 'shortcuts',
     templateUrl: './shortcuts.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'shortcuts',
-    imports: [MatIconButton, MatIcon, MatAutocompleteTrigger]
+    imports: [MatIconButton, MatIcon]
 })
 export class ShortcutsComponent implements OnInit, OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
@@ -27,7 +26,6 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     private readonly _shortcutsOrigin = viewChild<MatButton>('shortcutsOrigin');
     private readonly _shortcutsPanel = viewChild<TemplateRef<any>>('shortcutsPanel');
     private readonly barSearchInput = viewChild<ElementRef>('barSearchInput');
-    readonly matAutocomplete = viewChild<MatAutocomplete>('matAutocomplete');
 
     constructor() {
         effect(() => {
