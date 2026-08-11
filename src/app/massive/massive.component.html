@@ -7,7 +7,7 @@
       <!-- Title -->
       <div class="mt-2">
         <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
-          {{plantilla.nombre}}
+          {{plantilla()?.nombre}}
         </h2>
       </div>
     </div>
@@ -16,39 +16,39 @@
   <!-- Main -->
   <div class="flex flex-col flex-0 p-2 w-full">
     <div class="w-full">
-      <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading || isProcessing"
+      <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading() || isProcessing()"
         onclick="simpleUploadXML.click();">
         <mat-icon class="mr-2">cloud_upload</mat-icon> 2. Cargar
         <input id="simpleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
           (click)="$event.target.value = ''" (change)="handleFileInput($event.target.files!)" />
         </button>
-        @if (fieldIdInTemplateSecondary && documentosGenerados) {
+        @if (fieldIdInTemplateSecondary() && documentosGenerados()) {
           <button mat-flat-button color="accent" class="m-2" onclick="multipleUploadXML.click();"
-            [disabled]="isLoading || isProcessing">
+            [disabled]="isLoading() || isProcessing()">
             <mat-icon class="mr-2">cloud_upload</mat-icon> Cargar Multiple
             <input id="multipleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
               (click)="$event.target.value = ''" (change)="handleFileInputMultiple($event.target.files!)" />
             </button>
           }
 
-          <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading" (click)="downloadBase('xml')">
+          <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading()" (click)="downloadBase('xml')">
             <mat-icon class="mr-2">cloud_download</mat-icon> base (xml)
           </button>
-          <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading" (click)="downloadBase('excel')">
+          <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading()" (click)="downloadBase('excel')">
             <mat-icon class="mr-2">cloud_download</mat-icon> base (csv)
           </button>
           <span class="m-2"> Tiempo de espera
-            <input class="p-1 w-14 bg-white rounded"  [(ngModel)]="fTiempoEspera" [disabled]="isLoading" type="number" />
+            <input class="p-1 w-14 bg-white rounded"  [(ngModel)]="fTiempoEspera" [disabled]="isLoading()" type="number" />
           </span>
           <label><input class="m-2" type="checkbox" [(ngModel)]="skipSelected" />No detenerse cuando encuentre errores</label>
         </div>
 
-        <mat-progress-bar [mode]="isLoading ? 'indeterminate' : 'query'" class="w-full">Validando Datos</mat-progress-bar>
-        {{ lblCarga }}
-        {{ lblTipoProceso }}
-        <mat-progress-bar [mode]="isLoading ? 'indeterminate' : 'query'" class="w-full"></mat-progress-bar>
+        <mat-progress-bar [mode]="isLoading() ? 'indeterminate' : 'query'" class="w-full">Validando Datos</mat-progress-bar>
+        {{ lblCarga() }}
+        {{ lblTipoProceso() }}
+        <mat-progress-bar [mode]="isLoading() ? 'indeterminate' : 'query'" class="w-full"></mat-progress-bar>
         <div class="w-full">
-          <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading || !isValidate || isProcessing "
+          <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading() || !isValidate() || isProcessing() "
             (click)="startLoad()">
             <mat-icon class="mr-2">fast_forward</mat-icon> 3. Procesar
           </button>
@@ -57,23 +57,23 @@
           <mat-icon class="mr-2">pause</mat-icon> 4. Pausar
         </button-->
         <span></span>
-        <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing" (click)="newMassiveLoad()">
+        <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing()" (click)="newMassiveLoad()">
           <mat-icon class="mr-2">autorenew</mat-icon> Nueva carga
         </button>
 
-        <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing" >
+        <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing()" >
           <mat-icon class="mr-2">autorenew</mat-icon> Cargar archivos
         </button>
 
         <input [id]="'_file'" type="file" webkitdirectory directory multiple
-          (click)="$event.target.value = '';$event.stopPropagation();" [disabled]="isProcessing"
+          (click)="$event.target.value = '';$event.stopPropagation();" [disabled]="isProcessing()"
           (change)="handleFileInputToLoadArchivo($event.target.files!)" />
 
         </div>
-        <mat-progress-bar [mode]="isProcessing ? 'indeterminate' : 'query'" class="w-full"></mat-progress-bar>
-        <span class="w-full">{{ lblProcesar }}</span>
+        <mat-progress-bar [mode]="isProcessing() ? 'indeterminate' : 'query'" class="w-full"></mat-progress-bar>
+        <span class="w-full">{{ lblProcesar() }}</span>
         <div class="w-full">
-          @for (iDocument of failedDocuments; track iDocument) {
+          @for (iDocument of failedDocuments(); track iDocument) {
             <div>
               <app-document [document]="iDocument"></app-document>
             </div>
@@ -82,9 +82,9 @@
       </div>
 
       <!-- Table -->
-      @if (dataSource.data) {
+      @if (dataSource().data) {
         <div class="overflow-auto" >
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
             <ng-container [matColumnDef]="'orderNumber'" >
               <th mat-header-cell *matHeaderCellDef>No.</th>
               <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-500':element.status ==='FAILED'}">
@@ -114,7 +114,7 @@
                 }
               </td>
             </ng-container>
-            @for (column of titleColumns; track column; let i = $index) {
+            @for (column of titleColumns(); track column; let i = $index) {
               <ng-container [matColumnDef]="column">
                 <th mat-header-cell *matHeaderCellDef> {{column}} </th>
                 <td mat-cell *matCellDef="let element">
@@ -122,8 +122,8 @@
                 </td>
               </ng-container>
             }
-            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"  ></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns(); sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns();"  ></tr>
           </table>
         </div>
       }

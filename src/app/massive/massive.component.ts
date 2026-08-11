@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, DestroyRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, DestroyRef, CUSTOM_ELEMENTS_SCHEMA, signal } from '@angular/core';
 import {
   DocumentMessage,
   DocumentoPlantillaCaracteristicaDTO,
@@ -57,35 +57,35 @@ export class MassiveComponent implements OnInit {
   plantillaId: string;
   urlServer: string;
 
-  plantilla: DocumentoPlantillaDTO; // Estructura base de la lista
+  plantilla = signal<DocumentoPlantillaDTO | undefined>(undefined); // Estructura base de la lista
 
   canMassive = false;
-  failedDocuments: PedidoVentaDTO[] = [];
+  failedDocuments = signal<PedidoVentaDTO[]>([]);
   inicio: Date;
   cantidadProcesada: number;
 
-  lblCarga = '';
-  lblTipoProceso: string;
-  lblProcesar: string;
+  lblCarga = signal('');
+  lblTipoProceso = signal('');
+  lblProcesar = signal('');
 
-  isLoading = false;
-  isValidate = false;
-  isProcessing = false;
+  isLoading = signal(false);
+  isValidate = signal(false);
+  isProcessing = signal(false);
   isUpdate = false;
 
   camposConsultar: DocumentoPlantillaCaracteristicaDTO[];
 
-  documentosGenerados: LoadLineDTO[];
-  documentosGeneradosMultiple: LoadLineDTO[];
+  documentosGenerados = signal<LoadLineDTO[]>([]);
+  documentosGeneradosMultiple = signal<LoadLineDTO[]>([]);
   inicialCamposConsultar = 0;
 
   currentPedido: PedidoVentaDTO;
 
-  fieldIdInTemplateSecondary: DocumentoPlantillaCaracteristicaDTO;
+  fieldIdInTemplateSecondary = signal<DocumentoPlantillaCaracteristicaDTO | undefined>(undefined);
 
-  dataSource = new MatTableDataSource<LoadLineDTO>([]);
-  displayedColumns: string[] = [];
-  titleColumns: string[] = [];
+  dataSource = signal(new MatTableDataSource<LoadLineDTO>([]));
+  displayedColumns = signal<string[]>([]);
+  titleColumns = signal<string[]>([]);
   fTiempoEspera: number = 0;
   skipSelected: boolean = false;
   pause: boolean = false;
@@ -97,10 +97,10 @@ export class MassiveComponent implements OnInit {
       this.plantillaId = params.template;
       this.urlServer = params.server;
       if (this.plantillaId) {
-        this.plantilla = this.templateService.getTemplate(
+        this.plantilla.set(this.templateService.getTemplate(
           this.plantillaId,
           this.urlServer
-        )!;
+        )!);
         this.startForm();
       } else {
         this.router.navigate(['/main']);
@@ -111,28 +111,28 @@ export class MassiveComponent implements OnInit {
   }
 
   startForm() {
-    if (!this.plantilla) {
+    if (!this.plantilla()) {
       this.router.navigate(['/main']);
     } else {
       // Obtener Variables
       this.canMassive = !PlantillaHelper.isEmpty(
-        this.plantilla.propiedades,
+        this.plantilla()!.propiedades,
         PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA
       );
       if (!this.canMassive) {
         // this.closeMassiveForm();
       }
-      this.validateCamposPlantilla(this.plantilla);
+      this.validateCamposPlantilla(this.plantilla()!);
 
       const propertyLoadMassiveMultiple = PlantillaHelper.buscarPropiedad(
-        this.plantilla.propiedades,
+        this.plantilla()!.propiedades,
         PlantillaHelper.PLANTILLA_CARGA_MASIVA_MULTIPLE
       );
 
       if (propertyLoadMassiveMultiple) {
         const fieldMultiple: DocumentoPlantillaCaracteristicaDTO =
           getFieldFromTemplate(
-            this.plantilla,
+            this.plantilla()!,
             propertyLoadMassiveMultiple.valor
           )!;
         const crudProperty: string = PlantillaHelper.buscarValor(
@@ -152,10 +152,10 @@ export class MassiveComponent implements OnInit {
           this.templateService.getTemplate(crudProperty, null!)!;
 
         if (!template.caracteristicas) {
-          this.isProcessing = true;
+          this.isProcessing.set(true);
           this.api.obtenerCampos(crudProperty, template.server).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
-              this.isProcessing = false;
+              this.isProcessing.set(false);
               this.loadFiledInMultipleTemplate(plantilla);
               this.templateService.getTemplate(
                 plantilla.llaveTabla,
@@ -163,7 +163,7 @@ export class MassiveComponent implements OnInit {
               )!.caracteristicas = plantilla.caracteristicas;
             },
             error: () => {
-              this.isProcessing = false;
+              this.isProcessing.set(false);
             },
           });
           return;
@@ -184,41 +184,41 @@ export class MassiveComponent implements OnInit {
       if (dbProperty) {
         for (let j = 0; j < dbProperty.length; j++) {
           const elementProperty = dbProperty[j];
-          if (elementProperty.valor === this.plantilla.llaveTabla) {
-            this.fieldIdInTemplateSecondary = element;
+          if (elementProperty.valor === this.plantilla()!.llaveTabla) {
+            this.fieldIdInTemplateSecondary.set(element);
             return;
           }
         }
       }
     }
-    if (!this.fieldIdInTemplateSecondary) {
+    if (!this.fieldIdInTemplateSecondary()) {
       Swal.fire(
         'Unsupported',
         'En la plantilla ' +
         template.nombre +
         ' no encontramos ningun campo con fuente de datos ' +
-        this.plantilla.nombre
+        this.plantilla()!.nombre
       );
     }
   }
 
   /////////////// DESCARGAR ARCHIVO BASE ///////////////////////////
   downloadBase(type: string) {
-    if (!this.plantilla) {
+    if (!this.plantilla()) {
     } else {
-      if (!this.validateCamposPlantilla(this.plantilla)) {
+      if (!this.validateCamposPlantilla(this.plantilla()!)) {
         return;
       }
       if (type === 'xml') {
         const blob = new Blob([this.generateXMLBase()], {
           type: 'text/plain;charset=utf-8',
         });
-        saveAs(blob, this.plantilla.nombre + '.xml');
+        saveAs(blob, this.plantilla()!.nombre + '.xml');
       } else {
         const blob = new Blob([this.generateXMLBaseExcel()], {
           type: 'text/csv;charset=utf-8;',
         });
-        saveAs(blob, this.plantilla.nombre + '.csv');
+        saveAs(blob, this.plantilla()!.nombre + '.csv');
       }
     }
   }
@@ -236,15 +236,15 @@ export class MassiveComponent implements OnInit {
   }
 
   generateXMLBase(): string {
-    this.lblCarga = 'GENERANDO  XML';
-    this.isLoading = true;
+    this.lblCarga.set('GENERANDO  XML');
+    this.isLoading.set(true);
     try {
       let xmlBase = '<root>';
-      const nombre = this.formatStringXML(this.plantilla.codigo);
+      const nombre = this.formatStringXML(this.plantilla()!.codigo);
       for (let index = 1; index <= 2; index++) {
         xmlBase = xmlBase + '<' + nombre + '>';
-        for (let i = 0; i < this.plantilla.caracteristicas.length; i++) {
-          const iCampo = this.plantilla.caracteristicas[i];
+        for (let i = 0; i < this.plantilla()!.caracteristicas.length; i++) {
+          const iCampo = this.plantilla()!.caracteristicas[i];
           if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION){
             const campoNombre: string = this.formatStringXML(iCampo.nombre);
             xmlBase = xmlBase + '<' + campoNombre + '>';
@@ -255,31 +255,31 @@ export class MassiveComponent implements OnInit {
         xmlBase = xmlBase + '</' + nombre + '>';
       }
       xmlBase = xmlBase + '</root>';
-      this.isLoading = false;
+      this.isLoading.set(false);
       return xmlBase.toString();
     } catch (error) {
       Swal.fire('', error.message, 'error');
-      this.isLoading = false;
+      this.isLoading.set(false);
     }
     return '';
   }
 
   generateXMLBaseExcel(): string {
-    this.lblCarga = 'GENERANDO  EXCEL';
-    this.isLoading = true;
+    this.lblCarga.set('GENERANDO  EXCEL');
+    this.isLoading.set(true);
     try {
       let xmlBase = '';
-      for (const iCampo of this.plantilla.caracteristicas) {
+      for (const iCampo of this.plantilla()!.caracteristicas) {
         if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION){
           const campoNombre: string = this.formatStringXML(iCampo.nombre);
           xmlBase = xmlBase + campoNombre + ';';
         }
       }
-      this.isLoading = false;
+      this.isLoading.set(false);
       return xmlBase.toString();
     } catch (error) {
       Swal.fire('', error.message, 'error');
-      this.isLoading = false;
+      this.isLoading.set(false);
     }
     return '';
   }
@@ -306,7 +306,7 @@ export class MassiveComponent implements OnInit {
   /////////////CARGAR MULTIPLE///////////////////////////////////
 
   handleFileInputMultiple(files: FileList) {
-    if (!this.fieldIdInTemplateSecondary) {
+    if (!this.fieldIdInTemplateSecondary()) {
       Swal.fire(
         'Unsupported',
         'No encontramos la propiedad carga masiva plantilla multiple '
@@ -314,12 +314,12 @@ export class MassiveComponent implements OnInit {
       return;
     }
     const template = this.templateService.getTemplate(
-      this.fieldIdInTemplateSecondary.plantilla,
+      this.fieldIdInTemplateSecondary()!.plantilla,
       null!
     )!;
     this.validateCamposPlantilla(template);
     for (let i = 0; i < files.length; i++) {
-      this.lblCarga = 'CARGANDO XML MULTIPLE ' + '<--' + this.lblCarga;
+      this.lblCarga.set('CARGANDO XML MULTIPLE ' + '<--' + this.lblCarga());
       const reader = new FileReader();
       reader.onload = () => {
         this.onDataLoaded(reader.result!.toString(), template, 1);
@@ -332,8 +332,8 @@ export class MassiveComponent implements OnInit {
 
   handleFileInput(files: FileList) {
     this.isUpdate = false;
-    if (this.plantilla) {
-      if (!this.validateCamposPlantilla(this.plantilla)) {
+    if (this.plantilla()) {
+      if (!this.validateCamposPlantilla(this.plantilla()!)) {
         return;
       }
     } else {
@@ -343,12 +343,12 @@ export class MassiveComponent implements OnInit {
       );
     }
     for (let i = 0; i < files.length; i++) {
-      this.lblCarga = 'CARGANDO XML' + ' <-- ' + this.lblCarga;
+      this.lblCarga.set('CARGANDO XML' + ' <-- ' + this.lblCarga());
       const reader = new FileReader();
       const fileUpload = files[i];
       if (fileUpload.name.endsWith('.xml')) {
         reader.onload = () => {
-          this.onDataLoaded(reader.result!.toString(), this.plantilla, 1);
+          this.onDataLoaded(reader.result!.toString(), this.plantilla()!, 1);
         };
         reader.readAsText(fileUpload);
       } else {
@@ -356,7 +356,7 @@ export class MassiveComponent implements OnInit {
           if (e.target && e.target.result instanceof ArrayBuffer) {
             const decoder = new TextDecoder("utf-8"); // Especifica el encoding si es necesario
             const text = decoder.decode(e.target.result);
-            this.onDataLoaded(text, this.plantilla, 2);
+            this.onDataLoaded(text, this.plantilla()!, 2);
           }
         };
         reader.readAsArrayBuffer(fileUpload);
@@ -365,15 +365,15 @@ export class MassiveComponent implements OnInit {
   }
 
   generateColumnNames(template:DocumentoPlantillaDTO){
-    this.titleColumns = [];
-    this.displayedColumns = ['orderNumber'];
-    if(this.isUpdate){this.displayedColumns.push('updateId');}
-    this.displayedColumns.push('status');
-    this.displayedColumns.push('messages');
+    this.titleColumns.set([]);
+    this.displayedColumns.set(['orderNumber']);
+    if(this.isUpdate){this.displayedColumns.update(cols => [...cols, 'updateId']);}
+    this.displayedColumns.update(cols => [...cols, 'status']);
+    this.displayedColumns.update(cols => [...cols, 'messages']);
     for (let k = 0; k < template.caracteristicas.length; k++) {
       const iCampo = template.caracteristicas[k];
-      this.displayedColumns.push(iCampo.nombre);
-      this.titleColumns.push(iCampo.nombre);
+      this.displayedColumns.update(cols => [...cols, iCampo.nombre]);
+      this.titleColumns.update(cols => [...cols, iCampo.nombre]);
     }
 
   }
@@ -411,24 +411,25 @@ export class MassiveComponent implements OnInit {
         'info'
       );
     } else {
-      this.isValidate = false;
-      this.failedDocuments = [];
-      this.lblProcesar = '';
+      this.isValidate.set(false);
+      this.failedDocuments.set([]);
+      this.lblProcesar.set('');
 
       this.camposConsultar = [];
-      this.lblCarga =
+      this.lblCarga.set(
         'CARGANDO ' +
         (documentos.length - encabezado).toString() +
         ' DOCUMENTOS ' +
         ' <-- ' +
-        this.lblCarga;
+        this.lblCarga()
+      );
       this.inicio = new Date();
-      if (template.llaveTabla === this.plantilla.llaveTabla) {
-        this.documentosGenerados = this.generateVO(documentos, template);
-        this.generateColumnNames(this.plantilla);
-        this.dataSource = new MatTableDataSource(this.documentosGenerados);
-        if (!this.documentosGenerados || this.documentosGenerados.length === 0) {
-          this.lblCarga = this.lblCarga + 'Revisa la carga debido a que no se generaron documentos';
+      if (template.llaveTabla === this.plantilla()!.llaveTabla) {
+        this.documentosGenerados.set(this.generateVO(documentos, template));
+        this.generateColumnNames(this.plantilla()!);
+        this.dataSource.set(new MatTableDataSource(this.documentosGenerados()));
+        if (!this.documentosGenerados() || this.documentosGenerados().length === 0) {
+          this.lblCarga.set(this.lblCarga() + 'Revisa la carga debido a que no se generaron documentos');
           //Swal.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
           return;
         }
@@ -438,14 +439,14 @@ export class MassiveComponent implements OnInit {
         this.procesarCamposProceso(
           this.camposConsultar,
           template,
-          this.documentosGenerados
+          this.documentosGenerados()
         );
       } else {
-        this.documentosGeneradosMultiple = this.generateVO(
+        this.documentosGeneradosMultiple.set(this.generateVO(
           documentos,
           template
-        );
-        if (!this.documentosGeneradosMultiple || this.documentosGeneradosMultiple.length === 0) {
+        ));
+        if (!this.documentosGeneradosMultiple() || this.documentosGeneradosMultiple().length === 0) {
           Swal.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
           return;
         }
@@ -455,7 +456,7 @@ export class MassiveComponent implements OnInit {
         this.procesarCamposProceso(
           this.camposConsultar,
           template,
-          this.documentosGeneradosMultiple
+          this.documentosGeneradosMultiple()
         );
       }
     }
@@ -525,7 +526,7 @@ export class MassiveComponent implements OnInit {
 
         if (!campo) {
           this.mensajeValidacion(pedido, i);
-          this.isLoading = false;
+          this.isLoading.set(false);
           return [];
         }
 
@@ -604,7 +605,7 @@ export class MassiveComponent implements OnInit {
           valorTexto;
       }
     }
-    this.lblCarga = detalle;
+    this.lblCarga.set(detalle);
   }
 
   acumularProcesosConsulta(
@@ -612,8 +613,8 @@ export class MassiveComponent implements OnInit {
     id: string
   ) {
     if (
-      this.fieldIdInTemplateSecondary &&
-      this.fieldIdInTemplateSecondary.llaveTabla === campo.llaveTabla
+      this.fieldIdInTemplateSecondary() &&
+      this.fieldIdInTemplateSecondary()!.llaveTabla === campo.llaveTabla
     )
       return;
     if (!campo || !campo.llaveTabla) {
@@ -664,7 +665,7 @@ export class MassiveComponent implements OnInit {
           ' DURACION : ' +
           (new Date().getTime() - this.inicio.getTime()) / 1000 +
           'seg';
-        this.lblTipoProceso = detalle;
+        this.lblTipoProceso.set(detalle);
         //esto es para enviar a consultar solo de a 100
         const numberToDistribute = 100;
         this.cantidadProcesada =  this.cantidadProcesada + numberToDistribute;
@@ -675,13 +676,13 @@ export class MassiveComponent implements OnInit {
           currentCampo.documentos = currentCampo.documentos.slice(0,numberToDistribute);
           fieldsToReview.push(fieldToDistribute);
         }
-        this.isProcessing = true;
+        this.isProcessing.set(true);
         this.api
           .validarTipoProcesoCarga(currentCampo, template.server)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next:(value: DocumentoPlantillaCaracteristicaDTO)=>{
-              this.isProcessing = false;
+              this.isProcessing.set(false);
               if (value != null) {
                 //Itero por todos los documentos
                 for (let a = 0; a < documentsToRefactor.length; a++) {
@@ -721,12 +722,12 @@ export class MassiveComponent implements OnInit {
                 );
               }
             }, error:()=>{
-              this.isProcessing = false;
+              this.isProcessing.set(false);
             }
           });
       }
     } else {
-      this.isLoading = false;
+      this.isLoading.set(false);
       // Validar que sean correctos
       const failedDocuments = documentsToRefactor.filter(x=> x.status ==='FAILED');
       if(failedDocuments && failedDocuments.length !==0){
@@ -735,15 +736,15 @@ export class MassiveComponent implements OnInit {
           documentsToRefactor.splice(documentsToRefactor.indexOf(elementFailed), 1);
           documentsToRefactor.unshift(elementFailed);
         }
-        this.dataSource = new MatTableDataSource(this.documentosGenerados);
-        this.isValidate = false;
-        this.lblTipoProceso = this.lblTipoProceso + " SE ENCONTRARON ERRORES POR FAVOR CORRIJALOS Y VUELVA A ENVIAR LA CARGA"
+        this.dataSource.set(new MatTableDataSource(this.documentosGenerados()));
+        this.isValidate.set(false);
+        this.lblTipoProceso.set(this.lblTipoProceso() + " SE ENCONTRARON ERRORES POR FAVOR CORRIJALOS Y VUELVA A ENVIAR LA CARGA")
       }else{
         if (
-          !this.fieldIdInTemplateSecondary ||
-          template.llaveTabla !== this.plantilla.llaveTabla
+          !this.fieldIdInTemplateSecondary() ||
+          template.llaveTabla !== this.plantilla()!.llaveTabla
         )
-          this.isValidate = true;
+          this.isValidate.set(true);
       }
 
 
@@ -754,15 +755,15 @@ export class MassiveComponent implements OnInit {
   //////////////////////////INICIA LA CARGA MASIVA//////////////////////
   startLoad() {
     this.inicio = new Date();
-    this.isProcessing = true;
+    this.isProcessing.set(true);
     this.procesarDocumentos();
   }
 
   procesarDocumentos() {
-    if (this.cantidadProcesada < this.documentosGenerados.length + 1) {
+    if (this.cantidadProcesada < this.documentosGenerados().length + 1) {
       let detalle =
         'PROCESANDO DOCUMENTO # ' +
-        (this.cantidadProcesada + this.failedDocuments.length).toString()
+        (this.cantidadProcesada + this.failedDocuments().length).toString()
       ' INICIO : ' +
         this.inicio.toISOString() +
         ' HORA ACTUAL : ' +
@@ -771,9 +772,9 @@ export class MassiveComponent implements OnInit {
         (new Date().getTime() - this.inicio.getTime()) / 1000 +
         'seg';
       let valorTexto = '';
-      if (this.plantilla) {
+      if (this.plantilla()) {
         this.currentPedido =
-          this.documentosGenerados[this.cantidadProcesada - 1].document;
+          this.documentosGenerados()[this.cantidadProcesada - 1].document;
         for (
           let index = 0;
           index < this.currentPedido.caracteristicas.length;
@@ -790,15 +791,15 @@ export class MassiveComponent implements OnInit {
               if(iCampo.valorText && this.files && !iCampo.valorText.startsWith('http')){
                 for (let j = 0; j < this.files.length; j++) {
                   if(this.files[j].name === iCampo.valorText){
-                    this.isProcessing = true;
+                    this.isProcessing.set(true);
                     this.api.uploadFile(this.files[j], this.urlServer).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                       next: (value) => {
                         iCampo.valorText = value.message;
                         this.procesarDocumentos();
-                        this.isProcessing = false;
+                        this.isProcessing.set(false);
                       },
                       error: () => {
-                        this.isProcessing = false;
+                        this.isProcessing.set(false);
                       }
                     });
                     return;
@@ -807,7 +808,7 @@ export class MassiveComponent implements OnInit {
               }
             }
         }
-        this.isProcessing = true;
+        this.isProcessing.set(true);
 
         // Obtener el tiempo de espera del formulario, o usar el valor predeterminado si no está definido
         const tiempoEspera = this.fTiempoEspera !== null ? this.fTiempoEspera : 0;
@@ -835,19 +836,16 @@ export class MassiveComponent implements OnInit {
         }
         this.pendingSaveTimeout = setTimeout(() => {
           this.api
-            .saveByMassive(this.currentPedido, this.plantilla.server, Date.now().toString())
+            .saveByMassive(this.currentPedido, this.plantilla()!.server, Date.now().toString())
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
               next: (value: PedidoVentaDTO) => {
-                this.isProcessing = false;
+                this.isProcessing.set(false);
                 if (value) {
                   if (value.messages) {
-                    this.documentosGenerados[this.cantidadProcesada - 2].messages = value.messages;
-                    this.documentosGenerados[this.cantidadProcesada - 2].status = 'FAILED';
+                    this.documentosGenerados.update(docs => { docs[this.cantidadProcesada - 2].messages = value.messages; docs[this.cantidadProcesada - 2].status = 'FAILED'; return docs; });
                   } else {
-                    this.documentosGenerados[this.cantidadProcesada - 2].status = 'SAVE OK';
-                    this.documentosGenerados[this.cantidadProcesada - 2].documentId = value.llaveTabla;
-                    this.documentosGenerados[this.cantidadProcesada - 2].documentName = value.nombre;
+                    this.documentosGenerados.update(docs => { docs[this.cantidadProcesada - 2].status = 'SAVE OK'; docs[this.cantidadProcesada - 2].documentId = value.llaveTabla; docs[this.cantidadProcesada - 2].documentName = value.nombre; return docs; });
                   }
                   this.procesaMultiple(
                     value,
@@ -857,14 +855,13 @@ export class MassiveComponent implements OnInit {
                 }
               },
               error: (err: any) => {
-                this.isProcessing = false;
+                this.isProcessing.set(false);
                 if (err) {
                   const msg = new DocumentMessage();
                   msg.message = err;
-                  this.documentosGenerados[this.cantidadProcesada - 2].messages = [msg];
-                  this.documentosGenerados[this.cantidadProcesada - 2].status = 'FAILED';
-                  this.failedDocuments.push(this.currentPedido);
-                  this.documentosGenerados.splice(0, 1);
+                  this.documentosGenerados.update(docs => { docs[this.cantidadProcesada - 2].messages = [msg]; docs[this.cantidadProcesada - 2].status = 'FAILED'; return docs; });
+                  this.failedDocuments.update(failed => [...failed, this.currentPedido]);
+                  this.documentosGenerados.update(docs => docs.slice(1));
                   this.cantidadProcesada = this.cantidadProcesada - 1;
                   if(this.skipSelected){
                     this.procesarDocumentos();
@@ -882,7 +879,7 @@ export class MassiveComponent implements OnInit {
                       if (result.isConfirmed) {
                         this.procesarDocumentos();
                       } else {
-                        this.isProcessing = false;
+                        this.isProcessing.set(false);
                       }
                     });
                   }
@@ -893,52 +890,52 @@ export class MassiveComponent implements OnInit {
             });
         }, tiempoEspera * 1000);
       }
-      this.lblProcesar = detalle;
+      this.lblProcesar.set(detalle);
       this.cantidadProcesada++;
     } else {
       Swal.fire('Carga masiva completa', '', 'success');
-      this.isProcessing = false;
-      this.isValidate = false;
+      this.isProcessing.set(false);
+      this.isValidate.set(false);
     }
   }
 
   procesaMultiple(newDocument: PedidoVentaDTO, consecutive: string) {
-    if (!this.documentosGeneradosMultiple) {
+    if (!this.documentosGeneradosMultiple() || this.documentosGeneradosMultiple().length === 0) {
       this.procesarDocumentos();
       return;
     }
     for (
       let index = 0;
-      index < this.documentosGeneradosMultiple.length;
+      index < this.documentosGeneradosMultiple().length;
       index++
     ) {
-      const element = this.documentosGeneradosMultiple[index];
+      const element = this.documentosGeneradosMultiple()[index];
       for (let j = 0; j < element.document.caracteristicas.length; j++) {
         const fieldDoc = element.document.caracteristicas[j];
-        if (fieldDoc.campo === this.fieldIdInTemplateSecondary.llaveTabla) {
+        if (fieldDoc.campo === this.fieldIdInTemplateSecondary()!.llaveTabla) {
           if (fieldDoc.valorText === consecutive) {
             fieldDoc.valorOpcion = newDocument.llaveTabla;
-            this.isProcessing = true;
+            this.isProcessing.set(true);
             this.api
-              .saveByMassive(element.document, this.plantilla.server, Date.now().toString())
+              .saveByMassive(element.document, this.plantilla()!.server, Date.now().toString())
               .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe({
                 next: (resultDocument: PedidoVentaDTO) => {
-                  this.isProcessing = false;
+                  this.isProcessing.set(false);
                   const indexList =
-                    this.documentosGeneradosMultiple.indexOf(element);
+                    this.documentosGeneradosMultiple().indexOf(element);
                   if (indexList !== -1) {
                     if(resultDocument.messages){
-                      this.documentosGeneradosMultiple[indexList].messages = resultDocument.messages;
+                      this.documentosGeneradosMultiple.update(docs => { docs[indexList].messages = resultDocument.messages; return docs; });
                     } else{
-                      this.documentosGeneradosMultiple[indexList].status = 'SAVE OK';
+                      this.documentosGeneradosMultiple.update(docs => { docs[indexList].status = 'SAVE OK'; return docs; });
                     }
-                    this.documentosGeneradosMultiple.splice(indexList, 1);
+                    this.documentosGeneradosMultiple.update(docs => docs.slice(0, indexList).concat(docs.slice(indexList + 1)));
                   }
                   this.procesaMultiple(newDocument, consecutive);
                 },
                 error: (err: any) => {
-                  this.isProcessing = false;
+                  this.isProcessing.set(false);
                   if (err) {
                     Swal.fire({
                       title: 'Se ha presentado un error, continuamos?',
@@ -952,12 +949,11 @@ export class MassiveComponent implements OnInit {
                     }).then((result) => {
                       if (result.isConfirmed) {
                         const indexList =
-                          this.documentosGeneradosMultiple.indexOf(element);
+                          this.documentosGeneradosMultiple().indexOf(element);
                         if (index !== -1) {
-                            this.documentosGeneradosMultiple[indexList].messages = err;
-                            this.documentosGeneradosMultiple[indexList].status = 'ERROR';
+                            this.documentosGeneradosMultiple.update(docs => { docs[indexList].messages = err; docs[indexList].status = 'ERROR'; return docs; });
 
-                          this.documentosGeneradosMultiple.splice(indexList, 1);
+                          this.documentosGeneradosMultiple.update(docs => docs.slice(0, indexList).concat(docs.slice(indexList + 1)));
                         }
                         this.procesaMultiple(newDocument, consecutive);
                       }
@@ -975,21 +971,21 @@ export class MassiveComponent implements OnInit {
   }
 
   newMassiveLoad() {
-    this.failedDocuments = [];
+    this.failedDocuments.set([]);
 
-    this.lblCarga = '';
-    this.lblTipoProceso = '';
-    this.lblProcesar = '';
+    this.lblCarga.set('');
+    this.lblTipoProceso.set('');
+    this.lblProcesar.set('');
 
-    this.isLoading = false;
-    this.isValidate = false;
-    this.isProcessing = false;
+    this.isLoading.set(false);
+    this.isValidate.set(false);
+    this.isProcessing.set(false);
 
     this.camposConsultar = [];
 
-    this.dataSource.data = [];
-    this.documentosGenerados = undefined as any;
-    this.documentosGeneradosMultiple = undefined as any;
+    this.dataSource.update(ds => { ds.data = []; return ds; });
+    this.documentosGenerados.set([]);
+    this.documentosGeneradosMultiple.set([]);
 
     this.inicialCamposConsultar = 0;
     this.isUpdate = false;
@@ -1004,8 +1000,8 @@ export class MassiveComponent implements OnInit {
 
     // Valido que todos los archivos se encuentren
     for (let j = 0; j < files.length; j++) {
-      for (let i = 0; i <  this.documentosGenerados.length; i++) {
-        const pDocumento = this.documentosGenerados[i].document;
+      for (let i = 0; i <  this.documentosGenerados().length; i++) {
+        const pDocumento = this.documentosGenerados()[i].document;
         for (let b = 0; b < pDocumento.caracteristicas.length; b++) {
           const iCampo = pDocumento.caracteristicas[b];
           if (iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO) {
@@ -1018,8 +1014,8 @@ export class MassiveComponent implements OnInit {
       }
     }
 
-    for (let i = 0; i <  this.documentosGenerados.length; i++) {
-      const pDocumento = this.documentosGenerados[i].document;
+    for (let i = 0; i <  this.documentosGenerados().length; i++) {
+      const pDocumento = this.documentosGenerados()[i].document;
       for (let b = 0; b < pDocumento.caracteristicas.length; b++) {
         const iCampo = pDocumento.caracteristicas[b];
         if (iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO) {
