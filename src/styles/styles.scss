@@ -49,3 +49,8 @@
   overflow: auto !important;
   border-radius: 0 !important; /* si no quieres redondeo interno */
 }
+
+/* styles.scss */
+.swal2-container {
+    z-index: 2000 !important;
+}

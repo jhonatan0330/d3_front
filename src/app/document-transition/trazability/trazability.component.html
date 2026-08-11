@@ -15,10 +15,10 @@
     </div>
     <!-- Botones de accion -->
     <div class="flex">
-      @if (!fullScreen) {
+      @if (!fullScreen()) {
         <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen</mat-icon>
       }
-      @if (fullScreen) {
+      @if (fullScreen()) {
         <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen_exit</mat-icon>
       }
       <!-- Boton Cerrar -->
@@ -40,7 +40,7 @@
 
 
   <!-- Dropdown menu -->
-  @if (dropdownOpen) {
+  @if (dropdownOpen()) {
     <div id="dropdownBgHover"
       class="absolute z-10 w-48 -mt-18 bg-white rounded-lg shadow-sm dark:bg-gray-700">
       <ul class="p-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
@@ -374,7 +374,7 @@
           </li>
         }
       </ol>
-      @if (!isEnd) {
+      @if (!isEnd()) {
         <button mat-flat-button (click)="listar(pagina)">
           <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Seguir consultando
         </button>

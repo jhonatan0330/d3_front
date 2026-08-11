@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from "app/modules/full/neuron/model/sw42.domain";
@@ -42,9 +42,9 @@ export class TrazabilityComponent implements OnInit {
   // TRACE
   pagina = 1; // Indica que pagina estamos buscando
   cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
-  isLoading = false;
-  isEnd = false;
-  fullScreen = false;
+  isLoading = signal(false);
+  isEnd = signal(false);
+  fullScreen = signal(false);
   styleSizePop = '';
   dataProvider: DocumentoRelacionGestorDTO[]; // Conjunto de documentos a visualizar
 
@@ -63,7 +63,7 @@ export class TrazabilityComponent implements OnInit {
   selectedTrace = new FormControl(['1']);
 
   textDropDown = 'Documentos';
-  dropdownOpen = false;
+  dropdownOpen = signal(false);
 
   plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
 
@@ -74,7 +74,7 @@ export class TrazabilityComponent implements OnInit {
   state;
 
   toggleDropdown() {
-    this.dropdownOpen = !this.dropdownOpen;
+    this.dropdownOpen.set(!this.dropdownOpen());
   }
 
   onCheckboxChange(event: Event) {
@@ -165,10 +165,10 @@ export class TrazabilityComponent implements OnInit {
   }
 
   listar(_pagina: number) {
-    if (this.isLoading) {
+    if (this.isLoading()) {
       return;
     }
-    this.dropdownOpen = false;
+    this.dropdownOpen.set(false);
     const entity: DocumentoRelacionGestorFilterDTO = new DocumentoRelacionGestorFilterDTO();
     entity.documentoPrincipal = this.data.document;
 
@@ -186,13 +186,13 @@ export class TrazabilityComponent implements OnInit {
 
     if (_pagina === 1) {
       this.dataProvider = [];
-      this.isEnd = false;
+      this.isEnd.set(false);
     }
     if (entity.estado === '000000000') { return; }
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;
     this.pagina = _pagina;
-    this.isLoading = true;
+    this.isLoading.set(true);
     this._traceService.getTrace(entity, this.plantilla.server).subscribe({
       next: (dataResult: DocumentoRelacionGestorDTO[]) => {
         if (dataResult) {
@@ -231,14 +231,14 @@ export class TrazabilityComponent implements OnInit {
           if (_fullQuantity === this.cantidadPagina) {
             this.pagina++;
           } else {
-            this.isEnd = true;
+            this.isEnd.set(true);
             this.pagina = 1;
           }
         }
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
       error: (err: any) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
       }
     });
   }
@@ -265,7 +265,7 @@ export class TrazabilityComponent implements OnInit {
       const _prepare: VoucherPrepareRequest = new VoucherPrepareRequest();
       _prepare.documentId = this.data.document;
       _prepare.serviceId = pService.campo;
-      this.isLoading = true;
+      this.isLoading.set(true);
       this._traceService
         .getVoucherOfDocument(_prepare)
         .subscribe({
@@ -275,10 +275,10 @@ export class TrazabilityComponent implements OnInit {
             } else {
               this.notificationCenter.info('Comprobante', 'No se encontro comprobante para este documento');
             }
-            this.isLoading = false;
+            this.isLoading.set(false);
           },
           error: () => {
-            this.isLoading = false;
+            this.isLoading.set(false);
             if (this.state && this.state !== StatesEnum.INACTIVE) {
               this.vouchersTemplate.forEach((item) => {
                 if (item.valor === pService.valor) {
@@ -297,13 +297,13 @@ export class TrazabilityComponent implements OnInit {
       const _prepare: VoucherPrepareRequest = new VoucherPrepareRequest();
       _prepare.documentId = this.data.document;
       _prepare.serviceId = pServiceId
-      this.isLoading = true;
+      this.isLoading.set(true);
       this._traceService
         .generateVoucher(_prepare)
         .subscribe({
           next: () => {
             this.notificationCenter.info('Comprobante', 'Se envio a generar el comprobante por favor consulte de nuevo');
-            this.isLoading = false;
+            this.isLoading.set(false);
             this.vouchersTemplate.forEach((item) => {
               if (item.campo === pServiceId) {
                 item.estado = 'A';
@@ -311,7 +311,7 @@ export class TrazabilityComponent implements OnInit {
             });
           },
           error: () => {
-            this.isLoading = false;
+            this.isLoading.set(false);
           },
         });
     }
@@ -355,12 +355,12 @@ export class TrazabilityComponent implements OnInit {
   }
 
     toogleScreen() {
-    this.fullScreen = !this.fullScreen;
+    this.fullScreen.set(!this.fullScreen());
     this.getSizePop();
   }
 
   getSizePop() {
-    if (this.fullScreen) {
+    if (this.fullScreen()) {
       this.styleSizePop = 'width: 98vw;';
     } else {
       this.styleSizePop = '';
