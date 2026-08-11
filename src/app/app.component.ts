@@ -3,18 +3,21 @@ import { Title } from '@angular/platform-browser';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LoginService } from './authentication/login.service';
+import { AssistantButtonComponent } from './assistant/assistant-button/assistant-button.component';
+import { AssistantService } from './assistant/assistant.service';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterOutlet]
+    imports: [RouterOutlet, AssistantButtonComponent]
 })
 export class AppComponent implements OnInit {
   title = inject(Title);
   private router = inject(Router);
   private jwtAut = inject(LoginService);
+  public assistantService = inject(AssistantService);
 
 
   ngOnInit() {

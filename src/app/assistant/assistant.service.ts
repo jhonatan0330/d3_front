@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
 
 import {
@@ -20,6 +20,8 @@ export class AssistantService {
      * private readonly documentosService = inject(DocumentosService);
      * private readonly ventasService = inject(VentasService);
      */
+
+    isOpenDialog = signal<boolean>(true);
 
     interpretar(pregunta: string): AssistantIntent {
 

@@ -3,6 +3,7 @@ import {
     Component,
     DestroyRef,
     inject,
+    OnInit,
     signal,
 } from '@angular/core';
 
@@ -60,7 +61,10 @@ import {
 
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AssistantDialogComponent {
+export class AssistantDialogComponent implements OnInit {
+    ngOnInit(): void {
+        this.assistantService.isOpenDialog.set(false);
+    }
 
     private readonly dialogRef =
         inject(MatDialogRef<AssistantDialogComponent>);
@@ -379,6 +383,7 @@ export class AssistantDialogComponent {
 
     cerrar(): void {
 
+        this.assistantService.isOpenDialog.set(true);
         this.dialogRef.close();
 
     }

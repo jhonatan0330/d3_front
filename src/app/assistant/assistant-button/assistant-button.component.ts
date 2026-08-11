@@ -128,6 +128,7 @@ export class AssistantButtonComponent {
         maxWidth: '95vw',
         height: '700px',
         maxHeight: '90vh',
+        disableClose: true,
         panelClass: 'assistant-dialog-panel',
     });
     }
