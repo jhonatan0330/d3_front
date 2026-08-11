@@ -1,18 +1,28 @@
 // pdf.service.ts
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { config } from 'config';
 
 @Injectable({ providedIn: 'root' })
 export class PdfService {
   private http = inject(HttpClient);
 
-
-  private url = 'http://piopollo.softwareparati.com/reporte?nombre=dced80a3f26647b4b7f1d316cf56756b&P_KEY=2dbe67f93eff40df9827cde7023bf181&P_TOKEN=1e00b7b059cf41f49e5dab34b527295f';
-
-  obtenerPdf(params?: any) {
-    return this.http.get(this.url, {
+  obtenerPdf(params?: Record<string, string | number | boolean>) {
+    const url = config.reporte.url;
+    const httpParams = new HttpParams()
+      .set('nombre', 'dced80a3f26647b4b7f1d316cf56756b')
+      .set('P_KEY', config.reporte.pKey)
+      .set('P_TOKEN', config.reporte.pToken);
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        if (value !== undefined && value !== null) {
+          httpParams.append(key, value);
+        }
+      }
+    }
+    return this.http.get(url, {
       responseType: 'blob',
-      params
+      params: httpParams
     });
   }
 }
