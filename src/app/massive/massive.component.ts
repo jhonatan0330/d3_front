@@ -44,6 +44,15 @@ export class MassiveComponent implements OnInit {
   private api = inject(ApiService);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
+  private pendingSaveTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      if (this.pendingSaveTimeout) {
+        clearTimeout(this.pendingSaveTimeout);
+      }
+    });
+  }
 
   plantillaId: string;
   urlServer: string;
@@ -824,7 +833,7 @@ export class MassiveComponent implements OnInit {
             }
           });
         }
-        setTimeout(() => {
+        this.pendingSaveTimeout = setTimeout(() => {
           this.api
             .saveByMassive(this.currentPedido, this.plantilla.server, Date.now().toString())
             .pipe(takeUntilDestroyed(this.destroyRef))
