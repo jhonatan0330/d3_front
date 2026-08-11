@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
@@ -25,7 +26,7 @@ export class GpsComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.fControl.valueChanges.subscribe(() => {
+    this.fControl.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
       this.actualizar();
     });
     if (!this.data || !this.data.llaveTabla) {

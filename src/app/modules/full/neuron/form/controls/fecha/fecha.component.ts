@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
@@ -118,13 +119,13 @@ export class FechaComponent extends BaseComponent implements OnInit {
       }
     }
     if (this.sinCalendar) {
-      this.fControlHoras.valueChanges.subscribe(() => {
+      this.fControlHoras.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
         this.updateTimer();
       });
-      this.fControlMinutes.valueChanges.subscribe(() => {
+      this.fControlMinutes.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
         this.updateTimer();
       });
-      this.ftimeFromMinutesAndHours.valueChanges.subscribe(() => {
+      this.ftimeFromMinutesAndHours.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
         this.updateTimer();
       });
     }
@@ -141,12 +142,12 @@ export class FechaComponent extends BaseComponent implements OnInit {
       this.fControlMinutes.disable();
       this.ftimeFromMinutesAndHours.disable();
     }
-    this.dateFrom.valueChanges.subscribe({
+    this.dateFrom.valueChanges.pipe(takeUntilDestroyed()).subscribe({
       next: () => {
         this.actualizar();
       },
     });
-    this.timeFrom.valueChanges.subscribe({
+    this.timeFrom.valueChanges.pipe(takeUntilDestroyed()).subscribe({
       next: () => {
         this.actualizar();
       },

@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, viewChild, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import {
@@ -179,7 +180,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       this.proceso = this.data.principal;
     }
     // Al momento de cambiar actualizo el proceso y actualizo todo lo necesario
-    this.fControl.valueChanges.subscribe((value) => {
+    this.fControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
       // this.data.valorOpcion = value.llaveTabla;
       // Algunas ocaciones recibo string aqui valido que se coloque un objeto como proceso
       if (value) {

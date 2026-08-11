@@ -1,5 +1,6 @@
 // address-form.component.ts
 import { Component, OnInit, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -34,11 +35,11 @@ export class DireccionesComponent implements OnInit {
 
 
     // Emitir cada vez que algo cambie
-    this.form.valueChanges.subscribe(() => {
+    this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
       this.emitirDireccion();
     });
 
-    this.form.get('tipoVia')?.valueChanges.subscribe((valor) => {
+    this.form.get('tipoVia')?.valueChanges.pipe(takeUntilDestroyed()).subscribe((valor) => {
       this.actualizarOrientaciones(valor);
     });
 

@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BaseComponent } from '../base/base.component';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -33,7 +34,7 @@ export class BinarioComponent extends BaseComponent implements OnInit {
     } else {
       this.fControl.disable();
     }
-    this.fControl.valueChanges.subscribe((value) => {
+    this.fControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
       this.actualizar();
     });
     this.labelTextBinary = this.obtenerValor(PlantillaHelper.BINARIO_PREGUNTA);

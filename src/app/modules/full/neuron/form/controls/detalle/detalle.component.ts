@@ -1,4 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   DetallePedidoVentaDTO,
@@ -109,7 +110,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       this.showCategories();
     }
     if (this.isEnabled) {
-      this.fControl.valueChanges.subscribe((value) => this.filterProducts());
+      this.fControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => this.filterProducts());
     }
   }
 

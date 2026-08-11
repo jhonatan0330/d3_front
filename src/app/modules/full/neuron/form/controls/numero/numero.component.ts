@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
@@ -49,6 +50,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       // Solo tomo unos segundos en los casos que el campo tenga funcion asi evito tantas consultas al server
       this.fControl.valueChanges
         .pipe(
+          takeUntilDestroyed(),
           debounceTime(200)
         )
         .subscribe(() => {
@@ -57,6 +59,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     } else {
       this.fControl.valueChanges
       .pipe(
+        takeUntilDestroyed(),
         distinctUntilChanged(),
         map(value=>{ 
           this.fControl.setValue(this.numberToInput(value), { emitEvent: false });
