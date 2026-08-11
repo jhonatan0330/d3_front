@@ -4,7 +4,7 @@ Guidance for AI agents and developers working in this repository.
 
 ## Project Overview
 
-- **Name**: SW42 ("Asistant project IA")
+- **Name**: d3Front ("Asistant project IA")
 - **Type**: Angular SPA (admin/business app) built on the **FuseAdmin** template
 - **Current stack**: Angular **22.1.0**, TypeScript 6.0.3, Tailwind CSS 3.4.7, RxJS 7.8.2, SCSS
 - **Target**: Angular **22** (see `MIGRATION_PLAN.md` for the migration roadmap — it is the source of truth for the upgrade)

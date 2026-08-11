@@ -49,7 +49,6 @@ export class LocalStoreService {
     }
     const result = url!.concat(endpoint.toString());
     return result;
-    // return 'http://localhost:8080/sw42/' +  endpoint;
   }
 
   private getUrl4Id(id: string | null): string | null {
