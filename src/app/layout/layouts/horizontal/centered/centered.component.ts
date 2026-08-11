@@ -1,5 +1,4 @@
 import { Component, effect, OnDestroy, OnInit,  ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { SafeHtml } from '@angular/platform-browser';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
@@ -39,8 +38,8 @@ export class CenteredLayoutComponent implements OnInit, OnDestroy {
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     private _clockInterval: ReturnType<typeof setInterval>;
-    headerSection: SafeHtml[];
-    landing: SafeHtml[];
+    headerSection: string[];
+    landing: string[];
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks

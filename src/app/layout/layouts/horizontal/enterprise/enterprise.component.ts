@@ -7,7 +7,6 @@ import { NavigationService } from 'app/authorization/navigation/navigation.servi
 import { environment } from 'environments/environment';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
-import { SafeHtml } from '@angular/platform-browser';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
@@ -39,8 +38,8 @@ export class EnterpriseLayoutComponent implements OnInit, OnDestroy {
     currentApplicationVersion = environment.appVersion;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     private _clockInterval: ReturnType<typeof setInterval>;
-    headerSection: SafeHtml[];
-    landing: SafeHtml[];
+    headerSection: string[];
+    landing: string[];
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks

@@ -8,8 +8,8 @@ Bugs que comprometen seguridad o autenticación.
 
 - [x] **P0-1** `pdf.service.ts:10` — secretos `P_KEY`/`P_TOKEN` hardcodeados + HTTP sin TLS (`http://piopollo.softwareparati.com`). Mover a `environment.ts`, exigir HTTPS.
 - [x] **P0-2** `login.service.ts:222-225` — `catchError` emite `of(error)` (truthy) → bypass de `AuthGuard` en fallo de red. Cambiar a `return of(false)`.
-- [ ] **P0-3** JWT en query strings de reportes — `form.component.ts:966-987`, `cruds2.component.ts:472-490`, `manual-form.component.ts:411`. Enviar por header/body POST.
-- [ ] **P0-4** XSS potencial — `bypassSecurityTrustHtml` en `login.service.ts:168,175` → `[innerHTML]` en los 10 layouts. Render con escape o whitelist.
+- [ ] **P0-3** JWT en query strings de reportes — `form.component.ts:966-987`, `cruds2.component.ts:472-490`, `manual-form.component.ts:411`. **Diseñado, NO aplicado (requiere backend).** Diseño: los 3 `showReport` abren `window.open(GET /reporte?nombre&P_KEY&P_TOKEN)`; el backend solo acepta GET con query params. Fix propuesto: (1) backend expone endpoint que acepta el JWT por header `Authorization` (ya lo añade `token.interceptor.ts` a las llamadas HttpClient de la app) o por body POST; (2) frontend unifica los 3 call sites en un único helper en `utils.service.ts` que hace `HttpClient.post(..., { responseType: 'blob' })` y abre el blob resultante (`URL.createObjectURL`) en pestaña nueva, replicando el comportamiento actual. No tocar `showReport` hasta coordinar backend.
+- [x] **P0-4** XSS potencial — `bypassSecurityTrustHtml` en `login.service.ts:168,175` → `[innerHTML]` en los 10 layouts. Render con escape o whitelist.
 - [ ] **P0-5** `signout()` llama `getOrganization()` (HTTP en pleno logout) — `login.service.ts:261`. Extraer solo limpieza local.
 
 ## Fase P1 — NG0100 / Reactividad

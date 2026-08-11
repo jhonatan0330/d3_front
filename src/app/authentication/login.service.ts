@@ -13,7 +13,6 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { OrganizacionDTO, UsuarioAutenticacionAutorizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Injectable({ providedIn: 'root' })
@@ -25,7 +24,6 @@ export class LoginService {
   private templateService = inject(TemplateService);
   private notificationService = inject(NotificationsService);
   private apiService = inject(ApiService);
-  private domSanitizer = inject(DomSanitizer);
   private http = inject(HttpClient);
 
 
@@ -46,9 +44,9 @@ export class LoginService {
 
 
 
-  readonly landing = signal<SafeHtml[]>([]);
+  readonly landing = signal<string[]>([]);
 
-  readonly headerSection = signal<SafeHtml[]>([]);
+  readonly headerSection = signal<string[]>([]);
 
   constructor() {
     this.route.queryParams.subscribe(
@@ -138,8 +136,8 @@ export class LoginService {
 
   private getCarrousel(_company: OrganizacionDTO) {
     const slides: string[] = [];
-    const landing: SafeHtml[] = [];
-    let headerSection: SafeHtml[] = [];
+    const landing: string[] = [];
+    let headerSection: string[] = [];
     if (_company.propiedades) {
       const backImages = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.COVERAGE_IMAGE);
       if (backImages) {
@@ -165,14 +163,14 @@ export class LoginService {
       const _iHeaders = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.LANDING_PAGE);
       if (_iHeaders && _iHeaders.length !== 0) {
         _iHeaders.forEach((element: PropiedadDTO) => {
-          landing.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
+          landing.push(element.valor);
         });
       }
       const _iFooters = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.HEADER_PAGE);
       if (_iFooters && _iFooters.length !== 0) {
         headerSection = [];
         _iFooters.forEach((element: PropiedadDTO) => {
-          headerSection.push(this.domSanitizer.bypassSecurityTrustHtml(element.valor));
+          headerSection.push(element.valor);
         });
       }
 
