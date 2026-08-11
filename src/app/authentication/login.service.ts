@@ -217,11 +217,11 @@ export class LoginService {
             error: () => {}
           }
           );
-          return profile;
+          return true;
         }),
         catchError((error) => {
           this.signout();
-          return of(error);
+          return of(false);
         })
       );
   }

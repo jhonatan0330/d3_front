@@ -7,7 +7,7 @@ Plan de mejores prácticas post-migración Angular 22. Auditoría completa (sesi
 Bugs que comprometen seguridad o autenticación.
 
 - [x] **P0-1** `pdf.service.ts:10` — secretos `P_KEY`/`P_TOKEN` hardcodeados + HTTP sin TLS (`http://piopollo.softwareparati.com`). Mover a `environment.ts`, exigir HTTPS.
-- [ ] **P0-2** `login.service.ts:222-225` — `catchError` emite `of(error)` (truthy) → bypass de `AuthGuard` en fallo de red. Cambiar a `return of(false)`.
+- [x] **P0-2** `login.service.ts:222-225` — `catchError` emite `of(error)` (truthy) → bypass de `AuthGuard` en fallo de red. Cambiar a `return of(false)`.
 - [ ] **P0-3** JWT en query strings de reportes — `form.component.ts:966-987`, `cruds2.component.ts:472-490`, `manual-form.component.ts:411`. Enviar por header/body POST.
 - [ ] **P0-4** XSS potencial — `bypassSecurityTrustHtml` en `login.service.ts:168,175` → `[innerHTML]` en los 10 layouts. Render con escape o whitelist.
 - [ ] **P0-5** `signout()` llama `getOrganization()` (HTTP en pleno logout) — `login.service.ts:261`. Extraer solo limpieza local.
