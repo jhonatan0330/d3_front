@@ -269,7 +269,7 @@ export class MassiveComponent implements OnInit {
     this.isLoading = true;
     try {
       let xmlBase = '';
-      for (let iCampo of this.plantilla.caracteristicas) {
+      for (const iCampo of this.plantilla.caracteristicas) {
         if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION){
           const campoNombre: string = this.formatStringXML(iCampo.nombre);
           xmlBase = xmlBase + campoNombre + ';';
@@ -295,7 +295,7 @@ export class MassiveComponent implements OnInit {
     texto = texto.replace(':', '');
     texto = texto.replace(')', '');
     texto = texto.trim();
-    let de = 'ÁÃÀÄÂÉËÈÊÍÏÌÎÓÖÒÔÚÜÙÛÑÇáãàäâéëèêíïìîóöòôúüùûñç',
+    const de = 'ÁÃÀÄÂÉËÈÊÍÏÌÎÓÖÒÔÚÜÙÛÑÇáãàäâéëèêíïìîóöòôúüùûñç',
         a = 'AAAAAEEEEIIIIOOOOUUUUNCaaaaaeeeeiiiioooouuuunc',
         re = new RegExp('['+de+']' , 'ug');
   
@@ -463,7 +463,7 @@ export class MassiveComponent implements OnInit {
 
   generateVO(source, template: DocumentoPlantillaDTO): LoadLineDTO[] {
     if (!template || !template.caracteristicas) return [];
-    let documentosNewsFromXML: LoadLineDTO[] = [];
+    const documentosNewsFromXML: LoadLineDTO[] = [];
     let pedido: PedidoVentaDTO;
     let indexInicialProcesar = 0;
     if (!(source instanceof HTMLCollection)) {
@@ -551,7 +551,7 @@ export class MassiveComponent implements OnInit {
   }
 
   private reviewFieldsOfTemplate(source: any, template: DocumentoPlantillaDTO) {
-    let map = new Map();
+    const map = new Map();
     if (source instanceof HTMLCollection) {
       const camposTexto = source[0].children;
       for (let j = 0; j < camposTexto.length; j++) {
@@ -572,7 +572,7 @@ export class MassiveComponent implements OnInit {
     }
     if (map.size > 0) {
       let camposSinValidar = '';
-      for (let key of map.keys()) {
+      for (const key of map.keys()) {
         if (!key.endsWith("_NUMID") && !key.startsWith("UPDATE_")) { camposSinValidar = key + ", " + camposSinValidar; }
       }
       if (camposSinValidar) Swal.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar, "warning");

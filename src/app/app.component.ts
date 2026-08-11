@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
   }
 
   @HostListener("window:beforeunload", ["$event"]) unloadHandler(event: Event) {
-    let result = confirm("Quieres refrescar la pagina.");
+    const result = confirm("Quieres refrescar la pagina.");
     if (result) {
       return true;
     }

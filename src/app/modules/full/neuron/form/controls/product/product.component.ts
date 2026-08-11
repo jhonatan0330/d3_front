@@ -262,7 +262,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   }
 
   escogerTarifa(tarifarioBase: string): TarifaDTO {
-    let tarifa: TarifaDTO = new TarifaDTO();
+    const tarifa: TarifaDTO = new TarifaDTO();
     tarifa.valor = 0;
     if (
       this.detallePedidoVenta.tarifas &&

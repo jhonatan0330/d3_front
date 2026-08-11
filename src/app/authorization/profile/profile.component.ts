@@ -228,7 +228,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectFirst() {
     if (this.filteredModules && this.filteredModules.length != 0) {
-      let newRoute = '/list/' + this.filteredModules[0].children![0].llaveTabla;
+      const newRoute = '/list/' + this.filteredModules[0].children![0].llaveTabla;
       this.router.navigate(['/list' + newRoute]);
       this.filterControl.setValue(null);
       this.filterItem();

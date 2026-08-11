@@ -131,7 +131,7 @@ export class Estructura {
     const result: PedidoVentaDTO[] = [];
     this.cantidad = 0;
     this.seleccionados = '';
-    let map = new Map();
+    const map = new Map();
     for (let index = 0; index < this.ubicaciones.length; index++) {
       const element = this.ubicaciones[index];
       if (element.selected) {
@@ -150,7 +150,7 @@ export class Estructura {
     }
     if (map.size!==0){
       this.titulo = '';
-      for (let entry of map.entries()) {
+      for (const entry of map.entries()) {
         this.titulo = this.titulo + entry[0] +  '  ' + entry[1] + ', ';
       }
     }

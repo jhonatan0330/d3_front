@@ -84,7 +84,7 @@ export class FlexService {
         );
     }
 
-    consultaXIdPropiedadValorDefinido(pTemplate: String, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
+    consultaXIdPropiedadValorDefinido(pTemplate: string, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
         return this.http.post<PropiedadValorDefinidoDTO[]>(
             this.ls.getUrlAccess('/flex/consultaXIdPropiedadValorDefinido', _server),
             pTemplate
@@ -92,7 +92,7 @@ export class FlexService {
     }
 
     
-    consultaXIdCambio(pTemplate: String, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
+    consultaXIdCambio(pTemplate: string, _server: string): Observable<PropiedadValorDefinidoDTO[]> {
         return this.http.post<PropiedadValorDefinidoDTO[]>(
             this.ls.getUrlAccess('/flex/consultaXIdCambio', _server),
             pTemplate

@@ -43,7 +43,7 @@ export class OlMapComponent implements OnInit, AfterViewInit {
   readonly text = input<string>(DEFAULT_TEXT);
 
   target: string = 'map-' + Math.random().toString(36).substring(2);
-  nombre: String;
+  nombre: string;
   fControl = new FormControl('');
 
   map: Map;
@@ -105,7 +105,7 @@ export class OlMapComponent implements OnInit, AfterViewInit {
 
   handlerClick(evt) {
     this.marker.setGeometry(new Point(this.map.getEventCoordinate(evt)));
-    let coord = Proj.toLonLat(this.map.getEventCoordinate(evt));
+    const coord = Proj.toLonLat(this.map.getEventCoordinate(evt));
     this.lat = coord[1];
     this.lon = coord[0];
     this.fControl.setValue(this.lat + "," + this.lon);

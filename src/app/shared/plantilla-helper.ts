@@ -420,7 +420,7 @@ export class MVCTranslate {
 		return (field.valorNumero===1);
 	}
 	
-	static getField(document: PedidoVentaDTO, code:String): PedidoVentaCaracteristicaDTO | null {
+	static getField(document: PedidoVentaDTO, code:string): PedidoVentaCaracteristicaDTO | null {
 		if(document==null)	return null;
 		if(!document.caracteristicas || document.caracteristicas.length==0) return null;
 

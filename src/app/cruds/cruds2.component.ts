@@ -169,7 +169,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             }
             if (this.solicitarFechas) {
                 this.fCDateStart.setValue(new Date());
-                let endDate = new Date(new Date());
+                const endDate = new Date(new Date());
                 endDate.setDate(endDate.getDate() + 1);
                 this.fCDateEnd.setValue(endDate);
                 this.fCTimeStart.enable();
@@ -441,7 +441,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 start = this.dataProvider.findIndex((element) => element.llaveTabla === row.llaveTabla);
             }
 
-            let obj: PedidoVentaDTO[] = Object.assign([], this.dataProvider.slice(start, end));
+            const obj: PedidoVentaDTO[] = Object.assign([], this.dataProvider.slice(start, end));
 
             obj.forEach(e => this.selection.select(e))
         }

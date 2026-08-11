@@ -79,7 +79,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
         }
         if (this.data.valorAuxiliar && this.data.valorAuxiliar === 'R') {
           this.fControlDateStart.setValue(this.data.valorFecha);
-          let endDate: Date = new Date(this.fControlDateStart.value);
+          const endDate: Date = new Date(this.fControlDateStart.value);
           endDate.setHours(endDate.getHours() + Math.floor(this.data.valorNumero / 3600000));
           endDate.setMinutes(endDate.getMinutes() + ((this.data.valorNumero / 1000) % 3600) / 60);
           this.fControlDateEnd.setValue(endDate);
@@ -195,7 +195,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
   datesUpdated() {
     if (this.fControlDateStart.value && this.fControlDateEnd.value) {
       const startDate = new Date(this.fControlDateStart.value);
-      let endDate = new Date(this.fControlDateEnd.value);
+      const endDate = new Date(this.fControlDateEnd.value);
       endDate.setHours(0, 0, 0, 0);
       endDate.setDate(endDate.getDate() + 1);
       this.data.valorFecha = startDate;
@@ -244,7 +244,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
   showTimer() {
     if (this.data.valorFecha) {
-      let distance = this.data.valorFecha.getTime() - new Date().getTime();
+      const distance = this.data.valorFecha.getTime() - new Date().getTime();
       this.day = Math.floor(distance / (1000 * 60 * 60 * 24));
       if (this.day < 0) { this.day = this.day + 1; }
       this.hours = Math.floor(
@@ -320,7 +320,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
       const maxTime = this.obtenerValor(PlantillaHelper.FECHA_MAXIMA);
       if (!this.isEmpty(maxTime)) {
-        let fechaMaxima = new Date(fechaActual.getTime() + Number(maxTime));
+        const fechaMaxima = new Date(fechaActual.getTime() + Number(maxTime));
         if (this.data.valorFecha > fechaMaxima) {
           this.errorMessage =
             `La fecha no puede ser mayor a ${fechaMaxima.toLocaleString('en-ZA')}`;
@@ -328,7 +328,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
       }
       const minTime = this.obtenerValor(PlantillaHelper.FECHA_MINIMA);
       if (!this.isEmpty(minTime)) {
-        let fechaMinima = new Date(fechaActual.getTime() - Number(minTime));
+        const fechaMinima = new Date(fechaActual.getTime() - Number(minTime));
         if (this.data.valorFecha < fechaMinima) {
           this.errorMessage =
             `La fecha no puede ser menor a ${fechaMinima.toLocaleString('en-ZA')}`;

@@ -177,13 +177,13 @@ export class ApiService {
     }
 
 
-    consultarInventario(productoId: String, _server: string): Observable<ProductoInventarioDTO[]> {
+    consultarInventario(productoId: string, _server: string): Observable<ProductoInventarioDTO[]> {
         return this.http.get<ProductoInventarioDTO[]>(
             this.ls.getUrlAccess('/document/getInventory/' + productoId, _server)
         );
     }
 
-    getMessageInFiledProccess(property: String, value: String, _server: string = null!): Observable<IdResponse> {
+    getMessageInFiledProccess(property: string, value: string, _server: string = null!): Observable<IdResponse> {
         const endpoint = this.ls.getUrlAccess('/rest/getMessageToProcessField/' + property + '/' + value, _server);
         return this.http.get<IdResponse>(endpoint);
     }

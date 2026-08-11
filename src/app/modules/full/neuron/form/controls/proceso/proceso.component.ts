@@ -948,7 +948,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
         if (this.data.principal || this.keyInicial) {
           // Esto lo hago para que cuando copia plantillas los campos depende dejen seleeccionado el proceso
-          let procesoEncontrar: String = this.keyInicial;
+          let procesoEncontrar: string = this.keyInicial;
           if (procesoEncontrar == null) {
             procesoEncontrar = this.data.principal.llaveTabla;
           }
@@ -974,7 +974,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
-  encontrarProcesoBase(pId: String): PedidoVentaDTO {
+  encontrarProcesoBase(pId: string): PedidoVentaDTO {
     // Busca en los documentos un proceso
     if (this.disponibles) {
       for (let index = 0; index < this.disponibles.length; index++) {

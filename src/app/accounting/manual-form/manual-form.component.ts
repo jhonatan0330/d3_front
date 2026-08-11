@@ -117,7 +117,7 @@ export class ManualFormComponent implements OnInit {
 
         this.timeFrom.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
-                let dateFact: Date = this.form.get('header')!.get('factDate')!.value;
+                const dateFact: Date = this.form.get('header')!.get('factDate')!.value;
                 dateFact.setHours(this.timeFrom.value.substring(0, 2));
                 dateFact.setMinutes(this.timeFrom.value.substring(3, 5));
                 dateFact.setSeconds(0);

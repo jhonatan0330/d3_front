@@ -11,7 +11,7 @@ import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
-export function getFieldFromTemplate(template: DocumentoPlantillaDTO, fieldId: String): DocumentoPlantillaCaracteristicaDTO | null {
+export function getFieldFromTemplate(template: DocumentoPlantillaDTO, fieldId: string): DocumentoPlantillaCaracteristicaDTO | null {
   if (!template || !template.caracteristicas) return null;
   for (let index = 0; index < template.caracteristicas.length; index++) {
     const element = template.caracteristicas[index];

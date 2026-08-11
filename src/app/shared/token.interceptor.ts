@@ -12,7 +12,7 @@ import { TemplateService } from 'app/modules/full/neuron/service/template.servic
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const templateService = inject(TemplateService);
 
-  let token = templateService.getTokenConnection(req.url);
+  const token = templateService.getTokenConnection(req.url);
   let changedReq: HttpRequest<any>;
   if (token) {
     changedReq = req.clone({

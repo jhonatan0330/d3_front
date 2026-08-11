@@ -27,7 +27,7 @@ export interface IDynamicControl {
   adicionarListener(pField: IDynamicControl);
   actualizarDependencia(campoModificado: PedidoVentaCaracteristicaDTO);
   notificarModificacion(campoFiltro: PedidoVentaCaracteristicaDTO);
-  validateVisibility(textSelected: String);
+  validateVisibility(textSelected: string);
   setValorNumero(valor: number);
 
   send2Server(): boolean;
@@ -112,7 +112,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
     return resultado;
   }
 
-  getValorTexto(): String {
+  getValorTexto(): string {
     return this.data == null ? (null as any) : this.data.valorText;
   }
 
@@ -176,7 +176,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
     }
   }
 
-  validateVisibility(textSelected: String) {
+  validateVisibility(textSelected: string) {
     if (this.propVisibleDepende) {
       this.isInvisible = true;
       for (let index = 0; index < this.propVisibleDepende.length; index++) {
@@ -223,7 +223,7 @@ export class BaseComponent implements OnInit, IDynamicControl {
     return PlantillaHelper.buscarPropiedad(this.structure.propiedades, key)!;
   }
 
-  obtenerTexto(key: string): String {
+  obtenerTexto(key: string): string {
     const prop: PropiedadDTO = PlantillaHelper.buscarPropiedad(
       this.structure.propiedades,
       key

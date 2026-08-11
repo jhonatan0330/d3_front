@@ -219,7 +219,7 @@ resizeCanvas(): void {
     const iFile: File = this.selectedFiles.item(this.currentIndex)!;
     this.currentIndex = this.currentIndex + 1;
     if (iFile.type.match(/image\/*/)) {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.readAsDataURL(iFile);
       reader.onload = (_event) => {
         if (this.porcentajeCalidad) {
@@ -235,7 +235,7 @@ resizeCanvas(): void {
   }
 
   compressFile(image, fileName) {
-    var orientation = -1;
+    const orientation = -1;
     console.warn('Size in bytes is now:', this.imageCompress.byteCount(image) / (1024 * 1024));
     this.imageCompress.compressFile(image, orientation, this.porcentajeCalidad, this.porcentajeCalidad).then(
       result => {

@@ -35,7 +35,7 @@ export class FullMapComponent implements OnInit, AfterViewInit {
   @Input() lon: number;
 
   target: string = 'map-' + Math.random().toString(36).substring(2);
-  nombre: String;
+  nombre: string;
   documents: PedidoVentaDTO[];
 
   map: Map;

@@ -137,8 +137,8 @@ export class LoginService {
   }
 
   private getCarrousel(_company: OrganizacionDTO) {
-    let slides: string[] = [];
-    let landing: SafeHtml[] = [];
+    const slides: string[] = [];
+    const landing: SafeHtml[] = [];
     let headerSection: SafeHtml[] = [];
     if (_company.propiedades) {
       const backImages = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.COVERAGE_IMAGE);
@@ -304,7 +304,7 @@ export class LoginService {
     return this.http.post<UsuarioAutenticacionAutorizacionDTO>(this.ls.getUrlAccess('/main/solicitarNuevaClave'), autenticacion);
   }
 
-  isLoggedIn(): Boolean {
+  isLoggedIn(): boolean {
     if (!this.token) { this.token = this.getJwtToken(); }
     if (!this.token) { return false; }
     if (!this.urlService) { this.urlService = this.getConfUrl(); }
@@ -359,7 +359,7 @@ export class LoginService {
 
   private _jsonURL = '/assets/conf.xml';
 
-  getURL(): Observable<String> {
+  getURL(): Observable<string> {
     return this.http.get(this._jsonURL, { responseType: 'text' });
   }
 

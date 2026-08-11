@@ -43,7 +43,7 @@ export class LocalStoreService {
     if (!endpoint.startsWith('/')) {
       endpoint = '/' + endpoint;
     }
-    let url: String | null = this.getUrl4Id( server);
+    let url: string | null = this.getUrl4Id( server);
     if(!url){
        url = this.getItem(LocalConstants.URL_CONF);
     }

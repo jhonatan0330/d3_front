@@ -84,7 +84,7 @@ export class NavigationService {
         if (process) {
             
             process.forEach((process: DocumentoPlantillaDTO) => {
-                let idProcess = (process.proceso == null) ? process.codigo : process.proceso;
+                const idProcess = (process.proceso == null) ? process.codigo : process.proceso;
                 const newItem: FuseNavigationItem = {
                     id: idProcess,
                     title: process.nombre[0].toUpperCase() + process.nombre.substring(1).toLowerCase(),
