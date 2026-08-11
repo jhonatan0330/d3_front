@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, OnInit,  ChangeDetectionStrategy, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit,  ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountingService } from '../accounting.service';
@@ -33,6 +34,7 @@ export class ManualFormComponent implements OnInit {
     private ls = inject(LocalStoreService);
     private templateService = inject(TemplateService);
     private notificationCenter = inject(NotificationCenterService);
+    private destroyRef = inject(DestroyRef);
 
 
     public form: UntypedFormGroup;
@@ -113,7 +115,7 @@ export class ManualFormComponent implements OnInit {
             this.recordsArray.push(this.createRecord(new VoucherLine()));
         }
 
-        this.timeFrom.valueChanges.subscribe({
+        this.timeFrom.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
                 let dateFact: Date = this.form.get('header')!.get('factDate')!.value;
                 dateFact.setHours(this.timeFrom.value.substring(0, 2));
@@ -280,7 +282,7 @@ export class ManualFormComponent implements OnInit {
             this.subscription.unsubscribe();
         }
 
-        group.get('line')!.get('accountDTO')!.valueChanges.subscribe(
+        group.get('line')!.get('accountDTO')!.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
             (value) => {
                 if (!value || !value.key) {
                     group.get('line')!.get('accountName')!.setValue('');
@@ -302,7 +304,8 @@ export class ManualFormComponent implements OnInit {
         group.get('line')!.get('positive')!.valueChanges
             .pipe(
                 startWith(manualaccount.line.positive),
-                pairwise())
+                pairwise(),
+                takeUntilDestroyed(this.destroyRef))
             .subscribe(
                 ([prevValue, selectedValue]) => {
                     selectedValue *= 1;
@@ -321,7 +324,8 @@ export class ManualFormComponent implements OnInit {
         group.get('line')!.get('negative')!.valueChanges
             .pipe(
                 startWith(manualaccount.line.negative),
-                pairwise())
+                pairwise(),
+                takeUntilDestroyed(this.destroyRef))
             .subscribe(
                 ([prevValue, selectedValue]) => {
                     selectedValue *= 1; // el *1 es para pasar a numero porque viene como string y al sumar concatena
@@ -345,7 +349,8 @@ export class ManualFormComponent implements OnInit {
         }
 
         this.subscription = group.valueChanges.pipe(
-            debounceTime(1000)).subscribe(item => {
+            debounceTime(1000),
+            takeUntilDestroyed(this.destroyRef)).subscribe(item => {
                 if (item && item.line && item.line.account && (item.line.positive !== 0 || item.line.negative !== 0)) {
                     this.recordsArray.push(this.createRecord(new VoucherLine()));
                 }
