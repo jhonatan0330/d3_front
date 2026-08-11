@@ -5,6 +5,7 @@ import {
 } from '@angular/material/dialog';
 import {
     DetallePedidoVentaDTO,
+    DocumentMessage,
     DocumentoPlantillaCaracteristicaDTO,
     DocumentoPlantillaDTO,
     PedidoVentaAjusteDTO,
@@ -108,11 +109,14 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     auxPlantillaProxima?: string; // LAs transiciones aveces no tienen cargados los campos y se encesitan
     documentToTransition?: PedidoVentaDTO;
-    transiciones: ProcesoTransicionDTO[] = []; // Lista de botones
+    transiciones = signal<ProcesoTransicionDTO[]>([]); // Lista de botones
     uidOpenToNotDuplicate?: string;
 
     // REPORTS
-    reportes: ReporteBaseDTO[] = [];
+    reportes = signal<ReporteBaseDTO[]>([]);
+
+    // MESSAGES
+    messages = signal<DocumentMessage[] | null>(null);
 
 
     canMassive = signal(false);
@@ -289,8 +293,8 @@ export class FormComponent implements OnInit, AfterViewInit {
             });
         }
         this.pedido!.llaveTabla = value.llaveTabla;
-        for (let r = 0; r < this.reportes.length; r++) {
-            const _report = this.reportes[r];
+        for (let r = 0; r < this.reportes().length; r++) {
+            const _report = this.reportes()[r];
             if (PlantillaHelper.buscarValor(_report.propiedades, PlantillaHelper.REP_AUTOPRINT)) {
                 this.showReport(_report);
             }
@@ -335,6 +339,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             next: (_value: PedidoVentaDTO) => {
                 this.pedido = this.setPedido(_value);
                 this.pedido.messages = this.pedidoBase!.messages;
+                this.messages.set(this.pedidoBase!.messages);
                 this.showForm();
             },
             error: () => {
@@ -732,7 +737,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                             _newtransicion.imagen = tEliminar.imagen;
                             _newtransicion.plantilla = tEliminar.llaveTabla;
                             _newtransicion.nombre = tEliminar.nombre;
-                            this.transiciones.push(_newtransicion);
+                            this.transiciones.update(t => [...t, _newtransicion]);
                         }
                     }
                 } else {
@@ -744,7 +749,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                             _newAction.imagen = _tAction.imagen;
                             _newAction.plantilla = _tAction.llaveTabla;
                             _newAction.nombre = _tAction.nombre;
-                            this.transiciones.push(_newAction);
+                            this.transiciones.update(t => [...t, _newAction]);
                         }
                     }
                 }
@@ -791,7 +796,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                                 _newtransicion.plantilla = _templateVinculo.llaveTabla;
                                 _newtransicion.nombre = _property.motivo.toUpperCase();
                                 //_newtransicion.documentToTransition = pDocumentTransition;
-                                this.transiciones.push(_newtransicion);
+                                this.transiciones.update(t => [...t, _newtransicion]);
                             }
                         }
                     }
@@ -826,7 +831,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                             _newtransicion.plantilla = _templateTransition.llaveTabla;
                             _newtransicion.nombre = _transition.nombre;
                             _newtransicion.documentToTransition = pDocumentTransition;
-                            this.transiciones.push(_newtransicion);
+                            this.transiciones.update(t => [...t, _newtransicion]);
                         }
                     }
                 }
@@ -919,8 +924,8 @@ export class FormComponent implements OnInit, AfterViewInit {
             if (res && this.dialogRef) {
                 this.dialogRef.close();
                 if (!this.close2Save) {
-                    if (res && res.data && res.data.messages) { this.pedido!.messages = res.data.messages; }
-                    else { this.pedido!.messages = null as any; }
+                    if (res && res.data && res.data.messages) { this.pedido!.messages = res.data.messages; this.messages.set(res.data.messages); }
+                    else { this.pedido!.messages = null as any; this.messages.set(null); }
                     this.utilsService.modalWithParams(this.pedido!);
                 }
             }
@@ -956,7 +961,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                         || !this.pedido
                         || !this.pedido.estadoExpediente
                         || (propVisibleState && propVisibleState.find(x => x.valor === this.pedido!.estadoExpediente))) {
-                        this.reportes.push(reporte);
+                        this.reportes.update(r => [...r, reporte]);
                     }
                 }
             }

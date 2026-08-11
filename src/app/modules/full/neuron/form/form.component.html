@@ -179,9 +179,9 @@
         </mat-card>
       }
       <!-- Alertas-->
-      @if (pedido && pedido.messages) {
+      @if (pedido && messages()) {
         <div class="py-1 gap-1">
-          @for (msg of pedido.messages; track msg) {
+          @for (msg of messages(); track msg) {
             <div>
               @if (msg.type === 'ERROR') {
                 <div
@@ -214,7 +214,7 @@
           @if (!isLoading()) {
             <div class="p-1 w-full justify-between flex flex-wrap">
               <!-- Botones de transiciones -->
-              @for (t of transiciones; track t) {
+              @for (t of transiciones(); track t) {
                 <a (click)="crearPlantilla(t.plantilla, (t.documentToTransition==null)?pedido:t.documentToTransition)" class="cursor-pointer flex-auto">
                   <div class="p-1 w-full h-full items-center flex justify-center">
                     <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
@@ -223,7 +223,7 @@
                 </a>
               }
               <!-- Botones de reportes -->
-              @for (r of reportes; track r) {
+              @for (r of reportes(); track r) {
                 <a (click)="showReport(r)" class="cursor-pointer flex-auto">
                   <div class="p-1 w-full h-full items-center flex justify-center">
                     <div class="flex shrink-0 items-center justify-center h-8 w-8 rounded-full bg-gray-400">
