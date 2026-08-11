@@ -255,8 +255,6 @@ export class LoginService {
     this.dialog.closeAll();
     this.router.navigate(['/sign-in']);
 
-
-    this.getOrganization();
   }
 
   changePwd(oldPwd: string, newPwd: string, autorizacion: string) {
