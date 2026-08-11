@@ -193,12 +193,12 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (!this.modificable()) {
             return;
         }
-        this.submitted = signal(true);
+        this.submitted.set(true);
         // La variable modificado me indica si el usuario hizo cambios a los datos
         for (let i = 0; i < this.dynamicControls.length; i++) {
             const element = this.dynamicControls[i];
             if (!element.send2Server()) {
-                this.submitted = signal(false) ;
+                this.submitted.set(false);
                 return;
             }
         }
@@ -383,7 +383,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             }
             // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
             if (!dp.caracteristicas) {
-                this.isLoading = signal(true);
+                this.isLoading.set(true);
                 this.api
                     .obtenerCampos(plantillaId, dp.server)
                     .subscribe({
