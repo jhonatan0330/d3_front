@@ -54,13 +54,13 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
     private dialog = inject(MatDialog);
 
-    plantilla: DocumentoPlantillaDTO| null = null; // Estructura base de la lista
-    templatesFromProcess: DocumentoPlantillaDTO[];
+    plantilla = signal<DocumentoPlantillaDTO | null>(null); // Estructura base de la lista
+    templatesFromProcess = signal<DocumentoPlantillaDTO[]>([]);
     tableroId: string;
     procesoId: string | null;
 
     // Variables para sincronizar con la vista
-    dataProvider: PedidoVentaDTO[] = []; // Conjunto de documentos a visualizar
+    dataProvider = signal<PedidoVentaDTO[]>([]); // Conjunto de documentos a visualizar
     fControlSearch: FormControl = new FormControl(); // Texto que digita el usuario para filtrar
     fCDateStart: FormControl = new FormControl();
     fCDateEnd: FormControl = new FormControl();
@@ -71,14 +71,14 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     fRegistroTimeStart: FormControl = new FormControl();
     fRegistroTimeEnd: FormControl = new FormControl();
     fControlCheck: FormControl = new FormControl(false); // Check que indica si se debe realizar una busqueda por codigo exacto
-    pagina = 1; // Indica que pagina estamos buscando
+    pagina = signal(1); // Indica que pagina estamos buscando
     pageControl: FormControl = new FormControl('30');
     isLoading = signal(false);
     isEnd = signal(false);
     viewMode = 'grid-view';
     form: FormGroup = new FormGroup({});
-    hasCreatePermission = false;
-    reportForms: PropiedadDTO[];
+    hasCreatePermission = signal(false);
+    reportForms = signal<PropiedadDTO[]>([]);
     filteredReports: any[] = [];
 
     // textoInicial: string; // Usado para colocar el texto incial de los fomrularios nuevos, ejemplo un cliente buscado no encontrado
@@ -86,7 +86,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
     solicitarFechas = true;
 
-    displayedColumns: string[] = [];
+    displayedColumns = signal<string[]>([]);
     selection = new SelectionModel<PedidoVentaDTO>(true, []);
     lastSelectedSegmentRow: PedidoVentaDTO; // this is the variable which holds the last selected row index
     masterSelected: boolean = false;
@@ -94,14 +94,14 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
     readonly drawer = viewChild<MatDrawer>('drawer');
 
-    drawerMode: 'over' | 'side' = 'side';
-    drawerOpened: boolean = true;
+    drawerMode = signal<'over' | 'side'>('side');
+    drawerOpened = signal(true);
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     //VAriables del filtro
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
     formIsModified = false;
-    dynamicControls: IDynamicControl[] = [];
+    dynamicControls = signal<IDynamicControl[]>([]);
 
     ngOnInit(): void {
         this.route.params.subscribe((params: Params) => {
@@ -111,27 +111,27 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 return;
             }
             this.isEnd.set(false);
-            this.dataProvider = [];
-            this.templatesFromProcess = [];
+            this.dataProvider.set([]);
+            this.templatesFromProcess.set([]);
             this.fControlSearch.setValue('');
             this.procesoId = null;
             //const serverUrl = this.templateService.getUrl4Id(params.server_id);
             if (propType === 'list') {
-                this.plantilla = this.templateService.getTemplate(params.id, params.server_id)!;
-                if (!this.plantilla) {
+                this.plantilla.set(this.templateService.getTemplate(params.id, params.server_id)!);
+                if (!this.plantilla()) {
                     this.router.navigate(['/main']);
                     return;
                 }
             } else if (propType === 'process_crud') {
                 this.procesoId = params.id;
                 if (this.procesoId) {
-                    this.plantilla = this.templateService.getProceso(this.procesoId)!;
-                    if(this.plantilla && this.plantilla.proceso){
-                        this.templatesFromProcess = this.templateService.getTemplateOfProcess(this.procesoId)!
+                    this.plantilla.set(this.templateService.getProceso(this.procesoId)!);
+                    if(this.plantilla() && this.plantilla()!.proceso){
+                        this.templatesFromProcess.set(this.templateService.getTemplateOfProcess(this.procesoId)!
                         .filter((item) => item.propiedades &&
                             PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)
                             && PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PLANTILLA_INICIA_PROCESO)
-                        );
+                        ));
                     }
                     
                 } else {
@@ -142,22 +142,22 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 this.router.navigate(['/main']);
                 return;
             }
-            if (!this.plantilla) {
+            if (!this.plantilla()) {
                 this.router.navigate(['/main']);
                 return;
             }
             // Obtener Variables
             this.solicitarFechas = !PlantillaHelper.isEmpty(
-                this.plantilla.propiedades,
+                this.plantilla()!.propiedades,
                 PlantillaHelper.FORM_SOLICITAR_FECHAS
             );
-            this.reportForms = PlantillaHelper.buscarValorMultiple(
-                this.plantilla.propiedades,
+            this.reportForms.set(PlantillaHelper.buscarValorMultiple(
+                this.plantilla()!.propiedades,
                 PlantillaHelper.REPORT_MODULE_REFERENCE
-            ) ?? [];
-            if (!this.solicitarFechas && this.templatesFromProcess) {
-                for (let i = 0; i < this.templatesFromProcess.length; i++) {
-                    const iTemplateFromService = this.templatesFromProcess[i];
+            ) ?? []);
+            if (!this.solicitarFechas && this.templatesFromProcess()) {
+                for (let i = 0; i < this.templatesFromProcess().length; i++) {
+                    const iTemplateFromService = this.templatesFromProcess()[i];
                     if (!PlantillaHelper.isEmpty(
                         iTemplateFromService.propiedades,
                         PlantillaHelper.FORM_SOLICITAR_FECHAS
@@ -191,14 +191,14 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.fRegistroTimeStart.disable();
             this.fRegistroTimeEnd.disable();
 
-            this.hasCreatePermission = !PlantillaHelper.isEmpty(
-                this.plantilla.propiedades,
+            this.hasCreatePermission.set(!PlantillaHelper.isEmpty(
+                this.plantilla()!.propiedades,
                 PlantillaHelper.PERMISO_PLANTILLA_CREAR
-            );
-            if (this.plantilla.estados) {
+            ));
+            if (this.plantilla()!.estados) {
                 const _controlEstado = [];
-                for (let i = 0; i < this.plantilla.estados.length; i++) {
-                    const element = this.plantilla.estados[i];
+                for (let i = 0; i < this.plantilla()!.estados.length; i++) {
+                    const element = this.plantilla()!.estados[i];
                     if (!element.llaveTabla) {
                         element.llaveTabla = element.estadoDocumento;
                     }
@@ -208,15 +208,15 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 }
                 this.form = this.formBuilder.group(_controlEstado);
             }
-            this.displayedColumns = [];
-            if (this.plantilla.reportes && this.plantilla.reportes.length !== 0) { this.displayedColumns.push('select'); }
-            this.displayedColumns.push('nombre');
-            if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FORM_DESCRIPCION)) { this.displayedColumns.push('descripcion'); }
-            this.displayedColumns.push('estadoExpediente');
-            this.displayedColumns.push('fecha');
-            if (!PlantillaHelper.isEmpty(this.plantilla.propiedades, PlantillaHelper.FORM_TOTAL)) { this.displayedColumns.push('valor'); }
-            this.displayedColumns.push('detalles');
-            if (this.plantilla.reportes && this.plantilla.reportes.length !== 0) { this.displayedColumns.push('acciones'); }
+            this.displayedColumns.set([]);
+            if (this.plantilla()!.reportes && this.plantilla()!.reportes.length !== 0) { this.displayedColumns.update(cols => [...cols, 'select']); }
+            this.displayedColumns.update(cols => [...cols, 'nombre']);
+            if (!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.FORM_DESCRIPCION)) { this.displayedColumns.update(cols => [...cols, 'descripcion']); }
+            this.displayedColumns.update(cols => [...cols, 'estadoExpediente']);
+            this.displayedColumns.update(cols => [...cols, 'fecha']);
+            if (!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.FORM_TOTAL)) { this.displayedColumns.update(cols => [...cols, 'valor']); }
+            this.displayedColumns.update(cols => [...cols, 'detalles']);
+            if (this.plantilla()!.reportes && this.plantilla()!.reportes.length !== 0) { this.displayedColumns.update(cols => [...cols, 'acciones']); }
             this.showFields();
         });
 
@@ -227,12 +227,12 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
                 // Set the drawerMode and drawerOpened if the given breakpoint is active
                 if (matchingAliases.includes('md')) {
-                    this.drawerMode = 'side';
-                    this.drawerOpened = true;
+                    this.drawerMode.set('side');
+                    this.drawerOpened.set(true);
                 }
                 else {
-                    this.drawerMode = 'over';
-                    this.drawerOpened = false;
+                    this.drawerMode.set('over');
+                    this.drawerOpened.set(false);
                 }
             });
     }
@@ -265,8 +265,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     }*/
 
     openDialogFromTemplateModule() {
-        if (!this.plantilla) { return; }
-        this.openDialog(this.plantilla.llaveTabla, this.plantilla.server);
+        if (!this.plantilla()) { return; }
+        this.openDialog(this.plantilla()!.llaveTabla, this.plantilla()!.server);
     }
 
     openDialog(template: string, server: string | undefined) {
@@ -291,8 +291,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
-        if (this.plantilla) {
-            entity.plantilla = this.plantilla.llaveTabla;
+        if (this.plantilla()) {
+            entity.plantilla = this.plantilla()!.llaveTabla;
         }
         if (this.tableroId) {
             entity.campoPropiedad = this.tableroId;
@@ -334,7 +334,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
         }
 
-        if (this.plantilla?.estados && !this.fControlCheck.value) {
+        if (this.plantilla()?.estados && !this.fControlCheck.value) {
             entity.estadoExpediente = '';
 
             for (let i = 0; i < Object.keys(this.form.controls).length; i++) {
@@ -368,16 +368,16 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
         this.isLoading.set(true);
         if (_pagina === 1) {
-            this.dataProvider = [];
+            this.dataProvider.set([]);
             this.isEnd.set(false);
             this.selection.clear();
-            this.pagina = 1;
+            this.pagina.set(1);
         }
         entity.paginacionRegistroInicial = this.pageControl.value * (_pagina - 1);
         entity.paginacionRegistroFinal = this.pageControl.value;
-        if (this.dynamicControls) {
+        if (this.dynamicControls()) {
             entity.filtersByFields = [];
-            this.dynamicControls.forEach(fieldFilter => {
+            this.dynamicControls().forEach(fieldFilter => {
                 const fieldEntity: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
                 fieldEntity.campo = fieldFilter.data.campo;
                 fieldEntity.valorOpcion = fieldFilter.data.valorOpcion;
@@ -387,22 +387,22 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             });
         }
 
-        if(this.plantilla){
-            this.api.listarDocumentos(entity, this.plantilla.server).subscribe({
+        if(this.plantilla()){
+            this.api.listarDocumentos(entity, this.plantilla()!.server).subscribe({
             next: (dataResult: PedidoVentaDTO[]) => {
                 if (!dataResult) {
                     dataResult = [];
                 }
-                if (this.pagina === 1) {
-                    this.dataProvider = dataResult;
+                if (this.pagina() === 1) {
+                    this.dataProvider.set(dataResult);
                 } else {
-                    this.dataProvider = this.dataProvider.concat(dataResult);
+                    this.dataProvider.update(prev => prev.concat(dataResult));
                 }
                 if (dataResult.length >= this.pageControl.value) {
-                    this.pagina++;
+                    this.pagina.update(p => p + 1);
                 } else {
                     this.isEnd.set(true);
-                    this.pagina = 1;
+                    this.pagina.set(1);
                 }
                 this.isLoading.set(false);
             },
@@ -417,7 +417,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     /** Whether the number of selected elements matches the total number of rows. */
     isAllSelected() {
         const numSelected = this.selection.selected.length;
-        const numRows = this.dataProvider.length;
+        const numRows = this.dataProvider().length;
         return numSelected === numRows;
     }
 
@@ -425,23 +425,23 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     masterToggle() {
         this.isAllSelected()
             ? this.selection.clear()
-            : this.dataProvider.forEach((row) => this.selection.select(row));
+            : this.dataProvider().forEach((row) => this.selection.select(row));
     }
 
     multipleSelect(event, row) {
         if (event.shiftKey) {
             let start = 0;
             if (this.lastSelectedSegmentRow) {
-                start = this.dataProvider.findIndex((element) => element.llaveTabla === this.lastSelectedSegmentRow.llaveTabla);
+                start = this.dataProvider().findIndex((element) => element.llaveTabla === this.lastSelectedSegmentRow.llaveTabla);
             }
-            let end = this.dataProvider.findIndex((element) => element.llaveTabla === row.llaveTabla);
+            let end = this.dataProvider().findIndex((element) => element.llaveTabla === row.llaveTabla);
 
             if (start > end) {
                 end = start;
-                start = this.dataProvider.findIndex((element) => element.llaveTabla === row.llaveTabla);
+                start = this.dataProvider().findIndex((element) => element.llaveTabla === row.llaveTabla);
             }
 
-            const obj: PedidoVentaDTO[] = Object.assign([], this.dataProvider.slice(start, end));
+            const obj: PedidoVentaDTO[] = Object.assign([], this.dataProvider().slice(start, end));
 
             obj.forEach(e => this.selection.select(e))
         }
@@ -461,8 +461,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = pDocument.plantilla;
         pedidoVenta.llaveTabla = pDocument.llaveTabla;
-        if (this.plantilla) {
-            pedidoVenta.server = this.plantilla.server;
+        if (this.plantilla()) {
+            pedidoVenta.server = this.plantilla()!.server;
         }
         this.utilsService.modalWithParams(pedidoVenta, false);
     }
@@ -537,20 +537,20 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         const myForm = this.myForm();
         if (myForm) {
             myForm.clear();
-            this.dynamicControls = [];
+            this.dynamicControls.set([]);
         } else {
             // Espero que se cargue con el AfterInitView
             return;
         }
-        if (!this.plantilla) { return; }
+        if (!this.plantilla()) { return; }
         //Cuando es tipo proceso no puedo encontrar los campos de todas las plantillas
-        if (this.plantilla.estado === 'T') { return; }
-        if (!this.plantilla.caracteristicas) {
-            this.cargarPlantilla(this.plantilla.llaveTabla, null!);
+        if (this.plantilla()!.estado === 'T') { return; }
+        if (!this.plantilla()!.caracteristicas) {
+            this.cargarPlantilla(this.plantilla()!.llaveTabla, null!);
             return;
         }
         const filterDocument = new PedidoVentaDTO;
-        this.plantilla.caracteristicas.forEach((_campo) => {
+        this.plantilla()!.caracteristicas.forEach((_campo) => {
             if (_campo.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.MULTIPLE)
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)) {
@@ -560,18 +560,18 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 );
                 componentRef.instance.structure = _campo;
                 componentRef.instance.parent = filterDocument
-                if(this.plantilla) {
-                    componentRef.instance.urlServer = this.plantilla?.server;
+                if(this.plantilla()) {
+                    componentRef.instance.urlServer = this.plantilla()!.server;
                 }
                 const uc: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
                 uc.campo = _campo.llaveTabla;
                 componentRef.instance.data = uc;
-                this.dynamicControls.push(componentRef.instance);
+                this.dynamicControls.update(controls => [...controls, componentRef.instance]);
             }
         });
         // Colocar listener de Dependientes
-        for (let j = 0; j < this.plantilla?.caracteristicas.length; j++) {
-            const iBase = this.plantilla?.caracteristicas[j];
+        for (let j = 0; j < this.plantilla()!.caracteristicas.length; j++) {
+            const iBase = this.plantilla()!.caracteristicas[j];
             const codigoDepende: PropiedadDTO[] | null = PlantillaHelper.buscarValorMultipleFromManyKeys(
                 iBase.propiedades,
                 [PlantillaHelper.DEPENDE, PlantillaHelper.INFORMATIVE_DATA, PlantillaHelper.UPDATE_INFORMATIVE_FIELD]
@@ -580,8 +580,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             // PlantillaHelper.DEPENDENT_PROPERTIES
             if (codigoDepende) {
                 let iCampoDependiente; // Identifico el campo dependiente
-                for (let index = 0; index < this.dynamicControls.length; index++) {
-                    const iFieldDependiente: IDynamicControl = this.dynamicControls[index];
+                for (let index = 0; index < this.dynamicControls().length; index++) {
+                    const iFieldDependiente: IDynamicControl = this.dynamicControls()[index];
                     if (iFieldDependiente.structure.codigo === iBase.codigo) {
                         iCampoDependiente = iFieldDependiente;
                         break;
@@ -590,8 +590,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 if (iCampoDependiente) {
                     for (let z = 0; z < codigoDepende.length; z++) {
                         const codigo = codigoDepende[z];
-                        for (let k = 0; k < this.dynamicControls.length; k++) {
-                            const iFieldReferenciado = this.dynamicControls[k];
+                        for (let k = 0; k < this.dynamicControls().length; k++) {
+                            const iFieldReferenciado = this.dynamicControls()[k];
                             if (iFieldReferenciado.structure.llaveTabla === codigo.valor) {
                                 iFieldReferenciado.adicionarListener(iCampoDependiente);
                                 break;
@@ -643,8 +643,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             dp.caracteristicas = value.caracteristicas;
             this.templateService.getTemplate(value.llaveTabla, value.server)!.caracteristicas =
                 value.caracteristicas;
-            if(this.plantilla) {
-                this.plantilla.caracteristicas = value.caracteristicas;
+            if(this.plantilla()) {
+                this.plantilla()!.caracteristicas = value.caracteristicas;
             }
             this.showFields();
         } else {

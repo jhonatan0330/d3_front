@@ -3,7 +3,7 @@
   <mat-drawer-container class="flex-auto h-full">
 
     <!-- Drawer -->
-    <mat-drawer position="end" class="w-80 dark:bg-gray-900" [mode]="drawerMode" [(opened)]="drawerOpened" #drawer>
+    <mat-drawer position="end" class="w-80 dark:bg-gray-900" [mode]="drawerMode()" [opened]="drawerOpened()" (openedChange)="drawerOpened.set($event)" #drawer>
 
       <!-- sidebar -->
       <div class="flex flex-col flex-auto w-full">
@@ -15,26 +15,26 @@
               <button mat-icon-button color="primary" matTooltip="Listar" (click)="listar(1)" class="m-1">
                 <mat-icon>refresh</mat-icon>
               </button>
-              @if (plantilla) {
+              @if (plantilla()) {
                 <button mat-icon-button [color]="viewMode === 'list-view' ? 'accent' : ''"
                   (click)="viewMode = 'list-view'">
                   <mat-icon>format_list_bulleted</mat-icon>
                 </button>
               }
-              @if (plantilla) {
+              @if (plantilla()) {
                 <button mat-icon-button [color]="viewMode === 'grid-view' ? 'accent' : ''"
                   (click)="viewMode = 'grid-view'">
                   <mat-icon>apps</mat-icon>
                 </button>
               }
-              @if (plantilla?.reportes) {
+              @if (plantilla()?.reportes) {
               @if (viewMode !== 'grid-view') {
                 <div class="py-1">
                   <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="userMenuList">
                     <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Imprimir
                   </button>
                   <mat-menu #userMenuList="matMenu">
-                    @for (r of plantilla.reportes; track r.llaveTabla) {
+                    @for (r of plantilla()!.reportes; track r.llaveTabla) {
                       <button mat-menu-item
                         (click)="showReport(r, null!)">
                         <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
@@ -45,15 +45,15 @@
                 </div>
               }
             }
-              @if (reportForms) {
+              @if (reportForms()) {
                 <div class="py-1">
                   <button mat-flat-button color="accent" class="w-full"
                     [matMenuTriggerFor]="reportFormMenuList">
                     <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Informes
                   </button>
                   <mat-menu #reportFormMenuList="matMenu">
-                    @for (rf of reportForms; track rf) {
-                      <button mat-menu-item (click)="openDialog(rf.valor, plantilla?.server)">
+                    @for (rf of reportForms(); track rf) {
+                      <button mat-menu-item (click)="openDialog(rf.valor, plantilla()?.server)">
                         <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
                         <span>{{ rf.texto }}</span>
                       </button>
@@ -64,16 +64,16 @@
             </div>
           }
           <div>
-            @if (hasCreatePermission) {
+            @if (hasCreatePermission()) {
               <button class="w-full" mat-flat-button [color]="'primary'"
                 (click)="openDialogFromTemplateModule()">
                 <mat-icon>add</mat-icon>
                 <span>Nuevo</span>
               </button>
             }
-            @if (templatesFromProcess) {
+            @if (templatesFromProcess()) {
               <div>
-                @for (templateToCreate of templatesFromProcess; track templateToCreate) {
+                @for (templateToCreate of templatesFromProcess(); track templateToCreate) {
                   <button class="w-full my-1"
                     mat-flat-button [color]="'primary'"
                     (click)="openDialog(templateToCreate.llaveTabla, templateToCreate.server)">
@@ -140,7 +140,7 @@
                       </div>
                     </div>
                     <!-- Campos dinamicos -->
-                    @if (this.dynamicControls && this.dynamicControls.length !==0) {
+                    @if (this.dynamicControls() && this.dynamicControls().length !==0) {
                       <div
                       class="text-primary text-xs uppercase font-bold py-2"> Filtros por campos </div>
                     }
@@ -155,9 +155,9 @@
                         </label>
                       </div>
                       <form [formGroup]="form">
-                        @if (plantilla?.estados ) {
+                        @if (plantilla()?.estados ) {
                           <div>
-                            @for (_estado of plantilla.estados; track _estado.llaveTabla) {
+                            @for (_estado of plantilla()!.estados; track _estado.llaveTabla) {
                               <div class="p-0.5 w-full flex">
                                 <label class="text-sm w-full px-2">
                                   <input class="mx-2 py-1" type="checkbox"
@@ -225,23 +225,23 @@
                         <!-- Header -->
                         <div
                           class="flex flex-row flex-0 sm:items-center sm:justify-between p-3 sm:py-4 sm:px-5 border-b bg-card dark:bg-transparent">
-                          <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}"  (click)="openDiagram()"/>
+                          <img class="icon-size-12" src="{{ plantilla()?.imagen | imageFormat }}"  (click)="openDiagram()"/>
                           <div class="flex-1 min-w-0">
                             <!-- Title -->
                             <div class="mt-2">
                               <h2
                                 class="text-xl md:text-2xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
-                                {{ plantilla?.nombre }}
+                                {{ plantilla()?.nombre }}
                               </h2>
                             </div>
                           </div>
-                          @if (!drawerOpened) {
+                          @if (!drawerOpened()) {
                             <button mat-icon-button matTooltip="Listar" (click)="listar(1)"
                               class="m-1">
                               <mat-icon>refresh</mat-icon>
                             </button>
                           }
-                          @if (!drawerOpened && hasCreatePermission) {
+                          @if (!drawerOpened() && hasCreatePermission()) {
                             <button mat-icon-button matTooltip="Crear" (click)="openDialogFromTemplateModule()"
                               class="m-1">
                               <mat-icon>add</mat-icon>
@@ -254,7 +254,7 @@
                         <!-- Vista modo grilla -->
                         @if (viewMode === 'grid-view') {
                           <div class="flex flex-wrap p-1 w-full">
-                            @for (iDocument of dataProvider; track iDocument) {
+                            @for (iDocument of dataProvider(); track iDocument) {
                               <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
                                 <div class="p-0 rounded shadow-sm h-full border-b bg-card dark:bg-transparent">
                                   <!-- Title-->
@@ -277,8 +277,8 @@
                                           </a>
                                         }
                                       </div>
-                                      @if (plantilla?.reportes ) {
-                                        @if (plantilla.reportes.length!==0) {
+                                      @if (plantilla()?.reportes ) {
+                                        @if (plantilla()!.reportes!.length!==0) {
                                           <div>
                                             @if (iDocument.llaveTabla) {
                                               <button mat-icon-button [matMenuTriggerFor]="userMenu"
@@ -287,7 +287,7 @@
                                               </button>
                                             }
                                             <mat-menu #userMenu="matMenu">
-                                              @for (r of plantilla.reportes; track r) {
+                                              @for (r of plantilla()!.reportes; track r) {
                                                 <button mat-menu-item
                                                   (click)="showReport(r, iDocument)">
                                                   <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
@@ -318,11 +318,11 @@
                                       >
                                       @for (f of iDocument.caracteristicas; track f) {
                                         <div class="flex items-center" >
-                                          <small [id]="'css' + plantilla?.codigo+  f.campoDTO.codigo + '-0'"
+                                          <small [id]="'css' + plantilla()?.codigo+  f.campoDTO.codigo + '-0'"
                                             class="whitespace-nowrap font-extralight mr-2">{{ f.campoDTO.nombre
                                           }}</small>
                                           @if (f.valorText) {
-                                            <div [id]="'css' + plantilla?.codigo + f.campoDTO.codigo +'-1'"
+                                            <div [id]="'css' + plantilla()?.codigo + f.campoDTO.codigo +'-1'"
                                               class="text-right w-full truncate text-md">
                                               @if (!f.valorText.startsWith('http')) {
                                                 <div class="line-clamp-1"
@@ -347,7 +347,7 @@
                         }
                         <!-- Vista modo tabla -->
                         @if (viewMode !== 'grid-view') {
-                          <table mat-table [dataSource]="dataProvider" class="mat-elevation-z8 full-width"
+                          <table mat-table [dataSource]="dataProvider()" class="mat-elevation-z8 full-width"
                             >
                             <ng-container matColumnDef="select">
                               <th mat-header-cell *matHeaderCellDef>
@@ -402,14 +402,14 @@
                                 <ng-container matColumnDef="acciones">
                                   <th mat-header-cell *matHeaderCellDef>:</th>
                                   <td mat-cell *matCellDef="let element">
-                                    @if (plantilla && plantilla.reportes) {
+                                    @if (plantilla() && plantilla()!.reportes) {
                                       <div>
                                         <button mat-icon-button [matMenuTriggerFor]="userMenu"
                                           (click)="$event.stopPropagation()">
                                           <mat-icon>more_vert</mat-icon>
                                         </button>
                                         <mat-menu #userMenu="matMenu">
-                                          @for (r of plantilla.reportes; track r) {
+                                          @for (r of plantilla()!.reportes; track r) {
                                             <button mat-menu-item
                                               (click)="showReport(r, element)">
                                               <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
@@ -438,24 +438,24 @@
                                     }
                                   </td>
                                 </ng-container>
-                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                                <tr mat-row *matRowDef="let row; columns: displayedColumns"
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns()"
                                 (click)="multipleSelect($event, row)"></tr>
                               </table>
                             }
 
                             <!-- Star View-->
-                            @if (!isLoading() && !isEnd() && dataProvider.length === 0) {
+                            @if (!isLoading() && !isEnd() && dataProvider().length === 0) {
                               <div class="my-48 flex flex-col flex-auto overflow-y-auto lg:overflow-hidden dark:bg-default"
                                 >
                                 <div
                                   class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
-                                  <img class="icon-size-12" src="{{ plantilla?.imagen | imageFormat }}" />
+                                  <img class="icon-size-12" src="{{ plantilla()?.imagen | imageFormat }}" />
                                   <a href="#">
                                     <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{
-                                    plantilla?.nombre }}</h5>
+                                    plantilla()?.nombre }}</h5>
                                   </a>
-                                  <p>{{ plantilla?.objetivo }}</p>
+                                  <p>{{ plantilla()?.objetivo }}</p>
                                   <br>
                                     <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Para encontrar lo que
                                       necesitas, simplemente utiliza los filtros.
@@ -465,14 +465,14 @@
                                     </p>
                                     <button mat-flat-button style="width: 100%;"
                                       class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                      tabindex="-1" (click)="listar(pagina)">
+                                      tabindex="-1" (click)="listar(pagina())">
                                       Buscar
                                     </button>
                                   </div>
                                 </div>
                               }
 
-                              @if (isEnd() && dataProvider.length === 0) {
+                              @if (isEnd() && dataProvider().length === 0) {
                                 <div class="m-auto my-48 flex flex-col items-center justify-center"
                                   >
                                   <div
@@ -490,7 +490,7 @@
                                       </p>
                                       <button mat-flat-button style="width: 100%;"
                                         class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        tabindex="-1" (click)="listar(pagina)">
+                                        tabindex="-1" (click)="listar(pagina())">
                                         Buscar
                                       </button>
                                     </div>
@@ -516,7 +516,7 @@
                                           <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                                         </button>
                                         <span class="font-medium dark:text-white">Total :</span> {{
-                                        dataProvider.length }}
+                                        dataProvider().length }}
                                       </div>
                                     </div>
                                     <form class="w-20">
@@ -528,7 +528,7 @@
                                       </select>
                                     </form>
                                     @if (!isLoading() && !isEnd()) {
-                                      <button mat-raise-button tabindex="-1" (click)="listar(pagina)"
+                                      <button mat-raise-button tabindex="-1" (click)="listar(pagina())"
                                         class="relative inline-flex items-center px-2 py-2 text-sm 5xl:text-xl   font-medium text-gray-700 bg-white border border-gray-300 rounded-md sm:rounded-none hover:bg-gray-50 sm:rounded-r-md"
                                         data-id="pagination-next">Presiona aquí para buscar mas resultados<svg stroke="currentColor"
                                         fill="currentColor" stroke-width="0" viewBox="0 0 20 20" class="w-5 h-5"

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit,  inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit,  inject, signal } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
@@ -25,7 +25,7 @@ export class SettingsSecurityComponent implements OnInit {
     private jwtAuth = inject(LoginService);
 
     securityForm: UntypedFormGroup;
-    isLoading = false;
+    isLoading = signal(false);
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -54,13 +54,13 @@ export class SettingsSecurityComponent implements OnInit {
             );
             return;
         }
-        this.isLoading = true;
+        this.isLoading.set(true);
 
         if (this.data?.key) {
 
             this.jwtAuth.changePwdOther(this.data.key.llaveTabla, signinData.oldPwd, signinData.newPwd, null!).subscribe({
                 next: () => {
-                    this.isLoading = false;
+                    this.isLoading.set(false);
                     Swal.fire(
                         'Cambio Exitoso',
                         'La nueva clave del usuario '+this.data.key.nombre+' se cambio de forma exitosa',
@@ -68,13 +68,13 @@ export class SettingsSecurityComponent implements OnInit {
                     );
                 },
                 error: () => {
-                    this.isLoading = false;
+                    this.isLoading.set(false);
                 },
             });
         } else {
             this.jwtAuth.changePwd(signinData.oldPwd, signinData.newPwd, null!).subscribe({
                 next: () => {
-                    this.isLoading = false;
+                    this.isLoading.set(false);
                     Swal.fire(
                         'Cambio Exitoso',
                         'La nueva clave se cambio de forma exitosa',
@@ -82,7 +82,7 @@ export class SettingsSecurityComponent implements OnInit {
                     );
                 },
                 error: () => {
-                    this.isLoading = false;
+                    this.isLoading.set(false);
                 },
             });
         }
