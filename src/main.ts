@@ -29,6 +29,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { AppComponent } from './app/app.component';
+import { OVERLAY_DEFAULT_CONFIG } from '@angular/cdk/overlay';
 
 function registerIcons(): void {
     const registry = inject(MatIconRegistry);
@@ -60,6 +61,12 @@ bootstrapApplication(AppComponent, {
         ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
         provideHttpClient(withInterceptors([fuseLoadingInterceptor, tokenInterceptor, httpErrorInterceptor])),
         { provide: ErrorHandler, useClass: ErrorHandlerService },
+        {
+            provide: OVERLAY_DEFAULT_CONFIG,
+            useValue: {
+                usePopover: false
+            }
+        },
         { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },
         {
             provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
