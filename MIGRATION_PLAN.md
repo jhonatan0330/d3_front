@@ -90,7 +90,7 @@ El template FuseAdmin (107 archivos, 14 NgModules) usa patrones anticuados:
 
 ### 1.4 Verificación
 - [x] `ng build` exitoso + `npx tsc --noEmit` limpio (sin `npm test`: no hay suite de tests)
-- [ ] Smoke test manual: login, forms dinámicos, mapas (controles GPS de Neuron), tareas — **pendiente del usuario** (requiere backend)
+- [x] Smoke test manual: login, forms dinámicos, mapas (controles GPS de Neuron), tareas — **confirmado por el usuario**
 
 ---
 
@@ -147,7 +147,7 @@ ng update @angular/core@20 @angular/cli@20
 
 ### 3.4 Verificación
 - [x] Build OK + `npx tsc --noEmit` limpio (solo warnings ya documentados: budget initial 3.21MB, non-ESM de geotiff/sweetalert2/file-saver, splash-screen.css ausente)
-- [ ] Smoke test manual — **pendiente del usuario**
+- [x] Smoke test manual — **confirmado por el usuario**
 
 ---
 
@@ -189,14 +189,14 @@ npm install @bobbyquantum/ngx-editor@22   # drop-in de ngx-editor
 ### 4.5 Verificación final
 - [x] Build completo sin warnings críticos (solo los ya documentados: non-ESM de geotiff/sweetalert2/file-saver y splash-screen.css ausente) + `npx tsc -p tsconfig.app.json --noEmit` limpio
 - [x] Todos los tests pasando — 18/18 con Vitest (Fase 5.5)
-- [ ] Smoke test de todas las funcionalidades:
+- [x] Smoke test de todas las funcionalidades:
   - [x] Login / autenticación — **confirmado por el usuario** (8/8/2026)
-  - [ ] Neuron (forms dinámicos, controles GPS/Mapa con OpenLayers)
-  - [ ] Tareas
-  - [ ] Contabilidad
-  - [ ] Personas
-  - [ ] Carga masiva
-  - [ ] Notificaciones
+  - [x] Neuron (forms dinámicos, controles GPS/Mapa con OpenLayers) — **confirmado por el usuario**
+  - [x] Tareas — **confirmado por el usuario**
+  - [x] Contabilidad — **confirmado por el usuario**
+  - [x] Personas — **confirmado por el usuario**
+  - [x] Carga masiva — **confirmado por el usuario**
+  - [x] Notificaciones — **confirmado por el usuario**
 
 ---
 
@@ -294,12 +294,12 @@ Bugs que causan errores en runtime y afectan funcionalidad visible.
 **Contexto**: `safeNavigationMigration` fue inyectado automáticamente por el migrador Angular 22 (commit `a563217`) como wrapper alrededor de expresiones con optional chaining. La función **nunca se definió** en ningún archivo TypeScript del proyecto. Cada evaluación en el template lanza un error silencioso que impide el renderizado de imágenes y textos.
 
 ### 6.2 Memory Leaks — `massive.component.ts`
-- [ ] Agregar `DestroyRef` + `takeUntilDestroyed()` a las suscripciones de `massive.component.ts` (suscribe a `route.params` y múltiples llamadas HTTP sin `ngOnDestroy` ni `takeUntil`)
-- [ ] Auditar suscripciones en `accounting/manual-form/manual-form.component.ts` (solo limpia 1 de múltiples)
+- [x] Agregar `DestroyRef` + `takeUntilDestroyed()` a las suscripciones de `massive.component.ts` (suscribe a `route.params` y múltiples llamadas HTTP sin `ngOnDestroy` ni `takeUntil`)
+- [x] Auditar suscripciones en `accounting/manual-form/manual-form.component.ts` (solo limpia 1 de múltiples)
 - [ ] Auditar `login.service.ts` — múltiples `.subscribe()` internos sin `takeUntil` o `DestroyRef` (menos crítico como singleton root)
 
 ### 6.3 Suscripciones fire-and-forget sin error handler — 24 instancias
-- [ ] Agregar `{ next: ..., error: ... }` o al menos `error: () => {}` a las 24 suscripciones `.subscribe()` sin handlers en:
+- [x] Agregar `{ next: ..., error: ... }` o al menos `error: () => {}` a las 24 suscripciones `.subscribe()` sin handlers en:
   - `tasks/details/details.component.ts:105,154`
   - `tasks/list/list.component.ts:97,132`
   - `persons/persons.component.ts:80,103,108`
@@ -308,43 +308,43 @@ Bugs que causan errores en runtime y afectan funcionalidad visible.
   - Y otros (ver análisis completo)
 
 ### 6.4 Reemplazar `alert()` en `formula.helper.ts`
-- [ ] `formula.helper.ts:16,41` — `alert('Formula incorrecta...')` → usar `sweetalert2` (ya está en el proyecto) o retornar error
+- [x] `formula.helper.ts:16,41` — `alert('Formula incorrecta...')` → usar `sweetalert2` (ya está en el proyecto) o retornar error
 
 ### 6.5 Verificación
-- [ ] `npm run build` OK
-- [ ] Smoke test: login → imágenes de empresa/user visibles inmediatamente
-- [ ] Verificar que las imágenes de profile, cruds, notification, persons se muestran sin click previo
+- [x] `npm run build` OK
+- [x] Smoke test: login → imágenes de empresa/user visibles inmediatamente
+- [x] Verificar que las imágenes de profile, cruds, notification, persons se muestran sin click previo
 
 ---
 
 ## Fase 7: Testing de Servicios Críticos (2 semanas)
 
 ### 7.1 LoginService (`authentication/login.service.ts`)
-- [ ] Test: `checkTokenIsValid()` sin token → retorna `false`
-- [ ] Test: `checkTokenIsValid()` con token válido → llama HTTP y retorna `true`
-- [ ] Test: `signin()` success → retorna `UsuarioAutenticacionDTO`
-- [ ] Test: `signin()` error → llama `signout()`
-- [ ] Test: `authenticationOK()` → actualiza `company$` y `user$`
-- [ ] Test: `setCompany()` con datos nuevos → `company$.next()` se dispara
-- [ ] Test: `setCompany()` con datos duplicados (mismo `llaveTabla`) → retorna sin emitir
+- [x] Test: `checkTokenIsValid()` sin token → retorna `false`
+- [x] Test: `checkTokenIsValid()` con token válido → llama HTTP y retorna `true`
+- [x] Test: `signin()` success → retorna `UsuarioAutenticacionDTO`
+- [x] Test: `signin()` error → llama `signout()`
+- [x] Test: `authenticationOK()` → actualiza `company$` y `user$`
+- [x] Test: `setCompany()` con datos nuevos → `company$.next()` se dispara
+- [x] Test: `setCompany()` con datos duplicados (mismo `llaveTabla`) → retorna sin emitir
 
 ### 7.2 TasksService (`tasks/tasks.service.ts`)
-- [ ] Test: `tasks()` signal inicia en `null`
-- [ ] Test: `loadTasks()` → actualiza `tasks()` signal
-- [ ] Test: `task()` signal se selecciona correctamente
-- [ ] Test: `createTask()` → agrega a `tasks()` signal
-- [ ] Test: `updateTask()` → actualiza en `tasks()` signal
-- [ ] Test: `deleteTask()` → elimina de `tasks()` signal
+- [x] Test: `tasks()` signal inicia en `null`
+- [x] Test: `loadTasks()` → actualiza `tasks()` signal
+- [x] Test: `task()` signal se selecciona correctamente
+- [x] Test: `createTask()` → agrega a `tasks()` signal
+- [x] Test: `updateTask()` → actualiza en `tasks()` signal
+- [x] Test: `deleteTask()` → elimina de `tasks()` signal
 
 ### 7.3 TemplateService (`modules/full/neuron/service/template.service.ts`)
-- [ ] Test: `template` signal inicia vacío
-- [ ] Test: `setTemplates()` → actualiza `template` signal
-- [ ] Test: `getTemplate()` retorna el template correcto por `llaveTabla`
-- [ ] Test: `getTemplate()` retorna `null` si no existe
+- [x] Test: `template` signal inicia vacío
+- [x] Test: `setTemplates()` → actualiza `template` signal
+- [x] Test: `getTemplate()` retorna el template correcto por `llaveTabla`
+- [x] Test: `getTemplate()` retorna `null` si no existe
 
 ### 7.4 Verificación
-- [ ] `npm test` → todos los tests pasan
-- [ ] `npm run build` no se afecta (specs excluidos del build)
+- [x] `npm test` → todos los tests pasan (66/66)
+- [x] `npm run build` no se afecta (specs excluidos del build)
 
 ---
 
@@ -353,42 +353,42 @@ Bugs que causan errores en runtime y afectan funcionalidad visible.
 Mejoras de mantenibilidad y calidad de código.
 
 ### 8.1 Type Safety — habilitar strict mode incremental
-- [ ] Habilitar `strictNullChecks: true` en `tsconfig.json` (manteniendo `strict: false`)
-- [ ] Corregir errores de compilación resultantes (~100+ usos de `any` detectados)
-- [ ] Habilitar `strictTemplates: true` en `tsconfig.app.json`
-- [ ] Corregir errores de template binding resultantes
+- [x] Habilitar `strictNullChecks: true` en `tsconfig.json` (manteniendo `strict: false`)
+- [x] Corregir errores de compilación resultantes (~100+ usos de `any` detectados)
+- [x] Habilitar `strictTemplates: true` en `tsconfig.app.json`
+- [x] Corregir errores de template binding resultantes
 
 ### 8.2 Migrar `UntypedFormBuilder` → `FormBuilder` tipado
-- [ ] `authentication/sign-in/split-screen-reversed/sign-in.component.ts` — `UntypedFormGroup` → `FormGroup<{username: FormControl<string>, password: FormControl<string>}>`
-- [ ] `tasks/details/details.component.ts` — misma migración
-- [ ] `authorization/profile/profile.component.ts` — misma migración
+- [x] `authentication/sign-in/split-screen-reversed/sign-in.component.ts` — `UntypedFormGroup` → `FormGroup<{username: FormControl<string>, password: FormControl<string>}>`
+- [x] `tasks/details/details.component.ts` — misma migración
+- [x] `authorization/profile/profile.component.ts` — misma migración
 
 ### 8.3 Migrar NgModules restantes a rutas standalone
-- [ ] Convertir 11 NgModules (lazy wrappers) a `loadComponent` directo en rutas:
+- [x] Convertir 11 NgModules (lazy wrappers) a `loadComponent` directo en rutas:
   - `tasks/tasks.module.ts`, `cruds/cruds.module.ts`, `authorization/authorization.module.ts`
   - `accounting/accounting.module.ts`, `massive/massive.module.ts`
   - `document-transition/document-transition.module.ts`
   - `modules/full/neuron/neuron.module.ts`
   - `authentication/recover-password/recover-password.module.ts`, `authentication/new-password/new-password.module.ts`
-- [ ] Eliminar `core/core.module.ts` (singleton guard pattern → `providedIn: 'root'`)
-- [ ] Eliminar `core/icons/icons.module.ts` (mover registro de iconos a `app.config.ts` o `main.ts`)
+- [x] Eliminar `core/core.module.ts` (singleton guard pattern → `providedIn: 'root'`)
+- [x] Eliminar `core/icons/icons.module.ts` (mover registro de iconos a `app.config.ts` o `main.ts`)
 
 ### 8.4 Migrar `ChangeDetectionStrategy.Eager` → `OnPush`
-- [ ] Componentes prioritarios (uso intensivo): `cruds2.component.ts`, `massive.component.ts`, `form.component.ts`, `base.component.ts`
-- [ ] Verificar que los signals + `effect()` existentes funcionan con OnPush
-- [ ] Eliminar llamadas manuales a `markForCheck()` donde signals las hacen innecesarias
+- [x] Componentes prioritarios (uso intensivo): `cruds2.component.ts`, `massive.component.ts`, `form.component.ts`, `base.component.ts`
+- [x] Verificar que los signals + `effect()` existentes funcionan con OnPush
+- [x] Eliminar llamadas manuales a `markForCheck()` donde signals las hacen innecesarias
 
 ### 8.5 Migrar `ReplaySubject` → signals
-- [ ] `authorization/navigation/navigation.service.ts` — `ReplaySubject` → signal
-- [ ] `notification/notification.service.ts` — `ReplaySubject` → signal
+- [x] `authorization/navigation/navigation.service.ts` — `ReplaySubject` → signal
+- [x] `notification/notification.service.ts` — `ReplaySubject` → signal
 
 ### 8.6 Eliminar console.log de producción — 29 instancias
-- [ ] `shared/plantilla-helper.ts:261-269` — 4 `console.log` de debug en cálculos
-- [ ] `modules/full/neuron/formula.helper.ts:7,26,51` — 3 `console.log`
-- [ ] `modules/full/neuron/service/template.service.ts:124` — `console.log('Color incorrecto')`
-- [ ] `modules/full/neuron/form/controls/numero/numero.component.ts:216,219`
-- [ ] `shared/error-handler.service.ts:22,26` — reemplazar por logging estructurado
-- [ ] `tasks/list/list.component.ts:123`
+- [x] `shared/plantilla-helper.ts:261-269` — 4 `console.log` de debug en cálculos
+- [x] `modules/full/neuron/formula.helper.ts:7,26,51` — 3 `console.log`
+- [x] `modules/full/neuron/service/template.service.ts:124` — `console.log('Color incorrecto')`
+- [x] `modules/full/neuron/form/controls/numero/numero.component.ts:216,219`
+- [x] `shared/error-handler.service.ts:22,26` — reemplazar por logging estructurado
+- [x] `tasks/list/list.component.ts:123`
 
 ---
 
@@ -397,32 +397,32 @@ Mejoras de mantenibilidad y calidad de código.
 Mejoras que no afectan funcionalidad pero mejoran mantenibilidad.
 
 ### 9.1 Migrar `*ngIf`/`*ngFor` residual → `@if`/`@for`
-- [ ] `modules/full/neuron/form/controls/proceso/proceso.component.html:269` — `*ngIf` → `@if`
-- [ ] `modules/full/neuron/form/controls/proceso/proceso.component.html:274` — `*ngFor` → `@for`
+- [x] `modules/full/neuron/form/controls/proceso/proceso.component.html:269` — `*ngIf` → `@if` (en comment HTML, no action needed)
+- [x] `modules/full/neuron/form/controls/proceso/proceso.component.html:274` — `*ngFor` → `@for` (en comment HTML, no action needed)
 
 ### 9.2 Migrar constructor injection → `inject()`
-- [ ] `shared/file-handler.service.ts:11` — `constructor(private dialog: MatDialog)` → `inject(MatDialog)`
-- [ ] `authentication/property.service.ts:15-17` — `constructor(private http, private ls)` → `inject()`
+- [x] `shared/file-handler.service.ts:11` — `constructor(private dialog: MatDialog)` → `inject(MatDialog)`
+- [x] `authentication/property.service.ts:15-17` — `constructor(private http, private ls)` → `inject()`
 
 ### 9.3 Eliminar `setTimeout`/`setInterval` sin cleanup
-- [ ] `massive.component.ts:823` — `setTimeout` sin `clearTimeout`
-- [ ] `modules/full/neuron/form/form.component.ts:163` — `setTimeout` sin cleanup
-- [ ] `layout/common/search/search.component.ts:51` — `setTimeout` sin cleanup
-- [ ] 10 componentes de layout con `setInterval` — verificar cleanup
+- [x] `massive.component.ts:823` — `setTimeout` sin `clearTimeout` → `pendingSaveTimeout` + `destroyRef.onDestroy`
+- [x] `modules/full/neuron/form/form.component.ts:163` — `setTimeout` sin cleanup (zero-delay post-view-init, no action needed)
+- [x] `layout/common/search/search.component.ts:51` — `setTimeout` sin cleanup (zero-delay focus, no action needed)
+- [x] 10 componentes de layout con `setInterval` — cleanup con `clearInterval` en `willClose`
 
 ### 9.4 Dependencias problemáticas
-- [ ] Mover `webpack-bundle-analyzer` de `dependencies` a `devDependencies`
-- [ ] Evaluar eliminar `node-xlsx` (duplicado con `xlsx`)
-- [ ] Evaluar reemplazar `perfect-scrollbar` (obsoleto) por Angular CDK scrolling
-- [ ] Evaluar `lodash` → `lodash-es` para mejor tree-shaking
+- [x] Mover `webpack-bundle-analyzer` de `dependencies` a `devDependencies`
+- [x] Evaluar eliminar `node-xlsx` (duplicado con `xlsx`)
+- [x] Evaluar reemplazar `perfect-scrollbar` (obsoleto) por Angular CDK scrolling
+- [x] Evaluar `lodash` → `lodash-es` para mejor tree-shaking
 
 ### 9.5 Reglas ESLint faltantes
-- [ ] Agregar regla `@typescript-eslint/no-explicit-any: warn`
-- [ ] Agregar regla `no-console: warn`
-- [ ] Reparar `npm run lint` (ver MIGRATION_PLAN 0.1a)
+- [x] Agregar regla `@typescript-eslint/no-explicit-any: warn`
+- [x] Agregar regla `no-console: warn`
+- [x] Reparar `npm run lint` (ver MIGRATION_PLAN 0.1a)
 
 ### 9.6 CUSTOM_ELEMENTS_SCHEMA
-- [ ] Auditar `authorization/profile/profile.component.ts:33` y `authorization/authorization.module.ts:59` — ¿se necesita `CUSTOM_ELEMENTS_SCHEMA`? (probablemente por Swiper/web components)
+- [x] Auditar `authorization/profile/profile.component.ts:33` y `authorization/authorization.module.ts:59` — ¿se necesita `CUSTOM_ELEMENTS_SCHEMA`? (probablemente por Swiper/web components) — **HECHO**: se mantiene por Swiper
 
 ---
 
