@@ -119,13 +119,13 @@ export class FechaComponent extends BaseComponent implements OnInit {
       }
     }
     if (this.sinCalendar) {
-      this.fControlHoras.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.fControlHoras.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         this.updateTimer();
       });
-      this.fControlMinutes.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.fControlMinutes.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         this.updateTimer();
       });
-      this.ftimeFromMinutesAndHours.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.ftimeFromMinutesAndHours.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         this.updateTimer();
       });
     }
@@ -142,12 +142,12 @@ export class FechaComponent extends BaseComponent implements OnInit {
       this.fControlMinutes.disable();
       this.ftimeFromMinutesAndHours.disable();
     }
-    this.dateFrom.valueChanges.pipe(takeUntilDestroyed()).subscribe({
+    this.dateFrom.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.actualizar();
       },
     });
-    this.timeFrom.valueChanges.pipe(takeUntilDestroyed()).subscribe({
+    this.timeFrom.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.actualizar();
       },

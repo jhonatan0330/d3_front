@@ -26,7 +26,7 @@ export class GpsComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.fControl.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.fControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.actualizar();
     });
     if (!this.data || !this.data.llaveTabla) {

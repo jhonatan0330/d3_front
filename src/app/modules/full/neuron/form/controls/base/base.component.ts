@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, signal, WritableSignal } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, DestroyRef, inject, signal, WritableSignal } from '@angular/core';
 import { ProductComponent } from 'app/modules/full/neuron/form/controls/product/product.component';
 import {
   DocumentoPlantillaCaracteristicaDTO,
@@ -60,6 +60,8 @@ export class BaseComponent implements OnInit, IDynamicControl {
   urlServer: string;
   errorMessage: string | null = null;
   formIsModified = signal<boolean | null>(null);
+
+  protected destroyRef = inject(DestroyRef);
 
   idField: string | null = null;
 

@@ -50,7 +50,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
       // Solo tomo unos segundos en los casos que el campo tenga funcion asi evito tantas consultas al server
       this.fControl.valueChanges
         .pipe(
-          takeUntilDestroyed(),
+          takeUntilDestroyed(this.destroyRef),
           debounceTime(200)
         )
         .subscribe(() => {
@@ -59,7 +59,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     } else {
       this.fControl.valueChanges
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         distinctUntilChanged(),
         map(value=>{ 
           this.fControl.setValue(this.numberToInput(value), { emitEvent: false });

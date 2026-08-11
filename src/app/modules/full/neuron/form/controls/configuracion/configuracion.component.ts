@@ -47,7 +47,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     } else {
       this.procesarCampo(null!);
     }
-    this.fControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
+    this.fControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       this.actualizar();
     });
   }

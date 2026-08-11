@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, HostBinding, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges,  ChangeDetectionStrategy, inject, input, output, viewChild } from '@angular/core';
+import { Component, effect, ElementRef, HostBinding, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges,  ChangeDetectionStrategy, DestroyRef, inject, input, output, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_AUTOCOMPLETE_SCROLL_STRATEGY, MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
@@ -44,6 +44,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     private readonly barSearchInput = viewChild<ElementRef>('barSearchInput');
     private readonly matAutocomplete = viewChild(MatAutocomplete);
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private readonly destroyRef = inject(DestroyRef);
 
     constructor() {
         effect(() => {
@@ -93,7 +94,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
      * On init
      */
     ngOnInit(): void {
-        this.searchControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
+        this.searchControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
             // Algunas ocaciones recibo string aqui valido que se coloque un objeto como proceso
             if (value && value.llaveTabla) {
                 this.openDocument(value);

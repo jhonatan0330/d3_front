@@ -33,7 +33,7 @@ export class InformativeComponent extends BaseComponent implements OnInit {
         }
       }
     }
-    this.fControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
+    this.fControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       this.actualizar();
     });
   }

@@ -110,7 +110,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       this.showCategories();
     }
     if (this.isEnabled) {
-      this.fControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => this.filterProducts());
+      this.fControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => this.filterProducts());
     }
   }
 

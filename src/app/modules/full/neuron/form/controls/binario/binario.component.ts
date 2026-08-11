@@ -34,7 +34,7 @@ export class BinarioComponent extends BaseComponent implements OnInit {
     } else {
       this.fControl.disable();
     }
-    this.fControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
+    this.fControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
       this.actualizar();
     });
     this.labelTextBinary = this.obtenerValor(PlantillaHelper.BINARIO_PREGUNTA);
