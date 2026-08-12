@@ -213,7 +213,7 @@
               <mat-card-content class="p-1">
                 @if (d.caracteristicas && d.caracteristicas.length !== 0) {
                   <div>
-                    @for (f of d.caracteristicas; track f.llaveTabla) {
+                    @for (f of d.caracteristicas; track f.llaveTabla || $index) {
                       <div class="flex justify-between">
                         <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
                         @if (f.valorText) {
