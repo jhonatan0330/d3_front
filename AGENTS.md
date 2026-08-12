@@ -27,6 +27,13 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 
 > After generating or editing code, run `npm run build` to verify it compiles.
 
+## Workflow: commits por paso
+
+- **Cada paso/ítem de trabajo se resuelve y verifica en un commit independiente** (a `main`). No acumular varios pasos sin commitear.
+- Al terminar un paso (código verificado con `npm run build` / `npx tsc --noEmit`), hacer commit inmediato con mensaje corto y descriptivo que referencie el ítem del plan si aplica (ej. `fix(P1-1): ...`).
+- Un commit debe contener solo lo relacionado con ese paso; no mezclar cambios ajenos.
+- **No commitear si el usuario no lo ha pedido** — esta regla aplica cuando el trabajo está organizado en pasos/ítems y el usuario espera un commit por cada uno.
+
 ## Architecture
 
 ### Module layout

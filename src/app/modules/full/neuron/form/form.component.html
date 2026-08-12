@@ -1,25 +1,25 @@
 <!-- Titulo  [style]="styleSizePop"-->
 <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle class="flex px-4 py-2 shadow-md"
   [style]="styleSizePop" [style.color]="colorFont()" [style.backgroundColor]="color()">
-  <img src="{{ (pedido?.imagen ?? '') | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
+  <img src="{{ (pedido()?.imagen ?? '') | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
   <!-- Texto del titulo -->
   <div class="w-full">
     <div class="w-full flex sm:flex">
       <span class="px-1 font-semibold w-full">
-        <span>{{ plantilla?.nombre }}</span>
-        @if (pedido && pedido.historico && pedido.historico !== 0) {
+        <span>{{ plantilla()?.nombre }}</span>
+        @if (pedido() && pedido()!.historico && pedido()!.historico !== 0) {
           <span>*</span>
         }
-        @if (pedido && pedido.llaveTabla) {
-          <span> - {{ pedido.nombre }}</span>
+        @if (pedido() && pedido()!.llaveTabla) {
+          <span> - {{ pedido()!.nombre }}</span>
         }
-        @if (pedido && pedido.llaveTabla) {
+        @if (pedido() && pedido()!.llaveTabla) {
           <a class="cursor-pointer px-1" (click)="copyName()">
             <mat-icon inline="true" [style.color]="colorFont()">content_copy</mat-icon>
           </a>
         }
       </span>
-      @if (pedido && pedido.llaveTabla) {
+      @if (pedido() && pedido()!.llaveTabla) {
         <a class="cursor-pointer h-6 px-1" (click)="showTrace()">
           <mat-icon [style.color]="colorFont()" svgIcon="heroicons_outline:clock"></mat-icon>
         </a>
@@ -33,29 +33,29 @@
         [style.color]="colorFont()">fullscreen_exit</mat-icon>
       }
     </div>
-    @if (pedido && pedido.llaveTabla) {
+    @if (pedido() && pedido()!.llaveTabla) {
       <div class="w-full sm:flex justify-between">
-        @if (pedido && pedido.llaveTabla) {
-          <div class="font-semibold px-1 text-center text-md">{{pedido.estadoNombre }}
+        @if (pedido() && pedido()!.llaveTabla) {
+          <div class="font-semibold px-1 text-center text-md">{{ pedido()!.estadoNombre }}
           </div>
         }
       <!--div class="text-center px-1 text-sm line-clamp-1"> {{ pedido.funcionarioNombre }}</div-->
-      <div class="text-right text-xs px-2">{{ pedido.fecha | date: 'medium' }}</div>
+      <div class="text-right text-xs px-2">{{ pedido()!.fecha | date: 'medium' }}</div>
     </div>
   }
-  @if (pedido && pedido.dinero) {
+  @if (pedido() && pedido()!.dinero) {
     <div class="w-full justify-between flex px-2">
-      @if (pedido.dinero.saldo) {
-        <div class="px-2 text-sm">Saldo : {{pedido.dinero.saldo | currency}}</div>
+      @if (pedido()!.dinero.saldo) {
+        <div class="px-2 text-sm">Saldo : {{pedido()!.dinero.saldo | currency}}</div>
       }
-      @if (pedido.dinero.valorTotal) {
+      @if (pedido()!.dinero.valorTotal) {
         <div class="text-md font-bold flex-auto text-right">Valor
-        {{pedido.dinero.valorTotal | currency}}</div>
+        {{pedido()!.dinero.valorTotal | currency}}</div>
       }
     </div>
   }
-  @if (instruccionCrear) {
-    <span class="px-1 text-xs">{{ instruccionCrear }}</span>
+  @if (instruccionCrear()) {
+    <span class="px-1 text-xs">{{ instruccionCrear() }}</span>
   }
 </div>
 <!-- Botones de accion -->
@@ -91,28 +91,28 @@
       <button mat-menu-item (click)="duplicate()" tabindex="-1">
         <mat-icon>file_copy</mat-icon>Duplicar
       </button>
-      @if (pedido && pedido.llaveTabla) {
+      @if (pedido() && pedido()!.llaveTabla) {
         <button mat-menu-item (click)="reloadScreen()" tabindex="-1">
           <mat-icon svgIcon="heroicons_outline:arrow-path-rounded-square"></mat-icon>Recargar
         </button>
       }
       <!-- Boton Compartir -->
-      @if (pedido && pedido.llaveTabla) {
+      @if (pedido() && pedido()!.llaveTabla) {
         <button mat-menu-item (click)="copyUrl()">
           <mat-icon>link</mat-icon>
           <span>Copiar link</span>
         </button>
       }
       <!-- Boton Whatsapp -->
-      @if (pedido && pedido.llaveTabla) {
+      @if (pedido() && pedido()!.llaveTabla) {
         <button mat-menu-item (click)="sendWhatsApp()">
           <mat-icon>share</mat-icon>
           <span>Whatsapp</span>
         </button>
       }
       <!-- Boton Usuario -->
-      @if (pedido && pedido.llaveTabla && esRol()) {
-        <button mat-menu-item (click)="abrirUsuario(pedido.llaveTabla)">
+      @if (pedido() && pedido()!.llaveTabla && esRol()) {
+        <button mat-menu-item (click)="abrirUsuario(pedido()!.llaveTabla)">
           <mat-icon>person</mat-icon>
           <span>Usuario Rol</span>
         </button>
@@ -155,7 +155,7 @@
               <input matInput name="estadoFinal" [matAutocomplete]="auto"
                 [formControl]="changeStateForm.controls['estadoFinal']" placeholder="Nuevo estado" required />
                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplayChangeState">
-                  @for (newState of plantilla!.estados; track newState) {
+                  @for (newState of plantilla()!.estados; track newState) {
                     <mat-option [value]="newState">
                       <span>{{ newState.nombre }}</span>
                     </mat-option>
@@ -179,7 +179,7 @@
         </mat-card>
       }
       <!-- Alertas-->
-      @if (pedido && messages()) {
+      @if (pedido() && messages()) {
         <div class="py-1 gap-1">
           @for (msg of messages(); track msg) {
             <div>
@@ -205,7 +205,7 @@
       }
 
       <!-- Acciones  -->
-      @if (pedido && pedido.llaveTabla) {
+      @if (pedido() && pedido()!.llaveTabla) {
         <div class="w-full">
           @if (isLoading()) {
             <mat-progress-bar mode="indeterminate"></mat-progress-bar>
@@ -215,7 +215,7 @@
             <div class="p-1 w-full justify-between flex flex-wrap">
               <!-- Botones de transiciones -->
               @for (t of transiciones(); track t) {
-                <a (click)="crearPlantilla(t.plantilla, (t.documentToTransition==null)?pedido:t.documentToTransition)" class="cursor-pointer flex-auto">
+                <a (click)="crearPlantilla(t.plantilla, (t.documentToTransition==null)?pedido()!:t.documentToTransition)" class="cursor-pointer flex-auto">
                   <div class="p-1 w-full h-full items-center flex justify-center">
                     <img class="max-h-8" src="{{ t.imagen | imageFormat }}" [matTooltip]="t.nombre" />
                     <div class="pl-2 text-sm font-bold">{{ t.nombre }}</div>
@@ -262,8 +262,8 @@
         }
         @if (!submitted()) {
           <div>
-            <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified">
-              <mat-icon>save</mat-icon> Guardar {{ plantilla?.nombre | titlecase }}
+            <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified()">
+              <mat-icon>save</mat-icon> Guardar {{ plantilla()?.nombre | titlecase }}
             </button>
           </div>
         }
