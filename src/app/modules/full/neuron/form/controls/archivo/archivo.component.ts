@@ -35,15 +35,15 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
 
   static SEPARADOR = ';;';
 
-  multipleFiles = false;
+  multipleFiles = signal(false);
   validateOrientation: string;
-  firma = false;
+  firma = signal(false);
   maximoSize: number;
   porcentajeCalidad: number | undefined;
-  source: string | null;
-  filtroExtension: string;
+  source = signal<string | null>(null);
+  filtroExtension = signal('');
   isEnd = signal(false);
-  files: any[] = [];
+  files = signal<any[]>([]);
 
   // PreviewImage
   selectedFiles: FileList;
@@ -73,11 +73,11 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
     if (this.isEnabled && !this.formIsEnabled) {
       this.isEnabled = false;
     }
-    this.multipleFiles =
-      this.obtenerPropiedad(PlantillaHelper.MULTIPLE_FILE) != null;
+    this.multipleFiles.set(
+      this.obtenerPropiedad(PlantillaHelper.MULTIPLE_FILE) != null);
     this.allowUrlTextFromUser.set(
       this.obtenerPropiedad(PlantillaHelper.ARCHIVO_URL_USUARIO) != null);
-    this.firma = this.obtenerPropiedad(PlantillaHelper.ARCHIVO_FIRMA) != null;
+    this.firma.set(this.obtenerPropiedad(PlantillaHelper.ARCHIVO_FIRMA) != null);
     this.validateOrientation = this.obtenerValor(
       PlantillaHelper.VALIDATE_ORIENTATION
     );
@@ -90,26 +90,26 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
     if (this.porcentajeCalidad && this.porcentajeCalidad > 100) {
       this.porcentajeCalidad = undefined;
     }
-    this.filtroExtension = this.obtenerValor(PlantillaHelper.ARCHIVO_TIPO);
-    if (!this.isEmpty(this.filtroExtension)) {
-      const extensiones = this.filtroExtension.split(',');
+    this.filtroExtension.set(this.obtenerValor(PlantillaHelper.ARCHIVO_TIPO));
+    if (!this.isEmpty(this.filtroExtension())) {
+      const extensiones = this.filtroExtension().split(',');
       let extensionFilter = '';
       for (let i = 0; i < extensiones.length; i++) {
         const extension = extensiones[i];
         if (extension.indexOf("*") < 0) { extensionFilter + '.'; }
         extensionFilter = extensionFilter + extension + ',';
       }
-      this.filtroExtension = extensionFilter;
+      this.filtroExtension.set(extensionFilter);
     } else {
-      this.filtroExtension = '.pdf,.png,.jpg,.jpeg';
+      this.filtroExtension.set('.pdf,.png,.jpg,.jpeg');
     }
     if (this.maximoSize === 0) {
       this.maximoSize = 1024;
     }
-    this.source = this.data.valorText;
+    this.source.set(this.data.valorText);
     const defaultValue = this.obtenerPropiedad(PlantillaHelper.DEFAULT);
     if (defaultValue && !this.data.principal && !this.data.valorText) {
-      this.source = defaultValue.valor;
+      this.source.set(defaultValue.valor);
       this.data.valorText = defaultValue.valor;
     }
     this.actualizarVista();
@@ -158,8 +158,8 @@ resizeCanvas(): void {
     }
     this.selectedFiles = files;
     this.currentIndex = 0;
-    if (!this.multipleFiles && this.files.length !== 0) {
-      this.deleteFile(this.files[0]);
+    if (!this.multipleFiles() && this.files().length !== 0) {
+      this.deleteFile(this.files()[0]);
     }
     this.sincronizeFiles();
   }
@@ -200,11 +200,11 @@ resizeCanvas(): void {
   }
 
   remove2ValidateOrientation(pName: string) {
-    if (!this.files || this.files.length === 0) {
+    if (this.files().length === 0) {
       return;
     }
-    for (let i = 0; i < this.files.length; i++) {
-      const element = this.files[i];
+    for (let i = 0; i < this.files().length; i++) {
+      const element = this.files()[i];
       if (element.url === pName) {
         this.deleteFile(element);
         break;
@@ -282,27 +282,24 @@ resizeCanvas(): void {
 
 
   addFileToTable(pName: string, pBlob, pFile): any {
-    if (!this.files) {
-      this.files = [];
-    }
     const item = {
       url: pName,
-      index: this.files.length + 1,
+      index: this.files().length + 1,
       file: pFile,
       blob: pBlob,
       isLoading: true,
     };
-    this.files.push(item);
-    if (!this.multipleFiles) {
+    this.files.update(f => [...f, item]);
+    if (!this.multipleFiles()) {
       this.isEnd.set(true);
     }
     return item;
   }
 
   hasPendingLoadFiles(): boolean {
-    if (this.files && this.files.length !== 0) {
-      for (let j = 0; j < this.files.length; j++) {
-        const iFile = this.files[j];
+    if (this.files().length !== 0) {
+      for (let j = 0; j < this.files().length; j++) {
+        const iFile = this.files()[j];
         if (iFile.isLoading) {
           return true;
         }
@@ -320,14 +317,14 @@ resizeCanvas(): void {
       this.api.uploadFile(internalFile, this.urlServer).subscribe(
         (data) => {
           const returnedData = data.message;
-          if (!this.source) {
-            this.source = returnedData;
+          if (!this.source()) {
+            this.source.set(returnedData);
           } else {
             // Sucede que llegaba y como era lenta la carga entonces se duplicaban
-            if (this.multipleFiles) {
-              this.source = this.source + ArchivoComponent.SEPARADOR + returnedData;
+            if (this.multipleFiles()) {
+              this.source.set(this.source() + ArchivoComponent.SEPARADOR + returnedData);
             } else {
-              this.source = returnedData;
+              this.source.set(returnedData);
             }
           }
           fileToUpload.isLoading = false;
@@ -338,7 +335,7 @@ resizeCanvas(): void {
         },
         (error) => {
           this.isLoading.set(false);
-          this.files[this.currentIndex].message = error;
+          this.files()[this.currentIndex].message = error;
           alert(error);
         }
       );
@@ -346,34 +343,39 @@ resizeCanvas(): void {
   }
 
   actualizar() {
-    if (this.source != null) {
+    const _source = this.source();
+    if (_source != null) {
+      let nuevoValor: string | null = _source;
       if (
-        this.source.length > 2 &&
-        this.source.substr(this.source.length - 2) ===
+        nuevoValor.length > 2 &&
+        nuevoValor.substr(nuevoValor.length - 2) ===
         ArchivoComponent.SEPARADOR
       ) {
-        this.source = this.source.substr(0, this.source.length - 2);
+        nuevoValor = nuevoValor.substr(0, nuevoValor.length - 2);
       }
-      if (this.source === '') {
-        this.source = null;
+      if (nuevoValor === '') {
+        nuevoValor = null;
       }
+      this.source.set(nuevoValor);
     }
-    if (this.data.valorText !== this.source) {
-      this.data.valorText = this.source!;
+    if (this.data.valorText !== this.source()) {
+      this.data.valorText = this.source()!;
       this.avisarModificacion();
       // this.actualizarVista();
     }
   }
 
   actualizarVista() {
-    this.files = [];
+    this.files.set([]);
     this.isEnd.set(false);
-    if (this.source) {
-      const items: string[] = this.source.split(ArchivoComponent.SEPARADOR);
+    const _source = this.source();
+    if (_source) {
+      const items: string[] = _source.split(ArchivoComponent.SEPARADOR);
+      const _files: any[] = [];
       for (let i = 0; i < items.length; i++) {
         const iSource = items[i];
         if (iSource) {
-          this.files.push({
+          _files.push({
             url: iSource,
             index: i + 1,
             file: null,
@@ -381,7 +383,8 @@ resizeCanvas(): void {
           });
         }
       }
-      if (!this.multipleFiles) {
+      this.files.set(_files);
+      if (!this.multipleFiles()) {
         this.isEnd.set(true);
       }
     }
@@ -395,18 +398,20 @@ resizeCanvas(): void {
   }
 
   deleteFile(item: any) {
-    const index: number = this.files.indexOf(item);
+    const index: number = this.files().indexOf(item);
     if (index !== -1) {
-      this.files.splice(index, 1);
+      this.files.update(f => [...f.slice(0, index), ...f.slice(index + 1)]);
     }
     if (!item.isLoading) {
       const _url = item.url;
-      if (this.source) {
-        this.source = this.source.replace(
+      const _source = this.source();
+      if (_source) {
+        let nuevoSource = _source.replace(
           _url + ArchivoComponent.SEPARADOR,
           ''
         );
-        this.source = this.source.replace(_url, '');
+        nuevoSource = nuevoSource.replace(_url, '');
+        this.source.set(nuevoSource);
       }
       this.actualizar();
     }
@@ -454,12 +459,12 @@ resizeCanvas(): void {
 
   onClickLoadUrl() {
     if (this.isLoadingUrl()) {
-      this.source = this.urlText;
+      this.source.set(this.urlText);
       this.actualizarVista();
       this.actualizar();
     }
-    this.isLoading.set(!this.isLoadingUrl);
-    this.isLoadingUrl.set(!this.isLoadingUrl);
+    this.isLoading.set(!this.isLoadingUrl());
+    this.isLoadingUrl.set(!this.isLoadingUrl());
   }
 
   isImage(url) {

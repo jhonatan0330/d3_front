@@ -16,7 +16,7 @@ Bugs que comprometen seguridad o autenticación.
 
 Estado mutado en suscripciones sin notificación al CD (zoneless + OnPush).
 
-- [x] **P1-1** 5 componentes OnPush mutan props planas en subscribes sin CDR: `form.component.ts`, `massive.component.ts`, `cruds2.component.ts`, `security.component.ts`. Convertir estado a signals. *(Hecho: `security` + `cruds2` + `massive` en commits P1-1a/P1-1b. Pendiente: `form`.)*
+- [x] **P1-1** 5 componentes OnPush mutan props planas en subscribes sin CDR: `form.component.ts`, `massive.component.ts`, `cruds2.component.ts`, `security.component.ts`. Convertir estado a signals. *(Hecho: `security` + `cruds2` + `massive` en commits P1-1a/P1-1b, `archivo` en P1-1d. Pendiente: `form`.)*
 - [x] **P1-2** Anti-patrón: reasignación de signals en vez de `.set()` — `form.component.ts:196,386`. Corregir.
 - [x] **P1-3** Migrar props planas de `form.component.ts` (`transiciones`, `reportes`, `messages`) a signal/computed.
 
