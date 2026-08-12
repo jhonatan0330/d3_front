@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewContainerRef, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext, computed, signal } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext, computed, signal, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
     MatDialogRef,
     MAT_DIALOG_DATA,
@@ -63,6 +64,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private utilsService = inject(UtilsService);
     private _router = inject(Router);
     private _injector = inject(Injector);
+    private _destroyRef = inject(DestroyRef);
 
     // Variables para el control de los campos
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
@@ -237,6 +239,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         } else {
             this.api
                 .guardarDocumento(this.copiarPedidoBase(this.pedido()!, true), this.plantilla()!.server, this.uidOpenToNotDuplicate!)
+                .pipe(takeUntilDestroyed(this._destroyRef))
                 .subscribe({
                     next: (dataResult: PedidoVentaDTO) => {
                         this.openManager(dataResult);
@@ -335,7 +338,9 @@ export class FormComponent implements OnInit, AfterViewInit {
     consultarDocumento(id: string) {
         const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
         entity.llaveTabla = id;
-        this.api.consultarDocumento(entity, this.plantilla()!.server).subscribe({
+        this.api.consultarDocumento(entity, this.plantilla()!.server)
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe({
             next: (_value: PedidoVentaDTO) => {
                 this.pedido.set(this.setPedido(_value));
                 this.pedido()!.messages = this.pedidoBase!.messages;
@@ -352,7 +357,9 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (!this.plantilla() || !this.plantilla()!.llaveTabla) return;
         const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
         entity.plantilla = this.plantilla()!.llaveTabla;
-        this.api.validateBeforeNew(entity, this.plantilla()!.server).subscribe({
+        this.api.validateBeforeNew(entity, this.plantilla()!.server)
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe({
             next: (_value: PedidoVentaDTO) => {
                 if (_value && _value.messages && _value.messages.length > 0) {
                     let mensajeToShow = '';
@@ -391,6 +398,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 this.isLoading.set(true);
                 this.api
                     .obtenerCampos(plantillaId, dp.server)
+                    .pipe(takeUntilDestroyed(this._destroyRef))
                     .subscribe({
                         next: (plantilla: DocumentoPlantillaDTO) => {
                             plantilla.server = dp.server;
@@ -920,7 +928,9 @@ export class FormComponent implements OnInit, AfterViewInit {
             _doc.caracteristicas.push(campoBase);
         }
         _doc.server = this.plantilla()!.server;
-        this.utilsService.modalWithParams(_doc, true).subscribe((res) => {
+        this.utilsService.modalWithParams(_doc, true)
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe((res) => {
             if (res && this.dialogRef) {
                 this.dialogRef.close();
                 if (!this.close2Save) {
@@ -1004,6 +1014,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     showTransfer() {
         if (this.canTransfer()) {
             this.utilsService.modalTransfer(this.pedido()!.llaveTabla, this.pedido()!.estadoExpediente, this.pedido()!.plantilla, this.plantilla()!.server)
+                .pipe(takeUntilDestroyed(this._destroyRef))
                 .subscribe((res) => {
                     if (res && this.dialogRef) {
                         this.dialogRef.close();
@@ -1044,7 +1055,9 @@ export class FormComponent implements OnInit, AfterViewInit {
                 ajuste.estadoFinal = formData.estadoFinal!.llaveTabla!;
                 ajuste.motivo = formData.motivo!;
                 this.changeStateIsLoading.set(true);
-                this.api.ajustarEstado(ajuste, this.plantilla()!.server).subscribe({
+                this.api.ajustarEstado(ajuste, this.plantilla()!.server)
+                    .pipe(takeUntilDestroyed(this._destroyRef))
+                    .subscribe({
                     next: () => {
                         this.dialogRef.close(this.pedido());
                         this.changeStateIsLoading.set(false);
@@ -1120,7 +1133,9 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     reloadScreen(pTemplate?: string) {
         this.dialogRef.close();
-        this.utilsService.modalWithParams(this.pedido()!, false, null, false, pTemplate as any).subscribe({ error: () => {} });
+        this.utilsService.modalWithParams(this.pedido()!, false, null, false, pTemplate as any)
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe({ error: () => {} });
     }
 
 
@@ -1143,8 +1158,12 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     abrirUsuario(pUsuario: string) {
-        this.api.searchUserByRol(pUsuario).subscribe({ next: (contact: UsuarioDTO) => {
-            this.utilsService.modalUser(contact.llaveTabla).subscribe({ error: () => {} });
+        this.api.searchUserByRol(pUsuario)
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe({ next: (contact: UsuarioDTO) => {
+            this.utilsService.modalUser(contact.llaveTabla)
+                .pipe(takeUntilDestroyed(this._destroyRef))
+                .subscribe({ error: () => {} });
         }, error: () => {} });
     }
 
@@ -1186,7 +1205,9 @@ export class FormComponent implements OnInit, AfterViewInit {
             }
         }
         _doc.server = this.plantilla()!.server;
-        this.utilsService.modalWithParams(_doc, false).subscribe({ error: () => {} });
+        this.utilsService.modalWithParams(_doc, false)
+            .pipe(takeUntilDestroyed(this._destroyRef))
+            .subscribe({ error: () => {} });
     }
 
     public reviewFieldsVisibility() {

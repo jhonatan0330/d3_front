@@ -190,7 +190,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.showAlertSelectedProcess();
           const _pHTML = this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL)
           if (_pHTML) {
-            this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla).subscribe({
+            this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla)
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe({
               next: (res: IdResponse) => {
                 this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(res.comment);
               },
@@ -249,7 +251,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
         filtro.estado = StatesEnum.ACTIVE;
         filtro.propiedad = this.alertar.llaveTabla;
-        this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
+        this.api.relacionesPropiedad(filtro, this.urlServer)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
           next: (value: RelacionInternaDTO[]) => {
             if (!value || value.length === 0) {
               Swal.fire(this.structure.nombre, 'La propiedad ALERTAR no tiene relaciones para determinar que alertar', 'error');
@@ -284,7 +288,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     pedidoVenta.plantilla = p.plantilla;
     pedidoVenta.llaveTabla = p.llaveTabla;
     pedidoVenta.server = this.urlServer;
-    this.utilsService.modalWithParams(pedidoVenta, false).subscribe((res) => {
+    this.utilsService.modalWithParams(pedidoVenta, false)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
       if (res) {
         if (this.tipoMultiple) {
           this.procesarCampo(this.transformPVCtoFilter(this.data));
@@ -604,7 +610,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       filtro.valorAuxiliar = campoFiltro.valorAuxiliar;
     }
     this.isLoading.set(true);
-    this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
+    this.api.consultarDatosBase(filtro, this.urlServer)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
         this.isLoading.set(false);
         this.consultaExitosaDatosBase(_value);
@@ -1092,7 +1100,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         filtro.estado = StatesEnum.ACTIVE;
         filtro.propiedad = this.herencia.llaveTabla;
         filtro.plantilla = _plantilla;
-        this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
+        this.api.relacionesPropiedad(filtro, this.urlServer)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
           next: (value: RelacionInternaDTO[]) => {
             this.relacionesHerencia = value;
             this.createNewDocument(_plantilla, _property);
