@@ -8,7 +8,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-import { HomeButtonComponent } from '../../../common/home-button/home-button.component';
+
 import { SearchComponent } from '../../../common/search/search.component';
 import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
@@ -21,14 +21,14 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'classic-layout',
     templateUrl: './classic.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, RouterLink, MatIcon, MatIconButton, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, RouterLink, MatIcon, MatIconButton, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
 })
 export class ClassicLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);
     private _navigationService = inject(NavigationService);
 
-    isScreenSmall: boolean;
-    sidenavOpened = false;
+    isScreenSmall = signal(false);
+    sidenavOpened = signal(false);
     navigation: Navigation;
     user: UsuarioDTO | undefined;
     company: OrganizacionDTO | undefined;
@@ -36,8 +36,8 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
     currentApplicationVersion = environment.appVersion;
     private _mediaQuery = window.matchMedia('(min-width: 960px)');
     private _mediaHandler = (e: MediaQueryListEvent) => {
-        this.isScreenSmall = !e.matches;
-        this.sidenavOpened = e.matches;
+        this.isScreenSmall.set(!e.matches);
+        this.sidenavOpened.set(e.matches);
     };
     private _clockInterval: ReturnType<typeof setInterval>;
     headerSection: string[];
@@ -72,8 +72,8 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.isScreenSmall = !this._mediaQuery.matches;
-        this.sidenavOpened = this._mediaQuery.matches;
+        this.isScreenSmall.set(!this._mediaQuery.matches);
+        this.sidenavOpened.set(this._mediaQuery.matches);
         this._mediaQuery.addEventListener('change', this._mediaHandler);
 
         // Reloj
@@ -89,12 +89,12 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
 
     toggleNavigation(): void {
         // Toggle the opened status of the sidenav
-        this.sidenavOpened = !this.sidenavOpened;
+        this.sidenavOpened.update((value) => !value);
     }
 
     closeNavOnSmall(): void {
-        if (this.isScreenSmall) {
-            this.sidenavOpened = false;
+        if (this.isScreenSmall()) {
+            this.sidenavOpened.set(false);
         }
     }
 

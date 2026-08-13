@@ -8,7 +8,7 @@ import { LoginService } from 'app/authentication/login.service';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-import { HomeButtonComponent } from '../../../common/home-button/home-button.component';
+
 import { SearchComponent } from '../../../common/search/search.component';
 import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
@@ -20,7 +20,7 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'enterprise-layout',
     templateUrl: './enterprise.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIconButton, MatIcon, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIconButton, MatIcon, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
 })
 export class EnterpriseLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);

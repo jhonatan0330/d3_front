@@ -8,9 +8,9 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-import { HomeButtonComponent } from '../../../common/home-button/home-button.component';
+
 import { SearchComponent } from '../../../common/search/search.component';
-import { SearchPopButtonComponent } from '../../../common/search-pop/search-pop.component';
+
 import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
 import { UserComponent } from '../../../common/user/user.component';
@@ -22,7 +22,7 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'classy-layout',
     templateUrl: './classy.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, RouterLink, MatIcon, MatIconButton, HomeButtonComponent, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, RouterLink, MatIcon, MatIconButton, SearchComponent, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);
