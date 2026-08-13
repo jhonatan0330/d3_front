@@ -1,16 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import {
-    catchError,
-    debounceTime,
-    map,
-    Observable,
-    of,
-    switchMap,
-    tap,
-} from 'rxjs';
+import { catchError,    map,     Observable,    of,    switchMap,    tap,} from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import {  RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
