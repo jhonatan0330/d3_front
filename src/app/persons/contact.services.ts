@@ -41,11 +41,7 @@ export class ContactsService {
             .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/roles/' + query))
             ;
     }
-    searchPermisosById(query: string): Observable<PermisosDTO[]> {
-        return this._httpClient
-            .get<PermisosDTO[]>(this.ls.getUrlAccess('/user/properties/' + query))
-            ;
-    }
+
 
     getContacts(): Observable<UsuarioDTO[]> {
         return this._httpClient.post<UsuarioDTO[]>(
