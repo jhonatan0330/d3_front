@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { FUSE_APP_CONFIG } from '@fuse/services/config/config.constants';
+import { FUSE_APP_CONFIG } from 'app/core/config/fuse-config.constants';
 
 @Injectable({
     providedIn: 'root'

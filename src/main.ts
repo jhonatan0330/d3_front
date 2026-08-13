@@ -16,7 +16,7 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, ExtraOptions } from '@angular/router';
 import { appRoutes } from 'app/app.routing';
-import { FuseConfigModule } from '@fuse/services/config';
+import { FuseConfigModule } from 'app/core/config/fuse-config.module';
 import { appConfig } from 'app/core/config/app.config';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';

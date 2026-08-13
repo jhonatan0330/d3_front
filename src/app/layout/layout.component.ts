@@ -2,7 +2,7 @@ import { Component, effect, OnDestroy, OnInit, ChangeDetectionStrategy, inject, 
 
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {  filter,  Subject, takeUntil } from 'rxjs';
-import { FuseConfigService } from '@fuse/services/config';
+import { FuseConfigService } from 'app/core/config/fuse-config.service';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
 import { LoginService } from 'app/authentication/login.service';
