@@ -24,6 +24,6 @@ module.exports = tseslint.config(
     },
   },
   {
-    ignores: ["dist/**", "node_modules/**", "projects/**", "src/@fuse/**"],
+    ignores: ["dist/**", "node_modules/**", "projects/**"],
   }
 );

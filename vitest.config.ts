@@ -7,7 +7,6 @@ export default defineConfig(() => ({
   resolve: {
     mainFields: ['module'],
     alias: {
-      '@fuse': resolve(process.cwd(), 'src/@fuse'),
       'app': resolve(process.cwd(), 'src/app'),
       'environments': resolve(process.cwd(), 'src/environments'),
       'config': resolve(process.cwd(), 'src/config.ts'),
