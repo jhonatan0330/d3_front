@@ -1,11 +1,18 @@
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     DestroyRef,
+    ElementRef,
     inject,
     OnInit,
     signal,
+    ViewChild,
 } from '@angular/core';
+
+import {
+    MatInput,
+} from '@angular/material/input';
 
 import {
     FormsModule,
@@ -38,11 +45,17 @@ import {
 import {
     AssistantMessage,
     AssistantState,
+    TemplateData,
 } from '../assistant.models';
 
 import {
     AssistantService,
 } from '../assistant.service';
+
+import { Router } from '@angular/router';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { ImageFormatPipe } from '../../shared/local-image';
 
 
 @Component({
@@ -55,20 +68,29 @@ import {
         MatIconModule,
         MatFormFieldModule,
         MatInputModule,
+        ImageFormatPipe,
     ],
 
     templateUrl: './assistant-dialog.component.html',
 
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AssistantDialogComponent implements OnInit {
+export class AssistantDialogComponent implements OnInit, AfterViewInit {
     isDarkMode = false;
 
-
+    @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
+    @ViewChild('messageInput', { read: MatInput }) private messageInput!: MatInput;
 
     ngOnInit(): void {
         this.assistantService.isOpenDialog.set(false);
         this.isDarkMode = document.body.classList.contains('dark');
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            this.messageInput?.focus();
+            this.scrollToBottom();
+        });
     }
 
     private readonly dialogRef =
@@ -79,6 +101,9 @@ export class AssistantDialogComponent implements OnInit {
 
     private readonly destroyRef =
         inject(DestroyRef);
+
+    private readonly router = inject(Router);
+    private readonly utilsService = inject(UtilsService);
 
 
     /* ============================================================
@@ -303,6 +328,13 @@ export class AssistantDialogComponent implements OnInit {
 
                 break;
 
+
+            case 'abrir-template':
+
+                this.abrirTemplate(message);
+
+                break;
+
         }
     }
 
@@ -365,6 +397,25 @@ export class AssistantDialogComponent implements OnInit {
     }
 
 
+    private abrirTemplate(message: AssistantMessage): void {
+        const data = message.data as TemplateData;
+
+        if (!data || !data.llaveTabla) {
+            return;
+        }
+
+        const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
+        pedidoVenta.plantilla = data.llaveTabla;
+
+        if (data.server) {
+            pedidoVenta.server = data.server;
+        }
+
+        const esReporte = data.tipo === 'Report';
+        this.utilsService.modalWithParams(pedidoVenta, esReporte);
+    }
+
+
     /* ============================================================
      * MENSAJES
      * ========================================================== */
@@ -379,6 +430,24 @@ export class AssistantDialogComponent implements OnInit {
                 mensaje,
             ]
         );
+
+        setTimeout(() => this.scrollToBottom());
+    }
+
+
+    scrollToBottom(): void {
+        const el = this.messagesContainer?.nativeElement;
+        if (el) {
+            el.scrollTop = el.scrollHeight;
+        }
+    }
+
+
+    formatTime(date: Date): string {
+        return date.toLocaleTimeString('es-CO', {
+            hour: '2-digit',
+            minute: '2-digit',
+        });
     }
 
 

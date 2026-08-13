@@ -16,6 +16,7 @@ export interface AssistantAction {
     label: string;
     icon?: string;
     color?: 'primary' | 'accent' | 'warn';
+    image?: string;
 }
 
 export interface AssistantMessage {
@@ -34,4 +35,11 @@ export interface AssistantMessage {
      * Datos opcionales asociados al mensaje.
      */
     data?: unknown;
+}
+
+export interface TemplateData {
+    llaveTabla: string;
+    server?: string;
+    proceso?: string;
+    tipo: string;
 }

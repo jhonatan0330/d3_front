@@ -37,9 +37,13 @@ export const appRoutes: Route[] = [
       { path: 'list/:type/:id', loadComponent: () => import('app/cruds/cruds2.component').then(m => m.Cruds2Component) },
       { path: 'list/:type/:id/:server_id', loadComponent: () => import('app/cruds/cruds2.component').then(m => m.Cruds2Component) },
       { path: 'tasks', redirectTo: 'tasks/list', pathMatch: 'full' },
-      { path: 'tasks/list', loadComponent: () => import('app/tasks/list/list.component').then(m => m.TasksListComponent) },
-      { path: 'tasks/:id', loadComponent: () => import('app/tasks/details/details.component').then(m => m.TasksDetailsComponent), canDeactivate: [CanDeactivateTasksDetails] },
-      { path: 'noseperolodejopormodule/form', loadComponent: () => import('app/modules/full/neuron/form/form.component').then(m => m.FormComponent) },
+      {
+        path: 'tasks/list',
+        loadComponent: () => import('app/tasks/list/list.component').then(m => m.TasksListComponent),
+        children: [
+          { path: ':id', loadComponent: () => import('app/tasks/details/details.component').then(m => m.TasksDetailsComponent), canDeactivate: [CanDeactivateTasksDetails] }
+        ]
+      },
       { path: 'massive/:template', loadComponent: () => import('app/massive/massive.component').then(m => m.MassiveComponent) },
       { path: 'massive/:template/:server', loadComponent: () => import('app/massive/massive.component').then(m => m.MassiveComponent) },
       { path: 'account', loadComponent: () => import('app/accounting/accounting.component').then(m => m.AccountComponent) },

@@ -5,21 +5,19 @@ import {
     AssistantAction,
     AssistantMessage,
     AssistantState,
+    TemplateData,
 } from './assistant.models';
+
+import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AssistantService {
 
-    /**
-     * Aquí posteriormente inyectaremos tus servicios reales.
-     *
-     * Ejemplo:
-     *
-     * private readonly documentosService = inject(DocumentosService);
-     * private readonly ventasService = inject(VentasService);
-     */
+    private readonly templateService = inject(TemplateService);
 
     isOpenDialog = signal<boolean>(true);
 
@@ -28,12 +26,24 @@ export class AssistantService {
         const texto = this.normalizar(pregunta);
 
         /*
-         * BUSCAR DOCUMENTO
+         * FILTRAR TEMPLATES
          *
-         * Ej:
-         * "buscar EGRF603"
-         * "muéstrame EGRF603"
-         * "quiero ver el documento EGRF603"
+         * Detectar cuando el usuario busca plantillas, templates o documentos
+         * Ej: "buscar plantillas", "filtro ventas", "mostrar templates"
+         */
+        const esBusquedaTemplate = this.detectarBusquedaTemplate(texto);
+
+        if (esBusquedaTemplate) {
+            return {
+                tipo: 'filtrar-templates',
+                parametro: texto,
+            };
+        }
+
+        /*
+         * BUSCAR DOCUMENTO por código específico
+         *
+         * Ej: "buscar EGRF603", "muéstrame EGRF603"
          */
         const codigo = this.extraerCodigoDocumento(texto);
 
@@ -101,7 +111,52 @@ export class AssistantService {
 
         switch (intent.tipo) {
 
-            case 'buscar-documento':
+            case 'filtrar-templates': {
+
+                const templates = this.filtrarTemplates(intent.parametro);
+
+                if (templates.length === 0) {
+                    return of<AssistantResult>({
+                        state: 'success',
+                        message: {
+                            id: crypto.randomUUID(),
+                            type: 'assistant',
+                            text: 'No encontré plantillas que coincidan con tu búsqueda.',
+                            date: new Date(),
+                        },
+                    }).pipe(delay(500));
+                }
+
+                const actions: AssistantAction[] = templates.slice(0, 10).map(template => ({
+                    id: 'abrir-template',
+                    label: template.nombre,
+                    icon: 'description',
+                    color: 'primary',
+                    image: template.imagen,
+                }));
+
+                const message: AssistantMessage = {
+                    id: crypto.randomUUID(),
+                    type: 'assistant',
+                    text: `Encontré ${templates.length} plantilla(s):`,
+                    date: new Date(),
+                    actions: actions,
+                    data: templates.slice(0, 10).map(t => ({
+                        llaveTabla: t.llaveTabla,
+                        server: t.server,
+                        proceso: t.proceso,
+                        tipo: this.getTipoTemplate(t),
+                    })) as TemplateData[],
+                };
+
+                return of<AssistantResult>({
+                    state: 'success',
+                    message,
+                }).pipe(delay(800));
+            }
+
+
+            case 'buscar-documento': {
 
                 return of<AssistantResult>({
                     state: 'success',
@@ -129,9 +184,10 @@ export class AssistantService {
                 }).pipe(
                     delay(1000)
                 );
+            }
 
 
-            case 'mostrar-ventas':
+            case 'mostrar-ventas': {
 
                 return of<AssistantResult>({
                     state: 'success',
@@ -153,9 +209,10 @@ export class AssistantService {
                 }).pipe(
                     delay(800)
                 );
+            }
 
 
-            case 'crear-ingreso':
+            case 'crear-ingreso': {
 
                 return of<AssistantResult>({
                     state: 'success',
@@ -177,9 +234,10 @@ export class AssistantService {
                 }).pipe(
                     delay(800)
                 );
+            }
 
 
-            case 'cerrar-venta':
+            case 'cerrar-venta': {
 
                 return of<AssistantResult>({
                     state: 'success',
@@ -201,9 +259,10 @@ export class AssistantService {
                 }).pipe(
                     delay(800)
                 );
+            }
 
 
-            default:
+            default: {
 
                 return of<AssistantResult>({
                     state: 'error',
@@ -215,6 +274,7 @@ export class AssistantService {
                         date: new Date(),
                     },
                 });
+            }
         }
     }
 
@@ -248,6 +308,54 @@ export class AssistantService {
             ? match[0].toUpperCase()
             : null;
     }
+
+
+    private detectarBusquedaTemplate(texto: string): boolean {
+        const palabrasClave = [
+            'buscar', 'busca', 'buscar', 'filtrar', 'filtro',
+            'template', 'templates', 'plantilla', 'plantillas',
+            'mostrar', 'ver', 'listar', 'consulta', 'consultar'
+        ];
+
+        return palabrasClave.some(palabra => texto.includes(palabra));
+    }
+
+
+    private filtrarTemplates(texto: string): DocumentoPlantillaDTO[] {
+        const templates = this.templateService.template();
+
+        if (!templates || templates.length === 0) {
+            return [];
+        }
+
+        const textoNormalizado = texto
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim();
+
+        return templates.filter(item => {
+            const nombre = item.nombre?.toLowerCase() || '';
+            const codigo = item.codigo?.toLowerCase() || '';
+
+            const coincideNombre = nombre.includes(textoNormalizado);
+            const coincideCodigo = codigo === textoNormalizado;
+
+            const esVisible = item.estado === 'P' ||
+                PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU) ||
+                PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR);
+
+            return (coincideNombre || coincideCodigo) && esVisible;
+        });
+    }
+
+
+    private getTipoTemplate(template: DocumentoPlantillaDTO): string {
+        if (template.estado === 'R') return 'Report';
+        if (template.estado === 'T') return 'Process';
+        if (PlantillaHelper.buscarPropiedad(template.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) return 'Report';
+        return 'Template';
+    }
 }
 
 
@@ -256,6 +364,10 @@ export class AssistantService {
  * ========================================================== */
 
 export type AssistantIntent =
+    | {
+        tipo: 'filtrar-templates';
+        parametro: string;
+    }
     | {
         tipo: 'buscar-documento';
         parametro: string;

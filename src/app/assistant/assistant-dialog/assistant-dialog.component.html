@@ -98,7 +98,7 @@
         <div class="
                 flex gap-2
             ">
-            <button (click)="toggleScheme()"
+            <button (click)="toggleScheme()" tabindex="-1"
                 class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800"
                 [attr.aria-label]="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
                 @if (isDarkMode) {
@@ -114,7 +114,7 @@
                 }
             </button>
 
-            <button mat-icon-button type="button" (click)="cerrar()"
+            <button mat-icon-button type="button" (click)="cerrar()" tabindex="-1"
                 class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800">
 
                 <mat-icon>
@@ -132,13 +132,8 @@
          CONVERSACIÓN
     ======================================================= -->
 
-    <div class="
-            flex-1
-            overflow-y-auto
-            px-5
-            py-6
-            space-y-5
-        ">
+    <div #messagesContainer
+        class="            flex-1            overflow-y-auto            px-5            py-6        ">
 
         @for (
         mensaje of mensajes();
@@ -149,22 +144,18 @@
 
         <!-- USER -->
 
-        <div class="
-                        flex
-                        justify-end
-                    ">
+        <div class="                        flex                        justify-end                    ">
 
-            <div class="
-                            max-w-[75%]
-                            bg-primary
-                            text-white
-                            rounded-2xl
-                            rounded-br-sm
-                            px-4
-                            py-3
-                        ">
+            <div class="                            max-w-[75%]                        ">
+                <div
+                    class="                                bg-slate-700                                dark:bg-slate-600                                text-white                                rounded-2xl                                rounded-br-sm                                px-4                                py-3                                shadow-sm                            ">
+                    {{ mensaje.text }}
+                </div>
 
-                {{ mensaje.text }}
+                <div
+                    class="                                text-[10px]                                text-gray-400                                dark:text-gray-500                                mt-1                                text-right                            ">
+                    {{ formatTime(mensaje.date) }}
+                </div>
 
             </div>
 
@@ -174,10 +165,7 @@
 
         <!-- ASSISTANT -->
 
-        <div class="
-                        flex
-                        items-start
-                        gap-3
+        <div class="                        flex                        items-start                        gap-3
                     ">
 
             <img [src]="imagenAssistant" alt="Asistente" class="
@@ -211,6 +199,16 @@
 
                 </div>
 
+                <div class="
+                                text-[10px]
+                                text-gray-400
+                                dark:text-gray-500
+                                mt-1
+                                ml-1
+                            ">
+                    {{ formatTime(mensaje.date) }}
+                </div>
+
 
                 <!-- ACCIONES -->
 
@@ -235,10 +233,14 @@
                                                 action.id,
                                                 mensaje
                                             )
-                                        ">
+                                        " class="flex items-center gap-2">
+
+                        @if (action.image) {
+                        <img [src]="action.image | imageFormat" class="w-8 h-8 rounded object-cover" />
+                        }
 
                         @if (
-                        action.icon
+                        action.icon && !action.image
                         ) {
 
                         <mat-icon>
@@ -357,9 +359,7 @@
                     Pregúntame algo
                 </mat-label>
 
-                <input matInput [(ngModel)]="pregunta" (keydown.enter)="enviar()" placeholder="
-                        Ej: Buscar EGRF603
-                    " autocomplete="off" />
+                <input #messageInput matInput [(ngModel)]="pregunta" (keydown.enter)="enviar()" autocomplete="off" />
 
 
 
