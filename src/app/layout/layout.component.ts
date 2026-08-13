@@ -3,8 +3,6 @@ import { Component, effect, OnDestroy, OnInit, Renderer2,  DOCUMENT, ChangeDetec
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { combineLatest, filter, map, Subject, takeUntil } from 'rxjs';
 import { FuseConfigService } from '@fuse/services/config';
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { FusePlatformService } from '@fuse/services/platform';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
 import { LoginService } from 'app/authentication/login.service';
@@ -35,8 +33,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private _renderer2 = inject(Renderer2);
     private _router = inject(Router);
     private _fuseConfigService = inject(FuseConfigService);
-    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
-    private _fusePlatformService = inject(FusePlatformService);
     private _userService = inject(LoginService);
 
     config: AppConfig;
@@ -61,9 +57,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         // Set the theme and scheme based on the configuration
-        combineLatest([
+        /*combineLatest([
             this._fuseConfigService.config$,
-            this._fuseMediaWatcherService.onMediaQueryChange$(['(prefers-color-scheme: dark)', '(prefers-color-scheme: light)'])
+            //this._fuseMediaWatcherService.onMediaQueryChange$(['(prefers-color-scheme: dark)', '(prefers-color-scheme: light)'])
         ]).pipe(
             takeUntil(this._unsubscribeAll),
             map(([config, mql]) => {
@@ -86,7 +82,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             // Update the scheme and theme
             this._updateScheme();
             this._updateTheme();
-        });
+        });*/
         // Subscribe to config changes
         this._fuseConfigService.config$
             .pipe(takeUntil(this._unsubscribeAll))
@@ -105,10 +101,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this._updateLayout();
         });
 
-        // Set the app version
-        //this._renderer2.setAttribute(this._document.querySelector('[ng-version]'), 'fuse-version', FUSE_VERSION);
-        // Set the OS name
-        this._renderer2.addClass(this._document.body, this._fusePlatformService.osName);
+
     }
 
     ngOnDestroy(): void {

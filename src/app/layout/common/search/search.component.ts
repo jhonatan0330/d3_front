@@ -16,7 +16,7 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 @Component({
     selector: 'search',
     templateUrl: './search.component.html',
-    exportAs: 'fuseSearch',
+    //exportAs: 'fuseSearch',
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatIconButton, MatIcon, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatProgressBar, MatAutocomplete, MatOption],
     providers: [

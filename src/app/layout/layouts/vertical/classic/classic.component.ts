@@ -1,6 +1,4 @@
 import { Component, effect, OnDestroy, OnInit,  ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
 import { NavigationService } from 'app/authorization/navigation/navigation.service';
 import { environment } from 'environments/environment';
@@ -27,7 +25,6 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
 })
 export class ClassicLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);
-    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
     private _navigationService = inject(NavigationService);
 
     isScreenSmall: boolean;
@@ -37,7 +34,11 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
     company: OrganizacionDTO | undefined;
     time = signal(new Date());
     currentApplicationVersion = environment.appVersion;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private _mediaQuery = window.matchMedia('(min-width: 960px)');
+    private _mediaHandler = (e: MediaQueryListEvent) => {
+        this.isScreenSmall = !e.matches;
+        this.sidenavOpened = e.matches;
+    };
     private _clockInterval: ReturnType<typeof setInterval>;
     headerSection: string[];
     landing: string[];
@@ -71,18 +72,9 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-
-        // Subscribe to media changes
-        this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({ matchingAliases }) => {
-
-                // Check if the screen is small
-                this.isScreenSmall = !matchingAliases.includes('md');
-
-                // Open the sidenav on larger screens, close it on small screens
-                this.sidenavOpened = !this.isScreenSmall;
-            });
+        this.isScreenSmall = !this._mediaQuery.matches;
+        this.sidenavOpened = this._mediaQuery.matches;
+        this._mediaQuery.addEventListener('change', this._mediaHandler);
 
         // Reloj
         this._clockInterval = setInterval(() => {
@@ -92,9 +84,7 @@ export class ClassicLayoutComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         clearInterval(this._clockInterval);
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
+        this._mediaQuery.removeEventListener('change', this._mediaHandler);
     }
 
     toggleNavigation(): void {

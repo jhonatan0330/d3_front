@@ -62,8 +62,13 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssistantDialogComponent implements OnInit {
+    isDarkMode = false;
+
+
+
     ngOnInit(): void {
         this.assistantService.isOpenDialog.set(false);
+        this.isDarkMode = document.body.classList.contains('dark');
     }
 
     private readonly dialogRef =
@@ -108,24 +113,24 @@ export class AssistantDialogComponent implements OnInit {
         string
     > = {
 
-        idle:
-            'assets/images/assistant.gif',
+            idle:
+                'assets/images/assistant.gif',
 
-        listening:
-            'assets/images/assistant.gif',
+            listening:
+                'assets/images/assistant.gif',
 
-        thinking:
-            'assets/images/assistant.gif',
+            thinking:
+                'assets/images/assistant.gif',
 
-        searching:
-            'assets/images/assistant.gif',
+            searching:
+                'assets/images/assistant.gif',
 
-        success:
-            'assets/images/assistant.gif',
+            success:
+                'assets/images/assistant.gif',
 
-        error:
-            'assets/images/assistant.gif',
-    };
+            error:
+                'assets/images/assistant.gif',
+        };
 
 
     get imagenAssistant(): string {
@@ -386,5 +391,11 @@ export class AssistantDialogComponent implements OnInit {
         this.assistantService.isOpenDialog.set(true);
         this.dialogRef.close();
 
+    }
+    toggleScheme(): void {
+        const isDark = document.body.classList.contains('dark');
+        document.body.classList.remove('dark', 'light');
+        document.body.classList.add(isDark ? 'light' : 'dark');
+        this.isDarkMode = !isDark;
     }
 }

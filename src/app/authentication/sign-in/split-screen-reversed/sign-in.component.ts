@@ -39,7 +39,7 @@ export class SignInSplitScreenReversedComponent implements OnInit, AfterViewInit
     company: OrganizacionDTO | undefined;
     currentApplicationVersion = environment.appVersion;
     logo: SafeHtml;
-    isDarkMode = false;
+    
 
 
     constructor() {
@@ -74,7 +74,6 @@ export class SignInSplitScreenReversedComponent implements OnInit, AfterViewInit
                 if (!result) { this.loginservice.getUrlServices(); }
             });
 
-        this.isDarkMode = document.body.classList.contains('dark');
     }
 
     ngAfterViewInit(): void {
@@ -159,12 +158,7 @@ export class SignInSplitScreenReversedComponent implements OnInit, AfterViewInit
         this.utilsService.openPDF().subscribe({ error: () => {} });
     }
 
-    toggleScheme(): void {
-        const isDark = document.body.classList.contains('dark');
-        document.body.classList.remove('dark', 'light');
-        document.body.classList.add(isDark ? 'light' : 'dark');
-        this.isDarkMode = !isDark;
-    }
+
 
     private _initParticleCanvas(): void {
         const canvas = document.getElementById('background-canvas') as HTMLCanvasElement;

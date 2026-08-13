@@ -4,7 +4,6 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragPreview, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksService } from 'app/tasks/tasks.service';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -26,7 +25,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
     private _document = inject(DOCUMENT);
     private _router = inject(Router);
     private _tasksService = inject(TasksService);
-    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
 
     readonly matDrawer = viewChild<MatDrawer>('matDrawer');
 
@@ -37,6 +35,11 @@ export class TasksListComponent implements OnInit, OnDestroy {
         completed: 0,
         incomplete: 0,
         total: 0
+    };
+    private _mediaQuery = window.matchMedia('(min-width: 1440px)');
+    private _mediaHandler = (e: MediaQueryListEvent) => {
+        this.drawerMode = e.matches ? 'side' : 'over';
+        this._changeDetectorRef.markForCheck();
     };
     private _unsubscribeAll: Subject<any> = new Subject<any>();
 
@@ -65,16 +68,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
 
-        this._fuseMediaWatcherService.onMediaQueryChange$('(min-width: 1440px)')
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((state) => {
-
-                // Calculate the drawer mode
-                this.drawerMode = state.matches ? 'side' : 'over';
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
+        this.drawerMode = this._mediaQuery.matches ? 'side' : 'over';
+        this._mediaQuery.addEventListener('change', this._mediaHandler);
 
         fromEvent(this._document, 'keydown')
             .pipe(
@@ -99,6 +94,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
 
     ngOnDestroy(): void {
+        this._mediaQuery.removeEventListener('change', this._mediaHandler);
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();

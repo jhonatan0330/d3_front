@@ -151,7 +151,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
         // Create the overlay
         this._overlayRef = this._overlay.create({
             hasBackdrop: true,
-            backdropClass: 'fuse-backdrop-on-mobile',
+            //backdropClass: 'fuse-backdrop-on-mobile',
             scrollStrategy: this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
                 .flexibleConnectedTo(this._shortcutsOrigin()!._elementRef.nativeElement)

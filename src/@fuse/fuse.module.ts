@@ -1,13 +1,8 @@
 import { NgModule, inject } from '@angular/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { FuseMediaWatcherModule } from '@fuse/services/media-watcher/media-watcher.module';
-import { FusePlatformModule } from '@fuse/services/platform/platform.module';
 
 @NgModule({
-    imports  : [
-        FuseMediaWatcherModule,
-        FusePlatformModule
-    ],
+    imports  : [    ],
     providers: [
         {
             // Use the 'fill' appearance on Angular Material form fields by default

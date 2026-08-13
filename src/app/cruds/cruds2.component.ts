@@ -17,8 +17,6 @@ import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/modules/fu
 import { SelectionModel } from '@angular/cdk/collections';
 import Swal from 'sweetalert2';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
-import { Subject, takeUntil } from 'rxjs';
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/modules/full/neuron/form/controls/base/base.component';
@@ -51,7 +49,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private formBuilder = inject(FormBuilder);
     private ls = inject(LocalStoreService);
     private utilsService = inject(UtilsService);
-    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
     private dialog = inject(MatDialog);
 
     plantilla = signal<DocumentoPlantillaDTO | null>(null); // Estructura base de la lista
@@ -96,7 +93,11 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
     drawerMode = signal<'over' | 'side'>('side');
     drawerOpened = signal(true);
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private _mediaQuery = window.matchMedia('(min-width: 960px)');
+    private _mediaHandler = (e: MediaQueryListEvent) => {
+        this.drawerMode.set(e.matches ? 'side' : 'over');
+        this.drawerOpened.set(e.matches);
+    };
 
     //VAriables del filtro
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
@@ -221,20 +222,9 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         });
 
         // Subscribe to media changes
-        this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({ matchingAliases }) => {
-
-                // Set the drawerMode and drawerOpened if the given breakpoint is active
-                if (matchingAliases.includes('md')) {
-                    this.drawerMode.set('side');
-                    this.drawerOpened.set(true);
-                }
-                else {
-                    this.drawerMode.set('over');
-                    this.drawerOpened.set(false);
-                }
-            });
+        this.drawerMode.set(this._mediaQuery.matches ? 'side' : 'over');
+        this.drawerOpened.set(this._mediaQuery.matches);
+        this._mediaQuery.addEventListener('change', this._mediaHandler);
     }
 
     ngAfterViewInit(): void {
@@ -244,9 +234,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
+        this._mediaQuery.removeEventListener('change', this._mediaHandler);
     }
 
     /**

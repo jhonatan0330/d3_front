@@ -1,7 +1,5 @@
 import { Component, OnDestroy, OnInit,  ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
-import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { Subject, takeUntil } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from './accounting.domain';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -43,7 +41,6 @@ interface AccountFlatNode {
     imports: [MatDrawerContainer, MatDrawer, MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, MatProgressBar, NgClass, MatDrawerContent, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow, UpperCasePipe, DecimalPipe, DatePipe]
 })
 export class AccountComponent implements OnInit, OnDestroy {
-    private _fuseMediaWatcherService = inject(FuseMediaWatcherService);
     private utilsService = inject(UtilsService);
     accountingService = inject(AccountingService);
     private _jwt = inject(LoginService);
@@ -52,7 +49,10 @@ export class AccountComponent implements OnInit, OnDestroy {
     readonly drawer = viewChild<MatDrawer>('drawer');
 
     drawerMode: 'over' | 'side' = 'over';
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private _mediaQuery = window.matchMedia('(min-width: 960px)');
+    private _mediaHandler = (e: MediaQueryListEvent) => {
+        this.drawerMode = e.matches ? 'side' : 'over';
+    };
 
     catalogs: CatalogDTO[];
     searchInputControl: UntypedFormControl = new UntypedFormControl();
@@ -94,16 +94,8 @@ export class AccountComponent implements OnInit, OnDestroy {
             this._router.navigate(['/main']);
             return;
         }
-        this._fuseMediaWatcherService.onMediaChange$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({ matchingAliases }) => {
-                if (matchingAliases.includes('md')) {
-                    this.drawerMode = 'side';
-                }
-                else {
-                    this.drawerMode = 'over';
-                }
-            });
+        this.drawerMode = this._mediaQuery.matches ? 'side' : 'over';
+        this._mediaQuery.addEventListener('change', this._mediaHandler);
         this.getCatalogs();
         this.accountingService.currentCatalog = null!;
     }
@@ -113,9 +105,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
+        this._mediaQuery.removeEventListener('change', this._mediaHandler);
     }
 
 
