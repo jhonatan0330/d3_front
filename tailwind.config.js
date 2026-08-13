@@ -1,7 +1,7 @@
 const path = require('path');
 const colors = require('tailwindcss/colors');
 const defaultTheme = require('tailwindcss/defaultTheme');
-const generatePalette = require(path.resolve(__dirname, ('src/@fuse/tailwind/utils/generate-palette')));
+const generatePalette = require(path.resolve(__dirname, ('tailwind/utils/generate-palette')));
 
 /**
  * Custom palettes
@@ -284,9 +284,9 @@ const config = {
     plugins    : [
 
         // Fuse - Tailwind plugins
-        require(path.resolve(__dirname, ('src/@fuse/tailwind/plugins/utilities'))),
-        require(path.resolve(__dirname, ('src/@fuse/tailwind/plugins/icon-size'))),
-        require(path.resolve(__dirname, ('src/@fuse/tailwind/plugins/theming')))({themes}),
+        require(path.resolve(__dirname, ('tailwind/plugins/utilities'))),
+        require(path.resolve(__dirname, ('tailwind/plugins/icon-size'))),
+        require(path.resolve(__dirname, ('tailwind/plugins/theming')))({themes}),
 
         // Other third party and/or custom plugins
         require('@tailwindcss/typography')({modifiers: ['sm', 'lg']}),

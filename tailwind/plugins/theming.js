@@ -97,7 +97,7 @@ const theming = plugin.withOptions((options) => ({
         const sassMap = jsonToSassMap(JSON.stringify({'user-themes': themes}));
 
         /* Get the file path */
-        const filename = path.resolve(__dirname, ('../../styles/user-themes.scss'));
+        const filename = path.resolve(__dirname, ('../../src/styles/fuse/user-themes.scss'));
 
         /* Read the file and get its data */
         let data;
