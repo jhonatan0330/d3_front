@@ -1,4 +1,4 @@
-import { enableProdMode, provideZonelessChangeDetection, ErrorHandler, importProvidersFrom, provideAppInitializer, inject } from '@angular/core';
+import { enableProdMode, provideZonelessChangeDetection, ErrorHandler, importProvidersFrom, provideAppInitializer, inject, isDevMode } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import 'swiper/element/bundle';
@@ -13,6 +13,7 @@ import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { provideServiceWorker } from '@angular/service-worker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, ExtraOptions } from '@angular/router';
 import { appRoutes } from 'app/app.routing';
@@ -73,7 +74,8 @@ bootstrapApplication(AppComponent, {
             useValue: {
                 appearance: 'outline'
             }
-        }
+        },
+        provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode() })
     ]
 })
                         .catch(err => console.error(err));
