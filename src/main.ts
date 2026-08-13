@@ -16,7 +16,6 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, ExtraOptions } from '@angular/router';
 import { appRoutes } from 'app/app.routing';
-import { FuseModule } from '@fuse';
 import { FuseConfigModule } from '@fuse/services/config';
 import { appConfig } from 'app/core/config/app.config';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -56,8 +55,8 @@ bootstrapApplication(AppComponent, {
         provideZonelessChangeDetection(),
         provideAppInitializer(registerIcons),
         importProvidersFrom(CommonModule, BrowserModule, BrowserAnimationsModule, RouterModule.forRoot(appRoutes, routerConfig), 
-        // Fuse, FuseConfig & FuseMockAPI
-        FuseModule, FuseConfigModule.forRoot(appConfig), 
+        // FuseConfig
+        FuseConfigModule.forRoot(appConfig), 
         ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
         provideHttpClient(withInterceptors([tokenInterceptor, httpErrorInterceptor])),
         { provide: ErrorHandler, useClass: ErrorHandlerService },
