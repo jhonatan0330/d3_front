@@ -8,7 +8,6 @@ import { ErrorHandlerService } from './app/shared/error-handler.service';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { tokenInterceptor } from './app/shared/token.interceptor';
 import { httpErrorInterceptor } from './app/shared/error.interceptor';
-import { fuseLoadingInterceptor } from '@fuse/services/loading/loading.interceptor';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
@@ -60,7 +59,7 @@ bootstrapApplication(AppComponent, {
         // Fuse, FuseConfig & FuseMockAPI
         FuseModule, FuseConfigModule.forRoot(appConfig), 
         ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
-        provideHttpClient(withInterceptors([fuseLoadingInterceptor, tokenInterceptor, httpErrorInterceptor])),
+        provideHttpClient(withInterceptors([tokenInterceptor, httpErrorInterceptor])),
         { provide: ErrorHandler, useClass: ErrorHandlerService },
         {
             provide: OVERLAY_DEFAULT_CONFIG,

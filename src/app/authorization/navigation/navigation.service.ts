@@ -12,14 +12,14 @@ export class NavigationService {
     private _navigation: WritableSignal<Navigation> = signal(null!);
 
     constructor() {
-        this.generate(null!, null!, null!);
+        this.generate(null!, null!, );
     }
 
     get navigation(): Navigation {
         return this._navigation();
     }
 
-    generate(process: DocumentoPlantillaDTO[], modules: PropiedadDTO[], templates: DocumentoPlantillaDTO[]) {
+    generate(process: DocumentoPlantillaDTO[], modules: PropiedadDTO[]) {
 
 
         const localNavigation: FuseNavigationItem[] = [
@@ -40,44 +40,10 @@ export class NavigationService {
                 link : '/main'
             }]
 
-        if (!templates) {
+        if (!modules  && !process) {
             return;
         }
 
-        // ACCESOS RAPIDOS
-       /* if (templates) {
-             const items: FuseNavigationItem[] = [];
-            templates.forEach((element: DocumentoPlantillaDTO) => {
-                if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_ACCESO_RAPIDO) && PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-                    const newItem: FuseNavigationItem = {
-                        id: element.llaveTabla,
-                        title: element.nombre[0].toUpperCase() + element.nombre.substring(1).toLowerCase(),
-                        type: 'basic',
-                        link: '/main/' + element.llaveTabla,
-                        image: element.imagen
-                    };
-                    items.push(newItem);
-                }
-            });
-            if(items && items.length!==0){
-                const moduleItemLocal:FuseNavigationItem = {
-                    id      : 'rapid',
-                    title   : 'Accesos rapidos',
-                    type    : 'group',
-                    icon    : 'heroicons_outline:bolt',
-                    children: items
-                };
-                const moduleItemCompact:FuseNavigationItem = {
-                    id      : 'rapid',
-                    title   : 'Accesos rapidos',
-                    type    : 'aside',
-                    icon    : 'heroicons_outline:bolt',
-                    children: items
-                };
-                localNavigation.push(moduleItemLocal);
-                compactNavigation.push(moduleItemCompact);
-            }
-        }*/
 
         // PROCESOS
         const processNavItem: FuseNavigationItem[] = [];
@@ -156,73 +122,6 @@ export class NavigationService {
             
         }
 
-        // MODULOS
-        if (templates) {
-            const templateNavItem: FuseNavigationItem[] = [];
-            templates.forEach((element: DocumentoPlantillaDTO) => {
-                if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)) {
-                    const newItem: FuseNavigationItem = {
-                        id: element.llaveTabla,
-                        title: element.nombre[0].toUpperCase() + element.nombre.substring(1).toLowerCase(),
-                        type: 'basic',
-                        link: '/list/list/' + element.llaveTabla,
-                        image: element.imagen
-                    };
-                    templateNavItem.push(newItem);
-                }
-            });
-            if(templateNavItem && templateNavItem.length!==0){
-                const moduleItemLocal:FuseNavigationItem = {
-                    id      : 'modulos',
-                    title   : 'Modulos',
-                    type    : 'group',
-                    icon    : 'heroicons_outline:table-cells',
-                    children: templateNavItem
-                };
-                const moduleItemCompact:FuseNavigationItem = {
-                    id      : 'modulos',
-                    title   : 'Modulos',
-                    type    : 'aside',
-                    icon    : 'heroicons_outline:table-cells',
-                    children: templateNavItem
-                };
-                localNavigation.push(moduleItemLocal);
-                compactNavigation.push(moduleItemCompact);
-            }
-
-        // REPORTES
-            const reportNavItem: FuseNavigationItem[] = [];
-            templates.forEach((element: DocumentoPlantillaDTO) => {
-                if (PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE) && PlantillaHelper.buscarPropiedad(element.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-                    const newItem: FuseNavigationItem = {
-                        id: element.llaveTabla,
-                        title: element.nombre[0].toUpperCase() + element.nombre.substring(1).toLowerCase(),
-                        type: 'basic',
-                        link: '/main/' + element.llaveTabla,
-                        image: element.imagen
-                    };
-                    reportNavItem.push(newItem);
-                }
-            });
-            if(reportNavItem && reportNavItem.length!==0){
-                const moduleItemLocal:FuseNavigationItem = {
-                    id      : 'report',
-                    title   : 'Reportes',
-                    type    : 'group',
-                    icon    : 'heroicons_outline:newspaper',    
-                    children: reportNavItem
-                };
-                const moduleItemCompact:FuseNavigationItem = {
-                    id      : 'report',
-                    title   : 'Reportes',
-                    type    : 'aside',
-                    icon    : 'heroicons_outline:newspaper',
-                    children: reportNavItem
-                };
-                localNavigation.push(moduleItemLocal);
-                compactNavigation.push(moduleItemCompact);
-            }
-        }
         const navigation = {
             default: [...localNavigation],
 

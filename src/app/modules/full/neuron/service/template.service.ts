@@ -65,7 +65,7 @@ export class TemplateService {
         processToMenu.push(element);
       }
     });
-    this._navigationService.generate(processToMenu, this._modules!, value);
+    this._navigationService.generate(processToMenu, this._modules!);
   }
 
 
