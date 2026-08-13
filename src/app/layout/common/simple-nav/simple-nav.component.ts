@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { FuseNavigationItem } from '@fuse/components/navigation';
+import { FuseNavigationItem } from 'app/layout/layout.types';
 import { SimpleNavItemComponent } from './simple-nav-item.component';
 
 @Component({

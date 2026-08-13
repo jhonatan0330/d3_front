@@ -1,6 +1,6 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Navigation } from 'app/authorization/navigation/navigation.types';
-import { FuseNavigationItem } from '@fuse/components/navigation';
+import { FuseNavigationItem } from 'app/layout/layout.types';
 import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
