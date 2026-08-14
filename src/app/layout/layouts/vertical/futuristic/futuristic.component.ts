@@ -4,15 +4,15 @@ import { NavigationService } from 'app/layout/navigation/navigation.service';
 import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
-import { UserComponent } from '../../../common/user/user.component';
+import { UserComponent } from '../../../user/user.component';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 
-import { SearchComponent } from '../../../common/search/search.component';
-import { ShortcutsComponent } from '../../../common/shortcuts/shortcuts.component';
+import { SearchComponent } from '../../../search/search.component';
+import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
-import { SimpleNavComponent } from '../../../common/simple-nav/simple-nav.component';
+import { SimpleNavComponent } from '../../../simple-nav/simple-nav.component';
 import { RouterOutlet } from '@angular/router';
 import { ImageFormatPipe } from '../../../../shared/local-image';
 

@@ -4,8 +4,7 @@
     <span class="relative">
       @if (user.imagen) {
         <img class="w-7 h-7 rounded-full" [src]="user.imagen">
-      }
-      @if (!user.imagen) {
+      }    @else {
         <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
       }
     </span>

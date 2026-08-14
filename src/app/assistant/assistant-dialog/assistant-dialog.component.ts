@@ -12,6 +12,7 @@ import { AssistantService, } from '../assistant.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { ImageFormatPipe } from '../../shared/local-image';
+import { LoginService } from 'app/authentication/login.service';
 
 
 @Component({
@@ -29,6 +30,8 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
     private readonly assistantService = inject(AssistantService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly utilsService = inject(UtilsService);
+    private readonly jwtAuth = inject(LoginService);
+    imagenUsuario = signal<string>('');
     readonly estado = signal<AssistantState>('idle');
     pregunta = '';
 
@@ -44,6 +47,7 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.assistantService.isOpenDialog.set(false);
         this.isDarkMode = document.body.classList.contains('dark');
+        this.imagenUsuario.set(this.jwtAuth.user()?.imagen ?? '');
     }
 
     ngAfterViewInit(): void {

@@ -13,7 +13,7 @@ import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.d
 import { MatCard } from '@angular/material/card';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { TemplateComponent } from './template/template.component';
+import { TemplateComponent } from '../template/template.component';
 import { ImageFormatPipe } from '../../shared/local-image';
 import { register } from 'swiper/element';
 
