@@ -43,7 +43,6 @@
                         "styles": [
                             "src/styles/fuse/tailwind.scss",
                             "src/styles/fuse/themes.scss",
-                            "src/styles/vendors.scss",
                             "src/styles/fuse/main.scss",
                             "src/styles/styles.scss",
                             "src/styles/tailwind.scss",

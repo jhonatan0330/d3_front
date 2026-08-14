@@ -36,7 +36,6 @@
     "ng-apexcharts": "^2.4.0",
     "ngx-image-compress": "^18.1.5",
     "ol": "10.6.1",
-    "perfect-scrollbar": "1.5.5",
     "rxjs": "7.8.2",
     "signature_pad": "^5.1.0",
     "sweetalert2": "^11.14.4",
