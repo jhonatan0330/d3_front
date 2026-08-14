@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { TemplateService } from './template.service';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { NavigationService } from 'app/authorization/navigation/navigation.service';
+import { NavigationService } from 'app/layout/navigation/navigation.service';
 import { DocumentoPlantillaDTO } from './model/sw42.domain';
 
 describe('TemplateService', () => {

@@ -7,7 +7,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { OrganizacionDTO } from 'app/authentication/authentication.domain';
-import { NavigationService } from 'app/authorization/navigation/navigation.service';
+import { NavigationService } from 'app/layout/navigation/navigation.service';
 
 @Injectable({
   providedIn: 'root',

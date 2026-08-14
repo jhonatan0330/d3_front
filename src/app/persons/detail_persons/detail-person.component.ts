@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, DestroyRef } from '@angular/core';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ContactsService } from '../contact.services';
 import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
@@ -10,7 +10,7 @@ import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { ChangePictureComponent } from '../../authentication/settings/change-picture/change-picture.component';
+import { ChangePictureComponent } from '../../layout/change-picture/change-picture.component';
 
 @Component({
     selector: 'contacts-details',
@@ -24,6 +24,7 @@ export class ContactsDetailsComponent {
     private dialogRef = inject<MatDialogRef<ContactsDetailsComponent>>(MatDialogRef);
     jwtAuth = inject(LoginService);
     private utilService = inject(UtilsService);
+    private destroyRef = inject(DestroyRef);
 
     contact = toSignal(
         this._contactsService.getContactById(this.data.key),
@@ -50,7 +51,7 @@ export class ContactsDetailsComponent {
 
     buscartags() {
         this._contactsService.searchTagsById(this.data.key)
-            .pipe(takeUntilDestroyed())
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (value) => this.tags.set(value),
                 error: () => {}

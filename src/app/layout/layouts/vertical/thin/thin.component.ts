@@ -1,6 +1,6 @@
 import { Component, effect, OnDestroy, OnInit,  ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { Navigation } from 'app/authorization/navigation/navigation.types';
-import { NavigationService } from 'app/authorization/navigation/navigation.service';
+import { Navigation } from 'app/layout/navigation/navigation.types';
+import { NavigationService } from 'app/layout/navigation/navigation.service';
 import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';

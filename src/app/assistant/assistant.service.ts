@@ -21,6 +21,19 @@ export class AssistantService {
 
     isOpenDialog = signal<boolean>(true);
 
+    readonly mensajes = signal<AssistantMessage[]>([
+        {
+            id: crypto.randomUUID(),
+            type: 'assistant',
+            text: 'Hola \u{1F44B}\uFE0F Soy tu asistente. \u00BFQu\u00E9 necesitas hacer?',
+            date: new Date(),
+        },
+    ]);
+
+    agregarMensaje(mensaje: AssistantMessage): void {
+        this.mensajes.update(msgs => [...msgs, mensaje]);
+    }
+
     interpretar(pregunta: string): AssistantIntent {
 
         const texto = this.normalizar(pregunta);

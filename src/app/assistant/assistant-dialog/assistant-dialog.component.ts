@@ -4,6 +4,7 @@ import {
     Component,
     DestroyRef,
     ElementRef,
+    HostListener,
     inject,
     OnInit,
     signal,
@@ -52,7 +53,6 @@ import {
     AssistantService,
 } from '../assistant.service';
 
-import { Router } from '@angular/router';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { ImageFormatPipe } from '../../shared/local-image';
@@ -102,28 +102,15 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
     private readonly destroyRef =
         inject(DestroyRef);
 
-    private readonly router = inject(Router);
     private readonly utilsService = inject(UtilsService);
 
+    get mensajes() {
+        return this.assistantService.mensajes;
+    }
 
-    /* ============================================================
-     * ESTADO
-     * ========================================================== */
 
     readonly estado =
         signal<AssistantState>('idle');
-
-
-    readonly mensajes =
-        signal<AssistantMessage[]>([
-            {
-                id: crypto.randomUUID(),
-                type: 'assistant',
-                text:
-                    'Hola 👋 Soy tu asistente. ¿Qué necesitas hacer?',
-                date: new Date(),
-            },
-        ]);
 
 
     pregunta = '';
@@ -424,12 +411,7 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
         mensaje: AssistantMessage
     ): void {
 
-        this.mensajes.update(
-            mensajes => [
-                ...mensajes,
-                mensaje,
-            ]
-        );
+        this.assistantService.agregarMensaje(mensaje);
 
         setTimeout(() => this.scrollToBottom());
     }
@@ -461,6 +443,14 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
         this.dialogRef.close();
 
     }
+
+    @HostListener('document:keydown', ['$event'])
+    onKeydown(event: KeyboardEvent): void {
+        if (event.key === 'Escape') {
+            this.cerrar();
+        }
+    }
+
     toggleScheme(): void {
         const isDark = document.body.classList.contains('dark');
         document.body.classList.remove('dark', 'light');
