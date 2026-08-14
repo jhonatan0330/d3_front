@@ -25,18 +25,19 @@ import { BpmDiagramComponent, Proceso } from 'app/shared/components/bpm-diagram/
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import { MatFormField, MatSuffix, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ImageFormatPipe } from '../shared/local-image';
+import { DropdownComponent } from '../shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from '../shared/components/dropdown/dropdown-item.component';
 
 @Component({
     selector: 'app-cruds',
     templateUrl: './cruds2.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTooltip, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, CurrencyPipe, DatePipe, ImageFormatPipe]
+    imports: [MatTooltip, MatIcon, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, CurrencyPipe, DatePipe, ImageFormatPipe, DropdownComponent, DropdownItemComponent]
 })
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private route = inject(ActivatedRoute);
@@ -73,7 +74,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     form: FormGroup = new FormGroup({});
     hasCreatePermission = signal(false);
     reportForms = signal<PropiedadDTO[]>([]);
-    filteredReports: any[] = [];
 
     // textoInicial: string; // Usado para colocar el texto incial de los fomrularios nuevos, ejemplo un cliente buscado no encontrado
     // campoHerencia: string; // Usado para enviar el id del campo que tiene herencia

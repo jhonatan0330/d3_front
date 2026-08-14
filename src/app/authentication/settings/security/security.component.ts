@@ -26,6 +26,7 @@ export class SettingsSecurityComponent implements OnInit {
 
     securityForm: UntypedFormGroup;
     isLoading = signal(false);
+    keyData = signal<UsuarioDTO | null>(null);
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -41,6 +42,10 @@ export class SettingsSecurityComponent implements OnInit {
             newPwd: new UntypedFormControl('', Validators.required),
             repeatPwd: new UntypedFormControl('', Validators.required),
         });
+
+        if(this.data){
+            this.keyData.set(this.data?.key ?? null);
+        }
     }
 
 
@@ -56,14 +61,14 @@ export class SettingsSecurityComponent implements OnInit {
         }
         this.isLoading.set(true);
 
-        if (this.data?.key) {
+        if (this.keyData()) {
 
-            this.jwtAuth.changePwdOther(this.data.key.llaveTabla, signinData.oldPwd, signinData.newPwd, null!).subscribe({
+            this.jwtAuth.changePwdOther(this.keyData()!.llaveTabla, signinData.oldPwd, signinData.newPwd, null!).subscribe({
                 next: () => {
                     this.isLoading.set(false);
                     Swal.fire(
                         'Cambio Exitoso',
-                        'La nueva clave del usuario '+this.data.key.nombre+' se cambio de forma exitosa',
+                        'La nueva clave del usuario '+this.keyData()!.nombre+' se cambio de forma exitosa',
                         'success'
                     );
                 },

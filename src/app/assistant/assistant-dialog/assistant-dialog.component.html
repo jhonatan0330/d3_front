@@ -1,384 +1,128 @@
-<div class="
-        flex
-        flex-col
-        w-full
-        max-w-3xl
-        h-[90vh]
-        bg-white
-        dark:bg-gray-900
-        rounded-2xl
-        overflow-hidden
-    ">
-
-    <!-- ======================================================
-         HEADER
-    ======================================================= -->
-
-    <div class="
-            flex
-            items-center
-            justify-between
-            px-5
-            py-4
-            border-b
-            border-gray-200
-            dark:border-gray-700
-        ">
-
-        <div class="flex items-center gap-3">
-
-            <div class="relative">
-
-                <img [src]="imagenAssistant" alt="Asistente" class="
-                        w-12
-                        h-12
-                        rounded-full
-                        object-cover
-                    " />
-
-                <span class="
-                        absolute
-                        bottom-0
-                        right-0
-                        w-3
-                        h-3
-                        bg-green-500
-                        rounded-full
-                        border-2
-                        border-white
-                    "></span>
-
-            </div>
-
-
-            <div>
-
-                <div class="
-                        font-semibold
-                        text-base
-                    ">
-                    Asistente
-                </div>
-
-                <div class="
-                        text-xs
-                        text-gray-500
-                    ">
-
-                    @switch (estado()) {
-
-                    @case ('searching') {
-                    Buscando...
-                    }
-
-                    @case ('thinking') {
-                    Pensando...
-                    }
-
-                    @case ('success') {
-                    Listo
-                    }
-
-                    @case ('error') {
-                    Ocurrió un problema
-                    }
-
-                    @default {
-                    En línea
-                    }
-
-                    }
-
-                </div>
-
-            </div>
-
+<div
+  class="    flex    flex-col    w-full    max-w-3xl    h-[90vh]    bg-white    dark:bg-gray-900    rounded-2xl    overflow-hidden  ">
+  <!--  HEADER -->
+  <div
+    class="      flex      items-center      justify-between      px-5      py-4      border-b      border-gray-200      dark:border-gray-700    ">
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <img [src]="imagenAssistant" alt="Asistente" class="w-12 h-12 rounded-full object-cover           " />
+        <span
+          class=" absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white           "></span>
+      </div>
+      <div>
+        <div class=" font-semibold text-base           "> Asistente </div>
+        <div class=" text-xs text-gray-500           ">
+          @switch (estado()) {
+          @case ('searching') { Buscando... }
+          @case ('thinking') { Pensando... }
+          @case ('success') { Listo }
+          @case ('error') { Ocurrió un problema }
+          @default { En línea }
+          }
         </div>
-
-        <div class="
-                flex gap-2
-            ">
-            <button (click)="toggleScheme()" tabindex="-1"
-                class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800"
-                [attr.aria-label]="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
-                @if (isDarkMode) {
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                        clip-rule="evenodd" />
-                </svg>
-                } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                </svg>
-                }
-            </button>
-
-            <button mat-icon-button type="button" (click)="cerrar()" tabindex="-1"
-                class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800">
-
-                <mat-icon>
-                    close
-                </mat-icon>
-
-            </button>
-        </div>
-
-
+      </div>
     </div>
-
-
-    <!-- ======================================================
-         CONVERSACIÓN
-    ======================================================= -->
-
-    <div #messagesContainer
-        class="            flex-1            overflow-y-auto            px-5            py-6        ">
-
-        @for (
-        mensaje of mensajes();
-        track mensaje.id
-        ) {
-
-        @if (mensaje.type === 'user') {
-
-        <!-- USER -->
-
-        <div class="                        flex                        justify-end                    ">
-
-            <div class="                            max-w-[75%]                        ">
-                <div
-                    class="                                bg-slate-700                                dark:bg-slate-600                                text-white                                rounded-2xl                                rounded-br-sm                                px-4                                py-3                                shadow-sm                            ">
-                    {{ mensaje.text }}
-                </div>
-
-                <div
-                    class="                                text-[10px]                                text-gray-400                                dark:text-gray-500                                mt-1                                text-right                            ">
-                    {{ formatTime(mensaje.date) }}
-                </div>
-
-            </div>
-
-        </div>
-
+    <div class="         flex gap-2       ">
+      <button (click)="toggleScheme()" tabindex="-1"
+        class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800"
+        [attr.aria-label]="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+        @if (isDarkMode) {
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+            clip-rule="evenodd" />
+        </svg>
         } @else {
-
-        <!-- ASSISTANT -->
-
-        <div class="                        flex                        items-start                        gap-3
-                    ">
-
-            <img [src]="imagenAssistant" alt="Asistente" class="
-                            w-9
-                            h-9
-                            rounded-full
-                            object-cover
-                            flex-shrink-0
-                        " />
-
-
-            <div class="
-                            max-w-[80%]
-                        ">
-
-                <div class="
-                                bg-gray-100
-                                dark:bg-gray-800
-                                rounded-2xl
-                                rounded-tl-sm
-                                px-4
-                                py-3
-                            ">
-
-                    <div class="
-                                    whitespace-pre-line
-                                    text-sm
-                                ">
-                        {{ mensaje.text }}
-                    </div>
-
-                </div>
-
-                <div class="
-                                text-[10px]
-                                text-gray-400
-                                dark:text-gray-500
-                                mt-1
-                                ml-1
-                            ">
-                    {{ formatTime(mensaje.date) }}
-                </div>
-
-
-                <!-- ACCIONES -->
-
-                @if (
-                mensaje.actions?.length
-                ) {
-
-                <div class="
-                                    flex
-                                    flex-wrap
-                                    gap-2
-                                    mt-3
-                                ">
-
-                    @for (
-                    action of mensaje.actions;
-                    track action.id
-                    ) {
-
-                    <button mat-stroked-button type="button" (click)="
-                                            ejecutarAccion(
-                                                action.id,
-                                                mensaje
-                                            )
-                                        " class="flex items-center gap-2">
-
-                        @if (action.image) {
-                        <img [src]="action.image | imageFormat" class="w-8 h-8 rounded object-cover" />
-                        }
-
-                        @if (
-                        action.icon && !action.image
-                        ) {
-
-                        <mat-icon>
-                            {{ action.icon }}
-                        </mat-icon>
-
-                        }
-
-                        {{ action.label }}
-
-                    </button>
-
-                    }
-
-                </div>
-
-                }
-
-            </div>
-
-        </div>
-
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+        </svg>
         }
+      </button>
 
-        }
-
-
-        <!-- ==================================================
-             PENSANDO
-        =================================================== -->
-
-        @if (
-        estado() === 'thinking' ||
-        estado() === 'searching'
-        ) {
-
-        <div class="
-                    flex
-                    items-start
-                    gap-3
-                ">
-
-            <img [src]="imagenAssistant" alt="Asistente" class="
-                        w-9
-                        h-9
-                        rounded-full
-                    " />
-
-
-            <div class="
-                        bg-gray-100
-                        dark:bg-gray-800
-                        rounded-2xl
-                        rounded-tl-sm
-                        px-4
-                        py-3
-                    ">
-
-                <div class="flex gap-1">
-
-                    <span class="
-                                w-2
-                                h-2
-                                bg-gray-400
-                                rounded-full
-                                animate-bounce
-                            "></span>
-
-                    <span class="
-                                w-2
-                                h-2
-                                bg-gray-400
-                                rounded-full
-                                animate-bounce
-                            " style="animation-delay: 150ms"></span>
-
-                    <span class="
-                                w-2
-                                h-2
-                                bg-gray-400
-                                rounded-full
-                                animate-bounce
-                            " style="animation-delay: 300ms"></span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        }
-
+      <button mat-icon-button type="button" (click)="cerrar()" tabindex="-1"
+        class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800">
+        <mat-icon> close </mat-icon>
+      </button>
     </div>
+  </div>
 
+  <!--     CONVERSACIÓN  -->
 
-    <!-- ======================================================
-         INPUT
-    ======================================================= -->
-
-    <div class="
-            border-t
-            border-gray-200
-            dark:border-gray-700
-            p-4
-        ">
-
-        <div class="
-                flex
-                items-end
-                gap-2
-            ">
-
-            <mat-form-field appearance="outline" class="flex-1">
-
-                <mat-label>
-                    Pregúntame algo
-                </mat-label>
-
-                <input #messageInput matInput [(ngModel)]="pregunta" (keydown.enter)="enviar()" autocomplete="off" />
-
-
-
-
-                <button mat-icon-button matSuffix type="button" (click)="enviar()" [disabled]="
-                    !pregunta.trim() ||
-                    estado() === 'thinking' ||
-                    estado() === 'searching'
-                ">
-
-                    <mat-icon>
-                        send
-                    </mat-icon>
-
-                </button>
-            </mat-form-field>
-
+  <div #messagesContainer class="      flex-1      overflow-y-auto      px-5      py-6    ">
+    @for ( mensaje of mensajes(); track mensaje.id ) {
+    @if (mensaje.type === 'user') {
+    <!-- USER -->
+    <div class="flexjustify-end          ">
+      <div class="  max-w-[75%]">
+        <div
+          class="    bg-slate-700    dark:bg-slate-600    text-white    rounded-2xl    rounded-br-sm    px-4    py-3    shadow-sm  ">
+          {{ mensaje.text }}
+        </div>
+        <div class="    text-[10px]    text-gray-400    dark:text-gray-500    mt-1    text-right  ">
+          {{ formatTime(mensaje.date) }}
+        </div>
+      </div>
+    </div>
+    } @else {
+    <!-- ASSISTANT -->
+    <div class="flexitems-startgap-3          ">
+      <img [src]="imagenAssistant" alt="Asistente" class="  w-9  h-9  rounded-full  object-cover  flex-shrink-0" />
+      <div class="  max-w-[80%]">
+        <div class="    bg-gray-100    dark:bg-gray-800    rounded-2xl    rounded-tl-sm    px-4    py-3  ">
+          <div class="      whitespace-pre-line      text-sm    ">{{ mensaje.text }} </div>
+        </div>
+        <div class="    text-[10px]    text-gray-400    dark:text-gray-500    mt-1    ml-1  ">
+          {{ formatTime(mensaje.date) }}
         </div>
 
+        <!-- ACCIONES -->
+        @if ( mensaje.actions?.length ) {
+        <div class="      flex      flex-wrap      gap-2      mt-3    ">
+          @for ( action of mensaje.actions; track action.id ) {
+          <button mat-stroked-button type="button"
+            (click)="          ejecutarAccion(action.id,mensaje          )        " class="flex items-center gap-2">
+            @if (action.image) {
+            <img [src]="action.image | imageFormat" class="w-8 h-8 rounded object-cover" />
+            }
+            @if (action.icon && !action.image) {
+            <mat-icon> {{ action.icon }}</mat-icon>
+            }
+            {{ action.label }}
+          </button>
+          }
+        </div>
+        }
+      </div>
     </div>
-
+    }
+    }
+    <!--       PENSANDO -->
+    @if ( estado() === 'thinking' || estado() === 'searching' ) {
+    <div class="          flex          items-start          gap-3        ">
+      <img [src]="imagenAssistant" alt="Asistente" class="w-9 h-9 rounded-full          " />
+      <div class=" bg-gray-100 dark:bg-gray-800 rounded-2xl rounded-tl-sm px-4 py-3           ">
+        <div class="flex gap-1">
+          <span class="      w-2     h-2      bg-gray-400     rounded-full     animate-bounce   "></span>
+          <span class="     w-2     h-2     bg-gray-400     rounded-full     animate-bounce   "
+            style="animation-delay: 150ms"></span>
+          <span class="     w-2     h-2     bg-gray-400     rounded-full     animate-bounce   "
+            style="animation-delay: 300ms"></span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+  <!--      INPUT -->
+  <div class="      border-t      border-gray-200      dark:border-gray-700      p-4    ">
+    <div class="        flex        items-end        gap-2      ">
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label> Pregúntame algo </mat-label>
+        <input #messageInput matInput [(ngModel)]="pregunta" (keydown.enter)="enviar()" autocomplete="off" />
+        <button mat-icon-button matSuffix type="button" (click)="enviar()"
+          [disabled]="          !pregunta.trim() ||          estado() === 'thinking' ||          estado() === 'searching'        ">
+          <mat-icon>send </mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
 </div>

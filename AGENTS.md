@@ -94,9 +94,15 @@ Components are being migrated from Material to Tailwind CSS. The strategy is to 
 - Pattern: `w-full h-1 bg-gray-200 rounded overflow-hidden` + inner div with `animate-pulse`
 - No external dependencies, pure CSS animation
 
+#### Menu → Tailwind (completed)
+- `MatMenu` / `MatMenuTrigger` / `MatMenuItem` → custom `<app-dropdown>` + `<app-dropdown-item>`
+- Components in `src/app/shared/components/dropdown/`
+- Uses `@HostListener('document:click')` for click-outside closing
+- Signal-based state management (`isOpen`)
+- Reusable across all components
+
 ### Components to Keep (for now)
 - `MatDialog` — complex overlay, no simple Tailwind replacement
-- `MatMenu` / `MatMenuTrigger` — dropdown positioning logic
 - `MatTooltip` — behavior directive, lightweight
 - `MatDatepicker` — complex component with localization
 - `MatFormField` / `MatInput` — form field animations and labels

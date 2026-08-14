@@ -5,17 +5,16 @@ import { LoginService } from 'app/authentication/login.service';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { environment } from 'environments/environment';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { MatIconButton } from '@angular/material/button';
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
-import { MatDivider } from '@angular/material/divider';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 
 @Component({
     selector: 'user',
     templateUrl: './user.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'user',
-    imports: [MatIconButton, MatMenuTrigger, MatIcon, MatMenu, MatDivider, MatMenuItem]
+    imports: [MatIcon, DropdownComponent, DropdownItemComponent]
 })
 export class UserComponent {
     private _changeDetectorRef = inject(ChangeDetectorRef);
@@ -62,11 +61,6 @@ export class UserComponent {
 
     goToMyAccount(pUsuario) {
         this.utilService.modalUser(pUsuario.llaveTabla).subscribe({ error: () => {} });    
-    }
-
-    downloadApk() {
-        const url = '/cs.apk';
-        window.open(url, '_blank');
     }
 
 }
