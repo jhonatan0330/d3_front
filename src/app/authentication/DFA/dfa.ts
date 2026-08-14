@@ -3,14 +3,16 @@ import { Validators, FormGroup, FormBuilder, ReactiveFormsModule } from '@angula
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UsuarioAutenticacionDTO } from '../authentication.domain';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ParticleBackgroundDirective } from '../shared/particle-background';
 
 
 @Component({
-    selector: 'app-new-password',
+    selector: 'app-dfa',
     templateUrl: './dfa.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        ParticleBackgroundDirective
     ]
 })
 export class dfaComponent {
