@@ -4,15 +4,13 @@ import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } 
 import { Subject } from 'rxjs';
 import Swal from 'sweetalert2';
 import { LoginService } from '../login.service';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import { ParticleBackgroundDirective } from '../shared/particle-background';
 
 @Component({
     selector: 'app-new-password',
     templateUrl: './new-password.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatButton, RouterLink]
+    imports: [FormsModule, ReactiveFormsModule, RouterLink, ParticleBackgroundDirective]
 })
 export class NewPasswordComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
