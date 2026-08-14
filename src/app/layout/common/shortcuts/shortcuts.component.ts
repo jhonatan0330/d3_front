@@ -43,8 +43,9 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
             if (templates && templates.length) {
                 for (let i = 0; i < templates.length; i++) {
                     const iTemplate = templates[i];
-                    if (PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PLANTILLA_ACCESO_RAPIDO)
-                        && PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
+                    if ((PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PLANTILLA_ACCESO_RAPIDO)
+                        && PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR))
+                    || PlantillaHelper.buscarPropiedad(iTemplate.propiedades, PlantillaHelper.PLANTILLA_TIPO_REPORTE)) {
                         this.shortcuts.push(iTemplate);
                     }
                 }
@@ -81,13 +82,6 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
         this._utilService.modalWithParams(pedidoVenta, true);
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Open the shortcuts panel
-     */
     openPanel(): void {
         // Return if the shortcuts panel or its origin is not defined
         const _shortcutsPanel = this._shortcutsPanel();
@@ -105,19 +99,10 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
 
     }
 
-    /**
-     * Close the shortcuts panel
-     */
     closePanel(): void {
         this._overlayRef.detach();
     }
 
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
     trackByFn(index: number, item: any): any {
         return item.id || index;
     }
@@ -140,13 +125,6 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Create the overlay
-     */
     private _createOverlay(): void {
         // Create the overlay
         this._overlayRef = this._overlay.create({

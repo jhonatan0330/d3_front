@@ -16,14 +16,14 @@
   <!-- Main -->
   <div class="flex flex-col flex-0 p-2 w-full">
     <div class="w-full">
-      <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading() || isProcessing()"
+      <button class="btn-flat-accent m-2" [disabled]="isLoading() || isProcessing()"
         onclick="simpleUploadXML.click();">
         <mat-icon class="mr-2">cloud_upload</mat-icon> 2. Cargar
         <input id="simpleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
           (click)="$event.target.value = ''" (change)="handleFileInput($event.target.files!)" />
         </button>
         @if (fieldIdInTemplateSecondary() && documentosGenerados()) {
-          <button mat-flat-button color="accent" class="m-2" onclick="multipleUploadXML.click();"
+          <button class="btn-flat-accent m-2" onclick="multipleUploadXML.click();"
             [disabled]="isLoading() || isProcessing()">
             <mat-icon class="mr-2">cloud_upload</mat-icon> Cargar Multiple
             <input id="multipleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
@@ -31,10 +31,10 @@
             </button>
           }
 
-          <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading()" (click)="downloadBase('xml')">
+          <button class="btn-flat-accent m-2" [disabled]="isLoading()" (click)="downloadBase('xml')">
             <mat-icon class="mr-2">cloud_download</mat-icon> base (xml)
           </button>
-          <button mat-flat-button color="accent" class="m-2" [disabled]="isLoading()" (click)="downloadBase('excel')">
+          <button class="btn-flat-accent m-2" [disabled]="isLoading()" (click)="downloadBase('excel')">
             <mat-icon class="mr-2">cloud_download</mat-icon> base (csv)
           </button>
           <span class="m-2"> Tiempo de espera
@@ -43,12 +43,20 @@
           <label><input class="m-2" type="checkbox" [(ngModel)]="skipSelected" />No detenerse cuando encuentre errores</label>
         </div>
 
-        <mat-progress-bar [mode]="isLoading() ? 'indeterminate' : 'query'" class="w-full">Validando Datos</mat-progress-bar>
+        @if (isLoading()) {
+          <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+            <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+          </div>
+        }
         {{ lblCarga() }}
         {{ lblTipoProceso() }}
-        <mat-progress-bar [mode]="isLoading() ? 'indeterminate' : 'query'" class="w-full"></mat-progress-bar>
+        @if (isLoading()) {
+          <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+            <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+          </div>
+        }
         <div class="w-full">
-          <button mat-flat-button color="accent" class="m-4" [disabled]="isLoading() || !isValidate() || isProcessing() "
+          <button class="btn-flat-accent m-4" [disabled]="isLoading() || !isValidate() || isProcessing() "
             (click)="startLoad()">
             <mat-icon class="mr-2">fast_forward</mat-icon> 3. Procesar
           </button>
@@ -57,11 +65,11 @@
           <mat-icon class="mr-2">pause</mat-icon> 4. Pausar
         </button-->
         <span></span>
-        <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing()" (click)="newMassiveLoad()">
+        <button class="btn-flat-accent m-4" [disabled]="isProcessing()" (click)="newMassiveLoad()">
           <mat-icon class="mr-2">autorenew</mat-icon> Nueva carga
         </button>
 
-        <button mat-flat-button color="accent" class="m-4" [disabled]="isProcessing()" >
+        <button class="btn-flat-accent m-4" [disabled]="isProcessing()" >
           <mat-icon class="mr-2">autorenew</mat-icon> Cargar archivos
         </button>
 
@@ -70,7 +78,11 @@
           (change)="handleFileInputToLoadArchivo($event.target.files!)" />
 
         </div>
-        <mat-progress-bar [mode]="isProcessing() ? 'indeterminate' : 'query'" class="w-full"></mat-progress-bar>
+        @if (isProcessing()) {
+          <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+            <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+          </div>
+        }
         <span class="w-full">{{ lblProcesar() }}</span>
         <div class="w-full">
           @for (iDocument of failedDocuments(); track iDocument) {

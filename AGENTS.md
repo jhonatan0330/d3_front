@@ -65,3 +65,51 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
   - `ComponentFactoryResolver` in `cruds2.component.ts`, `neuron/form/form.component.ts`, `neuron/form/controls/product/product.component.ts`
 - Third-party risk packages: `@magloft/material-carousel` (abandoned), `ngx-editor` (unmaintained, v19 beta is latest), `ng-apexcharts`/`apexcharts` (needs major bump). Do not bump these outside the plan.
 - Recently removed from the codebase (do not recreate unless asked): the `gps` module and several `@fuse` sub-features (drawer, fullscreen, animations, `scroll-reset` directive, `find-by-key` pipe, navigation components, `scrollbar` directive, `utils` service).
+
+## Material Minimization Strategy
+
+**Goal**: Reduce Angular Material dependencies to the minimum necessary. Replace Material components with Tailwind CSS equivalents where feasible.
+
+### Current Approach
+
+Components are being migrated from Material to Tailwind CSS. The strategy is to keep Material only for complex components that have no simple Tailwind equivalent (e.g., `MatDialog`, `MatMenu`, `MatTooltip`, `MatDatepicker`).
+
+### Replacement Patterns
+
+#### Buttons → Tailwind (completed)
+- `mat-icon-button` → `.btn-icon` / `.btn-icon-primary` / `.btn-icon-accent`
+- `mat-flat-button` → `.btn-flat` / `.btn-flat-primary` / `.btn-flat-accent`
+- `mat-raise-button` → `.btn-raised`
+- Global classes defined in `src/styles/styles.scss`
+- `<mat-icon>` kept as thin wrapper for SVG sprite rendering
+
+#### Drawer → Tailwind (completed)
+- `mat-drawer-container` / `mat-drawer` / `mat-drawer-content` → custom `<div>` + `<aside>` + `<main>` with Tailwind
+- Responsive behavior replicated with `md:` breakpoint and `translate-x` transitions
+- Backdrop for overlay mode using conditional `fixed inset-0 bg-black/50`
+- Signals `drawerMode` and `drawerOpened` control behavior
+
+#### Progress Bar → Tailwind (completed)
+- `mat-progress-bar[mode="indeterminate"]` → animated Tailwind div
+- Pattern: `w-full h-1 bg-gray-200 rounded overflow-hidden` + inner div with `animate-pulse`
+- No external dependencies, pure CSS animation
+
+### Components to Keep (for now)
+- `MatDialog` — complex overlay, no simple Tailwind replacement
+- `MatMenu` / `MatMenuTrigger` — dropdown positioning logic
+- `MatTooltip` — behavior directive, lightweight
+- `MatDatepicker` — complex component with localization
+- `MatFormField` / `MatInput` — form field animations and labels
+- `MatTable` — structured table with selection (evaluate later)
+
+### Global Tailwind Button Classes
+Defined in `src/styles/styles.scss`:
+```scss
+.btn-icon          /* circular icon button */
+.btn-icon-primary  /* circular with primary color */
+.btn-icon-accent   /* circular with accent color */
+.btn-flat          /* flat filled button */
+.btn-flat-primary  /* flat with primary bg */
+.btn-flat-accent   /* flat with accent bg */
+.btn-raised        /* elevated button with border */
+```

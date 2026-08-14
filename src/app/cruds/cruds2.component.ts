@@ -16,7 +16,6 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { SelectionModel } from '@angular/cdk/collections';
 import Swal from 'sweetalert2';
-import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/modules/full/neuron/form/controls/base/base.component';
@@ -30,7 +29,6 @@ import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import { MatFormField, MatSuffix, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ImageFormatPipe } from '../shared/local-image';
 
@@ -38,7 +36,7 @@ import { ImageFormatPipe } from '../shared/local-image';
     selector: 'app-cruds',
     templateUrl: './cruds2.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatDrawerContainer, MatDrawer, MatTooltip, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatDrawerContent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatProgressBar, CurrencyPipe, DatePipe, ImageFormatPipe]
+    imports: [MatTooltip, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, CurrencyPipe, DatePipe, ImageFormatPipe]
 })
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private route = inject(ActivatedRoute);
@@ -87,8 +85,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     lastSelectedSegmentRow: PedidoVentaDTO; // this is the variable which holds the last selected row index
     masterSelected: boolean = false;
 
-
-    readonly drawer = viewChild<MatDrawer>('drawer');
 
     drawerMode = signal<'over' | 'side'>('side');
     drawerOpened = signal(true);
@@ -240,8 +236,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
        * Toggle the drawer
        */
     toggleDrawer(): void {
-        // Toggle the drawer
-        this.drawer()!.toggle();
+        this.drawerOpened.update(v => !v);
     }
 
     /*removeColumn(pColumn: string) {
