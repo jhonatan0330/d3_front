@@ -24,7 +24,6 @@ import { getComponent } from 'app/modules/full/neuron/form-helper';
 import { MatDatepickerInputEvent, MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
 import { BpmDiagramComponent, Proceso } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
@@ -39,7 +38,7 @@ import { ImageFormatPipe } from '../shared/local-image';
     selector: 'app-cruds',
     templateUrl: './cruds2.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatDrawerContainer, MatDrawer, MatIconButton, MatTooltip, MatIcon, MatButton, MatMenuTrigger, MatMenu, MatMenuItem, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatDrawerContent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatProgressBar, CurrencyPipe, DatePipe, ImageFormatPipe]
+    imports: [MatDrawerContainer, MatDrawer, MatTooltip, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatDrawerContent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatProgressBar, CurrencyPipe, DatePipe, ImageFormatPipe]
 })
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private route = inject(ActivatedRoute);

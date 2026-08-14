@@ -12,25 +12,23 @@
           <!-- Botones de accion en la lista -->
           @if (!isLoading()) {
             <div class="w-full">
-              <button mat-icon-button color="primary" matTooltip="Listar" (click)="listar(1)" class="m-1">
+              <button matTooltip="Listar" (click)="listar(1)" class="m-1 btn-icon-primary">
                 <mat-icon>refresh</mat-icon>
               </button>
               @if (plantilla()) {
-                <button mat-icon-button [color]="viewMode === 'list-view' ? 'accent' : ''"
-                  (click)="viewMode = 'list-view'">
+                <button (click)="viewMode = 'list-view'" [class.btn-icon-accent]="viewMode === 'list-view'" class="btn-icon">
                   <mat-icon>format_list_bulleted</mat-icon>
                 </button>
               }
               @if (plantilla()) {
-                <button mat-icon-button [color]="viewMode === 'grid-view' ? 'accent' : ''"
-                  (click)="viewMode = 'grid-view'">
+                <button (click)="viewMode = 'grid-view'" [class.btn-icon-accent]="viewMode === 'grid-view'" class="btn-icon">
                   <mat-icon>apps</mat-icon>
                 </button>
               }
               @if (plantilla()?.reportes) {
               @if (viewMode !== 'grid-view') {
                 <div class="py-1">
-                  <button mat-flat-button color="accent" class="w-full" [matMenuTriggerFor]="userMenuList">
+                  <button class="btn-flat-accent w-full" [matMenuTriggerFor]="userMenuList">
                     <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Imprimir
                   </button>
                   <mat-menu #userMenuList="matMenu">
@@ -47,7 +45,7 @@
             }
               @if (reportForms()) {
                 <div class="py-1">
-                  <button mat-flat-button color="accent" class="w-full"
+                  <button class="btn-flat-accent w-full"
                     [matMenuTriggerFor]="reportFormMenuList">
                     <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Informes
                   </button>
@@ -65,7 +63,7 @@
           }
           <div>
             @if (hasCreatePermission()) {
-              <button class="w-full" mat-flat-button [color]="'primary'"
+              <button class="btn-flat-primary w-full"
                 (click)="openDialogFromTemplateModule()">
                 <mat-icon>add</mat-icon>
                 <span>Nuevo</span>
@@ -74,8 +72,7 @@
             @if (templatesFromProcess()) {
               <div>
                 @for (templateToCreate of templatesFromProcess(); track templateToCreate) {
-                  <button class="w-full my-1"
-                    mat-flat-button [color]="'primary'"
+                  <button class="btn-flat-primary w-full my-1"
                     (click)="openDialog(templateToCreate.llaveTabla, templateToCreate.server)">
                     <mat-icon>add</mat-icon>
                     <span>{{templateToCreate.nombre}}</span>
@@ -92,11 +89,11 @@
             <mat-form-field>
               <input matInput type="text" placeholder="Coloca un texto y presiona enter"
                 [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
-                <button matSuffix mat-icon-button (click)="fControlSearch.setValue('')">
+                <button matSuffix class="btn-icon" (click)="fControlSearch.setValue('')">
                   <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
                 </button>
               </mat-form-field>
-              <button class="w-full " mat-flat-button [color]="'accent'" (click)="listar(1)">
+              <button class="btn-flat-accent w-full" (click)="listar(1)">
                 <mat-icon>refresh</mat-icon>
                 <span>Listar</span>
               </button>
@@ -236,18 +233,18 @@
                             </div>
                           </div>
                           @if (!drawerOpened()) {
-                            <button mat-icon-button matTooltip="Listar" (click)="listar(1)"
-                              class="m-1">
+                            <button matTooltip="Listar" (click)="listar(1)"
+                              class="m-1 btn-icon">
                               <mat-icon>refresh</mat-icon>
                             </button>
                           }
                           @if (!drawerOpened() && hasCreatePermission()) {
-                            <button mat-icon-button matTooltip="Crear" (click)="openDialogFromTemplateModule()"
-                              class="m-1">
+                            <button matTooltip="Crear" (click)="openDialogFromTemplateModule()"
+                              class="m-1 btn-icon">
                               <mat-icon>add</mat-icon>
                             </button>
                           }
-                          <button mat-icon-button class="m-1" (click)="toggleDrawer()">
+                          <button class="m-1 btn-icon" (click)="toggleDrawer()">
                             <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                           </button>
                         </div>
@@ -281,7 +278,7 @@
                                         @if (plantilla()!.reportes!.length!==0) {
                                           <div>
                                             @if (iDocument.llaveTabla) {
-                                              <button mat-icon-button [matMenuTriggerFor]="userMenu"
+                                              <button class="btn-icon" [matMenuTriggerFor]="userMenu"
                                                 >
                                                 <mat-icon>more_vert</mat-icon>
                                               </button>
@@ -404,7 +401,7 @@
                                   <td mat-cell *matCellDef="let element">
                                     @if (plantilla() && plantilla()!.reportes) {
                                       <div>
-                                        <button mat-icon-button [matMenuTriggerFor]="userMenu"
+                                        <button class="btn-icon" [matMenuTriggerFor]="userMenu"
                                           (click)="$event.stopPropagation()">
                                           <mat-icon>more_vert</mat-icon>
                                         </button>
@@ -459,12 +456,12 @@
                                   <br>
                                     <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Para encontrar lo que
                                       necesitas, simplemente utiliza los filtros.
-                                      <button class="icon-size-4" mat-icon-button (click)="toggleDrawer()">
-                                        <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-                                      </button>
+                                       <button class="icon-size-4 btn-icon" (click)="toggleDrawer()">
+                                         <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                                       </button>
                                     </p>
                                     <button 
-                                      class="w-full inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      class="btn-flat-primary w-full"
                                       tabindex="-1" (click)="listar(pagina())">
                                       Buscar
                                     </button>
@@ -484,13 +481,12 @@
                                       <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Lo sentimos. no encontramos
                                         ningun resultado para su búsqueda,
                                         puedes usar los filtros para mejorar tu busqueda.
-                                        <button class="icon-size-4" mat-icon-button (click)="toggleDrawer()">
-                                          <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-                                        </button>
+                                         <button class="icon-size-4 btn-icon" (click)="toggleDrawer()">
+                                           <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                                         </button>
                                       </p>
-                                      <button mat-flat-button style="width: 100%;"
-                                        class="inline-flex mx-auto py-2 font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        tabindex="-1" (click)="listar(pagina())">
+                                       <button class="btn-flat-primary w-full"
+                                         tabindex="-1" (click)="listar(pagina())">
                                         Buscar
                                       </button>
                                     </div>
@@ -512,7 +508,7 @@
                                         </div>
                                       }
                                       <div class="flex items-center">
-                                        <button mat-icon-button (click)="toggleDrawer()">
+                                        <button class="btn-icon" (click)="toggleDrawer()">
                                           <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                                         </button>
                                         <span class="font-medium dark:text-white">Total :</span> {{
@@ -528,8 +524,8 @@
                                       </select>
                                     </form>
                                     @if (!isLoading() && !isEnd()) {
-                                      <button mat-raise-button tabindex="-1" (click)="listar(pagina())"
-                                        class="relative inline-flex items-center px-2 py-2 text-sm 5xl:text-xl   font-medium text-gray-700 bg-white border border-gray-300 rounded-md sm:rounded-none hover:bg-gray-50 sm:rounded-r-md"
+                                      <button tabindex="-1" (click)="listar(pagina())"
+                                        class="btn-raised relative"
                                         data-id="pagination-next">Presiona aquí para buscar mas resultados<svg stroke="currentColor"
                                         fill="currentColor" stroke-width="0" viewBox="0 0 20 20" class="w-5 h-5"
                                         height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
