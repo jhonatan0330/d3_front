@@ -20,10 +20,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../../model/sw42.enum';
 import { UtilsService } from '../../../service/utils.service';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow } from '@angular/material/table';
@@ -35,7 +33,7 @@ import { ImageFormatPipe } from '../../../../../../shared/local-image';
     templateUrl: './detalle.component.html',
     styleUrls: ['./detalle.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatProgressBar, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatIconButton, MatSuffix, MatIcon, MatButton, MatCard, MatCardContent, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow, DecimalPipe, TitleCasePipe, ImageFormatPipe]
+    imports: [ MatFormField,MatLabel,MatInput,FormsModule,ReactiveFormsModule,MatSuffix,MatIcon,MatCard,MatCardContent,MatTable,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatCellDef,MatCell,MatFooterCellDef,MatFooterCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow,MatFooterRowDef,MatFooterRow,DecimalPipe,TitleCasePipe,ImageFormatPipe]
 })
 export class DetalleComponent extends BaseComponent implements OnInit, AfterViewInit {
   private templateService = inject(TemplateService);

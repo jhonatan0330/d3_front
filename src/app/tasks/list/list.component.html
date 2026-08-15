@@ -19,7 +19,7 @@
             <div
               class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between py-5 px-5 md:px-5">
               <!-- Add task button -->
-              <button mat-flat-button [color]="'primary'" (click)="createTask()"
+              <button class="btn-flat-primary" (click)="createTask()"
                 [matTooltip]="'Shortcut: Ctrl + /'">
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
               </button>
@@ -84,15 +84,15 @@
                     <div class="text-sm whitespace-nowrap text-secondary">
                       {{task.dueDate | date:'LLL dd'}}
                     </div>
-                    <button mat-icon-button [matMenuTriggerFor]="moreMenu">
-                      <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
-                    </button>
-                    <mat-menu #moreMenu="matMenu">
-                      <button mat-menu-item (click)="deleteTask(task)">
-                        <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
-                        <span>Delete </span>
+                    <app-dropdown>
+                      <button class="btn-icon" trigger>
+                        <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
                       </button>
-                    </mat-menu>
+                      <app-dropdown-item (clicked)="deleteTask(task)">
+                        <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                        <span>Delete</span>
+                      </app-dropdown-item>
+                    </app-dropdown>
                   </a>
                 </div>
               </div>

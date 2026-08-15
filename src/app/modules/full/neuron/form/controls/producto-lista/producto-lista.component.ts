@@ -6,10 +6,8 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { PedidoVentaCaracteristicaFilterDTO, ProductoDTO, UsuarioRolProductoDTO } from '../../../model/sw42.domain';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
@@ -19,7 +17,7 @@ import { DecimalPipe, TitleCasePipe } from '@angular/common';
     selector: 'app-producto-lista',
     templateUrl: './producto-lista.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatProgressBar, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatIconButton, MatSuffix, MatIcon, MatCard, MatButton, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCardContent, DecimalPipe, TitleCasePipe]
+    imports: [ MatFormField,MatLabel,MatInput,FormsModule,ReactiveFormsModule,MatSuffix,MatIcon,MatCard,MatTable,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatCellDef,MatCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow,MatCardContent,DecimalPipe,TitleCasePipe]
 })
 export class ProductoListaComponent extends BaseComponent implements OnInit {
   private api = inject(ApiService);

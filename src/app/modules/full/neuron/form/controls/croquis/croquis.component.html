@@ -10,18 +10,16 @@
 
 <ng-template #croquisDialog>
   <mat-dialog-content class="w-full space-y-4 p-6 relative">
-    <button mat-icon-button mat-dialog-close aria-label="Cerrar" class="absolute right-3 top-3">
+    <button mat-dialog-close aria-label="Cerrar" class="absolute right-3 top-3 btn-icon">
       <mat-icon>close</mat-icon>
     </button>
 
     <div class="max-w-3xl mx-auto space-y-4 text-center">
       <div class="flex items-center gap-3 justify-center flex-wrap">
         <button
-          mat-flat-button
-          color="primary"
           (click)="setBase()"
           [disabled]="!isEnabled"
-          class="px-3 py-1 text-sm h-8">
+          class="px-3 py-1 text-sm h-8 btn-flat-primary">
           Subir Plano
         </button>
 
@@ -34,11 +32,9 @@
         </mat-form-field>
 
         <button
-          mat-flat-button
-          color="accent"
           (click)="addComponente()"
           [disabled]="!isEnabled"
-          class="px-3 py-1 text-sm h-8">
+          class="px-3 py-1 text-sm h-8 btn-flat-accent">
           Agregar
         </button>
       </div>

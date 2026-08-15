@@ -23,28 +23,28 @@
           }
           @if (!isTakingPicture && !isReviewingPicture) {
             <div>
-              <button mat-icon-button (click)="isTakingPicture = true;setupDevices()">
+              <button class="btn-icon" (click)="isTakingPicture = true;setupDevices()">
                 <mat-icon class="text-white" [svgIcon]="'heroicons_outline:video-camera'"></mat-icon>
               </button>
             </div>
           }
           @if (isTakingPicture) {
             <div (click)="capture()">
-              <button mat-icon-button>
+              <button class="btn-icon">
                 <mat-icon class="text-white" [svgIcon]="'heroicons_outline:camera'"></mat-icon>
               </button>
             </div>
           }
           @if (isReviewingPicture && dataUrl) {
             <div>
-              <button mat-icon-button (click)="submit()">
+              <button class="btn-icon" (click)="submit()">
                 <mat-icon class="text-white" [svgIcon]="'heroicons_outline:upload'"></mat-icon>
               </button>
             </div>
           }
           @if (isReviewingPicture && dataUrl) {
             <div>
-              <button mat-icon-button (click)="isReviewingPicture= false; isTakingPicture = false">
+              <button class="btn-icon" (click)="isReviewingPicture= false; isTakingPicture = false">
                 <mat-icon class="text-white" [svgIcon]="'heroicons_outline:trash'"></mat-icon>
               </button>
             </div>
@@ -52,7 +52,9 @@
         </div>
       }
       @if (submitted) {
-        <mat-progress-bar class="w-full inset-0 absolute" mode="indeterminate"></mat-progress-bar>
+        <div class="w-full inset-0 absolute h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+        </div>
       }
     </div>
   </div>

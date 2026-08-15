@@ -1,7 +1,7 @@
 <div class="flex flex-col max-w-240 md:min-w-160 max-h-screen ">
     <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
         <div class="text-lg font-medium">Nueva propiedad</div>
-        <button mat-icon-button (click)="matDialogRef.close()" [tabIndex]="-1">
+        <button class="btn-icon" (click)="matDialogRef.close()" [tabIndex]="-1">
             <mat-icon class="text-current">close</mat-icon>
         </button>
     </div>
@@ -57,7 +57,7 @@
             <input matInput [formControlName]="'usuarioExcluyente'" >
         </mat-form-field>
 
-        <button class="order-first sm:order-last w-full" mat-flat-button [color]="'primary'" (click)="send()">
+        <button class="order-first sm:order-last w-full btn-flat-primary" (click)="send()">
             Guardar
         </button>
     </form>

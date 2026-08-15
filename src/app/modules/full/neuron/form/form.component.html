@@ -66,64 +66,64 @@
     [style.color]="colorFont()">exit_to_app</mat-icon>
   </div>
   <div>
-    <mat-icon class="h-6 cursor-pointer" [matMenuTriggerFor]="formMenuList"
-    [style.color]="colorFont()">menu</mat-icon>
-    <mat-menu #formMenuList="matMenu">
+    <app-dropdown>
+      <mat-icon class="h-6 cursor-pointer" trigger
+        [style.color]="colorFont()">menu</mat-icon>
       <!-- Boton Cambiar estado -->
       @if (canChangeState()) {
-        <button mat-menu-item (click)="showChangeState()" tabindex="-1">
+        <app-dropdown-item (clicked)="showChangeState()">
           <mat-icon>swap_horiz</mat-icon>Cambiar estado
-        </button>
+        </app-dropdown-item>
       }
       <!-- Boton transferir -->
       @if (canTransfer()) {
-        <button mat-menu-item (click)="showTransfer()" tabindex="-1">
+        <app-dropdown-item (clicked)="showTransfer()">
           <mat-icon>transfer_within_a_station</mat-icon>Transferir
-        </button>
+        </app-dropdown-item>
       }
       <!-- Boton carga masiva -->
       @if (canMassive()) {
-        <button mat-menu-item (click)="showMassive()" tabindex="-1">
+        <app-dropdown-item (clicked)="showMassive()">
           <mat-icon>cloud_upload</mat-icon> Carga Masiva
-        </button>
+        </app-dropdown-item>
       }
       <!-- Boton Duplicar -->
-      <button mat-menu-item (click)="duplicate()" tabindex="-1">
+      <app-dropdown-item (clicked)="duplicate()">
         <mat-icon>file_copy</mat-icon>Duplicar
-      </button>
+      </app-dropdown-item>
       @if (pedido() && pedido()!.llaveTabla) {
-        <button mat-menu-item (click)="reloadScreen()" tabindex="-1">
+        <app-dropdown-item (clicked)="reloadScreen()">
           <mat-icon svgIcon="heroicons_outline:arrow-path-rounded-square"></mat-icon>Recargar
-        </button>
+        </app-dropdown-item>
       }
       <!-- Boton Compartir -->
       @if (pedido() && pedido()!.llaveTabla) {
-        <button mat-menu-item (click)="copyUrl()">
+        <app-dropdown-item (clicked)="copyUrl()">
           <mat-icon>link</mat-icon>
           <span>Copiar link</span>
-        </button>
+        </app-dropdown-item>
       }
       <!-- Boton Whatsapp -->
       @if (pedido() && pedido()!.llaveTabla) {
-        <button mat-menu-item (click)="sendWhatsApp()">
+        <app-dropdown-item (clicked)="sendWhatsApp()">
           <mat-icon>share</mat-icon>
           <span>Whatsapp</span>
-        </button>
+        </app-dropdown-item>
       }
       <!-- Boton Usuario -->
       @if (pedido() && pedido()!.llaveTabla && esRol()) {
-        <button mat-menu-item (click)="abrirUsuario(pedido()!.llaveTabla)">
+        <app-dropdown-item (clicked)="abrirUsuario(pedido()!.llaveTabla)">
           <mat-icon>person</mat-icon>
           <span>Usuario Rol</span>
-        </button>
+        </app-dropdown-item>
       }
       @if (_jwt.isAdmin) {
-        <button mat-menu-item (click)="flex()">
+        <app-dropdown-item (clicked)="flex()">
           <mat-icon>person</mat-icon>
           <span>Administrar plantilla</span>
-        </button>
+        </app-dropdown-item>
       }
-    </mat-menu>
+    </app-dropdown>
   </div>
 </div>
 </div>
@@ -147,7 +147,9 @@
     @if (isChangeState()) {
       <mat-card class="p-2">
         @if (changeStateIsLoading()) {
-          <mat-progress-bar class="w-full" mode="indeterminate"></mat-progress-bar>
+          <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+            <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+          </div>
         }
           <form [formGroup]="changeStateForm" (ngSubmit)="changeState()">
           <div>
@@ -170,7 +172,7 @@
               </mat-form-field>
             </div>
             @if (!changeStateIsLoading()) {
-              <button mat-raised-button class="mat-primary w-full" [disabled]="changeStateForm.invalid"
+              <button class="mat-primary w-full btn-raised" [disabled]="changeStateForm.invalid"
                 >
                 Cambiar estado
               </button>
@@ -208,7 +210,9 @@
       @if (pedido() && pedido()!.llaveTabla) {
         <div class="w-full">
           @if (isLoading()) {
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+              <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+            </div>
           }
           <!-- Acciones -->
           @if (!isLoading()) {
@@ -234,7 +238,7 @@
                 </a>
               }
               <!-- Boton de historial
-              <button mat-flat-button (click)="showTrace()" class="flex-auto">
+              <button (click)="showTrace()" class="flex-auto btn-flat-primary">
                 <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Historial
               </button> -->
               <a class="cursor-pointer flex-auto" (click)="showTrace()">
@@ -258,11 +262,13 @@
     @if (modificable()) {
       <div class="pt-1 px-4 pb-4">
         @if (submitted()) {
-          <mat-progress-bar class="w-full" mode="indeterminate"></mat-progress-bar>
+          <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+            <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+          </div>
         }
         @if (!submitted()) {
           <div>
-            <button mat-raised-button color="primary" class="w-full" (click)="submit()" [disabled]="!formIsModified()">
+            <button class="w-full btn-flat-primary" (click)="submit()" [disabled]="!formIsModified()">
               <mat-icon>save</mat-icon> Guardar {{ plantilla()?.nombre | titlecase }}
             </button>
           </div>

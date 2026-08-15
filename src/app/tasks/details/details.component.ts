@@ -9,7 +9,6 @@ import { TasksService } from 'app/tasks/tasks.service';
 import { Editor, NgxEditorModule, Toolbar } from '@bobbyquantum/ngx-editor';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 
 import { MatInputModule } from '@angular/material/input';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
@@ -19,7 +18,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
     templateUrl: './details.component.html',
 
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatMenuModule, MatInputModule]
+    imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatInputModule]
 })
 export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);

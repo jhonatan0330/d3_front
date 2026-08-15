@@ -1,7 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MatInput } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,7 +16,7 @@ import { LoginService } from 'app/authentication/login.service';
 @Component({
     selector: 'app-assistant-dialog',
     standalone: true,
-    imports: [FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, RouterModule],
+    imports: [FormsModule,MatIconModule,MatFormFieldModule,MatInputModule,RouterModule],
     templateUrl: './assistant-dialog.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })

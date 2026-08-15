@@ -13,9 +13,7 @@ import { MatCard, MatCardContent } from "@angular/material/card";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from "@angular/material/autocomplete";
-import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
-import { MatProgressBar } from "@angular/material/progress-bar";
 import { ImageFormatPipe } from "../../shared/local-image";
 
 @Component({
@@ -23,7 +21,7 @@ import { ImageFormatPipe } from "../../shared/local-image";
     templateUrl: './transfer-form.component.html',
     exportAs: 'transfer-form',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatCard, MatCardContent, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatAutocompleteTrigger, MatAutocomplete, MatOption, MatButton, MatIcon, MatProgressBar, ImageFormatPipe]
+    imports: [MatCard,MatCardContent,FormsModule,ReactiveFormsModule,MatFormField,MatInput,MatAutocompleteTrigger,MatAutocomplete,MatOption,MatIcon,ImageFormatPipe]
 })
 export class TransferFormComponent implements OnInit {
   private notificationService = inject(NotificationsService);

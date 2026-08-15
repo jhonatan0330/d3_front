@@ -8,9 +8,7 @@ import SignaturePad from 'signature_pad';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { formatImageUrl } from 'app/shared/local-image';
 import { FormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { TitleCasePipe } from '@angular/common';
 import { ImageFormatPipe } from '../../../../../../shared/local-image';
 
@@ -23,7 +21,7 @@ import { ImageFormatPipe } from '../../../../../../shared/local-image';
     }
   `],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, MatButton, MatIcon, MatProgressBar, TitleCasePipe, ImageFormatPipe]
+    imports: [FormsModule,MatIcon,TitleCasePipe,ImageFormatPipe]
 })
 export class ArchivoComponent extends BaseComponent implements OnInit {
   private api = inject(ApiService);

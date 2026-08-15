@@ -1,5 +1,7 @@
 @if (isLoading()) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+    <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+  </div>
 }
 @if (messageHTML) {
   <div class="w-full" [innerHTML]="messageHTML"></div>
@@ -20,42 +22,40 @@
       </mat-autocomplete>
       <!-- Open window -->
       @if (proceso) {
-        <button mat-icon-button matPrefix (click)="openDialog(proceso)" tabindex="-1">
+        <button class="btn-icon" matPrefix (click)="openDialog(proceso)" tabindex="-1">
           <mat-icon>open_in_new</mat-icon>
         </button>
       }
       <!-- Create -->
       @if (acciones && !errorMessage && !proceso) {
-        <button mat-icon-button matPrefix [matMenuTriggerFor]="clickHoverMenuButton"
-          [style.display]="!fControl.value ? 'inline-flex' : 'none !important'"
-          #clickHoverMenuTrigger="matMenuTrigger"
-          (click)="sendCreate()" tabindex="-1">
-          <mat-icon>add_circle</mat-icon>
-        </button>
-      }
-      <mat-menu #clickHoverMenuButton="matMenu">
-        @for (item of acciones; track item) {
-          <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)"
-            tabindex="-1">
-            Crear {{ item.texto | titlecase }}
+        <app-dropdown matPrefix #createMenu="appDropdown">
+          <button class="btn-icon" trigger
+            [style.display]="!fControl.value ? 'inline-flex' : 'none !important'"
+            (click)="sendCreate(createMenu, $event)" tabindex="-1">
+            <mat-icon>add_circle</mat-icon>
           </button>
-        }
-      </mat-menu>
+          @for (item of acciones; track item) {
+            <app-dropdown-item (clicked)="createNewDocument(item.valor, item.llaveTabla)">
+              Crear {{ item.texto | titlecase }}
+            </app-dropdown-item>
+          }
+        </app-dropdown>
+      }
       <!-- Buscar -->
       @if (isEnabled && !proceso) {
-        <button mat-icon-button matSuffix (click)="gestionarKeyUpTexto()" tabindex="-1">
+        <button class="btn-icon" matSuffix (click)="gestionarKeyUpTexto()" tabindex="-1">
           <mat-icon>search</mat-icon>
         </button>
       }
       <!-- Limpiar -->
       @if (proceso && isEnabled) {
-        <button mat-icon-button matSuffix (click)="fControl.setValue('')" tabindex="-1">
+        <button class="btn-icon" matSuffix (click)="fControl.setValue('')" tabindex="-1">
           <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
         </button>
       }
       <!-- Boton codigo QR-->
       @if (isEnabled && readQR && !proceso) {
-        <button mat-icon-button matPrefix (click)="toogleScanner()" tabindex="-1">
+        <button class="btn-icon" matPrefix (click)="toogleScanner()" tabindex="-1">
           <mat-icon>camera_enhance</mat-icon>
         </button>
       }
@@ -136,25 +136,23 @@
       @if (!isLoading()) {
         <div>
           <div class="flex justify-between items-center w-full mb-1 gap-1">
-            <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))"
-              [matBadge]="data.valorText" matBadgeColor="primary" class="w-full">
+            <button (click)="procesarCampo(transformPVCtoFilter(data))"
+              [matBadge]="data.valorText" matBadgeColor="primary" class="w-full btn-flat-accent">
               {{ structure.nombre | titlecase }}
             </button>
             @if (acciones && formIsEnabled && data.expedientes) {
-              <button mat-raised-button color="accent" [matMenuTriggerFor]="clickHoverMenu"
-                #clickHoverMenuTrigger="matMenuTrigger"
-                (click)="sendCreate()" tabindex="-1">
-                <mat-icon>add</mat-icon>
-              </button>
-            }
-            <mat-menu #clickHoverMenu="matMenu">
-              @for (item of acciones; track item) {
-                <button mat-menu-item (click)="createNewDocument(item.valor, item.llaveTabla)"
-                  tabindex="-1">
-                  Crear {{ item.texto | titlecase }}
+              <app-dropdown #createMenuExpediente="appDropdown">
+                <button class="btn-flat-accent" trigger
+                  (click)="sendCreate(createMenuExpediente, $event)" tabindex="-1">
+                  <mat-icon>add</mat-icon>
                 </button>
-              }
-            </mat-menu>
+                @for (item of acciones; track item) {
+                  <app-dropdown-item (clicked)="createNewDocument(item.valor, item.llaveTabla)">
+                    Crear {{ item.texto | titlecase }}
+                  </app-dropdown-item>
+                }
+              </app-dropdown>
+            }
           </div>
           @if (data.valorNumero && data.valorNumero !== 0) {
             <span
@@ -186,7 +184,7 @@
                     }
                   </div>
                   @if (isEnabled) {
-                    <button mat-icon-button (click)="retirarProceso(d)">
+                    <button class="btn-icon" (click)="retirarProceso(d)">
                       <mat-icon>cancel</mat-icon>
                     </button>
                   }
@@ -261,11 +259,11 @@
               </div>
               <div class="pr-1">
                 <!-- Boton filtrar -->
-                <button mat-raised-button (click)="listar(1)" class="ml-1">
+                <button (click)="listar(1)" class="ml-1 btn-raised">
                   <mat-icon>refresh</mat-icon>
                 </button>
                 <!-- Create copiado de arriba
-                <button mat-raised-button matSuffix [matMenuTriggerFor]="clickHoverMenuMultiple"
+                <button class="btn-raised" matSuffix [matMenuTriggerFor]="clickHoverMenuMultiple"
                   *ngIf="acciones && !proceso && (isEnabled || herencia)" #clickHoverMenuTrigger="matMenuTrigger"
                   (click)="sendCreate()">
                   <mat-icon>add_circle</mat-icon>
@@ -277,19 +275,19 @@
                 </mat-menu>-->
                 <!-- Boton codigo QR-->
                 @if (isEnabled && readQR) {
-                  <button mat-raised-button (click)="toogleScanner()" class="ml-1">
+                  <button (click)="toogleScanner()" class="ml-1 btn-raised">
                     <mat-icon>camera_enhance</mat-icon>
                   </button>
                 }
                 <!-- Boton Agregar todos-->
                 @if (isEnabled && dataProvider && dataProvider.length && !herencia) {
-                  <button mat-raised-button (click)="agregarTodos()" class="ml-1"
+                  <button (click)="agregarTodos()" class="ml-1 btn-raised"
                     >
                     <mat-icon>file_upload</mat-icon>
                   </button>
                 }
                 <!-- Boton Agregar todos-->
-                <button mat-raised-button (click)="showFilterState = !showFilterState" class="ml-1">
+                <button (click)="showFilterState = !showFilterState" class="ml-1 btn-raised">
                   <mat-icon>filter_alt</mat-icon>
                 </button>
               </div>
@@ -335,7 +333,7 @@
                           }
                         </div>
                         @if (!herencia) {
-                          <button mat-icon-button (click)="agregarProceso(iDocument)">
+                          <button class="btn-icon" (click)="agregarProceso(iDocument)">
                             <mat-icon>file_upload</mat-icon>
                           </button>
                         }
@@ -377,14 +375,16 @@
                 </div>
               }
               @if (!isLoadingList() && !isEndList()) {
-                <button mat-flat-button color="accent" (click)="listar(pagina)" tabindex="-1" class="w-full"
+                <button (click)="listar(pagina)" tabindex="-1" class="w-full btn-flat-accent"
                   >
                   <mat-icon>refresh</mat-icon> Mas resultados {{ labelSearch }}
                 </button>
               }
             </div>
             @if (isLoadingList()) {
-              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+              <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+                <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+              </div>
             }
           </div>
         }
@@ -393,8 +393,8 @@
             <!-- Titulo y boton buscar -->
             <div class="text-center">
               @if (!isLoading()) {
-                <button mat-raised-button color="accent" (click)="procesarCampo(transformPVCtoFilter(data))"
-                  class="w-full">
+                <button (click)="procesarCampo(transformPVCtoFilter(data))"
+                  class="w-full btn-flat-accent">
                   {{ structure.nombre | titlecase }}
                 </button>
               }

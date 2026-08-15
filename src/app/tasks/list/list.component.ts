@@ -6,18 +6,18 @@ import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/materi
 import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksService } from 'app/tasks/tasks.service';
-import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { NgClass, DatePipe } from '@angular/common';
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 
 @Component({
     selector: 'tasks-list',
     templateUrl: './list.component.html',
 
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatDrawerContainer, MatDrawer, RouterOutlet, MatDrawerContent, MatButton, MatTooltip, MatIcon, CdkDropList, CdkDrag, NgClass, CdkDragPreview, CdkDragHandle, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, DatePipe]
+    imports: [MatDrawerContainer,MatDrawer,RouterOutlet,MatDrawerContent,MatTooltip,MatIcon,CdkDropList,CdkDrag,NgClass,CdkDragPreview,CdkDragHandle,DatePipe,DropdownComponent,DropdownItemComponent]
 })
 export class TasksListComponent implements OnInit, OnDestroy {
     private _activatedRoute = inject(ActivatedRoute);

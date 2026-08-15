@@ -11,7 +11,6 @@ import { ReporteBaseDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 import Swal from 'sweetalert2';
-import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -24,7 +23,7 @@ import { AsyncPipe, CurrencyPipe } from '@angular/common';
     selector: 'account-manual-form',
     templateUrl: './manual-form.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatIconButton, MatIcon, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatAutocompleteTrigger, MatButton, MatProgressSpinner, MatAutocomplete, MatOption, AsyncPipe, CurrencyPipe]
+    imports: [  MatIcon,FormsModule,ReactiveFormsModule,MatFormField,MatLabel,MatInput,MatDatepickerInput,MatDatepickerToggle,MatSuffix,MatDatepicker,MatAutocompleteTrigger,MatProgressSpinner,MatAutocomplete,MatOption,AsyncPipe,CurrencyPipe]
 })
 export class ManualFormComponent implements OnInit {
     data = inject(MAT_DIALOG_DATA);

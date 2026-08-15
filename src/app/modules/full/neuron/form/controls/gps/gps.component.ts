@@ -6,7 +6,6 @@ import { NotificationCenterService } from 'app/notification/notification-center.
 import { BaseComponent } from '../base/base.component';
 import { OlMapComponent } from './ol-map/ol-map.component';
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { TitleCasePipe } from '@angular/common';
@@ -15,7 +14,7 @@ import { TitleCasePipe } from '@angular/common';
     selector: 'app-gps',
     templateUrl: './gps.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatFormField, MatLabel, MatIconButton, MatPrefix, MatIcon, MatInput, FormsModule, ReactiveFormsModule, MatSuffix, TitleCasePipe]
+    imports: [MatFormField,MatLabel,MatPrefix,MatIcon,MatInput,FormsModule,ReactiveFormsModule,MatSuffix,TitleCasePipe]
 })
 export class GpsComponent extends BaseComponent implements OnInit {
   dialog = inject(MatDialog);

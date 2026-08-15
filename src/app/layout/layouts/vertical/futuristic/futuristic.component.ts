@@ -5,7 +5,6 @@ import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { UserComponent } from '../../../user/user.component';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 
@@ -20,7 +19,7 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'futuristic-layout',
     templateUrl: './futuristic.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, UserComponent, MatIconButton, MatIcon,  ShortcutsComponent, NotificationButtonComponent, RouterOutlet, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, UserComponent, MatIcon,  ShortcutsComponent, NotificationButtonComponent, RouterOutlet, ImageFormatPipe]
 })
 export class FuturisticLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);

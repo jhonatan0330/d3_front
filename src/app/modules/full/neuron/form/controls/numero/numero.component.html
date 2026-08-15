@@ -1,5 +1,7 @@
 @if (isLoading()) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+    <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+  </div>
 }
 <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
   @if (errorMessage) {

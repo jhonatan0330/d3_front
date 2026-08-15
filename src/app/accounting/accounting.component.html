@@ -21,7 +21,9 @@
 
         <div class="relative">
           @if (isLoadingCatalog) {
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+              <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+            </div>
           }
           @if (catalogs && catalogs.length) {
             @for (catalog of catalogs; track trackByFn(i, catalog); let i = $index) {
@@ -53,7 +55,7 @@
         <div class="flex flex-col flex-auto w-full bg-gray-100 dark:bg-transparent p-4 md:p-6 gap-2">
           <!-- Title and action buttons -->
           <div class="flex w-full">
-            <button mat-icon-button (click)="toggleDrawer()">
+            <button class="btn-icon" (click)="toggleDrawer()">
               <mat-icon>menu</mat-icon>
             </button>
             <div class="w-full text-center">
@@ -73,17 +75,16 @@
                     <div class="text-red-600 font-medium text-sm">{{ item.timeFrameName }}</div>
                   </div>
                   <div class="ml-2 -mt-2 -mr-3">
-                    <button class="h-6 min-h-6 px-2 rounded-full bg-hover" mat-icon-button
-                      [matMenuTriggerFor]="monthlyExpensesMenu">
-                      <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #monthlyExpensesMenu="matMenu">
-                      <button mat-menu-item>Minutos</button>
-                      <button mat-menu-item>Horas</button>
-                      <button mat-menu-item>Dias</button>
-                      <button mat-menu-item>Meses</button>
-                      <button mat-menu-item>Años</button>
-                    </mat-menu>
+                    <app-dropdown>
+                      <button class="h-6 min-h-6 px-2 rounded-full bg-hover btn-icon" trigger>
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <app-dropdown-item>Minutos</app-dropdown-item>
+                      <app-dropdown-item>Horas</app-dropdown-item>
+                      <app-dropdown-item>Dias</app-dropdown-item>
+                      <app-dropdown-item>Meses</app-dropdown-item>
+                      <app-dropdown-item>Años</app-dropdown-item>
+                    </app-dropdown>
                   </div>
                 </div>
                 <div class="flex items-center pt-1">
@@ -111,19 +112,19 @@
                 <div class="text-secondary font-medium">1 pending, 4 completed</div>
               </div>
               <div>
-                <button [matMenuTriggerFor]="actionsVoucher" mat-icon-button>
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #actionsVoucher="matMenu">
-                  <button mat-menu-item (click)="getBalance()">
+                <app-dropdown>
+                  <button class="btn-icon" trigger>
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <app-dropdown-item (clicked)="getBalance()">
                     <mat-icon class="icon-size-5">refresh</mat-icon>
                     <span>Actualizar balance</span>
-                  </button>
-                  <button mat-menu-item (click)="openManualForm()">
+                  </app-dropdown-item>
+                  <app-dropdown-item (clicked)="openManualForm()">
                     <mat-icon class="icon-size-5">add</mat-icon>
                     <span>Comprobante Manual</span>
-                  </button>
-                </mat-menu>
+                  </app-dropdown-item>
+                </app-dropdown>
               </div>
             </div>
             <div class="overflow-x-auto mx-6">
@@ -196,26 +197,26 @@
                   </th>
                   <td mat-cell *matCellDef="let row">
                     <div>
-                      <button [matMenuTriggerFor]="actionsTable" mat-icon-button>
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
-                      <mat-menu #actionsTable="matMenu">
-                        <button mat-menu-item (click)="editVouchers(row)">
+                      <app-dropdown>
+                        <button class="btn-icon" trigger>
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <app-dropdown-item (clicked)="editVouchers(row)">
                           <mat-icon class="icon-size-5">edit</mat-icon>
                           <span>Actualizar Comprobante</span>
-                        </button>
-                        <button mat-menu-item (click)="deleteVouchers(row)">
+                        </app-dropdown-item>
+                        <app-dropdown-item (clicked)="deleteVouchers(row)">
                           <mat-icon class="icon-size-5">delete</mat-icon>
                           <span>Eliminar Comprobante</span>
-                        </button>
-                      </mat-menu>
+                        </app-dropdown-item>
+                      </app-dropdown>
                     </div>
                   </td>
                 </ng-container>
                 <!-- Footer -->
                 <ng-container matColumnDef="recentOrdersTableFooter">
                   <td class="py-6 px-0 border-0" mat-footer-cell *matFooterCellDef colspan="6">
-                    <button mat-stroked-button (click)="getVouchers()">Ver mas comprobantes</button>
+                    <button class="btn-raised" (click)="getVouchers()">Ver mas comprobantes</button>
                   </td>
                 </ng-container>
                 <tr mat-header-row *matHeaderRowDef="recentTransactionsTableColumns"></tr>
@@ -232,21 +233,22 @@
               <div class=" text-lg font-medium tracking-tight leading-6 truncate">Cuentas del
               catalogo</div>
               <div>
-                <button [matMenuTriggerFor]="actionsBalance" mat-icon-button>
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #actionsBalance="matMenu">
-                  <button mat-menu-item (click)="getAccounts()">
+                <app-dropdown>
+                  <button class="btn-icon" trigger>
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <app-dropdown-item (clicked)="getAccounts()">
                     <mat-icon class="icon-size-5">refresh</mat-icon>
                     <span>Actualizar cuentas</span>
-                  </button>
-                </mat-menu>
+                  </app-dropdown-item>
+                </app-dropdown>
               </div>
             </div>
             <div class="px-6 py-2 overflow-x-auto">
               @if (isLoadingAccount) {
-                <mat-progress-bar mode="indeterminate"
-                class="w-full"></mat-progress-bar>
+                <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+                  <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+                </div>
               }
               <table class="w-full bg-transparent" mat-table matSort [dataSource]="dataSource">
                 <!-- WBS -->
@@ -254,7 +256,7 @@
                   <th mat-header-cell mat-sort-header *matHeaderCellDef>Codigo</th>
                   <td mat-cell *matCellDef="let row">
                     <div class="flex">
-                      <button mat-icon-button [style.visibility]="!row.expandable ? 'hidden' : ''"
+                      <button class="btn-icon" [style.visibility]="!row.expandable ? 'hidden' : ''"
                         (click)="treeControl.toggle(row)">
                         <mat-icon class="mat-icon-rtl-mirror">{{treeControl.isExpanded(row) ?
                         'expand_more' : 'chevron_right'}}</mat-icon>

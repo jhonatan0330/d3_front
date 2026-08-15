@@ -1,8 +1,7 @@
 <mat-form-field [style.display]="isInvisible ? 'none': 'block'">
   <mat-label>{{structure.nombre | titlecase }} </mat-label>
   @if (data.valorText) {
-    <button
-      mat-icon-button
+    <button class="btn-icon"
       matPrefix
       (click)="showMap()"
       tabindex="-1"
@@ -20,8 +19,7 @@
     class="cursor-pointer text-primary underline"
     (click)="showMap()"
     />
-    <button
-      mat-icon-button
+    <button class="btn-icon"
       matSuffix
       (click)="getLocation()"
       tabindex="-1"

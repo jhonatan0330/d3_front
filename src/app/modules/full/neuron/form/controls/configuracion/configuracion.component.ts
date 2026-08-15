@@ -15,16 +15,14 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from '@angular/material/autocomplete';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
     selector: 'app-configuracion',
     templateUrl: './configuracion.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatFormField, MatLabel, MatInput, FormsModule, MatAutocompleteTrigger, ReactiveFormsModule, MatAutocomplete, MatOption, MatIconButton, MatSuffix, MatIcon, MatProgressBar, AsyncPipe, TitleCasePipe]
+    imports: [MatFormField,MatLabel,MatInput,FormsModule,MatAutocompleteTrigger,ReactiveFormsModule,MatAutocomplete,MatOption,MatSuffix,MatIcon,AsyncPipe,TitleCasePipe]
 })
 export class ConfiguracionComponent extends BaseComponent implements OnInit {
   private templateService = inject(TemplateService);

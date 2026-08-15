@@ -21,17 +21,19 @@
           placeholder="Comentario" required></textarea>
         </mat-form-field>
         <div class="flex justify-between">
-          <button mat-raised-button color="accent" (click)="dialogRef.close(false)">
+          <button class="btn-flat-accent" (click)="dialogRef.close(false)">
             <mat-icon>exit_to_app</mat-icon> Cerrar
           </button>
           <span></span>
           @if (!isTransfering) {
-            <button mat-raised-button class="mat-primary mb-1" [disabled]="transferForm.invalid">
+            <button class="mat-primary mb-1 btn-raised" [disabled]="transferForm.invalid">
               Reasignar
             </button>
           }
           @if (isTransfering) {
-            <mat-progress-bar class="w-full" mode="indeterminate"></mat-progress-bar>
+            <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+              <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+            </div>
           }
         </div>
 

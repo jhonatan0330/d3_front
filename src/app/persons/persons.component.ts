@@ -24,15 +24,15 @@ import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { NgClass, AsyncPipe, I18nPluralPipe } from '@angular/common';
-import { MatIconButton } from '@angular/material/button';
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 
 
 @Component({
     selector: 'PersonsComponent',
     templateUrl: 'persons.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatDrawerContainer, MatDrawer, RouterOutlet, MatDrawerContent, MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, NgClass, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, AsyncPipe, I18nPluralPipe]
+    imports: [MatDrawerContainer,MatDrawer,RouterOutlet,MatDrawerContent,MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,AsyncPipe,I18nPluralPipe,DropdownComponent,DropdownItemComponent]
 })
 export class PersonsComponent implements OnInit, OnDestroy {
     private _activatedRoute = inject(ActivatedRoute);

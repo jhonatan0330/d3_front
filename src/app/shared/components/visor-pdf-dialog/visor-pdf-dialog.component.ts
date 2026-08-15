@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnDestroy, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { PdfService } from 'app/shared/pdf.service';
@@ -9,9 +8,7 @@ import { PdfService } from 'app/shared/pdf.service';
 @Component({
     selector: 'app-visor-pdf-dialog',
     imports: [
-    MatDialogModule,
-    MatButtonModule
-],
+    MatDialogModule],
     changeDetection: ChangeDetectionStrategy.Eager,
     templateUrl: './visor-pdf-dialog.component.html'
 })

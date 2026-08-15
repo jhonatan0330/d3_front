@@ -1,7 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, viewChild, signal } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
@@ -25,12 +24,10 @@ import { BarcodeFormat } from '@zxing/library';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { IdResponse } from '../../../model/sw42.utils';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
 import { NgClass, DecimalPipe, TitleCasePipe, DatePipe } from '@angular/common';
-import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { MatTable, MatColumnDef, MatCellDef, MatCell, MatRowDef, MatRow } from '@angular/material/table';
@@ -38,13 +35,15 @@ import { MatBadge } from '@angular/material/badge';
 import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker } from '@angular/material/datepicker';
 import { ImageFormatPipe } from '../../../../../../shared/local-image';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 
 @Component({
     selector: 'app-proceso',
     templateUrl: './proceso.component.html',
     styleUrls: ['./proceso.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatProgressBar, MatFormField, MatLabel, MatInput, MatAutocompleteTrigger, FormsModule, ReactiveFormsModule, NgClass, MatAutocomplete, MatIconButton, MatPrefix, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, MatSuffix, ZXingScannerModule, MatTable, MatColumnDef, MatCellDef, MatCell, MatRowDef, MatRow, MatButton, MatBadge, MatCard, MatCardTitle, MatCardContent, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker, DecimalPipe, TitleCasePipe, DatePipe, ImageFormatPipe]
+    imports: [ MatFormField,MatLabel,MatInput,MatAutocompleteTrigger,FormsModule,ReactiveFormsModule,NgClass,MatAutocomplete,MatPrefix,MatIcon,MatSuffix,ZXingScannerModule,MatTable,MatColumnDef,MatCellDef,MatCell,MatRowDef,MatRow,MatBadge,MatCard,MatCardTitle,MatCardContent,MatDateRangeInput,MatStartDate,MatEndDate,MatDatepickerToggle,MatDateRangePicker,DecimalPipe,TitleCasePipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent]
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {
   private templateService = inject(TemplateService);
@@ -52,7 +51,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   private utilsService = inject(UtilsService);
   private sanitizer = inject(DomSanitizer);
 
-  readonly trigger = viewChild<MatMenuTrigger>('clickHoverMenuTrigger');
   fControl = new UntypedFormControl();
   filteredDocuments: PedidoVentaDTO[];
 
@@ -1051,15 +1049,15 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
   }
 
-  sendCreate() {
+  sendCreate(dropdown?: DropdownComponent, event?: Event) {
+    event?.stopPropagation();
     if (this.acciones && this.acciones.length !== 0) {
       if (this.relatedFields) {
         for (let i = 0; i < this.data.dependientes.length; i++) {
           const iCampoPedido = this.data.dependientes[i];
           if (!iCampoPedido.valorText && !PlantillaHelper.buscarValor(iCampoPedido.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
             this.errorMessage = 'Por favor revisa que este seleccionado el campo ' + iCampoPedido.campoDTO.nombre;
-            const trigger = this.trigger();
-            if (trigger) { trigger.closeMenu(); }
+            dropdown?.close();
             return;
           }
         }
@@ -1067,11 +1065,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
       if (this.acciones.length === 1) {
         this.createNewDocument(this.acciones[0].valor, this.acciones[0].llaveTabla);
-        const trigger = this.trigger();
-        if (trigger) { trigger.closeMenu(); }
-      } else {
-        const trigger = this.trigger();
-        if (trigger) { trigger.openMenu(); }
+        dropdown?.close();
+      } else if (dropdown) {
+        dropdown.open();
       }
     }
   }

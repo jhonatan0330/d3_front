@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef,  inject, viewChild } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { MatButton, MatIconButton } from '@angular/material/button';
 import { Subject } from 'rxjs';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
@@ -14,7 +13,7 @@ import { MatIcon } from '@angular/material/icon';
     templateUrl: './shortcuts.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'shortcuts',
-    imports: [MatIconButton, MatIcon]
+    imports: [MatIcon]
 })
 export class ShortcutsComponent implements OnInit, OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
@@ -23,7 +22,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     private _viewContainerRef = inject(ViewContainerRef);
     private _utilService = inject(UtilsService);
 
-    private readonly _shortcutsOrigin = viewChild<MatButton>('shortcutsOrigin');
+    private readonly _shortcutsOrigin = viewChild<ElementRef>('shortcutsOrigin');
     private readonly _shortcutsPanel = viewChild<TemplateRef<any>>('shortcutsPanel');
     private readonly barSearchInput = viewChild<ElementRef>('barSearchInput');
 
@@ -132,7 +131,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
             //backdropClass: 'fuse-backdrop-on-mobile',
             scrollStrategy: this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
-                .flexibleConnectedTo(this._shortcutsOrigin()!._elementRef.nativeElement)
+                .flexibleConnectedTo(this._shortcutsOrigin()!.nativeElement)
                 .withLockedPosition(true)
                 .withPush(true)
                 .withPositions([

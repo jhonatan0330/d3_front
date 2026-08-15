@@ -3,7 +3,6 @@ import {
     inject,
 } from '@angular/core';
 
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AssistantDialogComponent } from '../assistant-dialog/assistant-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,10 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
     selector: 'app-assistant-button',
     standalone: true,
-    imports: [
-        MatButtonModule,
-        MatIconModule,
-    ],
+    imports: [ 
+        MatIconModule],
     templateUrl: './assistant-button.component.html',
     styleUrl: './assistant-button.component.scss',
 })

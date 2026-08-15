@@ -14,7 +14,6 @@ import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 
@@ -27,7 +26,7 @@ export const DEFAULT_TEXT = '';
     selector: 'app-ol-map',
     templateUrl: './ol-map.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatFormField, MatLabel, MatIconButton, MatPrefix, MatIcon, MatInput, FormsModule, ReactiveFormsModule, MatSuffix]
+    imports: [MatFormField,MatLabel,MatPrefix,MatIcon,MatInput,FormsModule,ReactiveFormsModule,MatSuffix]
 })
 export class OlMapComponent implements OnInit, AfterViewInit {
   data = inject(MAT_DIALOG_DATA);

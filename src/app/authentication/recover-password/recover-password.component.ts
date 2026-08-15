@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
-import { MatProgressBar } from '@angular/material/progress-bar';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
@@ -13,13 +12,11 @@ import { ParticleBackgroundDirective } from '../shared/particle-background';
     providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }],
     templateUrl: './recover-password.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, RouterLink, MatProgressBar, ParticleBackgroundDirective]
+    imports: [FormsModule, ReactiveFormsModule, RouterLink, ParticleBackgroundDirective]
 })
 export class RecoverPasswordComponent implements OnInit, OnDestroy {
   private loginService = inject(LoginService);
   private router = inject(Router);
-
-  readonly progressBar = viewChild(MatProgressBar);
 
   recoverForm: FormGroup<{ identificacion: FormControl<string | null>, correo: FormControl<string | null> }>;
   errorMsg = '';
@@ -48,7 +45,6 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
     const signinData = this.recoverForm.value;
 
     this.submitting = true;
-    this.progressBar()!.mode = 'indeterminate';
 
     this.loginService.recoverPassword(signinData.identificacion!, signinData.correo!).subscribe({
       next: () => {
@@ -58,7 +54,6 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.submitting = false;
-        this.progressBar()!.mode = 'determinate';
       }
     });
   }

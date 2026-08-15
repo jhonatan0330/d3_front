@@ -4,7 +4,6 @@ import { LoginService } from 'app/authentication/login.service';
 import { NavigationService } from 'app/layout/navigation/navigation.service';
 import { Navigation } from 'app/layout/navigation/navigation.types';
 import { environment } from 'environments/environment';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 
@@ -19,7 +18,7 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'centered-layout',
     templateUrl: './centered.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIconButton, MatIcon,   ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIcon,   ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
 })
 export class CenteredLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);

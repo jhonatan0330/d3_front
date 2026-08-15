@@ -2,6 +2,7 @@ import { Component, signal, HostListener, ChangeDetectionStrategy } from '@angul
 
 @Component({
     selector: 'app-dropdown',
+    exportAs: 'appDropdown',
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <div class="relative inline-block">
@@ -33,5 +34,9 @@ export class DropdownComponent {
 
     close(): void {
         this.isOpen.set(false);
+    }
+
+    open(): void {
+        this.isOpen.set(true);
     }
 }

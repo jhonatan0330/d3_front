@@ -4,7 +4,6 @@ import { NavigationService } from 'app/layout/navigation/navigation.service';
 import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 
@@ -20,7 +19,7 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'compact-layout',
     templateUrl: './compact.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIconButton, MatIcon,  ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIcon,  ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
 })
 export class CompactLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);

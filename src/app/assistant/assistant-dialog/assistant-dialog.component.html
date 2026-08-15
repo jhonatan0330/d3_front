@@ -47,8 +47,8 @@
         </svg>
       </a>
 
-      <button mat-icon-button type="button" (click)="cerrar()" tabindex="-1"
-        class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800">
+      <button type="button" (click)="cerrar()" tabindex="-1"
+        class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800 btn-icon">
         <mat-icon> close </mat-icon>
       </button>
     </div>
@@ -140,7 +140,7 @@
       <mat-form-field appearance="outline" class="flex-1">
         <mat-label> Pregúntame algo </mat-label>
         <input #messageInput matInput [(ngModel)]="pregunta" (keydown.enter)="enviar()" autocomplete="off" />
-        <button mat-icon-button matSuffix type="button" (click)="enviar()"
+        <button class="btn-icon" matSuffix type="button" (click)="enviar()"
           [disabled]=" !pregunta.trim() ||  estado() === 'thinking' ||  estado() === 'searching'">
           <mat-icon>send </mat-icon>
         </button>

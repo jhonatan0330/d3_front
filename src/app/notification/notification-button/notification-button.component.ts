@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewContainerRef, effect, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef, effect, inject, viewChild } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { MatButton, MatIconButton } from '@angular/material/button';
 import { ActividadDTO } from 'app/notification/notification.types';
 import { NotificationsService } from 'app/notification/notification.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -20,7 +19,7 @@ import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
 
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'notifications',
-    imports: [MatIconButton, MatIcon, MatTooltip, NgClass, DecimalPipe, DatePipe]
+    imports: [  MatIcon,MatTooltip,NgClass,DecimalPipe,DatePipe]
 })
 export class NotificationButtonComponent implements  OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
@@ -31,7 +30,7 @@ export class NotificationButtonComponent implements  OnDestroy {
     private _jwtAuth = inject(LoginService);
     private utilsService = inject(UtilsService);
 
-    private readonly _notificationsOrigin = viewChild<MatButton>('notificationsOrigin');
+    private readonly _notificationsOrigin = viewChild<ElementRef>('notificationsOrigin');
     private readonly _notificationsPanel = viewChild<TemplateRef<any>>('notificationsPanel');
 
     notifications: ActividadDTO[];
@@ -117,7 +116,7 @@ export class NotificationButtonComponent implements  OnDestroy {
             backdropClass: 'fuse-backdrop-on-mobile',
             scrollStrategy: this._overlay.scrollStrategies.block(),
             positionStrategy: this._overlay.position()
-                .flexibleConnectedTo(this._notificationsOrigin()!._elementRef.nativeElement)
+                .flexibleConnectedTo(this._notificationsOrigin()!.nativeElement)
                 .withLockedPosition(true)
                 .withPush(true)
                 .withPositions([

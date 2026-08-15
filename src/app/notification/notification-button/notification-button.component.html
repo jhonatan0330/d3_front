@@ -1,5 +1,5 @@
 <!-- Notifications toggle -->
-<button mat-icon-button (click)="openPanel()" #notificationsOrigin>
+<button class="btn-icon" (click)="openPanel()" #notificationsOrigin>
   @if (notificationCount > 0) {
     <span class="absolute top-0 right-0 left-0 flex items-center justify-center h-3">
       <span
@@ -20,13 +20,13 @@
     <!-- Header -->
     <div class="flex shrink-0 items-center py-4 pr-4 pl-6 bg-primary text-on-primary">
       <div class="sm:hidden -ml-1 mr-3">
-        <button mat-icon-button (click)="closePanel()">
+        <button class="btn-icon" (click)="closePanel()">
           <mat-icon class="icon-size-5 text-current" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
         </button>
       </div>
       <div class="text-lg font-medium leading-10">Notifications</div>
       <div class="ml-auto">
-        <button mat-icon-button [matTooltip]="'arrow-path'" (click)="refresh()">
+        <button class="btn-icon" [matTooltip]="'arrow-path'" (click)="refresh()">
           <mat-icon class="icon-size-5 text-current" svgIcon="heroicons_outline:arrow-path"></mat-icon>
         </button>
       </div>

@@ -1,8 +1,7 @@
 <div class="p-4 h-full">
     <mat-form-field>
         <mat-label>{{nombre}}</mat-label>
-        <button
-          mat-icon-button
+        <button class="btn-icon"
           matPrefix
           tabindex="-1">
           <mat-icon>map</mat-icon>
@@ -13,8 +12,7 @@
           [readonly]="true"
           autocomplete="off"
           class="cursor-pointer text-primary underline"/>
-        <button
-          mat-icon-button
+        <button class="btn-icon"
           matSuffix
           (click)="closeMap()"
           tabindex="-1">

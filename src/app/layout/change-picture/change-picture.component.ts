@@ -2,14 +2,11 @@ import { Component, ElementRef, ChangeDetectionStrategy, inject, viewChild } fro
 import { LoginService } from 'app/authentication/login.service';
 import Swal from 'sweetalert2';
 import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
-import { MatProgressBar } from '@angular/material/progress-bar';
-
 @Component({
     selector: 'app-change-picture',
     templateUrl: './change-picture.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatIcon, MatIconButton, MatProgressBar]
+    imports: [MatIcon]
 })
 export class ChangePictureComponent {
   jwtAuth = inject(LoginService);

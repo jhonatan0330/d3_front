@@ -110,16 +110,15 @@
                   <!-- Clave -->
                   <div class="ml-auto leading-6">
                     <!-- Botón del menú (los 3 punticos) -->
-                    <button mat-icon-button [matMenuTriggerFor]="menu">
-                      <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
-                    </button>
-                    <!-- Menú desplegable -->
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item (click)="cambiar_clave(contact)">
+                    <app-dropdown>
+                      <button class="btn-icon" trigger>
+                        <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
+                      </button>
+                      <app-dropdown-item (clicked)="cambiar_clave(contact)">
                         <mat-icon [svgIcon]="'heroicons_outline:key'"></mat-icon>
                         Cambiar Clave
-                      </button>
-                    </mat-menu>
+                      </app-dropdown-item>
+                    </app-dropdown>
                   </div>
                 </a>
               }

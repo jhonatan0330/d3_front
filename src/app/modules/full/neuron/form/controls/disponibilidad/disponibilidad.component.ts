@@ -14,7 +14,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
 
@@ -22,7 +21,7 @@ import { TitleCasePipe } from '@angular/common';
     selector: 'app-disponibilidad',
     templateUrl: './disponibilidad.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, MatIconButton, MatSuffix, MatIcon, TitleCasePipe]
+    imports: [MatFormField,MatLabel,MatInput,FormsModule,ReactiveFormsModule,MatSuffix,MatIcon,TitleCasePipe]
 })
 export class DisponibilidadComponent extends BaseComponent implements OnInit {
   private api = inject(ApiService);

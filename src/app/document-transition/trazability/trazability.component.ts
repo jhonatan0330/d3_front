@@ -14,7 +14,6 @@ import { VoucherPrepareRequest } from "app/accounting/accounting.domain";
 import { StatesEnum } from "app/modules/full/neuron/model/sw42.enum";
 import { CdkDrag, CdkDragHandle } from "@angular/cdk/drag-drop";
 import { MatIcon } from "@angular/material/icon";
-import { MatButton } from "@angular/material/button";
 import { UpperCasePipe, TitleCasePipe, CurrencyPipe } from "@angular/common";
 import { ImageFormatPipe } from "../../shared/local-image";
 
@@ -28,7 +27,7 @@ interface OptionTrace {
     templateUrl: './trazability.component.html',
     exportAs: 'trazability',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CdkDrag, CdkDragHandle, MatIcon, MatButton, UpperCasePipe, TitleCasePipe, CurrencyPipe, ImageFormatPipe]
+    imports: [CdkDrag,CdkDragHandle,MatIcon,UpperCasePipe,TitleCasePipe,CurrencyPipe,ImageFormatPipe]
 })
 export class TrazabilityComponent implements OnInit {
   data = inject(MAT_DIALOG_DATA);

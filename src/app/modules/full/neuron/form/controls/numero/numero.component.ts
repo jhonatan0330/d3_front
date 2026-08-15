@@ -10,7 +10,6 @@ import { BaseComponent } from '../base/base.component';
 import { debounceTime, distinctUntilChanged,  map, tap } from 'rxjs';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { formatNumber, TitleCasePipe } from '@angular/common';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 
@@ -18,7 +17,7 @@ import { MatInput } from '@angular/material/input';
     selector: 'app-numero',
     templateUrl: './numero.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatProgressBar, MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, TitleCasePipe]
+    imports: [  MatFormField,MatLabel,MatInput,FormsModule,ReactiveFormsModule,TitleCasePipe]
 })
 export class NumeroComponent extends BaseComponent implements OnInit {
   private api = inject(ApiService);

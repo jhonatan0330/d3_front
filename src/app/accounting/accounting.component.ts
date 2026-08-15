@@ -14,11 +14,10 @@ import { Router } from '@angular/router';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { MatProgressBar } from '@angular/material/progress-bar';
 import { NgClass, UpperCasePipe, DecimalPipe, DatePipe } from '@angular/common';
-import { MatIconButton, MatButton } from '@angular/material/button';
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 
 interface AccountNode {
     account: AccountDTO;
@@ -38,7 +37,7 @@ interface AccountFlatNode {
     selector: 'accounting',
     templateUrl: './accounting.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatDrawerContainer, MatDrawer, MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, MatProgressBar, NgClass, MatDrawerContent, MatIconButton, MatMenuTrigger, MatMenu, MatMenuItem, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow, UpperCasePipe, DecimalPipe, DatePipe]
+    imports: [MatDrawerContainer,MatDrawer,MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,MatDrawerContent,MatTable,MatSort,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatSortHeader,MatCellDef,MatCell,MatFooterCellDef,MatFooterCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow,MatFooterRowDef,MatFooterRow,UpperCasePipe,DecimalPipe,DatePipe,DropdownComponent,DropdownItemComponent]
 })
 export class AccountComponent implements OnInit, OnDestroy {
     private utilsService = inject(UtilsService);

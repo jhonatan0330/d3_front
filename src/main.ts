@@ -25,8 +25,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
 import { AppComponent } from './app/app.component';
 import { OVERLAY_DEFAULT_CONFIG } from '@angular/cdk/overlay';
 
@@ -57,7 +55,7 @@ bootstrapApplication(AppComponent, {
         importProvidersFrom(CommonModule, BrowserModule, BrowserAnimationsModule, RouterModule.forRoot(appRoutes, routerConfig), 
         // FuseConfig
         FuseConfigModule.forRoot(appConfig), 
-        ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatButtonModule),
+        ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatSidenavModule, MatFormFieldModule, MatIconModule, MatInputModule),
         provideHttpClient(withInterceptors([tokenInterceptor, httpErrorInterceptor])),
         { provide: ErrorHandler, useClass: ErrorHandlerService },
         {

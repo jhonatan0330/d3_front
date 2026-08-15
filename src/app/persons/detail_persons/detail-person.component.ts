@@ -8,7 +8,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoginService } from 'app/authentication/login.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { ChangePictureComponent } from '../../layout/change-picture/change-picture.component';
 
@@ -16,7 +15,7 @@ import { ChangePictureComponent } from '../../layout/change-picture/change-pictu
     selector: 'contacts-details',
     templateUrl: 'detail-person.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatIconButton, MatIcon, ChangePictureComponent,]
+    imports: [  MatIcon,ChangePictureComponent]
 })
 export class ContactsDetailsComponent {
     private _contactsService = inject(ContactsService);

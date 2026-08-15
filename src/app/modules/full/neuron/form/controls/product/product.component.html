@@ -7,7 +7,9 @@
     <mat-icon class="h-6" (click)="dialogRef.close(true)">exit_to_app</mat-icon>
   </div>
   @if (isLoading) {
-    <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
+    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+    </div>
   }
   @if (inventories) {
     <div class="w-full">
@@ -28,7 +30,9 @@
     </div>
   }
   @if (isLoading) {
-    <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
+    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+    </div>
   }
   <!-- Campos dinamicos -->
   <div class="w-full p-4">
@@ -38,10 +42,10 @@
 
   @if (this.allowEdit) {
     <div class="p-4 w-full flex justify-between">
-      <button mat-raised-button color="primary" (click)="dialogRef.close(false)">
+      <button class="btn-flat-primary" (click)="dialogRef.close(false)">
         <mat-icon>clear</mat-icon> Borrar registro
       </button>
-      <button mat-raised-button color="primary" (click)="closeWithValidation()">
+      <button class="btn-flat-primary" (click)="closeWithValidation()">
         <mat-icon>save</mat-icon> Aceptar
       </button>
     </div>

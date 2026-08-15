@@ -1,5 +1,7 @@
 @if (isLoading()) {
-  <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
+  <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+    <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+  </div>
 }
 <!-- Input de productos -->
 @if (!busquedaSinTexto) {
@@ -9,7 +11,7 @@
       autocomplete="off" />
       <!-- Buscar -->
       @if (this.isEnabled) {
-        <button mat-icon-button matSuffix (click)="searchAsincronous()" tabindex="-1">
+        <button class="btn-icon" matSuffix (click)="searchAsincronous()" tabindex="-1">
           <mat-icon>search</mat-icon>
         </button>
       }
@@ -18,8 +20,8 @@
   <!-- Titulo y boton buscar -->
   @if (busquedaSinTexto) {
     <div >
-      <button mat-raised-button color="accent" (click)="searchQuicly()" [disabled]="isLoading"
-        class="w-full">
+      <button (click)="searchQuicly()" [disabled]="isLoading()"
+        class="w-full btn-flat-accent">
         {{ structure.nombre | titlecase }}
       </button>
     </div>
@@ -65,7 +67,7 @@
         <ng-container matColumnDef="retirar">
           <th mat-header-cell *matHeaderCellDef class="px-1">Retirar</th>
           <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="warn" (click)="retirarProducto(element)">
+            <button class="btn-icon" (click)="retirarProducto(element)">
               <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
             </button>
           </td>

@@ -1,6 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
-import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
@@ -18,7 +17,7 @@ interface Transicion {
 
 @Component({
     selector: 'bpm-leaf-diagram',
-    imports: [MatButtonModule],
+    imports: [ ],
     templateUrl: './bpm-leaf-diagram.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./bpm-leaf-diagram.component.scss']
