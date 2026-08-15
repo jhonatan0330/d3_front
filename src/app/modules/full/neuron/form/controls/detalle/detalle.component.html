@@ -45,15 +45,15 @@
     <div class="flex flex-wrap">
       @for (product of productosFiltrados; track product) {
         <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1 items-center">
-          <mat-card class="user-card p-0 card-render" (click)="addProduct(product)">
-            <mat-card-content>
+          <div class="card user-card p-0 card-render" (click)="addProduct(product)">
+            <div>
               <div class="w-full" >
                 <small class="w-full">{{ product.codigo }}</small>
                 <img src="{{ product.imagen | imageFormat }}" />
                 <div class="text-md">{{ product.nombre }}</div>
               </div>
-            </mat-card-content>
-          </mat-card>
+            </div>
+          </div>
         </div>
       }
     </div>

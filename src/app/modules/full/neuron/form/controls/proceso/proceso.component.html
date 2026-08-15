@@ -136,10 +136,13 @@
       @if (!isLoading()) {
         <div>
           <div class="flex justify-between items-center w-full mb-1 gap-1">
-            <button (click)="procesarCampo(transformPVCtoFilter(data))"
-              [matBadge]="data.valorText" matBadgeColor="primary" class="w-full btn-flat-accent">
-              {{ structure.nombre | titlecase }}
-            </button>
+          <button (click)="procesarCampo(transformPVCtoFilter(data))"
+            class="relative w-full btn-flat-accent">
+            {{ structure.nombre | titlecase }}
+            @if (data.valorText) {
+              <span class="absolute -top-2 -right-2 min-w-5 h-5 px-1.5 rounded-full bg-primary text-on-primary text-xs flex items-center justify-center">{{ data.valorText }}</span>
+            }
+          </button>
             @if (acciones && formIsEnabled && data.expedientes) {
               <app-dropdown #createMenuExpediente="appDropdown">
                 <button class="btn-flat-accent" trigger
@@ -164,8 +167,8 @@
       <div class="flex flex-wrap p-1 w-full">
         @for (d of data.expedientes; track d.llaveTabla) {
           <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
-            <mat-card class="p-0 rounded h-full">
-              <mat-card-title class="p-1 rounded mb-0">
+            <div class="card p-0 rounded h-full">
+              <div class="p-1 rounded mb-0">
                 <div class="flex items-center">
                   <div class="w-16 p-1">
                     <a (click)="openDialog(d)"><img src="{{ d.imagen | imageFormat }}" /></a>
@@ -207,8 +210,8 @@
                     <div><small class="text-sm">Valor Total: </small>{{ d.dinero.valorTotal | number }}</div>
                   </div>
                 }
-              </mat-card-title>
-              <mat-card-content class="p-1">
+              </div>
+              <div class="p-1">
                 @if (d.caracteristicas && d.caracteristicas.length !== 0) {
                   <div>
                     @for (f of d.caracteristicas; track f.llaveTabla || $index) {
@@ -223,8 +226,8 @@
                     }
                   </div>
                 }
-              </mat-card-content>
-            </mat-card>
+              </div>
+            </div>
           </div>
         }
       </div>
@@ -313,8 +316,8 @@
             <div class="flex flex-wrap">
               @for (iDocument of dataProvider; track iDocument) {
                 <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
-                  <mat-card class="p-0 rounded h-full">
-                    <mat-card-title class="p-1 rounded">
+                  <div class="card p-0 rounded h-full">
+                    <div class="p-1 rounded">
                       <div class="flex items-center">
                         <div class="w-16 p-1">
                           <a (click)="openDialog(iDocument)"><img src="{{ iDocument.imagen | imageFormat }}" /></a>
@@ -354,8 +357,8 @@
                           <div>{{ iDocument.dinero.valorTotal | number }}</div>
                         </div>
                       }
-                    </mat-card-title>
-                    <mat-card-content class="p-1">
+                    </div>
+                    <div class="p-1">
                       @if (iDocument.caracteristicas && iDocument.caracteristicas.length !== 0) {
                         <div class="w-full">
                           @for (f of iDocument.caracteristicas; track f) {
@@ -370,8 +373,8 @@
                           }
                         </div>
                       }
-                    </mat-card-content>
-                  </mat-card>
+                    </div>
+                  </div>
                 </div>
               }
               @if (!isLoadingList() && !isEndList()) {

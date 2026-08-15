@@ -1,6 +1,6 @@
 <!-- Transferir documento -->
-<mat-card>
-  <mat-card-content>
+<div class="card p-4">
+  <div>
     <form [formGroup]="transferForm" (ngSubmit)="transfer()">
       <mat-form-field>
         <input matInput name="responsable" [matAutocomplete]="auto" [formControl]="transferForm.controls['responsable']"
@@ -38,9 +38,9 @@
         </div>
 
       </form>
-    </mat-card-content>
+    </div>
     <!-- Boton cerrar -->
     <div>
 
     </div>
-  </mat-card>
+  </div>

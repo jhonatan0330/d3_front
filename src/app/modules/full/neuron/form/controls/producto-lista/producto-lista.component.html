@@ -28,7 +28,7 @@
   }
   <!-- Promo form documento -->
   @if (usuarioRol) {
-    <mat-card>
+    <div class="card p-4">
       <form [formGroup]="promoForm" (ngSubmit)="addProductoExclusivo()">
         <div>
           <mat-form-field class="full-width">
@@ -59,7 +59,7 @@
               Guardar
             </button>
           </form>
-        </mat-card>
+              </div>
       }
       <!-- Tablas de escogidos -->
       <div class="full-width" style="overflow: auto">
@@ -114,18 +114,18 @@
           @for (product of productosFiltrados; track product) {
             <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 "
               >
-              <mat-card
-                class="user-card p-0 card-render"
+              <div
+                class="card user-card p-0 card-render"
                 (click)="mostrarFormularioAgregar(product)"
                 >
-                <mat-card-content>
+                <div>
                   <div class="full-width">
                     <small class="full-width">{{ product.codigo }}</small>
                     <img [src]="product.imagen" />
                     <span>{{ product.nombre }}</span>
                   </div>
-                </mat-card-content>
-              </mat-card>
+                </div>
+        </div>
             </div>
           }
         </div>

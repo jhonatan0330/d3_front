@@ -31,8 +31,6 @@ import { NgClass, DecimalPipe, TitleCasePipe, DatePipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { MatTable, MatColumnDef, MatCellDef, MatCell, MatRowDef, MatRow } from '@angular/material/table';
-import { MatBadge } from '@angular/material/badge';
-import { MatCard, MatCardTitle, MatCardContent } from '@angular/material/card';
 import { MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker } from '@angular/material/datepicker';
 import { ImageFormatPipe } from '../../../../../../shared/local-image';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
@@ -43,7 +41,7 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
     templateUrl: './proceso.component.html',
     styleUrls: ['./proceso.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ MatFormField,MatLabel,MatInput,MatAutocompleteTrigger,FormsModule,ReactiveFormsModule,NgClass,MatAutocomplete,MatPrefix,MatIcon,MatSuffix,ZXingScannerModule,MatTable,MatColumnDef,MatCellDef,MatCell,MatRowDef,MatRow,MatBadge,MatCard,MatCardTitle,MatCardContent,MatDateRangeInput,MatStartDate,MatEndDate,MatDatepickerToggle,MatDateRangePicker,DecimalPipe,TitleCasePipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent]
+    imports: [ MatFormField,MatLabel,MatInput,MatAutocompleteTrigger,FormsModule,ReactiveFormsModule,NgClass,MatAutocomplete,MatPrefix,MatIcon,MatSuffix,ZXingScannerModule,MatTable,MatColumnDef,MatCellDef,MatCell,MatRowDef,MatRow,MatDateRangeInput,MatStartDate,MatEndDate,MatDatepickerToggle,MatDateRangePicker,DecimalPipe,TitleCasePipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent]
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {
   private templateService = inject(TemplateService);

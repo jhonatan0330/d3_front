@@ -9,7 +9,6 @@ import { NotificationCenterService } from 'app/notification/notification-center.
 import { ActividadDTO } from "../notification.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
 import { UsuarioDTO } from "app/authentication/authentication.domain";
-import { MatCard, MatCardContent } from "@angular/material/card";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from "@angular/material/autocomplete";
@@ -21,7 +20,7 @@ import { ImageFormatPipe } from "../../shared/local-image";
     templateUrl: './transfer-form.component.html',
     exportAs: 'transfer-form',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatCard,MatCardContent,FormsModule,ReactiveFormsModule,MatFormField,MatInput,MatAutocompleteTrigger,MatAutocomplete,MatOption,MatIcon,ImageFormatPipe]
+    imports: [FormsModule,ReactiveFormsModule,MatFormField,MatInput,MatAutocompleteTrigger,MatAutocomplete,MatOption,MatIcon,ImageFormatPipe]
 })
 export class TransferFormComponent implements OnInit {
   private notificationService = inject(NotificationsService);

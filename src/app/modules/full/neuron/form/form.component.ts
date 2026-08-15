@@ -37,7 +37,6 @@ import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { MatIcon } from '@angular/material/icon';
-import { MatCard } from '@angular/material/card';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from '@angular/material/autocomplete';
@@ -51,7 +50,7 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
     selector: 'app-form',
     templateUrl: './form.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CdkDrag,CdkDragHandle,MatIcon,MatCard,FormsModule,ReactiveFormsModule,MatFormField,MatInput,MatAutocompleteTrigger,MatAutocomplete,MatOption,MatTooltip,SlicePipe,TitleCasePipe,CurrencyPipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent]
+    imports: [CdkDrag,CdkDragHandle,MatIcon,FormsModule,ReactiveFormsModule,MatFormField,MatInput,MatAutocompleteTrigger,MatAutocomplete,MatOption,MatTooltip,SlicePipe,TitleCasePipe,CurrencyPipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent]
 })
 export class FormComponent implements OnInit, AfterViewInit {
     data = inject(MAT_DIALOG_DATA);

@@ -16,14 +16,13 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
 import { MatInput } from '@angular/material/input';
 import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from '@angular/material/autocomplete';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'account-manual-form',
     templateUrl: './manual-form.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [  MatIcon,FormsModule,ReactiveFormsModule,MatFormField,MatLabel,MatInput,MatDatepickerInput,MatDatepickerToggle,MatSuffix,MatDatepicker,MatAutocompleteTrigger,MatProgressSpinner,MatAutocomplete,MatOption,AsyncPipe,CurrencyPipe]
+    imports: [  MatIcon,FormsModule,ReactiveFormsModule,MatFormField,MatLabel,MatInput,MatDatepickerInput,MatDatepickerToggle,MatSuffix,MatDatepicker,MatAutocompleteTrigger,MatAutocomplete,MatOption,AsyncPipe,CurrencyPipe]
 })
 export class ManualFormComponent implements OnInit {
     data = inject(MAT_DIALOG_DATA);

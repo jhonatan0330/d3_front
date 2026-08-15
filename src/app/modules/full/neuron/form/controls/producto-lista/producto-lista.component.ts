@@ -9,7 +9,6 @@ import { PedidoVentaCaracteristicaFilterDTO, ProductoDTO, UsuarioRolProductoDTO 
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
-import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { DecimalPipe, TitleCasePipe } from '@angular/common';
 
@@ -17,7 +16,7 @@ import { DecimalPipe, TitleCasePipe } from '@angular/common';
     selector: 'app-producto-lista',
     templateUrl: './producto-lista.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ MatFormField,MatLabel,MatInput,FormsModule,ReactiveFormsModule,MatSuffix,MatIcon,MatCard,MatTable,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatCellDef,MatCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow,MatCardContent,DecimalPipe,TitleCasePipe]
+    imports: [ MatFormField,MatLabel,MatInput,FormsModule,ReactiveFormsModule,MatSuffix,MatIcon,MatTable,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatCellDef,MatCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow,DecimalPipe,TitleCasePipe]
 })
 export class ProductoListaComponent extends BaseComponent implements OnInit {
   private api = inject(ApiService);

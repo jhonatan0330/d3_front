@@ -100,6 +100,10 @@
          dark:text-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700;
 }
 
+/* Tarjeta (reemplaza mat-card) */
+.card {
+  @apply bg-white rounded-lg shadow dark:bg-gray-800;
+}
 
 .mat-mdc-form-field{
     width: 100%;

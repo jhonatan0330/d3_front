@@ -145,7 +145,7 @@
   <div class="px-4 overflow-x-hidden">
     <!-- Cambiar estado del documento -->
     @if (isChangeState()) {
-      <mat-card class="p-2">
+      <div class="card p-2">
         @if (changeStateIsLoading()) {
           <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
             <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
@@ -178,7 +178,7 @@
               </button>
             }
           </form>
-        </mat-card>
+        </div>
       }
       <!-- Alertas-->
       @if (pedido() && messages()) {
