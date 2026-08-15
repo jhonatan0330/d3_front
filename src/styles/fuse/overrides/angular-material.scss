@@ -976,7 +976,26 @@
 /* -------------------------------------------------------------------------- */
 /*  @ Datepicker
 /* -------------------------------------------------------------------------- */
+.mat-datepicker-content {
+    background-color: var(--mat-datepicker-calendar-container-background-color, var(--mat-sys-surface-container-high, #ffffff)) !important;
 
+    .dark & {
+        background-color: var(--mat-datepicker-calendar-container-background-color, var(--mat-sys-surface-container-high, #1e293b)) !important;
+    }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  @ Autocomplete
+/* -------------------------------------------------------------------------- */
+div.mat-mdc-autocomplete-panel {
+    background-color: var(--mat-autocomplete-background-color, var(--mat-sys-surface-container, #ffffff)) !important;
+    box-shadow: var(--mat-autocomplete-container-elevation-shadow, 0 2px 4px rgba(0, 0, 0, 0.08)) !important;
+
+    .dark & {
+        background-color: var(--mat-autocomplete-background-color, var(--mat-sys-surface-container, #1e293b)) !important;
+        box-shadow: var(--mat-autocomplete-container-elevation-shadow, 0 2px 4px rgba(0, 0, 0, 0.24)) !important;
+    }
+}
 
 /* -------------------------------------------------------------------------- */
 /*  @ Icon

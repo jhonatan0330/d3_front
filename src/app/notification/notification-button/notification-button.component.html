@@ -1,9 +1,9 @@
 <!-- Notifications toggle -->
-<button class="btn-icon" (click)="openPanel()" #notificationsOrigin>
+<button class="btn-icon relative" (click)="openPanel()" #notificationsOrigin>
   @if (notificationCount > 0) {
     <span class="absolute top-0 right-0 left-0 flex items-center justify-center h-3">
       <span
-        class="flex items-center justify-center shrink-0 min-w-4 h-4 px-1 ml-4 mt-2.5 rounded-full bg-teal-600 text-indigo-50 text-xs font-medium">
+        class="absolute right-0 top-0 min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-teal-600 text-xs font-medium text-indigo-50">
         {{notificationCount}}
       </span>
     </span>
