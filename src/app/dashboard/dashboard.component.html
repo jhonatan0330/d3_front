@@ -6,7 +6,7 @@
     <!-- Header -->
     <div class="flex flex-col shadow">
       <!-- Cover image -->
-      @if (slides) {
+      @if (slides.length) {
       <div>
         <swiper-container class="h-40 lg:h-50 w-full" autoplay="true" autoplay-delay="5000" loop="true"
           navigation="true" keyboard="true" slides-per-view="1">
@@ -35,4 +35,6 @@
 
   </div>
   }
+
+  <dashboard-indicators></dashboard-indicators>
 </div>

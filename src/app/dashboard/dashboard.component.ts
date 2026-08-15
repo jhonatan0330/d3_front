@@ -1,15 +1,15 @@
-import { Component, effect, OnInit,  OnDestroy, AfterViewInit,  ChangeDetectionStrategy, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, effect, AfterViewInit, ChangeDetectionStrategy, DestroyRef, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from 'app/authentication/authentication.service';
-import { environment } from 'environments/environment';
 import { LoginService } from 'app/authentication/login.service';
-import { Subject } from 'rxjs';
-import { OrganizacionDTO} from 'app/authentication/authentication.domain';
+import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { register } from 'swiper/element';
+import { DashboardIndicators } from "./project/indicators";
 
 register();
 
@@ -18,25 +18,16 @@ register();
     templateUrl: './dashboard.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [FormsModule, ReactiveFormsModule]
+    imports: [FormsModule, ReactiveFormsModule, DashboardIndicators]
 })
-export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DashboardComponent implements AfterViewInit {
   private templateService = inject(TemplateService);
   _jwtAuth = inject(AuthenticationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private _utilsService = inject(UtilsService);
-  private _formBuilder = inject(FormBuilder);
   loginservice = inject(LoginService);
-
-
-  private _unsubscribeAll: Subject<any> = new Subject<any>();
-  currentApplicationVersion = environment.appVersion;
-  signInForm: FormGroup;
-
-  modules: DocumentoPlantillaDTO[] = [];
-  filterControl: FormControl = new FormControl();
-  isLoading = false;
+  private destroyRef = inject(DestroyRef);
 
   slides: string[] = [];
 
@@ -75,26 +66,12 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-
-    this.signInForm = this._formBuilder.group({
-      username: ['', [Validators.required]],
-      password: ['', Validators.required]
-    });
-
-  }
-
-  ngOnDestroy(): void {
-    this._unsubscribeAll.next(null);
-    this._unsubscribeAll.complete();
-  }
-
   ngAfterViewInit(): void {
     this.openFormLink();
   }
 
   openFormLink() {
-    this.route.params.subscribe((params: Params) => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params: Params) => {
       const type = params.type;
       if (type) {
         const plantilla = this.templateService.getTemplate(type, null!);
