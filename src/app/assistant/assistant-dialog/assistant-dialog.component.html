@@ -36,6 +36,17 @@
         }
       </button>
 
+      <a routerLink="/main" (click)="cerrar()" tabindex="-1"
+        class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800"
+        aria-label="Tablero de indicadores">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+      </a>
+
       <button mat-icon-button type="button" (click)="cerrar()" tabindex="-1"
         class="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md backdrop-blur-sm transition-colors hover:bg-white dark:bg-slate-800/80 dark:text-slate-200 dark:hover:bg-slate-800">
         <mat-icon> close </mat-icon>
@@ -79,7 +90,24 @@
                   <img class="h-8 w-8 rounded object-cover" [src]="doc.imagen" />
                   <div>
                     <span class="font-medium text-sm">{{ doc.nombre }}</span>
+                    @if (doc.nombrePlantilla) {
+                      <span class="text-gray-400 dark:text-gray-500 text-xs ml-1">({{ doc.nombrePlantilla }})</span>
+                    }
                     <small class="text-gray-500 dark:text-gray-400 block text-xs">{{ doc.descripcion }}</small>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+          @if (mensaje.templates?.length) {
+            <div class="mt-2 space-y-1">
+              @for (tmpl of mensaje.templates; track tmpl.llaveTabla) {
+                <div class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                     (click)="ejecutarPlantilla(tmpl)">
+                  <img class="h-8 w-8 rounded object-cover" [src]="tmpl.imagen" />
+                  <div>
+                    <span class="font-medium text-sm">{{ tmpl.nombre }}</span>
+                    <small class="text-gray-500 dark:text-gray-400 block text-xs">{{ tmpl.codigo }}</small>
                   </div>
                 </div>
               }
@@ -89,24 +117,6 @@
         <div class="text-[10px] text-gray-400 dark:text-gray-500 mt-1 ml-1">
           {{ formatTime(mensaje.date) }}
         </div>
-
-        <!-- ACCIONES -->
-        @if ( mensaje.actions?.length ) {
-        <div class="flex flex-wrap gap-2 mt-3">
-          @for ( action of mensaje.actions; track action.id ) {
-          <button mat-stroked-button type="button" (click)=" ejecutarAccion(action.id,mensaje  )"
-            class="flex items-center gap-2">
-            @if (action.image) {
-            <img [src]="action.image | imageFormat" class="w-8 h-8 rounded object-cover" />
-            }
-            @if (action.icon && !action.image) {
-            <mat-icon> {{ action.icon }}</mat-icon>
-            }
-            {{ action.label }}
-          </button>
-          }
-        </div>
-        }
       </div>
     </div>
     }

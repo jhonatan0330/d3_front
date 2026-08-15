@@ -3,7 +3,7 @@
   <div class="flex-auto h-full relative overflow-hidden">
     <!-- Backdrop (solo en modo 'over' cuando está abierto) -->
     @if (drawerOpened() && drawerMode() === 'over') {
-    <div class="fixed inset-0 bg-black/50 z-40 transition-opacity" (click)="drawerOpened.set(false)"></div>
+    <div class="absolute inset-0 bg-black/50 z-40 transition-opacity" (click)="drawerOpened.set(false)"></div>
     }
     <!-- Sidebar -->
     <aside
@@ -421,10 +421,8 @@
             <div
               class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
               <img class="icon-size-12" src="{{ plantilla()?.imagen | imageFormat }}" />
-              <a href="#">
-                <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{
+              <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{
                   plantilla()?.nombre }}</h5>
-              </a>
               <p>{{ plantilla()?.objetivo }}</p>
               <br>
               <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Para encontrar lo que

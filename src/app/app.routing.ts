@@ -31,9 +31,9 @@ export const appRoutes: Route[] = [
     canActivate: [AuthGuard],
     component: LayoutComponent,
     children: [
-      { path: 'main', loadComponent: () => import('app/authorization/profile/profile.component').then(m => m.ProfileComponent) },
-      { path: 'main/:type', loadComponent: () => import('app/authorization/profile/profile.component').then(m => m.ProfileComponent) },
-      { path: 'main/:type/:id', loadComponent: () => import('app/authorization/profile/profile.component').then(m => m.ProfileComponent) },
+      { path: 'main', loadComponent: () => import('app/dashboard/dashboard.component').then(m => m.DashboardComponent) },
+      { path: 'main/:type', loadComponent: () => import('app/dashboard/dashboard.component').then(m => m.DashboardComponent) },
+      { path: 'main/:type/:id', loadComponent: () => import('app/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'list/:type/:id', loadComponent: () => import('app/cruds/cruds2.component').then(m => m.Cruds2Component) },
       { path: 'list/:type/:id/:server_id', loadComponent: () => import('app/cruds/cruds2.component').then(m => m.Cruds2Component) },
       { path: 'tasks', redirectTo: 'tasks/list', pathMatch: 'full' },

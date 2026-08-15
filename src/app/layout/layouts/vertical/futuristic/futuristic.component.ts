@@ -9,7 +9,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 
-import { SearchComponent } from '../../../search/search.component';
+
 import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
 import { SimpleNavComponent } from '../../../simple-nav/simple-nav.component';
@@ -20,7 +20,7 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'futuristic-layout',
     templateUrl: './futuristic.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, UserComponent, MatIconButton, MatIcon, SearchComponent, ShortcutsComponent, NotificationButtonComponent, RouterOutlet, ImageFormatPipe]
+    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, UserComponent, MatIconButton, MatIcon,  ShortcutsComponent, NotificationButtonComponent, RouterOutlet, ImageFormatPipe]
 })
 export class FuturisticLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);

@@ -11,35 +11,37 @@ export type AssistantState =
     | 'success'
     | 'error';
 
-export interface AssistantAction {
-    id: string;
-    label: string;
-    icon?: string;
-    color?: 'primary' | 'accent' | 'warn';
-    image?: string;
+export type AssistantIntent =
+    {
+        tipo: 'buscar-por-arroba';
+        parametro: string;
+    }
+    | {
+        tipo: 'buscar-por-arroba-vacio';
+    }
+    | {
+        tipo: 'buscar-template-por-slash';
+        parametro: string;
+    }
+    | {
+        tipo: 'desconocido';
+    };
+
+
+export interface AssistantResult {
+    state: AssistantState;
+    message: AssistantMessage;
+    close?:boolean;
 }
+
 
 export interface AssistantMessage {
     id: string;
     type: AssistantMessageType;
     text: string;
     date: Date;
-
-    /**
-     * Acciones que el usuario puede ejecutar
-     * desde el mensaje.
-     */
-    actions?: AssistantAction[];
-
-    /**
-     * Datos opcionales asociados al mensaje.
-     */
-    data?: unknown;
-
-    /**
-     * Documentos encontrados para selección del usuario.
-     */
     documents?: DocumentSearchResult[];
+    templates?: TemplateSearchResult[];
 }
 
 export interface TemplateData {
@@ -53,6 +55,16 @@ export interface DocumentSearchResult {
     llaveTabla: string;
     nombre: string;
     descripcion: string;
+    imagen: string;
+    server?: string;
+    plantilla?: string;
+    nombrePlantilla?: string;
+}
+
+export interface TemplateSearchResult {
+    llaveTabla: string;
+    nombre: string;
+    codigo: string;
     imagen: string;
     server?: string;
 }

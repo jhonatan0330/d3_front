@@ -6,19 +6,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogRef } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AssistantMessage, AssistantState, TemplateData, DocumentSearchResult } from '../assistant.models';
+import { AssistantMessage, AssistantState, DocumentSearchResult, TemplateSearchResult } from '../assistant.models';
 import { AssistantService, } from '../assistant.service';
-import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { ImageFormatPipe } from '../../shared/local-image';
 import { LoginService } from 'app/authentication/login.service';
 
 
 @Component({
     selector: 'app-assistant-dialog',
     standalone: true,
-    imports: [FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, ImageFormatPipe],
+    imports: [FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, RouterModule],
     templateUrl: './assistant-dialog.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -29,7 +28,6 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
     private readonly dialogRef = inject(MatDialogRef<AssistantDialogComponent>);
     private readonly assistantService = inject(AssistantService);
     private readonly destroyRef = inject(DestroyRef);
-    private readonly utilsService = inject(UtilsService);
     private readonly jwtAuth = inject(LoginService);
     imagenUsuario = signal<string>('');
     readonly estado = signal<AssistantState>('idle');
@@ -69,10 +67,18 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
         const texto = this.pregunta.trim();
         if (!texto) { return; }
 
+        let textoMostrar = texto;
+        if (texto.startsWith('@')) {
+            const param = texto.slice(1).trim();
+            textoMostrar = param ? `Deseo buscar el documento ${param}` : '@';
+        } else if (texto.startsWith('/')) {
+            textoMostrar = `Deseo ingresar al modulo ${texto.slice(1).trim()}`;
+        }
+
         this.agregarMensaje({
             id: crypto.randomUUID(),
             type: 'user',
-            text: texto,
+            text: textoMostrar,
             date: new Date(),
         });
         this.pregunta = '';
@@ -80,16 +86,15 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
 
         const intent = this.assistantService.interpretar(texto);
 
-        if (intent.tipo === 'buscar-documento') {
-            this.estado.set('searching');
-        }
-
         this.assistantService.ejecutar(intent)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: resultado => {
                     this.estado.set(resultado.state);
                     this.agregarMensaje(resultado.message);
+                    if (resultado.close) {  // ← ADD
+                        this.cerrar();
+                    }
                 },
                 error: () => {
                     this.estado.set('error');
@@ -103,21 +108,18 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
             });
     }
 
-    ejecutarAccion(actionId: string, message: AssistantMessage): void {
-        switch (actionId) {
-            case 'abrir-template':
-                this.abrirTemplate(message);
-                break;
-        }
-    }
 
     ejecutarDocumento(doc: DocumentSearchResult): void {
-        const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
-        pedidoVenta.plantilla = doc.llaveTabla;
-        if (doc.server) {
-            pedidoVenta.server = doc.server;
+        if (doc.plantilla) {
+            const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
+            pedidoVenta.llaveTabla = doc.llaveTabla;
+            pedidoVenta.plantilla = doc.plantilla;
+            if (doc.server) {
+                pedidoVenta.server = doc.server;
+            }
+            this.assistantService.abrirDocumento(pedidoVenta);
         }
-        this.utilsService.modalWithParams(pedidoVenta, false);
+
 
         this.agregarMensaje({
             id: crypto.randomUUID(),
@@ -127,18 +129,15 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
         });
     }
 
-    private abrirTemplate(message: AssistantMessage): void {
-        const data = message.data as TemplateData;
-        if (!data || !data.llaveTabla) {
-            return;
-        }
-        const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
-        pedidoVenta.plantilla = data.llaveTabla;
-        if (data.server) {
-            pedidoVenta.server = data.server;
-        }
-        const esReporte = data.tipo === 'Report';
-        this.utilsService.modalWithParams(pedidoVenta, esReporte);
+    ejecutarPlantilla(template: TemplateSearchResult): void {
+        this.assistantService.abrirTemplateDirect(template.llaveTabla)
+        this.agregarMensaje({
+            id: crypto.randomUUID(),
+            type: 'assistant',
+            text: 'Plantilla abierta',
+            date: new Date(),
+        });
+        this.cerrar();
     }
 
     private agregarMensaje(mensaje: AssistantMessage): void {
