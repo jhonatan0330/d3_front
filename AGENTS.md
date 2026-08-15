@@ -7,7 +7,7 @@ Guidance for AI agents and developers working in this repository.
 - **Name**: d3Front ("Asistant project IA")
 - **Type**: Angular SPA (admin/business app) built on the **FuseAdmin** template
 - **Current stack**: Angular **22.1.0**, TypeScript 6.0.3, Tailwind CSS 3.4.7, RxJS 7.8.2, SCSS
-- **Target**: Angular **22** (see `MIGRATION_PLAN.md` for the migration roadmap — it is the source of truth for the upgrade)
+- **Target**: Angular **22** (already at 22.1.0; see `PlanMejoras.md` for the post-migration improvement plan — the source of truth for ongoing work).
 - **Build system**: Standalone components, bootstrap via `bootstrapApplication` in `src/main.ts` (**zoneless**, `provideZonelessChangeDetection()`; zone.js eliminado en Fase 5.4).
 
 ## Commands
@@ -18,7 +18,7 @@ npm run build        # ng build --build-optimizer (production)
 npm run build:stats  # ng build --stats-json (bundle analysis)
 npm run watch        # ng build --watch --configuration development
 npm run analyze      # webpack-bundle-analyzer on dist/fuse/stats.json
-npm run lint         # ng lint (ESLint, @angular-eslint) -- actualmente roto, ver MIGRATION_PLAN 0.1a
+npm run lint         # ng lint (ESLint, works; currently 165 warnings / 0 errors, mostly `any` and `no-console` in `warn` level)
 npm test             # vitest run (Vitest, ver Testing abajo)
 npm run test:watch   # vitest (modo watch)
 ```
@@ -38,9 +38,9 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 
 ### Module layout
 - `src/main.ts` — entry, `bootstrapApplication` con `provideZonelessChangeDetection()` (zoneless).
-- `src/app/app.routing.ts` — all routes. Admin section guarded by `AuthGuard`; lazy-loaded modules: `authorization` (Profile), `cruds`, `tasks`, `neuron`, `massive`, `accounting`, `recover-password`, `new-password`.
+- `src/app/app.routing.ts` — all routes. Admin section guarded by `AuthGuard`; lazy-loaded modules: `authorization` (Profile), `cruds`, `tasks`, `massive`, `accounting`, `recover-password`, `new-password`. (`persons` currently eager — see PlanMejoras.md limpieza).
 - `src/@fuse/` — FuseAdmin template (keep as-is during migration). Contains `FuseModule`, servicios (config, loading, media-watcher, platform), y los style entry points (`tailwind.scss`, `themes.scss`, `main.scss`). La navegación de Fuse fue reemplazada: **todos los layouts usan `mat-sidenav` + `simple-nav`** (`src/app/layout/common/simple-nav/`); de `@fuse/components/navigation` solo queda `navigation.types.ts` (tipo `FuseNavigationItem`).
-- `src/app/modules/full/neuron/` — **critical, complex** dynamic-forms engine (~16 dynamic control types under `form/controls/`). Treat as high-risk; migrate last and with care.
+- `src/app/modules/full/neuron/` — **critical, complex** dynamic-forms engine (18 dynamic control types under `form/controls/`: archivo, base, binario, configuracion, croquis, detalle, disponibilidad, fecha, gps, gps-map, informative, numero, proceso, product, producto-lista, seccion, texto, vinculo). Treat as high-risk; migrate last and with care.
 - Other domains: `accounting`, `authentication`, `authorization`, `configuration-forms`, `cruds`, `document-transition`, `layout`, `massive`, `notification`, `persons`, `shared`, `tasks`.
 
 ### Conventions
@@ -51,20 +51,21 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 
 ## Testing
 
-- **Vitest** (montado en Fase 5.5, runner primario): config en `vitest.config.ts` (`@analogjs/vite-plugin-angular` + aliases `@fuse`/`app`/`environments` para resolver el `baseUrl`), setup en `src/test-setup.ts` (**zoneless**: `setupTestBed({ zoneless: true })` de `@analogjs/vitest-angular/setup-testbed`), tipos en `tsconfig.spec.json`.
+- **Vitest** (configured in Fase 5.5, primary runner): config en `vitest.config.ts` (`@analogjs/vite-plugin-angular` + aliases `app`/`environments`/`config` para resolver el `baseUrl`), setup en `src/test-setup.ts` (**zoneless**: `setupTestBed({ zoneless: true })` de `@analogjs/vitest-angular/setup-testbed`), tipos en `tsconfig.spec.json`.
 - Comandos: `npm test` (una pasada) y `npm run test:watch`.
-- Primeras suites: `src/app/shared/plantilla-helper.spec.ts` y `src/app/shared/local-image.spec.ts` (18 tests). Los specs quedan excluidos del build de la app.
-- Verificación principal tras editar código: `npm run build` (y `npx tsc -p tsconfig.app.json --noEmit`).
+- 5 suites / 66 tests pass: `login.service.spec.ts`, `tasks.service.spec.ts`, `template.service.spec.ts`, `plantilla-helper.spec.ts`, `local-image.spec.ts`. Los specs quedan excluidos del build de la app. **Coverage tooling not yet installed** (`@vitest/coverage-v8` pending — see P5-1 in PlanMejoras.md).
+- Typecheck: `npx tsc -p tsconfig.app.json --noEmit` — **0 errors** (baseline ✅).
 
 ## Migration Status & Constraints
 
-- Project is on Angular 17.3.12 and being upgraded one major at a time to 22 (17→18→19→20→21→22). Follow `MIGRATION_PLAN.md` phases; do not skip majors.
-- **Separate version upgrade from modernization** (signals, standalone, zoneless). Modernization is Phase 5, after 22 is working.
-- Known deprecated APIs currently in use (fix only as the plan directs):
-  - `throwError(error)` (lazy arg) in `login.service.ts` and `shared/error.interceptor.ts`
-  - `ComponentFactoryResolver` in `cruds2.component.ts`, `neuron/form/form.component.ts`, `neuron/form/controls/product/product.component.ts`
-- Third-party risk packages: `@magloft/material-carousel` (abandoned), `ngx-editor` (unmaintained, v19 beta is latest), `ng-apexcharts`/`apexcharts` (needs major bump). Do not bump these outside the plan.
-- Recently removed from the codebase (do not recreate unless asked): the `gps` module and several `@fuse` sub-features (drawer, fullscreen, animations, `scroll-reset` directive, `find-by-key` pipe, navigation components, `scrollbar` directive, `utils` service).
+- Project is on Angular **22.1.0** (upgrade 17→18→19→20→21→22 — complete). Follow `PlanMejoras.md` phases for ongoing improvements; do not skip majors when introducing new migration steps.
+- **Separate version upgrade from modernization** (signals, standalone, zoneless). Modernization is Phase 5, after 22 is working. ✅ Modernization already in progress (zoneless active, signals adopted, `takeUntilDestroyed` in use).
+- Deprecated APIs — all resolved:
+  - `throwError(error)` (lazy arg) → `throwError(() => error)` in `login.service.ts:103` and `shared/error.interceptor.ts:45`.
+  - `ComponentFactoryResolver` → removed entirely (no occurrences in codebase).
+- Third-party risk packages: `ngx-editor` (unmaintained, `@bobbyquantum/ngx-editor@^22.0.1` is latest), `ng-apexcharts`/`apexcharts` (needs major bump). `@magloft/material-carousel` — **already removed** from `package.json`. Do not bump risk packages outside the plan.
+- The `gps` control (`neuron/form/controls/gps/`) — **still active**, 2 files. Not removed (correction: do not remove unless asked, it's live code).
+- Recently removed from the codebase (do not recreate unless asked): several `@fuse` sub-features (drawer, fullscreen, animations, `scroll-reset` directive, `find-by-key` pipe, navigation components, `scrollbar` directive, `utils` service).
 
 ## Material Minimization Strategy
 
@@ -94,12 +95,13 @@ Components are being migrated from Material to Tailwind CSS. The strategy is to 
 - Pattern: `w-full h-1 bg-gray-200 rounded overflow-hidden` + inner div with `animate-pulse`
 - No external dependencies, pure CSS animation
 
-#### Menu → Tailwind (completed)
+#### Menu → Tailwind (in progress)
 - `MatMenu` / `MatMenuTrigger` / `MatMenuItem` → custom `<app-dropdown>` + `<app-dropdown-item>`
 - Components in `src/app/shared/components/dropdown/`
 - Uses `@HostListener('document:click')` for click-outside closing
 - Signal-based state management (`isOpen`)
 - Reusable across all components
+- **Pendiente migrar**: `mat-menu` aún usado en `accounting.component.html`, `tasks/list`, `persons.component.html`, `form.component.html`, `cruds2.component.html`
 
 ### Components to Keep (for now)
 - `MatDialog` — complex overlay, no simple Tailwind replacement

@@ -6,11 +6,12 @@ Plan de mejores prácticas post-migración Angular 22. Auditoría completa (sesi
 
 Bugs que comprometen seguridad o autenticación.
 
-- [x] **P0-1** `pdf.service.ts:10` — secretos `P_KEY`/`P_TOKEN` hardcodeados + HTTP sin TLS (`http://piopollo.softwareparati.com`). Mover a `environment.ts`, exigir HTTPS.
+- [x] **P0-1** `pdf.service.ts:10` — secretos `P_KEY`/`P_TOKEN` hardcodeados en `config.ts` + HTTP sin TLS (`http://piopollo.softwareparati.com`). Secretos movidos a `config.ts` (importado desde `environments`), exigir HTTPS en backend. *(Nota: los secretos siguen en `config.ts` no en `environment.ts` — ver P0-extra).*
 - [x] **P0-2** `login.service.ts:222-225` — `catchError` emite `of(error)` (truthy) → bypass de `AuthGuard` en fallo de red. Cambiar a `return of(false)`.
 - [ ] **P0-3** JWT en query strings de reportes — `form.component.ts:966-987`, `cruds2.component.ts:472-490`, `manual-form.component.ts:411`. **Diseñado, NO aplicado (requiere backend).** Diseño: los 3 `showReport` abren `window.open(GET /reporte?nombre&P_KEY&P_TOKEN)`; el backend solo acepta GET con query params. Fix propuesto: (1) backend expone endpoint que acepta el JWT por header `Authorization` (ya lo añade `token.interceptor.ts` a las llamadas HttpClient de la app) o por body POST; (2) frontend unifica los 3 call sites en un único helper en `utils.service.ts` que hace `HttpClient.post(..., { responseType: 'blob' })` y abre el blob resultante (`URL.createObjectURL`) en pestaña nueva, replicando el comportamiento actual. No tocar `showReport` hasta coordinar backend.
 - [x] **P0-4** XSS potencial — `bypassSecurityTrustHtml` en `login.service.ts:168,175` → `[innerHTML]` en los 10 layouts. Render con escape o whitelist.
 - [x] **P0-5** `signout()` llama `getOrganization()` (HTTP en pleno logout) — `login.service.ts:261`. Extraer solo limpieza local.
+- [ ] **P0-extra** `config.ts:2` — `apiUrl: 'http://localhost'` hardcodeado en prod. Mover a `environment.prod.ts` con valor HTTPS real.
 
 ## Fase P1 — NG0100 / Reactividad
 
@@ -22,7 +23,7 @@ Estado mutado en suscripciones sin notificación al CD (zoneless + OnPush).
 
 ## Fase P2 — Ciclo de vida RxJS
 
-- [ ] **P2-1** 119 `.subscribe()` sin cleanup en 36 archivos (neuron: 63). Priorizar `valueChanges.subscribe()` de controles (fuga de listeners por apertura de dialog) → `takeUntilDestroyed()` o `effect()`. **Parcial**: 17 `valueChanges` de controles migrados (binario, configuracion, detalle, direcciones, fecha ×5, gps, informative, numero ×2, proceso, texto, search). Pendiente: resto de subscribes (Secciones B neuron y C app).
+- [ ] **P2-1** 102 `.subscribe()` sin cleanup en 36 archivos (neuron: 63). Priorizar `valueChanges.subscribe()` de controles (fuga de listeners por apertura de dialog) → `takeUntilDestroyed()` o `effect()`. **Parcial**: 17 `valueChanges` de controles migrados (binario, configuracion, detalle, direcciones, fecha ×5, gps, informative, numero ×2, proceso, texto, search). Pendiente: 102 subscribes restantes (Secciones B neuron y C app). *(Nota: el conteo inicial de 119 incluía 17 ya migrados).*
 - [ ] **P2-2** Suscripciones anidadas/recursivas: `form.component.ts:1141`, `detalle.component.ts:414`, `proceso.component.ts:1094,1132,1184` (recursión HTTP sin guarda anti-reentrada).
 - [ ] **P2-3** 22 archivos con `Subject<any>` + `takeUntil` legacy → `takeUntilDestroyed()`.
 
@@ -36,21 +37,22 @@ Estado mutado en suscripciones sin notificación al CD (zoneless + OnPush).
 
 ## Fase P4 — TypeScript y Forms
 
-- [ ] **P4-1** `strict:false` + 188 `any` + 48 `as any` + 366 `!` (`form.component.ts`: 105). Subir a `strict:true` incremental (por archivo).
+- [ ] **P4-1** `strict:false` + 50 `: any` + 48 `as any` + 366 `!` (`form.component.ts`: 105). Subir a `strict:true` incremental (por archivo). *(Nota: el conteo original de 188 `any` incluía matches de `as any` — separar: 50 anotaciones `: any` + 48 `as any` explícitos).*
 - [ ] **P4-2** 8 archivos con `UntypedForm*` legacy → `FormBuilder` tipado / `NonNullableFormBuilder`.
-- [ ] **P4-3** `LoginService` god service → extraer carrusel/landing/auth a servicios dedicados.
+- [ ] **P4-3** `LoginService` god service (432 líneas) → extraer carrusel/landing/auth a servicios dedicados.
 
 ## Fase P5 — Testing y CI
 
 - [ ] **P5-1** Instalar `@vitest/coverage-v8`, bloque `coverage` en `vitest.config.ts` con umbrales, scripts `typecheck`/`test:coverage`/`test:ci`.
-- [ ] **P5-2** Tests del motor `neuron` (mayor riesgo, 0 cobertura de componentes). Ampliar de 3/18 servicios a todos los críticos.
-- [ ] **P5-3** Integrar `@angular-eslint` en `eslint.config.js` (inactivo hoy), reparar `ng lint`, subir `no-explicit-any`/`no-console` a `error`.
+- [ ] **P5-2** Tests del motor `neuron` (mayor riesgo, 0 cobertura de componentes). Ampliar de 1/4 servicios testados (`template.service.spec.ts`) a todos los críticos (`api.service`, `utils.service`, `form.component`, `proceso.component`). *(Nota: 5 suites/66 tests pass; `neuron` tiene 35 archivos TS, 1 spec).*
+- [ ] **P5-3** Integrar `@angular-eslint` en `eslint.config.js` (inactivo hoy). Lint ya funciona con 165 warnings/0 errors (`ng lint` funciona); añadir `@angular-eslint` rules, subir `no-explicit-any`/`no-console` a `error`.
 - [ ] **P5-4** Pipeline CI (GitHub Actions/GitLab): install → lint → typecheck → test+coverage → build.
 
 ## Limpiezas menores (rápidas)
 
-- [ ] Ruta debug `noseperolodejopormodule/form` (app.routing.ts:42).
-- [ ] `persons` eager → lazy (`app.routing.ts:6,46`).
-- [ ] `apiUrl: 'http://localhost'` en config prod (`config.ts:2`, `environment.prod.ts:6`).
-- [ ] URLs demo hardcodeadas (`visor-pdf-dialog.component.ts:41,46`).
-- [ ] Actualizar AGENTS.md (afirmaciones desactualizadas: `ComponentFactoryResolver` ya no existe, `gps` sigue activo, `takeUntilDestroyed` en uso).
+- [x] AGENTS.md actualizado (afirmaciones desactualizadas corregidas: lint funciona, `gps` sigue activo, `throwError`/`ComponentFactoryResolver` resueltos, `@magloft` removido, `ignoreDeprecations` pendiente).
+- [ ] `persons` eager → lazy (`app.routing.ts:50`).
+- [ ] `apiUrl: 'http://localhost'` en config (`config.ts:2`, `environment.prod.ts:6`).
+- [ ] `ignoreDeprecations: "6.0"` en `tsconfig.json:6` — eliminar post-migración Angular 22.
+- [ ] URLs demo hardcodeadas (`visor-pdf-dialog.component.ts:41,46`) — verificar si siguen activas.
+- [ ] `rxjs/operators` import legacy en `token.interceptor.ts:9` (`map` desde `rxjs/operators`) → migrar a `rxjs/operators`... (Angular 22 recomienda imports directos).
