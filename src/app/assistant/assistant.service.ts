@@ -1,13 +1,17 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
-import { AssistantAction, AssistantMessage, AssistantState, TemplateData } from './assistant.models';
+import { Observable, of, delay, switchMap } from 'rxjs';
+import { AssistantAction, AssistantMessage, AssistantState, TemplateData, DocumentSearchResult } from './assistant.models';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 
 @Injectable({ providedIn: 'root' })
 export class AssistantService {
     private readonly templateService = inject(TemplateService);
+    private readonly api = inject(ApiService);
+    private readonly utilsService = inject(UtilsService);
 
     isOpenDialog = signal<boolean>(true);
 
@@ -26,6 +30,14 @@ export class AssistantService {
 
     interpretar(pregunta: string): AssistantIntent {
         const texto = this.normalizar(pregunta);
+
+        if (pregunta.trim().startsWith('@')) {
+            return {
+                tipo: 'buscar-por-arroba',
+                parametro: pregunta.trim().slice(1).trim(),
+            };
+        }
+
         const esBusquedaTemplate = this.detectarBusquedaTemplate(texto);
         if (esBusquedaTemplate) {
             return {
@@ -119,6 +131,58 @@ export class AssistantService {
             }
 
 
+            case 'buscar-por-arroba': {
+                const filter: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
+                filter.nombre = intent.parametro;
+                return this.api.listarDocumentos(filter, null!).pipe(
+                    switchMap((docs: PedidoVentaDTO[]) => {
+                        if (!docs || docs.length === 0) {
+                            return of<AssistantResult>({
+                                state: 'success',
+                                message: {
+                                    id: crypto.randomUUID(),
+                                    type: 'assistant',
+                                    text: `No se encontraron documentos que se identifiquen como: ${intent.parametro}`,
+                                    date: new Date(),
+                                },
+                            });
+                        }
+                        if (docs.length === 1) {
+                            const doc = docs[0];
+                            this.abrirDocumento(doc);
+                            return of<AssistantResult>({
+                                state: 'success',
+                                message: {
+                                    id: crypto.randomUUID(),
+                                    type: 'assistant',
+                                    text: 'Documento abierto',
+                                    date: new Date(),
+                                },
+                            });
+                        }
+                        const documentos: DocumentSearchResult[] = docs
+                            .filter(d => d.estado !== 'I')
+                            .map(d => ({
+                                llaveTabla: d.llaveTabla,
+                                nombre: d.nombre,
+                                descripcion: d.descripcion,
+                                imagen: d.imagen,
+                                server: d.server,
+                            }));
+                        return of<AssistantResult>({
+                            state: 'success',
+                            message: {
+                                id: crypto.randomUUID(),
+                                type: 'assistant',
+                                text: `Encontré ${documentos.length} documento(s):`,
+                                date: new Date(),
+                                documents: documentos,
+                            },
+                        });
+                    })
+                );
+            }
+
             default: {
 
                 return of<AssistantResult>({
@@ -196,6 +260,12 @@ export class AssistantService {
         if (PlantillaHelper.buscarPropiedad(template.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) return 'Report';
         return 'Template';
     }
+
+    abrirDocumento(doc: PedidoVentaDTO): void {
+        if (this.templateService.getTemplate(doc.plantilla, null!)) {
+            this.utilsService.modalWithParams(doc, false);
+        }
+    }
 }
 
 
@@ -210,6 +280,10 @@ export type AssistantIntent =
     }
     | {
         tipo: 'buscar-documento';
+        parametro: string;
+    }
+    | {
+        tipo: 'buscar-por-arroba';
         parametro: string;
     }
     | {

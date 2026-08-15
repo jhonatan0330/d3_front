@@ -35,6 +35,11 @@ export interface AssistantMessage {
      * Datos opcionales asociados al mensaje.
      */
     data?: unknown;
+
+    /**
+     * Documentos encontrados para selección del usuario.
+     */
+    documents?: DocumentSearchResult[];
 }
 
 export interface TemplateData {
@@ -42,4 +47,12 @@ export interface TemplateData {
     server?: string;
     proceso?: string;
     tipo: string;
+}
+
+export interface DocumentSearchResult {
+    llaveTabla: string;
+    nombre: string;
+    descripcion: string;
+    imagen: string;
+    server?: string;
 }

@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogRef } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AssistantMessage, AssistantState, TemplateData, } from '../assistant.models';
+import { AssistantMessage, AssistantState, TemplateData, DocumentSearchResult } from '../assistant.models';
 import { AssistantService, } from '../assistant.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
@@ -109,6 +109,22 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
                 this.abrirTemplate(message);
                 break;
         }
+    }
+
+    ejecutarDocumento(doc: DocumentSearchResult): void {
+        const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
+        pedidoVenta.plantilla = doc.llaveTabla;
+        if (doc.server) {
+            pedidoVenta.server = doc.server;
+        }
+        this.utilsService.modalWithParams(pedidoVenta, false);
+
+        this.agregarMensaje({
+            id: crypto.randomUUID(),
+            type: 'assistant',
+            text: 'Documento abierto',
+            date: new Date(),
+        });
     }
 
     private abrirTemplate(message: AssistantMessage): void {
