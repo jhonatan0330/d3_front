@@ -2,7 +2,6 @@ import { Route } from '@angular/router';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { AuthGuard } from './authentication/authentication.guard';
 import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
-import { PersonsComponent } from './persons/persons.component';
 import { CanDeactivateTasksDetails } from './tasks/tasks.guards';
 
 // @formatter:off
@@ -47,7 +46,7 @@ export const appRoutes: Route[] = [
       { path: 'massive/:template', loadComponent: () => import('app/massive/massive.component').then(m => m.MassiveComponent) },
       { path: 'massive/:template/:server', loadComponent: () => import('app/massive/massive.component').then(m => m.MassiveComponent) },
       { path: 'account', loadComponent: () => import('app/accounting/accounting.component').then(m => m.AccountComponent) },
-      { path: 'persons', component: PersonsComponent },
+      { path: 'persons', loadComponent: () => import('app/persons/persons.component').then(m => m.PersonsComponent) },
       { path: '**', redirectTo: 'main' },
     ]
 

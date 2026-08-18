@@ -51,8 +51,8 @@ Estado mutado en suscripciones sin notificación al CD (zoneless + OnPush).
 ## Limpiezas menores (rápidas)
 
 - [x] AGENTS.md actualizado (afirmaciones desactualizadas corregidas: lint funciona, `gps` sigue activo, `throwError`/`ComponentFactoryResolver` resueltos, `@magloft` removido, `ignoreDeprecations` pendiente).
-- [ ] `persons` eager → lazy (`app.routing.ts:50`).
-- [ ] `apiUrl: 'http://localhost'` en config (`config.ts:2`, `environment.prod.ts:6`).
-- [ ] `ignoreDeprecations: "6.0"` en `tsconfig.json:6` — eliminar post-migración Angular 22.
-- [ ] URLs demo hardcodeadas (`visor-pdf-dialog.component.ts:41,46`) — verificar si siguen activas.
-- [ ] `rxjs/operators` import legacy en `token.interceptor.ts:9` (`map` desde `rxjs/operators`) → migrar a `rxjs/operators`... (Angular 22 recomienda imports directos).
+- [x] `persons` eager → lazy (`app.routing.ts:50`). *(Completado: lazy-loaded via `loadComponent`.)*
+- [ ] `apiUrl: 'http://localhost'` en config (`config.ts:2`, `environment.prod.ts:6`). **Pendiente**: requiere decidir valor real HTTPS para prod.
+- [ ] `ignoreDeprecations: "6.0"` en `tsconfig.json:6` — **pendiente**: aún necesario para TypeScript 6.0.x, eliminar cuando se migre a TS 6.1+.
+- [x] URLs demo hardcodeadas (`visor-pdf-dialog.component.ts:38,46`) — eliminados URLs de debug (`orimi.com/pdf-test.pdf`).
+- [x] `rxjs/operators` import legacy en `token.interceptor.ts:9` → migrado a `import { map } from 'rxjs'`.

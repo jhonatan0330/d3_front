@@ -6,7 +6,7 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map } from 'rxjs';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {

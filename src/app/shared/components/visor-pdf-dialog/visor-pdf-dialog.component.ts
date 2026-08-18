@@ -35,12 +35,9 @@ export class VisorPdfDialogComponent implements OnDestroy {
         this.objectUrl = URL.createObjectURL(blob);
         this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.objectUrl);
         this.loading = false;
-this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.orimi.com/pdf-test.pdf');  
-        //setTimeout(() => this.imprimir(), 800);
       },
       error: (err) => {
         console.error('Error cargando PDF', err);
-        this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.orimi.com/pdf-test.pdf');  
         this.loading = false;
       }
     });
