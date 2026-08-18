@@ -47,6 +47,7 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.compo
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 import { CopierService } from 'app/shared/copier.service';
 import { FormReportService } from 'app/modules/full/neuron/service/form-report.service';
+import { FormTransitionService } from 'app/modules/full/neuron/service/form-transition.service';
 
 @Component({
     selector: 'app-form',
@@ -67,6 +68,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private _destroyRef = inject(DestroyRef);
     private copier = inject(CopierService);
     private reportService = inject(FormReportService);
+    private transitionService = inject(FormTransitionService);
 
     // Variables para el control de los campos
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
@@ -816,39 +818,8 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     getTransitionsOfTemplate(pTemplate: DocumentoPlantillaDTO, pState: string, pDocumentTransition: PedidoVentaDTO, pIsVinculo: boolean) {
-        if (!pTemplate || !pTemplate.estados || pTemplate.estados.length === 0) return;
-
-        for (let _iField = 0; _iField < pTemplate.estados.length; _iField++) {
-            const _stateElement = pTemplate.estados[_iField];
-            /*if (!this.pedido()!.llaveTabla && !estadollave) {
-                estadollave = estadoIterador.llaveTabla;
-            }*/
-            if (_stateElement.llaveTabla === pState) {
-                if (_stateElement.transiciones && _stateElement.transiciones.length === 0) return;
-                for (let j = 0; j < _stateElement.transiciones.length; j++) {
-                    const _transition = _stateElement.transiciones[j];
-                    if (_transition.plantilla) {
-                        const _templateTransition: DocumentoPlantillaDTO = this.templateService.getTemplate(_transition.plantilla, pTemplate.server)!;
-                        if (_templateTransition && !PlantillaHelper.isEmpty(_templateTransition.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-                            //Esto es para que no se vean todas las transiciones, si toca mejorar un poco la logica por el momento va asi
-                            if (pIsVinculo) {
-                                if(PlantillaHelper.isEmpty(_transition.propiedades, PlantillaHelper.TRANSICION_VISIBLE_VINCULO)){
-                                    continue;
-                                }
-                            }
-                            const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
-                            _newtransicion.imagen = _templateTransition.imagen;
-                            _newtransicion.plantilla = _templateTransition.llaveTabla;
-                            _newtransicion.nombre = _transition.nombre;
-                            _newtransicion.documentToTransition = pDocumentTransition;
-                            this.transiciones.update(t => [...t, _newtransicion]);
-                        }
-                    }
-                }
-                return;
-            }
-        }
-
+        const transitions = this.transitionService.getTransitionsOfTemplate(pTemplate, pState, pDocumentTransition, pIsVinculo);
+        transitions.forEach(t => this.transiciones.update(ts => [...ts, t]));
     }
 
     // Se encarga de abrir el formulario de la transicion

@@ -13,6 +13,7 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TitleCasePipe } from '@angular/common';
 import { ImageFormatPipe } from '../../../../../../shared/local-image';
+import { FormTransitionService } from 'app/modules/full/neuron/service/form-transition.service';
 
 @Component({
     selector: 'app-vinculo',
@@ -25,6 +26,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   private templateService = inject(TemplateService);
   dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
   private api = inject(ApiService);
+  private transitionService = inject(FormTransitionService);
 
 
   proceso: PedidoVentaDTO; // Contiene el documento seleccionado
@@ -57,38 +59,11 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   }
 
   getTransitionsOfTemplate(template: string, pState: string, pDocumentTransition: PedidoVentaDTO) {
-
-    const pTemplate: DocumentoPlantillaDTO = this.templateService.getTemplate(
-      template, null!
-    )!;
-    if (!pTemplate || !pTemplate.estados || pTemplate.estados.length === 0) return;
-
+    const pTemplate: DocumentoPlantillaDTO = this.templateService.getTemplate(template, null!)!;
+    if (!pTemplate) return;
     this.plantilla = pTemplate;
-
-    for (let _iField = 0; _iField < pTemplate.estados.length; _iField++) {
-      const _stateElement = pTemplate.estados[_iField];
-      /*if (!this.pedido.llaveTabla && !estadollave) {
-          estadollave = estadoIterador.llaveTabla;
-      }*/
-      if (_stateElement.llaveTabla === pState) {
-        if (_stateElement.transiciones && _stateElement.transiciones.length === 0) return;
-        for (let j = 0; j < _stateElement.transiciones.length; j++) {
-          const _transition = _stateElement.transiciones[j];
-          if (_transition.plantilla) {
-            const _templateTransition: DocumentoPlantillaDTO = this.templateService.getTemplate(_transition.plantilla, pTemplate.server)!;
-            if (_templateTransition && !PlantillaHelper.isEmpty(_templateTransition.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-              const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
-              _newtransicion.imagen = _templateTransition.imagen;
-              _newtransicion.plantilla = _templateTransition.llaveTabla;
-              _newtransicion.nombre = _transition.nombre;
-              _newtransicion.documentToTransition = pDocumentTransition;
-              this.transiciones.push(_newtransicion);
-            }
-          }
-        }
-        return;
-      }
-    }
+    const transitions = this.transitionService.getTransitionsOfTemplate(pTemplate, pState, pDocumentTransition);
+    transitions.forEach(t => this.transiciones.push(t));
   }
 
   openDocument(p: PedidoVentaDTO) {
