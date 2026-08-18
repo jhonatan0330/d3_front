@@ -1,4 +1,5 @@
-import { Component, ElementRef, OnInit, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext } from '@angular/core';
+import { Component, ElementRef, OnInit, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
@@ -77,7 +78,9 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
       filtro.dependientes = this.data.dependientes;
 
       this.isLoading.set(true);
-      this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
+      this.api.consultarDatosBase(filtro, this.urlServer)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
         next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
           this.isLoading.set(false);
           this.consultaExitosaDatosBase(_value);
@@ -120,7 +123,9 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
             disableClose: true,
             data: { data: formDetailLocation, allowEdit: this.isEnabled},
           });
-          dialogRef.afterClosed().subscribe((resp) => {
+          dialogRef.afterClosed()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((resp) => {
             // Aqui es donde se remueve el item
             if (!resp) {
               this.removeLocation(puesto);

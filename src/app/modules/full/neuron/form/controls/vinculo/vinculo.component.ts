@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
 import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO, PedidoVentaFilterDTO, ProcesoTransicionDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
@@ -92,7 +93,9 @@ export class VinculoComponent extends BaseComponent implements OnInit {
 
     const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
     entity.llaveTabla = this.proceso.llaveTabla;
-    this.api.consultarDocumento(entity, this.plantilla.server).subscribe({
+    this.api.consultarDocumento(entity, this.plantilla.server)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (_value: PedidoVentaDTO) => {
         this.proceso = _value;
         this.organizarDocumentoProceso(pNextTemplate);
@@ -205,7 +208,9 @@ export class VinculoComponent extends BaseComponent implements OnInit {
       _doc.caracteristicas.push(campoBase);
     }
     //_doc.server = this.plantilla.server;
-    this.utilsService.modalWithParams(_doc, true).subscribe((res) => {
+    this.utilsService.modalWithParams(_doc, true)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
       if (res && this.dialogRef) {
         this.dialogRef.close();
         /*if (!this.close2Save) {
@@ -252,6 +257,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
         this.isLoading.set(true);
         this.api
           .obtenerCampos(plantillaId, dp.server)
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
               plantilla.server = dp.server;

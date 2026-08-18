@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ChangeDetectionStrategy, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
@@ -75,12 +76,16 @@ export class CroquisComponent extends BaseComponent
       maxWidth: '95vw',
     });
 
-    dialogRef.afterOpened().subscribe(() => {
+    dialogRef.afterOpened()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
       this.initCanvasIfNeeded();
       this.draw();
     });
 
-    dialogRef.afterClosed().subscribe(() => {
+    dialogRef.afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
       this.removeCanvasListeners();
       this.canvas = undefined;
       this.ctx = undefined;

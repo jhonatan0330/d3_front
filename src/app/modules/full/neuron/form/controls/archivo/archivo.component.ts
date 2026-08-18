@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ChangeDetectionStrategy, inject, viewChild, signal, effect } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ChangeDetectionStrategy, inject, viewChild, signal, effect, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
@@ -312,7 +313,9 @@ resizeCanvas(): void {
       if (!internalFile && fileToUpload.blob) {
         internalFile = this.b64toFile(fileToUpload.blob);
       }
-      this.api.uploadFile(internalFile, this.urlServer).subscribe(
+      this.api.uploadFile(internalFile, this.urlServer)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(
         (data) => {
           const returnedData = data.message;
           if (!this.source()) {

@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
@@ -80,7 +81,9 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
     const nFilter:PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
     nFilter.filtroParametro = this.fControl.value!;
     this.fControl.setValue('');
-    this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
+    this.api.consultarDatosBase(nFilter, this.urlServer)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
         this.isLoading.set(false);
         this.productosDisponibles = Object.assign([], _value.campoDTO.productos);

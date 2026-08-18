@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
 import Swal from 'sweetalert2';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -62,7 +63,9 @@ export class GpsMapComponent extends BaseComponent implements OnInit {
     filtro.dependientes = this.data.dependientes;
 
     this.isLoading.set(true) ;
-    this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
+    this.api.consultarDatosBase(filtro, this.urlServer)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
         this.isLoading.set(false);
 

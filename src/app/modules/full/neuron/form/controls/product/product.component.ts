@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, inject, viewChild, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   DetallePedidoVentaDTO,
@@ -25,6 +26,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   data = inject(MAT_DIALOG_DATA);
   dialogRef = inject<MatDialogRef<ProductComponent>>(MatDialogRef);
   private api = inject(ApiService);
+  private destroyRef = inject(DestroyRef);
 
 
   detallePedidoVenta = new DetallePedidoVentaDTO();
@@ -363,7 +365,9 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   consultarInventarios() {
     this.isLoading = true;
-    this.api.consultarInventario(this.detallePedidoVenta.producto, this.server).subscribe({
+    this.api.consultarInventario(this.detallePedidoVenta.producto, this.server)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (_value: ProductoInventarioDTO[]) => {
         this.inventories = _value;
         this.isLoading = false;

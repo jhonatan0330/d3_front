@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.domain';
 import { ApiService } from '../../../service/api.service';
@@ -63,7 +64,9 @@ export class SeccionComponent extends BaseComponent implements OnInit {
         filtro.campo = this.structure.llaveTabla;
         filtro.documento = campoFiltro.documento;
         this.isLoading.set(true);
-        this.api.consultarDatosBase(filtro, this.urlServer).subscribe({
+        this.api.consultarDatosBase(filtro, this.urlServer)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
               next:(_value: PedidoVentaCaracteristicaFilterDTO) => {
                 if(_value.valorNumeroMax && _value.valorNumeroMax === 1) {
               this.isInvisible = false;
