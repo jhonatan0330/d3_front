@@ -404,12 +404,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
             if (dependentIterato.valor === element.campo) {
               const relations = this.templateService.getPropertyRelation(dependentIterato.llaveTabla);
               if (!relations || relations.length == 0) {
-                //Copiado de tipo proceso
-                const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
-                filtro.estado = StatesEnum.ACTIVE;
-                filtro.propiedad = dependentIterato.llaveTabla;
-                //this.isLoadingList = true;
-                this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
+                this.templateService.getOrFetchRelations(dependentIterato.llaveTabla, this.urlServer).subscribe({
                   next: (value: RelacionInternaDTO[]) => {
                     if (!value || value.length === 0) {
                       //Creo una relacion falsa para que no vuelva a filtrar
@@ -421,12 +416,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
                       value = [];
                       value.push(ri);
                     }
-                    this.templateService.addRelations(value);
-                    //this.isLoadingList = false;
                     this.modificarDetallePedido(item);
                   },
                   error: () => {
-                    //this.isLoadingList = false;
                   },
                 });
                 return;

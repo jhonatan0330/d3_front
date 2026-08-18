@@ -1,8 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import {
   DocumentoPlantillaDTO,
   RelacionInternaDTO,
+  RelacionInternaFilterDTO,
 } from 'app/modules/full/neuron/model/sw42.domain';
+import { StatesEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
@@ -13,6 +18,7 @@ import { NavigationService } from 'app/layout/navigation/navigation.service';
 })
 export class TemplateService {
   private ls = inject(LocalStoreService);
+  private http = inject(HttpClient);
   private _navigationService = inject(NavigationService);
 
   private readonly _template = signal<DocumentoPlantillaDTO[]>([]);
@@ -172,6 +178,22 @@ export class TemplateService {
   getPropertyRelation(propiedad: string): RelacionInternaDTO[] | undefined {
     if (!this.propiedadesConRelaciones) return;
     return this.propiedadesConRelaciones.filter(x => (x.propiedad && x.propiedad === propiedad));
+  }
+
+  getOrFetchRelations(propiedad: string, urlServer: string): Observable<RelacionInternaDTO[]> {
+    const cached = this.getPropertyRelation(propiedad);
+    if (cached && cached.length > 0) {
+      return of(cached);
+    }
+    const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
+    filtro.estado = StatesEnum.ACTIVE;
+    filtro.propiedad = propiedad;
+    return this.http.post<RelacionInternaDTO[]>(
+      this.ls.getUrlAccess('/template/getPropertyRelations', urlServer),
+      filtro
+    ).pipe(
+      tap(relations => this.addRelations(relations))
+    );
   }
 
   getTokenConnection(urlServer: string) {

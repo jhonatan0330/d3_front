@@ -244,10 +244,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.showAlertSelectedProcess();
       } else {
         this.isLoadingList.set(true);
-        const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
-        filtro.estado = StatesEnum.ACTIVE;
-        filtro.propiedad = this.alertar.llaveTabla;
-        this.api.relacionesPropiedad(filtro, this.urlServer)
+        this.templateService.getOrFetchRelations(this.alertar.llaveTabla, this.urlServer)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
           next: (value: RelacionInternaDTO[]) => {
@@ -255,7 +252,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               Swal.fire(this.structure.nombre, 'La propiedad ALERTAR no tiene relaciones para determinar que alertar', 'error');
             } else {
               this.relacionesAlerta = value;
-              this.templateService.addRelations(this.relacionesAlerta)
               this.isLoadingList.set(false);
               this.showAlertSelectedProcess();
             }
@@ -1090,11 +1086,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
       }
       if (!this.relacionesHerencia) {
-        const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
-        filtro.estado = StatesEnum.ACTIVE;
-        filtro.propiedad = this.herencia.llaveTabla;
-        filtro.plantilla = _plantilla;
-        this.api.relacionesPropiedad(filtro, this.urlServer)
+        this.isLoadingList.set(true);
+        this.templateService.getOrFetchRelations(this.herencia.llaveTabla, this.urlServer)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
           next: (value: RelacionInternaDTO[]) => {
@@ -1130,11 +1123,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           const dependentIterato = this.relatedFields[i];
           const relations = this.templateService.getPropertyRelation(dependentIterato.llaveTabla);
           if (!relations || relations.length == 0) {
-            const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
-            filtro.estado = StatesEnum.ACTIVE;
-            filtro.propiedad = dependentIterato.llaveTabla;
             this.isLoadingList.set(true);
-            this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
+            this.templateService.getOrFetchRelations(dependentIterato.llaveTabla, this.urlServer).subscribe({
               next: (value: RelacionInternaDTO[]) => {
                 if (!value || value.length === 0) {
                   //Creo una relacion falsa para que no vuelva a filtrar
@@ -1146,7 +1136,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
                   value = [];
                   value.push(ri);
                 }
-                this.templateService.addRelations(value);
                 this.isLoadingList.set(false);
                 this.createNewDocument(_plantilla, _property);
               },
@@ -1182,11 +1171,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
       const relationProperty = this.templateService.getPropertyRelation(_property);
       if (!relationProperty|| relationProperty.length == 0) {
-        const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
-        filtro.estado = StatesEnum.ACTIVE;
-        filtro.propiedad = _property;
         this.isLoadingList.set(true);
-        this.api.relacionesPropiedad(filtro, this.urlServer).subscribe({
+        this.templateService.getOrFetchRelations(_property, this.urlServer).subscribe({
           next: (value: RelacionInternaDTO[]) => {
             if (!value || value.length === 0) {
               //Creo una relacion falsa para que no vuelva a filtrar
@@ -1198,7 +1184,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               value = [];
               value.push(ri);
             }
-            this.templateService.addRelations(value);
             this.isLoadingList.set(false);
             this.createNewDocument(_plantilla, _property);
           },
