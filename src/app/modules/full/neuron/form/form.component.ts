@@ -45,6 +45,7 @@ import { SlicePipe, TitleCasePipe, CurrencyPipe, DatePipe } from '@angular/commo
 import { ImageFormatPipe } from '../../../../shared/local-image';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
+import { CopierService } from 'app/shared/copier.service';
 
 @Component({
     selector: 'app-form',
@@ -63,6 +64,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private _router = inject(Router);
     private _injector = inject(Injector);
     private _destroyRef = inject(DestroyRef);
+    private copier = inject(CopierService);
 
     // Variables para el control de los campos
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
@@ -1078,49 +1080,34 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     copyUrl() {
-        const selBox = document.createElement('textarea');
-        selBox.style.position = 'fixed';
-        selBox.style.left = '0';
-        selBox.style.top = '0';
-        selBox.style.opacity = '0';
-        selBox.value = this.getURLDocument();
-        document.body.appendChild(selBox);
-        selBox.focus();
-        selBox.select();
-        document.execCommand('copy');
-        document.body.removeChild(selBox);
-        Swal.fire({
-            position: 'top-end',
-            icon: 'info',
-            title: 'Ya puedes pegar tu link al correo o compartirlo en tus redes sociales',
-            showConfirmButton: false,
-            timer: 1000,
-            backdrop: false
+        this.copier.copyText(this.getURLDocument()).then(ok => {
+            if (ok) {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'info',
+                    title: 'Ya puedes pegar tu link al correo o compartirlo en tus redes sociales',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    backdrop: false
+                });
+            }
         });
     }
 
     copyName() {
         if (this.pedido()) {
-            const selBox = document.createElement('textarea');
-            selBox.style.position = 'fixed';
-            selBox.style.left = '0';
-            selBox.style.top = '0';
-            selBox.style.opacity = '0';
-            selBox.value = this.pedido()!.nombre;
-            document.body.appendChild(selBox);
-            selBox.focus();
-            selBox.select();
-            document.execCommand('copy');
-            document.body.removeChild(selBox);
-
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: this.pedido()!.nombre + ' Copiado al portapeles',
-                showConfirmButton: false,
-                timer: 1000,
-                backdrop: false
-            })
+            this.copier.copyText(this.pedido()!.nombre).then(ok => {
+                if (ok) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: this.pedido()!.nombre + ' Copiado al portapeles',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        backdrop: false
+                    });
+                }
+            });
         }
     }
 
