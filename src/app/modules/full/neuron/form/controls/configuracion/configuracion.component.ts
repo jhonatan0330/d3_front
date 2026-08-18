@@ -105,7 +105,9 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
       this.transformPVCtoFilter(this.data);
     nFilter.valorOpcion = null as any;
     this.isLoading.set(true);
-    this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
+    this.api.consultarDatosBase(nFilter, this.urlServer)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
         this.isLoading.set(false);
         this.consultaExitosaDatosBase(_value);

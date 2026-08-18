@@ -23,7 +23,7 @@ Estado mutado en suscripciones sin notificación al CD (zoneless + OnPush).
 
 ## Fase P2 — Ciclo de vida RxJS
 
-- [ ] **P2-1** 102 `.subscribe()` sin cleanup en 36 archivos (neuron: 63). Priorizar `valueChanges.subscribe()` de controles (fuga de listeners por apertura de dialog) → `takeUntilDestroyed()` o `effect()`. **Parcial**: 29 `valueChanges`/API subscribes de controles migrados (archivo, croquis, disponibilidad, gps-map, producto-lista, product, seccion, vinculo + binario, configuracion, detalle, direcciones, fecha ×5, gps, informative, numero ×2, proceso, texto, search). Pendiente: ~73 subscribes restantes (Secciones B neuron y C app). *(Nota: el conteo inicial de 119 incluía 17 ya migrados; 12 más migrados en esta sesión.)*
+- [ ] **P2-1** 102 `.subscribe()` sin cleanup en 36 archivos (neuron: 63). Priorizar `valueChanges.subscribe()` de controles (fuga de listeners por apertura de dialog) → `takeUntilDestroyed()` o `effect()`. **Parcial**: 42 `valueChanges`/API subscribes de controles migrados (archivo, configuracion, croquis, detalle ×5, disponibilidad ×2, fecha ×7, gps, gps-map, informative ×2, numero ×3, proceso ×6, product, producto-lista, seccion, vinculo ×3 + binario, direcciones, texto). Pendiente: ~60 subscribes restantes (Secciones B neuron y C app). *(Nota: 12 migrados en tanda 1 + 13 en tanda 2 = 25 nuevos esta sesión.)*
 - [ ] **P2-2** Suscripciones anidadas/recursivas: `form.component.ts:1141`, `detalle.component.ts:414`, `proceso.component.ts:1094,1132,1184` (recursión HTTP sin guarda anti-reentrada).
 - [ ] **P2-3** 22 archivos con `Subject<any>` + `takeUntil` legacy → `takeUntilDestroyed()`.
 

@@ -82,7 +82,9 @@ export class GpsComponent extends BaseComponent implements OnInit {
       disableClose: true,
       data: { latitude: this.data.valorText.substring(0, coma), longitud: this.data.valorText.substring(coma + 1, this.data.valorText.length) , nombre: this.structure.nombre}
     });
-    return dialogRef.afterClosed().subscribe((res) => {
+    return dialogRef.afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
       this.fControl.setValue(res.lat + "," + res.lon);
     });
   }

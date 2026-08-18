@@ -214,7 +214,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     const nFilter: PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
     nFilter.filtroParametro = this.fControl.value!;
     this.isLoading.set(true);
-    this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
+    this.api.consultarDatosBase(nFilter, this.urlServer)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
         this.isLoading.set(false);
         // En caso que sea la primera vez carga la info al campo
@@ -368,7 +370,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       nFilter.llaveTabla = item.llaveTabla;
       nFilter.filtroParametro = item.productoCodigo;
       this.isLoading.set(true);
-      this.api.consultarDatosBase(nFilter, this.urlServer).subscribe({
+      this.api.consultarDatosBase(nFilter, this.urlServer)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
         next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
           this.isLoading.set(false);
           item.tarifas = _value.campoDTO.productos[0].detallePlantilla.tarifas;
@@ -404,7 +408,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
             if (dependentIterato.valor === element.campo) {
               const relations = this.templateService.getPropertyRelation(dependentIterato.llaveTabla);
               if (!relations || relations.length == 0) {
-                this.templateService.getOrFetchRelations(dependentIterato.llaveTabla, this.urlServer).subscribe({
+                this.templateService.getOrFetchRelations(dependentIterato.llaveTabla, this.urlServer)
+                  .pipe(takeUntilDestroyed(this.destroyRef))
+                  .subscribe({
                   next: (value: RelacionInternaDTO[]) => {
                     if (!value || value.length === 0) {
                       //Creo una relacion falsa para que no vuelva a filtrar
@@ -449,7 +455,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
 
 
-      this.utilsService.modalWithParams(item.documentoDetalle, false, null, true).subscribe((res) => {
+      this.utilsService.modalWithParams(item.documentoDetalle, false, null, true)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((res) => {
         if (res) {
           item.documentoDetalle = res.data;
           this.updateDetailNumbersAfterFormWindow(item);
@@ -463,7 +471,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         disableClose: true,
         data: { data: item, allowEdit: this.isEnabled },
       });
-      dialogRef.afterClosed().subscribe((resp) => {
+      dialogRef.afterClosed()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((resp) => {
         if (!resp) {
           this.data.detalles.splice(0, 1);
           this.data.detalles = Object.assign([], this.data.detalles); // Para que se refresque la lista

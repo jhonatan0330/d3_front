@@ -1124,7 +1124,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           const relations = this.templateService.getPropertyRelation(dependentIterato.llaveTabla);
           if (!relations || relations.length == 0) {
             this.isLoadingList.set(true);
-            this.templateService.getOrFetchRelations(dependentIterato.llaveTabla, this.urlServer).subscribe({
+            this.templateService.getOrFetchRelations(dependentIterato.llaveTabla, this.urlServer)
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe({
               next: (value: RelacionInternaDTO[]) => {
                 if (!value || value.length === 0) {
                   //Creo una relacion falsa para que no vuelva a filtrar
@@ -1172,7 +1174,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       const relationProperty = this.templateService.getPropertyRelation(_property);
       if (!relationProperty|| relationProperty.length == 0) {
         this.isLoadingList.set(true);
-        this.templateService.getOrFetchRelations(_property, this.urlServer).subscribe({
+        this.templateService.getOrFetchRelations(_property, this.urlServer)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
           next: (value: RelacionInternaDTO[]) => {
             if (!value || value.length === 0) {
               //Creo una relacion falsa para que no vuelva a filtrar
@@ -1211,6 +1215,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     _doc.server = this.urlServer;
     this.utilsService
       .modalWithParams(_doc, true, this.fControl.value)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
         if (res && res.data) {
           if (this.tipoTexto) {
@@ -1472,7 +1477,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
     entity.estadoExpediente = null!;
     this.isLoadingList.set(true);
-    this.api.listarDocumentos(entity, this.urlServer).subscribe({
+    this.api.listarDocumentos(entity, this.urlServer)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (dataResult: PedidoVentaDTO[]) => {
         if (this.pagina === 1) {
           this.dataProvider = dataResult;
@@ -1571,7 +1578,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       const filter = new PedidoVentaFilterDTO();
       filter.llaveTabla = this.proceso.llaveTabla;
       filter.plantilla = this.proceso.plantilla;
-      this.api.consultarDocumento(filter, this.urlServer).subscribe({
+      this.api.consultarDocumento(filter, this.urlServer)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
         next: (fullDocument: PedidoVentaDTO) => {
           if (fullDocument && fullDocument.caracteristicas) {
             for (let index = 0; index < fullDocument.caracteristicas.length; index++) {

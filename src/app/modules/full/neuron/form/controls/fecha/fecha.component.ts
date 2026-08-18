@@ -153,7 +153,9 @@ export class FechaComponent extends BaseComponent implements OnInit {
       },
     });
     if (this.timerBackCount) {
-      this.clock = this.source.subscribe((t) => {
+      this.clock = this.source
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((t) => {
         this.showTimer();
       });
     }
@@ -295,6 +297,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
         this.api
           .consultarDatosBase(filtro, this.urlServer)
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((_value: PedidoVentaCaracteristicaFilterDTO) => {
             if (_value && _value.valorFechaMax) {
               this.dateFrom.setValue(_value.valorFechaMax);

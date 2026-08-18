@@ -281,6 +281,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         this.isLoading.set(true);
         this.api
           .consultarDatosBase(filtro, this.urlServer)
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
               this.fControl.setValue(this.numberToInput(_value.valorNumeroMax));
