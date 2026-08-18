@@ -46,6 +46,7 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 import { CopierService } from 'app/shared/copier.service';
+import { FormReportService } from 'app/modules/full/neuron/service/form-report.service';
 
 @Component({
     selector: 'app-form',
@@ -65,6 +66,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private _injector = inject(Injector);
     private _destroyRef = inject(DestroyRef);
     private copier = inject(CopierService);
+    private reportService = inject(FormReportService);
 
     // Variables para el control de los campos
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
@@ -960,45 +962,17 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     /*******************************REPORT *************/
-    // Envio a imprimir los reportes
     getReports() {
         if (this.plantilla()) {
             if (this.plantilla()!.reportes && this.plantilla()!.reportes.length !== 0) {
-                for (let i = 0; i < this.plantilla()!.reportes.length; i++) {
-                    const reporte = this.plantilla()!.reportes[i];
-                    const propVisibleState = PlantillaHelper.buscarValorMultiple(reporte.propiedades, PlantillaHelper.REP_VISIBLE_STATE);
-                    if (!propVisibleState
-                        || !this.pedido()
-                        || !this.pedido()!.estadoExpediente
-                        || (propVisibleState && propVisibleState.find(x => x.valor === this.pedido()!.estadoExpediente))) {
-                        this.reportes.update(r => [...r, reporte]);
-                    }
-                }
+                const visible = this.reportService.filterByState(this.plantilla()!.reportes, this.pedido()?.estadoExpediente);
+                visible.forEach(r => this.reportes.update(rs => [...rs, r]));
             }
         }
     }
 
     showReport(reporte: ReporteBaseDTO) {
-        if (!reporte) {
-            return;
-        }
-        let stringURL = reporte.servidorUrl;
-        if (!stringURL) {
-            stringURL = this.ls.getItem(LocalConstants.URL_CONF);
-        }
-        stringURL =
-            stringURL +
-            '/reporte?nombre=' +
-            reporte.llaveTabla +
-            '&P_KEY=' +
-            this.pedido()!.llaveTabla +
-            '&P_TOKEN=' +
-            this.templateService.getTokenConnection(stringURL);
-
-        if (reporte.variables) {
-            stringURL = stringURL + '&' + reporte.variables;
-        }
-        window.open(stringURL, '_blank');
+        this.reportService.openReport(reporte, this.pedido()!.llaveTabla);
     }
 
     showMassive() {

@@ -9,6 +9,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { ReporteBaseDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+import { FormReportService } from 'app/modules/full/neuron/service/form-report.service';
 
 import Swal from 'sweetalert2';
 import { MatIcon } from '@angular/material/icon';
@@ -33,6 +34,7 @@ export class ManualFormComponent implements OnInit {
     private templateService = inject(TemplateService);
     private notificationCenter = inject(NotificationCenterService);
     private destroyRef = inject(DestroyRef);
+    private reportService = inject(FormReportService);
 
 
     public form: UntypedFormGroup;
@@ -395,26 +397,7 @@ export class ManualFormComponent implements OnInit {
     }
 
     showReport(reporte: ReporteBaseDTO) {
-        if (!reporte) {
-            return;
-        }
-        let stringURL = reporte.servidorUrl;
-        if (!stringURL) {
-            stringURL = this.ls.getItem(LocalConstants.URL_CONF);
-        }
-        stringURL =
-            stringURL +
-            '/reporte?nombre=' +
-            reporte.llaveTabla +
-            '&P_KEY=' +
-            this.key +
-            '&P_TOKEN=' +
-            this.templateService.getTokenConnection(stringURL);
-
-        if (reporte.variables) {
-            stringURL = stringURL + '&' + reporte.variables;
-        }
-        window.open(stringURL, '_blank');
+        this.reportService.openReport(reporte, this.key);
     }
 
 }

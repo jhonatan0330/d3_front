@@ -13,6 +13,7 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { FormReportService } from 'app/modules/full/neuron/service/form-report.service';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { SelectionModel } from '@angular/cdk/collections';
 import Swal from 'sweetalert2';
@@ -48,6 +49,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private ls = inject(LocalStoreService);
     private utilsService = inject(UtilsService);
     private dialog = inject(MatDialog);
+    private reportService = inject(FormReportService);
 
     plantilla = signal<DocumentoPlantillaDTO | null>(null); // Estructura base de la lista
     templatesFromProcess = signal<DocumentoPlantillaDTO[]>([]);
@@ -452,24 +454,10 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     /************** ESTO ES COPIADO DE ACTIONS **************/
 
     showReport(reporte: ReporteBaseDTO, pDocument: PedidoVentaDTO) {
-        if (!reporte) {
-            return;
-        }
-        let stringURL = reporte.servidorUrl;
-        if (!stringURL) {
-            stringURL = this.ls.getItem(LocalConstants.URL_CONF);
-        }
-        stringURL = stringURL + '/reporte?nombre=' + reporte.llaveTabla;
-        if (pDocument) {
-            stringURL = stringURL + '&P_KEY=' + pDocument.llaveTabla;
-        }
-        stringURL =
-            stringURL +
-            '&P_TOKEN=' +
-            this.ls.getItem(LocalConstants.JWT_TOKEN).toString();
-        if (reporte.variables) {
-            stringURL = stringURL + '&' + reporte.variables;
-        }
+        if (!reporte) { return; }
+        const pKey = pDocument ? pDocument.llaveTabla : '';
+        const baseUrl = this.reportService.buildReportUrl(reporte, pKey);
+
         if (this.selection && this.selection.selected.length >= 1) {
             let msj = 'Vas a imprimir ' + (this.selection.selected.length).toString() + ' documentos .';
             if(this.selection.selected.length> 50) { msj = msj + 'Lo haremos abriendo ' + Math.ceil(this.selection.selected.length/50).toString() + ' pestañas en tu explorador, ¿estas deacuerdo?';}
@@ -488,22 +476,20 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                     for (let i = 1; i <= this.selection.selected.length; i++) {
                         const pdPrint = this.selection.selected[i-1];
                         plantillaIdMultiple = plantillaIdMultiple + pdPrint.llaveTabla + ';';
-                        //La idea es poder imprimir muchos pero laurl no deja asi que lo hago con varias ventanas
                         if((i%50)===0){
-                            window.open(stringURL + '&P_MULTIPLE=' + plantillaIdMultiple, '_blank');
+                            window.open(baseUrl + '&P_MULTIPLE=' + plantillaIdMultiple, '_blank');
                             plantillaIdMultiple = '';
                         }
                     }
                     //En caso que sean exactamente 50 no se imprime 2 veces
                     if(plantillaIdMultiple === '') return;
-                    stringURL = stringURL + '&P_MULTIPLE=' + plantillaIdMultiple;
-                    window.open(stringURL, '_blank');
+                    window.open(baseUrl + '&P_MULTIPLE=' + plantillaIdMultiple, '_blank');
                 } 
               });
               
             
         } else{
-            window.open(stringURL, '_blank');
+            window.open(baseUrl, '_blank');
         }
         
     }
