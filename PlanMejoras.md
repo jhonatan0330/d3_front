@@ -29,11 +29,11 @@ Estado mutado en suscripciones sin notificación al CD (zoneless + OnPush).
 
 ## Fase P3 — Deuda estructural del motor `neuron`
 
-- [ ] **P3-1** God objects: `proceso.component.ts` (1.625 líneas), `form.component.ts` (1.204). Extraer lógica de relaciones/QR/menú a servicios.
-- [ ] **P3-2** Bloque `relacionesPropiedad` duplicado 4× (proceso) + 1× (detalle) → único método memoizado en `TemplateService`.
-- [ ] **P3-3** `getComponent()` switch → `Record<Enum, Type<IDynamicControl>>` con `default: TextoComponent`.
-- [ ] **P3-4** Código muerto: `api.service.getTemplates()` (0 usos), `conectionTemplates` (nunca se puebla), `utils.openPDF()` hardcodeado.
-- [ ] **P3-5** Duplicación: `guardarDocumento`/`saveByMassive`, construcción de URLs de reporte (3×), boilerplate `getColor`/`getColorFont` (5×).
+- [ ] **P3-1** God objects: `proceso.component.ts` (~1.400 líneas), `form.component.ts` (~1.150). Extraer lógica de relaciones/QR/menú a servicios. *(Parcial: extraídos `FormClipboardService`, `FormReportService`, `FormTransitionService`. Pendiente: `listar()` y `createNewDocument()` muy acoplados al estado del componente, no extraíbles limpiamente.)*
+- [x] **P3-2** Bloque `relacionesPropiedad` duplicado 4× (proceso) + 1× (detalle) → único método memoizado `TemplateService.getOrFetchRelations()`. *(Completado: 5 call sites simplificados.)*
+- [x] **P3-3** `getComponent()` switch → `Record<Enum, Type<IDynamicControl>>` con `default: TextoComponent`. *(Completado: `form-helper.ts` 83→44 líneas.)*
+- [x] **P3-4** Código muerto: `api.service.getTemplates()` (0 usos), `conectionTemplates` (nunca se puebla), `utils.openPDF()` hardcodeado, `testPrint()`. *(Completado: ~65 líneas eliminadas en 4 archivos.)*
+- [x] **P3-5** Duplicación: `guardarDocumento`/`saveByMassive` unificados vía `postDocumento()`, construcción de URLs de reporte (3× → `FormReportService`), boilerplate `getColor`/`getColorFont` (5× wrappers mínimos, templates los usan directamente). *(Completado.)*
 
 ## Fase P4 — TypeScript y Forms
 
