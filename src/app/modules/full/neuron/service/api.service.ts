@@ -84,17 +84,17 @@ export class ApiService {
     }
 
     guardarDocumento(documento: PedidoVentaDTO, _server: string, session: string): Observable<PedidoVentaDTO> {
-        const headers = { 'non-duplicate': session };
-        return this.http.post<PedidoVentaDTO>(
-            this.ls.getUrlAccess('/rest/guardarDocumento', _server),
-            documento, { headers }
-        );
+        return this.postDocumento('/rest/guardarDocumento', documento, _server, session);
     }
 
     saveByMassive(documento: PedidoVentaDTO, _server: string, session: string): Observable<PedidoVentaDTO> {
+        return this.postDocumento('/rest/saveByMassive', documento, _server, session);
+    }
+
+    private postDocumento(endpoint: string, documento: PedidoVentaDTO, _server: string, session: string): Observable<PedidoVentaDTO> {
         const headers = { 'non-duplicate': session };
         return this.http.post<PedidoVentaDTO>(
-            this.ls.getUrlAccess('/rest/saveByMassive', _server),
+            this.ls.getUrlAccess(endpoint, _server),
             documento, { headers }
         );
     }
