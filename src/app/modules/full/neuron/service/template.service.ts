@@ -6,7 +6,6 @@ import {
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
-import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { NavigationService } from 'app/layout/navigation/navigation.service';
 
 @Injectable({
@@ -23,26 +22,16 @@ export class TemplateService {
   }
   private colores: PropiedadDTO[] | null;
 
-  conectionTemplates: OrganizacionDTO[];
-
   private propiedadesConRelaciones: RelacionInternaDTO[];
   private _modules: PropiedadDTO[] | null;
 
   getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO | null | undefined {
     const template = this.template();
     if (!template) { return null; }
-    let result: DocumentoPlantillaDTO | null | undefined = null;
     if (!urlServer) {
-      result = template.find((item) => id === item.llaveTabla);
-    } else {
-      if (this.conectionTemplates) {
-        const org = this.conectionTemplates.find((itemOrg) => urlServer === itemOrg.llaveTabla);
-        if (org) {
-          result = org.plantillas.find((itemExternal) => id === itemExternal.llaveTabla);
-        }
-      }
+      return template.find((item) => id === item.llaveTabla) ?? null;
     }
-    return result;
+    return null;
   }
 
   getTemplateOfProcess(processId: string): DocumentoPlantillaDTO[] | null {
@@ -186,14 +175,6 @@ export class TemplateService {
   }
 
   getTokenConnection(urlServer: string) {
-    if (this.conectionTemplates && urlServer) {
-      for (let i = 0; i < this.conectionTemplates.length; i++) {
-        const element = this.conectionTemplates[i];
-        if (urlServer.indexOf(element.servidor) !== -1) {
-          return element.token;
-        }
-      }
-    }
     return this.ls.getItem(LocalConstants.JWT_TOKEN);
   }
 

@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { ActividadDTO } from 'app/notification/notification.types';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { TemplateService } from 'app/modules/full/neuron/service/template.service';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
@@ -12,7 +11,6 @@ import { UsuarioDTO } from 'app/authentication/authentication.domain';
 export class NotificationsService {
   private http = inject(HttpClient);
   private ls = inject(LocalStoreService);
-  private templateService = inject(TemplateService);
 
   private _notifications: WritableSignal<ActividadDTO[]> = signal([]);
 
@@ -40,26 +38,8 @@ export class NotificationsService {
     ).pipe(
       tap((notifications) => {
         this._notifications.set(notifications);
-        this.getNotificationsFromOtherServers(notifications);
       })
     );
-  }
-
-  getNotificationsFromOtherServers(notificationMain:ActividadDTO[]){
-      if(this.templateService.conectionTemplates){
-        for (let i = 0; i < this.templateService.conectionTemplates.length; i++) {
-          const element = this.templateService.conectionTemplates[i];
-          // Al iniciar sesion por primera vez si el token no fuciona no me deja avanzar
-          if(this.templateService.getTokenConnection(element.servidor)){
-            this.http.get<ActividadDTO[]>(
-              this.ls.getUrlAccess('/notification/getNotifications', element.llaveTabla)
-            ).subscribe((notifications) => {
-                this._notifications.set(notificationMain.concat(notifications));
-              });
-          }
-          
-        }
-      }
   }
 
   clear(){
