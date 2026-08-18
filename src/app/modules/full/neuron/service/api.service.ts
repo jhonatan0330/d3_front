@@ -14,7 +14,7 @@ import {
     PedidoVentaCaracteristicaDTO,
 } from '../model/sw42.domain';
 import { ApiErrorResponse, IdResponse } from '../model/sw42.utils';
-import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+import { LocalStoreService } from 'app/shared/local-store.service';
 import { UsuarioAutenticacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
@@ -159,10 +159,6 @@ export class ApiService {
             this.ls.getUrlAccess('/rest/changeState', _server),
             ajuste
         );
-    }
-
-    getTemplates(): DocumentoPlantillaDTO[] {
-        return this.ls.getItem(LocalConstants.TEMPLATES);
     }
 
     getImage(imageUrl: string): Observable<Blob> {
