@@ -1,10 +1,20 @@
 <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
 
-  <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent">
+  <div class="flex h-full">
+
+    <!-- Backdrop for overlay mode -->
+    @if (drawerOpened() && drawerMode === 'over') {
+      <div class="fixed inset-0 bg-black/50 z-40" (click)="toggleDrawer()"></div>
+    }
 
     <!-- Drawer -->
-    <mat-drawer class="w-72 dark:bg-gray-900" [mode]="drawerMode" [opened]="true" [position]="'start'"
-      [disableClose]="!accountingService.currentCatalog" #drawer>
+    <aside class="w-72 dark:bg-gray-900 overflow-y-auto flex-shrink-0 transition-transform duration-300 ease-in-out"
+      [class.fixed]="drawerMode === 'over'"
+      [class.inset-y-0]="drawerMode === 'over'"
+      [class.left-0]="drawerMode === 'over'"
+      [class.z-50]="drawerMode === 'over'"
+      [class.-translate-x-full]="drawerMode === 'over' && !drawerOpened()"
+      [class.translate-x-0]="drawerMode !== 'over' || drawerOpened()">
 
       <!-- Main -->
       <div class="flex-auto">
@@ -46,10 +56,10 @@
         </div>
       </div>
 
-    </mat-drawer>
+    </aside>
 
-    <!-- Drawer content -->
-    <mat-drawer-content class="h-full">
+    <!-- Content -->
+    <main class="flex-1 h-full overflow-y-auto">
 
       @if (accountingService.currentCatalog) {
         <div class="flex flex-col flex-auto w-full bg-gray-100 dark:bg-transparent p-4 md:p-6 gap-2">
@@ -306,8 +316,8 @@
       }
       <!-- No chats template -->
 
-    </mat-drawer-content>
+    </main>
 
-  </mat-drawer-container>
+  </div>
 
 </div>

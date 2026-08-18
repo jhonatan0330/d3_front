@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, OnDestroy, OnInit,  DOCUMENT, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, OnDestroy, OnInit, DOCUMENT, inject, signal, viewChild, ElementRef } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragPreview, CdkDragHandle } from '@angular/cdk/drag-drop';
-import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksService } from 'app/tasks/tasks.service';
@@ -17,7 +16,7 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
     templateUrl: './list.component.html',
 
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatDrawerContainer,MatDrawer,RouterOutlet,MatDrawerContent,MatTooltip,MatIcon,CdkDropList,CdkDrag,NgClass,CdkDragPreview,CdkDragHandle,DatePipe,DropdownComponent,DropdownItemComponent]
+    imports: [RouterOutlet,MatTooltip,MatIcon,CdkDropList,CdkDrag,NgClass,CdkDragPreview,CdkDragHandle,DatePipe,DropdownComponent,DropdownItemComponent]
 })
 export class TasksListComponent implements OnInit, OnDestroy {
     private _activatedRoute = inject(ActivatedRoute);
@@ -26,8 +25,9 @@ export class TasksListComponent implements OnInit, OnDestroy {
     private _router = inject(Router);
     private _tasksService = inject(TasksService);
 
-    readonly matDrawer = viewChild<MatDrawer>('matDrawer');
+    readonly matDrawer = viewChild<ElementRef>('matDrawer');
 
+    drawerOpened = signal(false);
     drawerMode: 'side' | 'over';
     selectedTask: Task | null;
     tasks: Task[];
@@ -106,6 +106,18 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
+    }
+
+    openDrawer(): void {
+        this.drawerOpened.set(true);
+    }
+
+    closeDrawer(): void {
+        this.drawerOpened.set(false);
+    }
+
+    toggleDrawer(): void {
+        this.drawerOpened.update((v) => !v);
     }
 
 

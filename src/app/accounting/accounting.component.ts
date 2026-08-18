@@ -1,5 +1,4 @@
-import { Component, OnDestroy, OnInit,  ChangeDetectionStrategy, inject, viewChild } from '@angular/core';
-import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, signal, viewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from './accounting.domain';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -37,7 +36,7 @@ interface AccountFlatNode {
     selector: 'accounting',
     templateUrl: './accounting.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatDrawerContainer,MatDrawer,MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,MatDrawerContent,MatTable,MatSort,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatSortHeader,MatCellDef,MatCell,MatFooterCellDef,MatFooterCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow,MatFooterRowDef,MatFooterRow,UpperCasePipe,DecimalPipe,DatePipe,DropdownComponent,DropdownItemComponent]
+    imports: [MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,MatTable,MatSort,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatSortHeader,MatCellDef,MatCell,MatFooterCellDef,MatFooterCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow,MatFooterRowDef,MatFooterRow,UpperCasePipe,DecimalPipe,DatePipe,DropdownComponent,DropdownItemComponent]
 })
 export class AccountComponent implements OnInit, OnDestroy {
     private utilsService = inject(UtilsService);
@@ -45,8 +44,9 @@ export class AccountComponent implements OnInit, OnDestroy {
     private _jwt = inject(LoginService);
     private _router = inject(Router);
 
-    readonly drawer = viewChild<MatDrawer>('drawer');
+    readonly drawer = viewChild<ElementRef>('drawer');
 
+    drawerOpened = signal(true);
     drawerMode: 'over' | 'side' = 'over';
     private _mediaQuery = window.matchMedia('(min-width: 960px)');
     private _mediaHandler = (e: MediaQueryListEvent) => {
@@ -100,7 +100,15 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     toggleDrawer(): void {
-        this.drawer()!.toggle();
+        this.drawerOpened.update((v) => !v);
+    }
+
+    openDrawer(): void {
+        this.drawerOpened.set(true);
+    }
+
+    closeDrawer(): void {
+        this.drawerOpened.set(false);
     }
 
     ngOnDestroy(): void {
@@ -176,7 +184,7 @@ export class AccountComponent implements OnInit, OnDestroy {
             return;
         }
         this.accountingService.currentCatalog = catalog;
-        this.drawer()!.close();
+        this.drawerOpened.set(false);
         this.getAccounts();
         this.getBalance();
         this.getVouchers();

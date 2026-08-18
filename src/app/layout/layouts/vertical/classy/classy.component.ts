@@ -6,10 +6,6 @@ import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
-import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-
-
-
 import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
 import { UserComponent } from '../../../user/user.component';
@@ -21,7 +17,7 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'classy-layout',
     templateUrl: './classy.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, RouterLink, MatIcon,  ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
+    imports: [SimpleNavComponent, RouterLink, MatIcon,  ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);

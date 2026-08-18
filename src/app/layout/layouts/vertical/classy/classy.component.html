@@ -1,9 +1,16 @@
 <!-- Sidenav container -->
-<mat-sidenav-container class="h-screen w-full overflow-hidden print:hidden">
+<div class="flex h-screen w-full overflow-hidden">
+
+    <!-- Backdrop for mobile overlay mode 
+    @if (sidenavOpened() && isScreenSmall()) {
+        <div class="fixed inset-0 bg-black/50 z-40" (click)="toggleNavigation()"></div>
+    }-->
 
     <!-- Navigation -->
-    <mat-sidenav class="dark bg-gray-900 w-80" [mode]="isScreenSmall() ? 'over' : 'side'" [opened]="sidenavOpened()"
-(openedChange)="sidenavOpened.set($event)">
+    <aside class="flex flex-shrink-0 flex-col h-full bg-gray-900 transition-all duration-300 ease-in-out"
+
+        [class.w-80]="sidenavOpened()"
+        [class.w-0]="!sidenavOpened()">
         <div class="flex h-full flex-col overflow-hidden">
 
             <!-- App Logo -->
@@ -48,21 +55,19 @@
             <!-- Navigation footer -->
             <div class="flex flex-0 items-center justify-center h-16 pr-6 pl-2 mt-2 mb-4 opacity-12"></div>
         </div>
-    </mat-sidenav>
+    </aside>
 
     <!-- Main content -->
-    <mat-sidenav-content>
+    <main class="flex flex-1 flex-col min-w-0 min-h-0 h-full overflow-hidden transition-all duration-300">
         <div class="flex flex-col flex-auto w-full min-w-0 h-full">
             <!-- Header -->
-            <div class="relative flex flex-0 items-center w-full h-16 px-4 md:px-6 z-49 shadow bg-transparent">
+            <div class="flex h-16 flex-shrink-0 items-center w-full  px-4 md:px-6 z-49 shadow bg-transparent">
                 <!-- Navigation toggle button -->
                 <button class="btn-icon" (click)="toggleNavigation()">
                     <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
                 </button>
                 <!-- Components -->
                 <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
-                    
-                    
                     <!--app-search-pop-button></app-search-pop-button-->
                     <shortcuts></shortcuts>
                     <notifications></notifications>
@@ -96,6 +101,6 @@
                 </div>
             }
         </div>
-    </mat-sidenav-content>
+    </main>
 
-</mat-sidenav-container>
+</div>

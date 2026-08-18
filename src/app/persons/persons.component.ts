@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
 import {
     OnDestroy,
     OnInit,
@@ -19,7 +19,8 @@ import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authenticatio
 import { LoginService } from 'app/authentication/login.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
-import { MatDrawerContainer, MatDrawer, MatDrawerContent } from '@angular/material/sidenav';
+
+
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -32,7 +33,7 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
     selector: 'PersonsComponent',
     templateUrl: 'persons.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatDrawerContainer,MatDrawer,RouterOutlet,MatDrawerContent,MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,AsyncPipe,I18nPluralPipe,DropdownComponent,DropdownItemComponent]
+    imports: [RouterOutlet,MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,AsyncPipe,I18nPluralPipe,DropdownComponent,DropdownItemComponent]
 })
 export class PersonsComponent implements OnInit, OnDestroy {
     private _activatedRoute = inject(ActivatedRoute);
@@ -47,6 +48,7 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
     contactsCount = computed(() => this._contactsService.contacts()?.length ?? 0);
     contactsTableColumns: string[] = ['name', 'email', 'phoneNumber', 'job'];
+    drawerOpened = signal(false);
     drawerMode: 'side' | 'over';
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedContact: UsuarioDTO;
@@ -89,6 +91,18 @@ export class PersonsComponent implements OnInit, OnDestroy {
 
     onBackdropClicked(): void {
         this._router.navigate(['./'], { relativeTo: this._activatedRoute });
+    }
+
+    openDrawer(): void {
+        this.drawerOpened.set(true);
+    }
+
+    closeDrawer(): void {
+        this.drawerOpened.set(false);
+    }
+
+    toggleDrawer(): void {
+        this.drawerOpened.update((v) => !v);
     }
 
     trackByFn(index: number, item: any): any {

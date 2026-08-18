@@ -5,7 +5,7 @@ import { NavigationService } from 'app/layout/navigation/navigation.service';
 import { Navigation } from 'app/layout/navigation/navigation.types';
 import { environment } from 'environments/environment';
 import { MatIcon } from '@angular/material/icon';
-import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+
 
 import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
@@ -18,14 +18,14 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'centered-layout',
     templateUrl: './centered.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, MatIcon,   ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
+    imports: [SimpleNavComponent, MatIcon,   ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, ImageFormatPipe]
 })
 export class CenteredLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);
     private _navigationService = inject(NavigationService);
 
-    isScreenSmall: boolean;
-    sidenavOpened = false;
+    isScreenSmall = signal(false);
+    sidenavOpened = signal(false);
     navigation: Navigation;
     user: UsuarioDTO | undefined;
     company: OrganizacionDTO | undefined;
@@ -33,8 +33,8 @@ export class CenteredLayoutComponent implements OnInit, OnDestroy {
     currentApplicationVersion = environment.appVersion;
     private _mediaQuery = window.matchMedia('(min-width: 960px)');
     private _mediaHandler = (e: MediaQueryListEvent) => {
-        this.isScreenSmall = !e.matches;
-        this.sidenavOpened = e.matches;
+        this.isScreenSmall.set(!e.matches);
+        this.sidenavOpened.set(e.matches);
     };
     private _clockInterval: ReturnType<typeof setInterval>;
     headerSection: string[];
@@ -69,8 +69,8 @@ export class CenteredLayoutComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.isScreenSmall = !this._mediaQuery.matches;
-        this.sidenavOpened = this._mediaQuery.matches;
+        this.isScreenSmall.set(this._mediaQuery.matches);
+        this.sidenavOpened.set(this._mediaQuery.matches);
         this._mediaQuery.addEventListener('change', this._mediaHandler);
 
         // Reloj
@@ -86,12 +86,12 @@ export class CenteredLayoutComponent implements OnInit, OnDestroy {
 
     toggleNavigation(): void {
         // Toggle the opened status of the sidenav
-        this.sidenavOpened = !this.sidenavOpened;
+        this.sidenavOpened.update((value) => !value);
     }
 
     closeNavOnSmall(): void {
-        if (this.isScreenSmall) {
-            this.sidenavOpened = false;
+        if (this.isScreenSmall()) {
+            this.sidenavOpened.set(false);
         }
     }
 

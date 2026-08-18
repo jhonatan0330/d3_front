@@ -41,7 +41,8 @@ export class CanDeactivateTasksDetails
         else
         {
             // Close the drawer first, and then navigate
-            return component.closeDrawer().then(() => true);
+            component.closeDrawer();
+            return true;
         }
     }
 }

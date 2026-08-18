@@ -6,7 +6,7 @@ import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { UserComponent } from '../../../user/user.component';
 import { MatIcon } from '@angular/material/icon';
-import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+
 
 
 import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
@@ -19,14 +19,14 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     selector: 'futuristic-layout',
     templateUrl: './futuristic.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatSidenav, MatSidenavContainer, MatSidenavContent, SimpleNavComponent, UserComponent, MatIcon,  ShortcutsComponent, NotificationButtonComponent, RouterOutlet, ImageFormatPipe]
+    imports: [SimpleNavComponent, UserComponent, MatIcon,  ShortcutsComponent, NotificationButtonComponent, RouterOutlet, ImageFormatPipe]
 })
 export class FuturisticLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);
     private _navigationService = inject(NavigationService);
 
-    isScreenSmall: boolean;
-    sidenavOpened = false;
+    isScreenSmall = signal(false);
+    sidenavOpened = signal(false);
     navigation: Navigation;
     user: UsuarioDTO | undefined;
     company: OrganizacionDTO | undefined;
@@ -34,8 +34,8 @@ export class FuturisticLayoutComponent implements OnInit, OnDestroy {
     currentApplicationVersion = environment.appVersion;
     private _mediaQuery = window.matchMedia('(min-width: 960px)');
     private _mediaHandler = (e: MediaQueryListEvent) => {
-        this.isScreenSmall = !e.matches;
-        this.sidenavOpened = e.matches;
+        this.isScreenSmall.set(!e.matches);
+        this.sidenavOpened.set(e.matches);
     };
     private _clockInterval: ReturnType<typeof setInterval>;
     headerSection: string[];
@@ -70,8 +70,8 @@ export class FuturisticLayoutComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.isScreenSmall = !this._mediaQuery.matches;
-        this.sidenavOpened = this._mediaQuery.matches;
+        this.isScreenSmall.set(this._mediaQuery.matches);
+        this.sidenavOpened.set(this._mediaQuery.matches);
         this._mediaQuery.addEventListener('change', this._mediaHandler);
 
         // Reloj
@@ -87,12 +87,12 @@ export class FuturisticLayoutComponent implements OnInit, OnDestroy {
 
     toggleNavigation(): void {
         // Toggle the opened status of the sidenav
-        this.sidenavOpened = !this.sidenavOpened;
+        this.sidenavOpened.update((value) => !value);
     }
 
     closeNavOnSmall(): void {
-        if (this.isScreenSmall) {
-            this.sidenavOpened = false;
+        if (this.isScreenSmall()) {
+            this.sidenavOpened.set(false);
         }
     }
 }

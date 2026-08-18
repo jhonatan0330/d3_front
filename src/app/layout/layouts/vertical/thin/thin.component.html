@@ -1,8 +1,19 @@
 <!-- Sidenav container -->
-<mat-sidenav-container class="h-screen w-full overflow-hidden print:hidden">
+<div class="h-screen w-full overflow-hidden print:hidden flex">
+
+    <!-- Backdrop for mobile overlay mode -->
+    @if (sidenavOpened() && isScreenSmall()) {
+        <div class="fixed inset-0 bg-black/50 z-40" (click)="toggleNavigation()"></div>
+    }
 
     <!-- Navigation -->
-    <mat-sidenav class="bg-card dark:bg-gray-900 w-80" [mode]="isScreenSmall ? 'over' : 'side'" [(opened)]="sidenavOpened">
+    <aside class="bg-card dark:bg-gray-900 w-80 flex-shrink-0 h-full overflow-y-auto transition-transform duration-300 ease-in-out"
+        [class.fixed]="isScreenSmall()"
+        [class.inset-y-0]="isScreenSmall()"
+        [class.left-0]="isScreenSmall()"
+        [class.z-50]="isScreenSmall()"
+        [class.-translate-x-full]="isScreenSmall() && !sidenavOpened()"
+        [class.translate-x-0]="!isScreenSmall() || sidenavOpened()">
         <div class="flex h-full flex-col overflow-hidden">
 
             <!-- Logo -->
@@ -18,10 +29,10 @@
             <!-- Navigation footer -->
             <div class="flex flex-0 items-center justify-center h-16 pr-6 pl-2 mt-2 mb-4 opacity-12"></div>
         </div>
-    </mat-sidenav>
+    </aside>
 
     <!-- Main content -->
-    <mat-sidenav-content>
+    <main class="flex-1 min-w-0 h-full overflow-hidden">
         <div class="flex flex-col flex-auto w-full min-w-0 h-full">
 
             <!-- Header -->
@@ -66,6 +77,6 @@
                 </div>
             }
         </div>
-    </mat-sidenav-content>
+    </main>
 
-</mat-sidenav-container>
+</div>

@@ -1,7 +1,6 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit,  inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { debounceTime, filter, Subject, takeUntil, tap } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksListComponent } from 'app/tasks/list/list.component';
@@ -20,7 +19,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgxEditorModule, FormsModule, MatFormFieldModule, MatIconModule, ReactiveFormsModule, RouterModule, MatInputModule]
 })
-export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TasksDetailsComponent implements OnInit, OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
     private _formBuilder = inject(FormBuilder);
     private _router = inject(Router);
@@ -50,7 +49,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             const task = this._tasksService.task();
 
             // Open the drawer in case it is closed
-            this._tasksListComponent.matDrawer()!.open();
+            this._tasksListComponent.openDrawer();
 
             // Get the task
             this.task = task ?? this.task;
@@ -58,6 +57,8 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             if (task) {
                 // Patch values to the form from the task
                 this.taskForm.patchValue(task, { emitEvent: false });
+                // Focus title field when drawer opens with a task
+                setTimeout(() => this._titleField()?.nativeElement?.focus());
             }
 
             if (!task) this.closeDrawer();
@@ -68,7 +69,7 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit(): void {
         // Open the drawer
-        this._tasksListComponent.matDrawer()!.open();
+        this._tasksListComponent.openDrawer();
 
         this.editor = new Editor();
 
@@ -118,18 +119,6 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
             });
     }
 
-    ngAfterViewInit(): void {
-        // Listen for matDrawer opened change
-        this._tasksListComponent.matDrawer()!.openedChange
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                filter(opened => opened)
-            )
-            .subscribe(() => {
-                // Focus on the title element
-                this._titleField()!.nativeElement.focus();
-            });
-    }
 
 
     ngOnDestroy(): void {
@@ -139,8 +128,8 @@ export class TasksDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.editor.destroy();
     }
 
-    closeDrawer(): Promise<MatDrawerToggleResult> {
-        return this._tasksListComponent.matDrawer()!.close();
+    closeDrawer(): void {
+        this._tasksListComponent.closeDrawer();
     }
 
 
