@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, inject, viewChild, signal } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, inject, viewChild, signal, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
@@ -50,6 +51,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private utilsService = inject(UtilsService);
     private dialog = inject(MatDialog);
     private reportService = inject(FormReportService);
+    private destroyRef = inject(DestroyRef);
 
     plantilla = signal<DocumentoPlantillaDTO | null>(null); // Estructura base de la lista
     templatesFromProcess = signal<DocumentoPlantillaDTO[]>([]);
@@ -102,7 +104,9 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     dynamicControls = signal<IDynamicControl[]>([]);
 
     ngOnInit(): void {
-        this.route.params.subscribe((params: Params) => {
+        this.route.params
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((params: Params) => {
             const propType = params.type;
             if (!propType) {
                 this.router.navigate(['/main']);
@@ -372,7 +376,9 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if(this.plantilla()){
-            this.api.listarDocumentos(entity, this.plantilla()!.server).subscribe({
+            this.api.listarDocumentos(entity, this.plantilla()!.server)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
             next: (dataResult: PedidoVentaDTO[]) => {
                 if (!dataResult) {
                     dataResult = [];
@@ -582,6 +588,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 this.isLoading.set(true);
                 this.api
                     .obtenerCampos(plantillaId, dp.server)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
                     .subscribe({
                         next: (plantilla: DocumentoPlantillaDTO) => {
                             plantilla.server = dp.server;

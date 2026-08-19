@@ -1,4 +1,5 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PropertyService } from 'app/authentication/property.service';
@@ -10,6 +11,7 @@ import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
     templateUrl: './property-form.component.html'
 })
 export class PropertyForm implements OnInit {
+    private destroyRef = inject(DestroyRef);
     form: UntypedFormGroup;
     loading = false;
     key: string;
@@ -59,6 +61,7 @@ export class PropertyForm implements OnInit {
 
         if (!this.key) {
             this.propertyService.getProperty(this.key)
+                .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe(x => this.form.patchValue(x));
         }
     }
@@ -83,6 +86,7 @@ export class PropertyForm implements OnInit {
 
     private create() {
         this.propertyService.createProperty(this.form.value)
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: () => {
                     this.matDialogRef.close();

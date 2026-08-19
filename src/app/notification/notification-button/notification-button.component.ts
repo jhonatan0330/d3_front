@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef, effect, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef, effect, inject, viewChild, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { ActividadDTO } from 'app/notification/notification.types';
@@ -23,6 +24,7 @@ import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
 })
 export class NotificationButtonComponent implements  OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
+    private destroyRef = inject(DestroyRef);
     private _notificationsService = inject(NotificationsService);
     private _overlay = inject(Overlay);
     private _viewContainerRef = inject(ViewContainerRef);
@@ -148,7 +150,9 @@ export class NotificationButtonComponent implements  OnDestroy {
         });
 
         // Detach the overlay from the portal on backdrop click
-        this._overlayRef.backdropClick().subscribe(() => {
+        this._overlayRef.backdropClick()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => {
             this.closePanel();
         });
     }
@@ -174,7 +178,9 @@ export class NotificationButtonComponent implements  OnDestroy {
         pedidoVenta.plantilla = plantilla;
         pedidoVenta.llaveTabla = id;
         pedidoVenta.server = server;
-        this.utilsService.modalWithParams(pedidoVenta).subscribe(() => {
+        this.utilsService.modalWithParams(pedidoVenta)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => {
             this.refresh();
         });
     }
@@ -186,7 +192,9 @@ export class NotificationButtonComponent implements  OnDestroy {
 
     readActivity(actividad: ActividadDTO) {
         if (!actividad.fechaLeido) {
-            this._notificationsService.readActivity(actividad).subscribe({
+            this._notificationsService.readActivity(actividad)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
                 next: () => {
                     this.openDocument(actividad);
                 },
@@ -200,7 +208,9 @@ export class NotificationButtonComponent implements  OnDestroy {
 
     refresh() {
         if (this._jwtAuth.user() && this._jwtAuth.user().llaveTabla) {
-            this._notificationsService.getAll().subscribe({ error: () => {} });
+            this._notificationsService.getAll()
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({ error: () => {} });
         }
     }
 

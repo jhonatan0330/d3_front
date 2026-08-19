@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,6 +26,7 @@ export class FieldComponent implements OnInit {
     private flexService = inject(FlexService);
     private utilsService = inject(UtilsService);
     private dialogRef = inject<MatDialogRef<FieldComponent>>(MatDialogRef);
+    private destroyRef = inject(DestroyRef);
 
 
 
@@ -65,7 +67,9 @@ export class FieldComponent implements OnInit {
     cargarCampo(): void {
         this.isLoading = true;
 
-        this.flexService.getField(this.data.template, null!).subscribe({
+        this.flexService.getField(this.data.template, null!)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
             next: (resp) => {
                 this.field = resp;
                 this.listarPropiedadesCampo();
@@ -85,7 +89,9 @@ export class FieldComponent implements OnInit {
             return;
         }
 
-        this.flexService.listarConsultaPropiedad(this.field.llaveTabla, null!).subscribe({
+        this.flexService.listarConsultaPropiedad(this.field.llaveTabla, null!)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
             next: (props) => {
                 this.propiedadesCampo = props;
             },
@@ -117,13 +123,17 @@ export class FieldComponent implements OnInit {
         const _a = new PropiedadValorDefinidoDTO();
         if (this.tipo === 'Plantilla') {
             _a.origen = 'L';
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe({ next: response => {
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({ next: response => {
                 if (response) this.listarPropiedadesCampo();
             }, error: () => {} });
         } else {
             _a.origen = 'C';
             _a.origenCategoria = this.field.formato;
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe({ next: response => {
+            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({ next: response => {
                 if (response) this.listarPropiedadesCampo();
             }, error: () => {} });
         }
@@ -156,7 +166,9 @@ export class FieldComponent implements OnInit {
                     }
                 });
 
-                this.flexService.inactivarPropiedad(pPropiedad).subscribe({
+                this.flexService.inactivarPropiedad(pPropiedad)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe({
                     next: () => {
                         Swal.fire('Eliminado', 'La propiedad fue eliminada correctamente.', 'success');
                         this.cargarCampo();

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit,  inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit,  inject, signal, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
@@ -20,6 +21,7 @@ export class SettingsSecurityComponent implements OnInit {
 }>(MAT_DIALOG_DATA);
     private _formBuilder = inject(UntypedFormBuilder);
     private jwtAuth = inject(LoginService);
+    private destroyRef = inject(DestroyRef);
 
     securityForm: UntypedFormGroup;
     isLoading = signal(false);
@@ -60,7 +62,9 @@ export class SettingsSecurityComponent implements OnInit {
 
         if (this.keyData()) {
 
-            this.jwtAuth.changePwdOther(this.keyData()!.llaveTabla, signinData.oldPwd, signinData.newPwd, null!).subscribe({
+            this.jwtAuth.changePwdOther(this.keyData()!.llaveTabla, signinData.oldPwd, signinData.newPwd, null!)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
                 next: () => {
                     this.isLoading.set(false);
                     Swal.fire(
@@ -74,7 +78,9 @@ export class SettingsSecurityComponent implements OnInit {
                 },
             });
         } else {
-            this.jwtAuth.changePwd(signinData.oldPwd, signinData.newPwd, null!).subscribe({
+            this.jwtAuth.changePwd(signinData.oldPwd, signinData.newPwd, null!)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
                 next: () => {
                     this.isLoading.set(false);
                     Swal.fire(

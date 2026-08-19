@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from "@angular/core";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DocumentoPlantillaDTO } from "app/modules/full/neuron/model/sw42.domain";
@@ -24,6 +25,7 @@ import { ImageFormatPipe } from "../../shared/local-image";
 })
 export class TransferFormComponent implements OnInit {
   private notificationService = inject(NotificationsService);
+  private destroyRef = inject(DestroyRef);
   data = inject(MAT_DIALOG_DATA);
   dialogRef = inject<MatDialogRef<TransferFormComponent>>(MatDialogRef);
   private templateService = inject(TemplateService);
@@ -70,7 +72,9 @@ export class TransferFormComponent implements OnInit {
     const filter: ActividadDTO = new ActividadDTO();
     filter.documento = this.data.document;
     this.isTransfering = true;
-    this.notificationService.usersToTransfer(filter, this.plantilla!.server).subscribe({
+    this.notificationService.usersToTransfer(filter, this.plantilla!.server)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (value) => {
         this.isTransfering = false;
         this.users = value;
@@ -98,7 +102,9 @@ export class TransferFormComponent implements OnInit {
       reasignacion.responsable = transferData.responsable.llaveTabla;
       reasignacion.comentario = transferData.comentario;
       this.isTransfering = true;
-      this.notificationService.transfer(reasignacion, this.plantilla!.server).subscribe({
+      this.notificationService.transfer(reasignacion, this.plantilla!.server)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
         next: () => {
           this.dialogRef.close(true);
           this.isTransfering = false;

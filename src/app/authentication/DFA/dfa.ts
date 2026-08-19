@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { UsuarioAutenticacionDTO } from '../authentication.domain';
@@ -20,6 +21,7 @@ export class dfaComponent {
     private apiService = inject(ApiService);
     data = inject(MAT_DIALOG_DATA);
     private dialogRef = inject<MatDialogRef<dfaComponent>>(MatDialogRef);
+    private destroyRef = inject(DestroyRef);
 
 
     public recoverForm: FormGroup;
@@ -50,7 +52,9 @@ export class dfaComponent {
         _user.usuario = this.data.key.llaveTabla;
         _user.token = this.recoverForm.value.code;
 
-        this.apiService.verificarToken(_user).subscribe({
+        this.apiService.verificarToken(_user)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
             next: () => {
                 this.dialogRef.close(true);
             },

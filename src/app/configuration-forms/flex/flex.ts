@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
     DocumentoPlantillaCaracteristicaDTO,
@@ -24,8 +25,9 @@ import { FormsModule } from '@angular/forms';
 export class FlexComponent implements OnInit {
     data = inject(MAT_DIALOG_DATA);
     dialogRef = inject<MatDialogRef<FlexComponent>>(MatDialogRef);
-    private flexService = inject(FlexService);
+    private     flexService = inject(FlexService);
     private utilsService = inject(UtilsService);
+    private destroyRef = inject(DestroyRef);
 
 
     plantilla: DocumentoPlantillaDTO;
@@ -54,7 +56,9 @@ export class FlexComponent implements OnInit {
         this.nuevoCampo = new DocumentoPlantillaCaracteristicaDTO();
         this.nuevoCampo.formato = 'T';
         this.nuevoCampo.plantilla = this.data.template;
-        this.flexService.getTemplate(this.data.template, null!).subscribe({ next: (_returnedTemplate) => {
+        this.flexService.getTemplate(this.data.template, null!)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: (_returnedTemplate) => {
             this.plantilla = _returnedTemplate;
             this.isLoading = false;
             this.getFields();
@@ -63,7 +67,9 @@ export class FlexComponent implements OnInit {
 
     getFields() {
         this.isLoading = true;
-        this.flexService.getFields(this.plantilla.llaveTabla).subscribe({ next: (_returnedFields) => {
+        this.flexService.getFields(this.plantilla.llaveTabla)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: (_returnedFields) => {
             this.campos = _returnedFields;
             this.isLoading = false;
         }, error: () => {} });
@@ -87,7 +93,9 @@ export class FlexComponent implements OnInit {
 
     agregarCampo(): void {
         //this.utilsService.fieldAddModalFlex(this.data.template, this.nuevoCampo);
-        this.flexService.guardarDocumentoPlantillaCaracteristica(this.nuevoCampo).subscribe({ next: p => {
+        this.flexService.guardarDocumentoPlantillaCaracteristica(this.nuevoCampo)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: p => {
                 //this.nuevoCampo = p;
                 this.nuevoCampo.nombre = '';
                 this.getFields();
@@ -188,7 +196,9 @@ export class FlexComponent implements OnInit {
         item.orden = to + 1;
 
         this.onDragEnd();
-        this.flexService.actualizarDocumentoPlantillaCaracteristica(item).subscribe({ next: p => {
+        this.flexService.actualizarDocumentoPlantillaCaracteristica(item)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: p => {
             //this.campo = p;
         }, error: () => {} });
     }
@@ -236,7 +246,9 @@ export class FlexComponent implements OnInit {
         if (!ok) {
             return; // se canceló
         }
-        this.flexService.inactivarDocumentoPlantillaCaracteristica(eliminado).subscribe({ error: () => {} });
+        this.flexService.inactivarDocumentoPlantillaCaracteristica(eliminado)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ error: () => {} });
     }
 
     async actualizarCampo() {
@@ -244,6 +256,8 @@ export class FlexComponent implements OnInit {
         if (!ok) {
             return; // se canceló
         }
-        this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campoActual).subscribe({ error: () => {} });
+        this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campoActual)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ error: () => {} });
     }
 }

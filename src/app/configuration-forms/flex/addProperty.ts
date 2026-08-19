@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { propiedadCampo, PropiedadCampoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { FlexService } from '../flex.service';
@@ -20,6 +21,7 @@ export class AddPropertyComponent {
     private flexService = inject(FlexService);
     data = inject(MAT_DIALOG_DATA);
     dialogRef = inject<MatDialogRef<AddPropertyComponent>>(MatDialogRef);
+    private destroyRef = inject(DestroyRef);
 
     cargando = false;
 
@@ -88,6 +90,7 @@ export class AddPropertyComponent {
         _a.origen = this.propiedad.tipo;
         _a.origenCategoria = this.data.tipo.origenCategoria;
         this.flexService.listarPorOrigenPropiedadValorDefinido(_a, null!)
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({ next: p => {
                 this.propiedadValores = p;
                 this.def = this.propiedadValores.find(p => p.llaveTabla === this.propiedad.propiedadValor)!;
@@ -98,7 +101,9 @@ export class AddPropertyComponent {
             }, error: () => {} });
     }
     buscarRoles() {
-        this.flexService.listarConsultaRolAcceso().subscribe({ next: p => {
+        this.flexService.listarConsultaRolAcceso()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: p => {
             this.roles = p;
             if(!this.propiedad.llaveTabla){
                 this.propiedad.rol = null as any;
@@ -110,7 +115,9 @@ export class AddPropertyComponent {
     guardarPropiedad() {
         this.cargando = true;
         if(this.propiedad.llaveTabla){
-            this.flexService.changeProperty(this.propiedad).subscribe({
+            this.flexService.changeProperty(this.propiedad)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
             next: (result: ApiErrorResponse) => {
                 if (result?.message) {
                     Swal.fire('Error', 'No se pudo cambiar la propiedad ' + result.message, 'error');
@@ -126,7 +133,9 @@ export class AddPropertyComponent {
         });
 
         }else{
-            this.flexService.addProperty(this.propiedad).subscribe({
+            this.flexService.addProperty(this.propiedad)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
             next: (result: ApiErrorResponse) => {
                 if (result?.message) {
                     Swal.fire('Error', 'No se pudo crear la propiedad ' + result.message, 'error');
@@ -143,7 +152,9 @@ export class AddPropertyComponent {
         }
     }
     filtrarUsuarios(pFiltro) {
-        this.flexService.listarRolUsuario(pFiltro).subscribe({ next: p => {
+        this.flexService.listarRolUsuario(pFiltro)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: p => {
             this.usuarios = p;
         }, error: () => {} })
     }
@@ -174,7 +185,9 @@ export class AddPropertyComponent {
         filtro.propiedad = prop.llaveTabla;
         filtro.estado = prop.estado;
 
-        this.flexService.relacionesPropiedad(filtro, null!).subscribe({
+        this.flexService.relacionesPropiedad(filtro, null!)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
             next: (rels) => {
                 this.propiedadesRelacion = rels;
             },

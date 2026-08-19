@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, signal, viewChild, ElementRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, signal, viewChild, ElementRef, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from './accounting.domain';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -43,6 +44,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     accountingService = inject(AccountingService);
     private _jwt = inject(LoginService);
     private _router = inject(Router);
+    private destroyRef = inject(DestroyRef);
 
     readonly drawer = viewChild<ElementRef>('drawer');
 
@@ -118,7 +120,9 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     getVouchers() {
         this.isLoadingVoucher = true;
-        this.accountingService.getVouchers(this.accountingService.currentCatalog.key).subscribe({
+        this.accountingService.getVouchers(this.accountingService.currentCatalog.key)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
             next: (dataResult: ManualDTO[]) => {
                 this.recentTransactionsDataSource.data = dataResult;
                 this.isLoadingVoucher = false;
@@ -131,6 +135,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     editVouchers(voucher: ManualDTO) {
         this.utilsService.modalVoucher(voucher.key, voucher.catalog)
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => {
                 this.getAccounts();
             });
@@ -150,7 +155,9 @@ export class AccountComponent implements OnInit, OnDestroy {
         }).then((resultado) => {
 
             if (resultado.isConfirmed) {
-                this.accountingService.deleteVoucher(voucher.key).subscribe({
+                this.accountingService.deleteVoucher(voucher.key)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe({
                     next: (dataResult: ManualDTO) => {
                     },
                     error: () => {
@@ -167,7 +174,9 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     getCatalogs() {
         this.isLoadingCatalog = true;
-        this.accountingService.getCatalogs().subscribe({
+        this.accountingService.getCatalogs()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
             next: (dataResult: CatalogDTO[]) => {
                 this.catalogs = dataResult;
                 this.isLoadingCatalog = false;
@@ -194,7 +203,9 @@ export class AccountComponent implements OnInit, OnDestroy {
         this.balance = [];
         if (this.accountingService.currentCatalog) {
             this.isLoadingBalance = true;
-            this.accountingService.getBalance(this.accountingService.currentCatalog.key).subscribe({
+            this.accountingService.getBalance(this.accountingService.currentCatalog.key)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
                 next: (dataResult: ResultMapDTO[]) => {
                     this.balance = dataResult;
                     this.isLoadingBalance = false;
@@ -211,7 +222,9 @@ export class AccountComponent implements OnInit, OnDestroy {
         if (this.accountingService.currentCatalog) {
             this.isLoadingAccount = true;
             this.dataSource.data = [];
-            this.accountingService.getAccounts(this.accountingService.currentCatalog.key).subscribe({
+            this.accountingService.getAccounts(this.accountingService.currentCatalog.key)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
                 next: (dataResult: AccountDTO[]) => {
                     const TREE_DATA: AccountNode[] = [];
                     for (let i = 0; i < dataResult.length; i++) {
@@ -252,6 +265,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     openManualForm(): void {
         if (!this.accountingService.currentCatalog) { return; }
         this.utilsService.modalVoucher(null!, this.accountingService.currentCatalog.key)
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => { this.getBalance(); this.getVouchers(); });
     }
 }

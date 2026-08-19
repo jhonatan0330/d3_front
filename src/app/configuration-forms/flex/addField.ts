@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { FormsModule } from '@angular/forms';
 import { FlexService } from '../flex.service';
@@ -16,6 +17,7 @@ export class AddFieldComponent {
     private flexService = inject(FlexService);
     data = inject(MAT_DIALOG_DATA);
     private dialogRef = inject<MatDialogRef<AddFieldComponent>>(MatDialogRef);
+    private destroyRef = inject(DestroyRef);
 
     campo: DocumentoPlantillaCaracteristicaDTO;
 
@@ -32,6 +34,7 @@ export class AddFieldComponent {
             this.campo = this.data.campo;
         } else {
             this.flexService.getField(this.data.template, null!) //datos del campo antiguo
+                .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({ next: p => {
                     this.campo = p;
                 }, error: () => {} });
@@ -43,12 +46,16 @@ export class AddFieldComponent {
     actualizarCampo(): void {
 
         if (this.campo.llaveTabla) {
-            this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campo).subscribe({ next: p => {
+            this.flexService.actualizarDocumentoPlantillaCaracteristica(this.campo)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({ next: p => {
                 this.campo = p;
                 this.dialogRef.close(p);
             }, error: () => {} });
         } else {
-            this.flexService.guardarDocumentoPlantillaCaracteristica(this.campo).subscribe({ next: p => {
+            this.flexService.guardarDocumentoPlantillaCaracteristica(this.campo)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({ next: p => {
                 this.campo = p;
                 this.dialogRef.close(p);
             }, error: () => {} });

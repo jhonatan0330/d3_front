@@ -1,4 +1,5 @@
-import { Component, effect, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, effect, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,6 +28,7 @@ export class SignInSplitScreenReversedComponent implements OnInit {
     private route = inject(ActivatedRoute);
     private router = inject(Router);
     private utilsService = inject(UtilsService);
+    private destroyRef = inject(DestroyRef);
 
 
     templateNewUser: string;
@@ -67,6 +69,7 @@ export class SignInSplitScreenReversedComponent implements OnInit {
             password: ['', Validators.required]
         });
         this.loginservice.checkTokenIsValid()
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((result: boolean) => {
                 if (!result) { this.loginservice.getUrlServices(); }
             });
@@ -85,6 +88,7 @@ export class SignInSplitScreenReversedComponent implements OnInit {
         // Sign in
         const formValue = this.signInForm.value as any;
         this.loginservice.signin(formValue.username, formValue.password, null!)!
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (_val: UsuarioAutenticacionDTO) => {
                     this.isLoading = false;
@@ -92,7 +96,9 @@ export class SignInSplitScreenReversedComponent implements OnInit {
                     this.signInForm.controls['password'].setValue('');
                     const APP_DFA = PlantillaHelper.buscarValor(_val.organizacion.propiedades, PlantillaHelper.APP_DFA);
                     if (APP_DFA) {
-                        this.utilsService.modalUserChangePassOther(_val.usuarioDTO).subscribe((result) => {
+                        this.utilsService.modalUserChangePassOther(_val.usuarioDTO)
+                            .pipe(takeUntilDestroyed(this.destroyRef))
+                            .subscribe((result) => {
                             if (result) {
                                 this.loginservice.authenticationOK(_val);
                                 const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL') || '/main';
@@ -130,7 +136,9 @@ export class SignInSplitScreenReversedComponent implements OnInit {
         if (!this.templateNewUser) { return; }
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = this.templateNewUser;
-        this.utilsService.modalWithParams(pedidoVenta, true).subscribe((documentResponse) => {
+        this.utilsService.modalWithParams(pedidoVenta, true)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((documentResponse) => {
 
             this.signInForm.controls['username'].setValue(documentResponse.data.nombre);
             this.signInForm.controls['password'].setValue(documentResponse.data.nombre);

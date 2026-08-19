@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
@@ -17,6 +18,7 @@ import { ParticleBackgroundDirective } from '../shared/particle-background';
 export class RecoverPasswordComponent implements OnInit, OnDestroy {
   private loginService = inject(LoginService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   recoverForm: FormGroup<{ identificacion: FormControl<string | null>, correo: FormControl<string | null> }>;
   errorMsg = '';
@@ -46,7 +48,9 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
 
     this.submitting = true;
 
-    this.loginService.recoverPassword(signinData.identificacion!, signinData.correo!).subscribe({
+    this.loginService.recoverPassword(signinData.identificacion!, signinData.correo!)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: () => {
         this.loginService.signout();
         Swal.fire('Revisa tu correo', 'Hemos enviado un mensaje a tu correo electronico, hay puedes obtener el link para crear una clave y tambien tendras el codigo de seguridad.','info');

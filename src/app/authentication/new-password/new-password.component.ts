@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -16,6 +17,7 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private loginService = inject(LoginService);
+  private destroyRef = inject(DestroyRef);
 
 
   recoverForm: FormGroup<{ first: FormControl<string | null>, second: FormControl<string | null> }>;
@@ -45,7 +47,9 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   signin() {
     if(this.recoverForm.invalid) {return;}
 
-    this.route.params.subscribe((params: Params) => {
+    this.route.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params: Params) => {
       this.autorizationId = params.id;
     });
 
@@ -57,7 +61,9 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
     }
 
 
-    this.loginService.changePwd(signinData.first!, signinData.first!, this.autorizationId).subscribe({
+    this.loginService.changePwd(signinData.first!, signinData.first!, this.autorizationId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: () => {
         this.loginService.signout();
         Swal.fire('Todo perfecto', 'Tu nueva clave se ha confirmado, agradecemos tu paciencia, mejoramos para cuidar tu seguridad.','info');
