@@ -1,5 +1,4 @@
-import { Component, OnDestroy,  ChangeDetectionStrategy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -8,28 +7,5 @@ import { RouterOutlet } from '@angular/router';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterOutlet]
 })
-export class EmptyLayoutComponent implements OnDestroy
-{
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
-
-    /**
-     * Constructor
-     */
-    constructor()
-    {
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-    }
+export class EmptyLayoutComponent {
 }

@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Subject } from 'rxjs';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import Swal from 'sweetalert2';
 import { LoginService } from '../login.service';
@@ -15,7 +14,7 @@ import { ParticleBackgroundDirective } from '../shared/particle-background';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule, ReactiveFormsModule, RouterLink, ParticleBackgroundDirective]
 })
-export class RecoverPasswordComponent implements OnInit, OnDestroy {
+export class RecoverPasswordComponent implements OnInit {
   private loginService = inject(LoginService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
@@ -23,12 +22,6 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
   recoverForm: FormGroup<{ identificacion: FormControl<string | null>, correo: FormControl<string | null> }>;
   errorMsg = '';
   submitting = false;
-  
-  private _unsubscribeAll: Subject<any>;
-
-  constructor() {
-    this._unsubscribeAll = new Subject();
-  }
 
   ngOnInit() {
     this.recoverForm = new FormGroup({
@@ -37,11 +30,6 @@ export class RecoverPasswordComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  ngOnDestroy() {
-    // this._unsubscribeAll.next();
-    this._unsubscribeAll.complete();
-  }
 
   signin() {
     const signinData = this.recoverForm.value;

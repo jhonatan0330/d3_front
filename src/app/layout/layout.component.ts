@@ -1,7 +1,8 @@
-import { Component, effect, OnDestroy, OnInit, ChangeDetectionStrategy, inject, ViewEncapsulation } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit, ChangeDetectionStrategy, inject, ViewEncapsulation, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import {  filter,  Subject, takeUntil } from 'rxjs';
+import { filter } from 'rxjs';
 import { FuseConfigService } from 'app/core/config/fuse-config.service';
 import { Layout } from 'app/layout/layout.types';
 import { AppConfig } from 'app/core/config/app.config';
@@ -27,16 +28,15 @@ import { ThinLayoutComponent } from './layouts/vertical/thin/thin.component';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [EmptyLayoutComponent, CenteredLayoutComponent, EnterpriseLayoutComponent, MaterialLayoutComponent, ModernLayoutComponent, ClassicLayoutComponent, ClassyLayoutComponent, CompactLayoutComponent, DenseLayoutComponent, FuturisticLayoutComponent, ThinLayoutComponent]
 })
-export class LayoutComponent implements OnInit, OnDestroy {
+export class LayoutComponent implements OnInit {
     private _activatedRoute = inject(ActivatedRoute);
     private _router = inject(Router);
     private _fuseConfigService = inject(FuseConfigService);
     private _userService = inject(LoginService);
+    private _destroyRef = inject(DestroyRef);
 
     config: AppConfig;
     layout: Layout;
-
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     constructor() {
         effect(() => {
@@ -56,7 +56,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
        
         // Subscribe to config changes
         this._fuseConfigService.config$
-            .pipe(takeUntil(this._unsubscribeAll))
+            .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe((config: AppConfig) => {
                 // Store the config
                 this.config = config;
@@ -66,7 +66,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
         // Subscribe to NavigationEnd event
         this._router.events.pipe(
             filter(event => event instanceof NavigationEnd),
-            takeUntil(this._unsubscribeAll)
+            takeUntilDestroyed(this._destroyRef)
         ).subscribe(() => {
             // Update the layout
             this._updateLayout();
@@ -75,11 +75,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     }
 
-    ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-    }
 
     private _updateLayout(): void {
         // Get the current activated route

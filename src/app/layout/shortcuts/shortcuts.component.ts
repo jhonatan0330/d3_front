@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef,  inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef,  inject, viewChild, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Subject } from 'rxjs';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { TemplateService } from 'app/modules/full/neuron/service/template.service';
@@ -21,6 +21,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     private _overlay = inject(Overlay);
     private _viewContainerRef = inject(ViewContainerRef);
     private _utilService = inject(UtilsService);
+    private destroyRef = inject(DestroyRef);
 
     private readonly _shortcutsOrigin = viewChild<ElementRef>('shortcutsOrigin');
     private readonly _shortcutsPanel = viewChild<TemplateRef<any>>('shortcutsPanel');
@@ -57,16 +58,10 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     shortcuts: DocumentoPlantillaDTO[];
     shortcutsFiltered: DocumentoPlantillaDTO[];
     private _overlayRef: OverlayRef;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     ngOnInit(): void { }
 
     ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-
-        // Dispose the overlay
         if (this._overlayRef) {
             this._overlayRef.dispose();
         }
@@ -163,7 +158,9 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
         });
 
         // Detach the overlay from the portal on backdrop click
-        this._overlayRef.backdropClick().subscribe(() => {
+        this._overlayRef.backdropClick()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => {
             this._overlayRef.detach();
         });
     }

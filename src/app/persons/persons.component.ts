@@ -1,17 +1,15 @@
-import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject, signal, DestroyRef } from '@angular/core';
 import {
-    OnDestroy,
     OnInit,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ContactsService } from './contact.services';
 import {
     debounceTime,
     Observable,
-    Subject,
     switchMap,
-    takeUntil,
 } from 'rxjs';
 
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
@@ -35,12 +33,13 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterOutlet,MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,AsyncPipe,I18nPluralPipe,DropdownComponent,DropdownItemComponent]
 })
-export class PersonsComponent implements OnInit, OnDestroy {
+export class PersonsComponent implements OnInit {
     private _activatedRoute = inject(ActivatedRoute);
     private _jwt = inject(LoginService);
     private _contactsService = inject(ContactsService);
     private _router = inject(Router);
     private utilService = inject(UtilsService);
+    private destroyRef = inject(DestroyRef);
 
 
 
@@ -52,7 +51,6 @@ export class PersonsComponent implements OnInit, OnDestroy {
     drawerMode: 'side' | 'over';
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedContact: UsuarioDTO;
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
     tags$: Observable<RolAccesoFilterDTO[]>;
 
 
@@ -73,19 +71,13 @@ export class PersonsComponent implements OnInit, OnDestroy {
         this.searchInputControl.valueChanges
             .pipe(
                 debounceTime(500),
-                takeUntil(this._unsubscribeAll),
+                takeUntilDestroyed(this.destroyRef),
                 switchMap((query) =>
                     // Search
                     this._contactsService.searchContacts(query)
                 )
             )
             .subscribe({ error: () => {} });
-    }
-
-    ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
     }
 
 

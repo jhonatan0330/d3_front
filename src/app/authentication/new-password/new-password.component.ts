@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Subject } from 'rxjs';
 import Swal from 'sweetalert2';
 import { LoginService } from '../login.service';
 import { ParticleBackgroundDirective } from '../shared/particle-background';
@@ -13,7 +12,7 @@ import { ParticleBackgroundDirective } from '../shared/particle-background';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule, ReactiveFormsModule, RouterLink, ParticleBackgroundDirective]
 })
-export class NewPasswordComponent implements OnInit, OnDestroy {
+export class NewPasswordComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private loginService = inject(LoginService);
@@ -23,12 +22,6 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
   recoverForm: FormGroup<{ first: FormControl<string | null>, second: FormControl<string | null> }>;
   errorMsg = '';
   autorizationId: string;
-  
-  private _unsubscribeAll: Subject<any>;
-
-  constructor() {
-    this._unsubscribeAll = new Subject();
-  }
 
   ngOnInit() {
     this.loginService.getUrlServices();
@@ -38,11 +31,6 @@ export class NewPasswordComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  ngOnDestroy() {
-    this._unsubscribeAll.next(null);
-    this._unsubscribeAll.complete();
-  }
 
   signin() {
     if(this.recoverForm.invalid) {return;}
