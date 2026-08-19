@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { switchMap, of, map, tap } from 'rxjs';
 import { FormControl, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   DocumentoPlantillaDTO,
@@ -176,57 +177,56 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       this.proceso = this.data.principal;
     }
     // Al momento de cambiar actualizo el proceso y actualizo todo lo necesario
-    this.fControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
-      // this.data.valorOpcion = value.llaveTabla;
-      // Algunas ocaciones recibo string aqui valido que se coloque un objeto como proceso
-      if (value) {
-        if (value.llaveTabla) {
-          this.proceso = value;
-          this.filteredDocuments = null!;
-          this.showAlertSelectedProcess();
-          const _pHTML = this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL)
-          if (_pHTML) {
-            this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla)
-              .pipe(takeUntilDestroyed(this.destroyRef))
-              .subscribe({
-              next: (res: IdResponse) => {
-                this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(res.comment);
-              },
-              error: () => {
-              }
-            });
-          }
-        } else {
-          this.proceso = null!;
-          let filterValue: string = value.toLowerCase();
-          if (filterValue === '*') { filterValue = ''; }
-          if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length - 1); }
-          filterValue = filterValue.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-          if (this.disponibles) {
-            this.filteredDocuments = this.disponibles.filter(
-              (doc) => {
-                if (doc.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
-                if (doc.descripcion && doc.descripcion.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
-                if (doc.caracteristicas) {
-                  for (let filterItemField = 0; filterItemField < doc.caracteristicas.length; filterItemField++) {
-                    const element = doc.caracteristicas[filterItemField];
-                    if (element.valorText != null && element.valorText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
+    this.fControl.valueChanges.pipe(
+        tap((value) => {
+          if (value?.llaveTabla) {
+            this.proceso = value;
+            this.filteredDocuments = null!;
+            this.showAlertSelectedProcess();
+          } else if (value) {
+            this.proceso = null!;
+            let filterValue: string = value.toLowerCase();
+            if (filterValue === '*') { filterValue = ''; }
+            if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length - 1); }
+            filterValue = filterValue.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            if (this.disponibles) {
+              this.filteredDocuments = this.disponibles.filter(
+                (doc) => {
+                  if (doc.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
+                  if (doc.descripcion && doc.descripcion.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
+                  if (doc.caracteristicas) {
+                    for (let filterItemField = 0; filterItemField < doc.caracteristicas.length; filterItemField++) {
+                      const element = doc.caracteristicas[filterItemField];
+                      if (element.valorText != null && element.valorText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
+                    }
                   }
+                  return false;
                 }
-                return false;
-              }
-            );
+              );
+            }
+          } else {
+            this.proceso = null!;
+            if (this.fControl.touched) { this.filteredDocuments = this.disponibles; }
           }
-          if (!value) {
-            return this.disponibles.slice();
+        }),
+        switchMap((value) => {
+          if (value?.llaveTabla) {
+            const _pHTML = this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL);
+            if (_pHTML) {
+              return this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla)
+                .pipe(map((res: IdResponse) => ({ found: true as const, res })));
+            }
           }
+          return of({ found: false as const });
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((result) => {
+        if (result.found) {
+          this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(result.res.comment);
         }
-      } else {
-        this.proceso = null!;
-        if (this.fControl.touched) { this.filteredDocuments = this.disponibles; }
-      }
-      this.actualizar();
-    });
+        this.actualizar();
+      });
     this.iniciar();
   }
 

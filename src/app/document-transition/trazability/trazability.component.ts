@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal, DestroyRef } from "@angular/core";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from "app/modules/full/neuron/model/sw42.domain";
@@ -36,6 +37,7 @@ export class TrazabilityComponent implements OnInit {
   private templateService = inject(TemplateService);
   private utilsService = inject(UtilsService);
   private notificationCenter = inject(NotificationCenterService);
+  private destroyRef = inject(DestroyRef);
 
 
   // TRACE
@@ -267,6 +269,7 @@ export class TrazabilityComponent implements OnInit {
       this.isLoading.set(true);
       this._traceService
         .getVoucherOfDocument(_prepare)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (value: IdResponse) => {
             if (value && value.id) {

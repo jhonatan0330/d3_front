@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, switchMap } from 'rxjs/operators';
 import { of, throwError, Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
@@ -205,17 +205,13 @@ export class LoginService {
         autenticacion
       )
       .pipe(
-        map((profile: UsuarioAutenticacionDTO) => {
-          // Cuando ingreso todavia no tengo organizacion
-          //if (!this.company) { 
-          this.signin(null!, null!, tokenLocal)!.subscribe({
-            next: (data:UsuarioAutenticacionDTO) => {
+        switchMap((profile: UsuarioAutenticacionDTO) => {
+          return this.signin(null!, null!, tokenLocal)!.pipe(
+            map((data: UsuarioAutenticacionDTO) => {
               this.authenticationOK(data);
-            },
-            error: () => {}
-          }
+              return true;
+            })
           );
-          return true;
         }),
         catchError((error) => {
           this.signout();
