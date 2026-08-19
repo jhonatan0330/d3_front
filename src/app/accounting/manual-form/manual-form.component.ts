@@ -71,7 +71,9 @@ export class ManualFormComponent implements OnInit {
 
         if (this.data) {
             if (this.data.catalogId) {
-                this.accountingService.getCatalog(this.data.catalogId).subscribe({ next: (catalog) => {
+                this.accountingService.getCatalog(this.data.catalogId)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe({ next: (catalog) => {
                     this.catalog = catalog;
                     this.getReports();
                 }, error: () => {} });
@@ -83,6 +85,7 @@ export class ManualFormComponent implements OnInit {
             if (this.key) {
                 this.loading = true;
                 this.accountingService.getVoucher(this.data.key)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
                     .subscribe({ next: x => {
                         if (!x) { return; }
                         this.form = this._formBuilder.group({
@@ -138,7 +141,9 @@ export class ManualFormComponent implements OnInit {
     getAccounts() {
         if (this.accountingService.currentCatalog && !this.accountingService.currentCatalog.accounts) {
             this.loading = true;
-            this.accountingService.getAccounts(this.accountingService.currentCatalog.key).subscribe({
+            this.accountingService.getAccounts(this.accountingService.currentCatalog.key)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
                 next: (items) => {
                     this.accountingService.currentCatalog.accounts = items;
                     this.loading = false;
@@ -206,7 +211,9 @@ export class ManualFormComponent implements OnInit {
             }).then((resultado) => {
     
                 if (resultado.isConfirmed) {
-                    this.accountingService.deleteVoucher(voucher.key).subscribe({
+                    this.accountingService.deleteVoucher(voucher.key)
+                        .pipe(takeUntilDestroyed(this.destroyRef))
+                        .subscribe({
                         next: (dataResult: ManualDTO) => {
                         },
                         error: () => {
@@ -223,6 +230,7 @@ export class ManualFormComponent implements OnInit {
 
     private create() {
         this.accountingService.createManual(this.form.value)
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: () => {
                     this.loading = false;
@@ -236,6 +244,7 @@ export class ManualFormComponent implements OnInit {
 
     private update() {
         this.accountingService.updateManual(this.form.value)
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: () => {
                     this.matDialogRef.close();

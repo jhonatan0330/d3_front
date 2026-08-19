@@ -49,7 +49,9 @@ export class DashboardComponent implements AfterViewInit {
       const received = (date instanceof Date) ? date : new Date(date);
       // If the received date is greater than now, show a pop-up
       if (received < now) {
-        this._utilsService.modalUserChangePass().subscribe({ error: () => {} });
+        this._utilsService.modalUserChangePass()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ error: () => {} });
       }
     });
 

@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, OnDestroy, OnInit, DOCUMENT, inject, signal, viewChild, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, OnDestroy, OnInit, DOCUMENT, inject, signal, viewChild, ElementRef, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragPreview, CdkDragHandle } from '@angular/cdk/drag-drop';
-import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
+import { filter, fromEvent } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksService } from 'app/tasks/tasks.service';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -24,6 +25,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     private _document = inject(DOCUMENT);
     private _router = inject(Router);
     private _tasksService = inject(TasksService);
+    private destroyRef = inject(DestroyRef);
 
     readonly matDrawer = viewChild<ElementRef>('matDrawer');
 
@@ -41,7 +43,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
         this.drawerMode = e.matches ? 'side' : 'over';
         this._changeDetectorRef.markForCheck();
     };
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     constructor() {
         effect(() => {
@@ -73,7 +74,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
         fromEvent(this._document, 'keydown')
             .pipe(
-                takeUntil(this._unsubscribeAll),
+                takeUntilDestroyed(this.destroyRef),
                 filter<KeyboardEvent>(event =>
                     (event.ctrlKey === true || event.metaKey) // Ctrl or Cmd
                     && (event.key === '/' || event.key === '.') // '/' or '.' key
@@ -89,15 +90,14 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
             });
 
-        this._tasksService.getTasks().subscribe({ error: () => {} });
+        this._tasksService.getTasks()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ error: () => {} });
     }
 
 
     ngOnDestroy(): void {
         this._mediaQuery.removeEventListener('change', this._mediaHandler);
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
     }
 
     onBackdropClicked(): void {
@@ -122,7 +122,9 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
 
     createTask(): void {
-        this._tasksService.createTask("").subscribe({ next: (id) => {
+        this._tasksService.createTask("")
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: (id) => {
             const tasks = this._tasksService.tasks() ?? [];
             const task = tasks.find((t) => t.key === id);
             if (task) {
@@ -137,7 +139,9 @@ export class TasksListComponent implements OnInit, OnDestroy {
         if (task.completed) { (task as any).completed = null }
         else { task.completed = new Date() }
 
-        this._tasksService.updateTask(task).subscribe({ error: () => {} });
+        this._tasksService.updateTask(task)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ error: () => {} });
 
         this._changeDetectorRef.markForCheck();
     }
@@ -159,7 +163,9 @@ export class TasksListComponent implements OnInit, OnDestroy {
     }
 
     deleteTask(_task: Task): void {
-        this._tasksService.deleteTask(_task.key).subscribe({ next: () => {
+        this._tasksService.deleteTask(_task.key)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: () => {
             this._router.navigate(['./'], { relativeTo: this._activatedRoute });
             this._changeDetectorRef.markForCheck();
         }, error: () => {} });

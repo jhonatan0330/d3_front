@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementRef, OnDestroy, OnInit, inject, viewChild, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { debounceTime, filter, Subject, takeUntil, tap } from 'rxjs';
+import { debounceTime, filter, tap } from 'rxjs';
 import { Task } from 'app/tasks/tasks.types';
 import { TasksListComponent } from 'app/tasks/list/list.component';
 import { TasksService } from 'app/tasks/tasks.service';
@@ -26,6 +27,7 @@ export class TasksDetailsComponent implements OnInit, OnDestroy {
     private _tasksListComponent = inject(TasksListComponent);
     private _tasksService = inject(TasksService);
     private notificationCenter = inject(NotificationCenterService);
+    private destroyRef = inject(DestroyRef);
 
     private readonly _titleField = viewChild<ElementRef>('titleField');
 
@@ -42,7 +44,6 @@ export class TasksDetailsComponent implements OnInit, OnDestroy {
     ['text_color', 'background_color'],
     ['align_left', 'align_center', 'align_right', 'align_justify'],
   ];
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
 
     constructor() {
         effect(() => {
@@ -97,12 +98,14 @@ export class TasksDetailsComponent implements OnInit, OnDestroy {
                     }
                 }),
                 debounceTime(500),
-                takeUntil(this._unsubscribeAll)
+                takeUntilDestroyed(this.destroyRef)
             )
             .subscribe((value) => {
                 if (this.taskForm.invalid) { return; }
                 // Update the task on the server
-                this._tasksService.updateTask(value).subscribe({ error: () => {} });
+                this._tasksService.updateTask(value)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe({ error: () => {} });
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -110,7 +113,7 @@ export class TasksDetailsComponent implements OnInit, OnDestroy {
         // Listen for NavigationEnd event to focus on the title field
         this._router.events
             .pipe(
-                takeUntil(this._unsubscribeAll),
+                takeUntilDestroyed(this.destroyRef),
                 filter(event => event instanceof NavigationEnd)
             )
             .subscribe(() => {
@@ -122,9 +125,6 @@ export class TasksDetailsComponent implements OnInit, OnDestroy {
 
 
     ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
         this.editor.destroy();
     }
 
@@ -139,7 +139,9 @@ export class TasksDetailsComponent implements OnInit, OnDestroy {
         else { this.task.completed = new Date() }
 
         // Update the task on the server
-        this._tasksService.updateTask(this.task).subscribe({ error: () => {} });
+        this._tasksService.updateTask(this.task)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ error: () => {} });
 
         // Mark for check
         this._changeDetectorRef.markForCheck();
@@ -156,7 +158,9 @@ export class TasksDetailsComponent implements OnInit, OnDestroy {
     }
 
     deleteTask(): void {
-        this._tasksService.deleteTask(this.task.key).subscribe({ next: () => {
+        this._tasksService.deleteTask(this.task.key)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: () => {
             this.closeDrawer();
             this._changeDetectorRef.markForCheck();
         }, error: () => {} });
