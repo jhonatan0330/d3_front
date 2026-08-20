@@ -1128,16 +1128,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
               .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe({
               next: (value: RelacionInternaDTO[]) => {
-                if (!value || value.length === 0) {
-                  //Creo una relacion falsa para que no vuelva a filtrar
-                  const ri: RelacionInternaDTO = new RelacionInternaDTO();
-                  ri.propiedad = dependentIterato.llaveTabla;
-                  ri.campo = "FALSE";
-                  ri.plantilla = "FALSE";
-                  ri.auxiliar = "FALSE";
-                  value = [];
-                  value.push(ri);
-                }
                 this.isLoadingList.set(false);
                 this.createNewDocument(_plantilla, _property);
               },

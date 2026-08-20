@@ -1,24 +1,5 @@
 <div class="absolute inset-0 flex min-w-0 flex-col overflow-hidden">
-  <div class="bg-card h-full flex-auto dark:bg-transparent flex">
 
-    <!-- Backdrop for overlay mode -->
-    @if (drawerOpened() && drawerMode === 'over') {
-      <div class="fixed inset-0 bg-black/50 z-40" (click)="onBackdropClicked()"></div>
-    }
-
-    <!-- Drawer -->
-    <aside class="w-full dark:bg-gray-900 md:w-160 overflow-y-auto flex-shrink-0 transition-transform duration-300 ease-in-out"
-      [class.fixed]="drawerMode === 'over'"
-      [class.inset-y-0]="drawerMode === 'over'"
-      [class.right-0]="drawerMode === 'over'"
-      [class.z-50]="drawerMode === 'over'"
-      [class.translate-x-full]="!drawerOpened()"
-      [class.translate-x-0]="drawerOpened()">
-      <router-outlet></router-outlet>
-    </aside>
-
-    <!-- Content -->
-    <main class="flex flex-col flex-1">
       <!-- Main -->
       <div class="flex-auto h-screen overflow-y-auto">
         <!-- Header -->
@@ -149,6 +130,5 @@
           <!-- No contacts -->
         </div>
       </div>
-    </main>
-  </div>
+
 </div>

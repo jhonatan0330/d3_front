@@ -9,7 +9,7 @@ import { AuthenticationService } from 'app/authentication/authentication.service
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { register } from 'swiper/element';
-import { DashboardIndicators } from "./project/indicators";
+import { IndicatorsCardsComponent } from './cards';
 
 register();
 
@@ -18,7 +18,7 @@ register();
     templateUrl: './dashboard.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [FormsModule, ReactiveFormsModule, DashboardIndicators]
+    imports: [FormsModule, ReactiveFormsModule, IndicatorsCardsComponent]
 })
 export class DashboardComponent implements AfterViewInit {
   private templateService = inject(TemplateService);

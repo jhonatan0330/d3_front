@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import {  Router } from '@angular/router';
 import { ContactsService } from './contact.services';
 import {
     debounceTime,
@@ -15,7 +15,6 @@ import {
 import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
-import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
 
 
@@ -31,24 +30,20 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
     selector: 'PersonsComponent',
     templateUrl: 'persons.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterOutlet,MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,AsyncPipe,I18nPluralPipe,DropdownComponent,DropdownItemComponent]
+    imports: [MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,AsyncPipe,I18nPluralPipe,DropdownComponent,DropdownItemComponent]
 })
 export class PersonsComponent implements OnInit {
-    private _activatedRoute = inject(ActivatedRoute);
     private _jwt = inject(LoginService);
     private _contactsService = inject(ContactsService);
     private _router = inject(Router);
     private utilService = inject(UtilsService);
     private destroyRef = inject(DestroyRef);
 
-
-
     readonly contacts = this._contactsService.contacts;
 
     contactsCount = computed(() => this._contactsService.contacts()?.length ?? 0);
     contactsTableColumns: string[] = ['name', 'email', 'phoneNumber', 'job'];
-    drawerOpened = signal(false);
-    drawerMode: 'side' | 'over';
+
     searchInputControl: UntypedFormControl = new UntypedFormControl();
     selectedContact: UsuarioDTO;
     tags$: Observable<RolAccesoFilterDTO[]>;
@@ -80,22 +75,6 @@ export class PersonsComponent implements OnInit {
             .subscribe({ error: () => {} });
     }
 
-
-    onBackdropClicked(): void {
-        this._router.navigate(['./'], { relativeTo: this._activatedRoute });
-    }
-
-    openDrawer(): void {
-        this.drawerOpened.set(true);
-    }
-
-    closeDrawer(): void {
-        this.drawerOpened.set(false);
-    }
-
-    toggleDrawer(): void {
-        this.drawerOpened.update((v) => !v);
-    }
 
     trackByFn(index: number, item: any): any {
         return item.id || index;

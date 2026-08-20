@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import {
   DocumentoPlantillaDTO,
   RelacionInternaDTO,
@@ -180,6 +180,7 @@ export class TemplateService {
     return this.propiedadesConRelaciones.filter(x => (x.propiedad && x.propiedad === propiedad));
   }
 
+  /*
   getOrFetchRelations(propiedad: string, urlServer: string): Observable<RelacionInternaDTO[]> {
     const cached = this.getPropertyRelation(propiedad);
     if (cached && cached.length > 0) {
@@ -194,7 +195,47 @@ export class TemplateService {
     ).pipe(
       tap(relations => this.addRelations(relations))
     );
+  }*/
+
+    getOrFetchRelations(
+  propiedad: string,
+  urlServer: string
+): Observable<RelacionInternaDTO[]> {
+
+  const cached = this.getPropertyRelation(propiedad);
+
+  if (cached && cached.length > 0) {
+    return of(cached);
   }
+
+  const filtro = new RelacionInternaFilterDTO();
+  filtro.estado = StatesEnum.ACTIVE;
+  filtro.propiedad = propiedad;
+
+  return this.http.post<RelacionInternaDTO[]>(
+    this.ls.getUrlAccess('/template/getPropertyRelations', urlServer),
+    filtro
+  ).pipe(
+    map(relations => {
+
+      if (!relations || relations.length === 0) {
+
+        const ri = new RelacionInternaDTO();
+
+        ri.propiedad = propiedad;
+        ri.campo = 'FALSE';
+        ri.plantilla = 'FALSE';
+        ri.auxiliar = 'FALSE';
+
+        relations = [ri];
+      }
+
+      return relations;
+    }),
+
+    tap(relations => this.addRelations(relations))
+  );
+}
 
   getTokenConnection(urlServer: string) {
     return this.ls.getItem(LocalConstants.JWT_TOKEN);
