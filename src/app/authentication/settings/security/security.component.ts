@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit,  inject, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { UntypedFormBuilder, UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
@@ -19,11 +19,11 @@ export class SettingsSecurityComponent implements OnInit {
     data = inject<{
     key: UsuarioDTO;
 }>(MAT_DIALOG_DATA);
-    private _formBuilder = inject(UntypedFormBuilder);
+    private _formBuilder = inject(FormBuilder);
     private jwtAuth = inject(LoginService);
     private destroyRef = inject(DestroyRef);
 
-    securityForm: UntypedFormGroup;
+    securityForm: FormGroup<{ oldPwd: FormControl<string | null>, newPwd: FormControl<string | null>, repeatPwd: FormControl<string | null> }>;
     isLoading = signal(false);
     keyData = signal<UsuarioDTO | null>(null);
 
@@ -37,9 +37,9 @@ export class SettingsSecurityComponent implements OnInit {
     ngOnInit(): void {
         // Create the form
         this.securityForm = this._formBuilder.group({
-            oldPwd: new UntypedFormControl('', Validators.required),
-            newPwd: new UntypedFormControl('', Validators.required),
-            repeatPwd: new UntypedFormControl('', Validators.required),
+            oldPwd: new FormControl('', Validators.required),
+            newPwd: new FormControl('', Validators.required),
+            repeatPwd: new FormControl('', Validators.required),
         });
 
         if(this.data){
@@ -62,7 +62,7 @@ export class SettingsSecurityComponent implements OnInit {
 
         if (this.keyData()) {
 
-            this.jwtAuth.changePwdOther(this.keyData()!.llaveTabla, signinData.oldPwd, signinData.newPwd, null!)
+            this.jwtAuth.changePwdOther(this.keyData()!.llaveTabla, signinData.oldPwd!, signinData.newPwd!, null!)
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
                 next: () => {
@@ -78,7 +78,7 @@ export class SettingsSecurityComponent implements OnInit {
                 },
             });
         } else {
-            this.jwtAuth.changePwd(signinData.oldPwd, signinData.newPwd, null!)
+            this.jwtAuth.changePwd(signinData.oldPwd!, signinData.newPwd!, null!)
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
                 next: () => {

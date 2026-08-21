@@ -3,7 +3,7 @@ import {
     OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {  Router } from '@angular/router';
 import { ContactsService } from './contact.services';
 import {
@@ -44,7 +44,7 @@ export class PersonsComponent implements OnInit {
     contactsCount = computed(() => this._contactsService.contacts()?.length ?? 0);
     contactsTableColumns: string[] = ['name', 'email', 'phoneNumber', 'job'];
 
-    searchInputControl: UntypedFormControl = new UntypedFormControl();
+    searchInputControl: FormControl<string | null> = new FormControl<string | null>(null);
     selectedContact: UsuarioDTO;
     tags$: Observable<RolAccesoFilterDTO[]>;
 
@@ -69,7 +69,7 @@ export class PersonsComponent implements OnInit {
                 takeUntilDestroyed(this.destroyRef),
                 switchMap((query) =>
                     // Search
-                    this._contactsService.searchContacts(query)
+                    this._contactsService.searchContacts(query ?? '')
                 )
             )
             .subscribe({ error: () => {} });

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, signal, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from './accounting.domain';
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AccountingService } from './accounting.service';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
@@ -57,7 +57,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     };
 
     catalogs: CatalogDTO[];
-    searchInputControl: UntypedFormControl = new UntypedFormControl();
+    searchInputControl: FormControl<string | null> = new FormControl<string | null>(null);
     isLoadingCatalog = false;
     isLoadingAccount = false;
     isLoadingBalance = false;

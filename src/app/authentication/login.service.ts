@@ -13,6 +13,7 @@ import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { OrganizacionDTO, UsuarioAutenticacionAutorizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { CarouselService } from './carousel.service';
+import { DateNotificationService } from './date-notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -24,6 +25,7 @@ export class LoginService {
   private notificationService = inject(NotificationsService);
   private apiService = inject(ApiService);
   private carouselService = inject(CarouselService);
+  private dateNotificationService = inject(DateNotificationService);
   private http = inject(HttpClient);
 
 
@@ -31,7 +33,6 @@ export class LoginService {
   urlService: string;
   private isAuthenticated = false;
   readonly user = signal<UsuarioDTO>(new UsuarioDTO());
-  private readonly _date = signal<Date | null>(null);
   returnPath: string;
   readonly company = signal<OrganizacionDTO>(new OrganizacionDTO());
   isAdmin = false;
@@ -47,17 +48,16 @@ export class LoginService {
     );
   }
 
-  
-  setDate(date: Date |  null) {
-    this._date.set(date);
+  setDate(date: Date | string | null) {
+    this.dateNotificationService.setDate(date);
   }
 
   clearDate() {
-    this._date.set(null);
+    this.dateNotificationService.clearDate();
   }
 
   get date() {
-    return this._date.asReadonly();
+    return this.dateNotificationService.date;
   }
 
 

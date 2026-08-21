@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { switchMap, of, map, tap } from 'rxjs';
-import { FormControl, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
@@ -50,7 +50,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   private utilsService = inject(UtilsService);
   private sanitizer = inject(DomSanitizer);
 
-  fControl = new UntypedFormControl();
+  fControl = new FormControl<any>(null);
   filteredDocuments: PedidoVentaDTO[];
 
   plantilla: DocumentoPlantillaDTO; // Contiene el id de la fuente de datos de este proceso
