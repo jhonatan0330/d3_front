@@ -12,35 +12,16 @@ export class TasksService {
     private _httpClient = inject(HttpClient);
     private ls = inject(LocalStoreService);
 
-    // Private
     private readonly _task = signal<Task | null>(null);
     private readonly _tasks = signal<Task[] | null>(null);
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Accessors
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Getter for task
-     */
     get task() {
         return this._task.asReadonly();
     }
-
-    /**
-     * Getter for tasks
-     */
     get tasks() {
         return this._tasks.asReadonly();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Get tasks
-     */
     getTasks(_server: string | undefined = undefined): Observable<Task[]> {
         return this._httpClient.get<Task[]>(
             this.ls.getUrlAccess('/task/', _server)
@@ -55,31 +36,13 @@ export class TasksService {
         this._task.set(_task);
     }
 
-    /**
-     * Update tasks orders
-     *
-     * @param tasks
-     
-    updateTasksOrders(tasks: Task[], _server: string = null): Observable<Task[]>
-    {
-        return this._httpClient.patch<Task[]>('api/apps/tasks/order', {tasks});
-    }*/
 
-
-    /**
-     * Get task by id
-     */
     getTaskById(id: string, _server: string | undefined = undefined): Observable<Task> {
         return this._httpClient.get<Task>(
             this.ls.getUrlAccess('/task/' + id, _server)
         );
     }
 
-    /**
-     * Create task
-     *
-     * @param type
-     */
     createTask(title: string, _server: string | undefined = undefined): Observable<string> {
         const task = {
             title: title,
@@ -101,23 +64,12 @@ export class TasksService {
         );
     }
 
-    /**
-     * Update task
-     *
-     * @param id
-     * @param task
-     */
     updateTask(task: Task, _server: string | undefined = undefined): Observable<IdResponse> {
         return this._httpClient.post<IdResponse>(
             this.ls.getUrlAccess('/task/update', _server), task
         );
     }
 
-    /**
-     * Delete the task
-     *
-     * @param id
-     */
     deleteTask(id: string, _server: string | undefined = undefined): Observable<IdResponse> {
         return this._httpClient.post<IdResponse>(
             this.ls.getUrlAccess('/task/delete/' + id, _server), null
