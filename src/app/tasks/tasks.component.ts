@@ -122,10 +122,10 @@ export class TasksListComponent implements OnInit, OnDestroy {
         this.drawerMode = this._mediaQuery.matches ? 'side' : 'over';
         this._mediaQuery.addEventListener('change', this._mediaHandler);
 
-        fromEvent(this._document, 'keydown')
+        fromEvent<KeyboardEvent>(this._document, 'keydown')
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
-                filter<KeyboardEvent>(event =>
+                filter(event =>
                     (event.ctrlKey === true || event.metaKey) // Ctrl or Cmd
                     && (event.key === '/' || event.key === '.') // '/' or '.' key
                 )

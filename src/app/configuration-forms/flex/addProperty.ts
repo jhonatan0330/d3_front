@@ -118,7 +118,7 @@ export class AddPropertyComponent {
             this.flexService.changeProperty(this.propiedad)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
-            next: (result: ApiErrorResponse) => {
+            next: (result: any) => {
                 if (result?.message) {
                     Swal.fire('Error', 'No se pudo cambiar la propiedad ' + result.message, 'error');
                     return;
@@ -136,7 +136,7 @@ export class AddPropertyComponent {
             this.flexService.addProperty(this.propiedad)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
-            next: (result: ApiErrorResponse) => {
+            next: (result: any) => {
                 if (result?.message) {
                     Swal.fire('Error', 'No se pudo crear la propiedad ' + result.message, 'error');
                     return;

@@ -28,6 +28,7 @@ interface AccountFlatNode {
     expandable: boolean;
     name: string;
     code: string;
+    wbs: string;
     status: string;
     level: number;
     key: string;
@@ -67,7 +68,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     balance: ResultMapDTO[];
 
-    private transformer = (node: AccountNode, level: number) => {
+    private transformer = (node: AccountNode, level: number): AccountFlatNode => {
         return {
             expandable: !!node.children && node.children.length > 0,
             key: node.account.key,
