@@ -39,7 +39,7 @@ Estado mutado en suscripciones sin notificación al CD (zoneless + OnPush).
 
 - [x] **P4-1** `strict:false` + 50 `: any` + 48 `as any` + 366 `!`. **Completado parcial**: habilitados `strictBindCallApply`, `strictFunctionTypes`, `alwaysStrict` (ya estaban en tsconfig). Fixes: `accounting.component.ts` (AccountFlatNode+wbs), `tasks.component.ts` (fromEvent&lt;KeyboardEvent&gt;), `addProperty.ts` (ApiErrorResponse→any). `noImplicitAny` genera 838 errores — pendiente habilitar incrementalmente.
 - [ ] **P4-2** 8 archivos con `UntypedForm*` legacy → `FormBuilder` tipado / `NonNullableFormBuilder`.
-- [ ] **P4-3** `LoginService` god service (432 líneas) → extraer carrusel/landing/auth a servicios dedicados.
+- [x] **P4-3** `LoginService` god service (428 líneas) → **Completado**: extraído `CarouselService` (slides/landing/headerSection + loadFromOrganization) y `DateNotificationService` (date signal). LoginService delega ambos. Net -70 líneas en login.service.ts.
 
 ## Fase P5 — Testing y CI
 

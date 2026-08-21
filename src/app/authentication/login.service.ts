@@ -12,8 +12,7 @@ import { NotificationsService } from 'app/notification/notification.service';
 import { ApiService } from 'app/modules/full/neuron/service/api.service';
 import { OrganizacionDTO, UsuarioAutenticacionAutorizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { PropiedadDTO } from 'app/shared/shared.domain';
+import { CarouselService } from './carousel.service';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -24,6 +23,7 @@ export class LoginService {
   private templateService = inject(TemplateService);
   private notificationService = inject(NotificationsService);
   private apiService = inject(ApiService);
+  private carouselService = inject(CarouselService);
   private http = inject(HttpClient);
 
 
@@ -31,22 +31,15 @@ export class LoginService {
   urlService: string;
   private isAuthenticated = false;
   readonly user = signal<UsuarioDTO>(new UsuarioDTO());
+  private readonly _date = signal<Date | null>(null);
   returnPath: string;
   readonly company = signal<OrganizacionDTO>(new OrganizacionDTO());
   isAdmin = false;
   isReader = false;
-  //isPublicUser = true;
 
-  readonly slides = signal<string[]>([]);
-
-  // Fecha signal: notifica cambios de fecha a otros componentes
-  private readonly _date = signal<Date | null>(null);
-
-
-
-  readonly landing = signal<string[]>([]);
-
-  readonly headerSection = signal<string[]>([]);
+  readonly slides = this.carouselService.slides;
+  readonly landing = this.carouselService.landing;
+  readonly headerSection = this.carouselService.headerSection;
 
   constructor() {
     this.route.queryParams.subscribe(
@@ -54,21 +47,15 @@ export class LoginService {
     );
   }
 
-  // Public API for date notifications
-  setDate(date: Date | string | null) {
-    if (!date) {
-      this._date.set(null);
-      return;
-    }
-    const newDate = (date instanceof Date) ? date : new Date(date);
-    this._date.set(newDate);
+  
+  setDate(date: Date |  null) {
+    this._date.set(date);
   }
 
   clearDate() {
     this._date.set(null);
   }
 
-  // Signal to read from components
   get date() {
     return this._date.asReadonly();
   }
@@ -116,7 +103,7 @@ export class LoginService {
 
   private setCompany(_company: OrganizacionDTO) {
     if (_company) {
-      this.getCarrousel(_company);
+      this.carouselService.loadFromOrganization(_company, this.isAuthenticated);
       if (_company.propiedades) {
         this.isAdmin = !PlantillaHelper.isEmpty(_company.propiedades, PlantillaHelper.APP_ADMIN);
         this.isReader = !PlantillaHelper.isEmpty(_company.propiedades, PlantillaHelper.APP_READER);
@@ -132,53 +119,6 @@ export class LoginService {
     }
 
     this.company.set(_company);
-  }
-
-  private getCarrousel(_company: OrganizacionDTO) {
-    const slides: string[] = [];
-    const landing: string[] = [];
-    let headerSection: string[] = [];
-    if (_company.propiedades) {
-      const backImages = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.COVERAGE_IMAGE);
-      if (backImages) {
-        backImages.forEach(element => {
-          slides.push(element.valor);
-        });
-      }
-
-      if (PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE) && this.isAuthenticated) {
-        const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
-        entity.plantilla = PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE);
-        this.apiService.listarDocumentos(entity, null!).subscribe({
-          next: (dataResult: PedidoVentaDTO[]) => {
-            if (dataResult) {
-              this.slides.update(current => [...current, ...dataResult.map(element => element.imagen)]);
-            }
-          },
-          error: () => {
-          },
-        });
-      }
-
-      const _iHeaders = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.LANDING_PAGE);
-      if (_iHeaders && _iHeaders.length !== 0) {
-        _iHeaders.forEach((element: PropiedadDTO) => {
-          landing.push(element.valor);
-        });
-      }
-      const _iFooters = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.HEADER_PAGE);
-      if (_iFooters && _iFooters.length !== 0) {
-        headerSection = [];
-        _iFooters.forEach((element: PropiedadDTO) => {
-          headerSection.push(element.valor);
-        });
-      }
-
-    }
-    this.slides.set(slides);
-    this.landing.set(landing);
-    this.headerSection.set(headerSection);
-
   }
 
 
