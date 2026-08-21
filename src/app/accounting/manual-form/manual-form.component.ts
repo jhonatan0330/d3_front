@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit,  ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormArray, FormControl, FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountingService } from '../accounting.service';
 import { Observable, Subscription, debounceTime, pairwise, startWith, map } from 'rxjs';
@@ -28,7 +28,7 @@ import { AsyncPipe, CurrencyPipe } from '@angular/common';
 export class ManualFormComponent implements OnInit {
     data = inject(MAT_DIALOG_DATA);
     matDialogRef = inject<MatDialogRef<ManualFormComponent>>(MatDialogRef);
-    private _formBuilder = inject(UntypedFormBuilder);
+    private _formBuilder = inject(FormBuilder);
     accountingService = inject(AccountingService);
     private ls = inject(LocalStoreService);
     private templateService = inject(TemplateService);
@@ -37,7 +37,7 @@ export class ManualFormComponent implements OnInit {
     private reportService = inject(FormReportService);
 
 
-    public form: UntypedFormGroup;
+    public form: FormGroup;
     public timeFrom: FormControl = new FormControl('00:00'); // Controlador del texto de la hora
     public loading = false;
     public filteredOptions: Observable<AccountDTO[]>;
@@ -89,8 +89,8 @@ export class ManualFormComponent implements OnInit {
                     .subscribe({ next: x => {
                         if (!x) { return; }
                         this.form = this._formBuilder.group({
-                            header: this._formBuilder.group(x.header),
-                            records: this._formBuilder.array([], Validators.required)
+                            header: this._formBuilder.group({ ...x.header }) as FormGroup,
+                            records: this._formBuilder.array<FormGroup>([], Validators.required)
                         });
 
                         this.timeFrom.setValue(x.header.factDate.getHours() + ':' + x.header.factDate.getMinutes());
@@ -121,8 +121,8 @@ export class ManualFormComponent implements OnInit {
         this.timeFrom.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: () => {
                 const dateFact: Date = this.form.get('header')!.get('factDate')!.value;
-                dateFact.setHours(this.timeFrom.value.substring(0, 2));
-                dateFact.setMinutes(this.timeFrom.value.substring(3, 5));
+                dateFact.setHours(Number(this.timeFrom.value!.substring(0, 2)));
+                dateFact.setMinutes(Number(this.timeFrom.value!.substring(3, 5)));
                 dateFact.setSeconds(0);
                 this.form.get('header')!.get('factDate')!.setValue(dateFact);
             },
@@ -131,9 +131,9 @@ export class ManualFormComponent implements OnInit {
 
 
     createreferenceArray(pItems: ManualAccountAuxiliarDTO[]): FormArray {
-        const resultList = this._formBuilder.array([], Validators.required);
+        const resultList = this._formBuilder.array<FormGroup>([], Validators.required);
         for (let i = 0; i < pItems.length; i++) {
-            resultList.push(this._formBuilder.group(pItems[i]));
+            resultList.push(this._formBuilder.group(pItems[i]) as FormGroup);
         }
         return resultList;
     }
@@ -276,9 +276,9 @@ export class ManualFormComponent implements OnInit {
             manualaccount.line.note = "";
 
         const group = this._formBuilder.group({
-            line: this._formBuilder.group(manualaccount.line),
+            line: this._formBuilder.group({ ...manualaccount.line }) as FormGroup,
             references: this.createreferenceArray(manualaccount.references)
-        });
+        }) as FormGroup;
 
         if (manualaccount.line.positive && group.get('line')!.get('negative')!.enabled) {
             group.get('line')!.get('negative')!.disable();
@@ -317,12 +317,13 @@ export class ManualFormComponent implements OnInit {
                 takeUntilDestroyed(this.destroyRef))
             .subscribe(
                 ([prevValue, selectedValue]) => {
-                    selectedValue *= 1;
-                    this.debitValue -= prevValue;
-                    this.debitValue += selectedValue;
+                    const sel = Number(selectedValue ?? 0);
+                    const prev = Number(prevValue ?? 0);
+                    this.debitValue -= prev;
+                    this.debitValue += sel;
                     this.form.get('header')!.get('value')!.setValue(this.debitValue);
                     this.differenceValue = this.debitValue - this.creditValue;
-                    if (selectedValue !== 0) {
+                    if (sel !== 0) {
                         group.get('line')!.get('negative')!.disable({ emitEvent: false });
                     } else {
                         if (!group.get('line')!.get('negative')!.enabled) { group.get('line')!.get('negative')!.enable({ emitEvent: false }); }
@@ -337,11 +338,12 @@ export class ManualFormComponent implements OnInit {
                 takeUntilDestroyed(this.destroyRef))
             .subscribe(
                 ([prevValue, selectedValue]) => {
-                    selectedValue *= 1; // el *1 es para pasar a numero porque viene como string y al sumar concatena
-                    this.creditValue -= prevValue;
-                    this.creditValue += selectedValue;
+                    const sel = Number(selectedValue ?? 0);
+                    const prev = Number(prevValue ?? 0);
+                    this.creditValue -= prev;
+                    this.creditValue += sel;
                     this.differenceValue = this.debitValue - this.creditValue;
-                    if (selectedValue !== 0) {
+                    if (sel !== 0) {
                         group.get('line')!.get('positive')!.disable({ emitEvent: false });
                     } else {
                         if (!group.get('line')!.get('positive')!.enabled) { group.get('line')!.get('positive')!.enable({ emitEvent: false }); }
@@ -372,7 +374,7 @@ export class ManualFormComponent implements OnInit {
         return group;
     }
 
-    public filterAccount(value): AccountDTO[] {
+    public filterAccount(value: any): AccountDTO[] {
         if (!this.accountingService || !this.accountingService.currentCatalog || !this.accountingService.currentCatalog.accounts) return [];
         if (!value) { return this.accountingService.currentCatalog.accounts.filter(acc => acc.type === 'O') }
         if (value.key) { return []; }
