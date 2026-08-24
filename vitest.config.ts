@@ -18,5 +18,24 @@ export default defineConfig(() => ({
     environment: 'jsdom',
     include: ['src/**/*.spec.ts'],
     pool: 'forks',
+    coverage: {
+      provider: 'v8',
+      all: false,
+      reporter: ['text', 'html', 'lcov'],
+      reportsDirectory: 'dist/coverage',
+      include: ['src/app/**/*.ts'],
+      exclude: [
+        'src/app/@fuse/**',
+        'src/**/*.spec.ts',
+        'src/test-setup.ts',
+        'src/main.ts',
+      ],
+      thresholds: {
+        statements: 8,
+        branches: 3,
+        functions: 10,
+        lines: 8,
+      },
+    },
   },
 }));

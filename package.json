@@ -12,6 +12,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit",
+    "test:ci": "vitest run --coverage",
     "lint": "ng lint"
   },
   "dependencies": {
@@ -62,6 +65,7 @@
     "@types/node": "^26.2.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",
+    "@vitest/coverage-v8": "^4.1.11",
     "autoprefixer": "10.4.13",
     "chroma-js": "2.4.2",
     "eslint": "^10.8.1",

@@ -212,7 +212,6 @@ export class IndicatorCardComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resultado) => {
-          console.log(resultado);
           this.resultado.set(resultado);
           this.loading.set(false);
         },
