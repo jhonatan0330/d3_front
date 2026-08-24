@@ -45,3 +45,19 @@ export class PropiedadValorDefinidoDTO extends BasicDTO {
   solicitaMotivo: boolean;
   pideFechas: boolean;
 }
+
+export class PropiedadFilterDTO extends BasicFilterDTO {
+  propiedadValor: string;
+  tipo: string;
+  nombre: string;
+  key: string;
+  campo: string;
+}
+
+export class PropiedadValorDefinidoFilterDTO extends BasicFilterDTO {
+  origen: string;
+  origenCategoria: string;
+  codigo: string;
+  nombre: string;
+  grupo: string;
+}

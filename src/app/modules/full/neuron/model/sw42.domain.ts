@@ -410,4 +410,166 @@ export class ReporteBaseFilterDTO extends BasicFilterDTO {
     publicoFilter: boolean;
 }
 
+export class WebServiceDTO extends BasicParamDTO {
+    nombre: string;
+    url: string;
+    metodo: string;
+    cabeceras: string;
+    parametros: string;
+    autenticacion: string;
+    usuario: string;
+    clave: string;
+    timeout: number;
+    reintentos: number;
+}
+
+export class WebServiceFilterDTO extends BasicFilterDTO {
+    nombre: string;
+    url: string;
+    metodo: string;
+}
+
+export class WebServiceEjecucionDTO extends BasicDTO {
+    webService: string;
+    webServiceNombre: string;
+    parametrosEntrada: string;
+    resultado: string;
+    estado: string;
+    error: string;
+    fechaEjecucion: Date;
+    duracion: number;
+}
+
+export class WebServiceEjecucionFilterDTO extends BasicFilterDTO {
+    webService: string;
+    estado: string;
+    fechaDesde: Date;
+    fechaHasta: Date;
+}
+
+export class MensajePlantillaCorreoDTO extends BasicParamDTO {
+    nombre: string;
+    asunto: string;
+    cuerpo: string;
+    tipo: string;
+    adjuntos: string;
+}
+
+export class MensajePlantillaCorreoFilterDTO extends BasicFilterDTO {
+    nombre: string;
+    tipo: string;
+}
+
+export class MensajeDTO extends BasicDTO {
+    fecha: Date;
+    titulo: string;
+    usuario: string;
+    documento: string;
+    template: string;
+    parametros: string;
+    leido: Date;
+    correoEnviado: Date;
+    correoError: string;
+    correo: string;
+    reporte: string;
+    adjuntoURL: string;
+    transaccion: string;
+}
+
+export class MensajeFilterDTO extends BasicFilterDTO {
+    fechaDesde: Date;
+    fechaHasta: Date;
+    enviado: string;
+    usuario: string;
+    titulo: string;
+}
+
+export class ProcesoTransicionAutomaticaDTO extends BasicParamDTO {
+    proceso: string;
+    procesoNombre: string;
+    estadoOrigen: string;
+    estadoOrigenNombre: string;
+    estadoDestino: string;
+    estadoDestinoNombre: string;
+    condicion: string;
+    programa: string;
+    fechaProgramada: Date;
+    activa: boolean;
+}
+
+export class ProcesoTransicionAutomaticaFilterDTO extends BasicFilterDTO {
+    proceso: string;
+    estadoOrigen: string;
+    estadoDestino: string;
+    activa: boolean;
+    fechaDesde: Date;
+    fechaHasta: Date;
+}
+
+export class OrganizacionDTO extends BasicParamDTO {
+    nombre: string;
+    codigo: string;
+    nit: string;
+    direccion: string;
+    telefono: string;
+    email: string;
+    logo: string;
+    principal: boolean;
+}
+
+export class OrganizacionFilterDTO extends BasicFilterDTO {
+    nombre: string;
+    codigo: string;
+    nit: string;
+    principal: boolean;
+}
+
+export class ConsecutivoDTO extends BasicDTO {
+    nombre: string;
+    prefijo: string;
+    consecutivo: number;
+    longitud: number;
+    reinicioAnual: boolean;
+    reinicioMensual: boolean;
+    formato: string;
+}
+
+export class ConsecutivoFilterDTO extends BasicFilterDTO {
+    nombre: string;
+    prefijo: string;
+}
+
+export class ServidorDTO extends BasicParamDTO {
+    nombre: string;
+    url: string;
+    tipo: string;
+    usuario: string;
+    clave: string;
+    baseDatos: string;
+    puerto: number;
+    activo: boolean;
+}
+
+export class ServidorFilterDTO extends BasicFilterDTO {
+    nombre: string;
+    tipo: string;
+    activo: boolean;
+}
+
+export class ProcesoDTO extends BasicParamDTO {
+    nombre: string;
+    codigo: string;
+    descripcion: string;
+    imagen: string;
+    color: string;
+    consecutivo: string;
+    objetivo: string;
+}
+
+export class ProcesoFilterDTO extends BasicFilterDTO {
+    nombre: string;
+    codigo: string;
+    objetivo: string;
+}
+
 
