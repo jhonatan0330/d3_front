@@ -207,12 +207,18 @@ src/app/configuration-forms/
 - ✅ Lint: `npm run lint` - 0 errores (solo warnings pre-existentes)
 - ✅ Tests: `npm test` - 7 suites, 106 tests pasando
 
-### FASE 3: Módulos Jerárquicos Complejos (6-7 días)
+### FASE 3: Módulos Jerárquicos Complejos (6-7 días) ✅ **COMPLETADA**
 
-| Orden | Módulo | Estructura | Detalles |
-|-------|--------|------------|----------|
-| 3.1 | **Plantillas Documento** | DocumentTemplateList → DocumentTemplateForm (tabs: General, Campos, Reportes, Propiedades) | **Reutiliza/renombra** `flex/` existente<br>- General: datos plantilla + PropertyField<br>- Campos: FieldList (drag-drop ya hecho) + FieldForm<br>- Reportes: ReportList + ReportForm (ReporteBase + PropertyField)<br>- Propiedades: PropertyRelationsComponent |
-| 3.2 | **Procesos** | ProcessList → ProcessForm (tabs: General, Transiciones, Propiedades) | **General**: datos + PropertyField + selector consecutivo<br>**Transiciones**: TransitionList + TransitionForm (ProcesoTransicion + PropertyField)<br>**Árbol**: usa `consultarArbolProceso` para vista jerárquica |
+| Orden | Módulo | Estructura | Detalles | Estado |
+|-------|--------|------------|----------|--------|
+| 3.1 | **Plantillas Documento** | DocumentTemplateList → DocumentTemplateForm (tabs: General, Campos, Reportes, Propiedades) | **Reutiliza/extiende** `flex/` existente<br>- General: datos plantilla + PropertyField<br>- Campos: FieldList (drag-drop reutilizado) + FieldForm<br>- Reportes: ReportList + ReportForm (ReporteBase + PropertyField)<br>- Propiedades: PropertyFieldComponent | ✅ |
+| 3.2 | **Procesos** | ProcessList → ProcessForm (tabs: General, Transiciones, Propiedades) | **General**: datos + PropertyField + selector consecutivo<br>**Transiciones**: TransitionList + TransitionForm (ProcesoTransicion + PropertyField)<br>**Árbol**: usa `getProcessTree` para vista jerárquica con transiciones anidadas | ✅ |
+
+**Verificaciones FASE 3:**
+- ✅ Build: `npm run build` - Exitosa
+- ✅ Typecheck: `npx tsc -p tsconfig.app.json --noEmit` - Sin errores
+- ✅ Lint: `npm run lint` - 0 errores (solo warnings pre-existentes)
+- ✅ Tests: `npm test` - 7 suites, 106 tests pasando
 
 ### FASE 4: Integración, Navegación y Limpieza (2 días)
 
