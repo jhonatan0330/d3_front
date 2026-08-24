@@ -192,14 +192,20 @@ src/app/configuration-forms/
 - ✅ Lint: `npm run lint` - 0 errores (solo warnings pre-existentes)
 - ✅ Tests: `npm test` - 7 suites, 106 tests pasando
 
-### FASE 2: Módulos con Lógica Específica (4-5 días)
+### FASE 2: Módulos con Lógica Específica (4-5 días) ✅ **COMPLETADA**
 
-| Orden | Módulo | Rutas API | Particularidades |
-|-------|--------|-----------|------------------|
-| 2.1 | **WebServices** | `/api/config/web-services` | Pestaña "Ejecuciones" (histórico), modal "Ejecutar API" con parámetros JSON |
-| 2.2 | **Plantillas Mensaje** | `/api/config/message-templates` | CRUD estándar + PropertyField |
-| 2.3 | **Mensajes** | `/api/config/messages` | **Filtros**: fechaDesde, fechaHasta, enviado (sí/no)<br>**Tabla**: título, fecha, usuario, estado (enviado/pendiente/error), adjuntos (icono), acciones<br>**Detalle**: muestra `adjuntoURL` parseado (AttachmentViewerComponent), botón "Reenviar" si `!correoEnviado` |
-| 2.4 | **Tareas Automáticas** | `/api/config/auto-tasks` | **Filtro**: fechaDesde, fechaHasta<br>**Tabla**: nombre, proceso, estado, última ejecución, próxima ejecución<br>**Acciones**: btn "Programar" (modal cron/fecha), btn "Ejecutar Ahora" (confirm + loading) |
+| Orden | Módulo | Rutas API | Particularidades | Estado |
+|-------|--------|-----------|------------------|--------|
+| 2.1 | **WebServices** | `/api/config/web-services` | CRUD + pestaña Ejecuciones (histórico), modal Ejecutar API con parámetros JSON | ✅ |
+| 2.2 | **Plantillas Mensaje** | `/api/config/message-templates` | CRUD estándar + PropertyField | ✅ |
+| 2.3 | **Mensajes** | `/api/config/messages` | **Filtros**: fechaDesde, fechaHasta, enviado (sí/no)<br>**Tabla**: título, fecha, usuario, estado (enviado/pendiente/error), adjuntos (icono + contador), acciones<br>**Detalle**: muestra `adjuntoURL` parseado (AttachmentViewerComponent), botón "Reenviar" si `!correoEnviado` | ✅ |
+| 2.4 | **Tareas Automáticas** | `/api/config/auto-tasks` | **Filtro**: fechaDesde, fechaHasta, activa, proceso, estados<br>**Tabla**: nombre, proceso, estados, activa, programación, próxima ejecución<br>**Acciones**: btn "Programar" (modal cron/fecha única/recurrente), btn "Ejecutar Ahora" (confirm + loading) | ✅ |
+
+**Verificaciones FASE 2:**
+- ✅ Build: `npm run build` - Exitosa
+- ✅ Typecheck: `npx tsc -p tsconfig.app.json --noEmit` - Sin errores
+- ✅ Lint: `npm run lint` - 0 errores (solo warnings pre-existentes)
+- ✅ Tests: `npm test` - 7 suites, 106 tests pasando
 
 ### FASE 3: Módulos Jerárquicos Complejos (6-7 días)
 
