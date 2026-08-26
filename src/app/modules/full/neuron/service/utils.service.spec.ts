@@ -10,11 +10,11 @@ import { TrazabilityComponent } from 'app/document-transition/trazability/trazab
 import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.component';
 import { ContactsDetailsComponent } from 'app/persons/detail_persons/detail-person.component';
 import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
-import { FlexComponent } from 'app/configuration-forms/flex/flex';
+import { DocumentTemplateFormComponent } from 'app/configuration-forms/document-templates/document-template-form.component';
 import { dfaComponent } from 'app/authentication/DFA/dfa';
-import { FieldComponent } from 'app/configuration-forms/flex/fieldComponent';
-import { AddFieldComponent } from 'app/configuration-forms/flex/addField';
-import { AddPropertyComponent } from 'app/configuration-forms/flex/addProperty';
+import { DocumentTemplateFieldDetailComponent } from 'app/configuration-forms/document-templates/document-template-fields/document-template-field-detail.component';
+import { DocumentTemplateFieldFormComponent } from 'app/configuration-forms/document-templates/document-template-fields/document-template-field-form.component';
+import { PropertyModalComponent } from 'app/configuration-forms/shared/property-modal.component';
 
 describe('UtilsService', () => {
   let service: UtilsService;

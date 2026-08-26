@@ -55,6 +55,12 @@ export class DocumentoPlantillaCaracteristicaDTO extends BasicParamDTO {
     mostrarSelectorFormato?: boolean;
     editando?: boolean;
     _editValue?: string;
+    longitudMaxima?: number;
+    valorPorDefecto?: string;
+    opciones?: string;
+    validacion?: string;
+    requerido?: boolean;
+    soloLectura?: boolean;
 }
 
 export class propiedadCampo extends BasicDTO {
@@ -443,8 +449,8 @@ export class WebServiceEjecucionDTO extends BasicDTO {
 export class WebServiceEjecucionFilterDTO extends BasicFilterDTO {
     webService: string;
     estado: string;
-    fechaDesde: Date;
-    fechaHasta: Date;
+    fechaDesde?: Date;
+    fechaHasta?: Date;
 }
 
 export class MensajePlantillaCorreoDTO extends BasicParamDTO {
@@ -477,14 +483,15 @@ export class MensajeDTO extends BasicDTO {
 }
 
 export class MensajeFilterDTO extends BasicFilterDTO {
-    fechaDesde: Date;
-    fechaHasta: Date;
+    fechaDesde?: Date;
+    fechaHasta?: Date;
     enviado: string;
     usuario: string;
     titulo: string;
 }
 
 export class ProcesoTransicionAutomaticaDTO extends BasicParamDTO {
+    nombre: string;
     proceso: string;
     procesoNombre: string;
     estadoOrigen: string;
@@ -501,9 +508,9 @@ export class ProcesoTransicionAutomaticaFilterDTO extends BasicFilterDTO {
     proceso: string;
     estadoOrigen: string;
     estadoDestino: string;
-    activa: boolean;
-    fechaDesde: Date;
-    fechaHasta: Date;
+    activa?: boolean;
+    fechaDesde?: Date;
+    fechaHasta?: Date;
 }
 
 export class OrganizacionDTO extends BasicParamDTO {
@@ -521,7 +528,7 @@ export class OrganizacionFilterDTO extends BasicFilterDTO {
     nombre: string;
     codigo: string;
     nit: string;
-    principal: boolean;
+    principal?: boolean;
 }
 
 export class ConsecutivoDTO extends BasicDTO {
@@ -553,7 +560,7 @@ export class ServidorDTO extends BasicParamDTO {
 export class ServidorFilterDTO extends BasicFilterDTO {
     nombre: string;
     tipo: string;
-    activo: boolean;
+    activo?: boolean;
 }
 
 export class ProcesoDTO extends BasicParamDTO {
@@ -564,6 +571,8 @@ export class ProcesoDTO extends BasicParamDTO {
     color: string;
     consecutivo: string;
     objetivo: string;
+    proceso?: string;
+    transiciones?: ProcesoTransicionDTO[];
 }
 
 export class ProcesoFilterDTO extends BasicFilterDTO {

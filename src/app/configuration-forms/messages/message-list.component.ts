@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
@@ -20,7 +20,7 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-message-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatButtonModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, AttachmentViewerComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -64,32 +64,32 @@ import Swal from 'sweetalert2';
 
       <!-- Tabla -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        @if (loading()) { <div class="flex justify-center py-12"><mat-spinner diameter="40"></mat-spinner></div> } @else {
+        @if (loading()) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
           <div class="overflow-x-auto">
             <table mat-table [dataSource]="data()" class="w-full">
               <ng-container matColumnDef="fecha">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Fecha</th>
-                <td mat-cell class="px-4 py-3 whitespace-nowrap">{{ element.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Fecha</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3 whitespace-nowrap">{{ element.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
               </ng-container>
               <ng-container matColumnDef="titulo">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Título</th>
-                <td mat-cell class="px-4 py-3 font-medium cursor-pointer hover:underline" (click)="openDetail(element)">{{ element.titulo }}</td>
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Título</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3 font-medium cursor-pointer hover:underline" (click)="openDetail(element)">{{ element.titulo }}</td>
               </ng-container>
               <ng-container matColumnDef="usuario">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Usuario</th>
-                <td mat-cell class="px-4 py-3">{{ element.usuario }}</td>
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Usuario</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.usuario }}</td>
               </ng-container>
               <ng-container matColumnDef="estadoEnvio">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
-                <td mat-cell class="px-4 py-3">
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3">
                   <span class="badge" [class]="getEnvioBadge(element)">
                     {{ getEnvioLabel(element) }}
                   </span>
                 </td>
               </ng-container>
               <ng-container matColumnDef="adjuntos">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Adjuntos</th>
-                <td mat-cell class="px-4 py-3">
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Adjuntos</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3">
                   @if (element.adjuntoURL) {
                     <button type="button" class="btn-icon" (click)="openAttachments(element)" aria-label="Ver adjuntos" title="Ver adjuntos">
                       <mat-icon>attach_file</mat-icon>
@@ -101,8 +101,8 @@ import Swal from 'sweetalert2';
                 </td>
               </ng-container>
               <ng-container matColumnDef="acciones">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th>
-                <td mat-cell class="px-4 py-3">
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3">
                   <div class="flex items-center justify-end gap-1">
                     <button type="button" class="btn-icon" (click)="openDetail(element)" aria-label="Ver detalle"><mat-icon>visibility</mat-icon></button>
                     @if (!element.correoEnviado || element.correoError) {
@@ -123,19 +123,7 @@ import Swal from 'sweetalert2';
       </div>
     </div>
   `,
-    styles: [`
-    .btn-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; background: transparent; color: #666; cursor: pointer; }
-    .btn-icon:hover { background: #f5f5f5; color: #333; }
-    .badge { padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
-    .badge-success { background: #e8f5e9; color: #2e7d32; }
-    .badge-warning { background: #fff3e0; color: #ef6c00; }
-    .badge-error { background: #fce4ec; color: #c62828; }
-    .badge-secondary { background: #f5f5f5; color: #757575; }
-    :host ::ng-deep .mat-form-field { width: 100%; }
-    :host ::ng-deep .mat-column-acciones { width: 120px; text-align: right; }
-    :host ::ng-deep .mat-column-adjuntos { width: 100px; text-align: center; }
-    :host ::ng-deep .mat-column-estadoEnvio { width: 130px; }
-  `]
+    styles: []
 })
 export class MessageListComponent implements OnInit {
     private service = inject(MessageService);
@@ -147,7 +135,7 @@ export class MessageListComponent implements OnInit {
     pageSize = signal(25);
     currentPage = signal(0);
 
-    filter = signal<MensajeFilterDTO>({
+    filter: MensajeFilterDTO = {
         estado: 'A',
         fechaDesde: undefined,
         fechaHasta: undefined,
@@ -155,8 +143,11 @@ export class MessageListComponent implements OnInit {
         usuario: '',
         titulo: '',
         paginacionRegistroInicial: 0,
-        paginacionRegistroFinal: 25
-    });
+        paginacionRegistroFinal: 25,
+        filtroParametro: '',
+        llaveTabla: '',
+        securityToken: ''
+    };
 
     displayedColumns = ['fecha', 'titulo', 'usuario', 'estadoEnvio', 'adjuntos', 'acciones'];
 
@@ -164,7 +155,7 @@ export class MessageListComponent implements OnInit {
 
     loadData(): void {
         this.loading.set(true);
-        const f = this.filter();
+        const f = this.filter;
         f.paginacionRegistroInicial = this.currentPage() * this.pageSize();
         f.paginacionRegistroFinal = f.paginacionRegistroInicial + this.pageSize();
 

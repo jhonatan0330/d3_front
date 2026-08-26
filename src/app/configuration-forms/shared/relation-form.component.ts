@@ -4,8 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { RelacionInternaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PropertyService } from './property.service';
 
@@ -17,7 +15,7 @@ interface ModalData {
 @Component({
     selector: 'app-relation-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatSelectModule, MatInputModule, MatButtonModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatSelectModule],
     template: `
     <div class="max-w-md w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
@@ -74,13 +72,7 @@ interface ModalData {
       </form>
     </div>
   `,
-    styles: [`
-    .btn-flat { padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 500; border: 1px solid #e0e0e0; background: white; color: #333; }
-    .btn-flat:hover { background: #f5f5f5; }
-    .btn-flat-primary { padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 500; background: #3f51b5; color: white; border: none; }
-    .btn-flat-primary:hover:not(:disabled) { background: #303f9f; }
-    .btn-flat-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-  `]
+    styles: []
 })
 export class RelationFormComponent implements OnInit {
     private propertyService = inject(PropertyService);

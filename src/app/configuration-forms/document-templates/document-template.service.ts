@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { DocumentoPlantillaDTO, DocumentoPlantillaFilterDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Injectable({
     providedIn: 'root'
@@ -87,6 +88,25 @@ export class DocumentTemplateService {
         return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/fields/${key}`, undefined),
             {}
+        );
+    }
+
+    getField(key: string): Observable<DocumentoPlantillaCaracteristicaDTO> {
+        return this.getFieldById(key);
+    }
+
+    getTemplateProperties(templateKey: string): Observable<PropiedadDTO[]> {
+        const payload = { estado: 'A', campo: templateKey };
+        return this.http.post<PropiedadDTO[]>(
+            this.ls.getUrlAccess('/api/config/properties/list', undefined),
+            payload
+        );
+    }
+
+    inactivateProperty(property: PropiedadDTO): Observable<PropiedadDTO[]> {
+        return this.http.post<PropiedadDTO[]>(
+            this.ls.getUrlAccess('/api/config/properties/inactivate', undefined),
+            property
         );
     }
 

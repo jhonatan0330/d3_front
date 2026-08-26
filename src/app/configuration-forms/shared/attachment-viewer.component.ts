@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 interface Attachment {
@@ -120,7 +120,7 @@ export class AttachmentViewerComponent {
 
     private openImageModal(url: string): void {
         const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-        const dialogRef = this.dialog.open(ImagePreviewDialogComponent, {
+        this.dialog.open(ImagePreviewDialogComponent, {
             maxWidth: '90vw',
             maxHeight: '90vh',
             panelClass: 'image-preview-dialog',
@@ -143,7 +143,7 @@ export class AttachmentViewerComponent {
 @Component({
     selector: 'app-image-preview-dialog',
     standalone: true,
-    imports: [CommonModule, MatIconModule, MatButtonModule],
+    imports: [CommonModule, MatIconModule, MatDialogModule],
     template: `
     <div class="bg-black p-4">
       <div class="flex justify-between items-center mb-4 text-white">

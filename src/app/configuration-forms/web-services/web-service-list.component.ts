@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { WebServiceDTO, WebServiceFilterDTO, WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { WebServiceConfigService } from './web-service.service';
 import { WebServiceFormComponent } from './web-service-form.component';
@@ -24,13 +25,14 @@ import Swal from 'sweetalert2';
         FormsModule,
         MatDialogModule,
         MatIconModule,
-        MatButtonModule,
         MatTableModule,
         MatPaginatorModule,
         MatInputModule,
         MatFormFieldModule,
         MatTabsModule,
-        MatSelectModule
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
@@ -79,67 +81,65 @@ import Swal from 'sweetalert2';
         <mat-tab label="Web Services">
           <div class="p-4">
             @if (wsLoading()) {
-              <div class="flex justify-center py-12"><mat-spinner diameter="40"></mat-spinner></div>
-            } @else {
-              <div class="overflow-x-auto">
-                <table mat-table [dataSource]="wsData()" class="w-full">
-                  <ng-container matColumnDef="nombre">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th>
-                    <td mat-cell class="px-4 py-3 font-medium">{{ element.nombre }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="url">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">URL</th>
-                    <td mat-cell class="px-4 py-3 font-mono text-sm truncate max-w-xs">{{ element.url }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="metodo">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Método</th>
-                    <td mat-cell class="px-4 py-3">
-                      <span class="badge" [class]="getMetodoBadge(element.metodo)">{{ element.metodo }}</span>
-                    </td>
-                  </ng-container>
-                  <ng-container matColumnDef="autenticacion">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Auth</th>
-                    <td mat-cell class="px-4 py-3">{{ element.autenticacion || 'Ninguna' }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="timeout">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Timeout (s)</th>
-                    <td mat-cell class="px-4 py-3">{{ element.timeout }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="reintentos">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Reintentos</th>
-                    <td mat-cell class="px-4 py-3">{{ element.reintentos }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="estado">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
-                    <td mat-cell class="px-4 py-3">
-                      <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">
-                        {{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}
-                      </span>
-                    </td>
-                  </ng-container>
-                  <ng-container matColumnDef="acciones">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th>
-                    <td mat-cell class="px-4 py-3">
-                      <div class="flex items-center justify-end gap-1">
-                        <button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button>
-                        <button type="button" class="btn-icon" (click)="openExecuteDialog(element)" aria-label="Ejecutar" title="Ejecutar"><mat-icon>play_arrow</mat-icon></button>
-                        <button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button>
-                      </div>
-                    </td>
-                  </ng-container>
-                  <tr mat-header-row *matHeaderRowDef="wsDisplayedColumns"></tr>
-                  <tr mat-row *matRowDef="let row; columns: wsDisplayedColumns;"></tr>
-                </table>
-              </div>
-              <mat-paginator [length]="wsTotalItems()" [pageSize]="wsPageSize()" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onWsPageChange($event)" class="px-4 py-2 border-t border-gray-200 dark:border-gray-700"></mat-paginator>
+              <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div>
             }
-            @if (!wsLoading() && wsData().length === 0) { <div class="text-center py-12 text-gray-500 dark:text-gray-400">No hay web services registrados</div> }
+            <div class="overflow-x-auto">
+              <table mat-table [dataSource]="wsData()" class="w-full">
+                <ng-container matColumnDef="nombre">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3 font-medium">{{ element.nombre }}</td>
+                </ng-container>
+                <ng-container matColumnDef="url">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">URL</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm truncate max-w-xs">{{ element.url }}</td>
+                </ng-container>
+                <ng-container matColumnDef="metodo">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Método</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">
+                    <span class="badge" [class]="getMetodoBadge(element.metodo)">{{ element.metodo }}</span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="autenticacion">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Auth</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.autenticacion || 'Ninguna' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="timeout">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Timeout (s)</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.timeout }}</td>
+                </ng-container>
+                <ng-container matColumnDef="reintentos">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Reintentos</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.reintentos }}</td>
+                </ng-container>
+                <ng-container matColumnDef="estado">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">
+                    <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">
+                      {{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}
+                    </span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">
+                    <div class="flex items-center justify-end gap-1">
+                      <button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button>
+                      <button type="button" class="btn-icon" (click)="openExecuteDialog(element)" aria-label="Ejecutar" title="Ejecutar"><mat-icon>play_arrow</mat-icon></button>
+                      <button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button>
+                    </div>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="wsDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: wsDisplayedColumns;"></tr>
+              </table>
+            </div>
+            @if (wsData().length === 0 && !wsLoading()) { <div class="text-center py-12 text-gray-500 dark:text-gray-400">No hay web services registrados</div> }
+            <mat-paginator [length]="wsTotalItems()" [pageSize]="wsPageSize()" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onWsPageChange($event)" class="px-4 py-2 border-t border-gray-200 dark:border-gray-700"></mat-paginator>
           </div>
         </mat-tab>
 
         <mat-tab label="Ejecuciones">
           <div class="p-4">
-            <!-- Filtros ejecuciones -->
             <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4 border border-gray-200 dark:border-gray-700">
               <div class="grid grid-cols-1 sm:grid-cols-5 gap-4">
                 <mat-form-field appearance="outline" class="w-full">
@@ -176,76 +176,54 @@ import Swal from 'sweetalert2';
             </div>
 
             @if (execLoading()) {
-              <div class="flex justify-center py-12"><mat-spinner diameter="40"></mat-spinner></div>
-            } @else {
-              <div class="overflow-x-auto">
-                <table mat-table [dataSource]="execData()" class="w-full">
-                  <ng-container matColumnDef="webServiceNombre">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Web Service</th>
-                    <td mat-cell class="px-4 py-3">{{ element.webServiceNombre }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="fechaEjecucion">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Fecha Ejecución</th>
-                    <td mat-cell class="px-4 py-3">{{ element.fechaEjecucion | date:'dd/MM/yyyy HH:mm:ss' }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="estado">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
-                    <td mat-cell class="px-4 py-3">
-                      <span class="badge" [class]="getExecStatusBadge(element.estado)">
-                        {{ getExecStatusLabel(element.estado) }}
-                      </span>
-                    </td>
-                  </ng-container>
-                  <ng-container matColumnDef="duracion">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Duración (ms)</th>
-                    <td mat-cell class="px-4 py-3">{{ element.duracion }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="parametrosEntrada">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Parámetros</th>
-                    <td mat-cell class="px-4 py-3 font-mono text-sm truncate max-w-xs">{{ element.parametrosEntrada }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="resultado">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Resultado</th>
-                    <td mat-cell class="px-4 py-3 font-mono text-sm truncate max-w-xs">{{ element.resultado }}</td>
-                  </ng-container>
-                  <ng-container matColumnDef="error">
-                    <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Error</th>
-                    <td mat-cell class="px-4 py-3 text-red-600 dark:text-red-400 text-sm truncate max-w-xs">{{ element.error }}</td>
-                  </ng-container>
-                  <tr mat-header-row *matHeaderRowDef="execDisplayedColumns"></tr>
-                  <tr mat-row *matRowDef="let row; columns: execDisplayedColumns;"></tr>
-                </table>
-              </div>
-              <mat-paginator [length]="execTotalItems()" [pageSize]="execPageSize()" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onExecPageChange($event)" class="px-4 py-2 border-t border-gray-200 dark:border-gray-700"></mat-paginator>
+              <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div>
             }
-            @if (!execLoading() && execData().length === 0) { <div class="text-center py-12 text-gray-500 dark:text-gray-400">No hay ejecuciones registradas</div> }
+            <div class="overflow-x-auto">
+              <table mat-table [dataSource]="execData()" class="w-full">
+                <ng-container matColumnDef="webServiceNombre">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Web Service</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.webServiceNombre }}</td>
+                </ng-container>
+                <ng-container matColumnDef="fechaEjecucion">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Fecha Ejecución</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.fechaEjecucion | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="estado">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">
+                    <span class="badge" [class]="getExecStatusBadge(element.estado)">
+                      {{ getExecStatusLabel(element.estado) }}
+                    </span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="duracion">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Duración (ms)</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.duracion }}</td>
+                </ng-container>
+                <ng-container matColumnDef="parametrosEntrada">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Parámetros</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm truncate max-w-xs">{{ element.parametrosEntrada }}</td>
+                </ng-container>
+                <ng-container matColumnDef="resultado">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Resultado</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm truncate max-w-xs">{{ element.resultado }}</td>
+                </ng-container>
+                <ng-container matColumnDef="error">
+                  <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Error</th>
+                  <td mat-cell *matCellDef="let element" class="px-4 py-3 text-red-600 dark:text-red-400 text-sm truncate max-w-xs">{{ element.error }}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="execDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: execDisplayedColumns;"></tr>
+              </table>
+            </div>
+            @if (execData().length === 0 && !execLoading()) { <div class="text-center py-12 text-gray-500 dark:text-gray-400">No hay ejecuciones registradas</div> }
+            <mat-paginator [length]="execTotalItems()" [pageSize]="execPageSize()" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onExecPageChange($event)" class="px-4 py-2 border-t border-gray-200 dark:border-gray-700"></mat-paginator>
           </div>
         </mat-tab>
       </mat-tab-group>
     </div>
   `,
-    styles: [`
-    .btn-flat-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 500; background: #3f51b5; color: white; border: none; }
-    .btn-flat-primary:hover { background: #303f9f; }
-    .btn-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; background: transparent; color: #666; cursor: pointer; }
-    .btn-icon:hover { background: #f5f5f5; color: #333; }
-    .btn-flat-accent { background: #f44336; color: white; }
-    .btn-flat-accent:hover { background: #d32f2f; }
-    .badge { padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
-    .badge-success { background: #e8f5e9; color: #2e7d32; }
-    .badge-secondary { background: #f5f5f5; color: #757575; }
-    .badge-metodo-get { background: #e3f2fd; color: #1565c0; }
-    .badge-metodo-post { background: #e8f5e9; color: #2e7d32; }
-    .badge-metodo-put { background: #fff3e0; color: #ef6c00; }
-    .badge-metodo-delete { background: #fce4ec; color: #c62828; }
-    .badge-exec-success { background: #e8f5e9; color: #2e7d32; }
-    .badge-exec-error { background: #fce4ec; color: #c62828; }
-    .badge-exec-pending { background: #fff3e0; color: #ef6c00; }
-    :host ::ng-deep .mat-form-field { width: 100%; }
-    :host ::ng-deep .mat-column-acciones { width: 140px; text-align: right; }
-    :host ::ng-deep .mat-tab-header { background: #f5f5f5; }
-    :host ::ng-deep .dark .mat-tab-header { background: #1e1e1e; }
-  `]
+    styles: []
 })
 export class WebServiceListComponent implements OnInit {
     private service = inject(WebServiceConfigService);
@@ -259,7 +237,7 @@ export class WebServiceListComponent implements OnInit {
     wsTotalItems = signal(0);
     wsPageSize = signal(25);
     wsCurrentPage = signal(0);
-    wsFilter = signal<WebServiceFilterDTO>({ estado: 'A', nombre: '', url: '', metodo: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25 });
+    wsFilter: WebServiceFilterDTO = { estado: 'A', nombre: '', url: '', metodo: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25, filtroParametro: '', llaveTabla: '', securityToken: '' };
     wsDisplayedColumns = ['nombre', 'url', 'metodo', 'autenticacion', 'timeout', 'reintentos', 'estado', 'acciones'];
 
     // Ejecuciones
@@ -268,7 +246,7 @@ export class WebServiceListComponent implements OnInit {
     execTotalItems = signal(0);
     execPageSize = signal(25);
     execCurrentPage = signal(0);
-    execFilter = signal<WebServiceEjecucionFilterDTO>({ estado: 'A', webService: '', fechaDesde: undefined, fechaHasta: undefined, paginacionRegistroInicial: 0, paginacionRegistroFinal: 25 });
+    execFilter: WebServiceEjecucionFilterDTO = { estado: 'A', webService: '', fechaDesde: undefined, fechaHasta: undefined, paginacionRegistroInicial: 0, paginacionRegistroFinal: 25, filtroParametro: '', llaveTabla: '', securityToken: '' };
     execDisplayedColumns = ['webServiceNombre', 'fechaEjecucion', 'estado', 'duracion', 'parametrosEntrada', 'resultado', 'error'];
 
     ngOnInit(): void {
@@ -277,11 +255,10 @@ export class WebServiceListComponent implements OnInit {
 
     loadWebServices(): void {
         this.wsLoading.set(true);
-        const f = this.wsFilter();
-        f.paginacionRegistroInicial = this.wsCurrentPage() * this.wsPageSize();
-        f.paginacionRegistroFinal = f.paginacionRegistroInicial + this.wsPageSize();
+        this.wsFilter.paginacionRegistroInicial = this.wsCurrentPage() * this.wsPageSize();
+        this.wsFilter.paginacionRegistroFinal = this.wsFilter.paginacionRegistroInicial + this.wsPageSize();
 
-        this.service.getWebServices(f).subscribe({
+        this.service.getWebServices(this.wsFilter).subscribe({
             next: (res) => { this.wsData.set(res); this.wsTotalItems.set(res.length); this.wsLoading.set(false); },
             error: () => this.wsLoading.set(false)
         });
@@ -292,11 +269,10 @@ export class WebServiceListComponent implements OnInit {
 
     loadExecutions(): void {
         this.execLoading.set(true);
-        const f = this.execFilter();
-        f.paginacionRegistroInicial = this.execCurrentPage() * this.execPageSize();
-        f.paginacionRegistroFinal = f.paginacionRegistroInicial + this.execPageSize();
+        this.execFilter.paginacionRegistroInicial = this.execCurrentPage() * this.execPageSize();
+        this.execFilter.paginacionRegistroFinal = this.execFilter.paginacionRegistroInicial + this.execPageSize();
 
-        this.service.getExecutions(f).subscribe({
+        this.service.getExecutions(this.execFilter).subscribe({
             next: (res) => { this.execData.set(res); this.execTotalItems.set(res.length); this.execLoading.set(false); },
             error: () => this.execLoading.set(false)
         });

@@ -2,17 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ConsecutivoDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-consecutive-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCheckboxModule],
+    imports: [CommonModule, FormsModule, MatDialogModule],
     template: `
     <div class="max-w-md w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
@@ -88,13 +84,7 @@ import Swal from 'sweetalert2';
       </form>
     </div>
   `,
-    styles: [`
-    .btn-flat { padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 500; border: 1px solid #e0e0e0; background: white; color: #333; }
-    .btn-flat:hover { background: #f5f5f5; }
-    .btn-flat-primary { padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 500; background: #3f51b5; color: white; border: none; }
-    .btn-flat-primary:hover:not(:disabled) { background: #303f9f; }
-    .btn-flat-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-  `]
+    styles: []
 })
 export class ConsecutiveFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<ConsecutiveFormComponent>>(MatDialogRef);

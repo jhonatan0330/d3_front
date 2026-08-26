@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
@@ -20,7 +20,7 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-auto-task-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatButtonModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -45,18 +45,18 @@ import Swal from 'sweetalert2';
 
       <!-- Tabla -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        @if (loading()) { <div class="flex justify-center py-12"><mat-spinner diameter="40"></mat-spinner></div> } @else {
+        @if (loading()) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
           <div class="overflow-x-auto">
             <table mat-table [dataSource]="data()" class="w-full">
-              <ng-container matColumnDef="nombre"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th><td mat-cell class="px-4 py-3 font-medium">{{ element.nombre }}</td></ng-container>
-              <ng-container matColumnDef="procesoNombre"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Proceso</th><td mat-cell class="px-4 py-3">{{ element.procesoNombre }}</td></ng-container>
-              <ng-container matColumnDef="estadoOrigenNombre"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado Origen</th><td mat-cell class="px-4 py-3">{{ element.estadoOrigenNombre }}</td></ng-container>
-              <ng-container matColumnDef="estadoDestinoNombre"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado Destino</th><td mat-cell class="px-4 py-3">{{ element.estadoDestinoNombre }}</td></ng-container>
-              <ng-container matColumnDef="activa"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Activa</th><td mat-cell class="px-4 py-3"><span class="badge" [class.badge-success]="element.activa" [class.badge-secondary]="!element.activa">{{ element.activa ? 'Sí' : 'No' }}</span></td></ng-container>
-              <ng-container matColumnDef="programa"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Programación</th><td mat-cell class="px-4 py-3 font-mono text-sm">{{ element.programa || 'Manual' }}</td></ng-container>
-              <ng-container matColumnDef="fechaProgramada"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Próxima Ejecución</th><td mat-cell class="px-4 py-3">{{ element.fechaProgramada ? (element.fechaProgramada | date:'dd/MM/yyyy HH:mm') : '—' }}</td></ng-container>
-              <ng-container matColumnDef="estado"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th><td mat-cell class="px-4 py-3"><span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span></td></ng-container>
-              <ng-container matColumnDef="acciones"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th><td mat-cell class="px-4 py-3"><div class="flex items-center justify-end gap-1"><button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button><button type="button" class="btn-icon" (click)="openScheduleDialog(element)" aria-label="Programar" title="Programar" matTooltip="Programar"><mat-icon>schedule</mat-icon></button><button type="button" class="btn-icon text-green-600 hover:text-green-700" (click)="executeNow(element)" aria-label="Ejecutar Ahora" title="Ejecutar Ahora" matTooltip="Ejecutar Ahora"><mat-icon>play_circle_filled</mat-icon></button><button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button></div></td></ng-container>
+              <ng-container matColumnDef="nombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-medium">{{ element.nombre }}</td></ng-container>
+              <ng-container matColumnDef="procesoNombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Proceso</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.procesoNombre }}</td></ng-container>
+              <ng-container matColumnDef="estadoOrigenNombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado Origen</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.estadoOrigenNombre }}</td></ng-container>
+              <ng-container matColumnDef="estadoDestinoNombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado Destino</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.estadoDestinoNombre }}</td></ng-container>
+              <ng-container matColumnDef="activa"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Activa</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><span class="badge" [class.badge-success]="element.activa" [class.badge-secondary]="!element.activa">{{ element.activa ? 'Sí' : 'No' }}</span></td></ng-container>
+              <ng-container matColumnDef="programa"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Programación</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm">{{ element.programa || 'Manual' }}</td></ng-container>
+              <ng-container matColumnDef="fechaProgramada"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Próxima Ejecución</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.fechaProgramada ? (element.fechaProgramada | date:'dd/MM/yyyy HH:mm') : '—' }}</td></ng-container>
+              <ng-container matColumnDef="estado"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span></td></ng-container>
+              <ng-container matColumnDef="acciones"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="flex items-center justify-end gap-1"><button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button><button type="button" class="btn-icon" (click)="openScheduleDialog(element)" aria-label="Programar" title="Programar" matTooltip="Programar"><mat-icon>schedule</mat-icon></button><button type="button" class="btn-icon text-green-600 hover:text-green-700" (click)="executeNow(element)" aria-label="Ejecutar Ahora" title="Ejecutar Ahora" matTooltip="Ejecutar Ahora"><mat-icon>play_circle_filled</mat-icon></button><button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button></div></td></ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr><tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
           </div>
@@ -66,20 +66,7 @@ import Swal from 'sweetalert2';
       </div>
     </div>
   `,
-    styles: [`
-    .btn-flat-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 500; background: #3f51b5; color: white; border: none; }
-    .btn-flat-primary:hover { background: #303f9f; }
-    .btn-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; background: transparent; color: #666; cursor: pointer; }
-    .btn-icon:hover { background: #f5f5f5; color: #333; }
-    .btn-flat-accent { background: #f44336; color: white; }
-    .btn-flat-accent:hover { background: #d32f2f; }
-    .badge { padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
-    .badge-success { background: #e8f5e9; color: #2e7d32; }
-    .badge-secondary { background: #f5f5f5; color: #757575; }
-    :host ::ng-deep .mat-form-field { width: 100%; }
-    :host ::ng-deep .mat-column-acciones { width: 180px; text-align: right; }
-    :host ::ng-deep .mat-column-fechaProgramada { width: 180px; }
-  `]
+    styles: []
 })
 export class AutoTaskListComponent implements OnInit {
     private service = inject(AutoTaskService);
@@ -91,7 +78,7 @@ export class AutoTaskListComponent implements OnInit {
     pageSize = signal(25);
     currentPage = signal(0);
 
-    filter = signal<ProcesoTransicionAutomaticaFilterDTO>({
+    filter: ProcesoTransicionAutomaticaFilterDTO = {
         estado: 'A',
         proceso: '',
         estadoOrigen: '',
@@ -100,8 +87,11 @@ export class AutoTaskListComponent implements OnInit {
         fechaDesde: undefined,
         fechaHasta: undefined,
         paginacionRegistroInicial: 0,
-        paginacionRegistroFinal: 25
-    });
+        paginacionRegistroFinal: 25,
+        filtroParametro: '',
+        llaveTabla: '',
+        securityToken: ''
+    };
 
     displayedColumns = ['nombre', 'procesoNombre', 'estadoOrigenNombre', 'estadoDestinoNombre', 'activa', 'programa', 'fechaProgramada', 'estado', 'acciones'];
 
@@ -109,7 +99,7 @@ export class AutoTaskListComponent implements OnInit {
 
     loadData(): void {
         this.loading.set(true);
-        const f = this.filter();
+        const f = this.filter;
         f.paginacionRegistroInicial = this.currentPage() * this.pageSize();
         f.paginacionRegistroFinal = f.paginacionRegistroInicial + this.pageSize();
         this.service.getAutoTasks(f).subscribe({ next: (res) => { this.data.set(res); this.totalItems.set(res.length); this.loading.set(false); }, error: () => this.loading.set(false) });

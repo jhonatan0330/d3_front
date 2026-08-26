@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import { DocumentTemplateService } from '../document-template.service';
 import { DocumentTemplateFieldFormComponent } from './document-template-field-form.component';
 import Swal from 'sweetalert2';
@@ -14,7 +15,7 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-document-template-field-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatButtonModule, MatTableModule, DragDropModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, MatTableModule, DragDropModule],
     template: `
     <div class="flex flex-col h-full">
       <div class="flex items-center justify-between mb-4">
@@ -23,7 +24,9 @@ import Swal from 'sweetalert2';
       </div>
 
       @if (loading()) {
-        <div class="flex justify-center py-12"><mat-spinner diameter="40"></mat-spinner></div>
+        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+        </div>
       } @else if (fields().length === 0) {
         <div class="flex-1 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
           <mat-icon class="text-6xl mb-4">dynamic_form</mat-icon>

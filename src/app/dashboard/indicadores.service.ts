@@ -46,24 +46,24 @@ export class IndicadoresService {
     {
       id: 1,
       nombre: 'Ventas Totales',
-      icono: 'assets/icons/ventas-totales.svg',
+      icono: 'favicon-32x32.png',
       acciones: [
         {
           id: 101,
           nombre: 'Ver detalle',
-          imagen: 'assets/templates/ver-detalle.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'VENTAS'
         },
         {
           id: 102,
           nombre: 'Comparar períodos',
-          imagen: 'assets/templates/comparar-periodos.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'COMPARAR_PERIODOS'
         },
         {
           id: 103,
           nombre: 'Exportar reporte',
-          imagen: 'assets/templates/exportar.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'REPORTE_VENTAS'
         }
       ],
@@ -78,18 +78,18 @@ export class IndicadoresService {
     {
       id: 2,
       nombre: 'Cantidad de Ventas',
-      icono: 'assets/icons/cantidad-ventas.svg',
+      icono: 'favicon-32x32.png',
       acciones: [
         {
           id: 201,
           nombre: 'Ver ventas',
-          imagen: 'assets/templates/ver-ventas.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'VENTAS'
         },
         {
           id: 202,
           nombre: 'Analizar tendencia',
-          imagen: 'assets/templates/tendencia.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'TENDENCIA_VENTAS'
         }
       ],
@@ -104,18 +104,18 @@ export class IndicadoresService {
     {
       id: 3,
       nombre: 'Ticket Promedio',
-      icono: 'assets/icons/ticket-promedio.svg',
+      icono: 'favicon-32x32.png',
       acciones: [
         {
           id: 301,
           nombre: 'Ver evolución',
-          imagen: 'assets/templates/evolucion.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'EVOLUCION_TICKET'
         },
         {
           id: 302,
           nombre: 'Comparar vendedores',
-          imagen: 'assets/templates/comparar-vendedores.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'COMPARAR_VENDEDORES'
         }
       ],
@@ -130,18 +130,18 @@ export class IndicadoresService {
     {
       id: 4,
       nombre: 'Crecimiento de Ventas',
-      icono: 'assets/icons/crecimiento-ventas.svg',
+      icono: 'favicon-32x32.png',
       acciones: [
         {
           id: 401,
           nombre: 'Ver crecimiento',
-          imagen: 'assets/templates/crecimiento.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'CRECIMIENTO_VENTAS'
         },
         {
           id: 402,
           nombre: 'Comparar año anterior',
-          imagen: 'assets/templates/comparar-anio.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'COMPARAR_ANIO'
         }
       ],
@@ -156,24 +156,24 @@ export class IndicadoresService {
     {
       id: 5,
       nombre: 'Cumplimiento de Meta',
-      icono: 'assets/icons/cumplimiento-meta.svg',
+      icono: 'favicon-32x32.png',
       acciones: [
         {
           id: 501,
           nombre: 'Ver cumplimiento',
-          imagen: 'assets/templates/cumplimiento.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'CUMPLIMIENTO'
         },
         {
           id: 502,
           nombre: 'Ver metas',
-          imagen: 'assets/templates/metas.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'METAS'
         },
         {
           id: 503,
           nombre: 'Analizar desviaciones',
-          imagen: 'assets/templates/desviaciones.png',
+          imagen: 'favicon-32x32.png',
           plantilla: 'DESVIACIONES'
         }
       ],

@@ -61,3 +61,50 @@ export class PropiedadValorDefinidoFilterDTO extends BasicFilterDTO {
   nombre: string;
   grupo: string;
 }
+
+export class PropiedadCampoDTO extends BasicDTO {
+    cambioCreacion: string;
+    campo: string;
+    fechaDefinicion: Date;
+    fechaImplementacion: Date;
+    key: string;
+    motivo: string;
+    nombre: string;
+    propiedadValor: string;
+    tipo: string;
+    valor: number;
+    texto?: string;
+    relaciones: number;
+    bloqueo: string;
+    fechaFinal: string;
+    fechaInicial: string;
+    rol: string;
+    rolNombre: string;
+    rolExcluyente: string;
+    rolExcluyenteNombre: string;
+    usuario: string;
+    usuarioNombre: string;
+    usuarioExcluyente: string;
+    usuarioExcluyenteNombre: string;
+}
+
+export class RelacionInternaDTO extends BasicDTO {
+    propiedad: string;
+    propiedadNombre: string;
+    plantilla: string;
+    plantillaNombre: string;
+    campo: string;
+    campoNombre: string;
+    auxiliar: string;
+    fechaInicio?: string;
+}
+
+export class RelacionInternaFilterDTO extends BasicFilterDTO {
+    propiedad: string;
+    propiedadNombre: string;
+    plantilla: string;
+    plantillaNombre: string;
+    campo: string;
+    campoNombre: string;
+    auxiliar: string;
+}

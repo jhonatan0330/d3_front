@@ -134,3 +134,120 @@
 .mat-mdc-form-field-subscript-wrapper {
     height: 6px;
 }
+
+/* ========================================
+   Badges globales
+   ======================================== */
+
+.badge {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+.badge-secondary {
+  @apply bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400;
+}
+
+.badge-info {
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+.badge-warning {
+  @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400;
+}
+
+.badge-error {
+  @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+}
+
+.badge-metodo-get {
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+.badge-metodo-post {
+  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+.badge-metodo-put {
+  @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400;
+}
+
+.badge-metodo-delete {
+  @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+}
+
+.badge-exec-success {
+  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+.badge-exec-error {
+  @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+}
+
+.badge-exec-pending {
+  @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400;
+}
+
+.badge-tipo-db {
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+.badge-tipo-app {
+  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+.badge-tipo-web {
+  @apply bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400;
+}
+
+.badge-tipo-mail {
+  @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400;
+}
+
+.badge-tipo-email {
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+.badge-tipo-sms {
+  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+.badge-tipo-push {
+  @apply bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400;
+}
+
+.badge-origen-c {
+  @apply bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400;
+}
+
+.badge-origen-l {
+  @apply bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400;
+}
+
+.badge-origen-p {
+  @apply bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400;
+}
+
+.badge-origen-d {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+}
+
+/* ========================================
+   Drag & Drop (CDK)
+   ======================================== */
+
+.cdk-drag-preview {
+  @apply shadow-lg;
+}
+
+.cdk-drag-animating {
+  @apply transition-transform ease-out;
+  transition-duration: 250ms;
+}
+
+.cdk-drag-placeholder {
+  @apply opacity-50 bg-gray-200 border-2 border-dashed border-gray-400 dark:bg-gray-700 dark:border-gray-500;
+}

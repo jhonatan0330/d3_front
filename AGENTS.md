@@ -121,3 +121,64 @@ Defined in `src/styles/styles.scss`:
 .btn-flat-accent   /* flat with accent bg */
 .btn-raised        /* elevated button with border */
 ```
+
+## Architecture Rules (Configuration Forms Migration)
+
+### 1. Angular Material Minimization
+**Goal**: Reduce Angular Material to absolute minimum. Replace with Tailwind CSS equivalents.
+
+**Allowed Material Components** (no simple Tailwind equivalent):
+- `MatDialog` — complex overlay
+- `MatTooltip` — lightweight behavior directive  
+- `MatDatepicker` — complex with localization
+- `MatFormField` / `MatInput` — form field animations and labels
+- `MatTable` — structured table with selection
+
+**Banned/Replace Material Components**:
+| Material Component | Replacement |
+|--------------------|-------------|
+| `mat-select` / `MatSelectModule` | `<app-dropdown>` + `<app-dropdown-item>` from `src/app/shared/components/dropdown/` |
+| `mat-spinner` / `MatProgressSpinnerModule` | Custom Tailwind loading: `@if (isLoading()) { <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> }` |
+| `mat-menu` / `MatMenuModule` | `<app-dropdown>` + `<app-dropdown-item>` |
+| `mat-paginator` / `MatPaginatorModule` | Custom pagination (or keep temporarily) |
+| `mat-icon-button` / `mat-flat-button` / `mat-raised-button` | Tailwind `.btn-icon`, `.btn-flat`, `.btn-raised` classes |
+
+### 2. Standalone Components Only
+- **No NgModules** — all components must be standalone (`standalone: true`)
+- Use `imports: []` array in `@Component` decorator
+- Lazy loading via `loadComponent` / `loadChildren` with ES modules
+
+### 3. Loading Indicator Pattern
+```typescript
+// Component
+isLoading = signal(false);
+
+// Template - NO mat-spinner
+@if (isLoading()) {
+  <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+    <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+  </div>
+}
+```
+
+### 4. Select/Dropdown Pattern
+Use `src/app/shared/components/dropdown/`:
+```html
+<app-dropdown>
+  <button trigger class="...">
+    <mat-icon>chevron_down</mat-icon>
+  </button>
+  @for (opt of options; track opt.value) {
+    <app-dropdown-item (clicked)="select(opt)">
+      {{ opt.label }}
+    </app-dropdown-item>
+  }
+</app-dropdown>
+```
+
+### 5. Apply to All New Configuration Forms Components
+All components under `src/app/configuration-forms/` must follow these rules:
+- Replace all `mat-select` → `app-dropdown`
+- Replace all `mat-spinner` → custom Tailwind loading bar
+- Remove `MatProgressSpinnerModule`, `MatSelectModule`, `MatMenuModule` imports
+- Keep only allowed Material components (Dialog, Tooltip, Datepicker, FormField, Input, Table)

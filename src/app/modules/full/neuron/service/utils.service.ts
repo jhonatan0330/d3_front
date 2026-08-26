@@ -10,11 +10,11 @@ import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.comp
 import { ContactsDetailsComponent } from 'app/persons/detail_persons/detail-person.component';
 import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
-import { FlexComponent } from 'app/configuration-forms/flex/flex';
+import { DocumentTemplateFormComponent } from 'app/configuration-forms/document-templates/document-template-form.component';
 import { dfaComponent } from 'app/authentication/DFA/dfa';
-import { FieldComponent } from 'app/configuration-forms/flex/fieldComponent';
-import { AddFieldComponent } from 'app/configuration-forms/flex/addField';
-import { AddPropertyComponent } from 'app/configuration-forms/flex/addProperty';
+import { DocumentTemplateFieldFormComponent } from 'app/configuration-forms/document-templates/document-template-fields/document-template-field-form.component';
+import { DocumentTemplateFieldDetailComponent } from 'app/configuration-forms/document-templates/document-template-fields/document-template-field-detail.component';
+import { PropertyModalComponent } from 'app/configuration-forms/shared/property-modal.component';
 import {  PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 
 @Injectable({
@@ -50,65 +50,11 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  modalTransfer(document: string, state: string, template: string, server: string) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(TransferFormComponent, {
-      maxHeight: '90vh',
-      maxWidth: '90vh',
-      disableClose: false,
-      data: { document: document, state: state, template: template, server: server },
-    });
-    return dialogRef.afterClosed();
-  }
-
-  modalTrace(document: string, template: string, server: string, documentName: string, documentState: string, state: string) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(TrazabilityComponent, {
-      maxHeight: '90vh',
-      maxWidth: '99vh',
-      disableClose: false,
-      data: { document: document, template: template, server: server, documentName: documentName, documentState: documentState, state: state },
-    });
-    return dialogRef.afterClosed();
-  }
-
-  modalVoucher(_key: string, _catalog: string) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(ManualFormComponent, {
-      disableClose: true,
-      maxHeight: '90vh',
-      data: { key: _key, catalogId: _catalog }
-    });
-    return dialogRef.afterClosed();
-  }
-
-  modalUser(_key: string) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(ContactsDetailsComponent, {
-      maxHeight: '90vh',
-      data: { key: _key }
-    });
-    return dialogRef.afterClosed();
-  }
-
-  modalUserChangePassOther(_key: UsuarioDTO) {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(dfaComponent, {
-      maxHeight: '90vh',
-      disableClose: false, // permite cerrar haciendo clic fuera
-      data: { key: _key }
-    });
-    return dialogRef.afterClosed();
-  }
-
-
-  modalUserChangePass() {
-    const dialogRef: MatDialogRef<any> = this.dialog.open(SettingsSecurityComponent, {
-      maxHeight: '90vh',
-    });
-    return dialogRef.afterClosed();
-  }
-
   modalFlex(pTemplate: string){
     // Close any previously opened flex panel
     try{ if (this._flexDialogRef) { this._flexDialogRef.close(); } }catch(e){ }
 
-    this._flexDialogRef = this.dialog.open(FlexComponent, {
+    this._flexDialogRef = this.dialog.open(DocumentTemplateFormComponent, {
       hasBackdrop: false,
       disableClose: false,
       panelClass: 'flex-right-panel',
@@ -123,7 +69,7 @@ export class UtilsService {
     // Close any previously opened Field dialog so only one is displayed
     try{ if (this._fieldDialogRef) { this._fieldDialogRef.close(); } }catch(e){ }
 
-    this._fieldDialogRef = this.dialog.open(FieldComponent, {
+    this._fieldDialogRef = this.dialog.open(DocumentTemplateFieldDetailComponent, {
       hasBackdrop: false,
       disableClose: false,
       panelClass: 'flex-right-panel',
@@ -146,7 +92,7 @@ export class UtilsService {
 
 
   fieldEditModalFlex(pTemplate: string){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(AddFieldComponent, {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(DocumentTemplateFieldFormComponent, {
       maxHeight: '90vh',
       data: { template: pTemplate},
     });
@@ -154,7 +100,7 @@ export class UtilsService {
   }
 
   fieldAddModalFlex(ptemplate: string, pCampo?:DocumentoPlantillaCaracteristicaDTO){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(AddFieldComponent, {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(DocumentTemplateFieldFormComponent, {
       maxHeight: '90vh',
       data: { template: ptemplate , campo: pCampo },
     });
@@ -162,9 +108,58 @@ export class UtilsService {
   }
 
   propertyAddModalFlex(pCampo: string, ptipo:PropiedadValorDefinidoDTO , pPropiedad?:PropiedadCampoDTO){
-    const dialogRef: MatDialogRef<any> = this.dialog.open(AddPropertyComponent, {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(PropertyModalComponent, {
       maxHeight: '90vh',
       data: { template: pCampo , propiedad: pPropiedad, tipo: ptipo },
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalVoucher(pKey: string, pCatalog: string) {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(ManualFormComponent, {
+      maxHeight: '90vh',
+      data: { key: pKey, catalogId: pCatalog },
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalUserChangePassOther(pUsuario: UsuarioDTO) {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(dfaComponent, {
+      disableClose: false,
+      data: { key: pUsuario },
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalUserChangePass() {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(SettingsSecurityComponent, {
+      maxHeight: '90vh',
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalUser(pKey: string) {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(ContactsDetailsComponent, {
+      maxHeight: '90vh',
+      data: { key: pKey },
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalTransfer(pDocument: string, pState: string, pTemplate: string, pServer: string) {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(TransferFormComponent, {
+      disableClose: false,
+      data: { document: pDocument, state: pState, template: pTemplate, server: pServer },
+    });
+    return dialogRef.afterClosed();
+  }
+
+  modalTrace(pDocument: string, pTemplate: string, pServer: string, pDocumentName: string, pDocumentState: string, pState: string) {
+    const dialogRef: MatDialogRef<any> = this.dialog.open(TrazabilityComponent, {
+      data: {
+        document: pDocument, template: pTemplate, server: pServer,
+        documentName: pDocumentName, documentState: pDocumentState, state: pState,
+      },
     });
     return dialogRef.afterClosed();
   }

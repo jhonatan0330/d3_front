@@ -220,16 +220,38 @@ src/app/configuration-forms/
 - ✅ Lint: `npm run lint` - 0 errores (solo warnings pre-existentes)
 - ✅ Tests: `npm test` - 7 suites, 106 tests pasando
 
-### FASE 4: Integración, Navegación y Limpieza (2 días)
+### FASE 4: Integración, Navegación y Limpieza (En progreso)
 
-| Tarea | Descripción |
-|-------|-------------|
-| 4.1 | Registrar todas las rutas en `app.routing.ts` como lazy-loaded modules |
-| 4.2 | Agrupar en navegación lateral: nuevo grupo **"Configuración"** con sub-items por módulo |
-| 4.3 | Testing manual E2E de cada módulo (listar, crear, editar, inactivar, propiedades, relaciones) |
-| 4.4 | **Borrar `FullControllerDTO.java`** del backend |
-| 4.5 | Verificar que no queden imports/usos de `/flex/` en frontend (buscar `getUrlAccess('/flex/`) |
-| 4.6 | Actualizar `PlanMejoras.md` marcando ítems completados |
+| Tarea | Descripción | Estado |
+|-------|-------------|--------|
+| 4.1 | Registrar todas las rutas en `app.routing.ts` como lazy-loaded modules | ✅ Rutas agregadas |
+| 4.2 | Agrupar en navegación lateral: nuevo grupo **"Configuración"** con sub-items por módulo | ⬜ Pendiente (actualizar navigation.service.ts) |
+| 4.3 | Testing manual E2E de cada módulo | ⬜ Pendiente |
+| 4.4 | **Borrar `FullControllerDTO.java`** del backend | ⬜ Pendiente |
+| 4.5 | Verificar que no queden imports/usos de `/flex/` en frontend | ⬜ Pendiente |
+| 4.6 | Actualizar `PlanMejoras.md` marcando ítems completados | ✅ En progreso |
+
+**Problemas conocidos en FASE 4 (requieren corrección sistemática):**
+- **Patrón signal/ngModel**: Los filtros en componentes de lista usan `signal()` pero `[(ngModel)]` intenta escribir en ellos → cambiar a objetos planos
+- **Variable `element` vs `row`**: En tablas Angular Material, `*matRowDef="let row"` define `row` pero templates usan `element` → cambiar a `row`
+- **Imports Angular Material faltantes**: `MatProgressSpinnerModule`, `MatDatepickerModule`, `MatNativeDateModule`, `MatButtonModule`, `MatDialogModule` en varios componentes
+- **Imports DTOs**: `PropiedadValorDefinidoDTO`/`FilterDTO` están en `shared.domain.ts` pero se importan desde `sw42.domain.ts`; `UsuarioDTO` en `authentication.domain.ts`
+- **PropiedadCampoDTO valor/texto**: Tipos inconsistentes entre `shared.domain.ts` (string) y `sw42.domain.ts` (number/string)
+
+**Archivos creados en FASES 0-3 (listos, requieren fixes menores):**
+- `configuration-forms/shared/` - PropertyService, PropertyField, PropertyModal, PropertyRelations, RelationForm, UserSelector, AttachmentViewer
+- `configuration-forms/document-templates/` - Service, List, Form, Fields, Reports
+- `configuration-forms/web-services/` - Service, List, Form, ExecuteDialog
+- `configuration-forms/message-templates/` - Service, List, Form
+- `configuration-forms/messages/` - Service, List, Detail
+- `configuration-forms/auto-tasks/` - Service, List, Form, ScheduleDialog
+- `configuration-forms/organizations/` - Service, List, Form
+- `configuration-forms/consecutives/` - Service, List, Form
+- `configuration-forms/servers/` - Service, List, Form
+- `configuration-forms/property-values/` - Service, List, Form
+- `configuration-forms/processes/` - Service, List, Form, Transitions
+- Módulos de routing creados para cada feature
+- Rutas registradas en `app.routing.ts`
 
 ---
 
@@ -387,4 +409,48 @@ Headers: `Authorization: Bearer <jwt>` (ya maneja `token.interceptor.ts`)
 
 ---
 
-*Documento generado: 2026-08-24 | Versión 1.0 | Autor: Asistente IA*
+---
+
+## Resumen de Implementación (Estado Actual)
+
+### ✅ Completado - FASES 0-3 (Componentes y Servicios)
+
+| Fase | Módulos | Archivos Principales |
+|------|---------|---------------------|
+| **FASE 0** | Base Compartida | `shared/property.service.ts`, `property-field.component.ts`, `property-modal.component.ts`, `property-relations.component.ts`, `relation-form.component.ts`, `user-selector.component.ts`, `attachment-viewer.component.ts`, `document-template.service.ts` |
+| **FASE 1** | CRUD Simples (4) | `consecutives/`, `property-values/`, `organizations/`, `servers/` (Service + List + Form c/u) |
+| **FASE 2** | Lógica Específica (4) | `web-services/`, `message-templates/`, `messages/`, `auto-tasks/` (Service + List + Form + Dialogs) |
+| **FASE 3** | Jerárquicos (2) | `document-templates/` (tabs: General, Campos, Reportes, Props), `processes/` (tabs: General, Transiciones, Props + Tree) |
+
+### 📦 Estructura Final
+```
+src/app/configuration-forms/
+├── shared/                    ← Base reutilizable (Props, Adjuntos, Usuarios)
+├── document-templates/        ← Plantillas Documento (extiende flex/)
+│   ├── document-template-fields/    ← Campos (drag-drop)
+│   └── document-template-reports/   ← Reportes
+├── web-services/              ← Web Services + Ejecuciones
+├── message-templates/         ← Plantillas Mensaje
+├── messages/                  ← Mensajes (filtros, adjuntos, reenviar)
+├── auto-tasks/                ← Tareas Automáticas (programar/ejecutar)
+├── organizations/             ← Organizaciones
+├── consecutives/              ← Consecutivos
+├── servers/                   ← Servidores
+├── property-values/           ← Valores Definidos
+└── processes/                 ← Procesos + Transiciones
+    └── process-transitions/
+```
+
+### 🔧 Pendiente FASE 4 - Fixes Sistemáticos
+1. **Corregir patrón signal/ngModel** en ~15 componentes de lista (filtros → objetos planos)
+2. **Cambiar `element` → `row`** en ~15 templates de tabla Angular Material
+3. **Agregar imports Angular Material** faltantes (MatProgressSpinnerModule, MatDatepickerModule, MatNativeDateModule, MatButtonModule, MatDialogModule)
+4. **Corregir imports DTOs** (rutas correctas: shared.domain.ts, authentication.domain.ts)
+5. **Actualizar navigation.service.ts** con grupo "Configuración"
+6. **Testing E2E** y borrar `FullControllerDTO.java`
+
+### 📝 Notas Técnicas
+- **DTOs**: PropiedadDTO, PropiedadCampoDTO, RelacionInternaDTO, PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO, PropiedadFilterDTO → en `shared.domain.ts`
+- **DTOs específicos**: WebService, Mensaje, ProcesoTransicionAutomatica, Organizacion, Consecutivo, Servidor, Proceso → en `sw42.domain.ts`
+- **API Base**: `/api/config/` (reemplaza `/flex/`)
+- **Navegación**: Grupo "Configuración" en sidebar (pendiente)

@@ -2,9 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { WebServiceDTO, WebServiceEjecucionDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { WebServiceConfigService } from './web-service.service';
@@ -17,7 +14,7 @@ interface ExecuteDialogData {
 @Component({
     selector: 'app-web-service-execute-dialog',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
     template: `
     <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center gap-2">

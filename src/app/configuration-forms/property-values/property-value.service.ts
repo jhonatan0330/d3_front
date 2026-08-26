@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO } from 'app/shared/shared.domain';
 
 @Injectable({
     providedIn: 'root'

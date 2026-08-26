@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { PropiedadDTO, PropiedadCampoDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PropiedadDTO, PropiedadCampoDTO } from 'app/shared/shared.domain';
 import { PropertyModalComponent } from './property-modal.component';
 
 @Component({
@@ -118,11 +118,11 @@ export class PropertyFieldComponent {
         pc.nombre = prop.nombre;
         pc.key = prop.key;
         pc.campo = prop.campo;
-        pc.valor = prop.valor;
-        pc.texto = prop.texto;
-        pc.motivo = prop.motivo;
-        pc.relaciones = prop.relaciones;
-        pc.estado = prop.estado;
+        pc.valor = Number(prop.valor) || 0;
+        pc.texto = prop.texto || '';
+        pc.motivo = prop.motivo || '';
+        pc.relaciones = prop.relaciones || 0;
+        pc.estado = prop.estado || 'A';
         return pc;
     }
 
@@ -135,10 +135,10 @@ export class PropertyFieldComponent {
             nombre: result.nombre,
             key: result.key,
             campo: result.campo,
-            valor: result.valor,
-            texto: result.texto,
-            motivo: result.motivo,
-            relaciones: result.relaciones
+            valor: String(result.valor),
+            texto: result.texto || '',
+            motivo: result.motivo || '',
+            relaciones: result.relaciones || 0
         };
 
         if (result.llaveTabla) {

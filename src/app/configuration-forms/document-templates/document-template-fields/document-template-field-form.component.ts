@@ -2,12 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.domain';
+import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/modules/full/neuron/model/sw42.enum';
 import Swal from 'sweetalert2';
 
 interface FieldFormData {
@@ -18,7 +14,7 @@ interface FieldFormData {
 @Component({
     selector: 'app-document-template-field-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule],
+    imports: [CommonModule, FormsModule, MatDialogModule],
     template: `
     <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
@@ -109,14 +105,7 @@ interface FieldFormData {
       </form>
     </div>
   `,
-    styles: [`
-    .btn-flat { padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 500; border: 1px solid #e0e0e0; background: white; color: #333; }
-    .btn-flat:hover { background: #f5f5f5; }
-    .btn-flat-primary { padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 500; background: #3f51b5; color: white; border: none; }
-    .btn-flat-primary:hover:not(:disabled) { background: #303f9f; }
-    .btn-flat-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-    :host ::ng-deep .mat-form-field { width: 100%; }
-  `]
+    styles: []
 })
 export class DocumentTemplateFieldFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<DocumentTemplateFieldFormComponent>>(MatDialogRef);

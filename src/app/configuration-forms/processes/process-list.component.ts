@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CdkTreeModule } from '@angular/cdk/tree';
 import { ProcesoDTO, ProcesoFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { ProcessService } from './process.service';
 import { ProcessFormComponent } from './process-form.component';
@@ -28,7 +28,7 @@ interface TreeNode {
 @Component({
     selector: 'app-process-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatButtonModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatTabsModule, MatTreeModule, MatProgressSpinnerModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatTabsModule, CdkTreeModule],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -49,17 +49,17 @@ interface TreeNode {
               </div>
             </div>
 
-            @if (loading()) { <div class="flex justify-center py-12"><mat-spinner diameter="40"></mat-spinner></div> } @else {
+            @if (loading()) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
               <div class="overflow-x-auto">
                 <table mat-table [dataSource]="data()" class="w-full">
-                  <ng-container matColumnDef="codigo"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Código</th><td mat-cell class="px-4 py-3 font-mono text-sm">{{ element.codigo }}</td></ng-container>
-                  <ng-container matColumnDef="nombre"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th><td mat-cell class="px-4 py-3 font-medium">{{ element.nombre }}</td></ng-container>
-                  <ng-container matColumnDef="descripcion"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Descripción</th><td mat-cell class="px-4 py-3 text-sm truncate max-w-xs">{{ element.descripcion }}</td></ng-container>
-                  <ng-container matColumnDef="consecutivo"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Consecutivo</th><td mat-cell class="px-4 py-3">{{ element.consecutivo }}</td></ng-container>
-                  <ng-container matColumnDef="color"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Color</th><td mat-cell class="px-4 py-3"><div class="w-6 h-6 rounded border" [style.background-color]="element.color"></div></td></ng-container>
-                  <ng-container matColumnDef="objetivo"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Objetivo</th><td mat-cell class="px-4 py-3 text-sm truncate max-w-xs">{{ element.objetivo }}</td></ng-container>
-                  <ng-container matColumnDef="estado"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th><td mat-cell class="px-4 py-3"><span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span></td></ng-container>
-                  <ng-container matColumnDef="acciones"><th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th><td mat-cell class="px-4 py-3"><div class="flex items-center justify-end gap-1"><button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button><button type="button" class="btn-icon" (click)="openTransitions(element)" aria-label="Transiciones" title="Transiciones" matTooltip="Transiciones"><mat-icon>swap_horiz</mat-icon></button><button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button></div></td></ng-container>
+                  <ng-container matColumnDef="codigo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Código</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm">{{ element.codigo }}</td></ng-container>
+                  <ng-container matColumnDef="nombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-medium">{{ element.nombre }}</td></ng-container>
+                  <ng-container matColumnDef="descripcion"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Descripción</th><td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm truncate max-w-xs">{{ element.descripcion }}</td></ng-container>
+                  <ng-container matColumnDef="consecutivo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Consecutivo</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.consecutivo }}</td></ng-container>
+                  <ng-container matColumnDef="color"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Color</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="w-6 h-6 rounded border" [style.background-color]="element.color"></div></td></ng-container>
+                  <ng-container matColumnDef="objetivo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Objetivo</th><td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm truncate max-w-xs">{{ element.objetivo }}</td></ng-container>
+                  <ng-container matColumnDef="estado"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span></td></ng-container>
+                  <ng-container matColumnDef="acciones"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="flex items-center justify-end gap-1"><button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button><button type="button" class="btn-icon" (click)="openTransitions(element)" aria-label="Transiciones" title="Transiciones" matTooltip="Transiciones"><mat-icon>swap_horiz</mat-icon></button><button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button></div></td></ng-container>
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr><tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
               </div>
@@ -72,7 +72,7 @@ interface TreeNode {
         <!-- Tab Árbol -->
         <mat-tab label="Vista Árbol">
           <div class="p-4">
-            @if (treeLoading()) { <div class="flex justify-center py-12"><mat-spinner diameter="40"></mat-spinner></div> } @else {
+            @if (treeLoading()) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
               <div class="space-y-1 max-h-[600px] overflow-y-auto">
                 <cdk-tree [dataSource]="treeData()" [treeControl]="treeControl" class="w-full">
                   <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="py-1">
@@ -80,7 +80,7 @@ interface TreeNode {
                       <button type="button" class="btn-icon-sm" (click)="toggleNode(node)" aria-label="{{ node.expanded ? 'Colapsar' : 'Expandir' }}">
                         <mat-icon>{{ node.expanded ? 'expand_more' : 'chevron_right' }}</mat-icon>
                       </button>
-                      @if (node.isLoading) { <mat-spinner diameter="16" class="mr-2"></mat-spinner> }
+                      @if (node.isLoading) { <div class="w-4 h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden mr-2"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> }
                       <div class="flex-1 min-w-0 flex items-center gap-2">
                         <div class="w-3 h-3 rounded-full" [style.background-color]="node.proceso.color"></div>
                         <span class="font-medium truncate">{{ node.proceso.nombre }}</span>
@@ -119,24 +119,7 @@ interface TreeNode {
       </mat-tab-group>
     </div>
   `,
-    styles: [`
-    .btn-flat-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 500; background: #3f51b5; color: white; border: none; }
-    .btn-flat-primary:hover { background: #303f9f; }
-    .btn-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; background: transparent; color: #666; cursor: pointer; }
-    .btn-icon:hover { background: #f5f5f5; color: #333; }
-    .btn-icon-sm { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; background: transparent; color: #666; cursor: pointer; }
-    .btn-icon-sm:hover { background: #f5f5f5; color: #333; }
-    .btn-flat-accent { background: #f44336; color: white; }
-    .btn-flat-accent:hover { background: #d32f2f; }
-    .badge { padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
-    .badge-success { background: #e8f5e9; color: #2e7d32; }
-    .badge-secondary { background: #f5f5f5; color: #757575; }
-    :host ::ng-deep .mat-form-field { width: 100%; }
-    :host ::ng-deep .mat-column-acciones { width: 140px; text-align: right; }
-    :host ::ng-deep .mat-column-color { width: 60px; text-align: center; }
-    :host ::ng-deep .mat-tab-header { background: #f5f5f5; }
-    :host ::ng-deep .dark .mat-tab-header { background: #1e1e1e; }
-  `]
+    styles: []
 })
 export class ProcessListComponent implements OnInit {
     private service = inject(ProcessService);
@@ -149,14 +132,17 @@ export class ProcessListComponent implements OnInit {
     pageSize = signal(25);
     currentPage = signal(0);
 
-    filter = signal<ProcesoFilterDTO>({
+    filter: ProcesoFilterDTO = {
         estado: 'A',
         nombre: '',
         codigo: '',
         objetivo: '',
         paginacionRegistroInicial: 0,
-        paginacionRegistroFinal: 25
-    });
+        paginacionRegistroFinal: 25,
+        filtroParametro: '',
+        llaveTabla: '',
+        securityToken: ''
+    };
 
     displayedColumns = ['codigo', 'nombre', 'descripcion', 'consecutivo', 'color', 'objetivo', 'estado', 'acciones'];
 
@@ -174,7 +160,7 @@ export class ProcessListComponent implements OnInit {
 
     loadData(): void {
         this.loading.set(true);
-        const f = this.filter();
+        const f = this.filter;
         f.paginacionRegistroInicial = this.currentPage() * this.pageSize();
         f.paginacionRegistroFinal = f.paginacionRegistroInicial + this.pageSize();
 
@@ -228,7 +214,7 @@ export class ProcessListComponent implements OnInit {
             this.service.getTransitions(node.proceso.llaveTabla).subscribe({
                 next: (transitions) => {
                     const children = transitions.map(t => ({
-                        proceso: { ...t, nombre: `${t.nombre} (${t.estadoPartidaNombre} → ${t.estadoLlegadaNombre})` } as ProcesoDTO,
+                        proceso: { ...t, nombre: `${t.nombre} (${t.estadoPartidaNombre} → ${t.estadoLlegadaNombre})` } as unknown as ProcesoDTO,
                         children: [],
                         level: node.level + 1,
                         expanded: false,

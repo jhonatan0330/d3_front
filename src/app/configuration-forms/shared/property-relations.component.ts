@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { PropertyService } from './property.service';
@@ -11,7 +10,7 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-property-relations',
     standalone: true,
-    imports: [CommonModule, MatIconModule, MatButtonModule, MatDialogModule, RelationFormComponent],
+    imports: [CommonModule, MatIconModule, MatDialogModule],
     template: `
     <div class="space-y-4">
       <div class="flex justify-between items-center">

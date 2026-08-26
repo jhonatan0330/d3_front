@@ -2,15 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTabsModule } from '@angular/material/tabs';
 import { MensajeDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { AttachmentViewerComponent } from '../shared/attachment-viewer.component';
 
 @Component({
     selector: 'app-message-detail',
     standalone: true,
-    imports: [CommonModule, MatDialogModule, MatIconModule, MatButtonModule, MatTabsModule, AttachmentViewerComponent],
+    imports: [CommonModule, MatDialogModule, MatIconModule, AttachmentViewerComponent],
     template: `
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
       <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">

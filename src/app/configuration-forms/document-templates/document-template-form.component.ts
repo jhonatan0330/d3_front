@@ -2,13 +2,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
 import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { DocumentTemplateService } from './document-template.service';
 import { PropertyFieldComponent } from '../shared/property-field.component';
@@ -19,7 +14,7 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-document-template-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatTabsModule, MatIconModule, MatTableModule, PropertyFieldComponent, DocumentTemplateFieldListComponent, DocumentTemplateReportListComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatIconModule, PropertyFieldComponent, DocumentTemplateFieldListComponent, DocumentTemplateReportListComponent],
     template: `
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg max-w-5xl w-full max-h-[95vh] overflow-hidden flex flex-col">
       <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
@@ -79,7 +74,7 @@ import Swal from 'sweetalert2';
           </mat-tab>
 
           <!-- Tab Campos -->
-          <mat-tab label="Campos ({{ template.caracteristicas?.length || 0 }})">
+          <mat-tab label="Campos ({{ template.caracteristicas.length || 0 }})">
             <div class="p-4 h-full">
               <app-document-template-field-list
                 [templateKey]="template.llaveTabla"
@@ -90,7 +85,7 @@ import Swal from 'sweetalert2';
           </mat-tab>
 
           <!-- Tab Reportes -->
-          <mat-tab label="Reportes ({{ template.reportes?.length || 0 }})">
+          <mat-tab label="Reportes ({{ template.reportes.length || 0 }})">
             <div class="p-4 h-full">
               <app-document-template-report-list
                 [templateKey]="template.llaveTabla"
@@ -107,18 +102,7 @@ import Swal from 'sweetalert2';
       </form>
     </div>
   `,
-    styles: [`
-    .btn-flat { padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 500; border: 1px solid #e0e0e0; background: white; color: #333; }
-    .btn-flat:hover { background: #f5f5f5; }
-    .btn-flat-primary { padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 500; background: #3f51b5; color: white; border: none; }
-    .btn-flat-primary:hover:not(:disabled) { background: #303f9f; }
-    .btn-flat-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; background: transparent; color: #666; cursor: pointer; }
-    .btn-icon:hover { background: #f5f5f5; color: #333; }
-    :host ::ng-deep .mat-form-field { width: 100%; }
-    :host ::ng-deep .mat-tab-body-content { height: calc(100% - 48px); }
-    :host ::ng-deep .mat-tab-group { height: calc(100% - 80px); }
-  `]
+    styles: []
 })
 export class DocumentTemplateFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<DocumentTemplateFormComponent>>(MatDialogRef);

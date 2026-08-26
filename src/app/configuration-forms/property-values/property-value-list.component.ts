@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO, BasicFilterDTO } from 'app/shared/shared.domain';
 import { PropertyValueService } from './property-value.service';
 import { PropertyValueFormComponent } from './property-value-form.component';
 import Swal from 'sweetalert2';
@@ -22,7 +21,6 @@ import Swal from 'sweetalert2';
         FormsModule,
         MatDialogModule,
         MatIconModule,
-        MatButtonModule,
         MatTableModule,
         MatPaginatorModule,
         MatInputModule,
@@ -74,40 +72,40 @@ import Swal from 'sweetalert2';
       <!-- Tabla -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         @if (loading()) {
-          <div class="flex justify-center py-12"><mat-spinner diameter="40"></mat-spinner></div>
+          <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div>
         } @else {
           <div class="overflow-x-auto">
             <table mat-table [dataSource]="data()" class="w-full">
               <ng-container matColumnDef="codigo">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Código</th>
-                <td mat-cell class="px-4 py-3 font-mono text-sm">{{ element.codigo }}</td>
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Código</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm">{{ element.codigo }}</td>
               </ng-container>
 
               <ng-container matColumnDef="nombre">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th>
-                <td mat-cell class="px-4 py-3">{{ element.nombre }}</td>
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.nombre }}</td>
               </ng-container>
 
               <ng-container matColumnDef="origen">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Origen</th>
-                <td mat-cell class="px-4 py-3">
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Origen</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3">
                   <span class="badge" [class]="getOrigenBadge(element.origen)">{{ getOrigenLabel(element.origen) }}</span>
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="origenCategoria">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Categoría</th>
-                <td mat-cell class="px-4 py-3 text-sm">{{ element.origenCategoria }}</td>
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Categoría</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm">{{ element.origenCategoria }}</td>
               </ng-container>
 
               <ng-container matColumnDef="grupo">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Grupo</th>
-                <td mat-cell class="px-4 py-3 text-sm">{{ element.grupo }}</td>
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Grupo</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm">{{ element.grupo }}</td>
               </ng-container>
 
               <ng-container matColumnDef="flags">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Flags</th>
-                <td mat-cell class="px-4 py-3">
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Flags</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3">
                   <div class="flex flex-wrap gap-1">
                     @if (element.pideRol) { <span class="badge badge-info text-xs">Rol</span> }
                     @if (element.pideUsuario) { <span class="badge badge-info text-xs">Usuario</span> }
@@ -121,8 +119,8 @@ import Swal from 'sweetalert2';
               </ng-container>
 
               <ng-container matColumnDef="estado">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
-                <td mat-cell class="px-4 py-3">
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3">
                   <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">
                     {{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}
                   </span>
@@ -130,8 +128,8 @@ import Swal from 'sweetalert2';
               </ng-container>
 
               <ng-container matColumnDef="acciones">
-                <th mat-header-cell class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th>
-                <td mat-cell class="px-4 py-3">
+                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th>
+                <td mat-cell *matCellDef="let element" class="px-4 py-3">
                   <div class="flex items-center justify-end gap-1">
                     <button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button>
                     <button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button>
@@ -153,26 +151,7 @@ import Swal from 'sweetalert2';
       </div>
     </div>
   `,
-    styles: [`
-    .btn-flat-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 500; background: #3f51b5; color: white; border: none; }
-    .btn-flat-primary:hover { background: #303f9f; }
-    .btn-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; background: transparent; color: #666; cursor: pointer; }
-    .btn-icon:hover { background: #f5f5f5; color: #333; }
-    .btn-flat-accent { background: #f44336; color: white; }
-    .btn-flat-accent:hover { background: #d32f2f; }
-    .badge { padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
-    .badge-success { background: #e8f5e9; color: #2e7d32; }
-    .badge-secondary { background: #f5f5f5; color: #757575; }
-    .badge-info { background: #e3f2fd; color: #1565c0; }
-    .badge-warning { background: #fff3e0; color: #ef6c00; }
-    .badge-error { background: #fce4ec; color: #c62828; }
-    .badge-origen-c { background: #e8eaf6; color: #283593; }
-    .badge-origen-l { background: #e0f2f1; color: #00695c; }
-    .badge-origen-p { background: #f3e5f5; color: #6a1b9a; }
-    .badge-origen-d { background: #fff8e1; color: #f57f17; }
-    :host ::ng-deep .mat-form-field { width: 100%; }
-    :host ::ng-deep .mat-column-acciones { width: 100px; text-align: right; }
-  `]
+    styles: []
 })
 export class PropertyValueListComponent implements OnInit {
     private service = inject(PropertyValueService);
@@ -184,7 +163,7 @@ export class PropertyValueListComponent implements OnInit {
     pageSize = signal(25);
     currentPage = signal(0);
 
-    filter = signal<PropiedadValorDefinidoFilterDTO>({
+    filter: PropiedadValorDefinidoFilterDTO = {
         estado: 'A',
         origen: '',
         origenCategoria: '',
@@ -192,8 +171,11 @@ export class PropertyValueListComponent implements OnInit {
         nombre: '',
         grupo: '',
         paginacionRegistroInicial: 0,
-        paginacionRegistroFinal: 25
-    });
+        paginacionRegistroFinal: 25,
+        filtroParametro: '',
+        llaveTabla: '',
+        securityToken: ''
+    };
 
     displayedColumns = ['codigo', 'nombre', 'origen', 'origenCategoria', 'grupo', 'flags', 'estado', 'acciones'];
 
@@ -201,7 +183,7 @@ export class PropertyValueListComponent implements OnInit {
 
     loadData(): void {
         this.loading.set(true);
-        const f = this.filter();
+        const f = this.filter;
         f.paginacionRegistroInicial = this.currentPage() * this.pageSize();
         f.paginacionRegistroFinal = f.paginacionRegistroInicial + this.pageSize();
 

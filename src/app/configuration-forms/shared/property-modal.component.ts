@@ -4,11 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { PropiedadCampoDTO, PropiedadValorDefinidoDTO, RelacionInternaDTO, RelacionInternaFilterDTO, UsuarioDTO, RolAccesoFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PropiedadCampoDTO, PropiedadValorDefinidoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/shared/shared.domain';
+import { UsuarioDTO, RolAccesoFilterDTO } from 'app/authentication/authentication.domain';
 import { PropertyService } from './property.service';
 import { PropertyRelationsComponent } from './property-relations.component';
 import Swal from 'sweetalert2';
@@ -29,10 +27,7 @@ interface ModalData {
         MatDialogModule,
         MatIconModule,
         MatSelectModule,
-        MatInputModule,
-        MatButtonModule,
         MatFormFieldModule,
-        MatCheckboxModule,
         PropertyRelationsComponent
     ],
     template: `
@@ -278,11 +273,13 @@ export class PropertyModalComponent implements OnInit {
         });
     }
 
-    onUsuarioSelected(usuario: UsuarioDTO): void {
+    onUsuarioSelected(usuario: UsuarioDTO | Event): void {
+        if (usuario instanceof Event) return;
         this.propiedad.usuario = usuario.llaveTabla;
     }
 
-    onUsuarioExcluyenteSelected(usuario: UsuarioDTO): void {
+    onUsuarioExcluyenteSelected(usuario: UsuarioDTO | Event): void {
+        if (usuario instanceof Event) return;
         this.propiedad.usuarioExcluyente = usuario.llaveTabla;
     }
 

@@ -70,7 +70,6 @@ export class WebServiceConfigService {
         const payload = {
             estado: filter?.estado || 'A',
             webService: filter?.webService || '',
-            estado: filter?.estado || '',
             fechaDesde: filter?.fechaDesde,
             fechaHasta: filter?.fechaHasta,
             paginacionRegistroInicial: filter?.paginacionRegistroInicial || 0,

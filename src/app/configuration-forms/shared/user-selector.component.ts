@@ -1,16 +1,14 @@
 import { Component, EventEmitter, Input, Output, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { UsuarioDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { PropertyService } from './property.service';
 
 @Component({
     selector: 'app-user-selector',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatIconModule],
+    imports: [CommonModule, FormsModule, MatIconModule],
     template: `
     <div class="relative">
       <label class="block text-sm font-semibold mb-1">{{ label }}</label>

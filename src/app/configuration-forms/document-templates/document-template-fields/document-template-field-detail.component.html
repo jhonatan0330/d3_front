@@ -1,0 +1,53 @@
+<div class="w-full h-full bg-gray-100 dark:bg-gray-900 p-4 sm:p-6 flex flex-col text-gray-900 dark:text-gray-100">
+  <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-2">
+      <button class="ml-3 px-3 py-1 rounded btn-icon" (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
+      <div class="text-xl font-bold">{{ field.nombre || 'Campo' }}</div>
+    </div>
+    @if (field.imagen) {
+      <img [src]="field.imagen" alt="Imagen del campo"
+        class="h-10 object-cover rounded-lg" />
+    }
+  </div>
+
+  <ng-template #loadingTpl let-msg>
+    <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4 animate-pulse">{{ msg }}</div>
+  </ng-template>
+
+  <ng-template #emptyTpl let-msg>
+    <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4">{{ msg }}</div>
+  </ng-template>
+
+  <div class="grid grid-cols-1 gap-6 flex-1 h-full">
+    <div class="flex flex-col h-full min-h-[300px]">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow flex-1 p-2 overflow-y-auto">
+        @if (!isLoading) {
+          @if (propiedadesCampo.length > 0) {
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 gap-3">
+                @for (item of propiedadesCampo; track item; let i = $index) {
+                  <div class="flex border border-gray-200 rounded-lg p-2 bg-gray-50 transition relative cursor-move"
+                    (click)="editarPropiedad(item)">
+                    <div class="flex-1 mt-2">
+                      {{ item.nombre }}
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <ng-container *ngTemplateOutlet="emptyTpl; context: { $implicit: 'No hay propiedades disponibles' }"></ng-container>
+          }
+        } @else {
+          <ng-container
+          *ngTemplateOutlet="loadingTpl; context: { $implicit: 'Cargando propiedades...' }"></ng-container>
+        }
+
+      </div>
+    </div>
+  </div>
+</div>
