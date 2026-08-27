@@ -35,40 +35,6 @@ export class NavigationService {
                 link : '/main'
             }];
 
-        // CONFIGURACIÓN
-        const configNavItem: FuseNavigationItem[] = [
-            {
-                id: 'config.main',
-                title: 'Configuración',
-                type: 'basic',
-                icon: 'heroicons_outline:cog-6-tooth',
-                link: '/config'
-            }
-        ];
-
-        if (configNavItem && configNavItem.length !== 0) {
-            const configItemLocal: FuseNavigationItem = {
-                id: 'config',
-                title: 'Configuración',
-                type: 'group',
-                icon: 'heroicons_outline:cog-6-tooth',
-                children: configNavItem
-            };
-            const configItemCompact: FuseNavigationItem = {
-                id: 'config',
-                title: 'Configuración',
-                type: 'aside',
-                icon: 'heroicons_outline:cog-6-tooth',
-                children: configNavItem
-            };
-            localNavigation.push(configItemLocal);
-            compactNavigation.push(configItemCompact);
-        }
-
-        // PROCESOS (existentes de Flex)
-        const processNavItem: FuseNavigationItem[] = [];
-        // Note: Process loading would need to be injected via service
-
         const navigation = {
             default: [...localNavigation],
             compact: [...compactNavigation],

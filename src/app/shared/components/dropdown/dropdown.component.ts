@@ -5,7 +5,7 @@ import { Component, signal, HostListener, ChangeDetectionStrategy } from '@angul
     exportAs: 'appDropdown',
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-        <div class="relative inline-block">
+        <div class="relative inline-block w-full">
             <div (click)="toggle($event)">
                 <ng-content select="[trigger]"></ng-content>
             </div>
