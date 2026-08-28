@@ -4,8 +4,7 @@ import {
 } from '@angular/core';
 
 import { MatIconModule } from '@angular/material/icon';
-import { AssistantDialogComponent } from '../assistant-dialog/assistant-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
+import { AssistantService } from '../assistant.service';
 
 @Component({
     selector: 'app-assistant-button',
@@ -17,20 +16,9 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class AssistantButtonComponent  {
 
-    private readonly dialog = inject(MatDialog);
-
+    readonly assistantService = inject(AssistantService);
 
     onAssistantClick(): void {
-
-        this.dialog.open(AssistantDialogComponent, {
-        width: '600px',
-        maxWidth: '95vw',
-        height: '700px',
-        maxHeight: '90vh',
-        disableClose: true,
-        panelClass: 'assistant-dialog-panel',
-    });
+        this.assistantService.togglePanel();
     }
-
-
 }

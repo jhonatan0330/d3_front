@@ -15,7 +15,35 @@ export class AssistantService {
     private readonly utilsService = inject(UtilsService);
     private router = inject(Router);
 
-    isOpenDialog = signal<boolean>(true);
+    isOpenPanel = signal<boolean>(false);
+    private triggerElement: HTMLElement | null = null;
+
+    togglePanel(): void {
+        if (this.isOpenPanel()) {
+            this.closePanel();
+        } else {
+            this.openPanel();
+        }
+    }
+
+    openPanel(): void {
+        this.triggerElement = this.getActiveElement();
+        this.isOpenPanel.set(true);
+    }
+
+    closePanel(): void {
+        this.isOpenPanel.set(false);
+        const trigger = this.triggerElement;
+        this.triggerElement = null;
+        if (trigger) {
+            trigger.focus();
+        }
+    }
+
+    private getActiveElement(): HTMLElement | null {
+        const el = document.activeElement as HTMLElement | null;
+        return el && typeof el.focus === 'function' ? el : null;
+    }
 
     readonly mensajes = signal<AssistantMessage[]>([
         {

@@ -3,6 +3,9 @@
     <button
         class="assistant-button btn-icon"
         type="button"
+        [attr.tabindex]="assistantService.isOpenPanel() ? -1 : 0"
+        [attr.aria-hidden]="assistantService.isOpenPanel() ? 'true' : null"
+        aria-label="Abrir asistente"
         (click)="onAssistantClick()">
 
         <img

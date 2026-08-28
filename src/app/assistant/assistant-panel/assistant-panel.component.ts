@@ -4,27 +4,26 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialogRef } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AssistantMessage, AssistantState, DocumentSearchResult, TemplateSearchResult } from '../assistant.models';
-import { AssistantService, } from '../assistant.service';
+import { AssistantService } from '../assistant.service';
 import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
 import { LoginService } from 'app/authentication/login.service';
 
 
 @Component({
-    selector: 'app-assistant-dialog',
+    selector: 'app-assistant-panel',
     standalone: true,
-    imports: [FormsModule,MatIconModule,MatFormFieldModule,MatInputModule,RouterModule],
-    templateUrl: './assistant-dialog.component.html',
+    imports: [FormsModule, MatIconModule, MatFormFieldModule, MatInputModule, RouterModule],
+    templateUrl: './assistant-panel.component.html',
+    styleUrl: './assistant-panel.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AssistantDialogComponent implements OnInit, AfterViewInit {
+export class AssistantPanelComponent implements OnInit, AfterViewInit {
     isDarkMode = false;
     @ViewChild('messagesContainer') private messagesContainer!: ElementRef<HTMLDivElement>;
     @ViewChild('messageInput', { read: MatInput }) private messageInput!: MatInput;
-    private readonly dialogRef = inject(MatDialogRef<AssistantDialogComponent>);
     private readonly assistantService = inject(AssistantService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly jwtAuth = inject(LoginService);
@@ -42,7 +41,6 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
     };
 
     ngOnInit(): void {
-        this.assistantService.isOpenDialog.set(false);
         this.isDarkMode = document.body.classList.contains('dark');
         this.imagenUsuario.set(this.jwtAuth.user()?.imagen ?? '');
     }
@@ -91,7 +89,7 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
                 next: resultado => {
                     this.estado.set(resultado.state);
                     this.agregarMensaje(resultado.message);
-                    if (resultado.close) {  // ← ADD
+                    if (resultado.close) {
                         this.cerrar();
                     }
                 },
@@ -159,13 +157,13 @@ export class AssistantDialogComponent implements OnInit, AfterViewInit {
     }
 
     cerrar(): void {
-        this.assistantService.isOpenDialog.set(true);
-        this.dialogRef.close();
+        this.assistantService.closePanel();
     }
 
     @HostListener('document:keydown', ['$event'])
     onKeydown(event: KeyboardEvent): void {
         if (event.key === 'Escape') {
+            event.preventDefault();
             this.cerrar();
         }
     }

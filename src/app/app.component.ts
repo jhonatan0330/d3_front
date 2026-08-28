@@ -4,23 +4,21 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LoginService } from './authentication/login.service';
 import { AssistantButtonComponent } from './assistant/assistant-button/assistant-button.component';
+import { AssistantPanelComponent } from './assistant/assistant-panel/assistant-panel.component';
 import { AssistantService } from './assistant/assistant.service';
-import { AssistantDialogComponent } from './assistant/assistant-dialog/assistant-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterOutlet, AssistantButtonComponent]
+    imports: [RouterOutlet, AssistantButtonComponent, AssistantPanelComponent]
 })
 export class AppComponent implements OnInit {
   title = inject(Title);
   private router = inject(Router);
   private jwtAut = inject(LoginService);
   public assistantService = inject(AssistantService);
-  private dialog = inject(MatDialog);
 
 
   ngOnInit() {
@@ -49,16 +47,7 @@ export class AppComponent implements OnInit {
   onKeydown(event: KeyboardEvent): void {
     if (event.key === 'F9') {
       event.preventDefault();
-      if (this.assistantService.isOpenDialog()) {
-        this.dialog.open(AssistantDialogComponent, {
-          width: '600px',
-          maxWidth: '95vw',
-          height: '700px',
-          maxHeight: '90vh',
-          disableClose: true,
-          panelClass: 'assistant-dialog-panel',
-        });
-      }
+      this.assistantService.togglePanel();
     }
   }
 }

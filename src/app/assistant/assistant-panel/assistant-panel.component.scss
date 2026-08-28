@@ -1,0 +1,12 @@
+.assistant-panel {
+    animation: assistant-panel-in .25s ease-out;
+}
+
+@keyframes assistant-panel-in {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
