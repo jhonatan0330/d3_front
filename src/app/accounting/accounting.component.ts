@@ -8,7 +8,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow } from '@angular/material/table';
 import Swal from 'sweetalert2';
-import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { UtilsService } from 'app/document/service/utils.service';
 import { LoginService } from 'app/authentication/login.service';
 import { Router } from '@angular/router';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';

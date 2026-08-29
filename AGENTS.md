@@ -1,4 +1,4 @@
-# AGENTS.md
+﻿# AGENTS.md
 
 Guidance for AI agents and developers working in this repository.
 
@@ -40,7 +40,8 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 - `src/main.ts` — entry, `bootstrapApplication` con `provideZonelessChangeDetection()` (zoneless).
 - `src/app/app.routing.ts` — all routes. Admin section guarded by `AuthGuard`; lazy-loaded modules: `authorization` (Profile), `cruds`, `tasks`, `massive`, `accounting`, `recover-password`, `new-password`. (`persons` currently eager — see PlanMejoras.md limpieza).
 - `src/@fuse/` — FuseAdmin template (keep as-is during migration). Contains `FuseModule`, servicios (config, loading, media-watcher, platform), y los style entry points (`tailwind.scss`, `themes.scss`, `main.scss`). La navegación de Fuse fue reemplazada: **todos los layouts usan `mat-sidenav` + `simple-nav`** (`src/app/layout/common/simple-nav/`); de `@fuse/components/navigation` solo queda `navigation.types.ts` (tipo `FuseNavigationItem`).
-- `src/app/modules/full/neuron/` — **critical, complex** dynamic-forms engine (18 dynamic control types under `form/controls/`: archivo, base, binario, configuracion, croquis, detalle, disponibilidad, fecha, gps, gps-map, informative, numero, proceso, product, producto-lista, seccion, texto, vinculo). Treat as high-risk; migrate last and with care.
+- `src/app/configuration/` — **Formularios de Administración** migrados de Flex a `/api/config/` (ver `PLAN_MIGRACION_CONFIGURACION.md`). 12 módulos bajo `configuration-forms/` (web-services, messages, message-templates, document-templates, auto-tasks, processes, organizations, consecutives, servers, property-values, properties) + base compartida en `shared/`. Accedidos vía ruta lazy `/config` cuyo contenedor es `ConfigComponent` (`configuration-forms/config.component.ts`, selector `app-config`) con navegación por pestañas.
+- `src/app/document/` — **critical, complex** dynamic-forms engine (18 dynamic control types under `form/controls/`: archivo, base, binario, configuracion, croquis, detalle, disponibilidad, fecha, gps, gps-map, informative, numero, proceso, product, producto-lista, seccion, texto, vinculo). Treat as high-risk; migrate last and with care.
 - Other domains: `accounting`, `authentication`, `authorization`, `configuration-forms`, `cruds`, `document-transition`, `layout`, `massive`, `notification`, `persons`, `shared`, `tasks`.
 
 ### Conventions
@@ -66,6 +67,20 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 - Third-party risk packages: `ngx-editor` (unmaintained, `@bobbyquantum/ngx-editor@^22.0.1` is latest), `ng-apexcharts`/`apexcharts` (needs major bump). `@magloft/material-carousel` — **already removed** from `package.json`. Do not bump risk packages outside the plan.
 - The `gps` control (`neuron/form/controls/gps/`) — **still active**, 2 files. Not removed (correction: do not remove unless asked, it's live code).
 - Recently removed from the codebase (do not recreate unless asked): several `@fuse` sub-features (drawer, fullscreen, animations, `scroll-reset` directive, `find-by-key` pipe, navigation components, `scrollbar` directive, `utils` service).
+- `flex.service.ts` (en `src/app/configuration/`) — **código muerto**: ya no es importado por ningún componente y aún apunta a endpoints `/flex/`. Debe eliminarse al completar FASE 4.5 del `PLAN_MIGRACION_CONFIGURACION.md`.
+
+## Configuration Forms Migration (Flex → /api/config/)
+
+Ver `PLAN_MIGRACION_CONFIGURACION.md` (fuente de verdad de esta migración). Estado resumido:
+
+- **FASES 0-3 — COMPLETADAS**: base compartida en `configuration-forms/shared/` (PropertyService, PropertyField, PropertyModal, PropertyRelations, RelationForm, UserSelector, AttachmentViewer, DocumentTemplateService) + 12 módulos feature (web-services, messages, message-templates, document-templates, auto-tasks, processes, organizations, consecutives, servers, property-values, properties). `flex/` fue renombrado a `document-templates/` y sus componentes reemplazados por `document-template-*` (FlexComponent→DocumentTemplateListComponent, FieldComponent→DocumentTemplateFieldDetailComponent, AddFieldComponent→DocumentTemplateFieldFormComponent, AddPropertyComponent→shared/PropertyModalComponent).
+- **FASE 4 — EN PROGRESO**:
+  - 4.1 Rutas lazy bajo `/config` ya registradas en `app.routing.ts` ✅.
+  - 4.2 Navegación: **no** se usó un grupo "Configuración" en el sidebar; se implementó como componente con pestañas `ConfigComponent` (`configuration-forms/config.component.ts`, selector `app-config`) que lista los 11 módulos. `navigation.service.ts` no fue modificado para esto.
+  - 4.3 Testing E2E manual — **pendiente**.
+  - 4.4 Borrar `FullControllerDTO.java` del backend — **pendiente** (depende del backend).
+  - 4.5 Eliminar fuga de `/flex/` — **pendiente** (`flex.service.ts` sigue presente como código muerto).
+- **Problemas conocidos FASE 4 (reportados en el plan, sin verificar)**: patrón `signal()`+`[(ngModel)]` en filtros de lista, `element` vs `row` en `*matRowDef`, imports Angular Material faltantes, rutas de imports de DTOs, e inconsistencia de tipos `PropiedadCampoDTO` (string vs number). Build y typecheck reportan 0 errores en cada fase, por lo que podrían estar resueltos.
 
 ## Material Minimization Strategy
 
@@ -94,14 +109,14 @@ Components are being migrated from Material to Tailwind CSS. The strategy is to 
 - `mat-progress-bar[mode="indeterminate"]` → animated Tailwind div
 - Pattern: `w-full h-1 bg-gray-200 rounded overflow-hidden` + inner div with `animate-pulse`
 - No external dependencies, pure CSS animation
+- **`mat-spinner` / `MatProgressSpinnerModule` fully removed** from the codebase (0 occurrences); all loading indicators use the Tailwind bar pattern above.
 
-#### Menu → Tailwind (in progress)
+#### Menu → Tailwind (completed)
 - `MatMenu` / `MatMenuTrigger` / `MatMenuItem` → custom `<app-dropdown>` + `<app-dropdown-item>`
 - Components in `src/app/shared/components/dropdown/`
 - Uses `@HostListener('document:click')` for click-outside closing
 - Signal-based state management (`isOpen`)
-- Reusable across all components
-- **Pendiente migrar**: `mat-menu` aún usado en `accounting.component.html`, `tasks/list`, `persons.component.html`, `form.component.html`, `cruds2.component.html`
+- Reusable across all components (`accounting`, `tasks`, `cruds`, `layout/user`, `dashboard`, `neuron/form`). The `mat-menu` usages previously listed as pending are gone; only a commented-out block remains in `neuron/form/controls/proceso/proceso.component.html`.
 
 ### Components to Keep (for now)
 - `MatDialog` — complex overlay, no simple Tailwind replacement
@@ -143,6 +158,8 @@ Defined in `src/styles/styles.scss`:
 | `mat-paginator` / `MatPaginatorModule` | Custom pagination (or keep temporarily) |
 | `mat-icon-button` / `mat-flat-button` / `mat-raised-button` | Tailwind `.btn-icon`, `.btn-flat`, `.btn-raised` classes |
 
+> **Desviación conocida (configuration-forms)**: Los módulos de `src/app/configuration/` (FASES 0-3 del `PLAN_MIGRACION_CONFIGURACION.md`) **NO aplicaron** esta regla de minimización. Usan `MatTableModule`, `MatPaginatorModule`, `MatSelectModule`, `MatDatepickerModule`, `MatFormFieldModule`, `MatDialogModule` y `MatTooltipModule` como patrón estándar (tablas con paginación, filtros con `mat-select`, formularios con `mat-form-field`). `app-dropdown` se usa en el resto de la app, pero no en esos módulos. La sustitución de `mat-select`→`app-dropdown` y `mat-paginator`→paginación propia queda **pendiente** para los componentes de `configuration-forms`.
+
 ### 2. Standalone Components Only
 - **No NgModules** — all components must be standalone (`standalone: true`)
 - Use `imports: []` array in `@Component` decorator
@@ -177,8 +194,7 @@ Use `src/app/shared/components/dropdown/`:
 ```
 
 ### 5. Apply to All New Configuration Forms Components
-All components under `src/app/configuration-forms/` must follow these rules:
-- Replace all `mat-select` → `app-dropdown`
-- Replace all `mat-spinner` → custom Tailwind loading bar
-- Remove `MatProgressSpinnerModule`, `MatSelectModule`, `MatMenuModule` imports
-- Keep only allowed Material components (Dialog, Tooltip, Datepicker, FormField, Input, Table)
+All components under `src/app/configuration/` must follow these rules:
+- Replace all `mat-spinner` → custom Tailwind loading bar (✅ ya hecho; `MatProgressSpinnerModule` eliminado del codebase)
+- Replace all `mat-menu` → `app-dropdown` (✅ ya hecho en toda la app)
+- **Pendiente** en `configuration-forms`: sustituir `mat-select` → `app-dropdown` y `mat-paginator` → paginación propia. Por ahora estos módulos conservan `MatSelectModule`, `MatTableModule`, `MatPaginatorModule`, `MatDatepickerModule`, `MatFormFieldModule`, `MatDialogModule`, `MatTooltipModule` como patrón estándar (ver desviación en sección 1).

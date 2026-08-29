@@ -1,5 +1,5 @@
 
-import { DocumentoPlantillaDTO } from "app/modules/full/neuron/model/sw42.domain";
+import { DocumentoPlantillaDTO } from "app/document/model/sw42.domain";
 import { BasicDTO, BasicFilterDTO, BasicParamDTO } from "app/shared/shared.domain";
 
 export class UsuarioDTO extends BasicDTO {

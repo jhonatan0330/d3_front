@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect,  inject } from '@angular/core';
-import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { TemplateService } from 'app/document/service/template.service';
+import { ApiService } from 'app/document/service/api.service';
 import { LoginService } from 'app/authentication/login.service';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { environment } from 'environments/environment';
-import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { UtilsService } from 'app/document/service/utils.service';
 import { MatIcon } from '@angular/material/icon';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';

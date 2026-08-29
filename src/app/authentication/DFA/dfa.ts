@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
+import { ApiService } from 'app/document/service/api.service';
 import { UsuarioAutenticacionDTO } from '../authentication.domain';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ParticleBackgroundDirective } from '../shared/particle-background';

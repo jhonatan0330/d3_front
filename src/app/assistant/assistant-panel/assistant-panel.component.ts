@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AssistantMessage, AssistantState, DocumentSearchResult, TemplateSearchResult } from '../assistant.models';
 import { AssistantService } from '../assistant.service';
-import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaDTO } from 'app/document/model/sw42.domain';
 import { LoginService } from 'app/authentication/login.service';
 
 

@@ -1,5 +1,5 @@
 
-import { PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from 'app/document/model/sw42.domain';
 import { PropiedadDTO } from './shared.domain';
 
 export class PlantillaHelper {

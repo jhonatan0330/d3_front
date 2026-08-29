@@ -1,8 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { ApiService } from 'app/document/service/api.service';
+import { UtilsService } from 'app/document/service/utils.service';
 
 interface Estado {
   id: string;

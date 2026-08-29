@@ -6,10 +6,10 @@ import { AccountingService } from '../accounting.service';
 import { Observable, Subscription, debounceTime, pairwise, startWith, map } from 'rxjs';
 import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, ManualDTO, VoucherLine } from '../accounting.domain';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
-import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { ReporteBaseDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { TemplateService } from 'app/document/service/template.service';
+import { ReporteBaseDTO } from 'app/document/model/sw42.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
-import { FormReportService } from 'app/modules/full/neuron/service/form-report.service';
+import { FormReportService } from 'app/document/service/form-report.service';
 
 import Swal from 'sweetalert2';
 import { MatIcon } from '@angular/material/icon';

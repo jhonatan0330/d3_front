@@ -1,11 +1,11 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, delay, switchMap } from 'rxjs';
 import {  AssistantIntent, AssistantMessage, AssistantResult, AssistantState,  DocumentSearchResult, TemplateSearchResult } from './assistant.models';
-import { TemplateService } from 'app/modules/full/neuron/service/template.service';
-import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/modules/full/neuron/model/sw42.domain';
+import { TemplateService } from 'app/document/service/template.service';
+import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { ApiService } from 'app/modules/full/neuron/service/api.service';
-import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { ApiService } from 'app/document/service/api.service';
+import { UtilsService } from 'app/document/service/utils.service';
 import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })

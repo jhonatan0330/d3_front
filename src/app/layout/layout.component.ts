@@ -3,9 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
-import { FuseConfigService } from 'app/core/config/fuse-config.service';
+import { FuseConfigService } from 'app/layout/core/config/fuse-config.service';
 import { Layout } from 'app/layout/layout.types';
-import { AppConfig } from 'app/core/config/app.config';
+import { AppConfig } from 'app/layout/core/config/app.config';
 import { LoginService } from 'app/authentication/login.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { EmptyLayoutComponent } from './layouts/empty/empty.component';

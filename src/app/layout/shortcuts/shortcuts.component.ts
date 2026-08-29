@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementR
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
-import { TemplateService } from 'app/modules/full/neuron/service/template.service';
+import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/document/model/sw42.domain';
+import { UtilsService } from 'app/document/service/utils.service';
+import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { MatIcon } from '@angular/material/icon';
 

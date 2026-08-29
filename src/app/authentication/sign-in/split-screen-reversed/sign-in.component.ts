@@ -6,8 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { OrganizacionDTO, UsuarioAutenticacionDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
-import { PedidoVentaDTO } from 'app/modules/full/neuron/model/sw42.domain';
-import { UtilsService } from 'app/modules/full/neuron/service/utils.service';
+import { PedidoVentaDTO } from 'app/document/model/sw42.domain';
+import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { environment } from 'environments/environment';
 import { MatInput } from '@angular/material/input';

@@ -1,4 +1,4 @@
-import { PedidoVentaDTO } from "app/modules/full/neuron/model/sw42.domain";
+import { PedidoVentaDTO } from "app/document/model/sw42.domain";
 import { BasicDTO, BasicFilterDTO } from "app/shared/shared.domain";
 
 export class ActividadDTO extends BasicDTO {

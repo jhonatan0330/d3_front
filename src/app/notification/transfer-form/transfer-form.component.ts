@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from "
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { DocumentoPlantillaDTO } from "app/modules/full/neuron/model/sw42.domain";
-import { TemplateService } from "app/modules/full/neuron/service/template.service";
+import { DocumentoPlantillaDTO } from "app/document/model/sw42.domain";
+import { TemplateService } from "app/document/service/template.service";
 import { NotificationsService } from 'app/notification/notification.service';
 import { PlantillaHelper } from "app/shared/plantilla-helper";
 import { NotificationCenterService } from 'app/notification/notification-center.service';
