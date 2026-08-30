@@ -60,7 +60,7 @@ export class ApiService {
         const dpFilter: DocumentoPlantillaDTO = new DocumentoPlantillaDTO();
         dpFilter.llaveTabla = plantillaId;
         return this.http.post<DocumentoPlantillaDTO>(
-            this.ls.getUrlAccess('/rest/obtenerCampos', _server),
+            this.ls.getUrlAccess('/document/api/obtenerCampos', _server),
             dpFilter
         );
     }
@@ -69,7 +69,7 @@ export class ApiService {
         documentoFiltro: PedidoVentaFilterDTO, _server: string
     ): Observable<PedidoVentaDTO> {
         return this.http.post<PedidoVentaDTO>(
-            this.ls.getUrlAccess('/rest/consultarDocumento', _server),
+            this.ls.getUrlAccess('/document/api/consultarDocumento', _server),
             documentoFiltro
         );
     }
@@ -78,17 +78,17 @@ export class ApiService {
         documentoFiltro: PedidoVentaFilterDTO, _server: string
     ): Observable<PedidoVentaDTO> {
         return this.http.post<PedidoVentaDTO>(
-            this.ls.getUrlAccess('/rest/validateBeforeNew', _server),
+            this.ls.getUrlAccess('/document/api/validateBeforeNew', _server),
             documentoFiltro
         );
     }
 
     guardarDocumento(documento: PedidoVentaDTO, _server: string, session: string): Observable<PedidoVentaDTO> {
-        return this.postDocumento('/rest/guardarDocumento', documento, _server, session);
+        return this.postDocumento('/document/api/guardarDocumento', documento, _server, session);
     }
 
     saveByMassive(documento: PedidoVentaDTO, _server: string, session: string): Observable<PedidoVentaDTO> {
-        return this.postDocumento('/rest/saveByMassive', documento, _server, session);
+        return this.postDocumento('/document/api/saveByMassive', documento, _server, session);
     }
 
     private postDocumento(endpoint: string, documento: PedidoVentaDTO, _server: string, session: string): Observable<PedidoVentaDTO> {
@@ -147,7 +147,7 @@ export class ApiService {
 
 
         return this.http.post<PedidoVentaCaracteristicaFilterDTO>(
-            this.ls.getUrlAccess('/rest/consultarDatosBase', _server),
+            this.ls.getUrlAccess('/document/api/consultarDatosBase', _server),
             filter
         );
     }
@@ -156,7 +156,7 @@ export class ApiService {
         ajuste: PedidoVentaAjusteDTO, _server: string
     ): Observable<PedidoVentaAjusteDTO> {
         return this.http.post<PedidoVentaAjusteDTO>(
-            this.ls.getUrlAccess('/rest/changeState', _server),
+            this.ls.getUrlAccess('/document/api/changeState', _server),
             ajuste
         );
     }
@@ -166,7 +166,7 @@ export class ApiService {
     }
 
     uploadFile(fileToUpload: File, _server: string): Observable<ApiErrorResponse> {
-        const endpoint = this.ls.getUrlAccess('/rest/upload', _server);
+        const endpoint = this.ls.getUrlAccess('/document/api/upload', _server);
         const formData: FormData = new FormData();
         formData.append('file', fileToUpload, fileToUpload.name);
         return this.http.post<ApiErrorResponse>(endpoint, formData);
@@ -180,7 +180,7 @@ export class ApiService {
     }
 
     getMessageInFiledProccess(property: string, value: string, _server: string = null!): Observable<IdResponse> {
-        const endpoint = this.ls.getUrlAccess('/rest/getMessageToProcessField/' + property + '/' + value, _server);
+        const endpoint = this.ls.getUrlAccess('/document/api/getMessageToProcessField/' + property + '/' + value, _server);
         return this.http.get<IdResponse>(endpoint);
     }
 

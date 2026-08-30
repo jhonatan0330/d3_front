@@ -16,21 +16,21 @@ export class PropertyService {
 
     getProperties(type: string, field: string): Observable<PropiedadDTO[]> {
         return this.http.get<PropiedadDTO[]>(
-            this.ls.getUrlAccess('/property/'+ type + '/' + field)
+            this.ls.getUrlAccess('/api/config/property/'+ type + '/' + field)
         );
     }
 
     getTypes(type: string, filter: string): Observable<PropiedadValorDefinidoDTO[]> {
         return this.http.get<PropiedadValorDefinidoDTO[]>(
-            this.ls.getUrlAccess('/property/type/'+ type + '/' + filter)
+            this.ls.getUrlAccess('/api/config/property/type/'+ type + '/' + filter)
         );
     }
 
     createProperty(property: PropiedadDTO): Observable<PropiedadDTO> {
-        return this.http.post<PropiedadDTO>(this.ls.getUrlAccess('/property/'), property);
+        return this.http.post<PropiedadDTO>(this.ls.getUrlAccess('/api/config/property/'), property);
     }
 
     getProperty(key: string): Observable<PropiedadDTO> {
-        return this.http.get<PropiedadDTO>(this.ls.getUrlAccess('/property/' + key));
+        return this.http.get<PropiedadDTO>(this.ls.getUrlAccess('/api/config/property/' + key));
     }
 }

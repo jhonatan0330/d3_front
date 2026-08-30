@@ -75,7 +75,7 @@ export class LoginService {
     }
     return this.http
       .post<UsuarioAutenticacionDTO>(
-        this.ls.getUrlAccess('/main/autenticarUsuarioAutenticacion'),
+        this.ls.getUrlAccess('/document/main/autenticarUsuarioAutenticacion'),
         autenticacion
       )
       .pipe(
@@ -141,7 +141,7 @@ export class LoginService {
     autenticacion.securityToken = tokenLocal;
     return this.http
       .post<UsuarioAutenticacionDTO>(
-        this.ls.getUrlAccess('/main/checkToken'),
+        this.ls.getUrlAccess('/document/main/checkToken'),
         autenticacion
       )
       .pipe(
@@ -201,7 +201,7 @@ export class LoginService {
     autenticacion.clave = newPwd;
     return this.http
       .post<UsuarioAutenticacionDTO>(
-        this.ls.getUrlAccess('/main/cambiarClave'),
+        this.ls.getUrlAccess('/document/main/cambiarClave'),
         autenticacion
       );
   }
@@ -214,7 +214,7 @@ export class LoginService {
     autenticacion.clave = newPwd;
     return this.http
       .post<UsuarioAutenticacionDTO>(
-        this.ls.getUrlAccess('/main/cambiarClave'),
+        this.ls.getUrlAccess('/document/main/cambiarClave'),
         autenticacion
       );
   }
@@ -223,7 +223,7 @@ export class LoginService {
   changePwdOtherSystem(autenticacion: UsuarioOrganizacionDTO) {
     return this.http
       .post<UsuarioOrganizacionDTO>(
-        this.ls.getUrlAccess('/main/cambiarClaveOtherSystem'),
+        this.ls.getUrlAccess('/document/main/cambiarClaveOtherSystem'),
         autenticacion
       );
   }
@@ -233,7 +233,7 @@ export class LoginService {
     autenticacion.usuarioDTO = new UsuarioDTO();
     autenticacion.usuarioDTO.identificacion = identificacion;
     autenticacion.usuarioDTO.correo = correo;
-    return this.http.post<UsuarioAutenticacionAutorizacionDTO>(this.ls.getUrlAccess('/main/solicitarNuevaClave'), autenticacion);
+    return this.http.post<UsuarioAutenticacionAutorizacionDTO>(this.ls.getUrlAccess('/document/main/solicitarNuevaClave'), autenticacion);
   }
 
   isLoggedIn(): boolean {
@@ -285,7 +285,7 @@ export class LoginService {
   // CU01
   obtenerPrincipalOrganizacion(): Observable<OrganizacionDTO> {
     return this.http.get<OrganizacionDTO>(
-      this.ls.getUrlAccess('/main/obtenerPrincipalOrganizacion')
+      this.ls.getUrlAccess('/document/main/obtenerPrincipalOrganizacion')
     );
   }
 
@@ -296,7 +296,7 @@ export class LoginService {
   }
 
   changePictureUser(fileToUpload: File, _server: string): Observable<UsuarioDTO> {
-    const endpoint = this.ls.getUrlAccess('/rest/changePicture', _server);
+    const endpoint = this.ls.getUrlAccess('/document/api/changePicture', _server);
     const formData: FormData = new FormData();
     formData.append('file', fileToUpload, fileToUpload.name);
     return this.http.post<UsuarioDTO>(endpoint, formData);

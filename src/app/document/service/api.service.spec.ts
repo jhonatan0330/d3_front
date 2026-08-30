@@ -68,7 +68,7 @@ describe('ApiService', () => {
       service.getMessageInFiledProccess('prop', 'val').subscribe(res => {
         expect((res as any).id).toBe('x');
       });
-      expect(getUrlAccess).toHaveBeenCalledWith('/rest/getMessageToProcessField/prop/val', null);
+      expect(getUrlAccess).toHaveBeenCalledWith('/document/api/getMessageToProcessField/prop/val', null);
     });
 
     it('searchUserByRol should GET user by role query', () => {
@@ -123,9 +123,9 @@ describe('ApiService', () => {
 
       service.obtenerCampos('t9', null).subscribe();
 
-      expect(getUrlAccess).toHaveBeenCalledWith('/rest/obtenerCampos', null);
+      expect(getUrlAccess).toHaveBeenCalledWith('/document/api/obtenerCampos', null);
       expect(httpPost).toHaveBeenCalledWith(
-        'http://srv/rest/obtenerCampos',
+        'http://srv/document/api/obtenerCampos',
         expect.objectContaining({ llaveTabla: 't9' })
       );
     });
@@ -136,8 +136,8 @@ describe('ApiService', () => {
 
       service.consultarDocumento(filtro, null).subscribe();
 
-      expect(getUrlAccess).toHaveBeenCalledWith('/rest/consultarDocumento', null);
-      expect(httpPost).toHaveBeenCalledWith('http://srv/rest/consultarDocumento', filtro);
+      expect(getUrlAccess).toHaveBeenCalledWith('/document/api/consultarDocumento', null);
+      expect(httpPost).toHaveBeenCalledWith('http://srv/document/api/consultarDocumento', filtro);
     });
 
     it('validateBeforeNew should POST filter', () => {
@@ -145,7 +145,7 @@ describe('ApiService', () => {
 
       service.validateBeforeNew({ plantilla: 't1' } as any, null).subscribe();
 
-      expect(getUrlAccess).toHaveBeenCalledWith('/rest/validateBeforeNew', null);
+      expect(getUrlAccess).toHaveBeenCalledWith('/document/api/validateBeforeNew', null);
     });
 
     it('verificarToken should POST to /user/dfa', () => {
@@ -164,8 +164,8 @@ describe('ApiService', () => {
 
       service.ajustarEstado(ajuste, null).subscribe();
 
-      expect(getUrlAccess).toHaveBeenCalledWith('/rest/changeState', null);
-      expect(httpPost).toHaveBeenCalledWith('http://srv/rest/changeState', ajuste);
+      expect(getUrlAccess).toHaveBeenCalledWith('/document/api/changeState', null);
+      expect(httpPost).toHaveBeenCalledWith('http://srv/document/api/changeState', ajuste);
     });
   });
 
@@ -176,8 +176,8 @@ describe('ApiService', () => {
 
       service.guardarDocumento(documento, null, 'sess-1').subscribe();
 
-      expect(getUrlAccess).toHaveBeenCalledWith('/rest/guardarDocumento', null);
-      expect(httpPost).toHaveBeenCalledWith('http://srv/rest/guardarDocumento', documento, {
+      expect(getUrlAccess).toHaveBeenCalledWith('/document/api/guardarDocumento', null);
+      expect(httpPost).toHaveBeenCalledWith('http://srv/document/api/guardarDocumento', documento, {
         headers: { 'non-duplicate': 'sess-1' },
       });
     });
@@ -188,8 +188,8 @@ describe('ApiService', () => {
 
       service.saveByMassive(documento, 'srv3', 'sess-2').subscribe();
 
-      expect(getUrlAccess).toHaveBeenCalledWith('/rest/saveByMassive', 'srv3');
-      expect(httpPost).toHaveBeenCalledWith('http://srv/rest/saveByMassive', documento, {
+      expect(getUrlAccess).toHaveBeenCalledWith('/document/api/saveByMassive', 'srv3');
+      expect(httpPost).toHaveBeenCalledWith('http://srv/document/api/saveByMassive', documento, {
         headers: { 'non-duplicate': 'sess-2' },
       });
     });
@@ -202,9 +202,9 @@ describe('ApiService', () => {
       const file = new File(['contenido'], 'foto.png');
       service.uploadFile(file, null).subscribe();
 
-      expect(getUrlAccess).toHaveBeenCalledWith('/rest/upload', null);
+      expect(getUrlAccess).toHaveBeenCalledWith('/document/api/upload', null);
       const [url, formData] = httpPost.mock.calls[0];
-      expect(url).toBe('http://srv/rest/upload');
+      expect(url).toBe('http://srv/document/api/upload');
       expect(formData).toBeInstanceOf(FormData);
       const sentFile: File = formData.get('file');
       expect(sentFile.name).toBe('foto.png');
@@ -260,7 +260,7 @@ describe('ApiService', () => {
         campo: 'c1',
         expedientes: 'e1',
       });
-      expect(getUrlAccess).toHaveBeenCalledWith('/rest/consultarDatosBase', null);
+      expect(getUrlAccess).toHaveBeenCalledWith('/document/api/consultarDatosBase', null);
     });
 
     it('should leave dependientes undefined when input has none', () => {

@@ -158,7 +158,7 @@ describe('LoginService', () => {
         expect(res.token).toBe('new-token');
       });
 
-      const req = httpMock.expectOne('http://api.test/main/autenticarUsuarioAutenticacion');
+      const req = httpMock.expectOne('http://api.test/document/main/autenticarUsuarioAutenticacion');
       expect(req.request.method).toBe('POST');
       req.flush(mockResponse);
     });
