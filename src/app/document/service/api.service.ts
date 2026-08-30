@@ -13,7 +13,8 @@ import {
     PedidoVentaCaracteristicaFilterDTO,
     PedidoVentaCaracteristicaDTO,
 } from '../model/sw42.domain';
-import { ApiErrorResponse, IdResponse } from '../model/sw42.utils';
+import { ApiErrorResponse } from '../model/sw42.utils';
+import { SharedIdResponse } from 'app/shared/api-types';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { UsuarioAutenticacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
@@ -179,9 +180,9 @@ export class ApiService {
         );
     }
 
-    getMessageInFiledProccess(property: string, value: string, _server: string = null!): Observable<IdResponse> {
+    getMessageInFiledProccess(property: string, value: string, _server: string = null!): Observable<SharedIdResponse> {
         const endpoint = this.ls.getUrlAccess('/document/api/getMessageToProcessField/' + property + '/' + value, _server);
-        return this.http.get<IdResponse>(endpoint);
+        return this.http.get<SharedIdResponse>(endpoint);
     }
 
 

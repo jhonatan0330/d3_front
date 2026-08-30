@@ -34,16 +34,16 @@ export const appRoutes: Route[] = [
       { path: 'main/:type/:id', loadComponent: () => import('app/layout/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'list/:type/:id', loadComponent: () => import('app/document/cruds/cruds2.component').then(m => m.Cruds2Component) },
       { path: 'list/:type/:id/:server_id', loadComponent: () => import('app/document/cruds/cruds2.component').then(m => m.Cruds2Component) },
-      { path: 'tasks', loadComponent: () => import('app/task/tasks.component').then(m => m.TasksListComponent) },
-      { path: 'massive/:template', loadComponent: () => import('app/massiveload/massive.component').then(m => m.MassiveComponent) },
-      { path: 'massive/:template/:server', loadComponent: () => import('app/massiveload/massive.component').then(m => m.MassiveComponent) },
-      { path: 'account', loadComponent: () => import('app/accounting/accounting.component').then(m => m.AccountComponent) },
-      { path: 'persons', loadComponent: () => import('app/users/persons.component').then(m => m.PersonsComponent) },
+      { path: 'tasks', loadComponent: () => import('app/task/task-view/tasks.component').then(m => m.TasksListComponent) },
+      { path: 'massive/:template', loadComponent: () => import('app/massiveload/massiveload-view/massive.component').then(m => m.MassiveComponent) },
+      { path: 'massive/:template/:server', loadComponent: () => import('app/massiveload/massiveload-view/massive.component').then(m => m.MassiveComponent) },
+      { path: 'account', loadComponent: () => import('app/accounting/accounting-view/accounting.component').then(m => m.AccountComponent) },
+      { path: 'persons', loadComponent: () => import('app/users/users-view/users.component').then(m => m.PersonsComponent) },
 
       // CONFIGURACIÓN - Tabbed layout
       {
         path: 'config',
-        loadComponent: () => import('app/configuration/config.component').then(m => m.ConfigComponent),
+        loadComponent: () => import('app/configuration/configuration-view/config.component').then(m => m.ConfigComponent),
         children: [
           { path: '', redirectTo: 'web-services', pathMatch: 'full' },
 

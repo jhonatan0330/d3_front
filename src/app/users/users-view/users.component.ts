@@ -5,7 +5,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {  Router } from '@angular/router';
-import { ContactsService } from './contact.services';
+import { ContactsService } from '../users.services';
 import {
     debounceTime,
     Observable,
@@ -27,8 +27,8 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
 
 
 @Component({
-    selector: 'PersonsComponent',
-    templateUrl: 'persons.component.html',
+    selector: 'UsersComponent',
+    templateUrl: 'users.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,AsyncPipe,I18nPluralPipe,DropdownComponent,DropdownItemComponent]
 })

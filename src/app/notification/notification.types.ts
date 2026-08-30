@@ -1,3 +1,11 @@
+/**
+ * Tipos del dominio notifications — espejo de contract.md §10
+ *
+ * ActividadDTO: { llaveTabla, documento, responsable, ... }
+ * Endpoints: GET /notification/getNotifications, POST /notification/readActivity,
+ *            POST /notification/transfer, POST /notification/userToTransfer
+ */
+
 import { PedidoVentaDTO } from "app/document/model/sw42.domain";
 import { BasicDTO, BasicFilterDTO } from "app/shared/shared.domain";
 

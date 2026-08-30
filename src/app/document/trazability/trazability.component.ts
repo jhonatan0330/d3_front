@@ -10,7 +10,7 @@ import { NotificationCenterService } from 'app/notification/notification-center.
 import { DocumentTransitionService } from "../document-transition.service";
 import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from "../document-transition.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
-import { IdResponse } from "app/document/model/sw42.utils";
+import { SharedIdResponse } from "app/shared/api-types";
 import { VoucherPrepareRequest } from "app/accounting/accounting.domain";
 import { StatesEnum } from "app/document/model/sw42.enum";
 import { CdkDrag, CdkDragHandle } from "@angular/cdk/drag-drop";
@@ -271,7 +271,7 @@ export class TrazabilityComponent implements OnInit {
         .getVoucherOfDocument(_prepare)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-          next: (value: IdResponse) => {
+          next: (value: SharedIdResponse) => {
             if (value && value.id) {
               this.utilsService.modalVoucher(value.id, null!).subscribe({ error: () => {} });
             } else {

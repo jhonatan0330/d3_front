@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { vi } from 'vitest';
-import { TasksService } from './tasks.service';
+import { TasksService } from './task.service';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { Task } from './tasks.types';
+import { Task } from './task.types';
 
 describe('TasksService', () => {
   let service: TasksService;

@@ -1,12 +1,7 @@
-export class ApiErrorResponse {
-  status: string;
-  error_code: string;
-  message: string;
-  detail: string;
-}
+import { SharedApiErrorResponse, SharedIdResponse } from 'app/shared/api-types';
 
-export class IdResponse {
-  id: string;
-  code: string;
-  comment: string;
-}
+/** @deprecated Usar SharedApiErrorResponse de shared/api-types.ts */
+export type ApiErrorResponse = SharedApiErrorResponse;
+
+/** @deprecated Usar SharedIdResponse de shared/api-types.ts */
+export type IdResponse = SharedIdResponse;

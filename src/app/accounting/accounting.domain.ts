@@ -1,3 +1,14 @@
+/**
+ * Tipos del dominio accounting — espejo de contract.md §8
+ *
+ * Voucher: { header: ManualDTO, records: VoucherLine[] }
+ * AccountDTO: { key, state, catalog, code, name, parent, ... }
+ * CatalogDTO: { key, state, name, code, initialDate, finalDate, accounts, template }
+ * ResultMapDTO: { key, state, catalog, account, timeFrame, quantity, ... }
+ * VoucherPrepareRequest: { serviceId, documentId }
+ *
+ * Endpoints: GET/POST/DELETE acc/voucher/*, GET acc/plan/*
+ */
 
 export class CatalogDTO {
 	key: string;

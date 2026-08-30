@@ -4,7 +4,7 @@ import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from './
 import { Observable } from 'rxjs';
 import { PedidoVentaCaracteristicaDTO } from 'app/document/model/sw42.domain';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { IdResponse } from 'app/document/model/sw42.utils';
+import { SharedIdResponse } from 'app/shared/api-types';
 import { VoucherPrepareRequest } from 'app/accounting/accounting.domain';
 
 @Injectable({
@@ -37,14 +37,14 @@ export class DocumentTransitionService {
     );
   }
 
-  getVoucherOfDocument(pPrepareVoucher: VoucherPrepareRequest): Observable<IdResponse> {
-    return this.http.post<IdResponse>(this.ls.getUrlAccess('/acc/voucher/document', undefined),
+  getVoucherOfDocument(pPrepareVoucher: VoucherPrepareRequest): Observable<SharedIdResponse> {
+    return this.http.post<SharedIdResponse>(this.ls.getUrlAccess('/acc/voucher/document', undefined),
       pPrepareVoucher
     );
   }
 
-  generateVoucher(pPrepareVoucher: VoucherPrepareRequest): Observable<IdResponse> {
-    return this.http.post<IdResponse>(
+  generateVoucher(pPrepareVoucher: VoucherPrepareRequest): Observable<SharedIdResponse> {
+    return this.http.post<SharedIdResponse>(
       this.ls.getUrlAccess('/acc/voucher/generate-voucher', undefined),
       pPrepareVoucher
     );

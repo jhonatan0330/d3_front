@@ -4,8 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragPreview, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { debounceTime, filter, fromEvent, tap } from 'rxjs';
-import { Task } from 'app/task/tasks.types';
-import { TasksService } from 'app/task/tasks.service';
+import { Task } from 'app/task/task.types';
+import { TasksService } from 'app/task/task.service';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { NgClass, DatePipe } from '@angular/common';
@@ -237,8 +237,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
     toggleCompleted(task: Task): void {
 
-        if (task.completed) { (task as any).completed = null }
-        else { task.completed = new Date() }
+        if (task.completed) { task.completed = null }
+        else { task.completed = new Date().toISOString() }
 
         this._tasksService.updateTask(task)
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -255,7 +255,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
 
     trackByFn(index: number, item: any): any {
-        return item.id || index;
+        return item.key || index;
     }
 
     selectTask(_task: Task) {
@@ -265,7 +265,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
 
         deleteTask(_task: Task): void {
-        this._tasksService.deleteTask(_task.llaveTabla)
+        this._tasksService.deleteTask(_task.key)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({ next: () => {
             this.closeDrawer();

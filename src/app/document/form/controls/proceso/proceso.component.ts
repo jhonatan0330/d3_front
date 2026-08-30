@@ -24,7 +24,7 @@ import Swal from 'sweetalert2';
 import { BarcodeFormat } from '@zxing/library';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { IdResponse } from '../../../model/sw42.utils';
+import { SharedIdResponse } from 'app/shared/api-types';
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
@@ -214,7 +214,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             const _pHTML = this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL);
             if (_pHTML) {
               return this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla)
-                .pipe(map((res: IdResponse) => ({ found: true as const, res })));
+                .pipe(map((res: SharedIdResponse) => ({ found: true as const, res })));
             }
           }
           return of({ found: false as const });
@@ -223,7 +223,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       )
       .subscribe((result) => {
         if (result.found) {
-          this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(result.res.comment);
+          this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(result.res.comment ?? '');
         }
         this.actualizar();
       });

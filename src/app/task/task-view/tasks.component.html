@@ -76,7 +76,7 @@
                 <div class="divide-y" cdkDropList [cdkDropListData]="tasks" (cdkDropListDropped)="dropped($event)">
                     <!-- Task -->
                     @for (task of tasks; track trackByFn($index, task); let first = $first) {
-                    <div [id]="task.llaveTabla"
+                    <div [id]="task.key"
                         class="group w-full select-none hover:bg-gray-100 dark:hover:bg-hover h-16"
                         [ngClass]="{'text-hint': task.completed}" [class.border-t]="first" cdkDrag
                         [cdkDragLockAxis]="'y'">
@@ -85,7 +85,7 @@
                         <!-- Task content -->
                         <div class="relative flex items-center h-full pl-5">
                             <!-- Selected  -->
-                            @if (selectedTask && selectedTask.id === task.id) {
+                            @if (selectedTask && selectedTask.key === task.key) {
                             <div class="z-10 absolute -top-px right-0 -bottom-px flex flex-0 w-1 bg-primary">
                             </div>
                             }
