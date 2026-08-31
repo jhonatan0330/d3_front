@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit,  ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit,  ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -8,8 +8,8 @@ import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, Man
 import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { ReporteBaseDTO } from 'app/document/model/sw42.domain';
-import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
-import { FormReportService } from 'app/document/service/form-report.service';
+import { LocalStoreService } from 'app/shared/local-store.service';
+import { FormReportService } from 'app/report/form-report.service';
 
 import Swal from 'sweetalert2';
 import { MatIcon } from '@angular/material/icon';

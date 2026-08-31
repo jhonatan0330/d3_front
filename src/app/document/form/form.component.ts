@@ -45,7 +45,7 @@ import { SlicePipe, TitleCasePipe, CurrencyPipe, DatePipe } from '@angular/commo
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 import { CopierService } from 'app/shared/copier.service';
-import { FormReportService } from 'app/document/service/form-report.service';
+import { FormReportService } from 'app/report/form-report.service';
 import { FormTransitionService } from 'app/document/service/form-transition.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 
@@ -943,7 +943,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     showReport(reporte: ReporteBaseDTO) {
-        this.reportService.openReport(reporte, this.pedido()!.llaveTabla);
+            this.reportService.openReport(reporte, this.pedido()!.llaveTabla);
     }
 
     showMassive() {
