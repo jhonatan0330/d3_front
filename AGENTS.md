@@ -19,8 +19,6 @@ npm run build:stats  # ng build --stats-json (bundle analysis)
 npm run watch        # ng build --watch --configuration development
 npm run analyze      # webpack-bundle-analyzer on dist/fuse/stats.json
 npm run lint         # ng lint (ESLint, works; currently 165 warnings / 0 errors, mostly `any` and `no-console` in `warn` level)
-npm test             # vitest run (Vitest, ver Testing abajo)
-npm run test:watch   # vitest (modo watch)
 ```
 
 Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
@@ -52,9 +50,8 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 
 ## Testing
 
-- **Vitest** (configured in Fase 5.5, primary runner): config en `vitest.config.ts` (`@analogjs/vite-plugin-angular` + aliases `app`/`environments`/`config` para resolver el `baseUrl`), setup en `src/test-setup.ts` (**zoneless**: `setupTestBed({ zoneless: true })` de `@analogjs/vitest-angular/setup-testbed`), tipos en `tsconfig.spec.json`.
-- Comandos: `npm test` (una pasada) y `npm run test:watch`.
-- 5 suites / 66 tests pass: `login.service.spec.ts`, `tasks.service.spec.ts`, `template.service.spec.ts`, `plantilla-helper.spec.ts`, `local-image.spec.ts`. Los specs quedan excluidos del build de la app. **Coverage tooling not yet installed** (`@vitest/coverage-v8` pending — see P5-1 in PlanMejoras.md).
+- **No se ejecutan tests en CI.** Ver `sdd/specs/architecture.md` §13 (Estrategia de testing y CI) — ARCH-012.
+- Verificación estándar: `npm run build` + `npx tsc -p tsconfig.app.json --noEmit`.
 - Typecheck: `npx tsc -p tsconfig.app.json --noEmit` — **0 errors** (baseline ✅).
 
 ## Migration Status & Constraints
