@@ -21,6 +21,19 @@ import { IndicatorCardComponent } from './indicator-card.component';
           </div>
         }
       </div>
+      <div
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3"
+      >
+        @for (indicador of indicadores(); track indicador.id) {
+          <indicator-card [indicador]="indicador" />
+        } @empty {
+          <div
+            class="col-span-full rounded-2xl border border-neutral-100 bg-white p-10 text-center text-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-500"
+          >
+            No hay indicadores disponibles
+          </div>
+        }
+      </div>
     </div>
   `,
 })

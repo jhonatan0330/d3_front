@@ -5,7 +5,7 @@ layout {
     max-width: 100%;
     min-width: 0;
 
-    /* Base styles for individual layouts */
+    // Base styles for individual layouts 
     > * {
         position: relative;
         display: flex;
@@ -13,8 +13,8 @@ layout {
         width: 100%;
     }
 
-    /* Base styles for components that load as a route */
-    router-outlet {
+    // Base styles for components that load as a route 
+  /*  router-outlet {
 
         + * {
             position: relative;
@@ -22,5 +22,5 @@ layout {
             flex: 1 1 auto;
             width: 100%;
         }
-    }
+    }*/
 }

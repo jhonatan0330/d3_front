@@ -9,7 +9,7 @@ import { AuthenticationService } from 'app/authentication/authentication.service
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { register } from 'swiper/element';
-import { IndicatorsCardsComponent } from './cards';
+import { IndicatorsCardsComponent } from '../../accounting/indicators-cards';
 
 register();
 

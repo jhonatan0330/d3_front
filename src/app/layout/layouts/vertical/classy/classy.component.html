@@ -1,22 +1,13 @@
-<!-- Sidenav container -->
-<div class="flex h-screen w-full overflow-hidden">
-
-    <!-- Backdrop for mobile overlay mode 
-    @if (sidenavOpened() && isScreenSmall()) {
-        <div class="fixed inset-0 bg-black/50 z-40" (click)="toggleNavigation()"></div>
-    }-->
-
+<div class="flex h-screen w-full">
     <!-- Navigation -->
     <aside class="flex flex-shrink-0 flex-col h-full bg-gray-900 transition-all duration-300 ease-in-out"
-
-        [class.w-80]="sidenavOpened()"
-        [class.w-0]="!sidenavOpened()">
+        [class.w-80]="sidenavOpened()" [class.w-0]="!sidenavOpened()">
         <div class="flex h-full flex-col overflow-hidden">
 
             <!-- App Logo -->
             <a [routerLink]="'/main'" class="flex items-center justify-center h-16 p-1" (click)="closeNavOnSmall()">
                 @if (company?.imagen) {
-                    <img src="{{ company.imagen | imageFormat }}" class="h-full" />
+                <img src="{{ company.imagen | imageFormat }}" class="h-full" />
                 }
             </a>
 
@@ -25,23 +16,26 @@
                 <h2 class="text-center text-white">{{ company?.nombre }}</h2>
                 <span class="text-center text-white/70">{{ company?.slogan }}</span>
                 <div class="flex flex-col items-center justify-center w-full">
-                    <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-white">
+                    <div
+                        class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-white">
                         {{ user?.nombre }}
                     </div>
                     <div class="relative w-24 h-24">
                         @if (user?.imagen) {
-                            <img class="w-full h-full rounded-full" [src]="user.imagen" alt="User avatar" />
+                        <img class="w-full h-full rounded-full" [src]="user.imagen" alt="User avatar" />
                         }
                         @if (!user?.imagen) {
-                            <mat-icon class="icon-size-24 text-white/70" [svgIcon]="'heroicons_outline:user-circle'">
-                            </mat-icon>
+                        <mat-icon class="icon-size-24 text-white/70" [svgIcon]="'heroicons_outline:user-circle'">
+                        </mat-icon>
                         }
                     </div>
-                    <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-white/70">
+                    <div
+                        class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-white/70">
                         <mat-icon svgIcon="heroicons_outline:identification" class="icon-size-4"></mat-icon>
                         {{ user?.identificacion }}
                     </div>
-                    <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center text-md leading-normal font-medium text-white/70">
+                    <div
+                        class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center text-md leading-normal font-medium text-white/70">
                         {{ user?.correo }}
                     </div>
                     <span class="text-xs text-white/50">{{ time() | date : "medium" }}</span>
@@ -59,48 +53,46 @@
 
     <!-- Main content -->
     <main class="flex flex-1 flex-col min-w-0 min-h-0 h-full overflow-hidden transition-all duration-300">
-        <div class="flex flex-col flex-auto w-full min-w-0 h-full">
-            <!-- Header -->
-            <div class="flex h-16 flex-shrink-0 items-center w-full  px-4 md:px-6 z-49 shadow bg-transparent">
-                <!-- Navigation toggle button -->
-                <button class="btn-icon" (click)="toggleNavigation()">
-                    <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-                </button>
-                <!-- Components -->
-                <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
-                    <!--app-search-pop-button></app-search-pop-button-->
-                    <shortcuts></shortcuts>
-                    <notifications></notifications>
-                    <user></user>
-                </div>
+        <!-- Header -->
+        <div class="flex h-16 flex-shrink-0 items-center w-full  px-4 md:px-6 z-49 shadow bg-transparent">
+            <!-- Navigation toggle button -->
+            <button class="btn-icon" (click)="toggleNavigation()">
+                <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+            </button>
+            <!-- Components -->
+            <div class="flex items-center pl-2 ml-auto space-x-0.5 sm:space-x-2">
+                <!--app-search-pop-button></app-search-pop-button-->
+                <shortcuts></shortcuts>
+                <notifications></notifications>
+                <user></user>
             </div>
+        </div>
 
-            @if (headerSection && headerSection.length !== 0) {
-                <div class="w-full">
-                    @for (iHeader of headerSection; track iHeader) {
-                        <div [innerHTML]="iHeader"></div>
-                    }
-                </div>
-            }
-
-            <!-- Content -->
-            <div class="flex flex-col flex-auto min-h-0">
-                <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
-                Otherwise, layout changes won't be registered and the view won't be updated! -->
-                @if (true) {
-                    <router-outlet></router-outlet>
-                }
-            </div>
-
-            <!-- Footer -->
-            @if (landing && landing.length !== 0) {
-                <div class="w-full">
-                    @for (iFooter of landing; track iFooter) {
-                        <div [innerHTML]="iFooter" class="w-full"></div>
-                    }
-                </div>
+        @if (headerSection && headerSection.length !== 0) {
+        <div class="w-full">
+            @for (iHeader of headerSection; track iHeader) {
+            <div [innerHTML]="iHeader"></div>
             }
         </div>
+        }
+
+        <!-- Content  flex-col flex-auto min-h-0-->
+        <div class="flex flex-1 flex-col min-h-0 overflow-y-auto">
+            <!-- *ngIf="true" hack is required here for router-outlet to work correctly.
+                Otherwise, layout changes won't be registered and the view won't be updated! -->
+            @if (true) {
+            <router-outlet></router-outlet>
+            }
+        </div>
+
+        <!-- Footer -->
+        @if (landing && landing.length !== 0) {
+        <div class="w-full">
+            @for (iFooter of landing; track iFooter) {
+            <div [innerHTML]="iFooter" class="w-full"></div>
+            }
+        </div>
+        }
     </main>
 
 </div>
