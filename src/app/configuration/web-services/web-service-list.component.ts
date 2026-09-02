@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { WebServiceDTO, WebServiceFilterDTO, WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO } from 'app/document/model/sw42.domain';
-import { WebServiceConfigService } from './web-service.service';
+import { WebServiceConfigService } from '../configuracion.api';
 import { WebServiceFormComponent } from './web-service-form.component';
 import { WebServiceExecuteDialogComponent } from './web-service-execute-dialog.component';
 import Swal from 'sweetalert2';

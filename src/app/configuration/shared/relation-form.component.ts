@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { RelacionInternaDTO } from 'app/document/model/sw42.domain';
-import { PropertyService } from './property.service';
+import { PropertyService } from '../configuracion.api';
 
 interface ModalData {
     relacion?: RelacionInternaDTO;

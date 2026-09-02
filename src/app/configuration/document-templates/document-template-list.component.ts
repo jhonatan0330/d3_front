@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { DocumentoPlantillaDTO, DocumentoPlantillaFilterDTO } from 'app/document/model/sw42.domain';
-import { DocumentTemplateService } from './document-template.service';
+import { DocumentTemplateService } from '../configuracion.api';
 import { DocumentTemplateFormComponent } from './document-template-form.component';
 import Swal from 'sweetalert2';
 
@@ -27,8 +27,7 @@ import Swal from 'sweetalert2';
 
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Nombre</mat-label><input matInput [(ngModel)]="filter.nombre" (ngModelChange)="onFilterChange()" placeholder="Filtrar por nombre" /></mat-form-field>
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Código</mat-label><input matInput [(ngModel)]="filter.codigo" (ngModelChange)="onFilterChange()" placeholder="Filtrar por código" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full sm:col-span-2"><mat-label>Nombre o Código</mat-label><input matInput [(ngModel)]="filter.filtroParametro" (ngModelChange)="onFilterInput()" placeholder="Filtrar por nombre o código" /></mat-form-field>
           <mat-form-field appearance="outline" class="w-full"><mat-label>Proceso</mat-label><input matInput [(ngModel)]="filter.proceso" (ngModelChange)="onFilterChange()" placeholder="Filtrar por proceso" /></mat-form-field>
           <mat-form-field appearance="outline" class="w-full"><mat-label>Estado</mat-label><mat-select [(ngModel)]="filter.estado" (ngModelChange)="onFilterChange()"><mat-option value="A">Activo</mat-option><mat-option value="I">Inactivo</mat-option><mat-option value="">Todos</mat-option></mat-select></mat-form-field>
         </div>
@@ -43,10 +42,6 @@ import Swal from 'sweetalert2';
               <ng-container matColumnDef="objetivo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Objetivo</th><td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm truncate max-w-xs">{{ element.objetivo }}</td></ng-container>
               <ng-container matColumnDef="consecutivo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Consecutivo</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.consecutivo }}</td></ng-container>
               <ng-container matColumnDef="proceso"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Proceso</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.proceso }}</td></ng-container>
-              <ng-container matColumnDef="color"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Color</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="w-6 h-6 rounded border" [style.background-color]="element.color"></div></td></ng-container>
-              <ng-container matColumnDef="camposCount"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Campos</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.caracteristicas?.length || 0 }}</td></ng-container>
-              <ng-container matColumnDef="reportesCount"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Reportes</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.reportes?.length || 0 }}</td></ng-container>
-              <ng-container matColumnDef="estado"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span></td></ng-container>
               <ng-container matColumnDef="acciones"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="flex items-center justify-end gap-1"><button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button><button type="button" class="btn-icon" (click)="duplicateTemplate(element)" aria-label="Duplicar" title="Duplicar" matTooltip="Duplicar"><mat-icon>content_copy</mat-icon></button><button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button></div></td></ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr><tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
@@ -68,6 +63,7 @@ export class DocumentTemplateListComponent implements OnInit {
     totalItems = signal(0);
     pageSize = signal(25);
     currentPage = signal(0);
+    private debounceTimer: any;
 
     filter: DocumentoPlantillaFilterDTO = {
         estado: 'A',
@@ -85,7 +81,7 @@ export class DocumentTemplateListComponent implements OnInit {
         securityToken: ''
     };
 
-    displayedColumns = ['codigo', 'nombre', 'objetivo', 'consecutivo', 'proceso', 'color', 'camposCount', 'reportesCount', 'estado', 'acciones'];
+    displayedColumns = ['codigo', 'nombre', 'objetivo', 'consecutivo', 'proceso', 'acciones'];
 
     ngOnInit(): void { this.loadData(); }
 
@@ -98,6 +94,7 @@ export class DocumentTemplateListComponent implements OnInit {
     }
 
     onFilterChange(): void { this.currentPage.set(0); this.loadData(); }
+    onFilterInput(): void { clearTimeout(this.debounceTimer); this.debounceTimer = setTimeout(() => { this.onFilterChange(); }, 200); }
     onPageChange(event: PageEvent): void { this.currentPage.set(event.pageIndex); this.pageSize.set(event.pageSize); this.loadData(); }
 
     openForm(item?: DocumentoPlantillaDTO): void {

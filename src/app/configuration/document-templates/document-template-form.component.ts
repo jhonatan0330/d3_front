@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO } from 'app/document/model/sw42.domain';
-import { DocumentTemplateService } from './document-template.service';
+import { DocumentTemplateService } from '../configuracion.api';
 import { PropertyFieldComponent } from '../shared/property-field.component';
 import { DocumentTemplateFieldListComponent } from './document-template-fields/document-template-field-list.component';
 import { DocumentTemplateReportListComponent } from './document-template-reports/document-template-report-list.component';

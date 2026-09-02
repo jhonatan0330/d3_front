@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { WebServiceDTO, WebServiceEjecucionDTO } from 'app/document/model/sw42.domain';
-import { WebServiceConfigService } from './web-service.service';
+import { WebServiceConfigService } from '../configuracion.api';
 import Swal from 'sweetalert2';
 
 interface ExecuteDialogData {

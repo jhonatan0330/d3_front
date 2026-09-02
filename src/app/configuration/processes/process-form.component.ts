@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { ProcesoDTO, ProcesoTransicionDTO } from 'app/document/model/sw42.domain';
-import { ProcessService } from './process.service';
+import { ProcessService } from '../configuracion.api';
 import { PropertyFieldComponent } from '../shared/property-field.component';
 import { ProcessTransitionListComponent } from './process-transitions/process-transition-list.component';
 import Swal from 'sweetalert2';

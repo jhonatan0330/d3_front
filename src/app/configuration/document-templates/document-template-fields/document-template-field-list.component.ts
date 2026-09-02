@@ -8,7 +8,7 @@ import { MatTableModule } from '@angular/material/table';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO } from 'app/document/model/sw42.domain';
 import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/document/model/sw42.enum';
-import { DocumentTemplateService } from '../document-template.service';
+import { DocumentTemplateService } from '../../configuracion.api';
 import { DocumentTemplateFieldFormComponent } from './document-template-field-form.component';
 import Swal from 'sweetalert2';
 

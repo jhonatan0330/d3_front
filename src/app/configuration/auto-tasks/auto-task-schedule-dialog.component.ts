@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ProcesoTransicionAutomaticaDTO } from 'app/document/model/sw42.domain';
-import { AutoTaskService } from './auto-task.service';
+import { AutoTaskService } from '../configuracion.api';
 import Swal from 'sweetalert2';
 
 interface ScheduleDialogData {

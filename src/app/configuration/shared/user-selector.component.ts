@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
-import { PropertyService } from './property.service';
+import { PropertyService } from '../configuracion.api';
 
 @Component({
     selector: 'app-user-selector',

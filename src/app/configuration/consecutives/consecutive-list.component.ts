@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ConsecutivoDTO, ConsecutivoFilterDTO } from 'app/document/model/sw42.domain';
-import { ConsecutiveService } from './consecutive.service';
+import { ConsecutiveService } from '../configuracion.api';
 import { ConsecutiveFormComponent } from './consecutive-form.component';
 import Swal from 'sweetalert2';
 

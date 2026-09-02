@@ -11,7 +11,7 @@ import {
 } from 'app/document/model/sw42.domain';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import Swal from 'sweetalert2';
-import { DocumentTemplateService } from '../document-template.service';
+import { DocumentTemplateService } from '../../configuracion.api';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 

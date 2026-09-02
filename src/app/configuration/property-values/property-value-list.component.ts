@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO, BasicFilterDTO } from 'app/shared/shared.domain';
-import { PropertyValueService } from './property-value.service';
+import { PropertyValueService } from '../configuracion.api';
 import { PropertyValueFormComponent } from './property-value-form.component';
 import Swal from 'sweetalert2';
 

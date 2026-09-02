@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO } from 'app/document/model/sw42.domain';
-import { AutoTaskService } from './auto-task.service';
+import { AutoTaskService } from '../configuracion.api';
 import { AutoTaskFormComponent } from './auto-task-form.component';
 import { AutoTaskScheduleDialogComponent } from './auto-task-schedule-dialog.component';
 import Swal from 'sweetalert2';

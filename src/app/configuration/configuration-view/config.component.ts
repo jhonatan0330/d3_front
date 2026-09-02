@@ -39,6 +39,5 @@ export class ConfigComponent {
     { label: 'Consecutivos',    route: '/config/consecutives' },
     { label: 'Servidores',      route: '/config/servers' },
     { label: 'Valores',         route: '/config/property-values' },
-    { label: 'Propiedades',     route: '/config/properties' },
   ];
 }

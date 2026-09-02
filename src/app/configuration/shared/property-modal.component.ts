@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PropiedadCampoDTO, PropiedadValorDefinidoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/shared/shared.domain';
 import { UsuarioDTO, RolAccesoFilterDTO } from 'app/authentication/authentication.domain';
-import { PropertyService } from './property.service';
+import { PropertyService } from '../configuracion.api';
 import { PropertyRelationsComponent } from './property-relations.component';
 import Swal from 'sweetalert2';
 

@@ -13,7 +13,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/model/sw42.domain';
-import { ProcessService } from './process.service';
+import { ProcessService } from '../configuracion.api';
 import { ProcessFormComponent } from './process-form.component';
 import Swal from 'sweetalert2';
 

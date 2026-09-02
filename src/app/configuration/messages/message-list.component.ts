@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MensajeDTO, MensajeFilterDTO } from 'app/document/model/sw42.domain';
-import { MessageService } from './message.service';
+import { MessageService } from '../configuracion.api';
 import { MessageDetailComponent } from './message-detail.component';
 import { AttachmentViewerComponent } from '../shared/attachment-viewer.component';
 import Swal from 'sweetalert2';

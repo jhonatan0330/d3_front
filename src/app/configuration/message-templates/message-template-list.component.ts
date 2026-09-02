@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MensajePlantillaCorreoDTO, MensajePlantillaCorreoFilterDTO } from 'app/document/model/sw42.domain';
-import { MessageTemplateService } from './message-template.service';
+import { MessageTemplateService } from '../configuracion.api';
 import { MessageTemplateFormComponent } from './message-template-form.component';
 import Swal from 'sweetalert2';
 
