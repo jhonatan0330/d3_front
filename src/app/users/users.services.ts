@@ -1,18 +1,14 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
+import { inject, Injectable,  signal } from '@angular/core';
 import { catchError, map, Observable, of, switchMap, tap, } from 'rxjs';
-import { LocalStoreService } from 'app/shared/local-store.service';
-import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { UsersApiService } from './users.api';
 
 @Injectable({ providedIn: 'root' })
-export class ContactsService {
-    private _httpClient = inject(HttpClient);
-    private ls = inject(LocalStoreService);
-
-    // Private
+export class UsersService {
+    
     private readonly _contact = signal<UsuarioDTO | null>(null);
     private readonly _contacts = signal<UsuarioDTO[] | null>(null);
-
+    private userApiService = inject(UsersApiService);
 
     get contact() {
         return this._contact.asReadonly();
@@ -23,26 +19,16 @@ export class ContactsService {
     }
 
     searchTags(): Observable<RolAccesoFilterDTO[]> {
-        return this._httpClient
-            .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/getRole'))
-            ;
+        return this.userApiService.getRoles();
     }
 
     searchTagsById(query: string): Observable<RolAccesoFilterDTO[]> {
-        return this._httpClient
-            .get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/user/roles/' + query))
-            ;
+        return this.userApiService.getRolesByUserId(query);         ;
     }
 
-
-    getContacts(): Observable<UsuarioDTO[]> {
-        return this._httpClient.post<UsuarioDTO[]>(
-            this.ls.getUrlAccess('/user/getUsers'),
-            { estado: 'A' }
-        ).pipe(
-            tap((contacts) => {
-                this._contacts.set(contacts);
-            })
+    getContacts() {
+        this.userApiService.getUsers({ estado: 'A' }).pipe(
+            tap((contacts) => this._contacts.set(contacts))
         );
     }
 
@@ -51,8 +37,7 @@ export class ContactsService {
     }
 
     searchContacts(query: string): Observable<UsuarioDTO[]> {
-        return this._httpClient.post<UsuarioDTO[]>(
-            this.ls.getUrlAccess('/user/getUsers'),
+        return this.userApiService.getUsers(
             { estado: 'A', identificacion: query } // Búsqueda directa por identificación
         ).pipe(
             switchMap((contacts) => {
@@ -62,10 +47,7 @@ export class ContactsService {
                     return of(contacts); // Devuelve los contactos encontrados
                 } else {
                     // Si no hay resultados, se realiza la búsqueda general
-                    return this._httpClient.post<UsuarioDTO[]>(
-                        this.ls.getUrlAccess('/user/getUsers'),
-                        { estado: 'A' } // Filtrado por estado solo
-                    ).pipe(
+                    return this.userApiService.getUsers({ estado: 'A' }).pipe(
                         map((allContacts) =>
                             allContacts.filter(c =>
                                 c.identificacion?.includes(query) ||
@@ -84,24 +66,19 @@ export class ContactsService {
     }
 
     getContactByTag(query: string): Observable<UsuarioDTO[]> {
-        return this._httpClient.post<UsuarioDTO[]>(
-            this.ls.getUrlAccess('/user/getUsers'),
-            {
-                estado: 'A',
-                rol: query,
-                filtroParametro: 'A'
-            }
-        ).pipe(
+        return this.userApiService.getUsers({
+            estado: 'A',
+            rol: query,
+            filtroParametro: 'A'
+        }).pipe(
             tap((contacts) => this._contacts.set(contacts))
         );
     }
 
     getContactById(query: string): Observable<UsuarioDTO> {
-        return this._httpClient.get<UsuarioDTO>(
-            this.ls.getUrlAccess('/user/' + query)
-        ).pipe(
+        return this.userApiService.getUserById(query)
+        .pipe(
             tap((contacts) => this._contact.set(contacts))
         );
     }
-
 }

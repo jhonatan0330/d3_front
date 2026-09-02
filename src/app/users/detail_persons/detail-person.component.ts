@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed, DestroyRef } from '@angular/core';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ContactsService } from '../users.services';
-import { PermisosDTO, RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
+import { UsersService } from '../users.services';
+import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
@@ -18,7 +18,7 @@ import { ChangePictureComponent } from '../../layout/change-picture/change-pictu
     imports: [  MatIcon,ChangePictureComponent]
 })
 export class ContactsDetailsComponent {
-    private _contactsService = inject(ContactsService);
+    private _contactsService = inject(UsersService);
     data = inject<{ key: string }>(MAT_DIALOG_DATA);
     private dialogRef = inject<MatDialogRef<ContactsDetailsComponent>>(MatDialogRef);
     jwtAuth = inject(LoginService);

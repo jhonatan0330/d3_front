@@ -4,7 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragPreview, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { debounceTime, filter, fromEvent, tap } from 'rxjs';
-import { Task } from 'app/task/task.types';
+import { Task } from 'app/task/task.domain';
 import { TasksService } from 'app/task/task.service';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon, MatIconModule } from '@angular/material/icon';

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, tap } from 'rxjs';
-import { Task, TaskRequest } from 'app/task/task.types';
+import { Task, TaskRequest } from 'app/task/task.domain';
 import { SharedIdResponse } from 'app/shared/api-types';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { LoginService } from 'app/authentication/login.service';

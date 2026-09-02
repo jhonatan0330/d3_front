@@ -2,7 +2,7 @@ import { Component, OnInit,  ChangeDetectionStrategy, inject, DestroyRef } from 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AccountingService } from '../accounting.service';
+import { AccountingService } from '../accounting.api';
 import { Observable, Subscription, debounceTime, pairwise, startWith, map } from 'rxjs';
 import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, ManualDTO, VoucherLine } from '../accounting.domain';
 import { NotificationCenterService } from 'app/notification/notification-center.service';

@@ -5,7 +5,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {  Router } from '@angular/router';
-import { ContactsService } from '../users.services';
+import { UsersService } from '../users.services';
 import {
     debounceTime,
     Observable,
@@ -34,7 +34,7 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
 })
 export class PersonsComponent implements OnInit {
     private _jwt = inject(LoginService);
-    private _contactsService = inject(ContactsService);
+    private _contactsService = inject(UsersService);
     private _router = inject(Router);
     private utilService = inject(UtilsService);
     private destroyRef = inject(DestroyRef);
