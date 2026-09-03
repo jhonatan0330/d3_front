@@ -6,7 +6,7 @@ import {
     ConsecutivoDTO, ConsecutivoFilterDTO,
     MensajeDTO, MensajeFilterDTO,
     ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO,
-    DocumentoPlantillaDTO, DocumentoPlantillaFilterDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO,
+    DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO,
     MensajePlantillaCorreoDTO, MensajePlantillaCorreoFilterDTO,
     WebServiceDTO, WebServiceFilterDTO, WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO,
     ServidorDTO, ServidorFilterDTO,
@@ -17,6 +17,7 @@ import {
     PropiedadDTO, PropiedadCampoDTO, PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO,
     RelacionInternaDTO, RelacionInternaFilterDTO,
 } from 'app/shared/shared.domain';
+import { DocumentoPlantillaFilterDTO } from './configuration.types';
 
 @Injectable({ providedIn: 'root' })
 export class ConsecutiveService {

@@ -11,10 +11,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
-import { DocumentoPlantillaDTO, DocumentoPlantillaFilterDTO, ProcesoDTO } from 'app/document/document.types';
+import { DocumentoPlantillaDTO, ProcesoDTO } from 'app/document/document.types';
 import { DocumentTemplateService, ProcessService } from '../configuracion.api';
 import { DocumentTemplateFormComponent } from './document-template-form.component';
 import Swal from 'sweetalert2';
+import { DocumentoPlantillaFilterDTO } from '../configuration.types';
 
 @Component({
     selector: 'app-document-template-list',
@@ -86,7 +87,6 @@ export class DocumentTemplateListComponent implements OnInit {
         nombre: '',
         consecutivo: '',
         imagen: '',
-        color: '',
         codigo: '',
         proceso: '',
         paginacionRegistroInicial: 0,

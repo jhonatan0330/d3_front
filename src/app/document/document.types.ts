@@ -337,15 +337,6 @@ export class PedidoVentaAjusteFilterDTO extends BasicFilterDTO {
     responsable: string;
 }
 
-export class DocumentoPlantillaFilterDTO extends BasicFilterDTO {
-    nombre: string;
-    consecutivo: string;
-    imagen: string;
-    color: string;
-    codigo: string;
-    proceso: string;
-}
-
 export class RelacionInternaFilterDTO extends BasicFilterDTO {
     propiedad: string;
     propiedadNombre: string;
