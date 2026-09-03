@@ -1,19 +1,19 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
-import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO, PedidoVentaFilterDTO, ProcesoTransicionDTO } from 'app/document/model/sw42.domain';
+import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO, PedidoVentaFilterDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import { UtilsService } from 'app/document/service/utils.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../../model/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../sw42.enum';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormComponent } from '../../form.component';
 import Swal from 'sweetalert2';
-import { ApiService } from '../../../service/api.service';
+import { ApiService } from '../../../document.api';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TitleCasePipe } from '@angular/common';
-import { FormTransitionService } from 'app/document/service/form-transition.service';
+import { FormTransitionService } from 'app/document/form/form-transition.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 
 @Component({

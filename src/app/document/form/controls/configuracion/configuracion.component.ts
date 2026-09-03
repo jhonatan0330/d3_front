@@ -5,8 +5,8 @@ import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
-} from 'app/document/model/sw42.domain';
-import { ApiService } from 'app/document/service/api.service';
+} from 'app/document/document.types';
+import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';

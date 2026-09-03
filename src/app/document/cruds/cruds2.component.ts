@@ -8,20 +8,20 @@ import {
     PedidoVentaCaracteristicaFilterDTO,
     PedidoVentaDTO,
     ReporteBaseDTO,
-} from 'app/document/model/sw42.domain';
-import { PedidoVentaFilterDTO } from 'app/document/model/sw42.domain';
-import { ApiService } from 'app/document/service/api.service';
+} from 'app/document/document.types';
+import { PedidoVentaFilterDTO } from 'app/document/document.types';
+import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormReportService } from 'app/report/form-report.service';
-import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/document/model/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/document/form/sw42.enum';
 import { SelectionModel } from '@angular/cdk/collections';
 import Swal from 'sweetalert2';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/document/form/controls/base/base.component';
-import { getComponent } from 'app/document/form-helper';
+import { getComponent } from 'app/document/form/form-helper';
 import { MatDatepickerInputEvent, MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
 import { BpmDiagramComponent, Proceso } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
 import { MatDialog } from '@angular/material/dialog';

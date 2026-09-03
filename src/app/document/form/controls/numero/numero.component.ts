@@ -1,11 +1,11 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from 'app/document/model/sw42.domain';
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/model/sw42.enum';
-import { ApiService } from 'app/document/service/api.service';
+import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from 'app/document/document.types';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
+import { ApiService } from 'app/document/document.api';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { FormulaHelper } from 'app/document/formula.helper';
+import { FormulaHelper } from 'app/document/form/formula.helper';
 import { BaseComponent } from '../base/base.component';
 import { debounceTime, distinctUntilChanged,  map, tap } from 'rxjs';
 import { PropiedadDTO } from 'app/shared/shared.domain';

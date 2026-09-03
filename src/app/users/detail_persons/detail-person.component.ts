@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { LoginService } from 'app/authentication/login.service';
 import { UtilsService } from 'app/document/service/utils.service';
-import { PedidoVentaDTO } from 'app/document/model/sw42.domain';
+import { PedidoVentaDTO } from 'app/document/document.types';
 import { MatIcon } from '@angular/material/icon';
 import { ChangePictureComponent } from '../../layout/change-picture/change-picture.component';
 

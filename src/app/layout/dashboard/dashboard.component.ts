@@ -1,7 +1,7 @@
 import { Component, effect, AfterViewInit, ChangeDetectionStrategy, DestroyRef, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { PedidoVentaDTO } from 'app/document/model/sw42.domain';
+import { PedidoVentaDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

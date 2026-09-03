@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {  PedidoVentaCaracteristicaFilterDTO } from 'app/document/model/sw42.domain';
+import {  PedidoVentaCaracteristicaFilterDTO } from 'app/document/document.types';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { BarcodeFormat } from '@zxing/library';

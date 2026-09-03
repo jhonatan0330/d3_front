@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ReporteBaseDTO } from 'app/document/model/sw42.domain';
+import { ReporteBaseDTO } from 'app/document/document.types';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';

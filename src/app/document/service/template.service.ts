@@ -6,8 +6,8 @@ import {
   DocumentoPlantillaDTO,
   RelacionInternaDTO,
   RelacionInternaFilterDTO,
-} from 'app/document/model/sw42.domain';
-import { StatesEnum } from 'app/document/model/sw42.enum';
+} from 'app/document/document.types';
+import { StatesEnum } from 'app/document/form/sw42.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';

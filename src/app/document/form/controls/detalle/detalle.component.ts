@@ -10,15 +10,15 @@ import {
   ProductoDTO,
   RelacionInternaDTO,
   RelacionInternaFilterDTO
-} from 'app/document/model/sw42.domain';
-import { ApiService } from 'app/document/service/api.service';
+} from 'app/document/document.types';
+import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
-import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../../model/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../sw42.enum';
 import { UtilsService } from '../../../service/utils.service';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';

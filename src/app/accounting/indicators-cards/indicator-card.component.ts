@@ -20,7 +20,7 @@ import {
 } from 'app/layout/dashboard/indicadores.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { TemplateService } from 'app/document/service/template.service';
-import { PedidoVentaDTO } from 'app/document/model/sw42.domain';
+import { PedidoVentaDTO } from 'app/document/document.types';
 import { PeriodFilterComponent } from './period-filter.component';
 import { IndicatorTableComponent } from './indicator-table.component';
 

@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { ProcesoTransicionAutomaticaDTO } from 'app/document/model/sw42.domain';
+import { ProcesoTransicionAutomaticaDTO } from 'app/document/document.types';
 import { AutoTaskService } from '../configuracion.api';
 import Swal from 'sweetalert2';
 

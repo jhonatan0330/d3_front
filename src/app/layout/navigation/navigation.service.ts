@@ -1,7 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Navigation } from 'app/layout/navigation/navigation.types';
 import { FuseNavigationItem } from 'app/layout/layout.types';
-import { DocumentoPlantillaDTO } from 'app/document/model/sw42.domain';
+import { DocumentoPlantillaDTO } from 'app/document/document.types';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 
 @Injectable({

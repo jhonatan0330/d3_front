@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO } from 'app/document/model/sw42.domain';
+import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO } from 'app/document/document.types';
 import { DocumentTemplateService } from '../configuracion.api';
 import { PropertyFieldComponent } from '../shared/property-field.component';
 import { DocumentTemplateFieldListComponent } from './document-template-fields/document-template-field-list.component';

@@ -11,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
-import { DocumentoPlantillaDTO, DocumentoPlantillaFilterDTO, ProcesoDTO } from 'app/document/model/sw42.domain';
+import { DocumentoPlantillaDTO, DocumentoPlantillaFilterDTO, ProcesoDTO } from 'app/document/document.types';
 import { DocumentTemplateService, ProcessService } from '../configuracion.api';
 import { DocumentTemplateFormComponent } from './document-template-form.component';
 import Swal from 'sweetalert2';

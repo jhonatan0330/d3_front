@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { DocumentoPlantillaDTO, PedidoVentaDTO, ProcesoTransicionDTO } from 'app/document/model/sw42.domain';
+import { DocumentoPlantillaDTO, PedidoVentaDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 

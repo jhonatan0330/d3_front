@@ -4,9 +4,9 @@ import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angu
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { timer } from 'rxjs';
-import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.domain';
-import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
-import { ApiService } from '../../../service/api.service';
+import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../document.types';
+import { DocumentoPlantillaCaracteristicaEnum } from '../../sw42.enum';
+import { ApiService } from '../../../document.api';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker } from '@angular/material/datepicker';

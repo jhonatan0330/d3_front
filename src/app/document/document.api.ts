@@ -12,9 +12,10 @@ import {
     RelacionInternaFilterDTO,
     PedidoVentaCaracteristicaFilterDTO,
     PedidoVentaCaracteristicaDTO,
-} from '../model/sw42.domain';
-import { ApiErrorResponse } from '../model/sw42.utils';
-import { SharedIdResponse } from 'app/shared/api-types';
+    DocumentoRelacionGestorDTO,
+    DocumentoRelacionGestorFilterDTO,
+} from './document.types';
+import { SharedApiErrorResponse, SharedIdResponse } from 'app/shared/api-types';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { UsuarioAutenticacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
@@ -166,11 +167,11 @@ export class ApiService {
         return this.http.get(imageUrl, { responseType: 'blob' });
     }
 
-    uploadFile(fileToUpload: File): Observable<ApiErrorResponse> {
+    uploadFile(fileToUpload: File): Observable<SharedApiErrorResponse> {
         const endpoint = this.ls.getUrlAccess('/document/api/upload');
         const formData: FormData = new FormData();
         formData.append('file', fileToUpload, fileToUpload.name);
-        return this.http.post<ApiErrorResponse>(endpoint, formData);
+        return this.http.post<SharedApiErrorResponse>(endpoint, formData);
     }
 
 
@@ -190,4 +191,22 @@ export class ApiService {
         return this.http
             .get<UsuarioDTO>(this.ls.getUrlAccess('/user/document/' + query));
     }
+
+    getTrace(
+    _d: DocumentoRelacionGestorFilterDTO
+  ): Observable<DocumentoRelacionGestorDTO[]> {
+    return this.http.post<DocumentoRelacionGestorDTO[]>(
+      this.ls.getUrlAccess('/template/getTrace'),
+      _d
+    );
+  }
+
+  getTraceFields(
+    _document: string, _transaction: string
+  ): Observable<PedidoVentaCaracteristicaDTO[]> {
+    return this.http.get<PedidoVentaCaracteristicaDTO[]>(
+      this.ls.getUrlAccess('/template/getTraceFields/' + _document + '/' + _transaction)
+    );
+  }
+
 }

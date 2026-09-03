@@ -4,8 +4,8 @@ import { BaseComponent } from '../base/base.component';
 import Swal from 'sweetalert2';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FullMapComponent } from './full-map/full-map.component';
-import { ApiService } from '../../../service/api.service';
-import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from '../../../model/sw42.domain';
+import { ApiService } from '../../../document.api';
+import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from '../../../document.types';
 
 @Component({
     selector: 'app-gps-map',

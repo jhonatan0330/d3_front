@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MensajeDTO } from 'app/document/model/sw42.domain';
+import { MensajeDTO } from 'app/document/document.types';
 import { AttachmentViewerComponent } from '../shared/attachment-viewer.component';
 
 @Component({

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, ElementR
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/document/model/sw42.domain';
+import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/document/document.types';
 import { UtilsService } from 'app/document/service/utils.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';

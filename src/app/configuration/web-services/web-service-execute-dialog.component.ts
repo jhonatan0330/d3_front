@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { WebServiceDTO, WebServiceEjecucionDTO } from 'app/document/model/sw42.domain';
+import { WebServiceDTO, WebServiceEjecucionDTO } from 'app/document/document.types';
 import { WebServiceConfigService } from '../configuracion.api';
 import Swal from 'sweetalert2';
 

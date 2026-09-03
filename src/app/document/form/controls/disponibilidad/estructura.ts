@@ -2,7 +2,7 @@ import {
   DetallePedidoVentaDTO,
   DocumentoPlantillaCaracteristicaDTO,
   PedidoVentaDTO,
-} from 'app/document/model/sw42.domain';
+} from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { ImageFormatPipe } from 'app/shared/local-image';

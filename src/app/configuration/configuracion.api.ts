@@ -12,7 +12,7 @@ import {
     ServidorDTO, ServidorFilterDTO,
     OrganizacionDTO, OrganizacionFilterDTO,
     ProcesoDTO, ProcesoFilterDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO,
-} from 'app/document/model/sw42.domain';
+} from 'app/document/document.types';
 import {
     PropiedadDTO, PropiedadCampoDTO, PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO,
     RelacionInternaDTO, RelacionInternaFilterDTO,

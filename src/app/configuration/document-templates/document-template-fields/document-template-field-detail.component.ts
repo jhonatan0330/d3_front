@@ -8,7 +8,7 @@ import {
     PropiedadCampoDTO,
     RelacionInternaDTO,
     propiedadCampo
-} from 'app/document/model/sw42.domain';
+} from 'app/document/document.types';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import Swal from 'sweetalert2';
 import { DocumentTemplateService } from '../../configuracion.api';

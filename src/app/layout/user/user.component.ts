@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect,  inject } from '@angular/core';
 import { TemplateService } from 'app/document/service/template.service';
-import { ApiService } from 'app/document/service/api.service';
+import { ApiService } from 'app/document/document.api';
 import { LoginService } from 'app/authentication/login.service';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { environment } from 'environments/environment';

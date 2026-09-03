@@ -6,7 +6,7 @@
  *            POST /notification/transfer, POST /notification/userToTransfer
  */
 
-import { PedidoVentaDTO } from "app/document/model/sw42.domain";
+import { PedidoVentaDTO } from "app/document/document.types";
 import { BasicDTO, BasicFilterDTO } from "app/shared/shared.domain";
 
 export class ActividadDTO extends BasicDTO {

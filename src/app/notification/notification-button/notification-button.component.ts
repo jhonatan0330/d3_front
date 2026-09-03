@@ -6,7 +6,7 @@ import { ActividadDTO } from 'app/notification/notification.types';
 import { NotificationsService } from 'app/notification/notification.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { PedidoVentaDTO } from 'app/document/model/sw42.domain';
+import { PedidoVentaDTO } from 'app/document/document.types';
 import { UtilsService } from 'app/document/service/utils.service';
 import { LoginService } from 'app/authentication/login.service';
 import { MatIcon } from '@angular/material/icon';

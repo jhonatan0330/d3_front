@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MensajeDTO, MensajeFilterDTO } from 'app/document/model/sw42.domain';
+import { MensajeDTO, MensajeFilterDTO } from 'app/document/document.types';
 import { MessageService } from '../configuracion.api';
 import { MessageDetailComponent } from './message-detail.component';
 import { AttachmentViewerComponent } from '../shared/attachment-viewer.component';

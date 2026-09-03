@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { ProcesoDTO, ProcesoTransicionDTO } from 'app/document/model/sw42.domain';
+import { ProcesoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import { ProcessService } from '../configuracion.api';
 import { PropertyFieldComponent } from '../shared/property-field.component';
 import { ProcessTransitionListComponent } from './process-transitions/process-transition-list.component';

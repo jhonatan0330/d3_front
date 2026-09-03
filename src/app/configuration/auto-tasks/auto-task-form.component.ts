@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { ProcesoTransicionAutomaticaDTO } from 'app/document/model/sw42.domain';
+import { ProcesoTransicionAutomaticaDTO } from 'app/document/document.types';
 import Swal from 'sweetalert2';
 
 @Component({

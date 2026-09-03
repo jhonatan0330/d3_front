@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
-import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../model/sw42.domain';
-import { ApiService } from '../../../service/api.service';
-import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
+import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../document.types';
+import { ApiService } from '../../../document.api';
+import { DocumentoPlantillaCaracteristicaEnum } from '../../sw42.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({

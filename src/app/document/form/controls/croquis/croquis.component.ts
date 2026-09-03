@@ -6,14 +6,14 @@ import Swal from 'sweetalert2';
 import { firstValueFrom } from 'rxjs';
 
 import { BaseComponent } from '../base/base.component';
-import { ApiService } from 'app/document/service/api.service';
-import { DocumentMessage, PedidoVentaDTO } from '../../../model/sw42.domain';
-import { ApiErrorResponse } from '../../../model/sw42.utils';
+import { ApiService } from 'app/document/document.api';
+import { PedidoVentaDTO } from '../../../document.types';
 import { MatFormField, MatLabel, MatHint } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
+import { SharedApiErrorResponse } from 'app/shared/api-types';
 
 interface RenderItem {
   exp: PedidoVentaDTO;
@@ -519,12 +519,12 @@ export class CroquisComponent extends BaseComponent
     Swal.fire('Guardado', 'Posiciones guardadas correctamente', 'success');
   }
 
-  private async uploadFile(file: File): Promise<ApiErrorResponse> {
+  private async uploadFile(file: File): Promise<SharedApiErrorResponse> {
     try {
       const resp = await firstValueFrom(this.api.uploadFile(file));
       return resp;
     } catch (error) {
-      return error as ApiErrorResponse;
+      return error as SharedApiErrorResponse;
     }
   }
 }

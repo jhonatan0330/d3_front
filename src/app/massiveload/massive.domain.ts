@@ -1,4 +1,4 @@
-import { DocumentMessage, PedidoVentaDTO } from "app/document/model/sw42.domain";
+import { DocumentMessage, PedidoVentaDTO } from "app/document/document.types";
 
 export class LoadLineDTO {
 	orderNumber: number;

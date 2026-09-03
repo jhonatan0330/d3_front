@@ -8,7 +8,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { OrganizacionDTO, OrganizacionFilterDTO } from 'app/document/model/sw42.domain';
+import { OrganizacionDTO, OrganizacionFilterDTO } from 'app/document/document.types';
 import { OrganizationService } from '../configuracion.api';
 import { OrganizationFormComponent } from './organization-form.component';
 import Swal from 'sweetalert2';

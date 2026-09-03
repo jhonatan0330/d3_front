@@ -7,7 +7,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ReporteBaseDTO, ReporteBaseFilterDTO } from 'app/document/model/sw42.domain';
+import { ReporteBaseDTO, ReporteBaseFilterDTO } from 'app/document/document.types';
 import { DocumentTemplateService } from '../../configuracion.api';
 import { DocumentTemplateReportFormComponent } from './document-template-report-form.component';
 import Swal from 'sweetalert2';

@@ -2,7 +2,7 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/document/model/sw42.domain';
+import { RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/document/document.types';
 import { PropertyService } from '../configuracion.api';
 import { RelationFormComponent } from './relation-form.component';
 import Swal from 'sweetalert2';

@@ -1,10 +1,10 @@
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/model/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
 import {
   DocumentoPlantillaCaracteristicaDTO,
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
   PedidoVentaDTO,
-} from 'app/document/model/sw42.domain';
+} from 'app/document/document.types';
 
 import { formatDate } from '@angular/common';
 

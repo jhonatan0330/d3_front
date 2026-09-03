@@ -11,7 +11,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { WebServiceDTO, WebServiceFilterDTO, WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO } from 'app/document/model/sw42.domain';
+import { WebServiceDTO, WebServiceFilterDTO, WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO } from 'app/document/document.types';
 import { WebServiceConfigService } from '../configuracion.api';
 import { WebServiceFormComponent } from './web-service-form.component';
 import { WebServiceExecuteDialogComponent } from './web-service-execute-dialog.component';

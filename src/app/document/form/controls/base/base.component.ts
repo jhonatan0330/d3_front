@@ -5,11 +5,11 @@ import {
   PedidoVentaCaracteristicaDTO,
   PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
-} from 'app/document/model/sw42.domain';
+} from 'app/document/document.types';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormComponent } from '../../form.component';
-import { DocumentoPlantillaCaracteristicaEnum } from '../../../model/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from '../../sw42.enum';
 
 export interface IDynamicControl {
   structure: DocumentoPlantillaCaracteristicaDTO;

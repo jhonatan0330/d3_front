@@ -1,12 +1,12 @@
 import { Component, ElementRef, OnInit, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/model/sw42.enum';
-import { ApiService } from 'app/document/service/api.service';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
+import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { DetallePedidoVentaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, ProductoDTO } from '../../../model/sw42.domain';
+import { DetallePedidoVentaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, ProductoDTO } from '../../../document.types';
 import { BaseComponent } from '../base/base.component';
 import { Estructura } from './estructura';
 import { Puesto } from './puesto';

@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { TemplateService } from 'app/document/service/template.service';
 import { NotificationsService } from 'app/notification/notification.service';
-import { ApiService } from 'app/document/service/api.service';
+import { ApiService } from 'app/document/document.api';
 import { OrganizacionDTO, UsuarioAutenticacionAutorizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { CarouselService } from './carousel.service';

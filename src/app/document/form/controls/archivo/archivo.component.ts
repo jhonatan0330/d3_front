@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ChangeDetectionStrategy, inject, viewChild, signal, effect, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ApiService } from 'app/document/service/api.service';
+import { ApiService } from 'app/document/document.api';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';

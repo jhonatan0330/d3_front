@@ -17,18 +17,18 @@ import {
     ProcesoEstadoDTO,
     ProcesoTransicionDTO,
     ReporteBaseDTO,
-} from 'app/document/model/sw42.domain';
+} from 'app/document/document.types';
 import {
     DocumentoPlantillaCaracteristicaEnum,
     StatesEnum,
-} from 'app/document/model/sw42.enum';
-import { ApiService } from 'app/document/service/api.service';
+} from 'app/document/form/sw42.enum';
+import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { IDynamicControl } from './controls/base/base.component';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { UtilsService } from 'app/document/service/utils.service';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { getComponent } from 'app/document/form-helper';
+import { getComponent } from 'app/document/form/form-helper';
 import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
@@ -46,7 +46,7 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.compo
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 import { CopierService } from 'app/shared/copier.service';
 import { FormReportService } from 'app/report/form-report.service';
-import { FormTransitionService } from 'app/document/service/form-transition.service';
+import { FormTransitionService } from 'app/document/form/form-transition.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 
 @Component({

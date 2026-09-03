@@ -7,7 +7,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ProcesoDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO } from 'app/document/model/sw42.domain';
+import { ProcesoDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO } from 'app/document/document.types';
 import { ProcessService } from '../../configuracion.api';
 import { ProcessTransitionFormComponent } from './process-transition-form.component';
 import Swal from 'sweetalert2';

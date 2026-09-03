@@ -4,14 +4,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
   DetallePedidoVentaDTO,
   ProductoInventarioDTO
-} from 'app/document/model/sw42.domain';
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/model/sw42.enum';
-import { ApiService } from 'app/document/service/api.service';
-import { getComponent } from 'app/document/form-helper';
+} from 'app/document/document.types';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
+import { ApiService } from 'app/document/document.api';
+import { getComponent } from 'app/document/form/form-helper';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { IDynamicControl } from '../base/base.component';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import { TarifaDTO } from 'app/document/model/tariff.domain';
+import { TarifaDTO } from "app/document/document.types";
 import { MatIcon } from '@angular/material/icon';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { DecimalPipe } from '@angular/common';

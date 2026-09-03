@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO } from 'app/document/model/sw42.domain';
+import { ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO } from 'app/document/document.types';
 import { AutoTaskService } from '../configuracion.api';
 import { AutoTaskFormComponent } from './auto-task-form.component';
 import { AutoTaskScheduleDialogComponent } from './auto-task-schedule-dialog.component';

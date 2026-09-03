@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ApiService } from 'app/document/service/api.service';
+import { ApiService } from 'app/document/document.api';
 import { UtilsService } from 'app/document/service/utils.service';
 
 interface Estado {

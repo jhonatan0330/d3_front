@@ -7,7 +7,7 @@ import { Observable, Subscription, debounceTime, pairwise, startWith, map } from
 import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, ManualDTO, VoucherLine } from '../accounting.domain';
 import { NotificationCenterService } from 'app/notification/notification-center.service';
 import { TemplateService } from 'app/document/service/template.service';
-import { ReporteBaseDTO } from 'app/document/model/sw42.domain';
+import { ReporteBaseDTO } from 'app/document/document.types';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { FormReportService } from 'app/report/form-report.service';
 

@@ -5,8 +5,8 @@ import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaDTO,
   PedidoVentaDTO,
-} from 'app/document/model/sw42.domain';
-import { ApiService } from 'app/document/service/api.service';
+} from 'app/document/document.types';
+import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import {
@@ -15,7 +15,7 @@ import {
   procesarXMLBase,
 } from './massive-helper';
 import { saveAs } from 'file-saver';
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/model/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';

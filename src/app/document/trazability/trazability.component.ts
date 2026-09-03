@@ -2,21 +2,23 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, signal, DestroyRef 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from "app/document/model/sw42.domain";
+import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from "app/document/document.types";
 import { TemplateService } from "app/document/service/template.service";
 import { UtilsService } from "app/document/service/utils.service";
 import { PlantillaHelper } from "app/shared/plantilla-helper";
 import { NotificationCenterService } from 'app/notification/notification-center.service';
-import { DocumentTransitionService } from "../document-transition.service";
-import { DocumentoRelacionGestorDTO, DocumentoRelacionGestorFilterDTO } from "../document-transition.types";
+import { ApiService } from '../document.api';
+import { DocumentoRelacionGestorFilterDTO } from "../document.types";
+import { DocumentoRelacionGestorDTO } from "../document.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
 import { SharedIdResponse } from "app/shared/api-types";
 import { VoucherPrepareRequest } from "app/accounting/accounting.domain";
-import { StatesEnum } from "app/document/model/sw42.enum";
+import { StatesEnum } from "app/document/form/sw42.enum";
 import { CdkDrag, CdkDragHandle } from "@angular/cdk/drag-drop";
 import { MatIcon } from "@angular/material/icon";
 import { UpperCasePipe, TitleCasePipe, CurrencyPipe } from "@angular/common";
 import { ImageFormatPipe } from "../../shared/local-image";
+import { AccountingService } from "app/accounting/accounting.api";
 
 interface OptionTrace {
   value: string;
@@ -33,8 +35,9 @@ interface OptionTrace {
 export class TrazabilityComponent implements OnInit {
   data = inject(MAT_DIALOG_DATA);
   dialogRef = inject<MatDialogRef<TrazabilityComponent>>(MatDialogRef);
-  private _traceService = inject(DocumentTransitionService);
+  private _traceService = inject(ApiService);
   private templateService = inject(TemplateService);
+  private accountingService = inject(AccountingService);
   private utilsService = inject(UtilsService);
   private notificationCenter = inject(NotificationCenterService);
   private destroyRef = inject(DestroyRef);
@@ -266,7 +269,7 @@ export class TrazabilityComponent implements OnInit {
       _prepare.documentId = this.data.document;
       _prepare.serviceId = pService.campo;
       this.isLoading.set(true);
-      this._traceService
+      this.accountingService
         .getVoucherOfDocument(_prepare)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
@@ -299,7 +302,7 @@ export class TrazabilityComponent implements OnInit {
       _prepare.documentId = this.data.document;
       _prepare.serviceId = pServiceId
       this.isLoading.set(true);
-      this._traceService
+      this.accountingService
         .generateVoucher(_prepare)
         .subscribe({
           next: () => {

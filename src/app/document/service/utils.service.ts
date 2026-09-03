@@ -1,7 +1,7 @@
 import { Injectable, DOCUMENT, inject } from '@angular/core';
 
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaDTO, PropiedadCampoDTO } from 'app/document/model/sw42.domain';
+import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaDTO, PropiedadCampoDTO } from 'app/document/document.types';
 import { FormComponent } from 'app/document/form/form.component';
 import { TransferFormComponent } from 'app/notification/transfer-form/transfer-form.component';
 import { TrazabilityComponent } from 'app/document/trazability/trazability.component';

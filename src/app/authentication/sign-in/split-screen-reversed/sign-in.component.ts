@@ -6,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { OrganizacionDTO, UsuarioAutenticacionDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
-import { PedidoVentaDTO } from 'app/document/model/sw42.domain';
+import { PedidoVentaDTO } from 'app/document/document.types';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { environment } from 'environments/environment';

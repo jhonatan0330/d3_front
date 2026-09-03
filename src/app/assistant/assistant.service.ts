@@ -2,9 +2,9 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, delay, switchMap } from 'rxjs';
 import {  AssistantIntent, AssistantMessage, AssistantResult,  DocumentSearchResult, TemplateSearchResult } from './assistant.models';
 import { TemplateService } from 'app/document/service/template.service';
-import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/model/sw42.domain';
+import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { ApiService } from 'app/document/service/api.service';
+import { ApiService } from 'app/document/document.api';
 import { UtilsService } from 'app/document/service/utils.service';
 import { Router } from '@angular/router';
 

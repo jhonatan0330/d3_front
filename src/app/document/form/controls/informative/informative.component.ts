@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from 'app/document/model/sw42.domain';
+import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from 'app/document/document.types';
 import { BaseComponent } from '../base/base.component';
 import { UtilsService } from '../../../service/utils.service';
-import { ApiService } from '../../../service/api.service';
+import { ApiService } from '../../../document.api';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TitleCasePipe } from '@angular/common';

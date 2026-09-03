@@ -1,12 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ApiService } from 'app/document/service/api.service';
+import { ApiService } from 'app/document/document.api';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
-import { PedidoVentaCaracteristicaFilterDTO, ProductoDTO, UsuarioRolProductoDTO } from '../../../model/sw42.domain';
+import { PedidoVentaCaracteristicaFilterDTO, ProductoDTO, UsuarioRolProductoDTO } from '../../../document.types';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';

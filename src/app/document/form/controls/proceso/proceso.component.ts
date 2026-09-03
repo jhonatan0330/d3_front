@@ -10,12 +10,12 @@ import {
   PedidoVentaFilterDTO,
   RelacionInternaDTO,
   RelacionInternaFilterDTO,
-} from 'app/document/model/sw42.domain';
+} from 'app/document/document.types';
 import {
   DocumentoPlantillaCaracteristicaEnum,
   StatesEnum,
-} from 'app/document/model/sw42.enum';
-import { ApiService } from 'app/document/service/api.service';
+} from 'app/document/form/sw42.enum';
+import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
