@@ -7,7 +7,7 @@ import {
   RelacionInternaDTO,
   RelacionInternaFilterDTO,
 } from 'app/document/document.types';
-import { StatesEnum } from 'app/document/form/sw42.enum';
+import { StatesEnum } from 'app/document/form/form.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';

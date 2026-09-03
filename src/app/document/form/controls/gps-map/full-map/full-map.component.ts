@@ -13,7 +13,7 @@ import Point from 'ol/geom/Point';
 import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
 import { PedidoVentaDTO } from 'app/document/document.types';
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { LineString } from 'ol/geom';
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';

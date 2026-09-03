@@ -15,7 +15,7 @@ import {
   procesarXMLBase,
 } from './massive-helper';
 import { saveAs } from 'file-saver';
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';

@@ -309,7 +309,7 @@ export class LoginService {
     }
     this.getURL().subscribe({
       next: (data) => {
-        if (data !== '' && data !== 'SW42') {
+        if (data !== '' && data !== 'D3') {
           if (!data.endsWith('/')) {
             data = data + '/';
           }

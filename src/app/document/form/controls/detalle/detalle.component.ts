@@ -18,7 +18,7 @@ import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
-import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../form.enum';
 import { UtilsService } from '../../../service/utils.service';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';

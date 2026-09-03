@@ -1,4 +1,4 @@
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import {
   DocumentoPlantillaCaracteristicaDTO,
   DocumentoPlantillaDTO,

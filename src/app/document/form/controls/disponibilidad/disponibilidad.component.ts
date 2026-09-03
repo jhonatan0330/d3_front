@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';

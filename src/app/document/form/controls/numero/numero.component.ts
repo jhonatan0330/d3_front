@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/cor
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from 'app/document/document.types';
-import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { ApiService } from 'app/document/document.api';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormulaHelper } from 'app/document/form/formula.helper';

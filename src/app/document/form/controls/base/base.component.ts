@@ -9,7 +9,7 @@ import {
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormComponent } from '../../form.component';
-import { DocumentoPlantillaCaracteristicaEnum } from '../../sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from '../../form.enum';
 
 export interface IDynamicControl {
   structure: DocumentoPlantillaCaracteristicaDTO;

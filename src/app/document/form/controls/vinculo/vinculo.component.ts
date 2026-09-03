@@ -5,7 +5,7 @@ import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, PedidoVenta
 import { UtilsService } from 'app/document/service/utils.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../form.enum';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormComponent } from '../../form.component';
 import Swal from 'sweetalert2';

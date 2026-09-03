@@ -13,7 +13,7 @@ import { DocumentoRelacionGestorDTO } from "../document.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
 import { SharedIdResponse } from "app/shared/api-types";
 import { VoucherPrepareRequest } from "app/accounting/accounting.domain";
-import { StatesEnum } from "app/document/form/sw42.enum";
+import { StatesEnum } from "app/document/form/form.enum";
 import { CdkDrag, CdkDragHandle } from "@angular/cdk/drag-drop";
 import { MatIcon } from "@angular/material/icon";
 import { UpperCasePipe, TitleCasePipe, CurrencyPipe } from "@angular/common";

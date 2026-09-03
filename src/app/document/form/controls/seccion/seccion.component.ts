@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../document.types';
 import { ApiService } from '../../../document.api';
-import { DocumentoPlantillaCaracteristicaEnum } from '../../sw42.enum';
+import { DocumentoPlantillaCaracteristicaEnum } from '../../form.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Component({

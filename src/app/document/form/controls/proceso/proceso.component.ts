@@ -14,7 +14,7 @@ import {
 import {
   DocumentoPlantillaCaracteristicaEnum,
   StatesEnum,
-} from 'app/document/form/sw42.enum';
+} from 'app/document/form/form.enum';
 import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
