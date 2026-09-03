@@ -173,11 +173,10 @@ export class NotificationButtonComponent implements  OnDestroy {
         return this.templateService.getColorFont(pEstado);
     }
 
-    openDialog(plantilla: string, id: string, server: string) {
+    openDialog(plantilla: string, id: string) {
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = plantilla;
         pedidoVenta.llaveTabla = id;
-        pedidoVenta.server = server;
         this.utilsService.modalWithParams(pedidoVenta)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => {
@@ -186,8 +185,7 @@ export class NotificationButtonComponent implements  OnDestroy {
     }
 
     openDocument(document: ActividadDTO) {
-        this.openDialog(document.documentoDTO.plantilla, document.documentoDTO.llaveTabla
-            , document.documentoDTO.server);
+        this.openDialog(document.documentoDTO.plantilla, document.documentoDTO.llaveTabla);
     }
 
     readActivity(actividad: ActividadDTO) {

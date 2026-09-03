@@ -53,7 +53,6 @@ export class MassiveComponent implements OnInit {
   }
 
   plantillaId: string;
-  urlServer: string;
 
   plantilla = signal<DocumentoPlantillaDTO | undefined>(undefined); // Estructura base de la lista
 
@@ -93,11 +92,9 @@ export class MassiveComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params: Params) => {
       this.plantillaId = params.template;
-      this.urlServer = params.server;
       if (this.plantillaId) {
         this.plantilla.set(this.templateService.getTemplate(
-          this.plantillaId,
-          this.urlServer
+          this.plantillaId
         )!);
         this.startForm();
       } else {
@@ -147,17 +144,16 @@ export class MassiveComponent implements OnInit {
         }
 
         const template: DocumentoPlantillaDTO =
-          this.templateService.getTemplate(crudProperty, null!)!;
+          this.templateService.getTemplate(crudProperty)!;
 
         if (!template.caracteristicas) {
           this.isProcessing.set(true);
-          this.api.obtenerCampos(crudProperty, template.server).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+          this.api.obtenerCampos(crudProperty).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
               this.isProcessing.set(false);
               this.loadFiledInMultipleTemplate(plantilla);
               this.templateService.getTemplate(
-                plantilla.llaveTabla,
-                plantilla.server
+                plantilla.llaveTabla
               )!.caracteristicas = plantilla.caracteristicas;
             },
             error: () => {
@@ -312,8 +308,7 @@ export class MassiveComponent implements OnInit {
       return;
     }
     const template = this.templateService.getTemplate(
-      this.fieldIdInTemplateSecondary()!.plantilla,
-      null!
+      this.fieldIdInTemplateSecondary()!.plantilla
     )!;
     this.validateCamposPlantilla(template);
     for (let i = 0; i < files.length; i++) {
@@ -676,7 +671,7 @@ export class MassiveComponent implements OnInit {
         }
         this.isProcessing.set(true);
         this.api
-          .validarTipoProcesoCarga(currentCampo, template.server)
+          .validarTipoProcesoCarga(currentCampo)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next:(value: DocumentoPlantillaCaracteristicaDTO)=>{
@@ -790,7 +785,7 @@ export class MassiveComponent implements OnInit {
                 for (let j = 0; j < this.files.length; j++) {
                   if(this.files[j].name === iCampo.valorText){
                     this.isProcessing.set(true);
-                    this.api.uploadFile(this.files[j], this.urlServer).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+                    this.api.uploadFile(this.files[j]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                       next: (value) => {
                         iCampo.valorText = value.message;
                         this.procesarDocumentos();
@@ -834,7 +829,7 @@ export class MassiveComponent implements OnInit {
         }
         this.pendingSaveTimeout = setTimeout(() => {
           this.api
-            .saveByMassive(this.currentPedido, this.plantilla()!.server, Date.now().toString())
+            .saveByMassive(this.currentPedido, Date.now().toString())
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
               next: (value: PedidoVentaDTO) => {
@@ -915,7 +910,7 @@ export class MassiveComponent implements OnInit {
             fieldDoc.valorOpcion = newDocument.llaveTabla;
             this.isProcessing.set(true);
             this.api
-              .saveByMassive(element.document, this.plantilla()!.server, Date.now().toString())
+              .saveByMassive(element.document, Date.now().toString())
               .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe({
                 next: (resultDocument: PedidoVentaDTO) => {

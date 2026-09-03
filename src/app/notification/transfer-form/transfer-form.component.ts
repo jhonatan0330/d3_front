@@ -42,7 +42,7 @@ export class TransferFormComponent implements OnInit {
   ngOnInit(): void {
 
     this.plantilla = this.templateService.getTemplate(
-      this.data.template, this.data.server
+      this.data.template
     );
     if (!this.plantilla || !this.plantilla.estados || this.plantilla.estados.length === 0) {
       const notificationCenter = new NotificationCenterService();
@@ -72,7 +72,7 @@ export class TransferFormComponent implements OnInit {
     const filter: ActividadDTO = new ActividadDTO();
     filter.documento = this.data.document;
     this.isTransfering = true;
-    this.notificationService.usersToTransfer(filter, this.plantilla!.server)
+      this.notificationService.usersToTransfer(filter)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (value) => {
@@ -102,7 +102,7 @@ export class TransferFormComponent implements OnInit {
       reasignacion.responsable = transferData.responsable.llaveTabla;
       reasignacion.comentario = transferData.comentario;
       this.isTransfering = true;
-      this.notificationService.transfer(reasignacion, this.plantilla!.server)
+      this.notificationService.transfer(reasignacion)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
         next: () => {

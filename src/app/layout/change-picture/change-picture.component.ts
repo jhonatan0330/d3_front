@@ -106,7 +106,7 @@ export class ChangePictureComponent {
 
   submitFile(internalFile: File) {
     this.submitted = true;
-    this.jwtAuth.changePictureUser(internalFile, null as any).subscribe({
+    this.jwtAuth.changePictureUser(internalFile).subscribe({
       next: (data) => {
         this.jwtAuth.user.set(data);
         this.submitted = false;

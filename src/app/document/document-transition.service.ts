@@ -21,31 +21,31 @@ export class DocumentTransitionService {
 
 
   getTrace(
-    _d: DocumentoRelacionGestorFilterDTO, _server: string
+    _d: DocumentoRelacionGestorFilterDTO
   ): Observable<DocumentoRelacionGestorDTO[]> {
     return this.http.post<DocumentoRelacionGestorDTO[]>(
-      this.ls.getUrlAccess('/template/getTrace', _server),
+      this.ls.getUrlAccess('/template/getTrace'),
       _d
     );
   }
   
   getTraceFields(
-    _document: string, _transaction: string, _server: string
+    _document: string, _transaction: string
   ): Observable<PedidoVentaCaracteristicaDTO[]> {
     return this.http.get<PedidoVentaCaracteristicaDTO[]>(
-      this.ls.getUrlAccess('/template/getTraceFields/' + _document + '/' + _transaction, _server)
+      this.ls.getUrlAccess('/template/getTraceFields/' + _document + '/' + _transaction)
     );
   }
 
   getVoucherOfDocument(pPrepareVoucher: VoucherPrepareRequest): Observable<SharedIdResponse> {
-    return this.http.post<SharedIdResponse>(this.ls.getUrlAccess('/acc/voucher/document', undefined),
+    return this.http.post<SharedIdResponse>(this.ls.getUrlAccess('/acc/voucher/document'),
       pPrepareVoucher
     );
   }
 
   generateVoucher(pPrepareVoucher: VoucherPrepareRequest): Observable<SharedIdResponse> {
     return this.http.post<SharedIdResponse>(
-      this.ls.getUrlAccess('/acc/voucher/generate-voucher', undefined),
+      this.ls.getUrlAccess('/acc/voucher/generate-voucher'),
       pPrepareVoucher
     );
   }

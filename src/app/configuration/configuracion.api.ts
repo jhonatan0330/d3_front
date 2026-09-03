@@ -26,37 +26,37 @@ export class ConsecutiveService {
 
     getConsecutivos(filter?: ConsecutivoFilterDTO): Observable<ConsecutivoDTO[]> {
         return this.http.post<ConsecutivoDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getConsecutivoById(key: string): Observable<ConsecutivoDTO> {
         return this.http.post<ConsecutivoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     createConsecutivo(consecutivo: ConsecutivoDTO): Observable<ConsecutivoDTO> {
         return this.http.post<ConsecutivoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), consecutivo
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), consecutivo
         );
     }
 
     updateConsecutivo(consecutivo: ConsecutivoDTO): Observable<ConsecutivoDTO> {
         return this.http.post<ConsecutivoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), consecutivo
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), consecutivo
         );
     }
 
     inactivateConsecutivo(consecutivo: ConsecutivoDTO): Observable<ConsecutivoDTO> {
         return this.http.post<ConsecutivoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${consecutivo.llaveTabla}/inactivate`, undefined), consecutivo
+            this.ls.getUrlAccess(`${this.baseUrl}/${consecutivo.llaveTabla}/inactivate`), consecutivo
         );
     }
 
     assignConsecutivo(consecutivo: ConsecutivoDTO): Observable<ConsecutivoDTO> {
         return this.http.post<ConsecutivoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${consecutivo.llaveTabla}/assign`, undefined), consecutivo
+            this.ls.getUrlAccess(`${this.baseUrl}/${consecutivo.llaveTabla}/assign`), consecutivo
         );
     }
 }
@@ -69,19 +69,19 @@ export class MessageService {
 
     getMessages(filter?: MensajeFilterDTO): Observable<MensajeDTO[]> {
         return this.http.post<MensajeDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getMessageById(key: string): Observable<MensajeDTO> {
         return this.http.post<MensajeDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     resendMessage(key: string): Observable<MensajeDTO> {
         return this.http.post<MensajeDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}/resend`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}/resend`), {}
         );
     }
 }
@@ -94,43 +94,43 @@ export class AutoTaskService {
 
     getAutoTasks(filter?: ProcesoTransicionAutomaticaFilterDTO): Observable<ProcesoTransicionAutomaticaDTO[]> {
         return this.http.post<ProcesoTransicionAutomaticaDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getAutoTaskById(key: string): Observable<ProcesoTransicionAutomaticaDTO> {
         return this.http.post<ProcesoTransicionAutomaticaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     createAutoTask(task: ProcesoTransicionAutomaticaDTO): Observable<ProcesoTransicionAutomaticaDTO> {
         return this.http.post<ProcesoTransicionAutomaticaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), task
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), task
         );
     }
 
     updateAutoTask(task: ProcesoTransicionAutomaticaDTO): Observable<ProcesoTransicionAutomaticaDTO> {
         return this.http.post<ProcesoTransicionAutomaticaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), task
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), task
         );
     }
 
     inactivateAutoTask(task: ProcesoTransicionAutomaticaDTO): Observable<ProcesoTransicionAutomaticaDTO> {
         return this.http.post<ProcesoTransicionAutomaticaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${task.llaveTabla}/inactivate`, undefined), task
+            this.ls.getUrlAccess(`${this.baseUrl}/${task.llaveTabla}/inactivate`), task
         );
     }
 
     scheduleAutoTask(key: string, programacion: { tipo: string; cron?: string; fecha?: Date }): Observable<ProcesoTransicionAutomaticaDTO> {
         return this.http.post<ProcesoTransicionAutomaticaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}/schedule`, undefined), programacion
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}/schedule`), programacion
         );
     }
 
     executeAutoTask(key: string): Observable<ProcesoTransicionAutomaticaDTO> {
         return this.http.post<ProcesoTransicionAutomaticaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}/execute`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}/execute`), {}
         );
     }
 }
@@ -143,57 +143,57 @@ export class DocumentTemplateService {
 
     getTemplates(filter?: DocumentoPlantillaFilterDTO): Observable<DocumentoPlantillaDTO[]> {
         return this.http.post<DocumentoPlantillaDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getTemplateById(key: string): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     getAdminTemplates(): Observable<DocumentoPlantillaDTO[]> {
         const payload = { estado: 'A' };
         return this.http.post<DocumentoPlantillaDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/admin`, undefined), payload
+            this.ls.getUrlAccess(`${this.baseUrl}/admin`), payload
         );
     }
 
     createTemplate(template: DocumentoPlantillaDTO): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), template
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), template
         );
     }
 
     updateTemplate(template: DocumentoPlantillaDTO): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), template
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), template
         );
     }
 
     inactivateTemplate(template: DocumentoPlantillaDTO): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/inactivate`, undefined), template
+            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/inactivate`), template
         );
     }
 
     duplicateTemplate(templateKey: string): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/duplicate`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/duplicate`), {}
         );
     }
 
     getTemplateFields(templateKey: string): Observable<DocumentoPlantillaCaracteristicaDTO[]> {
         const payload = { estado: 'A', plantilla: templateKey };
         return this.http.post<DocumentoPlantillaCaracteristicaDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/fields`, undefined), payload
+            this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/fields`), payload
         );
     }
 
     getFieldById(key: string): Observable<DocumentoPlantillaCaracteristicaDTO> {
         return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/fields/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/fields/${key}`), {}
         );
     }
 
@@ -204,68 +204,68 @@ export class DocumentTemplateService {
     getTemplateProperties(templateKey: string): Observable<PropiedadDTO[]> {
         const payload = { estado: 'A', campo: templateKey };
         return this.http.post<PropiedadDTO[]>(
-            this.ls.getUrlAccess('/api/config/properties/list', undefined), payload
+            this.ls.getUrlAccess('/api/config/properties/list'), payload
         );
     }
 
     inactivateProperty(property: PropiedadDTO): Observable<PropiedadDTO[]> {
         return this.http.post<PropiedadDTO[]>(
-            this.ls.getUrlAccess('/api/config/properties/inactivate', undefined), property
+            this.ls.getUrlAccess('/api/config/properties/inactivate'), property
         );
     }
 
     createField(field: DocumentoPlantillaCaracteristicaDTO): Observable<DocumentoPlantillaCaracteristicaDTO> {
         return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/fields`, undefined), field
+            this.ls.getUrlAccess(`${this.baseUrl}/fields`), field
         );
     }
 
     updateField(field: DocumentoPlantillaCaracteristicaDTO): Observable<DocumentoPlantillaCaracteristicaDTO> {
         return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/fields/${field.llaveTabla}`, undefined), field
+            this.ls.getUrlAccess(`${this.baseUrl}/fields/${field.llaveTabla}`), field
         );
     }
 
     inactivateField(field: DocumentoPlantillaCaracteristicaDTO): Observable<DocumentoPlantillaCaracteristicaDTO> {
         return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/fields/${field.llaveTabla}/inactivate`, undefined), field
+            this.ls.getUrlAccess(`${this.baseUrl}/fields/${field.llaveTabla}/inactivate`), field
         );
     }
 
     getTemplateFieldsComplete(template: DocumentoPlantillaDTO): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/fields-complete`, undefined), template
+            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/fields-complete`), template
         );
     }
 
     getTemplateReports(templateKey: string): Observable<ReporteBaseDTO[]> {
         const payload = { estado: 'A', plantilla: templateKey };
         return this.http.post<ReporteBaseDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/reports`, undefined), payload
+            this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/reports`), payload
         );
     }
 
     getReportById(key: string): Observable<ReporteBaseDTO> {
         return this.http.post<ReporteBaseDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/reports/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/reports/${key}`), {}
         );
     }
 
     createReport(report: ReporteBaseDTO): Observable<ReporteBaseDTO> {
         return this.http.post<ReporteBaseDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/reports`, undefined), report
+            this.ls.getUrlAccess(`${this.baseUrl}/reports`), report
         );
     }
 
     updateReport(report: ReporteBaseDTO): Observable<ReporteBaseDTO> {
         return this.http.post<ReporteBaseDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/reports/${report.llaveTabla}`, undefined), report
+            this.ls.getUrlAccess(`${this.baseUrl}/reports/${report.llaveTabla}`), report
         );
     }
 
     inactivateReport(report: ReporteBaseDTO): Observable<ReporteBaseDTO> {
         return this.http.post<ReporteBaseDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/reports/${report.llaveTabla}/inactivate`, undefined), report
+            this.ls.getUrlAccess(`${this.baseUrl}/reports/${report.llaveTabla}/inactivate`), report
         );
     }
 }
@@ -278,31 +278,31 @@ export class MessageTemplateService {
 
     getTemplates(filter?: MensajePlantillaCorreoFilterDTO): Observable<MensajePlantillaCorreoDTO[]> {
         return this.http.post<MensajePlantillaCorreoDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getTemplateById(key: string): Observable<MensajePlantillaCorreoDTO> {
         return this.http.post<MensajePlantillaCorreoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     createTemplate(template: MensajePlantillaCorreoDTO): Observable<MensajePlantillaCorreoDTO> {
         return this.http.post<MensajePlantillaCorreoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), template
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), template
         );
     }
 
     updateTemplate(template: MensajePlantillaCorreoDTO): Observable<MensajePlantillaCorreoDTO> {
         return this.http.post<MensajePlantillaCorreoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), template
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), template
         );
     }
 
     inactivateTemplate(template: MensajePlantillaCorreoDTO): Observable<MensajePlantillaCorreoDTO> {
         return this.http.post<MensajePlantillaCorreoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/inactivate`, undefined), template
+            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/inactivate`), template
         );
     }
 }
@@ -315,38 +315,38 @@ export class PropertyValueService {
 
     getPropertyValues(filter?: PropiedadValorDefinidoFilterDTO): Observable<PropiedadValorDefinidoDTO[]> {
         return this.http.post<PropiedadValorDefinidoDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getPropertyValueById(key: string): Observable<PropiedadValorDefinidoDTO> {
         return this.http.post<PropiedadValorDefinidoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     getByOrigen(origen: string, origenCategoria?: string): Observable<PropiedadValorDefinidoDTO[]> {
         const payload = { origen, origenCategoria: origenCategoria || '' };
         return this.http.post<PropiedadValorDefinidoDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/by-origen`, undefined), payload
+            this.ls.getUrlAccess(`${this.baseUrl}/by-origen`), payload
         );
     }
 
     createPropertyValue(value: PropiedadValorDefinidoDTO): Observable<PropiedadValorDefinidoDTO> {
         return this.http.post<PropiedadValorDefinidoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), value
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), value
         );
     }
 
     updatePropertyValue(value: PropiedadValorDefinidoDTO): Observable<PropiedadValorDefinidoDTO> {
         return this.http.post<PropiedadValorDefinidoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), value
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), value
         );
     }
 
     inactivatePropertyValue(value: PropiedadValorDefinidoDTO): Observable<PropiedadValorDefinidoDTO> {
         return this.http.post<PropiedadValorDefinidoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${value.llaveTabla}/inactivate`, undefined), value
+            this.ls.getUrlAccess(`${this.baseUrl}/${value.llaveTabla}/inactivate`), value
         );
     }
 }
@@ -359,49 +359,49 @@ export class WebServiceConfigService {
 
     getWebServices(filter?: WebServiceFilterDTO): Observable<WebServiceDTO[]> {
         return this.http.post<WebServiceDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getWebServiceById(key: string): Observable<WebServiceDTO> {
         return this.http.post<WebServiceDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     createWebService(ws: WebServiceDTO): Observable<WebServiceDTO> {
         return this.http.post<WebServiceDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), ws
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), ws
         );
     }
 
     updateWebService(ws: WebServiceDTO): Observable<WebServiceDTO> {
         return this.http.post<WebServiceDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), ws
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), ws
         );
     }
 
     inactivateWebService(ws: WebServiceDTO): Observable<WebServiceDTO> {
         return this.http.post<WebServiceDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${ws.llaveTabla}/inactivate`, undefined), ws
+            this.ls.getUrlAccess(`${this.baseUrl}/${ws.llaveTabla}/inactivate`), ws
         );
     }
 
     executeWebService(key: string, parametros: string): Observable<WebServiceEjecucionDTO> {
         return this.http.post<WebServiceEjecucionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}/execute`, undefined), { parametros }
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}/execute`), { parametros }
         );
     }
 
     getExecutions(filter?: WebServiceEjecucionFilterDTO): Observable<WebServiceEjecucionDTO[]> {
         return this.http.post<WebServiceEjecucionDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/executions`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/executions`), filter
         );
     }
 
     getExecutionsByWebService(webServiceKey: string): Observable<WebServiceEjecucionDTO[]> {
         return this.http.post<WebServiceEjecucionDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${webServiceKey}/executions`, undefined), { estado: 'A' }
+            this.ls.getUrlAccess(`${this.baseUrl}/${webServiceKey}/executions`), { estado: 'A' }
         );
     }
 }
@@ -414,31 +414,31 @@ export class ServerService {
 
     getServidores(filter?: ServidorFilterDTO): Observable<ServidorDTO[]> {
         return this.http.post<ServidorDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getServidorById(key: string): Observable<ServidorDTO> {
         return this.http.post<ServidorDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     createServidor(server: ServidorDTO): Observable<ServidorDTO> {
         return this.http.post<ServidorDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), server
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), server
         );
     }
 
     updateServidor(server: ServidorDTO): Observable<ServidorDTO> {
         return this.http.post<ServidorDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), server
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), server
         );
     }
 
     inactivateServidor(server: ServidorDTO): Observable<ServidorDTO> {
         return this.http.post<ServidorDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${server.llaveTabla}/inactivate`, undefined), server
+            this.ls.getUrlAccess(`${this.baseUrl}/${server.llaveTabla}/inactivate`), server
         );
     }
 }
@@ -451,37 +451,37 @@ export class OrganizationService {
 
     getOrganizaciones(filter?: OrganizacionFilterDTO): Observable<OrganizacionDTO[]> {
         return this.http.post<OrganizacionDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getOrganizacionById(key: string): Observable<OrganizacionDTO> {
         return this.http.post<OrganizacionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     getPrincipal(): Observable<OrganizacionDTO> {
         return this.http.post<OrganizacionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/principal`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/principal`), {}
         );
     }
 
     createOrganizacion(org: OrganizacionDTO): Observable<OrganizacionDTO> {
         return this.http.post<OrganizacionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), org
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), org
         );
     }
 
     updateOrganizacion(org: OrganizacionDTO): Observable<OrganizacionDTO> {
         return this.http.post<OrganizacionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), org
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), org
         );
     }
 
     inactivateOrganizacion(org: OrganizacionDTO): Observable<OrganizacionDTO> {
         return this.http.post<OrganizacionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${org.llaveTabla}/inactivate`, undefined), org
+            this.ls.getUrlAccess(`${this.baseUrl}/${org.llaveTabla}/inactivate`), org
         );
     }
 }
@@ -494,75 +494,75 @@ export class ProcessService {
 
     getProcesses(filter?: ProcesoFilterDTO): Observable<ProcesoDTO[]> {
         return this.http.post<ProcesoDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getProcessById(key: string): Observable<ProcesoDTO> {
         return this.http.post<ProcesoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
         );
     }
 
     getProcessTree(): Observable<ProcesoDTO[]> {
         const payload = { estado: 'A' };
         return this.http.post<ProcesoDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/tree`, undefined), payload
+            this.ls.getUrlAccess(`${this.baseUrl}/tree`), payload
         );
     }
 
     getProcessForGraph(key: string): Observable<ProcesoDTO> {
         return this.http.post<ProcesoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}/graph`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}/graph`), {}
         );
     }
 
     createProcess(process: ProcesoDTO): Observable<ProcesoDTO> {
         return this.http.post<ProcesoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), process
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), process
         );
     }
 
     updateProcess(process: ProcesoDTO): Observable<ProcesoDTO> {
         return this.http.post<ProcesoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), process
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), process
         );
     }
 
     inactivateProcess(process: ProcesoDTO): Observable<ProcesoDTO> {
         return this.http.post<ProcesoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${process.llaveTabla}/inactivate`, undefined), process
+            this.ls.getUrlAccess(`${this.baseUrl}/${process.llaveTabla}/inactivate`), process
         );
     }
 
     getTransitions(processKey: string): Observable<ProcesoTransicionDTO[]> {
         const payload = { estado: 'A', proceso: processKey };
         return this.http.post<ProcesoTransicionDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${processKey}/transitions`, undefined), payload
+            this.ls.getUrlAccess(`${this.baseUrl}/${processKey}/transitions`), payload
         );
     }
 
     getTransitionById(key: string): Observable<ProcesoTransicionDTO> {
         return this.http.post<ProcesoTransicionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/transitions/${key}`, undefined), {}
+            this.ls.getUrlAccess(`${this.baseUrl}/transitions/${key}`), {}
         );
     }
 
     createTransition(transition: ProcesoTransicionDTO): Observable<ProcesoTransicionDTO> {
         return this.http.post<ProcesoTransicionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/transitions`, undefined), transition
+            this.ls.getUrlAccess(`${this.baseUrl}/transitions`), transition
         );
     }
 
     updateTransition(transition: ProcesoTransicionDTO): Observable<ProcesoTransicionDTO> {
         return this.http.post<ProcesoTransicionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/transitions/${transition.llaveTabla}`, undefined), transition
+            this.ls.getUrlAccess(`${this.baseUrl}/transitions/${transition.llaveTabla}`), transition
         );
     }
 
     inactivateTransition(transition: ProcesoTransicionDTO): Observable<ProcesoTransicionDTO> {
         return this.http.post<ProcesoTransicionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/transitions/${transition.llaveTabla}/inactivate`, undefined), transition
+            this.ls.getUrlAccess(`${this.baseUrl}/transitions/${transition.llaveTabla}/inactivate`), transition
         );
     }
 }
@@ -575,55 +575,55 @@ export class PropertyService {
 
     getProperties(filter?: { campo?: string; estado?: string }): Observable<PropiedadDTO[]> {
         return this.http.post<PropiedadDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
         );
     }
 
     getPropertyById(key: string): Observable<PropiedadDTO> {
         return this.http.post<PropiedadDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/by-id`, undefined), key
+            this.ls.getUrlAccess(`${this.baseUrl}/by-id`), key
         );
     }
 
     createProperty(property: PropiedadCampoDTO): Observable<PropiedadDTO> {
         return this.http.post<PropiedadDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`, undefined), property
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), property
         );
     }
 
     updateProperty(property: PropiedadCampoDTO): Observable<PropiedadDTO> {
         return this.http.post<PropiedadDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`, undefined), property
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), property
         );
     }
 
     inactivateProperty(property: PropiedadCampoDTO): Observable<PropiedadDTO[]> {
         return this.http.post<PropiedadDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/inactivate`, undefined), property
+            this.ls.getUrlAccess(`${this.baseUrl}/inactivate`), property
         );
     }
 
     getRelations(filter: RelacionInternaFilterDTO): Observable<RelacionInternaDTO[]> {
         return this.http.post<RelacionInternaDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${filter.propiedad}/relations`, undefined), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/${filter.propiedad}/relations`), filter
         );
     }
 
     createRelation(relation: RelacionInternaDTO): Observable<RelacionInternaDTO> {
         return this.http.post<RelacionInternaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/create`, undefined), relation
+            this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/create`), relation
         );
     }
 
     updateRelation(relation: RelacionInternaDTO): Observable<RelacionInternaDTO> {
         return this.http.post<RelacionInternaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/update`, undefined), relation
+            this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/update`), relation
         );
     }
 
     inactivateRelation(relation: RelacionInternaDTO): Observable<RelacionInternaDTO> {
         return this.http.post<RelacionInternaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/inactivate`, undefined), relation
+            this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/inactivate`), relation
         );
     }
 }

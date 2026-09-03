@@ -170,7 +170,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             return;
         }
         // Cargo la plantilla al formulario para comenzar
-        this.plantilla.set(this.cargarPlantilla(this.pedidoBase.plantilla, this.pedidoBase.server));
+        this.plantilla.set(this.cargarPlantilla(this.pedidoBase.plantilla));
         // Si la plantilla se consulta por primera vez se va asincrona asi que finaliza este metodo
         if (!this.plantilla()) {
             return;
@@ -242,7 +242,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             }
         } else {
             this.api
-                .guardarDocumento(this.copiarPedidoBase(this.pedido()!, true), this.plantilla()!.server, this.uidOpenToNotDuplicate!)
+                .guardarDocumento(this.copiarPedidoBase(this.pedido()!, true), this.uidOpenToNotDuplicate!)
                 .pipe(takeUntilDestroyed(this._destroyRef))
                 .subscribe({
                     next: (dataResult: PedidoVentaDTO) => {
@@ -287,7 +287,6 @@ export class FormComponent implements OnInit, AfterViewInit {
             } else {
                 pedidoVenta.llaveTabla = value.llaveTabla;
             }
-            pedidoVenta.server = this.plantilla()!.server;
             pedidoVenta.messages = value.messages;
             this.utilsService.modalWithParams(pedidoVenta);
         } else {
@@ -342,7 +341,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     consultarDocumento(id: string) {
         const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
         entity.llaveTabla = id;
-        this.api.consultarDocumento(entity, this.plantilla()!.server)
+        this.api.consultarDocumento(entity)
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({
             next: (_value: PedidoVentaDTO) => {
@@ -361,7 +360,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (!this.plantilla() || !this.plantilla()!.llaveTabla) return;
         const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
         entity.plantilla = this.plantilla()!.llaveTabla;
-        this.api.validateBeforeNew(entity, this.plantilla()!.server)
+        this.api.validateBeforeNew(entity)
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({
             next: (_value: PedidoVentaDTO) => {
@@ -385,9 +384,9 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     // Consulto de las plantillas generales la plantilla
-    cargarPlantilla(plantillaId: string, urlServer: string): DocumentoPlantillaDTO {
+    cargarPlantilla(plantillaId: string): DocumentoPlantillaDTO {
         const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
-            plantillaId, urlServer
+            plantillaId
         )!;
         if (dp) {
             if (!this.pedidoBase!.llaveTabla && PlantillaHelper.isEmpty(dp.propiedades,
@@ -401,11 +400,10 @@ export class FormComponent implements OnInit, AfterViewInit {
             if (!dp.caracteristicas) {
                 this.isLoading.set(true);
                 this.api
-                    .obtenerCampos(plantillaId, dp.server)
+                    .obtenerCampos(plantillaId)
                     .pipe(takeUntilDestroyed(this._destroyRef))
                     .subscribe({
                         next: (plantilla: DocumentoPlantillaDTO) => {
-                            plantilla.server = dp.server;
                             this.isLoading.set(false);
                             this.cargarCamposPlantilla(plantilla);
                         },
@@ -430,11 +428,11 @@ export class FormComponent implements OnInit, AfterViewInit {
         // La idea es sincronizar la informacion de la plantilla
         // Falta hacer que se reemplace la plantilla en el array general       :(
         const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
-            value.llaveTabla, value.server
+            value.llaveTabla
         )!;
         if (dp) {
             dp.caracteristicas = value.caracteristicas;
-            this.templateService.getTemplate(value.llaveTabla, value.server)!.caracteristicas =
+            this.templateService.getTemplate(value.llaveTabla)!.caracteristicas =
                 value.caracteristicas;
             // SettingsManager.getInstance().setSetting("DP_" + value.llaveTabla, dp);
 
@@ -673,7 +671,6 @@ export class FormComponent implements OnInit, AfterViewInit {
             );
             componentRef.instance.structure = _campo;
             componentRef.instance.parent = this.pedido()!;
-            componentRef.instance.urlServer = this.plantilla()!.server;
             componentRef.instance.form = this;
             for (let index = 0; index < this.pedido()!.caracteristicas.length; index++) {
                 const element = this.pedido()!.caracteristicas[index];
@@ -743,7 +740,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 if (this.pedido()!.estado === StatesEnum.ACTIVE) {
                     const plantillaEliminar = PlantillaHelper.buscarValor(this.plantilla()!.propiedades, PlantillaHelper.FORM_ANULAR);
                     if (plantillaEliminar) {
-                        const tEliminar: DocumentoPlantillaDTO = this.templateService.getTemplate(plantillaEliminar, this.plantilla()!.server)!;
+                        const tEliminar: DocumentoPlantillaDTO = this.templateService.getTemplate(plantillaEliminar)!;
                         if (tEliminar && !PlantillaHelper.isEmpty(tEliminar.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
                             const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
                             _newtransicion.imagen = tEliminar.imagen;
@@ -755,7 +752,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 } else {
                     const _templateAction = PlantillaHelper.buscarValor(this.plantilla()!.propiedades, PlantillaHelper.FORM_ACTIVATE);
                     if (_templateAction) {
-                        const _tAction: DocumentoPlantillaDTO = this.templateService.getTemplate(_templateAction, this.plantilla()!.server)!;
+                        const _tAction: DocumentoPlantillaDTO = this.templateService.getTemplate(_templateAction)!;
                         if (_tAction && !PlantillaHelper.isEmpty(_tAction.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
                             const _newAction: ProcesoTransicionDTO = new ProcesoTransicionDTO();
                             _newAction.imagen = _tAction.imagen;
@@ -795,13 +792,13 @@ export class FormComponent implements OnInit, AfterViewInit {
                 if (_element.campoDTO && _element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.VINCULO) {
                     if (_element.expedientes) {
                         this.getTransitionsOfTemplate(
-                            this.templateService.getTemplate(_element.expedientes[0].plantilla, null!)!,
+                            this.templateService.getTemplate(_element.expedientes[0].plantilla)!,
                             _element.expedientes[0].estadoExpediente, _element.expedientes[0], true);
                     } else {
                         //Para no crear una nueva propiedad use el campo del motivo
                         const _property = PlantillaHelper.buscarPropiedad(_element.campoDTO.propiedades, PlantillaHelper.VINCULO_DATA);
                         if (_property &&_property.motivo && !_property.relaciones) {
-                            const _templateVinculo = this.templateService.getTemplate(_property.valor, null!)!;
+                            const _templateVinculo = this.templateService.getTemplate(_property.valor)!;
                             if (_templateVinculo) {
                                 const _newtransicion: ProcesoTransicionDTO = new ProcesoTransicionDTO();
                                 _newtransicion.imagen = _templateVinculo.imagen;
@@ -831,7 +828,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         }
         this.auxPlantillaProxima = pNextTemplate;
         this.documentToTransition = pDocument;
-        const _nextTemplate: DocumentoPlantillaDTO = this.cargarPlantilla(pNextTemplate, this.plantilla()!.server);
+        const _nextTemplate: DocumentoPlantillaDTO = this.cargarPlantilla(pNextTemplate);
         if (!_nextTemplate) return;
         // Se supone que la carga asincrona
         const _doc: PedidoVentaDTO = new PedidoVentaDTO();
@@ -900,7 +897,6 @@ export class FormComponent implements OnInit, AfterViewInit {
             }
             _doc.caracteristicas.push(campoBase);
         }
-        _doc.server = this.plantilla()!.server;
         this.utilsService.modalWithParams(_doc, true)
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe((res) => {
@@ -949,7 +945,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     showMassive() {
         if (this.canMassive()) {
             let redirect = 'massive/' + this.plantilla()!.llaveTabla;
-            if (this.plantilla()!.server) { redirect = redirect + '/' + this.plantilla()!.server; }
             this._router.navigateByUrl(redirect);
             this.dialogRef.close()
         }
@@ -958,7 +953,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     showTransfer() {
         if (this.canTransfer()) {
-            this.utilsService.modalTransfer(this.pedido()!.llaveTabla, this.pedido()!.estadoExpediente, this.pedido()!.plantilla, this.plantilla()!.server)
+            this.utilsService.modalTransfer(this.pedido()!.llaveTabla, this.pedido()!.estadoExpediente, this.pedido()!.plantilla)
                 .pipe(takeUntilDestroyed(this._destroyRef))
                 .subscribe((res) => {
                     if (res && this.dialogRef) {
@@ -969,7 +964,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     showTrace() {
-        this.utilsService.modalTrace(this.pedido()!.llaveTabla, this.pedido()!.plantilla, this.plantilla()!.server, this.pedido()!.nombre, this.pedido()!.estadoNombre, this.pedido()!.estado);
+        this.utilsService.modalTrace(this.pedido()!.llaveTabla, this.pedido()!.plantilla, this.pedido()!.nombre, this.pedido()!.estadoNombre, this.pedido()!.estado);
     }
 
     showChangeState() {
@@ -1000,7 +995,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 ajuste.estadoFinal = formData.estadoFinal!.llaveTabla!;
                 ajuste.motivo = formData.motivo!;
                 this.changeStateIsLoading.set(true);
-                this.api.ajustarEstado(ajuste, this.plantilla()!.server)
+                this.api.ajustarEstado(ajuste)
                     .pipe(takeUntilDestroyed(this._destroyRef))
                     .subscribe({
                     next: () => {
@@ -1134,7 +1129,6 @@ export class FormComponent implements OnInit, AfterViewInit {
                 _doc.caracteristicas.push(campoBase);
             }
         }
-        _doc.server = this.plantilla()!.server;
         this.utilsService.modalWithParams(_doc, false)
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({ error: () => {} });

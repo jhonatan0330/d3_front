@@ -110,7 +110,6 @@ export class PedidoVentaDTO extends BasicDTO {
     caracteristicas: PedidoVentaCaracteristicaDTO[];
     campoOrigen: string;
     campoPropiedad: string;
-    server: string;
     messages: DocumentMessage[];
     historico: number;
 }
@@ -169,17 +168,15 @@ export class PedidoVentaAjusteDTO extends BasicDTO {
     responsable: string;
 }
 export class DocumentoPlantillaDTO extends BasicParamDTO {
-    objetivo: string;
+    tipo: string;
+    padre: string;
     nombre: string;
     consecutivo: string;
     imagen: string;
     caracteristicas: DocumentoPlantillaCaracteristicaDTO[];
     estados: ProcesoEstadoDTO[];
-    color: string;
-    documentos: PedidoVentaDTO[];
     reportes: ReporteBaseDTO[];
     codigo: string;
-    server: string;
     proceso: string;
 }
 
@@ -347,7 +344,6 @@ export class DocumentoPlantillaFilterDTO extends BasicFilterDTO {
     imagen: string;
     color: string;
     codigo: string;
-    server: string;
     proceso: string;
 }
 

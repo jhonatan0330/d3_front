@@ -29,7 +29,7 @@ export class CarouselService {
       if (PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE) && isAuthenticated) {
         const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
         entity.plantilla = PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE);
-        this.apiService.listarDocumentos(entity, null!).subscribe({
+        this.apiService.listarDocumentos(entity).subscribe({
           next: (dataResult: PedidoVentaDTO[]) => {
             if (dataResult) {
               this.slides.update(current => [...current, ...dataResult.map(element => element.imagen)]);

@@ -122,7 +122,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     super.ngOnInit();
     // Reuno las variables necesarias para el componente
     this.plantilla = this.templateService.getTemplate(
-      this.obtenerValor(PlantillaHelper.PLANTILLA_AUXILIAR), this.urlServer
+      this.obtenerValor(PlantillaHelper.PLANTILLA_AUXILIAR)
     )!;
     this.herencia = this.obtenerPropiedad(PlantillaHelper.CAMPO_HEREDADO);
     this.alertar = this.obtenerPropiedad(PlantillaHelper.ALERTAR_CAMPO_PROCESO);
@@ -141,7 +141,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (this.acciones && this.acciones.length !== 0) {
         for (let index = this.acciones.length - 1; index >= 0; index--) {
           const element = this.acciones[index];
-          const prop = this.templateService.getTemplate(element.valor, this.urlServer);
+          const prop = this.templateService.getTemplate(element.valor);
           if (!prop || !PlantillaHelper.buscarPropiedad(prop.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
             this.acciones.splice(index, 1);
           }
@@ -162,7 +162,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }*/
     if (this.plantilla) {
       this.solicitarFechas = !PlantillaHelper.isEmpty(
-        this.templateService.getTemplate(this.plantilla.llaveTabla, this.urlServer)!.propiedades,
+        this.templateService.getTemplate(this.plantilla.llaveTabla)!.propiedades,
         PlantillaHelper.FORM_SOLICITAR_FECHAS
       );
     }
@@ -279,7 +279,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = p.plantilla;
     pedidoVenta.llaveTabla = p.llaveTabla;
-    pedidoVenta.server = this.urlServer;
     this.utilsService.modalWithParams(pedidoVenta, false)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
@@ -602,7 +601,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       filtro.valorAuxiliar = campoFiltro.valorAuxiliar;
     }
     this.isLoading.set(true);
-    this.api.consultarDatosBase(filtro, this.urlServer)
+    this.api.consultarDatosBase(filtro)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
@@ -890,7 +889,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.actualizarDataProvider(pCampo.campoDTO.documentos);
         // Consulto la plantilla para actualizarla y no tener que volver a consultarla
         const plantillaBase: DocumentoPlantillaDTO = this.templateService.getTemplate(
-          this.structure.plantilla, this.urlServer
+          this.structure.plantilla
         )!;
         let flagDetalle = false;
 
@@ -1202,7 +1201,6 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
     }
     _doc.plantilla = _plantilla;
-    _doc.server = this.urlServer;
     this.utilsService
       .modalWithParams(_doc, true, this.fControl.value)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -1467,7 +1465,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
     entity.estadoExpediente = null!;
     this.isLoadingList.set(true);
-    this.api.listarDocumentos(entity, this.urlServer)
+    this.api.listarDocumentos(entity)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (dataResult: PedidoVentaDTO[]) => {
@@ -1568,7 +1566,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       const filter = new PedidoVentaFilterDTO();
       filter.llaveTabla = this.proceso.llaveTabla;
       filter.plantilla = this.proceso.plantilla;
-      this.api.consultarDocumento(filter, this.urlServer)
+      this.api.consultarDocumento(filter)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
         next: (fullDocument: PedidoVentaDTO) => {

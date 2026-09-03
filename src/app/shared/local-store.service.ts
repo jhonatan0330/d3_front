@@ -5,8 +5,7 @@ export const LocalConstants = {
   PUBLIC_TOKEN: 'PUBLIC_TOKEN',
   APP_USER: 'EGRET_USER',
   TEMPLATES: 'SW42_TEMPLATES',
-  URL_CONF: 'URL_CONF',
-  SERVERS: 'SERVERS'
+  URL_CONF: 'URL_CONF'
 };
 
 @Injectable({
@@ -39,25 +38,12 @@ export class LocalStoreService {
     this.ls.clear();
   }
 
-  getUrlAccess(endpoint: string, server: string | null = null): string {
+  getUrlAccess(endpoint: string): string {
     if (!endpoint.startsWith('/')) {
       endpoint = '/' + endpoint;
     }
-    let url: string | null = this.getUrl4Id( server);
-    if(!url){
-       url = this.getItem(LocalConstants.URL_CONF);
-    }
+    const url: string | null = this.getItem(LocalConstants.URL_CONF);
     const result = url!.concat(endpoint.toString());
     return result;
-  }
-
-  private getUrl4Id(id: string | null): string | null {
-    const otherSystems = this.getItem(LocalConstants.SERVERS);
-    if (!id || !otherSystems) { return null; }
-    const org = otherSystems.find(item => id === item.llaveTabla);
-    if (org) {
-      return org.servidorUrl;
-    }
-    return null;
   }
 }

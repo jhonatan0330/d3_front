@@ -111,9 +111,6 @@ export class AssistantPanelComponent implements OnInit, AfterViewInit {
             const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
             pedidoVenta.llaveTabla = doc.llaveTabla;
             pedidoVenta.plantilla = doc.plantilla;
-            if (doc.server) {
-                pedidoVenta.server = doc.server;
-            }
             this.assistantService.abrirDocumento(pedidoVenta);
         }
 

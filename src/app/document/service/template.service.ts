@@ -31,13 +31,10 @@ export class TemplateService {
   private propiedadesConRelaciones: RelacionInternaDTO[];
   private _modules: PropiedadDTO[] | null;
 
-  getTemplate(id: string, urlServer: string): DocumentoPlantillaDTO | null | undefined {
+  getTemplate(id: string): DocumentoPlantillaDTO | null | undefined {
     const template = this.template();
     if (!template) { return null; }
-    if (!urlServer) {
-      return template.find((item) => id === item.llaveTabla) ?? null;
-    }
-    return null;
+    return template.find((item) => id === item.llaveTabla) ?? null;
   }
 
   getTemplateOfProcess(processId: string): DocumentoPlantillaDTO[] | null {
@@ -190,7 +187,7 @@ export class TemplateService {
     filtro.estado = StatesEnum.ACTIVE;
     filtro.propiedad = propiedad;
     return this.http.post<RelacionInternaDTO[]>(
-      this.ls.getUrlAccess('/template/getPropertyRelations', urlServer),
+    this.ls.getUrlAccess('/template/getPropertyRelations'),
       filtro
     ).pipe(
       tap(relations => this.addRelations(relations))
@@ -213,7 +210,7 @@ export class TemplateService {
   filtro.propiedad = propiedad;
 
   return this.http.post<RelacionInternaDTO[]>(
-    this.ls.getUrlAccess('/template/getPropertyRelations', urlServer),
+    this.ls.getUrlAccess('/template/getPropertyRelations'),
     filtro
   ).pipe(
     map(relations => {

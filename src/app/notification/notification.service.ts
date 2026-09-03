@@ -32,9 +32,9 @@ export class NotificationsService {
   /**
    * Get all notifications
    */
-  getAll(_server: string = null!): Observable<ActividadDTO[]> {
+  getAll(): Observable<ActividadDTO[]> {
     return this.http.get<ActividadDTO[]>(
-      this.ls.getUrlAccess('/notification/getNotifications', _server)
+      this.ls.getUrlAccess('/notification/getNotifications')
     ).pipe(
       tap((notifications) => {
         this._notifications.set(notifications);
@@ -46,23 +46,23 @@ export class NotificationsService {
     this._notifications.set([]);
   }
 
-  readActivity(actividad: ActividadDTO, _server: string = null!): Observable<ActividadDTO> {
+  readActivity(actividad: ActividadDTO): Observable<ActividadDTO> {
     return this.http.post<ActividadDTO>(
-      this.ls.getUrlAccess('/notification/readActivity', _server),
+      this.ls.getUrlAccess('/notification/readActivity'),
       actividad
     );
   }
 
-  transfer(plantilla: ActividadDTO, _server: string): Observable<ActividadDTO> {
+  transfer(plantilla: ActividadDTO): Observable<ActividadDTO> {
     return this.http.post<ActividadDTO>(
-      this.ls.getUrlAccess('/notification/transfer', _server),
+      this.ls.getUrlAccess('/notification/transfer'),
       plantilla
     );
   }
 
-  usersToTransfer(plantilla: ActividadDTO, _server: string): Observable<UsuarioDTO[]> {
+  usersToTransfer(plantilla: ActividadDTO): Observable<UsuarioDTO[]> {
     return this.http.post<UsuarioDTO[]>(
-      this.ls.getUrlAccess('/notification/userToTransfer', _server),
+      this.ls.getUrlAccess('/notification/userToTransfer'),
       plantilla
     );
   }

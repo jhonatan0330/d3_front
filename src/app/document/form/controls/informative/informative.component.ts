@@ -61,7 +61,7 @@ export class InformativeComponent extends BaseComponent implements OnInit {
     filtro.campo = this.structure.llaveTabla;
     filtro.dependientes = this.data.dependientes;
     this.api
-    .consultarDatosBase(filtro, this.urlServer)
+    .consultarDatosBase(filtro)
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe((_value: PedidoVentaCaracteristicaFilterDTO) => {
       if(_value){
@@ -81,7 +81,6 @@ export class InformativeComponent extends BaseComponent implements OnInit {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = p.plantilla;
     pedidoVenta.llaveTabla = p.llaveTabla;
-    pedidoVenta.server = this.urlServer;
     this.utilsService.modalWithParams(pedidoVenta, false)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({ error: () => {} });

@@ -81,7 +81,7 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
     const nFilter:PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
     nFilter.filtroParametro = this.fControl.value!;
     this.fControl.setValue('');
-    this.api.consultarDatosBase(nFilter, this.urlServer)
+    this.api.consultarDatosBase(nFilter)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {

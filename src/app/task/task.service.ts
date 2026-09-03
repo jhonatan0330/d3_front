@@ -24,9 +24,9 @@ export class TasksService {
         return this._tasks.asReadonly();
     }
 
-    getTasks(_server: string | undefined = undefined): Observable<Task[]> {
+    getTasks(): Observable<Task[]> {
         return this._httpClient.get<Task[]>(
-            this.ls.getUrlAccess('/task/', _server)
+            this.ls.getUrlAccess('/task/')
         ).pipe(
             tap((response) => {
                 this._tasks.set(response);
@@ -39,13 +39,13 @@ export class TasksService {
     }
 
 
-    getTaskById(id: string, _server: string | undefined = undefined): Observable<Task> {
+    getTaskById(id: string): Observable<Task> {
         return this._httpClient.get<Task>(
-            this.ls.getUrlAccess('/task/' + id + '?id=' + id, _server)
+            this.ls.getUrlAccess('/task/' + id + '?id=' + id)
         );
     }
 
-    createTask(title: string, _server: string | undefined = undefined): Observable<string> {
+    createTask(title: string): Observable<string> {
         const user = this._loginService.getUser();
         const taskRequest: TaskRequest = {
             key: null,
@@ -58,7 +58,7 @@ export class TasksService {
             order: 0
         };
         return this._httpClient.post<SharedIdResponse>(
-            this.ls.getUrlAccess('/task/create', _server), taskRequest
+            this.ls.getUrlAccess('/task/create'), taskRequest
         ).pipe(
             map((idTask) => {
                 const newTask: Task = {
@@ -72,7 +72,7 @@ export class TasksService {
         );
     }
 
-    updateTask(task: Task, _server: string | undefined = undefined): Observable<SharedIdResponse> {
+    updateTask(task: Task): Observable<SharedIdResponse> {
         const taskRequest: TaskRequest = {
             key: task.key,
             user: task.user,
@@ -84,13 +84,13 @@ export class TasksService {
             order: task.order
         };
         return this._httpClient.post<SharedIdResponse>(
-            this.ls.getUrlAccess('/task/update', _server), taskRequest
+            this.ls.getUrlAccess('/task/update'), taskRequest
         );
     }
 
-    deleteTask(id: string, _server: string | undefined = undefined): Observable<SharedIdResponse> {
+    deleteTask(id: string): Observable<SharedIdResponse> {
         return this._httpClient.post<SharedIdResponse>(
-            this.ls.getUrlAccess('/task/delete/' + id, _server), null
+            this.ls.getUrlAccess('/task/delete/' + id), null
         ).pipe(
             map((idTask) => {
                 this._tasks.update(tasks => (tasks ?? []).filter((item) => item.key !== idTask.id));

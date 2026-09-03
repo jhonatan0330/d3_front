@@ -120,7 +120,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.procesoId = null;
             //const serverUrl = this.templateService.getUrl4Id(params.server_id);
             if (propType === 'list') {
-                this.plantilla.set(this.templateService.getTemplate(params.id, params.server_id)!);
+                this.plantilla.set(this.templateService.getTemplate(params.id)!);
                 if (!this.plantilla()) {
                     this.router.navigate(['/main']);
                     return;
@@ -255,14 +255,13 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
     openDialogFromTemplateModule() {
         if (!this.plantilla()) { return; }
-        this.openDialog(this.plantilla()!.llaveTabla, this.plantilla()!.server);
+        this.openDialog(this.plantilla()!.llaveTabla);
     }
 
-    openDialog(template: string, server: string | undefined) {
+    openDialog(template: string) {
         if (!template) { return; }
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = template;
-        if(server)pedidoVenta.server = server;
         this.utilsService.modalWithParams(pedidoVenta);
     }
 
@@ -377,7 +376,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         }
 
         if(this.plantilla()){
-            this.api.listarDocumentos(entity, this.plantilla()!.server)
+            this.api.listarDocumentos(entity)
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
             next: (dataResult: PedidoVentaDTO[]) => {
@@ -452,9 +451,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = pDocument.plantilla;
         pedidoVenta.llaveTabla = pDocument.llaveTabla;
-        if (this.plantilla()) {
-            pedidoVenta.server = this.plantilla()!.server;
-        }
         this.utilsService.modalWithParams(pedidoVenta, false);
     }
 
@@ -521,7 +517,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         //Cuando es tipo proceso no puedo encontrar los campos de todas las plantillas
         if (this.plantilla()!.estado === 'T') { return; }
         if (!this.plantilla()!.caracteristicas) {
-            this.cargarPlantilla(this.plantilla()!.llaveTabla, null!);
+            this.cargarPlantilla(this.plantilla()!.llaveTabla);
             return;
         }
         const filterDocument = new PedidoVentaDTO;
@@ -535,9 +531,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 );
                 componentRef.instance.structure = _campo;
                 componentRef.instance.parent = filterDocument
-                if(this.plantilla()) {
-                    componentRef.instance.urlServer = this.plantilla()!.server;
-                }
                 const uc: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
                 uc.campo = _campo.llaveTabla;
                 componentRef.instance.data = uc;
@@ -579,20 +572,19 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     }
 
     // Consulto de las plantillas generales la plantilla
-    cargarPlantilla(plantillaId: string, urlServer: string): DocumentoPlantillaDTO {
+    cargarPlantilla(plantillaId: string): DocumentoPlantillaDTO {
         const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
-            plantillaId, urlServer
+            plantillaId
         )!;
         if (dp) {
             // Si la plantilla no tiene caracteristicas se debe consultar al servidor de forma completa
             if (!dp.caracteristicas) {
                 this.isLoading.set(true);
                 this.api
-                    .obtenerCampos(plantillaId, dp.server)
+                    .obtenerCampos(plantillaId)
                     .pipe(takeUntilDestroyed(this.destroyRef))
                     .subscribe({
                         next: (plantilla: DocumentoPlantillaDTO) => {
-                            plantilla.server = dp.server;
                             this.isLoading.set(false);
                             this.cargarCamposPlantilla(plantilla);
                         },
@@ -613,11 +605,11 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     // Metodo que recibe la llamada asincrona de cargar los campos de una plantilla
     cargarCamposPlantilla(value: DocumentoPlantillaDTO) {
         const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
-            value.llaveTabla, value.server
+            value.llaveTabla
         )!;
         if (dp) {
             dp.caracteristicas = value.caracteristicas;
-            this.templateService.getTemplate(value.llaveTabla, value.server)!.caracteristicas =
+            this.templateService.getTemplate(value.llaveTabla)!.caracteristicas =
                 value.caracteristicas;
             if(this.plantilla()) {
                 this.plantilla()!.caracteristicas = value.caracteristicas;

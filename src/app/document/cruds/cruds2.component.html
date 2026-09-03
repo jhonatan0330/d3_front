@@ -46,7 +46,7 @@
                 <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Informes
               </button>
               @for (rf of reportForms(); track rf) {
-              <app-dropdown-item (clicked)="openDialog(rf.valor, plantilla()?.server)">
+              <app-dropdown-item (clicked)="openDialog(rf.valor)">
                 <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>
                 <span>{{ rf.texto }}</span>
               </app-dropdown-item>
@@ -72,7 +72,7 @@
           <div>
             @for (templateToCreate of templatesFromProcess(); track templateToCreate) {
             <button class="btn-flat-primary w-full my-1"
-              (click)="openDialog(templateToCreate.llaveTabla, templateToCreate.server)">
+              (click)="openDialog(templateToCreate.llaveTabla)">
               <mat-icon>add</mat-icon>
               <span>{{templateToCreate.nombre}}</span>
             </button>

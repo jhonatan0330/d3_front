@@ -60,7 +60,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   }
 
   getTransitionsOfTemplate(template: string, pState: string, pDocumentTransition: PedidoVentaDTO) {
-    const pTemplate: DocumentoPlantillaDTO = this.templateService.getTemplate(template, null!)!;
+    const pTemplate: DocumentoPlantillaDTO = this.templateService.getTemplate(template)!;
     if (!pTemplate) return;
     this.plantilla = pTemplate;
     const transitions = this.transitionService.getTransitionsOfTemplate(pTemplate, pState, pDocumentTransition);
@@ -71,7 +71,6 @@ export class VinculoComponent extends BaseComponent implements OnInit {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = p.plantilla;
     pedidoVenta.llaveTabla = p.llaveTabla;
-    pedidoVenta.server = this.urlServer;
     this.utilsService.modalWithParams(pedidoVenta, false);
   }
 
@@ -93,7 +92,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
 
     const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
     entity.llaveTabla = this.proceso.llaveTabla;
-    this.api.consultarDocumento(entity, this.plantilla.server)
+    this.api.consultarDocumento(entity)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (_value: PedidoVentaDTO) => {
@@ -108,12 +107,12 @@ export class VinculoComponent extends BaseComponent implements OnInit {
 
   organizarDocumentoProceso(pNextTemplate: string,) {
     const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
-      this.proceso.plantilla, null!
+      this.proceso.plantilla
     )!;
     // Debo cargar los campos tambien de la plantilla del documento
     if (!dp.caracteristicas) {
       this.auxPlantillaProxima = pNextTemplate;
-      this.cargarPlantilla(dp.llaveTabla, dp.server)
+      this.cargarPlantilla(dp.llaveTabla)
       //this.cargarCamposPlantilla(dp);
       return;
     }
@@ -138,7 +137,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
     }*/
     this.auxPlantillaProxima = pNextTemplate;
     this.documentToTransition = pDocument;
-    const _nextTemplate: DocumentoPlantillaDTO = this.cargarPlantilla(pNextTemplate, this.plantilla.server)!;
+    const _nextTemplate: DocumentoPlantillaDTO = this.cargarPlantilla(pNextTemplate)!;
     if (!_nextTemplate) return;
     // Se supone que la carga asincrona
     const _doc: PedidoVentaDTO = new PedidoVentaDTO();
@@ -240,9 +239,9 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   }
 
   // Consulto de las plantillas generales la plantilla
-  cargarPlantilla(plantillaId: string, urlServer: string): DocumentoPlantillaDTO | undefined {
+  cargarPlantilla(plantillaId: string): DocumentoPlantillaDTO | undefined {
     const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
-      plantillaId, urlServer
+      plantillaId
     )!;
     if (dp) {
       if (!this.proceso.llaveTabla && PlantillaHelper.isEmpty(dp.propiedades,
@@ -256,11 +255,10 @@ export class VinculoComponent extends BaseComponent implements OnInit {
       if (!dp.caracteristicas) {
         this.isLoading.set(true);
         this.api
-          .obtenerCampos(plantillaId, dp.server)
+          .obtenerCampos(plantillaId)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: (plantilla: DocumentoPlantillaDTO) => {
-              plantilla.server = dp.server;
               this.isLoading.set(false);
               this.cargarCamposPlantilla(plantilla);
             },
@@ -285,11 +283,11 @@ export class VinculoComponent extends BaseComponent implements OnInit {
     // La idea es sincronizar la informacion de la plantilla
     // Falta hacer que se reemplace la plantilla en el array general       :(
     const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(
-      value.llaveTabla, value.server
+      value.llaveTabla
     )!;
     if (dp) {
       dp.caracteristicas = value.caracteristicas;
-      this.templateService.getTemplate(value.llaveTabla, value.server)!.caracteristicas =
+      this.templateService.getTemplate(value.llaveTabla)!.caracteristicas =
         value.caracteristicas;
       // SettingsManager.getInstance().setSetting("DP_" + value.llaveTabla, dp);
 

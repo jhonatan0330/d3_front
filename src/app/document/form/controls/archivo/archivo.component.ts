@@ -312,7 +312,7 @@ resizeCanvas(): void {
       if (!internalFile && fileToUpload.blob) {
         internalFile = this.b64toFile(fileToUpload.blob);
       }
-      this.api.uploadFile(internalFile, this.urlServer)
+      this.api.uploadFile(internalFile)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
         (data) => {

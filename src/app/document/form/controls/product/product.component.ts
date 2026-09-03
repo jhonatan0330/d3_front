@@ -365,7 +365,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   consultarInventarios() {
     this.isLoading = true;
-    this.api.consultarInventario(this.detallePedidoVenta.producto, this.server)
+    this.api.consultarInventario(this.detallePedidoVenta.producto)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (_value: ProductoInventarioDTO[]) => {

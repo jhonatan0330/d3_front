@@ -76,7 +76,7 @@ export class DashboardComponent implements AfterViewInit {
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params: Params) => {
       const type = params.type;
       if (type) {
-        const plantilla = this.templateService.getTemplate(type, null!);
+        const plantilla = this.templateService.getTemplate(type);
         if (plantilla) {
           this.openDialog(type, params.id)
         } else {
@@ -88,11 +88,10 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   private openDialog(_type, _id) {
-    const plantilla = this.templateService.getTemplate(_type, null!);
+    const plantilla = this.templateService.getTemplate(_type);
     if (plantilla) {
       const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
       pedidoVenta.plantilla = plantilla.llaveTabla;
-      pedidoVenta.server = plantilla.server;
       const idDocument = _id;
       if (idDocument) {
         pedidoVenta.llaveTabla = idDocument;

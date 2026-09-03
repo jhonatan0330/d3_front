@@ -280,7 +280,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         filtro.documento = campoFiltro.documento;
         this.isLoading.set(true);
         this.api
-          .consultarDatosBase(filtro, this.urlServer)
+          .consultarDatosBase(filtro)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: (_value: PedidoVentaCaracteristicaFilterDTO) => {

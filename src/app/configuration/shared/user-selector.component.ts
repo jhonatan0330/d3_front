@@ -92,7 +92,7 @@ export class UserSelectorComponent implements OnInit {
         }
 
         this.propertyService['http'].post<UsuarioDTO[]>(
-            this.propertyService['ls'].getUrlAccess('/api/config/users/search', undefined),
+            this.propertyService['ls'].getUrlAccess('/api/config/users/search'),
             { estado: 'A', filtroParametro: filtro }
         ).subscribe({
             next: (users) => this.usuarios = users,
@@ -117,7 +117,7 @@ export class UserSelectorComponent implements OnInit {
 
     private loadUserDisplay(key: string): void {
         this.propertyService['http'].post<UsuarioDTO>(
-            this.propertyService['ls'].getUrlAccess('/api/config/users/by-id', undefined),
+            this.propertyService['ls'].getUrlAccess('/api/config/users/by-id'),
             key
         ).subscribe({
             next: (user) => this.displayValue = user.nombre,

@@ -121,7 +121,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       for (const item of this.productosDisponibles) {
         if (!map.has(item.categoria)) {
           map.set(item.categoria, true);    // set any value to Map
-          const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(item.categoria, null!)!;
+          const dp: DocumentoPlantillaDTO = this.templateService.getTemplate(item.categoria)!;
           if (dp) { this.categories.push(dp); }
         }
       }
@@ -215,7 +215,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     const nFilter: PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
     nFilter.filtroParametro = this.fControl.value!;
     this.isLoading.set(true);
-    this.api.consultarDatosBase(nFilter, this.urlServer)
+    this.api.consultarDatosBase(nFilter)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
@@ -247,7 +247,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   private loadInfo(_value: PedidoVentaCaracteristicaFilterDTO) {
     // Copia toda la informacion a las variables del campo
     this.productosDisponibles = Object.assign([], _value.campoDTO.productos);
-    const plantillaBase = this.templateService.getTemplate(this.structure.plantilla, this.urlServer);
+    const plantillaBase = this.templateService.getTemplate(this.structure.plantilla);
     for (let i = 0; i < plantillaBase!.caracteristicas.length; i++) {
       const iCampo = plantillaBase!.caracteristicas[i];
       if (iCampo.llaveTabla === this.structure.llaveTabla) {
@@ -371,7 +371,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       nFilter.llaveTabla = item.llaveTabla;
       nFilter.filtroParametro = item.productoCodigo;
       this.isLoading.set(true);
-      this.api.consultarDatosBase(nFilter, this.urlServer)
+      this.api.consultarDatosBase(nFilter)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
         next: (_value: PedidoVentaCaracteristicaFilterDTO) => {

@@ -22,7 +22,7 @@ export class FormTransitionService {
       const result: ProcesoTransicionDTO[] = [];
       for (const _transition of _stateElement.transiciones) {
         if (!_transition.plantilla) continue;
-        const _templateTransition = this.templateService.getTemplate(_transition.plantilla, pTemplate.server);
+        const _templateTransition = this.templateService.getTemplate(_transition.plantilla);
         if (!_templateTransition || PlantillaHelper.isEmpty(_templateTransition.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) continue;
         if (pIsVinculo && PlantillaHelper.isEmpty(_transition.propiedades, PlantillaHelper.TRANSICION_VISIBLE_VINCULO)) continue;
 

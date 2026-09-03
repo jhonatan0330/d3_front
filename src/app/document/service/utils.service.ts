@@ -146,18 +146,18 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  modalTransfer(pDocument: string, pState: string, pTemplate: string, pServer: string) {
+  modalTransfer(pDocument: string, pState: string, pTemplate: string) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(TransferFormComponent, {
       disableClose: false,
-      data: { document: pDocument, state: pState, template: pTemplate, server: pServer },
+      data: { document: pDocument, state: pState, template: pTemplate },
     });
     return dialogRef.afterClosed();
   }
 
-  modalTrace(pDocument: string, pTemplate: string, pServer: string, pDocumentName: string, pDocumentState: string, pState: string) {
+  modalTrace(pDocument: string, pTemplate: string, pDocumentName: string, pDocumentState: string, pState: string) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(TrazabilityComponent, {
       data: {
-        document: pDocument, template: pTemplate, server: pServer,
+        document: pDocument, template: pTemplate,
         documentName: pDocumentName, documentState: pDocumentState, state: pState,
       },
     });

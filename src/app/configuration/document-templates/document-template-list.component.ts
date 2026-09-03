@@ -4,20 +4,22 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { DocumentoPlantillaDTO, DocumentoPlantillaFilterDTO } from 'app/document/model/sw42.domain';
-import { DocumentTemplateService } from '../configuracion.api';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
+import { DocumentoPlantillaDTO, DocumentoPlantillaFilterDTO, ProcesoDTO } from 'app/document/model/sw42.domain';
+import { DocumentTemplateService, ProcessService } from '../configuracion.api';
 import { DocumentTemplateFormComponent } from './document-template-form.component';
 import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-document-template-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatAutocompleteModule, DropdownComponent, DropdownItemComponent],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -28,23 +30,33 @@ import Swal from 'sweetalert2';
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <mat-form-field appearance="outline" class="w-full sm:col-span-2"><mat-label>Nombre o Código</mat-label><input matInput [(ngModel)]="filter.filtroParametro" (ngModelChange)="onFilterInput()" placeholder="Filtrar por nombre o código" /></mat-form-field>
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Proceso</mat-label><input matInput [(ngModel)]="filter.proceso" (ngModelChange)="onFilterChange()" placeholder="Filtrar por proceso" /></mat-form-field>
+           <mat-form-field appearance="outline" class="w-full"><mat-label>Proceso</mat-label><input matInput [matAutocomplete]="autoProceso" [(ngModel)]="processSearch" (ngModelChange)="onProcessSearch($event)" placeholder="Filtrar por proceso" /><mat-autocomplete #autoProceso="matAutocomplete" (optionSelected)="onProcessSelected($event)">@for (p of filteredProcesses(); track p.llaveTabla) { <mat-option [value]="p.nombre">{{ p.nombre }}</mat-option> }</mat-autocomplete></mat-form-field>
           <mat-form-field appearance="outline" class="w-full"><mat-label>Estado</mat-label><mat-select [(ngModel)]="filter.estado" (ngModelChange)="onFilterChange()"><mat-option value="A">Activo</mat-option><mat-option value="I">Inactivo</mat-option><mat-option value="">Todos</mat-option></mat-select></mat-form-field>
         </div>
       </div>
 
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         @if (loading()) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="data()" class="w-full">
-              <ng-container matColumnDef="codigo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Código</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm">{{ element.codigo }}</td></ng-container>
-              <ng-container matColumnDef="nombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-medium">{{ element.nombre }}</td></ng-container>
-              <ng-container matColumnDef="objetivo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Objetivo</th><td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm truncate max-w-xs">{{ element.objetivo }}</td></ng-container>
-              <ng-container matColumnDef="consecutivo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Consecutivo</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.consecutivo }}</td></ng-container>
-              <ng-container matColumnDef="proceso"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Proceso</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.proceso }}</td></ng-container>
-              <ng-container matColumnDef="acciones"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="flex items-center justify-end gap-1"><button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button><button type="button" class="btn-icon" (click)="duplicateTemplate(element)" aria-label="Duplicar" title="Duplicar" matTooltip="Duplicar"><mat-icon>content_copy</mat-icon></button><button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button></div></td></ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr><tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
+          <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @for (element of data(); track element.llaveTabla) {
+              <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-center gap-3 min-w-0">
+                    @if (element.imagen) { <img [src]="element.imagen" class="w-10 h-10 rounded-lg object-cover shrink-0" alt="" /> } @else { <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">description</mat-icon></div> }
+                    <div class="min-w-0">
+                      <p class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ element.codigo }}</p>
+                      <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.nombre }}</h3>
+                    </div>
+                  </div>
+                  <app-dropdown>
+                    <button type="button" class="btn-icon" trigger aria-label="Acciones"><mat-icon>more_vert</mat-icon></button>
+                    <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
+                    <app-dropdown-item (clicked)="duplicateTemplate(element)"><mat-icon class="text-base">content_copy</mat-icon> Duplicar</app-dropdown-item>
+                    <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
+                  </app-dropdown>
+                </div>
+              </div>
+            }
           </div>
           <mat-paginator [length]="totalItems()" [pageSize]="pageSize()" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onPageChange($event)" class="px-4 py-2 border-t border-gray-200 dark:border-gray-700"></mat-paginator>
         }
@@ -56,6 +68,7 @@ import Swal from 'sweetalert2';
 })
 export class DocumentTemplateListComponent implements OnInit {
     private service = inject(DocumentTemplateService);
+    private processService = inject(ProcessService);
     private dialog = inject(MatDialog);
 
     loading = signal(false);
@@ -64,6 +77,9 @@ export class DocumentTemplateListComponent implements OnInit {
     pageSize = signal(25);
     currentPage = signal(0);
     private debounceTimer: any;
+    processSearch = '';
+    processes = signal<ProcesoDTO[]>([]);
+    filteredProcesses = signal<ProcesoDTO[]>([]);
 
     filter: DocumentoPlantillaFilterDTO = {
         estado: 'A',
@@ -72,7 +88,6 @@ export class DocumentTemplateListComponent implements OnInit {
         imagen: '',
         color: '',
         codigo: '',
-        server: '',
         proceso: '',
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
@@ -81,9 +96,10 @@ export class DocumentTemplateListComponent implements OnInit {
         securityToken: ''
     };
 
-    displayedColumns = ['codigo', 'nombre', 'objetivo', 'consecutivo', 'proceso', 'acciones'];
-
-    ngOnInit(): void { this.loadData(); }
+    ngOnInit(): void {
+        this.loadData();
+        this.processService.getProcessTree().subscribe({ next: (res) => { this.processes.set(res); this.filteredProcesses.set(res); } });
+    }
 
     loadData(): void {
         this.loading.set(true);
@@ -95,6 +111,14 @@ export class DocumentTemplateListComponent implements OnInit {
 
     onFilterChange(): void { this.currentPage.set(0); this.loadData(); }
     onFilterInput(): void { clearTimeout(this.debounceTimer); this.debounceTimer = setTimeout(() => { this.onFilterChange(); }, 200); }
+    onProcessSearch(value: string): void {
+        const term = value.toLowerCase();
+        this.filteredProcesses.set(term ? this.processes().filter(p => p.nombre.toLowerCase().includes(term) || p.codigo.toLowerCase().includes(term)) : this.processes());
+    }
+    onProcessSelected(event: any): void {
+        this.filter.proceso = event.option.value;
+        this.onFilterChange();
+    }
     onPageChange(event: PageEvent): void { this.currentPage.set(event.pageIndex); this.pageSize.set(event.pageSize); this.loadData(); }
 
     openForm(item?: DocumentoPlantillaDTO): void {

@@ -105,7 +105,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
       this.transformPVCtoFilter(this.data);
     nFilter.valorOpcion = null as any;
     this.isLoading.set(true);
-    this.api.consultarDatosBase(nFilter, this.urlServer)
+    this.api.consultarDatosBase(nFilter)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
@@ -123,7 +123,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     this.asignarValorInicial(); // Se hace antes del validar porque no aparecian la primera ve<
     // Consulto la plantilla para actualizarla y no tener que volver a consultarla
     const plantillaBase: DocumentoPlantillaDTO =
-      this.templateService.getTemplate(this.structure.plantilla, this.urlServer)!;
+      this.templateService.getTemplate(this.structure.plantilla)!;
 
     for (let i = 0; i < plantillaBase.caracteristicas.length; i++) {
       const iCampo = plantillaBase.caracteristicas[i];

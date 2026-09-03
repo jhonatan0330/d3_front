@@ -63,7 +63,7 @@ export class GpsMapComponent extends BaseComponent implements OnInit {
     filtro.dependientes = this.data.dependientes;
 
     this.isLoading.set(true) ;
-    this.api.consultarDatosBase(filtro, this.urlServer)
+    this.api.consultarDatosBase(filtro)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {

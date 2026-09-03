@@ -102,7 +102,7 @@ export class TrazabilityComponent implements OnInit {
 
   ngOnInit(): void {
     this.plantilla = this.templateService.getTemplate(
-      this.data.template, this.data.server
+      this.data.template
     )!;
     this.documentName = this.data.documentName;
     this.documentState = this.data.documentState;
@@ -194,7 +194,7 @@ export class TrazabilityComponent implements OnInit {
     entity.paginacionRegistroFinal = this.cantidadPagina;
     this.pagina = _pagina;
     this.isLoading.set(true);
-    this._traceService.getTrace(entity, this.plantilla.server).subscribe({
+          this._traceService.getTrace(entity).subscribe({
       next: (dataResult: DocumentoRelacionGestorDTO[]) => {
         if (dataResult) {
           const _fullQuantity = dataResult.length;
@@ -245,7 +245,7 @@ export class TrazabilityComponent implements OnInit {
   }
 
   showTraceField2Document(_gestor: DocumentoRelacionGestorDTO) {
-    this._traceService.getTraceFields(_gestor.documentoPrincipal, _gestor.transaccion, this.plantilla.server).subscribe({
+          this._traceService.getTraceFields(_gestor.documentoPrincipal, _gestor.transaccion).subscribe({
       next: (_dataResult: PedidoVentaCaracteristicaDTO[]) => {
         _gestor.campos = _dataResult;
       },
@@ -257,7 +257,6 @@ export class TrazabilityComponent implements OnInit {
     const _doc: PedidoVentaDTO = new PedidoVentaDTO();
     _doc.plantilla = _template;
     _doc.llaveTabla = _id;
-    _doc.server = this.plantilla.server;
     this.utilsService.modalWithParams(_doc);
   }
 

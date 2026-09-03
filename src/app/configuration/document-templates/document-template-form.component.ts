@@ -44,21 +44,9 @@ import Swal from 'sweetalert2';
                   <label class="block text-sm font-semibold mb-1">Proceso</label>
                   <input type="text" [(ngModel)]="template.proceso" name="proceso" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Llave del proceso" />
                 </div>
-                <div class="sm:col-span-2">
-                  <label class="block text-sm font-semibold mb-1">Objetivo</label>
-                  <textarea [(ngModel)]="template.objetivo" name="objetivo" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Color</label>
-                  <input type="color" [(ngModel)]="template.color" name="color" class="w-full h-10 border border-gray-300 dark:border-gray-600 rounded p-1 bg-white dark:bg-gray-800 cursor-pointer" />
-                </div>
                 <div>
                   <label class="block text-sm font-semibold mb-1">Imagen (URL)</label>
                   <input type="text" [(ngModel)]="template.imagen" name="imagen" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div class="sm:col-span-2">
-                  <label class="block text-sm font-semibold mb-1">Servidor</label>
-                  <input type="text" [(ngModel)]="template.server" name="server" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
               </div>
 
@@ -123,7 +111,6 @@ export class DocumentTemplateFormComponent implements OnInit {
         } else {
             this.template = new DocumentoPlantillaDTO();
             this.template.estado = 'A';
-            this.template.color = '#3f51b5';
             this.template.propiedades = [];
             this.template.caracteristicas = [];
             this.template.reportes = [];

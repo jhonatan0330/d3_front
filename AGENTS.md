@@ -4,11 +4,22 @@ Guidance for AI agents and developers working in this repository.
 
 ## Project Overview
 
-- **Name**: d3Front ("Asistant project IA")
+- **Name**: d3Front (Frontend SPA for D3 ecosystem)
 - **Type**: Angular SPA (admin/business app) built on the **FuseAdmin** template
 - **Current stack**: Angular **22.1.0**, TypeScript 6.0.3, Tailwind CSS 3.4.7, RxJS 7.8.2, SCSS
 - **Target**: Angular **22** (already at 22.1.0; see `PlanMejoras.md` for the post-migration improvement plan — the source of truth for ongoing work).
 - **Build system**: Standalone components, bootstrap via `bootstrapApplication` in `src/main.ts` (**zoneless**, `provideZonelessChangeDetection()`; zone.js eliminado en Fase 5.4).
+
+## SDD — Source of Truth
+
+This project follows Spec-Driven Development. The source of truth lives in `sdd/specs/`:
+
+- **`contract.md`** — API contract (endpoints, DTOs, auth, errors)
+- **`architecture.md`** — Global standards (folders, naming, security, testing — ARCH-xxx)
+- **`domains/`** — Domain-specific use cases and specs
+- **`openapi.yaml`** — Machine-readable API contract
+
+Any implementation must match the SDD specs. Deviations are defects.
 
 ## Commands
 
@@ -25,10 +36,24 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 
 > After generating or editing code, run `npm run build` to verify it compiles.
 
-## Workflow: commits por paso
+## Workflow
+
+### SDD Process (`sdd/specs/README.md`)
+
+For each new feature (or bug changing contract):
+
+1. **Specs** — Register requirements in `specs.md`
+2. **Use Cases** — Create/update `use-cases-back.md` and `use-cases-front.md`
+3. **Contract** — Update `contract.md` and `openapi.yaml` if API changes
+4. **Tasks** — Break down in `backlog.md` with verifiable items (front/back separate)
+5. **Implement** — Back (`d3brain`) and front (`d3_front`). Verify:
+   - Front: `npm run build` + `npx tsc -p tsconfig.app.json --noEmit`
+6. **Close** — Mark item complete in `backlog.md`
+
+### Commit Convention
 
 - **Cada paso/ítem de trabajo se resuelve y verifica en un commit independiente** (a `main`). No acumular varios pasos sin commitear.
-- Al terminar un paso (código verificado con `npm run build` / `npx tsc --noEmit`), hacer commit inmediato con mensaje corto y descriptivo que referencie el ítem del plan si aplica (ej. `fix(P1-1): ...`).
+- Al terminar un paso (código verificado con `npm run build` / `npx tsc --noEmit`), hacer commit inmediato con mensaje corto y descriptivo que referencie el ítem del backlog si aplica (ej. `fix(T-DOM-001): ...`).
 - Un commit debe contener solo lo relacionado con ese paso; no mezclar cambios ajenos.
 - **No commitear si el usuario no lo ha pedido** — esta regla aplica cuando el trabajo está organizado en pasos/ítems y el usuario espera un commit por cada uno.
 
@@ -42,17 +67,72 @@ Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
 - `src/app/document/` — **critical, complex** dynamic-forms engine (18 dynamic control types under `form/controls/`: archivo, base, binario, configuracion, croquis, detalle, disponibilidad, fecha, gps, gps-map, informative, numero, proceso, product, producto-lista, seccion, texto, vinculo). Treat as high-risk; migrate last and with care.
 - Other domains: `accounting`, `authentication`, `authorization`, `configuration-forms`, `cruds`, `document-transition`, `layout`, `massive`, `notification`, `persons`, `shared`, `tasks`.
 
+### Frontend Folder Convention (`architecture.md` §2)
+
+Each domain follows this structure:
+```
+src/app/<dominio>/
+  <dominio>.types.ts    ← Interfaces/DTOs from contract (root only)
+  <dominio>.service.ts  ← Service consuming API (root only)
+  componente-a/         ← Angular component (dedicated folder)
+    componente-a.component.ts
+    componente-a.component.html
+```
+
+**Rules:**
+- Root of domain: only `*.types.ts` and `*.service.ts` — no loose components
+- Components: each in its own folder named after the component
+- Services: always at domain root, not in subfolders
+- Types: always at domain root, not in subfolders
+- Auxiliary files (helpers, utils specific to domain): at domain root alongside service
+
 ### Conventions
 - `baseUrl: ./src` in `tsconfig.json`; use path-less imports from `src`, e.g. `import ... from 'app/...'`, `from 'environments/...'`.
 - Components use SCSS (`inlineStyleLanguage: scss`), `ViewEncapsulation.None` + `ChangeDetectionStrategy.OnPush` where the template sets it.
 - ESLint: `@angular-eslint` ng-cli-compat rules, **kebab-case** component/directive selectors with **empty prefix**. Files sometimes use `// @formatter:off` / `/* eslint-disable */` blocks — preserve them.
 - Do NOT add comments to code unless asked.
 
+### API Conventions (`architecture.md` §4, §5, §7, §11)
+
+#### Endpoints (`architecture.md` §4)
+- Use **kebab-case** for new routes: `/web-services`, `/change-state`
+- Legacy camelCase maintained: `/changeState`, `/guardarDocumento`
+- POST for complex filters (legacy compat); GET preferred for new endpoints
+- Auth: `Authorization: Bearer <token>` header (except public endpoints)
+- See `contract.md` for the complete endpoint inventory
+
+#### DTOs (`architecture.md` §5)
+- Response DTOs: `*DTO` suffix (e.g., `TaskDTO`)
+- Filter DTOs: `*FilterDTO` suffix (e.g., `TaskFilterDTO`)
+- Request DTOs: `*Request` suffix (e.g., `TaskRequest`)
+- Identity fields: `llaveTabla` (legacy) or `key` (new domains)
+- State fields: `estado` (legacy) or `state` (new domains)
+- All fields, names and types must match `contract.md` exactly
+
+#### Error Handling (`architecture.md` §7)
+Frontend receives `SharedApiErrorResponse`:
+```json
+{
+  "status": 400,
+  "error_code": "VALIDATION_ERROR",
+  "message": "User-readable message",
+  "detail": "Technical detail (optional)"
+}
+```
+Error codes: `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `VALIDATION_ERROR`, `DUPLICATE_ERROR`, `INTERNAL_ERROR`.
+
+#### Frontend-Contract Sync (`architecture.md` §11)
+- `*.types.ts` must be **exact mirror** of `contract.md` — no extra fields, no missing fields
+- Service paths and HTTP methods must match contract exactly
+- Use `SharedIdResponse` from `shared/api-types.ts` for create/update/delete responses
+- Types in `*.types.ts` are for HTTP communication only; UI-specific types extend them
+
 ## Testing
 
-- **No se ejecutan tests en CI.** Ver `sdd/specs/architecture.md` §13 (Estrategia de testing y CI) — ARCH-012.
-- Verificación estándar: `npm run build` + `npx tsc -p tsconfig.app.json --noEmit`.
-- Typecheck: `npx tsc -p tsconfig.app.json --noEmit` — **0 errors** (baseline ✅).
+- **No unit/integration tests in CI** — ARCH-012 (`architecture.md` §13)
+- Compiler is the only automatic verification
+- Verification: `npm run build` + `npx tsc -p tsconfig.app.json --noEmit`
+- Backend verification: `./gradlew.bat build -x test`
 
 ## Migration Status & Constraints
 

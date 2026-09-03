@@ -392,7 +392,7 @@ export class ManualFormComponent implements OnInit {
 
     getReports() {
         if (!this.catalog) return;
-        const _template = this.templateService.getTemplate(this.catalog.template, null!);
+        const _template = this.templateService.getTemplate(this.catalog.template);
         if (!_template || !_template.reportes || _template.reportes.length === 0) return;
         for (let i = 0; i < _template.reportes.length; i++) {
             this.reportes.push(_template.reportes[i]);

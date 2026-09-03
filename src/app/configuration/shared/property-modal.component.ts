@@ -243,7 +243,7 @@ export class PropertyModalComponent implements OnInit {
         filter.origenCategoria = this.data.origenCategoria || '';
 
         this.propertyService['http'].post<PropiedadValorDefinidoDTO[]>(
-            this.propertyService['ls'].getUrlAccess('/api/config/property-values/by-origen', undefined),
+            this.propertyService['ls'].getUrlAccess('/api/config/property-values/by-origen'),
             filter
         ).subscribe({
             next: (vals) => {
@@ -265,7 +265,7 @@ export class PropertyModalComponent implements OnInit {
 
     loadRoles(): void {
         this.propertyService['http'].post<RolAccesoFilterDTO[]>(
-            this.propertyService['ls'].getUrlAccess('/api/config/roles/list', undefined),
+            this.propertyService['ls'].getUrlAccess('/api/config/roles/list'),
             { estado: 'A' }
         ).subscribe({
             next: (roles) => this.roles = roles,

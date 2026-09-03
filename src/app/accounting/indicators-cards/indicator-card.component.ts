@@ -234,10 +234,9 @@ export class IndicatorCardComponent implements OnInit {
   }
 
   protected onAction(accion: Accion): void {
-    const template = this.templateService.getTemplate(accion.plantilla, null!);
+    const template = this.templateService.getTemplate(accion.plantilla);
     const pedidoVenta = new PedidoVentaDTO();
     pedidoVenta.plantilla = accion.plantilla;
-    pedidoVenta.server = template?.server ?? '';
     this.utilsService.modalWithParams(pedidoVenta, true);
   }
 

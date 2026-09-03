@@ -296,7 +296,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
         filtro.documento = campoFiltro.documento;
 
         this.api
-          .consultarDatosBase(filtro, this.urlServer)
+          .consultarDatosBase(filtro)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((_value: PedidoVentaCaracteristicaFilterDTO) => {
             if (_value && _value.valorFechaMax) {

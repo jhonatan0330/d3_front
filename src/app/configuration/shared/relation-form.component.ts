@@ -103,7 +103,7 @@ export class RelationFormComponent implements OnInit {
         });
 
         this.propertyService['http'].post<any[]>(
-            this.propertyService['ls'].getUrlAccess('/api/config/document-templates/list', undefined),
+            this.propertyService['ls'].getUrlAccess('/api/config/document-templates/list'),
             { estado: 'A' }
         ).subscribe({
             next: (templates) => {

@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, delay, switchMap } from 'rxjs';
-import {  AssistantIntent, AssistantMessage, AssistantResult, AssistantState,  DocumentSearchResult, TemplateSearchResult } from './assistant.models';
+import {  AssistantIntent, AssistantMessage, AssistantResult,  DocumentSearchResult, TemplateSearchResult } from './assistant.models';
 import { TemplateService } from 'app/document/service/template.service';
 import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/model/sw42.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -126,7 +126,7 @@ export class AssistantService {
             case 'buscar-por-arroba': {
                 const filter: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
                 filter.nombre = intent.parametro;
-                return this.api.listarDocumentos(filter, null!).pipe(
+                return this.api.listarDocumentos(filter).pipe(
                     switchMap((docs: PedidoVentaDTO[]) => {
                         if (!docs || docs.length === 0) {
                             return of<AssistantResult>({
@@ -142,13 +142,12 @@ export class AssistantService {
                         const documentos: DocumentSearchResult[] = docs
                             .filter(d => d.estado !== 'I')
                             .map(d => {
-                                const template = this.templateService.getTemplate(d.plantilla, d.server);
+                                const template = this.templateService.getTemplate(d.plantilla);
                                 return {
                                     llaveTabla: d.llaveTabla,
                                     nombre: d.nombre,
                                     descripcion: d.descripcion,
                                     imagen: d.imagen,
-                                    server: d.server,
                                     plantilla: template?.llaveTabla,
                                     nombrePlantilla: template?.nombre,
                                 };
@@ -190,7 +189,6 @@ export class AssistantService {
                     nombre: t.nombre,
                     codigo: t.codigo,
                     imagen: t.imagen,
-                    server: t.server,
                 }));
                 if (templateResults.length === 1) {
                     this.abrirTemplateDirect(templates[0].llaveTabla);
@@ -256,7 +254,7 @@ export class AssistantService {
     }
 
     abrirDocumento(doc: PedidoVentaDTO): void {
-        if (this.templateService.getTemplate(doc.plantilla, null!)) {
+        if (this.templateService.getTemplate(doc.plantilla)) {
             this.utilsService.modalWithParams(doc, false);
         }
     }
