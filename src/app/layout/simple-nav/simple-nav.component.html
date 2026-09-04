@@ -1,5 +1,18 @@
+<div class="px-3 py-2">
+    <div class="flex items-center gap-2 rounded border border-white/10 bg-white/5 px-3 py-2">
+        <mat-icon class="icon-size-4 shrink-0 text-gray-400" [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
+        <input type="text" [ngModel]="filter()" (ngModelChange)="onFilterChange($event)"
+            placeholder="Buscar en el menú"
+            class="w-full min-w-0 bg-transparent text-sm text-white placeholder:text-gray-500 focus:outline-none" />
+        @if (filter()) {
+            <button type="button" class="shrink-0 text-gray-400 hover:text-white" (click)="onFilterChange('')">
+                <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:x-mark'"></mat-icon>
+            </button>
+        }
+    </div>
+</div>
 <nav class="flex flex-1 flex-col min-w-0 overflow-y-auto px-2 pb-4">
-    @for (item of items(); track trackByFn($index, item)) {
+    @for (item of filteredItems(); track trackByFn($index, item)) {
         <simple-nav-item [item]="item" [level]="0" (navigate)="onNavigate()"></simple-nav-item>
     }
 </nav>

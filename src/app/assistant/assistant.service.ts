@@ -61,19 +61,7 @@ export class AssistantService {
         {
             id: crypto.randomUUID(),
             type: 'assistant',
-            text: `📄 Tip 2 — Busca documentos 🔎 Escribe @ seguido del código exacto del documento para encontrarlo rápidamente.Por ejemplo:@FE-1234`,
-            date: new Date(),
-        },
-        {
-            id: crypto.randomUUID(),
-            type: 'assistant',
-            text: `🚀 Tip 3 — Entra a los módulos 🧭 Escribe / seguido del nombre o código del módulo para acceder rápidamente. No necesitas escribir el nombre completo. Por ejemplo: /gas . Te permitirá buscar módulos relacionados con gastos.`,
-            date: new Date(),
-        },
-        {
-            id: crypto.randomUUID(),
-            type: 'assistant',
-            text: `🤖 Tip 4 — Estoy aprendiendo 🌱 Todavía estoy creciendo. Por ahora no soy una IA, pero cada día estoy aprendiendo para poder ayudarte mucho más. ✨ ¡Pronto seré mucho más inteligente!`,
+            text: `🤖 Tip 2 — Estoy aprendiendo 🌱 Todavía estoy creciendo. Por ahora no soy una IA, pero cada día estoy aprendiendo para poder ayudarte mucho más. ✨ ¡Pronto seré mucho más inteligente!`,
             date: new Date(),
         },
     ]);
@@ -83,47 +71,45 @@ export class AssistantService {
     }
 
     interpretar(pregunta: string): AssistantIntent {
+        const texto = pregunta.trim();
 
-        if (pregunta.trim().startsWith('@')) {
-            const parametro = pregunta.trim().slice(1).trim();
-            if (!parametro) {
-                return {
-                    tipo: 'buscar-por-arroba-vacio',
-                };
-            }
+        if (!texto) {
             return {
-                tipo: 'buscar-por-arroba',
-                parametro: parametro,
+                tipo: 'vacio',
             };
         }
 
-        if (pregunta.trim().startsWith('/')) {
+        const tieneEspacios = /\s/.test(texto);
+        const tieneDigitos = /\d/.test(texto);
+
+        if (!tieneEspacios && tieneDigitos) {
             return {
-                tipo: 'buscar-template-por-slash',
-                parametro: pregunta.trim().slice(1).trim(),
+                tipo: 'buscar-por-codigo',
+                parametro: texto,
             };
         }
 
         return {
-            tipo: 'desconocido',
+            tipo: 'buscar-modulo',
+            parametro: texto,
         };
     }
 
     ejecutar(intent: AssistantIntent): Observable<AssistantResult> {
         switch (intent.tipo) {
-            case 'buscar-por-arroba-vacio': {
+            case 'vacio': {
                 return of<AssistantResult>({
-                    state: 'success',
+                    state: 'idle',
                     message: {
                         id: crypto.randomUUID(),
                         type: 'assistant',
-                        text: 'Por favor, escriba el código del documento después del símbolo @. Por ejemplo: @FE-1234',
+                        text: '',
                         date: new Date(),
                     },
-                }).pipe(delay(300));
+                });
             }
 
-            case 'buscar-por-arroba': {
+            case 'buscar-por-codigo': {
                 const filter: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
                 filter.nombre = intent.parametro;
                 return this.api.listarDocumentos(filter).pipe(
@@ -157,6 +143,7 @@ export class AssistantService {
                         }
                         return of<AssistantResult>({
                             state: 'success',
+                            close: documentos.length === 1,
                             message: {
                                 id: crypto.randomUUID(),
                                 type: 'assistant',
@@ -171,7 +158,7 @@ export class AssistantService {
                 );
             }
 
-            case 'buscar-template-por-slash': {
+            case 'buscar-modulo': {
                 const templates = this.filtrarTemplates(intent.parametro);
                 if (templates.length === 0) {
                     return of<AssistantResult>({
@@ -179,7 +166,7 @@ export class AssistantService {
                         message: {
                             id: crypto.randomUUID(),
                             type: 'assistant',
-                            text: `No se encontraron plantillas que coincidan con: ${intent.parametro}`,
+                            text: `No se encontraron módulos que coincidan con: ${intent.parametro}`,
                             date: new Date(),
                         },
                     }).pipe(delay(500));

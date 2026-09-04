@@ -3,6 +3,7 @@ import { Navigation } from 'app/layout/navigation/navigation.types';
 import { FuseNavigationItem } from 'app/layout/layout.types';
 import { DocumentoPlantillaDTO } from 'app/document/document.types';
 import { PropiedadDTO } from 'app/shared/shared.domain';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Injectable({
     providedIn: 'root'
@@ -11,14 +12,14 @@ export class NavigationService {
     private _navigation: WritableSignal<Navigation> = signal(null!);
 
     constructor() {
-        this.generate(null!, null!);
+        this.generate(null!, null!, null!);
     }
 
     get navigation(): Navigation {
         return this._navigation();
     }
 
-    generate(process: DocumentoPlantillaDTO[], modules: PropiedadDTO[]) {
+    generate(process: DocumentoPlantillaDTO[], modules: PropiedadDTO[], templates: DocumentoPlantillaDTO[]) {
 
 
         const localNavigation: FuseNavigationItem[] = [
@@ -119,6 +120,42 @@ export class NavigationService {
                 compactNavigation.push(moduleItemCompact);
             }
             
+        }
+
+        // PLANTILLAS (Crear)
+        const createNavItem: FuseNavigationItem[] = [];
+        if (templates && templates.length) {
+            templates.forEach((template: DocumentoPlantillaDTO) => {
+                if ((PlantillaHelper.buscarPropiedad(template.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
+                    && template.tipo == 'P')) {
+                    const newItem: FuseNavigationItem = {
+                        id: template.llaveTabla,
+                        title: template.nombre,
+                        type: 'basic',
+                        image: template.imagen,
+                        link: '/list/list/' + template.llaveTabla
+                    };
+                    createNavItem.push(newItem);
+                }
+            });
+        }
+        if (createNavItem && createNavItem.length !== 0) {
+            const createItemLocal: FuseNavigationItem = {
+                id      : 'crear',
+                title   : 'Modulos',
+                type    : 'group',
+                icon    : 'heroicons_outline:plus',
+                children: createNavItem
+            };
+            const createItemCompact: FuseNavigationItem = {
+                id      : 'crear',
+                title   : 'Crear',
+                type    : 'aside',
+                icon    : 'heroicons_outline:plus',
+                children: createNavItem
+            };
+            localNavigation.push(createItemLocal);
+            compactNavigation.push(createItemCompact);
         }
 
         const navigation = {

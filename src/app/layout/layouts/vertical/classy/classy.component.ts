@@ -12,12 +12,13 @@ import { UserComponent } from '../../../user/user.component';
 import { SimpleNavComponent } from '../../../simple-nav/simple-nav.component';
 import { DatePipe } from '@angular/common';
 import { ImageFormatPipe } from '../../../../shared/local-image';
+import { SearchComponent } from 'app/layout/search/search.component';
 
 @Component({
     selector: 'classy-layout',
     templateUrl: './classy.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SimpleNavComponent, RouterLink, MatIcon,  ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe]
+    imports: [SimpleNavComponent, RouterLink, MatIcon,  ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe, SearchComponent]
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);

@@ -64,18 +64,10 @@ export class AssistantPanelComponent implements OnInit, AfterViewInit {
         const texto = this.pregunta.trim();
         if (!texto) { return; }
 
-        let textoMostrar = texto;
-        if (texto.startsWith('@')) {
-            const param = texto.slice(1).trim();
-            textoMostrar = param ? `Deseo buscar el documento ${param}` : '@';
-        } else if (texto.startsWith('/')) {
-            textoMostrar = `Deseo ingresar al modulo ${texto.slice(1).trim()}`;
-        }
-
         this.agregarMensaje({
             id: crypto.randomUUID(),
             type: 'user',
-            text: textoMostrar,
+            text: texto,
             date: new Date(),
         });
         this.pregunta = '';
@@ -83,12 +75,16 @@ export class AssistantPanelComponent implements OnInit, AfterViewInit {
 
         const intent = this.assistantService.interpretar(texto);
 
+        if (intent.tipo === 'vacio') { return; }
+
         this.assistantService.ejecutar(intent)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: resultado => {
                     this.estado.set(resultado.state);
-                    this.agregarMensaje(resultado.message);
+                    if (resultado.message.text) {
+                        this.agregarMensaje(resultado.message);
+                    }
                     if (resultado.close) {
                         this.cerrar();
                     }
@@ -114,13 +110,13 @@ export class AssistantPanelComponent implements OnInit, AfterViewInit {
             this.assistantService.abrirDocumento(pedidoVenta);
         }
 
-
         this.agregarMensaje({
             id: crypto.randomUUID(),
             type: 'assistant',
             text: 'Documento abierto',
             date: new Date(),
         });
+        this.cerrar();
     }
 
     ejecutarPlantilla(template: TemplateSearchResult): void {

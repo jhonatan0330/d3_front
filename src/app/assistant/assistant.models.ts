@@ -13,15 +13,15 @@ export type AssistantState =
 
 export type AssistantIntent =
     {
-        tipo: 'buscar-por-arroba';
+        tipo: 'buscar-por-codigo';
         parametro: string;
     }
     | {
-        tipo: 'buscar-por-arroba-vacio';
+        tipo: 'buscar-modulo';
+        parametro: string;
     }
     | {
-        tipo: 'buscar-template-por-slash';
-        parametro: string;
+        tipo: 'vacio';
     }
     | {
         tipo: 'desconocido';

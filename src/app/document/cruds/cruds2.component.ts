@@ -39,7 +39,12 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
     selector: 'app-cruds',
     templateUrl: './cruds2.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTooltip, MatIcon, FormsModule, ReactiveFormsModule, MatFormField, MatInput, MatSuffix, MatLabel, MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, CurrencyPipe, DatePipe, 
+    imports: [MatTooltip, MatIcon, FormsModule, ReactiveFormsModule, 
+        MatFormField, MatInput, MatSuffix, MatLabel, 
+        MatDatepickerInput, MatDatepickerToggle, MatDatepicker,
+         MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, 
+         MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, 
+         MatRowDef, MatRow, CurrencyPipe, DatePipe, 
         ImageFormatPipe, DropdownComponent, DropdownItemComponent]
 })
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
