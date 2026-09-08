@@ -55,14 +55,8 @@ export const appRoutes: Route[] = [
           ]},
           { path: 'messages', children: [
             { path: '', loadComponent: () => import('app/configuration/messages/message-list.component').then(m => m.MessageListComponent) },
-            { path: ':id', loadComponent: () => import('app/configuration/messages/message-list.component').then(m => m.MessageListComponent) },
           ]},
-          { path: 'message-templates', children: [
-            { path: '', loadComponent: () => import('app/configuration/message-templates/message-template-list.component').then(m => m.MessageTemplateListComponent) },
-            { path: 'new', loadComponent: () => import('app/configuration/message-templates/message-template-form.component').then(m => m.MessageTemplateFormComponent) },
-            { path: ':id/edit', loadComponent: () => import('app/configuration/message-templates/message-template-form.component').then(m => m.MessageTemplateFormComponent) },
-            { path: ':id', loadComponent: () => import('app/configuration/message-templates/message-template-form.component').then(m => m.MessageTemplateFormComponent) },
-          ]},
+          { path: 'message-templates', redirectTo: 'messages', pathMatch: 'full' },
           { path: 'document-templates', children: [
             { path: '', loadComponent: () => import('app/configuration/document-templates/document-template-list.component').then(m => m.DocumentTemplateListComponent) },
             { path: 'new', loadComponent: () => import('app/configuration/document-templates/document-template-form.component').then(m => m.DocumentTemplateFormComponent) },
@@ -121,7 +115,14 @@ export const appRoutes: Route[] = [
             { path: ':id/edit', loadComponent: () => import('app/configuration/property-values/property-value-form.component').then(m => m.PropertyValueFormComponent) },
             { path: ':id', loadComponent: () => import('app/configuration/property-values/property-value-form.component').then(m => m.PropertyValueFormComponent) },
           ]},
+          { path: 'indicators', children: [
+            { path: '', loadComponent: () => import('app/configuration/indicators/indicator-list.component').then(m => m.IndicatorListComponent) },
+            { path: 'new', loadComponent: () => import('app/configuration/indicators/indicator-form.component').then(m => m.IndicatorFormComponent) },
+            { path: ':id/edit', loadComponent: () => import('app/configuration/indicators/indicator-form.component').then(m => m.IndicatorFormComponent) },
+            { path: ':id', loadComponent: () => import('app/configuration/indicators/indicator-form.component').then(m => m.IndicatorFormComponent) },
+          ]},
           { path: 'properties', loadComponent: () => import('app/configuration/shared/property-field.component').then(m => m.PropertyFieldComponent) },
+          { path: 'tree-compare', loadComponent: () => import('app/configuration/tree-compare/tree-compare.component').then(m => m.TreeCompareComponent) },
         ]
       },
 

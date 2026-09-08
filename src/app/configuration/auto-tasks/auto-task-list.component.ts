@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 import { ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO } from 'app/document/document.types';
 import { AutoTaskService } from '../configuracion.api';
 import { AutoTaskFormComponent } from './auto-task-form.component';
@@ -20,7 +20,7 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-auto-task-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, DropdownComponent, DropdownItemComponent],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -30,35 +30,55 @@ import Swal from 'sweetalert2';
 
       <!-- Filtros -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Proceso</mat-label><input matInput [(ngModel)]="filter.proceso" (ngModelChange)="onFilterChange()" placeholder="Filtrar por proceso" /></mat-form-field>
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Estado Origen</mat-label><input matInput [(ngModel)]="filter.estadoOrigen" (ngModelChange)="onFilterChange()" placeholder="Filtrar por estado origen" /></mat-form-field>
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Estado Destino</mat-label><input matInput [(ngModel)]="filter.estadoDestino" (ngModelChange)="onFilterChange()" placeholder="Filtrar por estado destino" /></mat-form-field>
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Fecha Desde</mat-label><input matInput [matDatepicker]="dp1" [(ngModel)]="filter.fechaDesde" (ngModelChange)="onFilterChange()" placeholder="DD/MM/YYYY" /><mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle><mat-datepicker #dp1></mat-datepicker></mat-form-field>
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Fecha Hasta</mat-label><input matInput [matDatepicker]="dp2" [(ngModel)]="filter.fechaHasta" (ngModelChange)="onFilterChange()" placeholder="DD/MM/YYYY" /><mat-datepicker-toggle matIconSuffix [for]="dp2"></mat-datepicker-toggle><mat-datepicker #dp2></mat-datepicker></mat-form-field>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Plantilla Nombre</mat-label><input matInput [(ngModel)]="filter.plantillaNombre" (ngModelChange)="onFilterChange()" placeholder="Filtrar por plantilla nombre" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Plantilla</mat-label><input matInput [(ngModel)]="filter.plantilla" (ngModelChange)="onFilterChange()" placeholder="Filtrar por plantilla" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Transición</mat-label><input matInput [(ngModel)]="filter.transicion" (ngModelChange)="onFilterChange()" placeholder="Filtrar por transición" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Propiedad</mat-label><input matInput [(ngModel)]="filter.propiedad" (ngModelChange)="onFilterChange()" placeholder="Filtrar por propiedad" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Fecha Desde</mat-label><input matInput [matDatepicker]="dp1" [(ngModel)]="filter.fechaMin" (ngModelChange)="onFilterChange()" placeholder="DD/MM/YYYY" /><mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle><mat-datepicker #dp1></mat-datepicker></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Fecha Hasta</mat-label><input matInput [matDatepicker]="dp2" [(ngModel)]="filter.fechaMax" (ngModelChange)="onFilterChange()" placeholder="DD/MM/YYYY" /><mat-datepicker-toggle matIconSuffix [for]="dp2"></mat-datepicker-toggle><mat-datepicker #dp2></mat-datepicker></mat-form-field>
         </div>
         <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Activa</mat-label><mat-select [(ngModel)]="filter.activa" (ngModelChange)="onFilterChange()"><mat-option value="">Todas</mat-option><mat-option [value]="true">Sí</mat-option><mat-option [value]="false">No</mat-option></mat-select></mat-form-field>
           <mat-form-field appearance="outline" class="w-full"><mat-label>Estado</mat-label><mat-select [(ngModel)]="filter.estado" (ngModelChange)="onFilterChange()"><mat-option value="A">Activo</mat-option><mat-option value="I">Inactivo</mat-option><mat-option value="">Todos</mat-option></mat-select></mat-form-field>
         </div>
       </div>
 
-      <!-- Tabla -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         @if (loading()) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="data()" class="w-full">
-              <ng-container matColumnDef="nombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-medium">{{ element.nombre }}</td></ng-container>
-              <ng-container matColumnDef="procesoNombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Proceso</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.procesoNombre }}</td></ng-container>
-              <ng-container matColumnDef="estadoOrigenNombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado Origen</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.estadoOrigenNombre }}</td></ng-container>
-              <ng-container matColumnDef="estadoDestinoNombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado Destino</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.estadoDestinoNombre }}</td></ng-container>
-              <ng-container matColumnDef="activa"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Activa</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><span class="badge" [class.badge-success]="element.activa" [class.badge-secondary]="!element.activa">{{ element.activa ? 'Sí' : 'No' }}</span></td></ng-container>
-              <ng-container matColumnDef="programa"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Programación</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm">{{ element.programa || 'Manual' }}</td></ng-container>
-              <ng-container matColumnDef="fechaProgramada"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Próxima Ejecución</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.fechaProgramada ? (element.fechaProgramada | date:'dd/MM/yyyy HH:mm') : '—' }}</td></ng-container>
-              <ng-container matColumnDef="estado"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span></td></ng-container>
-              <ng-container matColumnDef="acciones"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="flex items-center justify-end gap-1"><button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button><button type="button" class="btn-icon" (click)="openScheduleDialog(element)" aria-label="Programar" title="Programar" matTooltip="Programar"><mat-icon>schedule</mat-icon></button><button type="button" class="btn-icon text-green-600 hover:text-green-700" (click)="executeNow(element)" aria-label="Ejecutar Ahora" title="Ejecutar Ahora" matTooltip="Ejecutar Ahora"><mat-icon>play_circle_filled</mat-icon></button><button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button></div></td></ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr><tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
+          <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @for (element of data(); track element.llaveTabla) {
+              <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">playlist_play</mat-icon></div>
+                    <div class="min-w-0">
+                      <p class="text-xs text-gray-500 dark:text-gray-400">{{ element.plantillaNombre }}</p>
+                      <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.transicion }}</h3>
+                    </div>
+                  </div>
+                  <app-dropdown>
+                    <button type="button" class="btn-icon" trigger aria-label="Acciones"><mat-icon>more_vert</mat-icon></button>
+                    <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
+                    <app-dropdown-item (clicked)="openScheduleDialog(element)"><mat-icon class="text-base">schedule</mat-icon> Programar</app-dropdown-item>
+                    <app-dropdown-item (clicked)="executeNow(element)"><mat-icon class="text-base">play_circle_filled</mat-icon> Ejecutar ahora</app-dropdown-item>
+                    <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
+                  </app-dropdown>
+                </div>
+                <dl class="grid grid-cols-2 gap-2 text-sm">
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Plantilla</dt><dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.plantilla }}</dd></div>
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Propiedad</dt><dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.propiedad }}</dd></div>
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Fecha</dt><dd class="text-gray-900 dark:text-gray-100">{{ element.fecha ? (element.fecha | date:'dd/MM/yyyy') : '—' }}</dd></div>
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Ejecución</dt><dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.ejecucion }}</dd></div>
+                </dl>
+                <div>
+                  <dt class="text-xs text-gray-500 dark:text-gray-400">Mensaje</dt>
+                  <dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.mensaje }}</dd>
+                </div>
+                <div class="mt-auto flex items-center gap-2">
+                  <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
+                </div>
+              </div>
+            }
           </div>
           <mat-paginator [length]="totalItems()" [pageSize]="pageSize()" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onPageChange($event)" class="px-4 py-2 border-t border-gray-200 dark:border-gray-700"></mat-paginator>
         }
@@ -80,20 +100,18 @@ export class AutoTaskListComponent implements OnInit {
 
     filter: ProcesoTransicionAutomaticaFilterDTO = {
         estado: 'A',
-        proceso: '',
-        estadoOrigen: '',
-        estadoDestino: '',
-        activa: undefined,
-        fechaDesde: undefined,
-        fechaHasta: undefined,
+        plantilla: '',
+        plantillaNombre: '',
+        transicion: '',
+        propiedad: '',
+        fechaMin: undefined,
+        fechaMax: undefined,
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
         securityToken: ''
     };
-
-    displayedColumns = ['nombre', 'procesoNombre', 'estadoOrigenNombre', 'estadoDestinoNombre', 'activa', 'programa', 'fechaProgramada', 'estado', 'acciones'];
 
     ngOnInit(): void { this.loadData(); }
 
@@ -121,7 +139,7 @@ export class AutoTaskListComponent implements OnInit {
     executeNow(task: ProcesoTransicionAutomaticaDTO): void {
         Swal.fire({
             title: '¿Ejecutar ahora?',
-            text: `Se ejecutará la tarea "${task.nombre}" inmediatamente.`,
+            text: `Se ejecutará la tarea "${task.plantillaNombre}" inmediatamente.`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Sí, ejecutar',

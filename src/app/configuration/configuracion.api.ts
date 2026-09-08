@@ -17,7 +17,7 @@ import {
     PropiedadDTO, PropiedadCampoDTO, PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO,
     RelacionInternaDTO, RelacionInternaFilterDTO,
 } from 'app/shared/shared.domain';
-import { DocumentoPlantillaFilterDTO } from './configuration.types';
+import { DocumentoPlantillaFilterDTO, IndicatorDTO, IndicatorFilterDTO, ArbolConfiguracionFilterDTO, TreeNodeDTO, DiferenciaDTO, SincronizacionSeleccionadaDTO, CompararArbolRequest } from './configuration.types';
 
 @Injectable({ providedIn: 'root' })
 export class ConsecutiveService {
@@ -625,6 +625,75 @@ export class PropertyService {
     inactivateRelation(relation: RelacionInternaDTO): Observable<RelacionInternaDTO> {
         return this.http.post<RelacionInternaDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/inactivate`), relation
+        );
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class IndicatorConfigService {
+    private http = inject(HttpClient);
+    private ls = inject(LocalStoreService);
+    private baseUrl = '/api/config/indicators';
+
+    getIndicadores(filter?: IndicatorFilterDTO): Observable<IndicatorDTO[]> {
+        return this.http.post<IndicatorDTO[]>(
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
+        );
+    }
+
+    getIndicadorById(key: string): Observable<IndicatorDTO> {
+        return this.http.post<IndicatorDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
+        );
+    }
+
+    createIndicador(indicador: IndicatorDTO): Observable<IndicatorDTO> {
+        return this.http.post<IndicatorDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/create`), indicador
+        );
+    }
+
+    updateIndicador(indicador: IndicatorDTO): Observable<IndicatorDTO> {
+        return this.http.post<IndicatorDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/update`), indicador
+        );
+    }
+
+    inactivateIndicador(indicador: IndicatorDTO): Observable<IndicatorDTO> {
+        return this.http.post<IndicatorDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${indicador.llaveTabla}/inactivate`), indicador
+        );
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class TreeConfigService {
+    private http = inject(HttpClient);
+    private ls = inject(LocalStoreService);
+    private baseUrl = '/api/config/tree';
+
+    getTree(filter?: ArbolConfiguracionFilterDTO): Observable<TreeNodeDTO> {
+        return this.http.post<TreeNodeDTO>(
+            this.ls.getUrlAccess(this.baseUrl), filter ?? new ArbolConfiguracionFilterDTO()
+        );
+    }
+
+    exportTree(filter?: ArbolConfiguracionFilterDTO): Observable<{ url: string }> {
+        return this.http.post<{ url: string }>(
+            this.ls.getUrlAccess(`${this.baseUrl}/export`), filter ?? new ArbolConfiguracionFilterDTO()
+        );
+    }
+
+    compareTree(arbol: TreeNodeDTO, filter?: ArbolConfiguracionFilterDTO): Observable<DiferenciaDTO[]> {
+        const request: CompararArbolRequest = { arbol, filter: filter ?? new ArbolConfiguracionFilterDTO() };
+        return this.http.post<DiferenciaDTO[]>(
+            this.ls.getUrlAccess(`${this.baseUrl}/compare`), request
+        );
+    }
+
+    syncTree(request: SincronizacionSeleccionadaDTO): Observable<{ url: string }> {
+        return this.http.post<{ url: string }>(
+            this.ls.getUrlAccess(`${this.baseUrl}/sync`), request
         );
     }
 }

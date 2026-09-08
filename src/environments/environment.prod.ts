@@ -4,5 +4,5 @@ export const environment = {
   production: true,
   appVersion: config.dateCompile,
   apiURL: config.apiUrl,
-  dateCompile: config.dateCompile
+  dateCompile: config.dateCompile,
 };

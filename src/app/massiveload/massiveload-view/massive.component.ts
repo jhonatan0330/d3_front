@@ -787,7 +787,7 @@ export class MassiveComponent implements OnInit {
                     this.isProcessing.set(true);
                     this.api.uploadFile(this.files[j]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                       next: (value) => {
-                        iCampo.valorText = value.message;
+                        iCampo.valorText = value;
                         this.procesarDocumentos();
                         this.isProcessing.set(false);
                       },

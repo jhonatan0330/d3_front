@@ -1,10 +1,10 @@
-<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+<div class="flex flex-col min-w-0 overflow-hidden">
 
   <div class="flex h-full">
 
     <!-- Backdrop for overlay mode -->
     @if (drawerOpened() && drawerMode === 'over') {
-      <div class="fixed inset-0 bg-black/50 z-40" (click)="toggleDrawer()"></div>
+      <div class="inset-0 bg-black/50 z-40" (click)="toggleDrawer()"></div>
     }
 
     <!-- Drawer -->
@@ -30,13 +30,13 @@
         </div>
 
         <div class="relative">
-          @if (isLoadingCatalog) {
+          @if (isLoadingCatalog()) {
             <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
               <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
             </div>
           }
-          @if (catalogs && catalogs.length) {
-            @for (catalog of catalogs; track trackByFn(i, catalog); let i = $index) {
+          @if (catalogs().length) {
+            @for (catalog of catalogs(); track trackByFn(i, catalog); let i = $index) {
               <a class="z-20 flex items-center justify-between px-6 py-4 md:px-8 cursor-pointer border-b"
                 (click)="selectCatalog(catalog)"
                                 [ngClass]="{'hover:bg-gray-100 dark:hover:bg-hover': !accountingService.currentCatalog || accountingService.currentCatalog.key !== catalog.key,
@@ -75,7 +75,7 @@
           </div>
           <!-- Account balance -->
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full min-w-0">
-            @for (item of balance; track item) {
+            @for (item of balance(); track item) {
               <div
                 class="sm:col-span-1 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
                 <div class="flex items-start justify-between">
@@ -139,7 +139,7 @@
             </div>
             <div class="overflow-x-auto mx-6">
               <table class="w-full bg-transparent" mat-table matSort
-                [dataSource]="recentTransactionsDataSource" [trackBy]="trackByFn"
+                [dataSource]="recentTransactionsDataSource()" [trackBy]="trackByFn"
                 #recentTransactionsTable>
                 <!-- Transaction ID -->
                 <ng-container matColumnDef="transactionId">
@@ -255,12 +255,12 @@
               </div>
             </div>
             <div class="px-6 py-2 overflow-x-auto">
-              @if (isLoadingAccount) {
+              @if (isLoadingAccount()) {
                 <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
                   <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
                 </div>
               }
-              <table class="w-full bg-transparent" mat-table matSort [dataSource]="dataSource">
+              <table class="w-full bg-transparent" mat-table matSort [dataSource]="dataSource()">
                 <!-- WBS -->
                 <ng-container matColumnDef="code">
                   <th mat-header-cell mat-sort-header *matHeaderCellDef>Codigo</th>

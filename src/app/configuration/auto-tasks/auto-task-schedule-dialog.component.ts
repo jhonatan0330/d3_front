@@ -24,7 +24,7 @@ interface ScheduleDialogData {
     <div class="max-w-md w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
         <mat-icon class="text-blue-500 mr-2">schedule</mat-icon>
-        Programar Tarea: {{ data.task.nombre }}
+        Programar Tarea: {{ data.task.plantillaNombre }}
       </h2>
 
       <form #form="ngForm" (ngSubmit)="onSchedule()">
@@ -180,12 +180,7 @@ export class AutoTaskScheduleDialogComponent implements OnInit {
     ];
     cargando = false;
 
-    ngOnInit(): void {
-        if (this.data.task.programa) {
-            this.cronExpression = this.data.task.programa;
-            this.scheduleType = 'cron';
-        }
-    }
+    ngOnInit(): void {}
 
     setCron(cron: string): void {
         this.cronExpression = cron;

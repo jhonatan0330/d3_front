@@ -5,7 +5,6 @@ import {
   HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs';
 import { TemplateService } from 'app/document/service/template.service';
 
@@ -14,7 +13,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = templateService.getTokenConnection(req.url);
   let changedReq: HttpRequest<any>;
-  if (token) {
+  if (token && !req.url.includes('openrouter.ai')) {
     changedReq = req.clone({
       setHeaders: {
         Authorization: `${token}`,

@@ -14,10 +14,10 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
 import {
   Accion,
   Indicador,
-  IndicadoresService,
-  Periodo,
-  ResultadoIndicador,
-} from 'app/layout/dashboard/indicadores.service';
+  IndicadorResultadoDTO,
+  PeriodoDTO,
+} from 'app/accounting/accounting.types';
+import { IndicadoresService } from 'app/accounting/indicators-cards/indicadores.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
@@ -44,7 +44,7 @@ import { IndicatorTableComponent } from './indicator-table.component';
           >
             <img
               class="h-6 w-6 object-contain"
-              [src]="indicador().icono"
+              [src]="indicador().imagen"
               alt=""
               (error)="onImageError($event)"
             />
@@ -186,8 +186,8 @@ export class IndicatorCardComponent implements OnInit {
   private utilsService = inject(UtilsService);
   private templateService = inject(TemplateService);
 
-  protected selectedPeriod = signal<Periodo | undefined>(undefined);
-  protected resultado = signal<ResultadoIndicador | undefined>(undefined);
+  protected selectedPeriod = signal<PeriodoDTO | undefined>(undefined);
+  protected resultado = signal<IndicadorResultadoDTO | undefined>(undefined);
   protected loading = signal(false);
 
   ngOnInit(): void {
@@ -208,7 +208,7 @@ export class IndicatorCardComponent implements OnInit {
     if (!period) { return; }
     this.loading.set(true);
     this.indicadoresService
-      .getResultadoIndicador(this.indicador().id, period)
+      .getResultadoIndicador(this.indicador().llaveTabla, period)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resultado) => {
@@ -219,7 +219,7 @@ export class IndicatorCardComponent implements OnInit {
       });
   }
 
-  protected applyPeriod(period: Periodo): void {
+  protected applyPeriod(period: PeriodoDTO): void {
     this.selectedPeriod.set(period);
     this.loadResultado();
   }

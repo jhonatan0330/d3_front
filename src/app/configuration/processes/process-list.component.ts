@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,6 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { CdkTreeModule } from '@angular/cdk/tree';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/document.types';
 import { ProcessService } from '../configuracion.api';
 import { ProcessFormComponent } from './process-form.component';
@@ -28,7 +28,7 @@ interface TreeNode {
 @Component({
     selector: 'app-process-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatTabsModule, CdkTreeModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatTabsModule, CdkTreeModule, DropdownComponent, DropdownItemComponent],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -44,24 +44,42 @@ interface TreeNode {
               <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 <mat-form-field appearance="outline" class="w-full"><mat-label>Nombre</mat-label><input matInput [(ngModel)]="filter.nombre" (ngModelChange)="onFilterChange()" placeholder="Filtrar por nombre" /></mat-form-field>
                 <mat-form-field appearance="outline" class="w-full"><mat-label>Código</mat-label><input matInput [(ngModel)]="filter.codigo" (ngModelChange)="onFilterChange()" placeholder="Filtrar por código" /></mat-form-field>
-                <mat-form-field appearance="outline" class="w-full"><mat-label>Objetivo</mat-label><input matInput [(ngModel)]="filter.objetivo" (ngModelChange)="onFilterChange()" placeholder="Filtrar por objetivo" /></mat-form-field>
+                <mat-form-field appearance="outline" class="w-full"><mat-label>Tipo</mat-label><mat-select [(ngModel)]="filter.tipo" (ngModelChange)="onFilterChange()"><mat-option value="">Todos</mat-option><mat-option value="A">Agrupador</mat-option><mat-option value="E">Ejecutor</mat-option></mat-select></mat-form-field>
                 <mat-form-field appearance="outline" class="w-full"><mat-label>Estado</mat-label><mat-select [(ngModel)]="filter.estado" (ngModelChange)="onFilterChange()"><mat-option value="A">Activo</mat-option><mat-option value="I">Inactivo</mat-option><mat-option value="">Todos</mat-option></mat-select></mat-form-field>
               </div>
             </div>
 
             @if (loading()) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
-              <div class="overflow-x-auto">
-                <table mat-table [dataSource]="data()" class="w-full">
-                  <ng-container matColumnDef="codigo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Código</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm">{{ element.codigo }}</td></ng-container>
-                  <ng-container matColumnDef="nombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-medium">{{ element.nombre }}</td></ng-container>
-                  <ng-container matColumnDef="descripcion"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Descripción</th><td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm truncate max-w-xs">{{ element.descripcion }}</td></ng-container>
-                  <ng-container matColumnDef="consecutivo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Consecutivo</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.consecutivo }}</td></ng-container>
-                  <ng-container matColumnDef="color"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Color</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="w-6 h-6 rounded border" [style.background-color]="element.color"></div></td></ng-container>
-                  <ng-container matColumnDef="objetivo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Objetivo</th><td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm truncate max-w-xs">{{ element.objetivo }}</td></ng-container>
-                  <ng-container matColumnDef="estado"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span></td></ng-container>
-                  <ng-container matColumnDef="acciones"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="flex items-center justify-end gap-1"><button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button><button type="button" class="btn-icon" (click)="openTransitions(element)" aria-label="Transiciones" title="Transiciones" matTooltip="Transiciones"><mat-icon>swap_horiz</mat-icon></button><button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button></div></td></ng-container>
-                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr><tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                </table>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                @for (element of data(); track element.llaveTabla) {
+                  <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border" [class.bg-blue-500]="element.tipo === 'A'" [class.bg-violet-500]="element.tipo === 'E'"><mat-icon class="text-white">account_tree</mat-icon></div>
+                        <div class="min-w-0">
+                          <p class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ element.codigo }}</p>
+                          <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.nombre }}</h3>
+                        </div>
+                      </div>
+                      <app-dropdown>
+                        <button type="button" class="btn-icon" trigger aria-label="Acciones"><mat-icon>more_vert</mat-icon></button>
+                        <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
+                        <app-dropdown-item (clicked)="openTransitions(element)"><mat-icon class="text-base">swap_horiz</mat-icon> Transiciones</app-dropdown-item>
+                        <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
+                      </app-dropdown>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{{ element.objetivo }}</p>
+                    <dl class="grid grid-cols-2 gap-2 text-sm">
+                      <div><dt class="text-xs text-gray-500 dark:text-gray-400">Tipo</dt><dd class="text-gray-900 dark:text-gray-100">{{ element.tipo === 'A' ? 'Agrupador' : (element.tipo === 'E' ? 'Ejecutor' : element.tipo) }}</dd></div>
+                      <div><dt class="text-xs text-gray-500 dark:text-gray-400">Prioridad</dt><dd class="font-mono text-gray-900 dark:text-gray-100">{{ element.prioridad }}</dd></div>
+                      <div><dt class="text-xs text-gray-500 dark:text-gray-400">Macro Proceso</dt><dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.macroproceso }}</dd></div>
+                      <div><dt class="text-xs text-gray-500 dark:text-gray-400">Macro Nombre</dt><dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.macroNombre }}</dd></div>
+                    </dl>
+                    <div class="mt-auto">
+                      <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
+                    </div>
+                  </div>
+                }
               </div>
               <mat-paginator [length]="totalItems()" [pageSize]="pageSize()" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onPageChange($event)" class="px-4 py-2 border-t border-gray-200 dark:border-gray-700"></mat-paginator>
             }
@@ -82,7 +100,7 @@ interface TreeNode {
                       </button>
                       @if (node.isLoading) { <div class="w-4 h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden mr-2"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> }
                       <div class="flex-1 min-w-0 flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full" [style.background-color]="node.proceso.color"></div>
+                        <div class="w-3 h-3 rounded-full" [class.bg-blue-500]="node.proceso.tipo === 'A'" [class.bg-violet-500]="node.proceso.tipo === 'E'"></div>
                         <span class="font-medium truncate">{{ node.proceso.nombre }}</span>
                         <span class="text-xs text-gray-500 dark:text-gray-400 font-mono">{{ node.proceso.codigo }}</span>
                         <span class="badge" [class.badge-success]="node.proceso.estado === 'A'" [class.badge-secondary]="node.proceso.estado === 'I'">{{ node.proceso.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
@@ -99,7 +117,7 @@ interface TreeNode {
                     <div class="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800" [style.margin-left.px]="node.level * 24">
                       <span class="w-5"></span>
                       <div class="flex-1 min-w-0 flex items-center gap-2">
-                        <div class="w-3 h-3 rounded-full" [style.background-color]="node.proceso.color"></div>
+                        <div class="w-3 h-3 rounded-full" [class.bg-blue-500]="node.proceso.tipo === 'A'" [class.bg-violet-500]="node.proceso.tipo === 'E'"></div>
                         <span class="font-medium truncate">{{ node.proceso.nombre }}</span>
                         <span class="text-xs text-gray-500 dark:text-gray-400 font-mono">{{ node.proceso.codigo }}</span>
                         <span class="badge" [class.badge-success]="node.proceso.estado === 'A'" [class.badge-secondary]="node.proceso.estado === 'I'">{{ node.proceso.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
@@ -136,15 +154,17 @@ export class ProcessListComponent implements OnInit {
         estado: 'A',
         nombre: '',
         codigo: '',
-        objetivo: '',
+        tipo: '',
+        macroproceso: '',
+        macroNombre: '',
+        imagen: '',
+        prioridad: 0,
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
-        securityToken: ''
+securityToken: ''
     };
-
-    displayedColumns = ['codigo', 'nombre', 'descripcion', 'consecutivo', 'color', 'objetivo', 'estado', 'acciones'];
 
     // Tree
     treeLoading = signal(false);
@@ -174,7 +194,7 @@ export class ProcessListComponent implements OnInit {
         this.treeLoading.set(true);
         this.service.getProcessTree().subscribe({
             next: (processes) => {
-                const roots = processes.filter(p => !p.proceso || p.proceso === p.llaveTabla);
+                const roots = processes.filter(p => !p.macroproceso || p.macroproceso === p.llaveTabla);
                 this.treeData.set(this.buildTree(roots, processes));
                 this.treeLoading.set(false);
             },
@@ -185,7 +205,7 @@ export class ProcessListComponent implements OnInit {
     buildTree(roots: ProcesoDTO[], all: ProcesoDTO[]): TreeNode[] {
         const childrenMap = new Map<string, ProcesoDTO[]>();
         all.forEach(p => {
-            const parentKey = p.proceso || p.llaveTabla;
+            const parentKey = p.macroproceso || p.llaveTabla;
             if (!childrenMap.has(parentKey)) childrenMap.set(parentKey, []);
             childrenMap.get(parentKey)!.push(p);
         });

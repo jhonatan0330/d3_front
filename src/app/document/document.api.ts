@@ -15,7 +15,7 @@ import {
     DocumentoRelacionGestorDTO,
     DocumentoRelacionGestorFilterDTO,
 } from './document.types';
-import { SharedApiErrorResponse, SharedIdResponse } from 'app/shared/api-types';
+import { SharedIdResponse } from 'app/shared/api-types';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { UsuarioAutenticacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
@@ -167,11 +167,11 @@ export class ApiService {
         return this.http.get(imageUrl, { responseType: 'blob' });
     }
 
-    uploadFile(fileToUpload: File): Observable<SharedApiErrorResponse> {
-        const endpoint = this.ls.getUrlAccess('/document/api/upload');
+    uploadFile(fileToUpload: File): Observable<string> {
+        const endpoint = this.ls.getUrlAccess('/files/upload');
         const formData: FormData = new FormData();
         formData.append('file', fileToUpload, fileToUpload.name);
-        return this.http.post<SharedApiErrorResponse>(endpoint, formData);
+        return this.http.post<string>(endpoint, formData);
     }
 
 

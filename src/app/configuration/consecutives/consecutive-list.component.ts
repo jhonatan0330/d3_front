@@ -1,13 +1,14 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 import { ConsecutivoDTO, ConsecutivoFilterDTO } from 'app/document/document.types';
 import { ConsecutiveService } from '../configuracion.api';
 import { ConsecutiveFormComponent } from './consecutive-form.component';
@@ -21,10 +22,9 @@ import Swal from 'sweetalert2';
         FormsModule,
         MatDialogModule,
         MatIconModule,
-        MatTableModule,
         MatPaginatorModule,
         MatInputModule,
-        MatFormFieldModule, MatSelectModule
+        MatFormFieldModule, MatSelectModule, DropdownComponent, DropdownItemComponent
     ],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
@@ -38,7 +38,7 @@ import Swal from 'sweetalert2';
 
       <!-- Filtros -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Nombre</mat-label>
             <input matInput [(ngModel)]="filter.nombre" (ngModelChange)="onFilterChange()" placeholder="Filtrar por nombre" />
@@ -46,6 +46,18 @@ import Swal from 'sweetalert2';
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Prefijo</mat-label>
             <input matInput [(ngModel)]="filter.prefijo" (ngModelChange)="onFilterChange()" placeholder="Filtrar por prefijo" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Sufijo</mat-label>
+            <input matInput [(ngModel)]="filter.sufijo" (ngModelChange)="onFilterChange()" placeholder="Filtrar por sufijo" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Manual</mat-label>
+            <mat-select [(ngModel)]="manualFilter" (ngModelChange)="onManualFilterChange()">
+              <mat-option value="">Todas</mat-option>
+              <mat-option value="true">Sí</mat-option>
+              <mat-option value="false">No</mat-option>
+            </mat-select>
           </mat-form-field>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Estado</mat-label>
@@ -58,83 +70,43 @@ import Swal from 'sweetalert2';
         </div>
       </div>
 
-      <!-- Tabla -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         @if (loading()) {
           <div class="flex justify-center py-12">
             <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div>
           </div>
         } @else {
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="data()" class="w-full">
-              <ng-container matColumnDef="prefijo">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Prefijo</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm">{{ element.prefijo }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="nombre">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm">{{ element.nombre }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="consecutivo">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Consecutivo</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm">{{ element.consecutivo }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="longitud">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Longitud</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm">{{ element.longitud }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="formato">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Formato</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm">{{ element.formato }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="reinicio">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Reinicio</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3">
-                  <span class="inline-flex items-center gap-1 text-xs">
-                    @if (element.reinicioAnual) { <span class="badge badge-info">Anual</span> }
-                    @if (element.reinicioMensual) { <span class="badge badge-warning">Mensual</span> }
-                    @if (!element.reinicioAnual && !element.reinicioMensual) { <span class="text-gray-400">Ninguno</span> }
-                  </span>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="estado">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3">
-                  <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">
-                    {{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}
-                  </span>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="acciones">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3">
-                  <div class="flex items-center gap-1">
-                    <button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar">
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}">
-                      <mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon>
-                    </button>
-                    <button type="button" class="btn-icon" (click)="assignConsecutivo(element)" aria-label="Asignar consecutivo" title="Asignar">
-                      <mat-icon>assignment</mat-icon>
-                    </button>
+          <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @for (element of data(); track element.llaveTabla) {
+              <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">tag</mat-icon></div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ element.prefijo }}{{ element.sufijo ? '-' + element.sufijo : '' }}</p>
+                      <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.nombre }}</h3>
+                    </div>
                   </div>
-                </td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
+                  <app-dropdown>
+                    <button type="button" class="btn-icon" trigger aria-label="Acciones"><mat-icon>more_vert</mat-icon></button>
+                    <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
+                    <app-dropdown-item (clicked)="assignConsecutivo(element)"><mat-icon class="text-base">assignment</mat-icon> Asignar consecutivo</app-dropdown-item>
+                    <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
+                  </app-dropdown>
+                </div>
+                <dl class="grid grid-cols-2 gap-2 text-sm">
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Consecutivo Actual</dt><dd class="font-mono text-gray-900 dark:text-gray-100">{{ element.consecutivoActual }}</dd></div>
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Número Actual</dt><dd class="text-gray-900 dark:text-gray-100">{{ element.numeroActual }}</dd></div>
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Rango</dt><dd class="font-mono text-gray-900 dark:text-gray-100">{{ element.numeroInicial }} - {{ element.numeroFinal }}</dd></div>
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Padding</dt><dd class="text-gray-900 dark:text-gray-100">{{ element.padding }}</dd></div>
+                </dl>
+                <div class="flex items-center gap-2 mt-auto">
+                  <span class="badge" [class.badge-info]="element.manual" [class.badge-secondary]="!element.manual">{{ element.manual ? 'Manual' : 'Automático' }}</span>
+                  <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
+                </div>
+              </div>
+            }
           </div>
-
-          <!-- Paginación -->
           <mat-paginator
             [length]="totalItems()"
             [pageSize]="pageSize()"
@@ -164,18 +136,21 @@ export class ConsecutiveListComponent implements OnInit {
     pageSize = signal(25);
     currentPage = signal(0);
 
+    manualFilter: string = '';
+
     filter: ConsecutivoFilterDTO = {
         estado: 'A',
         nombre: '',
         prefijo: '',
+        sufijo: '',
+        padding: 0,
+        consecutivoActual: '',
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
         securityToken: ''
     };
-
-    displayedColumns = ['prefijo', 'nombre', 'consecutivo', 'longitud', 'formato', 'reinicio', 'estado', 'acciones'];
 
     ngOnInit(): void {
         this.loadData();
@@ -200,6 +175,11 @@ export class ConsecutiveListComponent implements OnInit {
     onFilterChange(): void {
         this.currentPage.set(0);
         this.loadData();
+    }
+
+    onManualFilterChange(): void {
+        this.filter.manualFilter = this.manualFilter === 'true' ? true : this.manualFilter === 'false' ? false : undefined;
+        this.onFilterChange();
     }
 
     onPageChange(event: PageEvent): void {
@@ -249,7 +229,7 @@ export class ConsecutiveListComponent implements OnInit {
     assignConsecutivo(item: ConsecutivoDTO): void {
         this.service.assignConsecutivo(item).subscribe({
             next: (res) => {
-                Swal.fire('Asignado', `Consecutivo asignado: ${res.consecutivo}`, 'success');
+                Swal.fire('Asignado', `Consecutivo asignado: ${res.consecutivoActual}`, 'success');
                 this.loadData();
             },
             error: () => Swal.fire('Error', 'No se pudo asignar el consecutivo', 'error')

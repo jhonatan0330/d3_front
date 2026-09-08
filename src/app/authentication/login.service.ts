@@ -295,11 +295,9 @@ export class LoginService {
     return this.http.get(this._jsonURL, { responseType: 'text' });
   }
 
-  changePictureUser(fileToUpload: File): Observable<UsuarioDTO> {
+  changePicture(url: string): Observable<UsuarioDTO> {
     const endpoint = this.ls.getUrlAccess('/document/api/changePicture');
-    const formData: FormData = new FormData();
-    formData.append('file', fileToUpload, fileToUpload.name);
-    return this.http.post<UsuarioDTO>(endpoint, formData);
+    return this.http.post<UsuarioDTO>(endpoint, { url });
   }
 
   getUrlServices() {

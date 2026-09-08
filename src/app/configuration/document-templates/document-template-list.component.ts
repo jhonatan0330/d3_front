@@ -89,6 +89,8 @@ export class DocumentTemplateListComponent implements OnInit {
         imagen: '',
         codigo: '',
         proceso: '',
+        tipo: '',
+        padre: '',
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
         filtroParametro: '',

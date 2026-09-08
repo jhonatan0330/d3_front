@@ -1,0 +1,71 @@
+<div [class]="avatar()
+        ? 'relative w-32 h-32 rounded-full overflow-hidden border-4 border-bg-card bg-gray-100 dark:bg-gray-800'
+        : 'relative w-32 h-32 rounded-xl overflow-hidden border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800'">
+
+    @if (value()) {
+        <img [src]="value()" alt="Imagen" class="absolute inset-0 w-full h-full object-cover" />
+    }
+
+    <video #video
+        [style.display]="camaraActiva() ? 'block' : 'none'"
+        autoplay playsinline muted
+        class="absolute inset-0 w-full h-full object-cover">
+    </video>
+
+    <canvas #canvas
+        [style.display]="revisando() && dataUrl() ? 'block' : 'none'"
+        class="absolute inset-0 w-full h-full object-cover">
+    </canvas>
+
+    @if (revisando() && dataUrl() && !camaraActiva()) {
+        <img [src]="dataUrl()" alt="Vista previa" class="absolute inset-0 w-full h-full object-cover" />
+    }
+
+    <input
+        type="file"
+        accept="image/*"
+        #fileInput
+        (change)="onArchivoSeleccionado($any($event.target).files)"
+        class="hidden"
+        id="imageUploaderFile"
+    />
+
+    @if (!subiendo()) {
+        @if (camaraActiva()) {
+            <div class="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
+                <button (click)="capturar()" class="btn-icon" type="button">
+                    <mat-icon class="text-white" svgIcon="heroicons_outline:camera"></mat-icon>
+                </button>
+            </div>
+        } @else if (revisando()) {
+            <div class="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 z-10">
+                <button (click)="subirCaptura()" class="btn-icon" type="button">
+                    <mat-icon class="text-white" svgIcon="heroicons_outline:upload"></mat-icon>
+                </button>
+                <button (click)="cancelarCaptura()" class="btn-icon" type="button">
+                    <mat-icon class="text-white" svgIcon="heroicons_outline:x-mark"></mat-icon>
+                </button>
+            </div>
+        } @else {
+            <div class="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 hover:bg-black/50 transition z-10">
+                <label for="imageUploaderFile" class="btn-icon cursor-pointer" type="button">
+                    <mat-icon class="text-white" svgIcon="heroicons_outline:paper-clip"></mat-icon>
+                </label>
+                <button (click)="abrirCamara()" class="btn-icon" type="button">
+                    <mat-icon class="text-white" svgIcon="heroicons_outline:video-camera"></mat-icon>
+                </button>
+                @if (value()) {
+                    <button (click)="limpiar()" class="btn-icon" type="button">
+                        <mat-icon class="text-white" svgIcon="heroicons_outline:trash"></mat-icon>
+                    </button>
+                }
+            </div>
+        }
+    } @else {
+        <div class="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
+            <div class="w-2/3 h-1 bg-gray-200 rounded overflow-hidden">
+                <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+            </div>
+        </div>
+    }
+</div>

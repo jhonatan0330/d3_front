@@ -36,24 +36,31 @@ import Swal from 'sweetalert2';
                   <input type="text" [(ngModel)]="process.codigo" name="codigo" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
-                  <label class="block text-sm font-semibold mb-1">Consecutivo</label>
-                  <input type="text" [(ngModel)]="process.consecutivo" name="consecutivo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  <label class="block text-sm font-semibold mb-1">Tipo *</label>
+                  <select [(ngModel)]="process.tipo" name="tipo" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="A">Agrupador</option>
+                    <option value="E">Ejecutor</option>
+                  </select>
                 </div>
                 <div class="sm:col-span-2">
-                  <label class="block text-sm font-semibold mb-1">Descripción</label>
-                  <textarea [(ngModel)]="process.descripcion" name="descripcion" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                </div>
-                <div>
                   <label class="block text-sm font-semibold mb-1">Objetivo</label>
                   <input type="text" [(ngModel)]="process.objetivo" name="objetivo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Color</label>
-                  <input type="color" [(ngModel)]="process.color" name="color" class="w-full h-10 border border-gray-300 dark:border-gray-600 rounded p-1 bg-white dark:bg-gray-800 cursor-pointer" />
                 </div>
                 <div class="sm:col-span-2">
                   <label class="block text-sm font-semibold mb-1">Imagen (URL)</label>
                   <input type="text" [(ngModel)]="process.imagen" name="imagen" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold mb-1">Prioridad</label>
+                  <input type="number" [(ngModel)]="process.prioridad" name="prioridad" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold mb-1">Macro Proceso</label>
+                  <input type="text" [(ngModel)]="process.macroproceso" name="macroproceso" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-sm font-semibold mb-1">Macro Nombre</label>
+                  <input type="text" [(ngModel)]="process.macroNombre" name="macroNombre" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
               </div>
 
@@ -119,7 +126,6 @@ export class ProcessFormComponent implements OnInit {
         } else {
             this.process = new ProcesoDTO();
             this.process.estado = 'A';
-            this.process.color = '#3f51b5';
             this.process.propiedades = [];
             this.process.transiciones = [];
         }

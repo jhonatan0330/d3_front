@@ -55,17 +55,17 @@ export class AccountComponent implements OnInit, OnDestroy {
         this.drawerMode = e.matches ? 'side' : 'over';
     };
 
-    catalogs: CatalogDTO[];
+    catalogs = signal<CatalogDTO[]>([]);
     searchInputControl: FormControl<string | null> = new FormControl<string | null>(null);
-    isLoadingCatalog = false;
-    isLoadingAccount = false;
-    isLoadingBalance = false;
-    isLoadingVoucher = false;
+    isLoadingCatalog = signal(false);
+    isLoadingAccount = signal(false);
+    isLoadingBalance = signal(false);
+    isLoadingVoucher = signal(false);
 
-    recentTransactionsDataSource: MatTableDataSource<ManualDTO> = new MatTableDataSource();
+    recentTransactionsDataSource = signal(new MatTableDataSource<ManualDTO>());
     recentTransactionsTableColumns: string[] = ['transactionId', 'date', 'name', 'amount', 'status', 'actions'];
 
-    balance: ResultMapDTO[];
+    balance = signal<ResultMapDTO[]>([]);
 
     private transformer = (node: AccountNode, level: number): AccountFlatNode => {
         return {
@@ -88,7 +88,7 @@ export class AccountComponent implements OnInit, OnDestroy {
         this.transformer, node => node.level,
         node => node.expandable, node => node.children);
 
-    dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    dataSource = signal(new MatTreeFlatDataSource(this.treeControl, this.treeFlattener));
 
     ngOnInit(): void {
         if (!this._jwt.validateAccessModule('account')) {
@@ -119,16 +119,16 @@ export class AccountComponent implements OnInit, OnDestroy {
 
 
     getVouchers() {
-        this.isLoadingVoucher = true;
+        this.isLoadingVoucher.set(true);
         this.accountingService.getVouchers(this.accountingService.currentCatalog.key)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
             next: (dataResult: ManualDTO[]) => {
-                this.recentTransactionsDataSource.data = dataResult;
-                this.isLoadingVoucher = false;
+                this.recentTransactionsDataSource.set(new MatTableDataSource(dataResult));
+                this.isLoadingVoucher.set(false);
             },
             error: () => {
-                this.isLoadingVoucher = false;
+                this.isLoadingVoucher.set(false);
             },
         });
     }
@@ -161,7 +161,7 @@ export class AccountComponent implements OnInit, OnDestroy {
                     next: (dataResult: ManualDTO) => {
                     },
                     error: () => {
-                        this.isLoadingCatalog = false;
+                        this.isLoadingCatalog.set(false);
                     },
                     complete: () => {
                         this.getVouchers();
@@ -173,17 +173,17 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     getCatalogs() {
-        this.isLoadingCatalog = true;
+        this.isLoadingCatalog.set(true);
         this.accountingService.getCatalogs()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
             next: (dataResult: CatalogDTO[]) => {
-                this.catalogs = dataResult;
-                this.isLoadingCatalog = false;
-                if (this.catalogs.length === 1) { this.selectCatalog(this.catalogs[0]); }
+                this.catalogs.set(dataResult);
+                this.isLoadingCatalog.set(false);
+                if (this.catalogs().length === 1) { this.selectCatalog(this.catalogs()[0]); }
             },
             error: () => {
-                this.isLoadingCatalog = false;
+                this.isLoadingCatalog.set(false);
             },
         });
     }
@@ -200,28 +200,27 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     getBalance() {
-        this.balance = [];
+        this.balance.set([]);
         if (this.accountingService.currentCatalog) {
-            this.isLoadingBalance = true;
+            this.isLoadingBalance.set(true);
             this.accountingService.getBalance(this.accountingService.currentCatalog.key)
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
                 next: (dataResult: ResultMapDTO[]) => {
-                    this.balance = dataResult;
-                    this.isLoadingBalance = false;
+                    this.balance.set(dataResult);
+                    this.isLoadingBalance.set(false);
                 },
                 error: () => {
-                    this.isLoadingBalance = false;
+                    this.isLoadingBalance.set(false);
                 },
             });
         }
     }
 
     getAccounts() {
-        this.dataSource.data = [];
+        this.dataSource.set(new MatTreeFlatDataSource(this.treeControl, this.treeFlattener));
         if (this.accountingService.currentCatalog) {
-            this.isLoadingAccount = true;
-            this.dataSource.data = [];
+            this.isLoadingAccount.set(true);
             this.accountingService.getAccounts(this.accountingService.currentCatalog.key)
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
@@ -234,11 +233,13 @@ export class AccountComponent implements OnInit, OnDestroy {
                             this.searchParentNode(accToOrder, TREE_DATA);
                         }
                     }
-                    this.dataSource.data = TREE_DATA;
-                    this.isLoadingAccount = false;
+                    const source = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+                    source.data = TREE_DATA;
+                    this.dataSource.set(source);
+                    this.isLoadingAccount.set(false);
                 },
                 error: () => {
-                    this.isLoadingAccount = false;
+                    this.isLoadingAccount.set(false);
                 },
             });
         }

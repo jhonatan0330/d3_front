@@ -25,6 +25,7 @@ export type AssistantIntent =
     }
     | {
         tipo: 'desconocido';
+        parametro: string;
     };
 
 
@@ -67,4 +68,23 @@ export interface TemplateSearchResult {
     codigo: string;
     imagen: string;
     server?: string;
+}
+
+export interface ChatMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+export interface ChatRequest {
+  messages: ChatMessage[];
+  model?: string;
+}
+
+export interface ChatResponse {
+  choices: {
+    message: {
+      role: 'assistant';
+      content: string;
+    };
+  }[];
 }

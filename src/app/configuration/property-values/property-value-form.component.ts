@@ -63,6 +63,7 @@ import Swal from 'sweetalert2';
             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" [(ngModel)]="valor.necesitaDesarrollo" name="necesitaDesarrollo" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" /><span class="text-sm">Necesita Desarrollo</span></label>
             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" [(ngModel)]="valor.textOculto" name="textOculto" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" /><span class="text-sm">Texto Oculto</span></label>
             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" [(ngModel)]="valor.incluirPreloadOrigen" name="incluirPreloadOrigen" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" /><span class="text-sm">Preload Origen</span></label>
+            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" [(ngModel)]="valor.privada" name="privada" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" /><span class="text-sm">Privada</span></label>
           </div>
         </div>
 
@@ -97,6 +98,7 @@ export class PropertyValueFormComponent implements OnInit {
             this.valor.necesitaDesarrollo = false;
             this.valor.textOculto = false;
             this.valor.incluirPreloadOrigen = false;
+            this.valor.privada = false;
         }
     }
 

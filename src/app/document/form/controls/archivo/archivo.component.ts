@@ -316,7 +316,7 @@ resizeCanvas(): void {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
         (data) => {
-          const returnedData = data.message;
+          const returnedData = data;
           if (!this.source()) {
             this.source.set(returnedData);
           } else {

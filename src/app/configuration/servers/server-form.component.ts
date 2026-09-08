@@ -24,19 +24,19 @@ import Swal from 'sweetalert2';
           </div>
           <div>
             <label class="block text-sm font-semibold mb-1">Tipo *</label>
-            <mat-form-field appearance="outline" class="w-full"><mat-select [(ngModel)]="servidor.tipo" name="tipo" required><mat-option value="DB">Base de Datos</mat-option><mat-option value="APP">Aplicación</mat-option><mat-option value="WEB">Web</mat-option><mat-option value="MAIL">Correo</mat-option></mat-select></mat-form-field>
+            <mat-form-field appearance="outline" class="w-full"><mat-select [(ngModel)]="servidor.tipo" name="tipo" required><mat-option value="F">FTP</mat-option><mat-option value="W">Web</mat-option><mat-option value="B">Base de Datos</mat-option><mat-option value="E">Correo</mat-option><mat-option value="L">FTP Local</mat-option></mat-select></mat-form-field>
           </div>
           <div class="sm:col-span-2">
-            <label class="block text-sm font-semibold mb-1">URL *</label>
-            <input type="text" [(ngModel)]="servidor.url" name="url" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-sm font-semibold mb-1">URL</label>
+            <input type="text" [(ngModel)]="servidor.url" name="url" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label class="block text-sm font-semibold mb-1">Puerto *</label>
-            <input type="number" [(ngModel)]="servidor.puerto" name="puerto" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-sm font-semibold mb-1">Orden</label>
+            <input type="number" [(ngModel)]="servidor.orden" name="orden" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label class="block text-sm font-semibold mb-1">Base de Datos</label>
-            <input type="text" [(ngModel)]="servidor.baseDatos" name="baseDatos" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-sm font-semibold mb-1">Puerto</label>
+            <input type="text" [(ngModel)]="servidor.puerto" name="puerto" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
             <label class="block text-sm font-semibold mb-1">Usuario</label>
@@ -46,11 +46,18 @@ import Swal from 'sweetalert2';
             <label class="block text-sm font-semibold mb-1">Clave</label>
             <input type="password" [(ngModel)]="servidor.clave" name="clave" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <input type="checkbox" [(ngModel)]="servidor.activo" name="activo" id="activo" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-          <label for="activo" class="text-sm">Activo</label>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Base</label>
+            <input type="text" [(ngModel)]="servidor.base" name="base" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">URL Conexión</label>
+            <input type="text" [(ngModel)]="servidor.urlConexion" name="urlConexion" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-semibold mb-1">Servidor Respaldo</label>
+            <input type="text" [(ngModel)]="servidor.servidorRespaldo" name="servidorRespaldo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
         </div>
 
         <app-property-field [propiedades]="servidor.propiedades || []" [tipoOrigen]="'S'" [campoKey]="servidor.llaveTabla || ''" (propiedadesChange)="onPropiedadesChange($event)"></app-property-field>
@@ -76,8 +83,6 @@ export class ServerFormComponent implements OnInit {
         else {
             this.servidor = new ServidorDTO();
             this.servidor.estado = 'A';
-            this.servidor.activo = true;
-            this.servidor.puerto = 5432;
             this.servidor.propiedades = [];
         }
     }

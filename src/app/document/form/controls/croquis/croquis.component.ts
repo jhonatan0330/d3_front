@@ -13,7 +13,6 @@ import { MatInput } from '@angular/material/input';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
-import { SharedApiErrorResponse } from 'app/shared/api-types';
 
 interface RenderItem {
   exp: PedidoVentaDTO;
@@ -279,7 +278,7 @@ export class CroquisComponent extends BaseComponent
     if (!file) return;
 
     try {
-      const url = (await this.uploadFile(file)).message;
+      const url = await this.uploadFile(file);
       this.data.valorText = url;
       this.valorTextCtrl.setValue(url);
       this.loadBaseFromUrl(url);
@@ -302,7 +301,7 @@ export class CroquisComponent extends BaseComponent
     }
 
     try {
-      const url = (await this.uploadFile(file)).message;
+      const url = await this.uploadFile(file);
 
       const count = (this.data.expedientes?.length || 0) + 1;
 
@@ -519,12 +518,11 @@ export class CroquisComponent extends BaseComponent
     Swal.fire('Guardado', 'Posiciones guardadas correctamente', 'success');
   }
 
-  private async uploadFile(file: File): Promise<SharedApiErrorResponse> {
+  private async uploadFile(file: File): Promise<string> {
     try {
-      const resp = await firstValueFrom(this.api.uploadFile(file));
-      return resp;
+      return await firstValueFrom(this.api.uploadFile(file));
     } catch (error) {
-      return error as SharedApiErrorResponse;
+      throw error;
     }
   }
 }

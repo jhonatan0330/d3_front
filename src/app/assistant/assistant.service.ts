@@ -1,12 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, delay, switchMap } from 'rxjs';
-import {  AssistantIntent, AssistantMessage, AssistantResult,  DocumentSearchResult, TemplateSearchResult } from './assistant.models';
+import { AssistantIntent, AssistantMessage, AssistantResult, ChatMessage, DocumentSearchResult, TemplateSearchResult } from './assistant.models';
 import { TemplateService } from 'app/document/service/template.service';
 import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { ApiService } from 'app/document/document.api';
 import { UtilsService } from 'app/document/service/utils.service';
 import { Router } from '@angular/router';
+import { ChatService } from './chat.service';
 
 @Injectable({ providedIn: 'root' })
 export class AssistantService {
@@ -14,6 +15,9 @@ export class AssistantService {
     private readonly api = inject(ApiService);
     private readonly utilsService = inject(UtilsService);
     private router = inject(Router);
+
+    private readonly chatService = inject(ChatService);
+    messages: ChatMessage[] = [];
 
     isOpenPanel = signal<boolean>(false);
     private triggerElement: HTMLElement | null = null;
@@ -58,12 +62,6 @@ export class AssistantService {
             text: `💡 Tip 1 — ¿Necesitas ayuda? ⌨️ En PC: puedes llamarme presionando F9. ❌ Para cerrarme, simplemente presiona Esc. 📱 En celular: toca el ícono de asistente que encontrarás en la esquina inferior derecha.`,
             date: new Date(),
         },
-        {
-            id: crypto.randomUUID(),
-            type: 'assistant',
-            text: `🤖 Tip 2 — Estoy aprendiendo 🌱 Todavía estoy creciendo. Por ahora no soy una IA, pero cada día estoy aprendiendo para poder ayudarte mucho más. ✨ ¡Pronto seré mucho más inteligente!`,
-            date: new Date(),
-        },
     ]);
 
     agregarMensaje(mensaje: AssistantMessage): void {
@@ -89,8 +87,15 @@ export class AssistantService {
             };
         }
 
+        if (!tieneEspacios && !tieneDigitos) {
+            return {
+                tipo: 'buscar-modulo',
+                parametro: texto,
+            };
+        }
+
         return {
-            tipo: 'buscar-modulo',
+            tipo: 'desconocido',
             parametro: texto,
         };
     }
@@ -182,7 +187,7 @@ export class AssistantService {
                 }
                 return of<AssistantResult>({
                     state: 'success',
-                    close: templateResults.length === 1, 
+                    close: templateResults.length === 1,
                     message: {
                         id: crypto.randomUUID(),
                         type: 'assistant',
@@ -197,6 +202,44 @@ export class AssistantService {
 
             default: {
 
+                this.messages.push({
+                    role: 'user',
+                    content: intent.parametro
+                });
+
+
+                return this.chatService
+                    .sendMessage(this.messages).pipe(
+                        switchMap((response) => {
+                    
+                            const assistantMessage =
+                                response.choices[0]?.message;
+
+                            
+                            if (assistantMessage) {
+                                
+                                this.messages.push({
+                                    role: 'assistant',
+                                    content: assistantMessage.content
+                                });
+                                
+                            }
+                            return of<AssistantResult>({
+                                state: 'success',
+                                message: {
+                                    id: crypto.randomUUID(),
+                                    type: 'assistant',
+                                    text: assistantMessage.content,
+                                    date: new Date(),
+                                },
+                            });
+                            
+                        })
+                        
+                    );
+                
+            }
+                /*
                 return of<AssistantResult>({
                     state: 'error',
                     message: {
@@ -206,8 +249,8 @@ export class AssistantService {
                             'No estoy seguro de lo que quieres hacer. Recuerda los tips iniciales',
                         date: new Date(),
                     },
-                });
-            }
+                });*/
+            
         }
     }
 
@@ -233,8 +276,8 @@ export class AssistantService {
             const coincideNombre = nombre.includes(textoNormalizado);
             const coincideCodigo = codigo === textoNormalizado;
 
-            const esVisible = item.estado === 'P' ||
-                PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU);
+            const esVisible = (PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
+                    && item.tipo == 'P');
 
             return (coincideNombre || coincideCodigo) && esVisible;
         });

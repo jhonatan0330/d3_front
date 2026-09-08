@@ -1,0 +1,166 @@
+<div class="p-6 max-w-6xl mx-auto">
+
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Comparar y sincronizar configuración</h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Compara la configuración de este tenant contra el árbol JSON de otro tenant, decide por rama y sincroniza.
+      </p>
+    </div>
+    <button type="button" class="btn-flat" (click)="exportar()" [disabled]="descargando()">
+      <mat-icon class="mr-2">download</mat-icon>
+      Descargar árbol actual
+    </button>
+  </div>
+
+  @if (cargando()) {
+    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
+    </div>
+  }
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+    <div
+      (click)="fileInput.click()"
+      (dragover)="alArrastrar($event)"
+      (drop)="alSoltar($event)"
+      class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors bg-gray-50 dark:bg-gray-800">
+      <input #fileInput type="file" accept=".json,application/json" class="hidden" (change)="leerArchivo($event)" />
+      <mat-icon class="text-4xl text-gray-400 mb-2">cloud_upload</mat-icon>
+      @if (remoto()) {
+        <p class="font-medium text-gray-700 dark:text-gray-200">{{ archivoNombre() }}</p>
+        <p class="text-sm text-gray-500">{{ contadorNodos(remoto()) }} nodos</p>
+      } @else {
+        <p class="font-medium text-gray-700 dark:text-gray-200">Arrastra aquí el JSON del árbol remoto</p>
+        <p class="text-sm text-gray-500">o haz clic para seleccionarlo</p>
+      }
+    </div>
+
+    <div class="flex flex-col justify-center gap-3">
+      <button type="button" class="btn-flat-primary w-full justify-center" [disabled]="!remoto() || comparando()"
+              (click)="comparar()">
+        <mat-icon class="mr-2">compare_arrows</mat-icon>
+        Comparar árboles
+      </button>
+      <button type="button" class="btn-flat w-full justify-center" [disabled]="!tieneDecidido() || sincronizando()"
+              (click)="sincronizar()">
+        <mat-icon class="mr-2">sync</mat-icon>
+        Sincronizar seleccionado
+      </button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="mb-4 p-3 rounded bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm">
+      {{ error() }}
+    </div>
+  }
+
+  @if (comparando()) {
+    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
+    </div>
+  }
+
+  @if (diferencias().length > 0) {
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-4 text-sm">
+          <span class="text-gray-600 dark:text-gray-300">{{ diferencias().length }} diferencias</span>
+          <span class="px-2 py-0.5 rounded text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40">
+            Crear: {{ contar('CREAR') }}
+          </span>
+          <span class="px-2 py-0.5 rounded text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40">
+            Actualizar: {{ contar('ACTUALIZAR') }}
+          </span>
+          <span class="px-2 py-0.5 rounded text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
+            Omitir: {{ contar('OMITIR') }}
+          </span>
+        </div>
+        <button type="button" class="btn-flat text-xs" (click)="omitirTodo()">
+          Omitir todo
+        </button>
+      </div>
+
+      <div class="divide-y divide-gray-100 dark:divide-gray-700">
+        @for (fila of diferencias(); track fila.camino) {
+          <div class="flex items-center justify-between px-4 py-2"
+               [style.padding-left.px]="16 + fila.profundidad * 26">
+            <div class="flex items-center gap-3 min-w-0">
+              @if (fila.tipoDiferencia === 'CREAR') {
+                <span class="px-2 py-0.5 rounded text-xs font-medium text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40 whitespace-nowrap">
+                  CREAR
+                </span>
+              } @else {
+                <span class="px-2 py-0.5 rounded text-xs font-medium text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40 whitespace-nowrap">
+                  ACTUALIZAR
+                </span>
+              }
+              <div class="min-w-0">
+                <p class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+                  {{ etiquetaTipo(fila.tipo) }} — {{ fila.nombre }}
+                </p>
+                <p class="text-xs text-gray-400 truncate">{{ fila.camino }}</p>
+                @if (fila.camposDiferentes.length > 0) {
+                  <div class="flex flex-wrap gap-1 mt-1">
+                    @for (campo of fila.camposDiferentes; track campo) {
+                      <span class="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                        {{ campo }}
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1 shrink-0">
+              @if (fila.tipoDiferencia === 'CREAR') {
+                <button type="button"
+                        class="btn-flat-primary text-xs"
+                        [class.ring-2]="seleccionPrivada(fila.camino) === 'CREAR'"
+                        [class.ring-emerald-400]="seleccionPrivada(fila.camino) === 'CREAR'"
+                        (click)="decidir(fila.camino, 'CREAR')">
+                  Crear rama
+                </button>
+              } @else {
+                <button type="button"
+                        class="btn-flat-accent text-xs"
+                        [class.ring-2]="seleccionPrivada(fila.camino) === 'ACTUALIZAR'"
+                        [class.ring-amber-400]="seleccionPrivada(fila.camino) === 'ACTUALIZAR'"
+                        (click)="decidir(fila.camino, 'ACTUALIZAR')">
+                  Actualizar
+                </button>
+              }
+              <button type="button"
+                      class="btn-flat text-xs"
+                      [class.ring-2]="seleccionPrivada(fila.camino) === 'OMITIR'"
+                      (click)="decidir(fila.camino, 'OMITIR')">
+                Omitir
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (sincronizando()) {
+    <div class="mt-4 w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
+    </div>
+  }
+
+  @if (logsUrl()) {
+    <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Logs de sincronización</h3>
+        <a [href]="logsUrl()" target="_blank" rel="noopener" class="btn-flat text-xs">
+          <mat-icon class="mr-1">open_in_new</mat-icon>
+          Abrir archivo
+        </a>
+      </div>
+      <pre class="p-4 text-xs text-gray-600 dark:text-gray-300 whitespace-pre-wrap max-h-96 overflow-auto">{{ logs() }}</pre>
+    </div>
+  }
+
+</div>

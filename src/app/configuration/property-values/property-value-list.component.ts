@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
 import { PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO, BasicFilterDTO } from 'app/shared/shared.domain';
 import { PropertyValueService } from '../configuracion.api';
 import { PropertyValueFormComponent } from './property-value-form.component';
@@ -21,11 +22,10 @@ import Swal from 'sweetalert2';
         FormsModule,
         MatDialogModule,
         MatIconModule,
-        MatTableModule,
         MatPaginatorModule,
         MatInputModule,
         MatFormFieldModule,
-        MatSelectModule
+        MatSelectModule, DropdownComponent, DropdownItemComponent
     ],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
@@ -69,79 +69,52 @@ import Swal from 'sweetalert2';
         </div>
       </div>
 
-      <!-- Tabla -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         @if (loading()) {
           <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div>
         } @else {
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="data()" class="w-full">
-              <ng-container matColumnDef="codigo">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Código</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3 font-mono text-sm">{{ element.codigo }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="nombre">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.nombre }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="origen">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Origen</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3">
-                  <span class="badge" [class]="getOrigenBadge(element.origen)">{{ getOrigenLabel(element.origen) }}</span>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="origenCategoria">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Categoría</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm">{{ element.origenCategoria }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="grupo">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Grupo</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3 text-sm">{{ element.grupo }}</td>
-              </ng-container>
-
-              <ng-container matColumnDef="flags">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Flags</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3">
-                  <div class="flex flex-wrap gap-1">
-                    @if (element.pideRol) { <span class="badge badge-info text-xs">Rol</span> }
-                    @if (element.pideUsuario) { <span class="badge badge-info text-xs">Usuario</span> }
-                    @if (element.pideFechas) { <span class="badge badge-warning text-xs">Fechas</span> }
-                    @if (element.pideTiempoBloqueo) { <span class="badge badge-warning text-xs">Bloqueo</span> }
-                    @if (element.multiple) { <span class="badge badge-success text-xs">Múltiple</span> }
-                    @if (element.propiedadBoolean) { <span class="badge badge-secondary text-xs">Boolean</span> }
-                    @if (element.necesitaDesarrollo) { <span class="badge badge-error text-xs">Dev</span> }
+          <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @for (element of data(); track element.llaveTabla) {
+              <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">tune</mat-icon></div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ element.codigo }}</p>
+                      <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.nombre }}</h3>
+                    </div>
                   </div>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="estado">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3">
-                  <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">
-                    {{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}
-                  </span>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="acciones">
-                <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th>
-                <td mat-cell *matCellDef="let element" class="px-4 py-3">
-                  <div class="flex items-center justify-end gap-1">
-                    <button type="button" class="btn-icon btn-flat-primary" (click)="openForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button>
-                    <button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button>
+                  <app-dropdown>
+                    <button type="button" class="btn-icon" trigger aria-label="Acciones"><mat-icon>more_vert</mat-icon></button>
+                    <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
+                    <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
+                  </app-dropdown>
+                </div>
+                <dl class="grid grid-cols-2 gap-2 text-sm">
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Origen</dt><dd><span class="badge" [class]="getOrigenBadge(element.origen)">{{ getOrigenLabel(element.origen) }}</span></dd></div>
+                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Categoría</dt><dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.origenCategoria }}</dd></div>
+                  <div class="col-span-2"><dt class="text-xs text-gray-500 dark:text-gray-400">Grupo</dt><dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.grupo || '—' }}</dd></div>
+                  <div class="col-span-2">
+                    <dt class="text-xs text-gray-500 dark:text-gray-400">Flags</dt>
+                    <dd class="flex flex-wrap gap-1 mt-1">
+                      @if (element.pideRol) { <span class="badge badge-info text-xs">Rol</span> }
+                      @if (element.pideUsuario) { <span class="badge badge-info text-xs">Usuario</span> }
+                      @if (element.pideFechas) { <span class="badge badge-warning text-xs">Fechas</span> }
+                      @if (element.pideTiempoBloqueo) { <span class="badge badge-warning text-xs">Bloqueo</span> }
+                      @if (element.multiple) { <span class="badge badge-success text-xs">Múltiple</span> }
+                      @if (element.propiedadBoolean) { <span class="badge badge-secondary text-xs">Boolean</span> }
+                      @if (element.necesitaDesarrollo) { <span class="badge badge-error text-xs">Dev</span> }
+                      @if (element.privada) { <span class="badge badge-secondary text-xs">Privada</span> }
+                      @if (!element.pideRol && !element.pideUsuario && !element.pideFechas && !element.pideTiempoBloqueo && !element.multiple && !element.propiedadBoolean && !element.necesitaDesarrollo && !element.privada) { <span class="text-gray-400 text-xs">Ninguno</span> }
+                    </dd>
                   </div>
-                </td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
+                </dl>
+                <div class="mt-auto">
+                  <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
+                </div>
+              </div>
+            }
           </div>
-
           <mat-paginator [length]="totalItems()" [pageSize]="pageSize()" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onPageChange($event)" class="px-4 py-2 border-t border-gray-200 dark:border-gray-700"></mat-paginator>
         }
 
@@ -176,8 +149,6 @@ export class PropertyValueListComponent implements OnInit {
         llaveTabla: '',
         securityToken: ''
     };
-
-    displayedColumns = ['codigo', 'nombre', 'origen', 'origenCategoria', 'grupo', 'flags', 'estado', 'acciones'];
 
     ngOnInit(): void { this.loadData(); }
 

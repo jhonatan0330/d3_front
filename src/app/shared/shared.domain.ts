@@ -44,6 +44,7 @@ export class PropiedadValorDefinidoDTO extends BasicDTO {
   pideUsuario: boolean;
   solicitaMotivo: boolean;
   pideFechas: boolean;
+  privada: boolean;
 }
 
 export class PropiedadFilterDTO extends BasicFilterDTO {

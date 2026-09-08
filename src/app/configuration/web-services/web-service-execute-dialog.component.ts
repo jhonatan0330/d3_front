@@ -23,9 +23,8 @@ interface ExecuteDialogData {
       </h2>
 
       <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
-        <p class="text-sm text-gray-600 dark:text-gray-400"><strong>URL:</strong> {{ data.webService.url }}</p>
-        <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Método:</strong> <span class="badge" [class]="getMetodoBadge(data.webService.metodo)">{{ data.webService.metodo }}</span></p>
-        <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Auth:</strong> {{ data.webService.autenticacion }}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Código:</strong> {{ data.webService.codigo }}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Proceso:</strong> {{ data.webService.proceso }}</p>
       </div>
 
       <form #form="ngForm" (ngSubmit)="onExecute()">
@@ -45,11 +44,10 @@ interface ExecuteDialogData {
           <div class="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-3">
             <h3 class="font-medium">Última Ejecución</h3>
             <div class="grid grid-cols-2 gap-4 text-sm">
-              <div><span class="text-gray-500 dark:text-gray-400">Estado:</span> <span class="badge ml-2" [class]="getExecStatusBadge(lastExecution.estado)">{{ getExecStatusLabel(lastExecution.estado) }}</span></div>
-              <div><span class="text-gray-500 dark:text-gray-400">Duración:</span> <span class="ml-2 font-mono">{{ lastExecution.duracion }} ms</span></div>
-              <div class="col-span-2"><span class="text-gray-500 dark:text-gray-400">Fecha:</span> <span class="ml-2">{{ lastExecution.fechaEjecucion | date:'dd/MM/yyyy HH:mm:ss' }}</span></div>
-              <div class="col-span-2"><span class="text-gray-500 dark:text-gray-400">Parámetros enviados:</span> <pre class="mt-1 text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded font-mono overflow-auto">{{ lastExecution.parametrosEntrada }}</pre></div>
-              <div class="col-span-2"><span class="text-gray-500 dark:text-gray-400">Resultado:</span> <pre class="mt-1 text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded font-mono overflow-auto">{{ lastExecution.resultado }}</pre></div>
+              <div><span class="text-gray-500 dark:text-gray-400">Resultado:</span> <span class="badge ml-2" [class.badge-exec-error]="lastExecution.error" [class.badge-exec-success]="!lastExecution.error">{{ lastExecution.error ? 'Error' : 'Exitoso' }}</span></div>
+              <div><span class="text-gray-500 dark:text-gray-400">Fecha:</span> <span class="ml-2">{{ lastExecution.fechaEjecucion | date:'dd/MM/yyyy HH:mm:ss' }}</span></div>
+              <div class="col-span-2"><span class="text-gray-500 dark:text-gray-400">Parámetros enviados:</span> <pre class="mt-1 text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded font-mono overflow-auto">{{ lastExecution.entrada }}</pre></div>
+              <div class="col-span-2"><span class="text-gray-500 dark:text-gray-400">Resultado:</span> <pre class="mt-1 text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded font-mono overflow-auto">{{ lastExecution.salida }}</pre></div>
               @if (lastExecution.error) {
                 <div class="col-span-2"><span class="text-red-600 dark:text-red-400">Error:</span> <pre class="mt-1 text-xs bg-red-50 dark:bg-red-900/30 p-2 rounded font-mono overflow-auto">{{ lastExecution.error }}</pre></div>
               }
@@ -74,13 +72,8 @@ interface ExecuteDialogData {
     .btn-flat-primary:hover:not(:disabled) { background: #303f9f; }
     .btn-flat-primary:disabled { opacity: 0.5; cursor: not-allowed; }
     .badge { padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 500; }
-    .badge-metodo-get { background: #e3f2fd; color: #1565c0; }
-    .badge-metodo-post { background: #e8f5e9; color: #2e7d32; }
-    .badge-metodo-put { background: #fff3e0; color: #ef6c00; }
-    .badge-metodo-delete { background: #fce4ec; color: #c62828; }
     .badge-exec-success { background: #e8f5e9; color: #2e7d32; }
     .badge-exec-error { background: #fce4ec; color: #c62828; }
-    .badge-exec-pending { background: #fff3e0; color: #ef6c00; }
   `]
 })
 export class WebServiceExecuteDialogComponent implements OnInit {
@@ -93,9 +86,6 @@ export class WebServiceExecuteDialogComponent implements OnInit {
     cargando = false;
 
     ngOnInit(): void {
-        if (this.data.webService.parametros) {
-            this.parametros = this.data.webService.parametros;
-        }
         this.loadLastExecution();
     }
 
@@ -116,9 +106,9 @@ export class WebServiceExecuteDialogComponent implements OnInit {
                 this.cargando = false;
                 this.lastExecution = result;
                 Swal.fire({
-                    title: result.estado === 'A' ? 'Éxito' : 'Error',
-                    text: result.estado === 'A' ? 'Web Service ejecutado correctamente' : (result.error || 'Error en la ejecución'),
-                    icon: result.estado === 'A' ? 'success' : 'error',
+                    title: result.error ? 'Error' : 'Éxito',
+                    text: result.error ? (result.error || 'Error en la ejecución') : 'Web Service ejecutado correctamente',
+                    icon: result.error ? 'error' : 'success',
                     timer: 3000,
                     showConfirmButton: false
                 });
@@ -128,20 +118,5 @@ export class WebServiceExecuteDialogComponent implements OnInit {
                 Swal.fire('Error', 'No se pudo ejecutar el web service', 'error');
             }
         });
-    }
-
-    getMetodoBadge(metodo: string): string {
-        const badges: Record<string, string> = { 'GET': 'badge-metodo-get', 'POST': 'badge-metodo-post', 'PUT': 'badge-metodo-put', 'DELETE': 'badge-metodo-delete' };
-        return badges[metodo] || 'badge-secondary';
-    }
-
-    getExecStatusLabel(estado: string): string {
-        const labels: Record<string, string> = { 'A': 'Exitoso', 'E': 'Error', 'P': 'Pendiente' };
-        return labels[estado] || estado;
-    }
-
-    getExecStatusBadge(estado: string): string {
-        const badges: Record<string, string> = { 'A': 'badge-exec-success', 'E': 'badge-exec-error', 'P': 'badge-exec-pending' };
-        return badges[estado] || 'badge-secondary';
     }
 }

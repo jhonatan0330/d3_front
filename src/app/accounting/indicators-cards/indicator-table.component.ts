@@ -3,10 +3,10 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
-  DatoTabla,
+  DatoTablaDTO,
   Indicador,
-  IndicadoresService,
-} from 'app/layout/dashboard/indicadores.service';
+} from 'app/accounting/accounting.types';
+import { IndicadoresService } from 'app/accounting/indicators-cards/indicadores.service';
 
 interface IndicatorTableData {
   indicador: Indicador;
@@ -25,7 +25,7 @@ interface IndicatorTableData {
           >
             <img
               class="h-5 w-5 object-contain"
-              [src]="indicador.icono"
+              [src]="indicador.imagen"
               alt=""
               (error)="onImageError($event)"
             />
@@ -120,13 +120,13 @@ export class IndicatorTableComponent {
   data = inject<IndicatorTableData>(MAT_DIALOG_DATA);
 
   protected indicador = this.data.indicador;
-  protected tabla = signal<DatoTabla[]>([]);
+  protected tabla = signal<DatoTablaDTO[]>([]);
   protected loading = signal(false);
 
   constructor() {
     this.loading.set(true);
     this.indicadoresService
-      .getTablaIndicador(this.indicador.id)
+      .getTablaIndicador(this.indicador.llaveTabla)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (tabla) => {

@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO } from 'app/document/document.types';
 import { DocumentTemplateService } from '../configuracion.api';
 import { PropertyFieldComponent } from '../shared/property-field.component';
+import { ProcessSelectorComponent } from '../shared/process-selector.component';
 import { DocumentTemplateFieldListComponent } from './document-template-fields/document-template-field-list.component';
 import { DocumentTemplateReportListComponent } from './document-template-reports/document-template-report-list.component';
 import Swal from 'sweetalert2';
@@ -14,7 +15,7 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-document-template-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatIconModule, PropertyFieldComponent, DocumentTemplateFieldListComponent, DocumentTemplateReportListComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatIconModule, PropertyFieldComponent, ProcessSelectorComponent, DocumentTemplateFieldListComponent, DocumentTemplateReportListComponent],
     template: `
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg max-w-5xl w-full max-h-[95vh] overflow-hidden flex flex-col">
       <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
@@ -42,7 +43,7 @@ import Swal from 'sweetalert2';
                 </div>
                 <div>
                   <label class="block text-sm font-semibold mb-1">Proceso</label>
-                  <input type="text" [(ngModel)]="template.proceso" name="proceso" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Llave del proceso" />
+                  <app-process-selector [(ngModel)]="template.proceso" name="proceso"></app-process-selector>
                 </div>
                 <div>
                   <label class="block text-sm font-semibold mb-1">Imagen (URL)</label>

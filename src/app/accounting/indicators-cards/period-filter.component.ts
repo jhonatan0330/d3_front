@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
-import { Periodo } from 'app/layout/dashboard/indicadores.service';
+import { PeriodoDTO } from 'app/accounting/accounting.types';
 
 type Nivel = 'full' | 'año' | 'mes' | 'dia';
 type Step = 'nivel' | 'year' | 'month' | 'day';
@@ -225,8 +225,8 @@ const LEVELS: Nivel[] = ['full', 'año', 'mes', 'dia'];
   `,
 })
 export class PeriodFilterComponent {
-  readonly period = input<Periodo>();
-  readonly periodChange = output<Periodo>();
+  readonly period = input<PeriodoDTO>();
+  readonly periodChange = output<PeriodoDTO>();
 
   protected LEVELS = LEVELS;
   protected MONTHS = MONTHS;
@@ -394,7 +394,7 @@ export class PeriodFilterComponent {
 
   private emitPeriod(fechaInicial: string, fechaFinal: string): void {
     const base = this.period();
-    const period: Periodo = {
+    const period: PeriodoDTO = {
       id: base?.id ?? 0,
       nivel: this.level(),
       fechaInicial,

@@ -23,34 +23,37 @@ import Swal from 'sweetalert2';
             <input type="text" [(ngModel)]="organizacion.nombre" name="nombre" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label class="block text-sm font-semibold mb-1">Código *</label>
-            <input type="text" [(ngModel)]="organizacion.codigo" name="codigo" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-sm font-semibold mb-1">Código</label>
+            <input type="text" [(ngModel)]="organizacion.codigo" name="codigo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
-            <label class="block text-sm font-semibold mb-1">NIT *</label>
-            <input type="text" [(ngModel)]="organizacion.nit" name="nit" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-sm font-semibold mb-1">Principal</label>
+            <input type="text" [(ngModel)]="organizacion.principal" name="principal" placeholder="Llave de la organización principal" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Servidor</label>
+            <input type="text" [(ngModel)]="organizacion.servidor" name="servidor" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Usuario System</label>
+            <input type="text" [(ngModel)]="organizacion.usuarioSystem" name="usuarioSystem" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div class="sm:col-span-2">
-            <label class="block text-sm font-semibold mb-1">Dirección</label>
-            <input type="text" [(ngModel)]="organizacion.direccion" name="direccion" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label class="block text-sm font-semibold mb-1">Teléfono</label>
-            <input type="text" [(ngModel)]="organizacion.telefono" name="telefono" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label class="block text-sm font-semibold mb-1">Email</label>
-            <input type="email" [(ngModel)]="organizacion.email" name="email" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-sm font-semibold mb-1">Imagen (URL)</label>
+            <input type="text" [(ngModel)]="organizacion.imagen" name="imagen" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div class="sm:col-span-2">
-            <label class="block text-sm font-semibold mb-1">Logo (URL)</label>
-            <input type="text" [(ngModel)]="organizacion.logo" name="logo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-sm font-semibold mb-1">Slogan</label>
+            <input type="text" [(ngModel)]="organizacion.slogan" name="slogan" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <input type="checkbox" [(ngModel)]="organizacion.principal" name="principal" id="principal" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-          <label for="principal" class="text-sm">Organización Principal</label>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-semibold mb-1">Mensaje Ingreso</label>
+            <input type="text" [(ngModel)]="organizacion.mensajeIngreso" name="mensajeIngreso" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-semibold mb-1">Public Token</label>
+            <input type="text" [(ngModel)]="organizacion.publicToken" name="publicToken" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
         </div>
 
         <!-- PropertyField para propiedades de la organización -->
@@ -83,7 +86,6 @@ export class OrganizationFormComponent implements OnInit {
         } else {
             this.organizacion = new OrganizacionDTO();
             this.organizacion.estado = 'A';
-            this.organizacion.principal = false;
             this.organizacion.propiedades = [];
         }
     }
