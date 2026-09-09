@@ -65,7 +65,7 @@
                     class="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
                     (click)="item().function!(item())">
                     @if (item().image) {
-                        <img class="h-5 w-5 shrink-0 rounded object-cover" [src]="item().image!" alt="">
+                        <img class="h-5 w-5 " [src]="item().image!" alt="">
                     } @else if (item().icon) {
                         <mat-icon class="icon-size-5 shrink-0 text-gray-400" [svgIcon]="item().icon!"></mat-icon>
                     }
@@ -79,7 +79,7 @@
                     class="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
                     (click)="onNavigate()">
                     @if (item().image) {
-                        <img class="h-5 w-5 shrink-0 rounded object-cover" [src]="item().image!" alt="">
+                        <img class="h-5 w-5" [src]="item().image!" alt="">
                     } @else if (item().icon) {
                         <mat-icon class="icon-size-5 shrink-0 text-gray-400" [svgIcon]="item().icon!"></mat-icon>
                     }
@@ -91,7 +91,7 @@
             } @else {
                 <div class="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-300">
                     @if (item().image) {
-                        <img class="h-5 w-5 shrink-0 rounded object-cover" [src]="item().image!" alt="">
+                        <img class="h-5 w-5" [src]="item().image!" alt="">
                     } @else if (item().icon) {
                         <mat-icon class="icon-size-5 shrink-0 text-gray-400" [svgIcon]="item().icon!"></mat-icon>
                     }

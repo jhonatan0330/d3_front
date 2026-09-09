@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
+import { PropertyValueService } from '../configuracion.api';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -12,7 +13,7 @@ import Swal from 'sweetalert2';
     standalone: true,
     imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatSelectModule],
     template: `
-    <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
         {{ data?.llaveTabla ? 'Editar Valor Definido' : 'Nuevo Valor Definido' }}
       </h2>
@@ -80,6 +81,8 @@ export class PropertyValueFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<PropertyValueFormComponent>>(MatDialogRef);
     public data = inject<PropiedadValorDefinidoDTO | null>(MAT_DIALOG_DATA);
 
+    private service = inject(PropertyValueService);
+
     valor: PropiedadValorDefinidoDTO = new PropiedadValorDefinidoDTO();
     cargando = false;
 
@@ -104,6 +107,21 @@ export class PropertyValueFormComponent implements OnInit {
 
     onSubmit(): void {
         this.cargando = true;
-        this.dialogRef.close(this.valor);
+
+        const request$ = this.valor.llaveTabla
+            ? this.service.updatePropertyValue(this.valor)
+            : this.service.createPropertyValue(this.valor);
+
+        request$.subscribe({
+            next: (result) => {
+                this.cargando = false;
+                Swal.fire('Éxito', 'Valor guardado correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: (err) => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar el valor', 'error');
+            }
+        });
     }
 }

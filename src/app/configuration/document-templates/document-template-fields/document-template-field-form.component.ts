@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO } from 'app/document/document.types';
 import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
+import { DocumentTemplateService } from '../../configuracion.api';
+import { ImageUploaderComponent } from '../../../upload/image-uploader/image-uploader.component';
 import Swal from 'sweetalert2';
 
 interface FieldFormData {
@@ -14,9 +16,9 @@ interface FieldFormData {
 @Component({
     selector: 'app-document-template-field-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, ImageUploaderComponent],
     template: `
-    <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
         {{ data.field?.llaveTabla ? 'Editar Campo' : 'Nuevo Campo' }}
       </h2>
@@ -53,8 +55,8 @@ interface FieldFormData {
               <input type="number" [(ngModel)]="field.orden" name="orden" min="1" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
-              <label class="block text-sm font-semibold mb-1">Imagen (URL)</label>
-              <input type="text" [(ngModel)]="field.imagen" name="imagen" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label class="block text-sm font-semibold mb-1">Imagen</label>
+              <app-image-uploader [(value)]="field.imagen"></app-image-uploader>
             </div>
           </div>
 
@@ -111,6 +113,8 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<DocumentTemplateFieldFormComponent>>(MatDialogRef);
     public data = inject<FieldFormData>(MAT_DIALOG_DATA);
 
+    private service = inject(DocumentTemplateService);
+
     field: DocumentoPlantillaCaracteristicaDTO = new DocumentoPlantillaCaracteristicaDTO();
     cargando = false;
     formatos = Object.keys(FormatoCampoSimboloEnum) as (keyof typeof FormatoCampoSimboloEnum)[];
@@ -140,6 +144,21 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
 
     onSubmit(): void {
         this.cargando = true;
-        this.dialogRef.close(this.field);
+
+        const request$ = this.field.llaveTabla
+            ? this.service.updateField(this.field)
+            : this.service.createField(this.field);
+
+        request$.subscribe({
+            next: (result) => {
+                this.cargando = false;
+                Swal.fire('Éxito', 'Campo guardado correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: (err) => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar el campo', 'error');
+            }
+        });
     }
 }

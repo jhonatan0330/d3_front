@@ -1,9 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -22,7 +21,6 @@ import Swal from 'sweetalert2';
         FormsModule,
         MatDialogModule,
         MatIconModule,
-        MatPaginatorModule,
         MatInputModule,
         MatFormFieldModule, MatSelectModule, DropdownComponent, DropdownItemComponent
     ],
@@ -71,7 +69,7 @@ import Swal from 'sweetalert2';
       </div>
 
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        @if (loading()) {
+        @if (loading() && data().length === 0) {
           <div class="flex justify-center py-12">
             <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div>
           </div>
@@ -80,10 +78,9 @@ import Swal from 'sweetalert2';
             @for (element of data(); track element.llaveTabla) {
               <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
                 <div class="flex items-start justify-between gap-2">
-                  <div class="flex items-center gap-3 min-w-0">
+                  <div class="flex items-center gap-3 min-w-0 cursor-pointer rounded-lg p-1 -m-1 transition hover:bg-gray-900/5 dark:hover:bg-white/10" (click)="openForm(element)">
                     <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">tag</mat-icon></div>
                     <div class="min-w-0">
-                      <p class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ element.prefijo }}{{ element.sufijo ? '-' + element.sufijo : '' }}</p>
                       <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.nombre }}</h3>
                     </div>
                   </div>
@@ -94,26 +91,13 @@ import Swal from 'sweetalert2';
                     <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
                   </app-dropdown>
                 </div>
-                <dl class="grid grid-cols-2 gap-2 text-sm">
-                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Consecutivo Actual</dt><dd class="font-mono text-gray-900 dark:text-gray-100">{{ element.consecutivoActual }}</dd></div>
-                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Número Actual</dt><dd class="text-gray-900 dark:text-gray-100">{{ element.numeroActual }}</dd></div>
-                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Rango</dt><dd class="font-mono text-gray-900 dark:text-gray-100">{{ element.numeroInicial }} - {{ element.numeroFinal }}</dd></div>
-                  <div><dt class="text-xs text-gray-500 dark:text-gray-400">Padding</dt><dd class="text-gray-900 dark:text-gray-100">{{ element.padding }}</dd></div>
-                </dl>
-                <div class="flex items-center gap-2 mt-auto">
-                  <span class="badge" [class.badge-info]="element.manual" [class.badge-secondary]="!element.manual">{{ element.manual ? 'Manual' : 'Automático' }}</span>
-                  <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
-                </div>
               </div>
             }
           </div>
-          <mat-paginator
-            [length]="totalItems()"
-            [pageSize]="pageSize()"
-            [pageSizeOptions]="[10, 25, 50, 100]"
-            (page)="onPageChange($event)"
-            class="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
-          </mat-paginator>
+          <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Mostrando {{ data().length }} registros</span>
+            @if (loading()) { <div class="w-40 h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> }
+          </div>
         }
 
         @if (!loading() && data().length === 0) {
@@ -122,19 +106,22 @@ import Swal from 'sweetalert2';
           </div>
         }
       </div>
+      <div #loadMore></div>
     </div>
   `,
     styles: []
 })
-export class ConsecutiveListComponent implements OnInit {
+export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestroy {
     private service = inject(ConsecutiveService);
     private dialog = inject(MatDialog);
+    @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
+    private observer?: IntersectionObserver;
 
     loading = signal(false);
     data = signal<ConsecutivoDTO[]>([]);
-    totalItems = signal(0);
-    pageSize = signal(25);
     currentPage = signal(0);
+    hasMore = signal(true);
+    private readonly pageSize = 25;
 
     manualFilter: string = '';
 
@@ -153,39 +140,47 @@ export class ConsecutiveListComponent implements OnInit {
     };
 
     ngOnInit(): void {
-        this.loadData();
+        this.loadNext();
     }
 
-    loadData(): void {
+    ngAfterViewInit(): void {
+        this.observer = new IntersectionObserver((entries) => { if (entries.some(e => e.isIntersecting)) this.loadNext(); });
+        this.observer.observe(this.loadMoreRef.nativeElement);
+    }
+
+    ngOnDestroy(): void {
+        this.observer?.disconnect();
+    }
+
+    loadNext(): void {
+        if (this.loading() || !this.hasMore()) return;
         this.loading.set(true);
         const f = this.filter;
-        f.paginacionRegistroInicial = this.currentPage() * this.pageSize();
-        f.paginacionRegistroFinal = f.paginacionRegistroInicial + this.pageSize();
+        f.paginacionRegistroInicial = this.currentPage() * this.pageSize;
+        f.paginacionRegistroFinal = this.pageSize;
+        this.service.getConsecutivos(f).subscribe({ next: (res) => { this.data.update(items => [...items, ...res]); this.currentPage.update(p => p + 1); if (res.length < this.pageSize) this.hasMore.set(false); this.loading.set(false); this.checkMore(); }, error: () => this.loading.set(false) });
+    }
 
-        this.service.getConsecutivos(f).subscribe({
-            next: (res) => {
-                this.data.set(res);
-                this.totalItems.set(res.length > 0 ? res.length : 0);
-                this.loading.set(false);
-            },
-            error: () => this.loading.set(false)
+    private checkMore(): void {
+        requestAnimationFrame(() => {
+            if (this.loading() || !this.hasMore() || this.data().length === 0) return;
+            const rect = this.loadMoreRef.nativeElement.getBoundingClientRect();
+            if (rect.top < window.innerHeight) this.loadNext();
         });
     }
 
-    onFilterChange(): void {
+    reload(): void {
         this.currentPage.set(0);
-        this.loadData();
+        this.hasMore.set(true);
+        this.data.set([]);
+        this.loadNext();
     }
+
+    onFilterChange(): void { this.reload(); }
 
     onManualFilterChange(): void {
         this.filter.manualFilter = this.manualFilter === 'true' ? true : this.manualFilter === 'false' ? false : undefined;
-        this.onFilterChange();
-    }
-
-    onPageChange(event: PageEvent): void {
-        this.currentPage.set(event.pageIndex);
-        this.pageSize.set(event.pageSize);
-        this.loadData();
+        this.reload();
     }
 
     openForm(consecutivo?: ConsecutivoDTO): void {
@@ -197,7 +192,7 @@ export class ConsecutiveListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((result: ConsecutivoDTO) => {
             if (result) {
-                this.loadData();
+                this.reload();
             }
         });
     }
@@ -218,7 +213,7 @@ export class ConsecutiveListComponent implements OnInit {
                 this.service.inactivateConsecutivo(updated).subscribe({
                     next: () => {
                         Swal.fire('Éxito', `Consecutivo ${action}do correctamente`, 'success');
-                        this.loadData();
+                        this.reload();
                     },
                     error: () => Swal.fire('Error', `No se pudo ${action} el consecutivo`, 'error')
                 });
@@ -230,7 +225,7 @@ export class ConsecutiveListComponent implements OnInit {
         this.service.assignConsecutivo(item).subscribe({
             next: (res) => {
                 Swal.fire('Asignado', `Consecutivo asignado: ${res.consecutivoActual}`, 'success');
-                this.loadData();
+                this.reload();
             },
             error: () => Swal.fire('Error', 'No se pudo asignar el consecutivo', 'error')
         });

@@ -1,9 +1,8 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -15,6 +14,7 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
 import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/document.types';
 import { ProcessService } from '../configuracion.api';
 import { ProcessFormComponent } from './process-form.component';
+import { PropertyPanelComponent } from '../shared/property-panel.component';
 import Swal from 'sweetalert2';
 
 interface TreeNode {
@@ -28,7 +28,7 @@ interface TreeNode {
 @Component({
     selector: 'app-process-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatPaginatorModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatTabsModule, CdkTreeModule, DropdownComponent, DropdownItemComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatTabsModule, CdkTreeModule, DropdownComponent, DropdownItemComponent],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -54,29 +54,23 @@ interface TreeNode {
                 @for (element of data(); track element.llaveTabla) {
                   <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
                     <div class="flex items-start justify-between gap-2">
-                      <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border" [class.bg-blue-500]="element.tipo === 'A'" [class.bg-violet-500]="element.tipo === 'E'"><mat-icon class="text-white">account_tree</mat-icon></div>
+                      <div class="flex items-center gap-3 min-w-0 cursor-pointer rounded-lg p-1 -m-1 transition hover:bg-gray-900/5 dark:hover:bg-white/10" (click)="openForm(element)">
+                        @if (element.imagen) { <img [src]="element.imagen" class="w-10 h-10 rounded-lg object-cover shrink-0" alt="" /> } @else { <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">account_tree</mat-icon></div> }
                         <div class="min-w-0">
                           <p class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ element.codigo }}</p>
                           <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.nombre }}</h3>
                         </div>
                       </div>
-                      <app-dropdown>
-                        <button type="button" class="btn-icon" trigger aria-label="Acciones"><mat-icon>more_vert</mat-icon></button>
-                        <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
-                        <app-dropdown-item (clicked)="openTransitions(element)"><mat-icon class="text-base">swap_horiz</mat-icon> Transiciones</app-dropdown-item>
-                        <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
-                      </app-dropdown>
-                    </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{{ element.objetivo }}</p>
-                    <dl class="grid grid-cols-2 gap-2 text-sm">
-                      <div><dt class="text-xs text-gray-500 dark:text-gray-400">Tipo</dt><dd class="text-gray-900 dark:text-gray-100">{{ element.tipo === 'A' ? 'Agrupador' : (element.tipo === 'E' ? 'Ejecutor' : element.tipo) }}</dd></div>
-                      <div><dt class="text-xs text-gray-500 dark:text-gray-400">Prioridad</dt><dd class="font-mono text-gray-900 dark:text-gray-100">{{ element.prioridad }}</dd></div>
-                      <div><dt class="text-xs text-gray-500 dark:text-gray-400">Macro Proceso</dt><dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.macroproceso }}</dd></div>
-                      <div><dt class="text-xs text-gray-500 dark:text-gray-400">Macro Nombre</dt><dd class="text-gray-900 dark:text-gray-100 truncate">{{ element.macroNombre }}</dd></div>
-                    </dl>
-                    <div class="mt-auto">
-                      <span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
+                      <div class="flex items-center gap-1">
+                        <button type="button" class="btn-icon btn-flat-primary" (click)="openProperties(element)" title="Propiedades" aria-label="Propiedades"><mat-icon>tune</mat-icon></button>
+                        <app-dropdown>
+                          <button type="button" class="btn-icon" trigger aria-label="Acciones"><mat-icon>more_vert</mat-icon></button>
+                          <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
+                          <app-dropdown-item (clicked)="openProperties(element)"><mat-icon class="text-base">tune</mat-icon> Propiedades</app-dropdown-item>
+                          <app-dropdown-item (clicked)="openTransitions(element)"><mat-icon class="text-base">swap_horiz</mat-icon> Transiciones</app-dropdown-item>
+                          <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
+                        </app-dropdown>
+                      </div>
                     </div>
                   </div>
                 }
@@ -103,7 +97,6 @@ interface TreeNode {
                         <div class="w-3 h-3 rounded-full" [class.bg-blue-500]="node.proceso.tipo === 'A'" [class.bg-violet-500]="node.proceso.tipo === 'E'"></div>
                         <span class="font-medium truncate">{{ node.proceso.nombre }}</span>
                         <span class="text-xs text-gray-500 dark:text-gray-400 font-mono">{{ node.proceso.codigo }}</span>
-                        <span class="badge" [class.badge-success]="node.proceso.estado === 'A'" [class.badge-secondary]="node.proceso.estado === 'I'">{{ node.proceso.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
                       </div>
                       <div class="flex items-center gap-1">
                         <button type="button" class="btn-icon btn-flat-primary" (click)="openForm(node.proceso)" aria-label="Editar"><mat-icon>edit</mat-icon></button>
@@ -120,7 +113,6 @@ interface TreeNode {
                         <div class="w-3 h-3 rounded-full" [class.bg-blue-500]="node.proceso.tipo === 'A'" [class.bg-violet-500]="node.proceso.tipo === 'E'"></div>
                         <span class="font-medium truncate">{{ node.proceso.nombre }}</span>
                         <span class="text-xs text-gray-500 dark:text-gray-400 font-mono">{{ node.proceso.codigo }}</span>
-                        <span class="badge" [class.badge-success]="node.proceso.estado === 'A'" [class.badge-secondary]="node.proceso.estado === 'I'">{{ node.proceso.estado === 'A' ? 'Activo' : 'Inactivo' }}</span>
                       </div>
                       <div class="flex items-center gap-1">
                         <button type="button" class="btn-icon btn-flat-primary" (click)="openForm(node.proceso)" aria-label="Editar"><mat-icon>edit</mat-icon></button>
@@ -258,6 +250,13 @@ securityToken: ''
 
     openTransitions(process: ProcesoDTO): void {
         // Navegar a transiciones - se implementará en el routing
+    }
+
+    openProperties(item: ProcesoDTO): void {
+        this.dialog.open(PropertyPanelComponent, {
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            data: { campoKey: item.llaveTabla, tipoOrigen: 'P', titulo: item.nombre }
+        });
     }
 
     toggleStatus(item: ProcesoDTO): void {

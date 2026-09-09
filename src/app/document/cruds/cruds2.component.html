@@ -97,6 +97,30 @@
             <span>Listar</span>
           </button>
         </div>
+        <div class="py-2">
+          <div class="text-primary text-xs uppercase font-bold py-1">Ordenar por</div>
+          <div class="flex items-center">
+            <label class="text-sm px-2">
+              <input class="mx-2 py-1" type="checkbox" [checked]="ascendente()"
+                (change)="ascendente.set($event.target.checked)" />Ascendente
+            </label>
+            <app-dropdown>
+              <button class="btn-raised w-full flex items-center justify-between" trigger>
+                <span>{{ ordenCampo() === 'N' ? 'Nombre' : (ordenCampo() === 'D' ? 'Descripcion' : 'Fecha') }}</span>
+                <mat-icon>chevron_down</mat-icon>
+              </button>
+              <app-dropdown-item (clicked)="ordenCampo.set('')">
+                <span>Fecha</span>
+              </app-dropdown-item>
+              <app-dropdown-item (clicked)="ordenCampo.set('N')">
+                <span>Codigo</span>
+              </app-dropdown-item>
+              <app-dropdown-item (clicked)="ordenCampo.set('D')">
+                <span>Descripcion</span>
+              </app-dropdown-item>
+            </app-dropdown>
+          </div>
+        </div>
         @if (fControlCheck && !fControlCheck.value) {
         <div>
           <!-- Buscador de fecha -->

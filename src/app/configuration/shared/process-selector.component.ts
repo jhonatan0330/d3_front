@@ -14,18 +14,20 @@ import { ProcessService } from '../configuracion.api';
     ],
     template: `
     <div class="relative">
-      <label class="block text-sm font-semibold mb-1">{{ label }}</label>
+      @if (label) { <label class="block text-sm font-semibold mb-1">{{ label }}</label> }
       <div class="relative">
         <input type="text"
           [value]="query || displayValue"
+          [disabled]="disabled"
           (input)="onInput($event)"
           (focus)="onFocus()"
           (blur)="onBlur()"
           (keydown.escape)="showDropdown = false"
-          placeholder="Buscar proceso..."
-          class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 pr-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          [placeholder]="placeholder"
+          class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 pr-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 [disabled]:bg-gray-100 dark:[disabled]:bg-gray-700 [disabled]:cursor-not-allowed" />
         @if (displayValue) {
           <button type="button"
+            [disabled]="disabled"
             class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
             (click)="clear($event)">
             <mat-icon class="text-sm">clear</mat-icon>
@@ -56,6 +58,7 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
     private processService = inject(ProcessService);
 
     @Input() label = 'Proceso';
+    @Input() placeholder = 'Buscar proceso...';
 
     procesos: ProcesoDTO[] = [];
     filteredProcesos: ProcesoDTO[] = [];

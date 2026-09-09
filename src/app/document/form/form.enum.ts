@@ -23,6 +23,24 @@ export enum StatesEnum {
   FINALIZADO = 'C'
 }
 
+export enum DocumentoPlantillaTipoEnum {
+  PRINCIPAL = 'P',
+  ACTIVACION = 'A',
+  ANULACION = 'I',
+  MODIFICACIONES = 'U',
+  REPORTE = 'T',
+  ROL = 'R'
+}
+
+export const DocumentoPlantillaTipoLabel: Record<string, string> = {
+  [DocumentoPlantillaTipoEnum.PRINCIPAL]: 'P - Principal de proceso',
+  [DocumentoPlantillaTipoEnum.ACTIVACION]: 'A - Activación',
+  [DocumentoPlantillaTipoEnum.ANULACION]: 'I - Anulación',
+  [DocumentoPlantillaTipoEnum.MODIFICACIONES]: 'U - Modificaciones',
+  [DocumentoPlantillaTipoEnum.REPORTE]: 'T - Reporte',
+  [DocumentoPlantillaTipoEnum.ROL]: 'R - Rol'
+};
+
 
 export enum PropiedadEnum {
   ORGANIZACION = "O",

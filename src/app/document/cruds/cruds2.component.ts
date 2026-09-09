@@ -76,6 +76,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     fRegistroTimeStart: FormControl = new FormControl();
     fRegistroTimeEnd: FormControl = new FormControl();
     fControlCheck: FormControl = new FormControl(false); // Check que indica si se debe realizar una busqueda por codigo exacto
+    ordenCampo = signal(''); // Campo por el cual ordenar: ''=fecha, 'N'=nombre, 'D'=descripcion
+    ascendente = signal(false); // Por defecto descendente; si se marca, ascendente
     pagina = signal(1); // Indica que pagina estamos buscando
     pageControl: FormControl = new FormControl('30');
     isLoading = signal(false);
@@ -122,6 +124,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.dataProvider.set([]);
             this.templatesFromProcess.set([]);
             this.fControlSearch.setValue('');
+            this.ordenCampo.set('');
+            this.ascendente.set(false);
             this.procesoId = null;
             //const serverUrl = this.templateService.getUrl4Id(params.server_id);
             if (propType === 'list') {
@@ -368,6 +372,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         }
         entity.paginacionRegistroInicial = this.pageControl.value * (_pagina - 1);
         entity.paginacionRegistroFinal = this.pageControl.value;
+        entity.ordenNombre = this.ordenCampo() || null!;
+        entity.ascendente = this.ascendente() ? 'A' : null!;
         if (this.dynamicControls()) {
             entity.filtersByFields = [];
             this.dynamicControls().forEach(fieldFilter => {

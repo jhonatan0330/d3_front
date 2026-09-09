@@ -3,14 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { WebServiceDTO } from 'app/document/document.types';
+import { WebServiceConfigService } from '../configuracion.api';
 import { ProcessSelectorComponent } from '../shared/process-selector.component';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-web-service-form',
     standalone: true,
     imports: [CommonModule, FormsModule, MatDialogModule, ProcessSelectorComponent],
     template: `
-    <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
         {{ data?.llaveTabla ? 'Editar Web Service' : 'Nuevo Web Service' }}
       </h2>
@@ -45,6 +47,7 @@ import { ProcessSelectorComponent } from '../shared/process-selector.component';
 export class WebServiceFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<WebServiceFormComponent>>(MatDialogRef);
     public data = inject<WebServiceDTO | null>(MAT_DIALOG_DATA);
+    private service = inject(WebServiceConfigService);
 
     ws: WebServiceDTO = new WebServiceDTO();
     cargando = false;
@@ -60,6 +63,19 @@ export class WebServiceFormComponent implements OnInit {
 
     onSubmit(): void {
         this.cargando = true;
-        this.dialogRef.close(this.ws);
+        const request = this.ws.llaveTabla
+            ? this.service.updateWebService(this.ws)
+            : this.service.createWebService(this.ws);
+        request.subscribe({
+            next: (res) => {
+                this.cargando = false;
+                Swal.fire('Éxito', this.ws.llaveTabla ? 'Web Service actualizado correctamente' : 'Web Service creado correctamente', 'success');
+                this.dialogRef.close(res);
+            },
+            error: () => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar el web service', 'error');
+            },
+        });
     }
 }

@@ -3,6 +3,7 @@ import { Observable, of, delay, switchMap } from 'rxjs';
 import { AssistantIntent, AssistantMessage, AssistantResult, ChatMessage, DocumentSearchResult, TemplateSearchResult } from './assistant.models';
 import { TemplateService } from 'app/document/service/template.service';
 import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
+import { DocumentoPlantillaTipoEnum } from 'app/document/form/form.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { ApiService } from 'app/document/document.api';
 import { UtilsService } from 'app/document/service/utils.service';
@@ -277,7 +278,7 @@ export class AssistantService {
             const coincideCodigo = codigo === textoNormalizado;
 
             const esVisible = (PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
-                    && item.tipo == 'P');
+                    && (item.tipo == DocumentoPlantillaTipoEnum.PRINCIPAL || item.tipo == DocumentoPlantillaTipoEnum.ROL));
 
             return (coincideNombre || coincideCodigo) && esVisible;
         });

@@ -14,7 +14,6 @@ export class PlantillaHelper {
   static FORM_CONSECUTIVO = 'CONSECUTIVO';
   static FORM_FECHA = 'FECHA';
   static FORM_RESPONSABLE = 'RESPONSABLE';
-  static FORM_ORDEN = 'ORDEN';
   static FORM_AYUDA = 'AYUDA';
   static FORM_SOLICITAR_FECHAS = 'SOLICITAR_FECHAS';
   static FORM_ANULAR = 'PLANTILLA_ANULAR';

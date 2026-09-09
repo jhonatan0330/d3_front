@@ -6,7 +6,7 @@ import {
     ConsecutivoDTO, ConsecutivoFilterDTO,
     MensajeDTO, MensajeFilterDTO,
     ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO,
-    DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO,
+    DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO, ReporteBaseFilterDTO,
     MensajePlantillaCorreoDTO, MensajePlantillaCorreoFilterDTO,
     WebServiceDTO, WebServiceFilterDTO, WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO,
     ServidorDTO, ServidorFilterDTO,
@@ -209,8 +209,8 @@ export class DocumentTemplateService {
         );
     }
 
-    inactivateProperty(property: PropiedadDTO): Observable<PropiedadDTO[]> {
-        return this.http.post<PropiedadDTO[]>(
+    inactivateProperty(property: PropiedadDTO): Observable<PropiedadDTO> {
+        return this.http.post<PropiedadDTO>(
             this.ls.getUrlAccess('/api/config/properties/inactivate'), property
         );
     }
@@ -239,8 +239,8 @@ export class DocumentTemplateService {
         );
     }
 
-    getTemplateReports(templateKey: string): Observable<ReporteBaseDTO[]> {
-        const payload = { estado: 'A', plantilla: templateKey };
+    getTemplateReports(templateKey: string, filter?: ReporteBaseFilterDTO): Observable<ReporteBaseDTO[]> {
+        const payload = { estado: 'A', plantilla: templateKey, ...(filter || {}) };
         return this.http.post<ReporteBaseDTO[]>(
             this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/reports`), payload
         );
@@ -536,8 +536,8 @@ export class ProcessService {
         );
     }
 
-    getTransitions(processKey: string): Observable<ProcesoTransicionDTO[]> {
-        const payload = { estado: 'A', proceso: processKey };
+    getTransitions(processKey: string, filter?: ProcesoTransicionFilterDTO): Observable<ProcesoTransicionDTO[]> {
+        const payload = { estado: 'A', proceso: processKey, ...(filter || {}) };
         return this.http.post<ProcesoTransicionDTO[]>(
             this.ls.getUrlAccess(`${this.baseUrl}/${processKey}/transitions`), payload
         );
@@ -598,8 +598,8 @@ export class PropertyService {
         );
     }
 
-    inactivateProperty(property: PropiedadCampoDTO): Observable<PropiedadDTO[]> {
-        return this.http.post<PropiedadDTO[]>(
+    inactivateProperty(property: PropiedadDTO): Observable<PropiedadDTO> {
+        return this.http.post<PropiedadDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/inactivate`), property
         );
     }

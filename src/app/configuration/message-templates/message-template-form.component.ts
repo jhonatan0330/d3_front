@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MensajePlantillaCorreoDTO } from 'app/document/document.types';
+import { MessageTemplateService } from '../configuracion.api';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -53,6 +54,8 @@ export class MessageTemplateFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<MessageTemplateFormComponent>>(MatDialogRef);
     public data = inject<MensajePlantillaCorreoDTO | null>(MAT_DIALOG_DATA);
 
+    private service = inject(MessageTemplateService);
+
     template: MensajePlantillaCorreoDTO = new MensajePlantillaCorreoDTO();
     cargando = false;
 
@@ -67,6 +70,21 @@ export class MessageTemplateFormComponent implements OnInit {
 
     onSubmit(): void {
         this.cargando = true;
-        this.dialogRef.close(this.template);
+
+        const request$ = this.template.llaveTabla
+            ? this.service.updateTemplate(this.template)
+            : this.service.createTemplate(this.template);
+
+        request$.subscribe({
+            next: (result) => {
+                this.cargando = false;
+                Swal.fire('Éxito', 'Plantilla guardada correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: (err) => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar la plantilla', 'error');
+            }
+        });
     }
 }

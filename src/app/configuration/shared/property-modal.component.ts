@@ -31,7 +31,7 @@ interface ModalData {
         PropertyRelationsComponent
     ],
     template: `
-    <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
         {{ data.propiedad?.llaveTabla ? 'Editar Propiedad' : 'Nueva Propiedad' }}
       </h2>

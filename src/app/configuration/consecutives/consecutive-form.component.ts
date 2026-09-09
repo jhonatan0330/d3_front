@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { ConsecutivoDTO } from 'app/document/document.types';
+import { ConsecutiveService } from '../configuracion.api';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-consecutive-form',
@@ -107,6 +109,8 @@ export class ConsecutiveFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<ConsecutiveFormComponent>>(MatDialogRef);
     public data = inject<ConsecutivoDTO | null>(MAT_DIALOG_DATA);
 
+    private service = inject(ConsecutiveService);
+
     consecutivo: ConsecutivoDTO = new ConsecutivoDTO();
     cargando = false;
 
@@ -127,6 +131,21 @@ export class ConsecutiveFormComponent implements OnInit {
 
     onSubmit(): void {
         this.cargando = true;
-        this.dialogRef.close(this.consecutivo);
+
+        const request$ = this.consecutivo.llaveTabla
+            ? this.service.updateConsecutivo(this.consecutivo)
+            : this.service.createConsecutivo(this.consecutivo);
+
+        request$.subscribe({
+            next: (result) => {
+                this.cargando = false;
+                Swal.fire('Éxito', 'Consecutivo guardado correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: (err) => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar el consecutivo', 'error');
+            }
+        });
     }
 }

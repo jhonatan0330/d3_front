@@ -1,15 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { OrganizacionDTO } from 'app/document/document.types';
-import { PropertyFieldComponent } from '../shared/property-field.component';
+import { OrganizationService } from '../configuracion.api';
+import { PropertyPanelComponent } from '../shared/property-panel.component';
+import { ImageUploaderComponent } from '../../upload/image-uploader/image-uploader.component';
+import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-organization-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, PropertyFieldComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, ImageUploaderComponent],
     template: `
     <div class="max-w-3xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
@@ -39,8 +42,8 @@ import Swal from 'sweetalert2';
             <input type="text" [(ngModel)]="organizacion.usuarioSystem" name="usuarioSystem" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div class="sm:col-span-2">
-            <label class="block text-sm font-semibold mb-1">Imagen (URL)</label>
-            <input type="text" [(ngModel)]="organizacion.imagen" name="imagen" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-sm font-semibold mb-1">Imagen</label>
+            <app-image-uploader [(value)]="organizacion.imagen"></app-image-uploader>
           </div>
           <div class="sm:col-span-2">
             <label class="block text-sm font-semibold mb-1">Slogan</label>
@@ -56,15 +59,8 @@ import Swal from 'sweetalert2';
           </div>
         </div>
 
-        <!-- PropertyField para propiedades de la organización -->
-        <app-property-field
-          [propiedades]="organizacion.propiedades || []"
-          [tipoOrigen]="'L'"
-          [campoKey]="organizacion.llaveTabla || ''"
-          (propiedadesChange)="onPropiedadesChange($event)">
-        </app-property-field>
-
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!organizacion.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
           <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
           <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data?.llaveTabla ? 'Actualizar' : 'Crear') }}</button>
         </div>
@@ -77,6 +73,9 @@ export class OrganizationFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<OrganizationFormComponent>>(MatDialogRef);
     public data = inject<OrganizacionDTO | null>(MAT_DIALOG_DATA);
 
+    private service = inject(OrganizationService);
+    private dialog = inject(MatDialog);
+
     organizacion: OrganizacionDTO = new OrganizacionDTO();
     cargando = false;
 
@@ -86,16 +85,34 @@ export class OrganizationFormComponent implements OnInit {
         } else {
             this.organizacion = new OrganizacionDTO();
             this.organizacion.estado = 'A';
-            this.organizacion.propiedades = [];
         }
     }
 
-    onPropiedadesChange(props: any[]): void {
-        this.organizacion.propiedades = props;
+    openPropiedades(): void {
+        if (!this.organizacion.llaveTabla) return;
+        this.dialog.open(PropertyPanelComponent, {
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            data: { campoKey: this.organizacion.llaveTabla, tipoOrigen: 'O', titulo: this.organizacion.nombre }
+        });
     }
 
     onSubmit(): void {
         this.cargando = true;
-        this.dialogRef.close(this.organizacion);
+
+        const request$ = this.organizacion.llaveTabla
+            ? this.service.updateOrganizacion(this.organizacion)
+            : this.service.createOrganizacion(this.organizacion);
+
+        request$.subscribe({
+            next: (result) => {
+                this.cargando = false;
+                Swal.fire('Éxito', 'Organización guardada correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: (err) => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar la organización', 'error');
+            }
+        });
     }
 }

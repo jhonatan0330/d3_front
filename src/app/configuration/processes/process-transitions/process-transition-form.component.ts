@@ -1,9 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { ProcesoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
-import { PropertyFieldComponent } from '../../shared/property-field.component';
+import { ProcessService } from '../../configuracion.api';
+import { PropertyPanelComponent } from '../../shared/property-panel.component';
+import { ImageUploaderComponent } from '../../../upload/image-uploader/image-uploader.component';
+import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
 
 interface TransitionFormData {
@@ -14,9 +17,9 @@ interface TransitionFormData {
 @Component({
     selector: 'app-process-transition-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, PropertyFieldComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, ImageUploaderComponent],
     template: `
-    <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
         {{ data.transition?.llaveTabla ? 'Editar Transición' : 'Nueva Transición' }}
       </h2>
@@ -88,24 +91,18 @@ interface TransitionFormData {
           </div>
 
           <div>
-            <label class="block text-sm font-semibold mb-1">Imagen (URL)</label>
-            <input type="text" [(ngModel)]="transition.imagen" name="imagen" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-sm font-semibold mb-1">Imagen</label>
+            <app-image-uploader [(value)]="transition.imagen"></app-image-uploader>
           </div>
 
           <div>
             <label class="block text-sm font-semibold mb-1">Tipo Llegada</label>
             <input type="text" [(ngModel)]="transition.estadoLlegadaTipo" name="estadoLlegadaTipo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-
-          <app-property-field
-            [propiedades]="transition.propiedades || []"
-            [tipoOrigen]="'T'"
-            [campoKey]="transition.llaveTabla || ''"
-            (propiedadesChange)="onPropiedadesChange($event)">
-          </app-property-field>
         </div>
 
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!transition.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
           <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
           <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data.transition?.llaveTabla ? 'Actualizar' : 'Crear') }}</button>
         </div>
@@ -117,6 +114,9 @@ interface TransitionFormData {
 export class ProcessTransitionFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<ProcessTransitionFormComponent>>(MatDialogRef);
     public data = inject<TransitionFormData>(MAT_DIALOG_DATA);
+
+    private service = inject(ProcessService);
+    private dialog = inject(MatDialog);
 
     transition: ProcesoTransicionDTO = new ProcesoTransicionDTO();
     cargando = false;
@@ -132,16 +132,34 @@ export class ProcessTransitionFormComponent implements OnInit {
             this.transition.rapida = false;
             this.transition.estadoPartidaOrden = 0;
             this.transition.estadoLlegadaOrden = 0;
-            this.transition.propiedades = [];
         }
     }
 
-    onPropiedadesChange(props: any[]): void {
-        this.transition.propiedades = props;
+    openPropiedades(): void {
+        if (!this.transition.llaveTabla) return;
+        this.dialog.open(PropertyPanelComponent, {
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            data: { campoKey: this.transition.llaveTabla, tipoOrigen: 'T', titulo: this.transition.nombre }
+        });
     }
 
     onSubmit(): void {
         this.cargando = true;
-        this.dialogRef.close(this.transition);
+
+        const request$ = this.transition.llaveTabla
+            ? this.service.updateTransition(this.transition)
+            : this.service.createTransition(this.transition);
+
+        request$.subscribe({
+            next: (result) => {
+                this.cargando = false;
+                Swal.fire('Éxito', 'Transición guardada correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: (err) => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar la transición', 'error');
+            }
+        });
     }
 }

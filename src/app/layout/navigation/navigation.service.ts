@@ -2,6 +2,7 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Navigation } from 'app/layout/navigation/navigation.types';
 import { FuseNavigationItem } from 'app/layout/layout.types';
 import { DocumentoPlantillaDTO } from 'app/document/document.types';
+import { DocumentoPlantillaTipoEnum } from 'app/document/form/form.enum';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
@@ -127,7 +128,7 @@ export class NavigationService {
         if (templates && templates.length) {
             templates.forEach((template: DocumentoPlantillaDTO) => {
                 if ((PlantillaHelper.buscarPropiedad(template.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
-                    && template.tipo == 'P')) {
+                    && (template.tipo == DocumentoPlantillaTipoEnum.PRINCIPAL || template.tipo == DocumentoPlantillaTipoEnum.ROL))) {
                     const newItem: FuseNavigationItem = {
                         id: template.llaveTabla,
                         title: template.nombre,

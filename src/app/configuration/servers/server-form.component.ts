@@ -1,17 +1,19 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ServidorDTO } from 'app/document/document.types';
-import { PropertyFieldComponent } from '../shared/property-field.component';
+import { ServerService } from '../configuracion.api';
+import { PropertyPanelComponent } from '../shared/property-panel.component';
+import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-server-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatSelectModule, PropertyFieldComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatSelectModule, MatIconModule],
     template: `
     <div class="max-w-3xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">{{ data?.llaveTabla ? 'Editar Servidor' : 'Nuevo Servidor' }}</h2>
@@ -60,9 +62,8 @@ import Swal from 'sweetalert2';
           </div>
         </div>
 
-        <app-property-field [propiedades]="servidor.propiedades || []" [tipoOrigen]="'S'" [campoKey]="servidor.llaveTabla || ''" (propiedadesChange)="onPropiedadesChange($event)"></app-property-field>
-
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!servidor.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
           <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
           <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data?.llaveTabla ? 'Actualizar' : 'Crear') }}</button>
         </div>
@@ -75,6 +76,9 @@ export class ServerFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<ServerFormComponent>>(MatDialogRef);
     public data = inject<ServidorDTO | null>(MAT_DIALOG_DATA);
 
+    private service = inject(ServerService);
+    private dialog = inject(MatDialog);
+
     servidor: ServidorDTO = new ServidorDTO();
     cargando = false;
 
@@ -83,11 +87,34 @@ export class ServerFormComponent implements OnInit {
         else {
             this.servidor = new ServidorDTO();
             this.servidor.estado = 'A';
-            this.servidor.propiedades = [];
         }
     }
 
-    onPropiedadesChange(props: any[]): void { this.servidor.propiedades = props; }
+    openPropiedades(): void {
+        if (!this.servidor.llaveTabla) return;
+        this.dialog.open(PropertyPanelComponent, {
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            data: { campoKey: this.servidor.llaveTabla, tipoOrigen: 'S', titulo: this.servidor.nombre }
+        });
+    }
 
-    onSubmit(): void { this.cargando = true; this.dialogRef.close(this.servidor); }
+    onSubmit(): void {
+        this.cargando = true;
+
+        const request$ = this.servidor.llaveTabla
+            ? this.service.updateServidor(this.servidor)
+            : this.service.createServidor(this.servidor);
+
+        request$.subscribe({
+            next: (result) => {
+                this.cargando = false;
+                Swal.fire('Éxito', 'Servidor guardado correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: (err) => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar el servidor', 'error');
+            }
+        });
+    }
 }

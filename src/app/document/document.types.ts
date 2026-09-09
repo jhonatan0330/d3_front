@@ -293,6 +293,8 @@ export class PedidoVentaFilterDTO extends BasicFilterDTO {
     filtersByFields: PedidoVentaCaracteristicaFilterDTO[];
     campoOrigen: string;
     campoPropiedad: string;
+    ordenNombre: string;
+    ascendente: string;
 }
 
 export class PedidoVentaCaracteristicaFilterDTO extends BasicFilterDTO {

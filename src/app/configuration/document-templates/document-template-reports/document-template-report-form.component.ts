@@ -1,9 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { ReporteBaseDTO } from 'app/document/document.types';
-import { PropertyFieldComponent } from '../../shared/property-field.component';
+import { DocumentTemplateService } from '../../configuracion.api';
+import { PropertyPanelComponent } from '../../shared/property-panel.component';
+import { MatIconModule } from '@angular/material/icon';
 import Swal from 'sweetalert2';
 
 interface ReportFormData {
@@ -14,9 +16,9 @@ interface ReportFormData {
 @Component({
     selector: 'app-document-template-report-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, PropertyFieldComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
     template: `
-    <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
         {{ data.report?.llaveTabla ? 'Editar Reporte' : 'Nuevo Reporte' }}
       </h2>
@@ -79,15 +81,10 @@ interface ReportFormData {
             </label>
           </div>
 
-          <app-property-field
-            [propiedades]="report.propiedades || []"
-            [tipoOrigen]="'R'"
-            [campoKey]="report.llaveTabla || ''"
-            (propiedadesChange)="onPropiedadesChange($event)">
-          </app-property-field>
-        </div>
+          </div>
 
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!report.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
           <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
           <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data.report?.llaveTabla ? 'Actualizar' : 'Crear') }}</button>
         </div>
@@ -99,6 +96,9 @@ interface ReportFormData {
 export class DocumentTemplateReportFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<DocumentTemplateReportFormComponent>>(MatDialogRef);
     public data = inject<ReportFormData>(MAT_DIALOG_DATA);
+
+    private service = inject(DocumentTemplateService);
+    private dialog = inject(MatDialog);
 
     report: ReporteBaseDTO = new ReporteBaseDTO();
     cargando = false;
@@ -114,16 +114,34 @@ export class DocumentTemplateReportFormComponent implements OnInit {
             this.report.soloExistente = false;
             this.report.publico = false;
             this.report.variables = '{}';
-            this.report.propiedades = [];
         }
     }
 
-    onPropiedadesChange(props: any[]): void {
-        this.report.propiedades = props;
+    openPropiedades(): void {
+        if (!this.report.llaveTabla) return;
+        this.dialog.open(PropertyPanelComponent, {
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            data: { campoKey: this.report.llaveTabla, tipoOrigen: 'E', titulo: this.report.nombre }
+        });
     }
 
     onSubmit(): void {
         this.cargando = true;
-        this.dialogRef.close(this.report);
+
+        const request$ = this.report.llaveTabla
+            ? this.service.updateReport(this.report)
+            : this.service.createReport(this.report);
+
+        request$.subscribe({
+            next: (result) => {
+                this.cargando = false;
+                Swal.fire('Éxito', 'Reporte guardado correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: (err) => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar el reporte', 'error');
+            }
+        });
     }
 }

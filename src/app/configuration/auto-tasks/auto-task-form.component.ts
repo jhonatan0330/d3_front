@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { ProcesoTransicionAutomaticaDTO } from 'app/document/document.types';
+import { AutoTaskService } from '../configuracion.api';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -10,7 +11,7 @@ import Swal from 'sweetalert2';
     standalone: true,
     imports: [CommonModule, FormsModule, MatDialogModule],
     template: `
-    <div class="max-w-2xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
         {{ data?.llaveTabla ? 'Editar Tarea Automática' : 'Nueva Tarea Automática' }}
       </h2>
@@ -69,6 +70,8 @@ export class AutoTaskFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<AutoTaskFormComponent>>(MatDialogRef);
     public data = inject<ProcesoTransicionAutomaticaDTO | null>(MAT_DIALOG_DATA);
 
+    private service = inject(AutoTaskService);
+
     task: ProcesoTransicionAutomaticaDTO = new ProcesoTransicionAutomaticaDTO();
     cargando = false;
 
@@ -83,6 +86,21 @@ export class AutoTaskFormComponent implements OnInit {
 
     onSubmit(): void {
         this.cargando = true;
-        this.dialogRef.close(this.task);
+
+        const request$ = this.task.llaveTabla
+            ? this.service.updateAutoTask(this.task)
+            : this.service.createAutoTask(this.task);
+
+        request$.subscribe({
+            next: (result) => {
+                this.cargando = false;
+                Swal.fire('Éxito', 'Tarea automática guardada correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: (err) => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo guardar la tarea automática', 'error');
+            }
+        });
     }
 }
