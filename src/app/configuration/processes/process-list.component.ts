@@ -49,7 +49,7 @@ interface TreeNode {
               </div>
             </div>
 
-            @if (loading()) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
+            @if (loading() && data().length === 0) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @for (element of data(); track element.llaveTabla) {
                   <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
@@ -75,10 +75,14 @@ interface TreeNode {
                   </div>
                 }
               </div>
-              <mat-paginator [length]="totalItems()" [pageSize]="pageSize()" [pageSizeOptions]="[10, 25, 50, 100]" (page)="onPageChange($event)" class="px-4 py-2 border-t border-gray-200 dark:border-gray-700"></mat-paginator>
+              <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
+                <span class="text-sm text-gray-500 dark:text-gray-400">Mostrando {{ data().length }} registros</span>
+                @if (loading()) { <div class="w-40 h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> }
+              </div>
             }
             @if (!loading() && data().length === 0) { <div class="text-center py-12 text-gray-500 dark:text-gray-400">No hay procesos registrados</div> }
           </div>
+          <div #loadMore></div>
         </mat-tab>
 
         <!-- Tab Árbol -->
@@ -131,16 +135,18 @@ interface TreeNode {
   `,
     styles: []
 })
-export class ProcessListComponent implements OnInit {
+export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
     private service = inject(ProcessService);
     private dialog = inject(MatDialog);
+    @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
+    private observer?: IntersectionObserver;
 
     activeTab = signal(0);
     loading = signal(false);
     data = signal<ProcesoDTO[]>([]);
-    totalItems = signal(0);
-    pageSize = signal(25);
     currentPage = signal(0);
+    hasMore = signal(true);
+    private readonly pageSize = 25;
 
     filter: ProcesoFilterDTO = {
         estado: 'A',
@@ -167,19 +173,44 @@ securityToken: ''
     treeData = signal<TreeNode[]>([]);
 
     ngOnInit(): void {
-        this.loadData();
+        this.loadNext();
     }
 
-    loadData(): void {
+    ngAfterViewInit(): void {
+        this.observer = new IntersectionObserver((entries) => { if (entries.some(e => e.isIntersecting)) this.loadNext(); });
+        this.observer.observe(this.loadMoreRef.nativeElement);
+    }
+
+    ngOnDestroy(): void {
+        this.observer?.disconnect();
+    }
+
+    loadNext(): void {
+        if (this.loading() || !this.hasMore()) return;
         this.loading.set(true);
         const f = this.filter;
-        f.paginacionRegistroInicial = this.currentPage() * this.pageSize();
-        f.paginacionRegistroFinal = f.paginacionRegistroInicial + this.pageSize();
+        f.paginacionRegistroInicial = this.currentPage() * this.pageSize;
+        f.paginacionRegistroFinal = this.pageSize;
 
         this.service.getProcesses(f).subscribe({
-            next: (res) => { this.data.set(res); this.totalItems.set(res.length); this.loading.set(false); },
+            next: (res) => { this.data.update(items => [...items, ...res]); this.currentPage.update(p => p + 1); if (res.length < this.pageSize) this.hasMore.set(false); this.loading.set(false); this.checkMore(); },
             error: () => this.loading.set(false)
         });
+    }
+
+    private checkMore(): void {
+        requestAnimationFrame(() => {
+            if (this.loading() || !this.hasMore() || this.data().length === 0) return;
+            const rect = this.loadMoreRef.nativeElement.getBoundingClientRect();
+            if (rect.top < window.innerHeight) this.loadNext();
+        });
+    }
+
+    reload(): void {
+        this.currentPage.set(0);
+        this.hasMore.set(true);
+        this.data.set([]);
+        this.loadNext();
     }
 
     loadTree(): void {
@@ -240,12 +271,11 @@ securityToken: ''
         }
     }
 
-    onFilterChange(): void { this.currentPage.set(0); this.loadData(); }
-    onPageChange(event: PageEvent): void { this.currentPage.set(event.pageIndex); this.pageSize.set(event.pageSize); this.loadData(); }
+    onFilterChange(): void { this.reload(); }
 
     openForm(item?: ProcesoDTO): void {
         const dialogRef = this.dialog.open(ProcessFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', data: item ? { ...item } : null });
-        dialogRef.afterClosed().subscribe((result: ProcesoDTO) => { if (result) { this.loadData(); if (this.activeTab() === 1) this.loadTree(); } });
+        dialogRef.afterClosed().subscribe((result: ProcesoDTO) => { if (result) { this.reload(); if (this.activeTab() === 1) this.loadTree(); } });
     }
 
     openTransitions(process: ProcesoDTO): void {
@@ -263,6 +293,6 @@ securityToken: ''
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
         Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} proceso?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateProcess(updated).subscribe({ next: () => { Swal.fire('Éxito', `Proceso ${action}do correctamente`, 'success'); this.loadData(); if (this.activeTab() === 1) this.loadTree(); }, error: () => Swal.fire('Error', `No se pudo ${action} el proceso`, 'error') }); }});
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateProcess(updated).subscribe({ next: () => { Swal.fire('Éxito', `Proceso ${action}do correctamente`, 'success'); this.reload(); if (this.activeTab() === 1) this.loadTree(); }, error: () => Swal.fire('Error', `No se pudo ${action} el proceso`, 'error') }); }});
     }
 }

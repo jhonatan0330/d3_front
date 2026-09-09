@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ProcesoDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO } from 'app/document/document.types';
@@ -15,7 +14,7 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-process-transition-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTableModule, MatPaginatorModule, MatInputModule, MatFormFieldModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule],
     template: `
     <div class="flex flex-col h-full">
       <div class="flex items-center justify-between mb-4">
