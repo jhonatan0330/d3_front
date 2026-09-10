@@ -5,6 +5,8 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { PropiedadCampoDTO, PropiedadValorDefinidoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/shared/shared.domain';
 import { UsuarioDTO, RolAccesoFilterDTO } from 'app/authentication/authentication.domain';
 import { PropertyService } from '../configuracion.api';
@@ -28,6 +30,8 @@ interface ModalData {
         MatIconModule,
         MatSelectModule,
         MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
         PropertyRelationsComponent
     ],
     template: `
@@ -41,11 +45,20 @@ interface ModalData {
           <div>
             <label class="block text-sm font-semibold mb-1">Propiedad Valor</label>
             <mat-form-field appearance="outline" class="w-full">
-              <mat-select [(ngModel)]="propiedad.propiedadValor" name="propiedadValor" required>
-                @for (pv of propiedadValores; track pv.llaveTabla) {
-                  <mat-option [value]="pv.llaveTabla">{{ pv.nombre }}</mat-option>
+              <input type="text" matInput
+                placeholder="Buscar por código o nombre"
+                [ngModel]="propiedadValorTexto"
+                name="propiedadValorTexto"
+                (ngModelChange)="onPropiedadValorTextoChange($event)"
+                [matAutocomplete]="auto"
+                required />
+              <mat-autocomplete #auto="matAutocomplete"
+                [displayWith]="displayPropiedadValor"
+                (optionSelected)="onPropiedadValorOption($event)">
+                @for (pv of propiedadValoresFiltrados; track pv.llaveTabla) {
+                  <mat-option [value]="pv">{{ pv.codigo }} - {{ pv.nombre }}</mat-option>
                 }
-              </mat-select>
+              </mat-autocomplete>
             </mat-form-field>
           </div>
 
@@ -141,21 +154,24 @@ interface ModalData {
               </div>
             }
 
-            <div>
-              <label class="block text-sm font-semibold mb-1">Motivo</label>
-              <textarea rows="3"
-                [(ngModel)]="propiedad.motivo"
-                name="motivo"
-                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-            </div>
+            @if (def.usoMotivo) {
+              <div>
+                <label class="block text-sm font-semibold mb-1">{{ def.usoMotivo }}</label>
+                <textarea rows="3"
+                  [(ngModel)]="propiedad.motivo"
+                  name="motivo"
+                  class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+              </div>
+            }
           }
         </div>
 
-        @if (def && propiedad.llaveTabla) {
+        @if (def && def.usoRelaciones && propiedad.llaveTabla) {
           <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
             <app-property-relations
               [propiedadKey]="propiedad.llaveTabla"
-              [propiedadEstado]="propiedad.estado">
+              [propiedadEstado]="propiedad.estado"
+              [titulo]="def.usoRelaciones">
             </app-property-relations>
           </div>
         }
@@ -217,6 +233,8 @@ export class PropertyModalComponent implements OnInit {
 
     propiedad: PropiedadCampoDTO = new PropiedadCampoDTO();
     propiedadValores: PropiedadValorDefinidoDTO[] = [];
+    propiedadValoresFiltrados: PropiedadValorDefinidoDTO[] = [];
+    propiedadValorTexto: string = '';
     roles: RolAccesoFilterDTO[] = [];
     def: PropiedadValorDefinidoDTO | null = null;
     cargando = false;
@@ -230,7 +248,6 @@ export class PropertyModalComponent implements OnInit {
             this.propiedad = new PropiedadCampoDTO();
             this.propiedad.campo = this.data.campoKey || '';
             this.propiedad.tipo = this.data.tipoOrigen;
-            this.propiedad.valor = 1;
             this.propiedad.estado = 'A';
         }
 
@@ -248,12 +265,43 @@ export class PropertyModalComponent implements OnInit {
         ).subscribe({
             next: (vals) => {
                 this.propiedadValores = vals;
+                this.propiedadValoresFiltrados = [...vals];
                 if (this.propiedad.propiedadValor) {
+                    const pv = vals.find(p => p.llaveTabla === this.propiedad.propiedadValor);
+                    if (pv) this.propiedadValorTexto = this.displayPropiedadValor(pv);
                     this.onPropiedadValorChange(this.propiedad.propiedadValor);
                 }
             },
             error: () => {}
         });
+    }
+
+    displayPropiedadValor(pv: PropiedadValorDefinidoDTO | string | null): string {
+        if (!pv) return '';
+        if (typeof pv === 'string') return pv;
+        return `${pv.codigo} - ${pv.nombre}`;
+    }
+
+    onPropiedadValorTextoChange(texto: string): void {
+        const t = texto.trim().toLowerCase();
+        this.propiedadValoresFiltrados = t
+            ? this.propiedadValores.filter(pv =>
+                (pv.codigo || '').toLowerCase().includes(t) ||
+                (pv.nombre || '').toLowerCase().includes(t))
+            : [...this.propiedadValores];
+        const seleccion = this.propiedadValores.find(p => p.llaveTabla === this.propiedad.propiedadValor);
+        if (!seleccion || this.displayPropiedadValor(seleccion) !== texto.trim()) {
+            this.propiedad.propiedadValor = '';
+            this.def = null;
+        }
+    }
+
+    onPropiedadValorOption(event: MatAutocompleteSelectedEvent): void {
+        const pv = event.option.value as PropiedadValorDefinidoDTO;
+        if (!pv) return;
+        this.propiedad.propiedadValor = pv.llaveTabla;
+        this.propiedadValorTexto = this.displayPropiedadValor(pv);
+        this.onPropiedadValorChange(pv.llaveTabla);
     }
 
     onPropiedadValorChange(llave: string): void {

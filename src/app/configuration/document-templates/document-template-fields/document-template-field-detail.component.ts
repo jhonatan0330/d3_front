@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import {
     DocumentoPlantillaCaracteristicaDTO,
     PropiedadCampoDTO,
-    RelacionInternaDTO,
     propiedadCampo
 } from 'app/document/document.types';
 import { PropiedadDTO } from 'app/shared/shared.domain';
@@ -122,9 +121,10 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
         pc.nombre = prop.nombre;
         pc.key = prop.key;
         pc.campo = prop.campo;
-        pc.valor = Number(prop.valor) || 0;
+        pc.valor = prop.valor || '';
         pc.texto = prop.texto || '';
         pc.motivo = prop.motivo || '';
+        pc.imagen = prop.imagen || '';
         pc.estado = prop.estado || 'A';
         pc.cambioCreacion = '';
         pc.campo = prop.campo || '';
@@ -135,7 +135,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
         pc.nombre = prop.nombre || '';
         pc.propiedadValor = prop.propiedadValor || '';
         pc.tipo = prop.tipo || '';
-        pc.valor = 0;
+        pc.valor = '';
         pc.texto = prop.texto || '';
         return pc;
     }

@@ -26,6 +26,7 @@ export class PropiedadDTO extends BasicDTO {
   texto: string;
   motivo: string;
   relaciones: number;
+  imagen: string;
 }
 
 export class PropiedadValorDefinidoDTO extends BasicDTO {
@@ -42,7 +43,9 @@ export class PropiedadValorDefinidoDTO extends BasicDTO {
   pideTiempoBloqueo: boolean;
   propiedadBoolean: boolean;
   pideUsuario: boolean;
-  solicitaMotivo: boolean;
+  usoMotivo: string;
+  imagen: string;
+  usoRelaciones: string;
   pideFechas: boolean;
   privada: boolean;
 }
@@ -73,7 +76,7 @@ export class PropiedadCampoDTO extends BasicDTO {
     nombre: string;
     propiedadValor: string;
     tipo: string;
-    valor: number;
+    valor: string;
     texto?: string;
     relaciones: number;
     bloqueo: string;
@@ -87,6 +90,7 @@ export class PropiedadCampoDTO extends BasicDTO {
     usuarioNombre: string;
     usuarioExcluyente: string;
     usuarioExcluyenteNombre: string;
+    imagen: string;
 }
 
 export class RelacionInternaDTO extends BasicDTO {

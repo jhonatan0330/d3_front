@@ -1,7 +1,7 @@
 import { Route } from '@angular/router';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { AuthGuard } from './authentication/authentication.guard';
-import { SignInSplitScreenReversedComponent } from './authentication/sign-in/split-screen-reversed/sign-in.component';
+import { SignInSplitScreenReversedComponent } from './authentication/sign-in/sign-in.component';
 
 // @formatter:off
 

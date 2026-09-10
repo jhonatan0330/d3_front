@@ -8,14 +8,14 @@ import { TrazabilityComponent } from 'app/document/trazability/trazability.compo
 import { SuccessComponent } from '../form/success/success.component';
 import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.component';
 import { ContactsDetailsComponent } from 'app/users/detail_persons/detail-person.component';
-import { SettingsSecurityComponent } from 'app/authentication/settings/security/security.component';
+import { SettingsSecurityComponent } from 'app/authentication/security/security.component';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { DocumentTemplateFormComponent } from 'app/configuration/document-templates/document-template-form.component';
 import { dfaComponent } from 'app/authentication/DFA/dfa';
 import { DocumentTemplateFieldFormComponent } from 'app/configuration/document-templates/document-template-fields/document-template-field-form.component';
 import { DocumentTemplateFieldDetailComponent } from 'app/configuration/document-templates/document-template-fields/document-template-field-detail.component';
 import { PropertyModalComponent } from 'app/configuration/shared/property-modal.component';
-import {  PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
+import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 
 @Injectable({
   providedIn: 'root',

@@ -72,7 +72,7 @@ export class propiedadCampo extends BasicDTO {
     nombre:string;
     propiedadValor:string;
     tipo:string;
-    valor:number;
+    valor:string;
     texto?: string;
 }
 
@@ -89,6 +89,7 @@ export class PropiedadCampoDTO extends propiedadCampo {
     usuarioNombre: string;
     usuarioExcluyente: string;
     usuarioExcluyenteNombre: string;
+    imagen: string;
 }
 
 export class PedidoVentaDTO extends BasicDTO {

@@ -148,14 +148,95 @@ $dark-base: (
     $dark-theme: map.merge($dark-theme, (color: $dark-theme-colors));
     $dark-theme: map.merge($dark-theme, $dark-theme-colors);
 
-    /* Generate and encapsulate Angular Material themes */
-    #{map.get($theme, selector)} .light,
-    #{map.get($theme, selector)}.light {
-        @include mat.all-component-colors($light-theme);
+    /* Build the light/dark selectors. For the default theme also target `body`
+       so CDK overlays (renderizados como hijos directos de <body>) heredan las
+       variables CSS del tema. */
+    $light-selector: '#{map.get($theme, selector)} .light, #{map.get($theme, selector)}.light';
+    $dark-selector: '#{map.get($theme, selector)} .dark, #{map.get($theme, selector)}.dark';
+
+    @if ($name == 'default') {
+        $light-selector: '#{$light-selector}, body.light';
+        $dark-selector: '#{$dark-selector}, body.dark';
     }
 
-    #{map.get($theme, selector)} .dark,
-    #{map.get($theme, selector)}.dark {
+    /* Generate and encapsulate Angular Material themes + M3 system tokens */
+    #{$light-selector} {
+        @include mat.all-component-colors($light-theme);
+
+        /* M3 system tokens - light */
+        --mat-sys-primary: #{map.get(map.get($theme, primary), DEFAULT)};
+        --mat-sys-on-primary: #{map.get(map.get(map.get($theme, primary), contrast), DEFAULT)};
+        --mat-sys-primary-container: #{map.get(map.get($theme, primary), 100)};
+        --mat-sys-on-primary-container: #{map.get(map.get(map.get($theme, primary), contrast), 100)};
+        --mat-sys-secondary: #{map.get(map.get($theme, accent), DEFAULT)};
+        --mat-sys-on-secondary: #{map.get(map.get(map.get($theme, accent), contrast), DEFAULT)};
+        --mat-sys-secondary-container: #{map.get(map.get($theme, accent), 100)};
+        --mat-sys-on-secondary-container: #{map.get(map.get(map.get($theme, accent), contrast), 100)};
+        --mat-sys-error: #{map.get(map.get($theme, warn), DEFAULT)};
+        --mat-sys-on-error: #{map.get(map.get(map.get($theme, warn), contrast), DEFAULT)};
+        --mat-sys-error-container: #{map.get(map.get($theme, warn), 100)};
+        --mat-sys-on-error-container: #{map.get(map.get(map.get($theme, warn), contrast), 100)};
+        --mat-sys-surface: #FFFFFF;
+        --mat-sys-surface-dim: #F1F5F9;
+        --mat-sys-surface-bright: #FFFFFF;
+        --mat-sys-surface-container-lowest: #FFFFFF;
+        --mat-sys-surface-container-low: #FFFFFF;
+        --mat-sys-surface-container: #FFFFFF;
+        --mat-sys-surface-container-high: #FFFFFF;
+        --mat-sys-surface-container-highest: #FFFFFF;
+        --mat-sys-surface-variant: #E2E8F0;
+        --mat-sys-on-surface: #1E293B;
+        --mat-sys-on-surface-variant: #64748B;
+        --mat-sys-on-background: #1E293B;
+        --mat-sys-background: #F1F5F9;
+        --mat-sys-outline: #94A3B8;
+        --mat-sys-outline-variant: #CBD5E1;
+        --mat-sys-inverse-surface: #1E293B;
+        --mat-sys-inverse-on-surface: #F1F5F9;
+        --mat-sys-inverse-primary: #{map.get(map.get($theme, primary), 200)};
+        --mat-sys-scrim: #000000;
+        --mat-sys-shadow: #000000;
+        --mat-sys-tertiary: #{map.get(map.get($theme, primary), 600)};
+        --mat-sys-on-tertiary: #FFFFFF;
+    }
+
+    #{$dark-selector} {
         @include mat.all-component-colors($dark-theme);
+
+        /* M3 system tokens - dark */
+        --mat-sys-primary: #{map.get(map.get($theme, primary), DEFAULT)};
+        --mat-sys-on-primary: #{map.get(map.get(map.get($theme, primary), contrast), DEFAULT)};
+        --mat-sys-primary-container: #{map.get(map.get($theme, primary), 700)};
+        --mat-sys-on-primary-container: #{map.get(map.get(map.get($theme, primary), contrast), 700)};
+        --mat-sys-secondary: #{map.get(map.get($theme, accent), DEFAULT)};
+        --mat-sys-on-secondary: #{map.get(map.get(map.get($theme, accent), contrast), DEFAULT)};
+        --mat-sys-secondary-container: #{map.get(map.get($theme, accent), 700)};
+        --mat-sys-on-secondary-container: #{map.get(map.get(map.get($theme, accent), contrast), 700)};
+        --mat-sys-error: #{map.get(map.get($theme, warn), DEFAULT)};
+        --mat-sys-on-error: #{map.get(map.get(map.get($theme, warn), contrast), DEFAULT)};
+        --mat-sys-error-container: #{map.get(map.get($theme, warn), 700)};
+        --mat-sys-on-error-container: #{map.get(map.get(map.get($theme, warn), contrast), 700)};
+        --mat-sys-surface: #1E293B;
+        --mat-sys-surface-dim: #0F172A;
+        --mat-sys-surface-bright: #334155;
+        --mat-sys-surface-container-lowest: #0F172A;
+        --mat-sys-surface-container-low: #1E293B;
+        --mat-sys-surface-container: #1E293B;
+        --mat-sys-surface-container-high: #334155;
+        --mat-sys-surface-container-highest: #475569;
+        --mat-sys-surface-variant: #334155;
+        --mat-sys-on-surface: #FFFFFF;
+        --mat-sys-on-surface-variant: #94A3B8;
+        --mat-sys-on-background: #FFFFFF;
+        --mat-sys-background: #0F172A;
+        --mat-sys-outline: #64748B;
+        --mat-sys-outline-variant: #475569;
+        --mat-sys-inverse-surface: #F1F5F9;
+        --mat-sys-inverse-on-surface: #1E293B;
+        --mat-sys-inverse-primary: #{map.get(map.get($theme, primary), 600)};
+        --mat-sys-scrim: #000000;
+        --mat-sys-shadow: #000000;
+        --mat-sys-tertiary: #{map.get(map.get($theme, primary), 200)};
+        --mat-sys-on-tertiary: #000000;
     }
 }

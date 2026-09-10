@@ -11,8 +11,8 @@ import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { environment } from 'environments/environment';
 import { MatInput } from '@angular/material/input';
-import { ImageFormatPipe } from '../../../shared/local-image';
-import { ParticleBackgroundDirective } from '../../shared/particle-background';
+import { ImageFormatPipe } from '../../shared/local-image';
+import { ParticleBackgroundDirective } from '../shared/particle-background';
 
 
 @Component({

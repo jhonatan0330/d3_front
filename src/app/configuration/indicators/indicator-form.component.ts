@@ -27,7 +27,6 @@ import Swal from 'sweetalert2';
             <input type="text" [(ngModel)]="indicador.codigo" name="codigo" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="ej. ventas_totales" />
           </div>
           <div>
-            <label class="block text-sm font-semibold mb-1">Proceso</label>
             <app-process-selector [(ngModel)]="indicador.proceso" name="proceso"></app-process-selector>
           </div>
           <div>

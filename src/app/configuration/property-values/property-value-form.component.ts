@@ -6,12 +6,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { PropertyValueService } from '../configuracion.api';
+import { ImageUploaderComponent } from 'app/upload/image-uploader/image-uploader.component';
 import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-property-value-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatSelectModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatSelectModule, ImageUploaderComponent],
     template: `
     <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
       <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
@@ -52,6 +53,22 @@ import Swal from 'sweetalert2';
           <div>
             <label class="block text-sm font-semibold mb-1">Grupo</label>
             <input type="text" [(ngModel)]="valor.grupo" name="grupo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">Uso Motivo</label>
+              <input type="text" [(ngModel)]="valor.usoMotivo" name="usoMotivo" maxlength="200" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">Uso Relaciones</label>
+              <input type="text" [(ngModel)]="valor.usoRelaciones" name="usoRelaciones" maxlength="200" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-1">Imagen</label>
+            <app-image-uploader [(value)]="valor.imagen" />
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -102,6 +119,9 @@ export class PropertyValueFormComponent implements OnInit {
             this.valor.textOculto = false;
             this.valor.incluirPreloadOrigen = false;
             this.valor.privada = false;
+            this.valor.usoMotivo = '';
+            this.valor.imagen = '';
+            this.valor.usoRelaciones = '';
         }
     }
 

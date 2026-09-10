@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
     template: `
     <div class="space-y-4">
       <div class="flex justify-between items-center">
-        <h3 class="text-lg font-bold">Relaciones de Propiedad</h3>
+        <h3 class="text-lg font-bold">{{ titulo }}</h3>
         <button type="button"
           class="btn-flat-primary text-sm"
           (click)="openRelationModal()">
@@ -87,6 +87,7 @@ export class PropertyRelationsComponent implements OnInit {
 
     @Input() propiedadKey!: string;
     @Input() propiedadEstado: string = 'A';
+    @Input() titulo: string = 'Relaciones de Propiedad';
 
     relaciones: RelacionInternaDTO[] = [];
     cargando = false;
