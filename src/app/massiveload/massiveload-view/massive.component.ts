@@ -27,6 +27,7 @@ import { LoadLineDTO } from '../massive.domain';
 import { MatIcon } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
+import { UploadService } from 'app/upload/upload.service';
 
 @Component({
     selector: 'app-massive',
@@ -40,6 +41,7 @@ export class MassiveComponent implements OnInit {
   private router = inject(Router);
   private templateService = inject(TemplateService);
   private api = inject(ApiService);
+  private uploadApi = inject(UploadService);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
   private pendingSaveTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -785,9 +787,9 @@ export class MassiveComponent implements OnInit {
                 for (let j = 0; j < this.files.length; j++) {
                   if(this.files[j].name === iCampo.valorText){
                     this.isProcessing.set(true);
-                    this.api.uploadFile(this.files[j]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+                    this.uploadApi.subirArchivo(this.files[j]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
                       next: (value) => {
-                        iCampo.valorText = value;
+                        iCampo.valorText = value.url;
                         this.procesarDocumentos();
                         this.isProcessing.set(false);
                       },

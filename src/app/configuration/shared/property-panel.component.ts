@@ -95,7 +95,8 @@ export class PropertyPanelComponent implements OnInit {
             maxWidth: '90vw',
             disableClose: true,
             data: {
-                propiedad: propiedad ? this.toPropiedadCampo(propiedad) : null,
+                propiedad: null,
+                propiedadId: propiedad?.llaveTabla,
                 tipoOrigen: this.data.tipoOrigen,
                 origenCategoria: this.data.origenCategoria || '',
                 campoKey: this.data.campoKey
@@ -130,22 +131,5 @@ export class PropertyPanelComponent implements OnInit {
                 });
             }
         });
-    }
-
-    private toPropiedadCampo(prop: PropiedadDTO): PropiedadCampoDTO {
-        const pc = new PropiedadCampoDTO();
-        pc.llaveTabla = prop.llaveTabla;
-        pc.propiedadValor = prop.propiedadValor;
-        pc.tipo = prop.tipo;
-        pc.nombre = prop.nombre;
-        pc.key = prop.key;
-        pc.campo = prop.campo;
-        pc.valor = prop.valor || '';
-        pc.texto = prop.texto || '';
-        pc.motivo = prop.motivo || '';
-        pc.relaciones = prop.relaciones || 0;
-        pc.imagen = prop.imagen || '';
-        pc.estado = prop.estado || 'A';
-        return pc;
     }
 }

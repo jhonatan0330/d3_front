@@ -6,13 +6,13 @@ import Swal from 'sweetalert2';
 import { firstValueFrom } from 'rxjs';
 
 import { BaseComponent } from '../base/base.component';
-import { ApiService } from 'app/document/document.api';
 import { PedidoVentaDTO } from '../../../document.types';
 import { MatFormField, MatLabel, MatHint } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
+import { UploadService } from 'app/upload/upload.service';
 
 interface RenderItem {
   exp: PedidoVentaDTO;
@@ -25,14 +25,14 @@ interface RenderItem {
 }
 
 @Component({
-    selector: 'app-croquis',
-    templateUrl: './croquis.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatFormField,MatLabel,MatInput,CdkScrollable,MatDialogContent,MatDialogClose,MatIcon,FormsModule,ReactiveFormsModule,MatHint,TitleCasePipe]
+  selector: 'app-croquis',
+  templateUrl: './croquis.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [MatFormField, MatLabel, MatInput, CdkScrollable, MatDialogContent, MatDialogClose, MatIcon, FormsModule, ReactiveFormsModule, MatHint, TitleCasePipe]
 })
 export class CroquisComponent extends BaseComponent
   implements OnInit, AfterViewInit, OnDestroy {
-  private api = inject(ApiService);
+  private uploadApi = inject(UploadService);
   private dialog = inject(MatDialog);
 
 
@@ -78,18 +78,18 @@ export class CroquisComponent extends BaseComponent
     dialogRef.afterOpened()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-      this.initCanvasIfNeeded();
-      this.draw();
-    });
+        this.initCanvasIfNeeded();
+        this.draw();
+      });
 
     dialogRef.afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-      this.removeCanvasListeners();
-      this.canvas = undefined;
-      this.ctx = undefined;
-      this.canvasInitialized = false;
-    });
+        this.removeCanvasListeners();
+        this.canvas = undefined;
+        this.ctx = undefined;
+        this.canvasInitialized = false;
+      });
   }
 
   ngOnInit(): void {
@@ -231,7 +231,7 @@ export class CroquisComponent extends BaseComponent
 
       if (it.exp?.nombre) {
         const text = it.exp.nombre;
-        const fontSize = 12/w*2/text.length;
+        const fontSize = 12 / w * 2 / text.length;
         this.ctx.font = `${fontSize}px sans-serif`;
         this.ctx.textBaseline = 'middle';
         this.ctx.textAlign = 'center';
@@ -277,16 +277,20 @@ export class CroquisComponent extends BaseComponent
     input.value = '';
     if (!file) return;
 
-    try {
-      const url = await this.uploadFile(file);
-      this.data.valorText = url;
-      this.valorTextCtrl.setValue(url);
-      this.loadBaseFromUrl(url);
-      this.avisarModificacion();
-      Swal.fire('Éxito', 'Plano subido correctamente', 'success');
-    } catch (e) {
-      Swal.fire('Error', 'No se pudo subir el plano', 'error');
-    }
+    this.uploadApi.subirArchivo(file).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (value) => {
+        this.data.valorText = value.url;
+        this.valorTextCtrl.setValue(value.url);
+        this.loadBaseFromUrl(value.url);
+        this.avisarModificacion();
+        Swal.fire('Éxito', 'Plano subido correctamente', 'success');
+      },
+      error: () => {
+
+      }
+    });
+
+
   }
 
   async onFileItemChange(ev: Event): Promise<void> {
@@ -300,35 +304,39 @@ export class CroquisComponent extends BaseComponent
       return;
     }
 
-    try {
-      const url = await this.uploadFile(file);
 
-      const count = (this.data.expedientes?.length || 0) + 1;
+    this.uploadApi.subirArchivo(file).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (value) => {
+        const url = value.url;
 
-      const nuevoExp: PedidoVentaDTO = {
-        ...this.exp,
-        llaveTabla: this.structure.llaveTabla,
-        nombre: this.nombreCtrl.value.trim(),
-        imagen: url,
-        dinero: {
-          ...(this.exp.dinero ?? { saldo: 0, valorTotal: 0 }),
-          saldo: 30 + 5 ,
-          valorTotal: 30 + 5 ,
-        },
-      } as PedidoVentaDTO;
+        const nuevoExp: PedidoVentaDTO = {
+          ...this.exp,
+          llaveTabla: this.structure.llaveTabla,
+          nombre: this.nombreCtrl.value.trim(),
+          imagen: url,
+          dinero: {
+            ...(this.exp.dinero ?? { saldo: 0, valorTotal: 0 }),
+            saldo: 30 + 5,
+            valorTotal: 30 + 5,
+          },
+        } as PedidoVentaDTO;
 
-      if (!Array.isArray(this.data.expedientes)) {
-        this.data.expedientes = [];
+        if (!Array.isArray(this.data.expedientes)) {
+          this.data.expedientes = [];
+        }
+
+        this.data.expedientes.push(nuevoExp);
+        this.pushRenderItemFromExp(nuevoExp);
+        this.nombreCtrl.setValue('');
+        this.avisarModificacion();
+        Swal.fire('Éxito', 'Componente agregado', 'success');
+      },
+      error: () => {
+
       }
+    });
 
-      this.data.expedientes.push(nuevoExp);
-      this.pushRenderItemFromExp(nuevoExp);
-      this.nombreCtrl.setValue('');
-      this.avisarModificacion();
-      Swal.fire('Éxito', 'Componente agregado', 'success');
-    } catch (e) {
-      Swal.fire('Error', 'No se pudo subir el componente ' + e, 'error');
-    }
+
   }
 
   private loadBaseFromUrl(url: string): void {
@@ -518,11 +526,4 @@ export class CroquisComponent extends BaseComponent
     Swal.fire('Guardado', 'Posiciones guardadas correctamente', 'success');
   }
 
-  private async uploadFile(file: File): Promise<string> {
-    try {
-      return await firstValueFrom(this.api.uploadFile(file));
-    } catch (error) {
-      throw error;
-    }
-  }
 }

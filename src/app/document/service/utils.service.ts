@@ -110,7 +110,13 @@ export class UtilsService {
   propertyAddModalFlex(pCampo: string, ptipo:PropiedadValorDefinidoDTO , pPropiedad?:PropiedadCampoDTO){
     const dialogRef: MatDialogRef<any> = this.dialog.open(PropertyModalComponent, {
       maxHeight: '90vh',
-      data: { template: pCampo , propiedad: pPropiedad, tipo: ptipo },
+      data: {
+        propiedad: null,
+        propiedadId: pPropiedad?.llaveTabla,
+        tipoOrigen: ptipo?.origen,
+        origenCategoria: ptipo?.origenCategoria ?? '',
+        campoKey: pCampo
+      },
     });
     return dialogRef.afterClosed();
   }

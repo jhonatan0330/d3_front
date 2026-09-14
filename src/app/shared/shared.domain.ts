@@ -27,6 +27,22 @@ export class PropiedadDTO extends BasicDTO {
   motivo: string;
   relaciones: number;
   imagen: string;
+  rol?: string;
+  rolNombre?: string;
+  rolExcluyente?: string;
+  rolExcluyenteNombre?: string;
+  fechaInicial?: string;
+  fechaFinal?: string;
+  usuario?: string;
+  usuarioNombre?: string;
+  usuarioExcluyente?: string;
+  usuarioExcluyenteNombre?: string;
+  bloqueo?: string;
+  fechaDefinicion?: Date;
+  fechaImplementacion?: Date;
+  fechaEliminacion?: Date;
+  usuarioCreacion?: string;
+  usuarioEliminacion?: string;
 }
 
 export class PropiedadValorDefinidoDTO extends BasicDTO {
@@ -69,8 +85,8 @@ export class PropiedadValorDefinidoFilterDTO extends BasicFilterDTO {
 export class PropiedadCampoDTO extends BasicDTO {
     cambioCreacion: string;
     campo: string;
-    fechaDefinicion: Date;
-    fechaImplementacion: Date;
+    fechaDefinicion: Date | null;
+    fechaImplementacion: Date | null;
     key: string;
     motivo: string;
     nombre: string;

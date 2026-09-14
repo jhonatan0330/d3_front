@@ -11,6 +11,7 @@ import { formatImageUrl, ImageFormatPipe } from 'app/shared/local-image';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
+import { UploadService } from 'app/upload/upload.service';
 
 @Component({
     selector: 'app-archivo',
@@ -24,7 +25,7 @@ import { TitleCasePipe } from '@angular/common';
     imports: [FormsModule,MatIcon,TitleCasePipe,ImageFormatPipe]
 })
 export class ArchivoComponent extends BaseComponent implements OnInit {
-  private api = inject(ApiService);
+  private uploadApi = inject(UploadService);
   private imageCompress = inject(NgxImageCompressService);
   private ls = inject(LocalStoreService);
 
@@ -312,30 +313,39 @@ resizeCanvas(): void {
       if (!internalFile && fileToUpload.blob) {
         internalFile = this.b64toFile(fileToUpload.blob);
       }
-      this.api.uploadFile(internalFile)
+      this.uploadApi.subirArchivo(internalFile)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
         (data) => {
           const returnedData = data;
           if (!this.source()) {
-            this.source.set(returnedData);
+            this.source.set(returnedData.url);
+            this.isLoading.set(false);
           } else {
             // Sucede que llegaba y como era lenta la carga entonces se duplicaban
             if (this.multipleFiles()) {
-              this.source.set(this.source() + ArchivoComponent.SEPARADOR + returnedData);
+              this.source.set(this.source() + ArchivoComponent.SEPARADOR + returnedData.url);
             } else {
-              this.source.set(returnedData);
+              this.source.set(returnedData.url);
             }
           }
-          fileToUpload.isLoading = false;
-          fileToUpload.url = returnedData;
+          this.files.update(files => files.map(file =>
+            file === fileToUpload
+              ? { ...file, isLoading: false, url: returnedData.url }
+              : file
+          ));
           this.actualizar();
           // this.currentIndex = this.currentIndex + 1;
           // this.uploadFileToActivity();
+          
         },
         (error) => {
           this.isLoading.set(false);
-          this.files()[this.currentIndex].message = error;
+          this.files.update(files => files.map(file =>
+            file === fileToUpload
+              ? { ...file, isLoading: false, message: error }
+              : file
+          ));
           alert(error);
         }
       );

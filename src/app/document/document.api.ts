@@ -167,12 +167,12 @@ export class ApiService {
         return this.http.get(imageUrl, { responseType: 'blob' });
     }
 
-    uploadFile(fileToUpload: File): Observable<string> {
+    /*uploadFile(fileToUpload: File): Observable<string> {
         const endpoint = this.ls.getUrlAccess('/files/upload');
         const formData: FormData = new FormData();
         formData.append('file', fileToUpload, fileToUpload.name);
         return this.http.post<string>(endpoint, formData);
-    }
+    }*/
 
 
     consultarInventario(productoId: string): Observable<ProductoInventarioDTO[]> {
