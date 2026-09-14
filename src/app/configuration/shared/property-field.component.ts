@@ -98,6 +98,7 @@ export class PropertyFieldComponent {
         const dialogRef = this.dialog.open(PropertyModalComponent, {
             width: '600px',
             maxWidth: '90vw',
+            disableClose: true,
             data: {
                 propiedad: propiedad ? this.toPropiedadCampo(propiedad) : null,
                 tipoOrigen: this.tipoOrigen,

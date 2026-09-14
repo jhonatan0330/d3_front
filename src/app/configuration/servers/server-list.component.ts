@@ -130,7 +130,7 @@ export class ServerListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     openForm(item?: ServidorDTO): void {
-        const dialogRef = this.dialog.open(ServerFormComponent, { width: '700px', maxWidth: '90vw', data: item ? { ...item } : null });
+        const dialogRef = this.dialog.open(ServerFormComponent, { disableClose: true, width: '700px', maxWidth: '90vw', data: item ? { ...item } : null });
         dialogRef.afterClosed().subscribe((result: ServidorDTO) => { if (result) this.reload(); });
     }
 

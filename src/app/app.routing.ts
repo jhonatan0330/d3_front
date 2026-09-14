@@ -53,10 +53,15 @@ export const appRoutes: Route[] = [
             { path: ':id/edit', loadComponent: () => import('app/configuration/web-services/web-service-form.component').then(m => m.WebServiceFormComponent) },
             { path: ':id', loadComponent: () => import('app/configuration/web-services/web-service-form.component').then(m => m.WebServiceFormComponent) },
           ]},
+          { path: 'web-service-executions', children: [
+            { path: '', loadComponent: () => import('app/configuration/web-services/web-service-execute-list.component').then(m => m.WebServiceExecuteListComponent) },
+          ]},
           { path: 'messages', children: [
             { path: '', loadComponent: () => import('app/configuration/messages/message-list.component').then(m => m.MessageListComponent) },
           ]},
-          { path: 'message-templates', redirectTo: 'messages', pathMatch: 'full' },
+          { path: 'message-templates', children: [
+            { path: '', loadComponent: () => import('app/configuration/messages/message-template-list.component').then(m => m.MessageTemplateListComponent) },
+          ]},
           { path: 'document-templates', children: [
             { path: '', loadComponent: () => import('app/configuration/document-templates/document-template-list.component').then(m => m.DocumentTemplateListComponent) },
             { path: 'new', loadComponent: () => import('app/configuration/document-templates/document-template-form.component').then(m => m.DocumentTemplateFormComponent) },

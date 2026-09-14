@@ -274,7 +274,7 @@ securityToken: ''
     onFilterChange(): void { this.reload(); }
 
     openForm(item?: ProcesoDTO): void {
-        const dialogRef = this.dialog.open(ProcessFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', data: item ? { ...item } : null });
+        const dialogRef = this.dialog.open(ProcessFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', disableClose: true, data: item ? { ...item } : null });
         dialogRef.afterClosed().subscribe((result: ProcesoDTO) => { if (result) { this.reload(); if (this.activeTab() === 1) this.loadTree(); } });
     }
 
@@ -284,7 +284,7 @@ securityToken: ''
 
     openProperties(item: ProcesoDTO): void {
         this.dialog.open(PropertyPanelComponent, {
-            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh', disableClose: true,
             data: { campoKey: item.llaveTabla, tipoOrigen: 'P', titulo: item.nombre }
         });
     }

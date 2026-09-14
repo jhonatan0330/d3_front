@@ -109,7 +109,7 @@ export class DocumentTemplateFieldListComponent implements OnInit {
 
     openFieldForm(field?: DocumentoPlantillaCaracteristicaDTO): void {
         const dialogRef = this.dialog.open(DocumentTemplateFieldFormComponent, {
-            width: '600px', maxWidth: '90vw',
+            width: '600px', maxWidth: '90vw', disableClose: true,
             data: { field: field ? { ...field } : null, template: this.template }
         });
         dialogRef.afterClosed().subscribe((result: DocumentoPlantillaCaracteristicaDTO) => {

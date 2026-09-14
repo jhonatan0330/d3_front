@@ -81,7 +81,7 @@ export class ProcessTransitionListComponent implements OnInit {
 
     openTransitionForm(transition?: ProcesoTransicionDTO): void {
         const dialogRef = this.dialog.open(ProcessTransitionFormComponent, {
-            width: '700px', maxWidth: '90vw',
+            width: '700px', maxWidth: '90vw', disableClose: true,
             data: { transition: transition ? { ...transition } : null, process: this.process }
         });
         dialogRef.afterClosed().subscribe((result: ProcesoTransicionDTO) => {

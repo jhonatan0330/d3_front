@@ -116,7 +116,7 @@ export class ProcessFormComponent implements OnInit {
     openPropiedades(): void {
         if (!this.process.llaveTabla) return;
         this.dialog.open(PropertyPanelComponent, {
-            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh', disableClose: true,
             data: { campoKey: this.process.llaveTabla, tipoOrigen: 'P', titulo: this.process.nombre }
         });
     }

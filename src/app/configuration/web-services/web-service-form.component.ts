@@ -15,9 +15,10 @@ import Swal from 'sweetalert2';
     imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, ProcessSelectorComponent],
     template: `
     <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
-      <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
-        {{ data?.llaveTabla ? 'Editar Web Service' : 'Nuevo Web Service' }}
-      </h2>
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">{{ data?.llaveTabla ? 'Editar Web Service' : 'Nuevo Web Service' }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
 
       <form #form="ngForm" (ngSubmit)="onSubmit()">
         <div class="space-y-4">
@@ -67,6 +68,7 @@ export class WebServiceFormComponent implements OnInit {
     openPropiedades(): void {
         if (!this.ws.llaveTabla) return;
         this.dialog.open(PropertyPanelComponent, {
+            disableClose: true,
             width: '800px', maxWidth: '95vw', maxHeight: '90vh',
             data: { campoKey: this.ws.llaveTabla, tipoOrigen: 'W', titulo: this.ws.nombre }
         });

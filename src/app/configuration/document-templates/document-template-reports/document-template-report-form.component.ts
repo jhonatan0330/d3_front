@@ -18,12 +18,13 @@ interface ReportFormData {
     standalone: true,
     imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
     template: `
-    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
-        {{ data.report?.llaveTabla ? 'Editar Reporte' : 'Nuevo Reporte' }}
-      </h2>
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">{{ data.report?.llaveTabla ? 'Editar Reporte' : 'Nuevo Reporte' }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
 
-      <form #form="ngForm" (ngSubmit)="onSubmit()">
+      <form #form="ngForm" (ngSubmit)="onSubmit()" class="flex-1 overflow-y-auto">
         <div class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -120,7 +121,7 @@ export class DocumentTemplateReportFormComponent implements OnInit {
     openPropiedades(): void {
         if (!this.report.llaveTabla) return;
         this.dialog.open(PropertyPanelComponent, {
-            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh', disableClose: true,
             data: { campoKey: this.report.llaveTabla, tipoOrigen: 'E', titulo: this.report.nombre }
         });
     }

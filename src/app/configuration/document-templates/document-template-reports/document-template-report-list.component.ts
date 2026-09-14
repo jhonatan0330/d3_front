@@ -80,7 +80,7 @@ export class DocumentTemplateReportListComponent implements OnInit {
 
     openReportForm(report?: ReporteBaseDTO): void {
         const dialogRef = this.dialog.open(DocumentTemplateReportFormComponent, {
-            width: '700px', maxWidth: '90vw',
+            width: '700px', maxWidth: '90vw', disableClose: true,
             data: { report: report ? { ...report } : null, templateKey: this.templateKey }
         });
         dialogRef.afterClosed().subscribe((result: ReporteBaseDTO) => {

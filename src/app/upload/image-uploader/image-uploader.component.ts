@@ -1,15 +1,16 @@
-import { Component, DestroyRef, ElementRef, inject, input, model, signal, viewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, computed, inject, input, model, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { LocalStoreService } from 'app/shared/local-store.service';
+import { UploadService } from 'app/upload/upload.service';
 import Swal from 'sweetalert2';
+import { ImageFormatPipe } from 'app/shared/local-image';
 
 @Component({
     selector: 'app-image-uploader',
     templateUrl: './image-uploader.component.html',
-    imports: [CommonModule, MatIcon],
+    imports: [CommonModule, MatIcon, ImageFormatPipe],
     styles: [`
         :host { display: block; }
     `]
@@ -18,17 +19,18 @@ export class ImageUploaderComponent {
     value = model<string | null>(null);
     avatar = input(false);
 
-    private http = inject(HttpClient);
+    private uploadService = inject(UploadService);
     private ls = inject(LocalStoreService);
     private destroyRef = inject(DestroyRef);
 
     private static IMAGE_TYPE = 'image/jpeg';
     private static IMAGE_QUALITY = 0.92;
     private static MAX_EDGE = 1024;
-    private static UPLOAD_ENDPOINT = '/files/upload';
 
     video = viewChild<ElementRef>('video');
     canvas = viewChild<ElementRef>('canvas');
+
+   
 
     subiendo = signal(false);
     camaraActiva = signal(false);
@@ -120,13 +122,11 @@ export class ImageUploaderComponent {
 
     private subir(file: File): void {
         this.subiendo.set(true);
-        const formData = new FormData();
-        formData.append('file', file, file.name);
-        this.http.post<string>(this.ls.getUrlAccess(ImageUploaderComponent.UPLOAD_ENDPOINT), formData)
+        this.uploadService.subirArchivo(file)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
-                next: (url) => {
-                    this.value.set(url);
+                next: (resp) => {
+                    this.value.set(resp.url);
                     this.dataUrl.set(null);
                     this.revisando.set(false);
                     this.subiendo.set(false);

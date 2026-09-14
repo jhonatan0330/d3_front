@@ -185,6 +185,7 @@ export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestro
 
     openForm(consecutivo?: ConsecutivoDTO): void {
         const dialogRef = this.dialog.open(ConsecutiveFormComponent, {
+            disableClose: true,
             width: '600px',
             maxWidth: '90vw',
             data: consecutivo ? { ...consecutivo } : null

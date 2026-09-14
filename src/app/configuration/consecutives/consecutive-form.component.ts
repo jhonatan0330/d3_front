@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { ConsecutivoDTO } from 'app/document/document.types';
 import { ConsecutiveService } from '../configuracion.api';
 import Swal from 'sweetalert2';
@@ -9,12 +10,13 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-consecutive-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
     template: `
     <div class="max-w-md w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
-      <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
-        {{ data?.llaveTabla ? 'Editar Consecutivo' : 'Nuevo Consecutivo' }}
-      </h2>
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">{{ data?.llaveTabla ? 'Editar Consecutivo' : 'Nuevo Consecutivo' }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
 
       <form #form="ngForm" (ngSubmit)="onSubmit()">
         <div class="space-y-4">

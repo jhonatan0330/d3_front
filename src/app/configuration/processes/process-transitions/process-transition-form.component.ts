@@ -20,9 +20,10 @@ interface TransitionFormData {
     imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, ImageUploaderComponent],
     template: `
     <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
-        {{ data.transition?.llaveTabla ? 'Editar Transición' : 'Nueva Transición' }}
-      </h2>
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">{{ data.transition?.llaveTabla ? 'Editar Transición' : 'Nueva Transición' }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
 
       <form #form="ngForm" (ngSubmit)="onSubmit()">
         <div class="space-y-4">
@@ -138,7 +139,7 @@ export class ProcessTransitionFormComponent implements OnInit {
     openPropiedades(): void {
         if (!this.transition.llaveTabla) return;
         this.dialog.open(PropertyPanelComponent, {
-            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh', disableClose: true,
             data: { campoKey: this.transition.llaveTabla, tipoOrigen: 'T', titulo: this.transition.nombre }
         });
     }

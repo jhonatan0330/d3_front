@@ -147,13 +147,13 @@ export class DocumentTemplateListComponent implements OnInit, AfterViewInit, OnD
     onFilterInput(): void { clearTimeout(this.debounceTimer); this.debounceTimer = setTimeout(() => { this.reload(); }, 200); }
 
     openForm(item?: DocumentoPlantillaDTO): void {
-        const dialogRef = this.dialog.open(DocumentTemplateFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', data: item ? { ...item } : null });
+        const dialogRef = this.dialog.open(DocumentTemplateFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', disableClose: true, data: item ? { ...item } : null });
         dialogRef.afterClosed().subscribe((result: DocumentoPlantillaDTO) => { if (result) this.reload(); });
     }
 
     openProperties(item: DocumentoPlantillaDTO): void {
         this.dialog.open(PropertyPanelComponent, {
-            width: '800px', maxWidth: '95vw', maxHeight: '90vh',
+            width: '800px', maxWidth: '95vw', maxHeight: '90vh', disableClose: true,
             data: { campoKey: item.llaveTabla, tipoOrigen: 'L', titulo: item.nombre }
         });
     }

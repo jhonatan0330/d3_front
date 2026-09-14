@@ -118,6 +118,7 @@ export class PropertyRelationsComponent implements OnInit {
         const dialogRef = this.dialog.open(RelationFormComponent, {
             width: '500px',
             maxWidth: '90vw',
+            disableClose: true,
             data: {
                 relacion: relacion ? { ...relacion } : null,
                 propiedadKey: this.propiedadKey

@@ -17,10 +17,13 @@ interface ExecuteDialogData {
     imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
     template: `
     <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
-      <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2 flex items-center gap-2">
-        <mat-icon class="text-blue-500">play_arrow</mat-icon>
-        Ejecutar Web Service: {{ data.webService.nombre }}
-      </h2>
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold flex items-center gap-2">
+          <mat-icon class="text-blue-500">play_arrow</mat-icon>
+          Ejecutar Web Service: {{ data.webService.nombre }}
+        </h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
 
       <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
         <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Código:</strong> {{ data.webService.codigo }}</p>

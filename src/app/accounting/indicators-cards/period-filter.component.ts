@@ -37,7 +37,7 @@ const LEVELS: Nivel[] = ['full', 'año', 'mes', 'dia'];
     <app-dropdown #dd="appDropdown">
       <button
         trigger
-        class="flex items-center gap-x-1.5 rounded-lg border border-neutral-200 bg-white px-2.5 py-1.5 text-xs font-medium text-neutral-600 shadow-sm transition-colors hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-800 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-700 dark:hover:text-neutral-100"
+        class="rounded-lg border border-neutral-200 bg-white p-2 text-neutral-500 shadow-sm transition-colors hover:border-neutral-300 hover:bg-neutral-50 hover:text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:border-neutral-600 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
         aria-label="Filtrar por periodo"
       >
         <svg
@@ -55,7 +55,7 @@ const LEVELS: Nivel[] = ['full', 'año', 'mes', 'dia'];
           <path d="M8 2v4" />
           <path d="M3 10h18" />
         </svg>
-        <span>{{ periodLabel() }}</span>
+        <!--span>{{ periodLabel() }}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-3 w-3"
@@ -67,7 +67,7 @@ const LEVELS: Nivel[] = ['full', 'año', 'mes', 'dia'];
           stroke-linejoin="round"
         >
           <path d="m6 9 6 6 6-6" />
-        </svg>
+        </svg-->
       </button>
 
       @switch (step()) {
@@ -249,7 +249,7 @@ export class PeriodFilterComponent {
     return Number.isFinite(month) ? month : new Date().getMonth() + 1;
   });
 
-  protected periodLabel = computed(() => {
+  /*protected periodLabel = computed(() => {
     const period = this.period();
     if (!period) { return 'Periodo'; }
     if (!period.fechaInicial || period.nivel === 'full') { return 'Todo'; }
@@ -259,7 +259,7 @@ export class PeriodFilterComponent {
       return `${MONTHS[(month ?? 1) - 1]} ${year}`;
     }
     return `${String(day ?? 1).padStart(2, '0')} ${MONTHS[(month ?? 1) - 1].slice(0, 3)} ${year}`;
-  });
+  });*/
 
   protected yearOptions = computed<string[]>(() => {
     const currentYear = new Date().getFullYear();

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
-import { PropertyService } from '../configuracion.api';
+import { ConfigUserService } from '../configuracion.api';
 
 @Component({
     selector: 'app-user-selector',
@@ -49,7 +49,7 @@ import { PropertyService } from '../configuracion.api';
   `]
 })
 export class UserSelectorComponent implements OnInit {
-    private propertyService = inject(PropertyService);
+    private configUserService = inject(ConfigUserService);
 
     @Input() label = 'Usuario';
     @Input() value: string = '';
@@ -91,10 +91,7 @@ export class UserSelectorComponent implements OnInit {
             return;
         }
 
-        this.propertyService['http'].post<UsuarioDTO[]>(
-            this.propertyService['ls'].getUrlAccess('/api/config/users/search'),
-            { estado: 'A', filtroParametro: filtro }
-        ).subscribe({
+        this.configUserService.searchUsers({ estado: 'A', filtroParametro: filtro }).subscribe({
             next: (users) => this.usuarios = users,
             error: () => this.usuarios = []
         });
@@ -116,10 +113,7 @@ export class UserSelectorComponent implements OnInit {
     }
 
     private loadUserDisplay(key: string): void {
-        this.propertyService['http'].post<UsuarioDTO>(
-            this.propertyService['ls'].getUrlAccess('/api/config/users/by-id'),
-            key
-        ).subscribe({
+        this.configUserService.getUserById(key).subscribe({
             next: (user) => this.displayValue = user.nombre,
             error: () => {}
         });

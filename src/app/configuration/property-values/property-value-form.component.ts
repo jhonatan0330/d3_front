@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
@@ -12,12 +13,13 @@ import Swal from 'sweetalert2';
 @Component({
     selector: 'app-property-value-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatSelectModule, ImageUploaderComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatSelectModule, ImageUploaderComponent],
     template: `
     <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
-      <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
-        {{ data?.llaveTabla ? 'Editar Valor Definido' : 'Nuevo Valor Definido' }}
-      </h2>
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">{{ data?.llaveTabla ? 'Editar Valor Definido' : 'Nuevo Valor Definido' }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
 
       <form #form="ngForm" (ngSubmit)="onSubmit()">
         <div class="space-y-4">

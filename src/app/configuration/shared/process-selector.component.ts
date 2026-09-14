@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, inject, OnInit } from '@angular/core';
+import { Component, Input, forwardRef, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -56,6 +56,7 @@ import { ProcessService } from '../configuracion.api';
 })
 export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
     private processService = inject(ProcessService);
+    private cdr = inject(ChangeDetectorRef);
 
     @Input() label = 'Proceso';
     @Input() placeholder = 'Buscar proceso...';
@@ -94,8 +95,9 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
                 this.procesos = res;
                 this.applyFilter();
                 if (this.selectedKey) this.setDisplayFromList();
+                this.cdr.markForCheck();
             },
-            error: () => this.procesos = []
+            error: () => { this.procesos = []; this.cdr.markForCheck(); }
         });
     }
 
@@ -150,8 +152,8 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
 
     private loadDisplay(key: string): void {
         this.processService.getProcessById(key).subscribe({
-            next: (process) => this.displayValue = process.nombre,
-            error: () => this.displayValue = key
+            next: (process) => { this.displayValue = process.nombre; this.cdr.markForCheck(); },
+            error: () => { this.displayValue = key; this.cdr.markForCheck(); }
         });
     }
 

@@ -17,6 +17,7 @@ import {
     PropiedadDTO, PropiedadCampoDTO, PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO,
     RelacionInternaDTO, RelacionInternaFilterDTO,
 } from 'app/shared/shared.domain';
+import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { DocumentoPlantillaFilterDTO, IndicatorDTO, IndicatorFilterDTO, ArbolConfiguracionFilterDTO, TreeNodeDTO, DiferenciaDTO, SincronizacionSeleccionadaDTO, CompararArbolRequest } from './configuration.types';
 
 @Injectable({ providedIn: 'root' })
@@ -580,6 +581,13 @@ export class PropertyService {
         );
     }
 
+    getRoles(filter?: RolAccesoFilterDTO): Observable<RolAccesoFilterDTO[]> {
+        return this.http.post<RolAccesoFilterDTO[]>(
+            this.ls.getUrlAccess('/api/config/roles/list'),
+            filter ?? { estado: 'A' }
+        );
+    }
+
     getPropertyById(key: string): Observable<PropiedadDTO> {
         return this.http.post<PropiedadDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/by-id`), key
@@ -625,6 +633,25 @@ export class PropertyService {
     inactivateRelation(relation: RelacionInternaDTO): Observable<RelacionInternaDTO> {
         return this.http.post<RelacionInternaDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/inactivate`), relation
+        );
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class ConfigUserService {
+    private http = inject(HttpClient);
+    private ls = inject(LocalStoreService);
+    private baseUrl = '/api/config/users';
+
+    searchUsers(filter?: { estado?: string; filtroParametro?: string }): Observable<UsuarioDTO[]> {
+        return this.http.post<UsuarioDTO[]>(
+            this.ls.getUrlAccess(`${this.baseUrl}/search`), filter ?? { estado: 'A' }
+        );
+    }
+
+    getUserById(key: string): Observable<UsuarioDTO> {
+        return this.http.post<UsuarioDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/by-id`), key
         );
     }
 }

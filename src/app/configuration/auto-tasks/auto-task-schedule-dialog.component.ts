@@ -22,10 +22,13 @@ interface ScheduleDialogData {
     imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatIconModule],
     template: `
     <div class="max-w-md w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
-      <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
-        <mat-icon class="text-blue-500 mr-2">schedule</mat-icon>
-        Programar Tarea: {{ data.task.plantillaNombre }}
-      </h2>
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">
+          <mat-icon class="text-blue-500 mr-2 align-middle">schedule</mat-icon>
+          Programar Tarea: {{ data.task.plantillaNombre }}
+        </h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
 
       <form #form="ngForm" (ngSubmit)="onSchedule()">
         <div class="space-y-4">

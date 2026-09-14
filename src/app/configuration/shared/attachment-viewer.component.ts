@@ -124,6 +124,7 @@ export class AttachmentViewerComponent {
             maxWidth: '90vw',
             maxHeight: '90vh',
             panelClass: 'image-preview-dialog',
+            disableClose: true,
             data: { url: safeUrl, name: this.extractFileName(url) }
         });
     }

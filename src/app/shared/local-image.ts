@@ -13,6 +13,16 @@ export function formatImageUrl(ls: LocalStoreService, url: string | undefined) {
   return url;
 }
 
+/* resolvedUrl = computed(() => {
+        const url = this.value();
+        if (!url) return null;
+        if (/^https?:\/\//i.test(url)) return url;
+        const ruta = url.replace(/\\/g, '/');
+        const path = ruta.startsWith('/') ? ruta : '/' + ruta;
+        return this.ls.getUrlAccess('/files').concat(path);
+    });
+    */
+
 @Pipe({ name: 'imageFormat' })
 export class ImageFormatPipe implements PipeTransform {
   private ls: LocalStoreService;

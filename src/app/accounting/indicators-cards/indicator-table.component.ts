@@ -7,6 +7,7 @@ import {
   Indicador,
 } from 'app/accounting/accounting.types';
 import { IndicadoresService } from 'app/accounting/indicators-cards/indicadores.service';
+import { ImageFormatPipe } from 'app/shared/local-image';
 
 interface IndicatorTableData {
   indicador: Indicador;
@@ -14,7 +15,7 @@ interface IndicatorTableData {
 
 @Component({
   selector: 'indicator-table',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, ImageFormatPipe],
   template: `
     <div class="flex w-[min(90vw,48rem)] flex-col gap-4 p-6">
       <!-- Header -->
@@ -25,7 +26,7 @@ interface IndicatorTableData {
           >
             <img
               class="h-5 w-5 object-contain"
-              [src]="indicador.imagen"
+              src="{{ indicador.imagen | imageFormat }}"
               alt=""
               (error)="onImageError($event)"
             />

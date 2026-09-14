@@ -3,7 +3,7 @@
         : 'relative w-32 h-32 rounded-xl overflow-hidden border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800'">
 
     @if (value()) {
-        <img [src]="value()" alt="Imagen" class="absolute inset-0 w-full h-full object-cover" />
+        <img src="{{value() | imageFormat}}" alt="Imagen" class="absolute inset-0 w-full h-full object-cover" />
     }
 
     <video #video
@@ -18,7 +18,7 @@
     </canvas>
 
     @if (revisando() && dataUrl() && !camaraActiva()) {
-        <img [src]="dataUrl()" alt="Vista previa" class="absolute inset-0 w-full h-full object-cover" />
+        <img src="{{dataUrl() | imageFormat}}" alt="Vista previa" class="absolute inset-0 w-full h-full object-cover" />
     }
 
     <input

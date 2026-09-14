@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { PropiedadCampoDTO, PropiedadValorDefinidoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/shared/shared.domain';
 import { UsuarioDTO, RolAccesoFilterDTO } from 'app/authentication/authentication.domain';
-import { PropertyService } from '../configuracion.api';
+import { PropertyService, PropertyValueService } from '../configuracion.api';
 import { PropertyRelationsComponent } from './property-relations.component';
 import Swal from 'sweetalert2';
 
@@ -36,9 +36,10 @@ interface ModalData {
     ],
     template: `
     <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
-      <h2 class="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2">
-        {{ data.propiedad?.llaveTabla ? 'Editar Propiedad' : 'Nueva Propiedad' }}
-      </h2>
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">{{ data.propiedad?.llaveTabla ? 'Editar Propiedad' : 'Nueva Propiedad' }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
 
       <form #form="ngForm" (ngSubmit)="onSubmit()">
         <div class="space-y-4">
@@ -228,6 +229,7 @@ interface ModalData {
 })
 export class PropertyModalComponent implements OnInit {
     private propertyService = inject(PropertyService);
+    private propertyValueService = inject(PropertyValueService);
     public dialogRef = inject<MatDialogRef<PropertyModalComponent>>(MatDialogRef);
     public data = inject<ModalData>(MAT_DIALOG_DATA);
 
@@ -255,14 +257,7 @@ export class PropertyModalComponent implements OnInit {
     }
 
     loadPropertyValues(): void {
-        const filter = new PropiedadValorDefinidoDTO();
-        filter.origen = this.propiedad.tipo;
-        filter.origenCategoria = this.data.origenCategoria || '';
-
-        this.propertyService['http'].post<PropiedadValorDefinidoDTO[]>(
-            this.propertyService['ls'].getUrlAccess('/api/config/property-values/by-origen'),
-            filter
-        ).subscribe({
+        this.propertyValueService.getByOrigen(this.propiedad.tipo, this.data.origenCategoria).subscribe({
             next: (vals) => {
                 this.propiedadValores = vals;
                 this.propiedadValoresFiltrados = [...vals];
@@ -312,10 +307,7 @@ export class PropertyModalComponent implements OnInit {
     }
 
     loadRoles(): void {
-        this.propertyService['http'].post<RolAccesoFilterDTO[]>(
-            this.propertyService['ls'].getUrlAccess('/api/config/roles/list'),
-            { estado: 'A' }
-        ).subscribe({
+        this.propertyService.getRoles().subscribe({
             next: (roles) => this.roles = roles,
             error: () => {}
         });
