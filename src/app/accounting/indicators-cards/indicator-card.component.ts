@@ -76,11 +76,6 @@ function accentFor(key: string): string {
             </div>
           </div>
         </div>
-
-        <period-filter
-          [period]="selectedPeriod()"
-          (periodChange)="applyPeriod($event)"
-        ></period-filter>
       </div>
 
       <!-- Result -->
@@ -158,17 +153,31 @@ function accentFor(key: string): string {
             }
           </div>
 
-          <div class="mt-2 border-t border-neutral-100 pt-2 text-[11px] tabular-nums text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
-            antes
-            <span class="font-medium text-neutral-700 dark:text-neutral-200">{{ r.valor_antes | number }}</span>
-            · después
-            <span class="font-medium text-neutral-700 dark:text-neutral-200">{{ r.valor_despues | number }}</span>
+          <div class="mt-3 grid grid-cols-2 gap-x-2">
+            <div class="rounded-lg bg-neutral-50 px-2.5 py-1.5 dark:bg-neutral-800/60">
+              <div class="text-[10px] uppercase tracking-wide text-neutral-400 dark:text-neutral-500">Antes</div>
+              <div class="text-[13px] font-medium tabular-nums text-neutral-700 dark:text-neutral-200">
+                {{ r.valor_antes | number }}
+              </div>
+            </div>
+            <div class="rounded-lg bg-neutral-50 px-2.5 py-1.5 dark:bg-neutral-800/60">
+              <div class="text-[10px] uppercase tracking-wide text-neutral-400 dark:text-neutral-500">Después</div>
+              <div class="text-[13px] font-medium tabular-nums text-neutral-700 dark:text-neutral-200">
+                {{ r.valor_despues | number }}
+              </div>
+            </div>
           </div>
         }
       </div>
 
       <!-- Actions -->
-      <div class="mt-4 flex items-center justify-end gap-x-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+      <div class="mt-4 flex items-center justify-between gap-x-1 border-t border-neutral-100 pt-3 dark:border-neutral-800">
+        <period-filter
+          [period]="selectedPeriod()"
+          (periodChange)="applyPeriod($event)"
+        ></period-filter>
+
+        <div class="flex items-center gap-x-1">
         <button
           class="rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-50 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
           aria-label="Ver tabla de datos"
@@ -217,6 +226,7 @@ function accentFor(key: string): string {
             <path d="M8 16H3v5" />
           </svg>
         </button>
+        </div>
       </div>
     </div>
   `,

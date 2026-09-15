@@ -13,6 +13,7 @@ import { ImageUploaderComponent } from '../../upload/image-uploader/image-upload
 import { DocumentTemplateFieldListComponent } from './document-template-fields/document-template-field-list.component';
 import { DocumentTemplateReportListComponent } from './document-template-reports/document-template-report-list.component';
 import Swal from 'sweetalert2';
+import { forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-document-template-form',
@@ -21,9 +22,13 @@ import Swal from 'sweetalert2';
     template: `
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg max-w-5xl w-full max-h-[95vh] overflow-hidden flex flex-col">
       <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-xl font-bold">{{ data?.llaveTabla ? 'Editar Plantilla' : 'Nueva Plantilla' }}</h2>
+        <h2 class="text-xl font-bold">{{ template.llaveTabla ? 'Editar Plantilla' : 'Nueva Plantilla' }}</h2>
         <button type="button" class="btn-icon" (click)="dialogRef.close()"><mat-icon>close</mat-icon></button>
       </div>
+
+      @if (cargando) {
+        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div>
+      }
 
       <form #form="ngForm" (ngSubmit)="onSubmit()">
         <mat-tab-group class="flex-1 overflow-hidden" [selectedIndex]="activeTab()">
@@ -63,23 +68,27 @@ import Swal from 'sweetalert2';
           </mat-tab>
 
           <!-- Tab Campos -->
-          <mat-tab label="Campos ({{ template.caracteristicas.length || 0 }})">
+          <mat-tab label="Campos ({{ template.caracteristicas?.length || 0 }})">
             <div class="p-4 h-full">
-              <app-document-template-field-list
-                [templateKey]="template.llaveTabla"
-                [template]="template"
-                (fieldSaved)="onFieldSaved($event)">
-              </app-document-template-field-list>
+              @if (template.llaveTabla) {
+                <app-document-template-field-list
+                  [templateKey]="template.llaveTabla"
+                  [template]="template"
+                  (fieldSaved)="onFieldSaved($event)">
+                </app-document-template-field-list>
+              }
             </div>
           </mat-tab>
 
           <!-- Tab Reportes -->
-          <mat-tab label="Reportes ({{ template.reportes.length || 0 }})">
+          <mat-tab label="Reportes ({{ template.reportes?.length || 0 }})">
             <div class="p-4 h-full">
-              <app-document-template-report-list
-                [templateKey]="template.llaveTabla"
-                (reportSaved)="onReportSaved($event)">
-              </app-document-template-report-list>
+              @if (template.llaveTabla) {
+                <app-document-template-report-list
+                  [templateKey]="template.llaveTabla"
+                  (reportSaved)="onReportSaved($event)">
+                </app-document-template-report-list>
+              }
             </div>
           </mat-tab>
         </mat-tab-group>
@@ -87,7 +96,7 @@ import Swal from 'sweetalert2';
         <div class="flex justify-end gap-3 p-4 border-t border-gray-200 dark:border-gray-700">
           <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!template.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
           <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
-          <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data?.llaveTabla ? 'Actualizar' : 'Crear') }}</button>
+          <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (template.llaveTabla ? 'Actualizar' : 'Crear') }}</button>
         </div>
       </form>
     </div>
@@ -96,7 +105,7 @@ import Swal from 'sweetalert2';
 })
 export class DocumentTemplateFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<DocumentTemplateFormComponent>>(MatDialogRef);
-    public data = inject<DocumentoPlantillaDTO | null>(MAT_DIALOG_DATA);
+    public data = inject<DocumentoPlantillaDTO | { template: string } | null>(MAT_DIALOG_DATA);
 
     private service = inject(DocumentTemplateService);
     private dialog = inject(MatDialog);
@@ -106,16 +115,48 @@ export class DocumentTemplateFormComponent implements OnInit {
     activeTab = signal(0);
 
     ngOnInit(): void {
+        this.template = new DocumentoPlantillaDTO();
+        this.template.estado = 'A';
+        this.template.caracteristicas = [];
+        this.template.reportes = [];
+
+        const templateId = this.getTemplateId();
+        if (templateId) {
+            this.loadTemplateFromServer(templateId);
+            return;
+        }
         if (this.data) {
-            this.template = { ...this.data };
+            this.template = { ...(this.data as DocumentoPlantillaDTO) };
             if (!this.template.caracteristicas) this.template.caracteristicas = [];
             if (!this.template.reportes) this.template.reportes = [];
-        } else {
-            this.template = new DocumentoPlantillaDTO();
-            this.template.estado = 'A';
-            this.template.caracteristicas = [];
-            this.template.reportes = [];
         }
+    }
+
+    private getTemplateId(): string {
+        if (this.data && typeof (this.data as { template?: unknown }).template === 'string') {
+            return (this.data as { template: string }).template;
+        }
+        return '';
+    }
+
+    private loadTemplateFromServer(templateId: string): void {
+        this.cargando = true;
+        forkJoin({
+            plantilla: this.service.getTemplateById(templateId),
+            caracteristicas: this.service.getTemplateFields(templateId),
+            reportes: this.service.getTemplateReports(templateId),
+        }).subscribe({
+            next: ({ plantilla, caracteristicas, reportes }) => {
+                this.template = plantilla;
+                this.template.caracteristicas = caracteristicas || [];
+                this.template.reportes = reportes || [];
+                this.cargando = false;
+            },
+            error: () => {
+                this.cargando = false;
+                Swal.fire('Error', 'No se pudo consultar la plantilla de documento', 'error');
+            }
+        });
     }
 
     openPropiedades(): void {
