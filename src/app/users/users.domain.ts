@@ -15,7 +15,6 @@ export interface UsuarioFilterDTO {
     filtroParametro?: string;
     llaveTabla?: string;
     estado?: string;
-    securityToken?: string;
     identificacion?: string;
     nombre?: string;
     correo?: string;

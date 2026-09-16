@@ -90,7 +90,6 @@ export class OrganizationListComponent implements OnInit, AfterViewInit, OnDestr
     filter: OrganizacionFilterDTO = { estado: 'A', nombre: '', codigo: '', servidor: '', principal: '', usuarioSystem: '', imagen: '', sincronizacionFilter: '', servidorUrl: '', servidorCorreo: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
-        securityToken: ''
     };
 
     ngOnInit(): void { this.loadNext(); }

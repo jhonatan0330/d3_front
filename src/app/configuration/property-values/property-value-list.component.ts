@@ -129,7 +129,6 @@ export class PropertyValueListComponent implements OnInit, AfterViewInit, OnDest
         paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
-        securityToken: ''
     };
 
     ngOnInit(): void { this.loadNext(); }

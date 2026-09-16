@@ -101,7 +101,6 @@ export class AutoTaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
-        securityToken: ''
     };
 
     ngOnInit(): void { this.loadNext(); }

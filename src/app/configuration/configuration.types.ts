@@ -8,6 +8,7 @@ export class DocumentoPlantillaFilterDTO extends BasicFilterDTO {
     proceso: string;
     tipo: string;
     padre: string;
+    securityToken: string;
 }
 
 export class IndicatorDTO extends BasicParamDTO {

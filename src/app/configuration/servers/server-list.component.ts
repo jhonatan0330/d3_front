@@ -79,7 +79,6 @@ export class ServerListComponent implements OnInit, AfterViewInit, OnDestroy {
     filter: ServidorFilterDTO = { estado: 'A', nombre: '', tipo: '', orden: 0, puerto: '', servidorRespaldo: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
-        securityToken: ''
     };
 
     ngOnInit(): void { this.loadNext(); }

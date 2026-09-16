@@ -56,8 +56,17 @@
 }
 
 .cdk-overlay-container {
-  z-index: 1000 !important;
+  z-index: 3000 !important;
 }
+
+.dropdown-overlay-pane {
+  z-index: 3000 !important;
+}
+
+.dropdown-backdrop {
+  background: transparent;
+}
+
 
 /* ========================================
    Botones globales - Tailwind

@@ -13,11 +13,12 @@ import { IndicatorConfigService } from '../configuracion.api';
 import { IndicatorFormComponent } from './indicator-form.component';
 import { ProcessSelectorComponent } from '../shared/process-selector.component';
 import Swal from 'sweetalert2';
+import { ImageFormatPipe } from 'app/shared/local-image';
 
 @Component({
     selector: 'app-indicator-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatInputModule, MatFormFieldModule, MatSelectModule, DropdownComponent, DropdownItemComponent, ProcessSelectorComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatInputModule, MatFormFieldModule, MatSelectModule, DropdownComponent, DropdownItemComponent, ProcessSelectorComponent, ImageFormatPipe],
     template: `
     <div class="p-4 sm:p-6 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -41,7 +42,7 @@ import Swal from 'sweetalert2';
               <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
                 <div class="flex items-start justify-between gap-2">
                   <div class="flex items-center gap-3 min-w-0 cursor-pointer rounded-lg p-1 -m-1 transition hover:bg-gray-900/5 dark:hover:bg-white/10" (click)="openForm(element)">
-                    @if (element.imagen) { <img [src]="element.imagen" class="w-10 h-10 rounded-lg object-cover shrink-0" alt="" /> } @else { <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">insights</mat-icon></div> }
+                    @if (element.imagen) { <img src="{{element.imagen | imageFormat }}" class="w-10 h-10 rounded-lg object-cover shrink-0" alt="" /> } @else { <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">insights</mat-icon></div> }
                     <div class="min-w-0">
                       <p class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ element.codigo }}</p>
                       <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.nombre }}</h3>
@@ -83,7 +84,6 @@ export class IndicatorListComponent implements OnInit, AfterViewInit, OnDestroy 
     filter: IndicatorFilterDTO = { estado: 'A', nombre: '', codigo: '', proceso: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
-        securityToken: ''
     };
     ngOnInit(): void { this.loadNext(); }
 

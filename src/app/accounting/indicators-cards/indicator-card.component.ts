@@ -153,7 +153,7 @@ function accentFor(key: string): string {
             }
           </div>
 
-          <div class="mt-3 grid grid-cols-2 gap-x-2">
+          <!--div class="mt-3 grid grid-cols-2 gap-x-2">
             <div class="rounded-lg bg-neutral-50 px-2.5 py-1.5 dark:bg-neutral-800/60">
               <div class="text-[10px] uppercase tracking-wide text-neutral-400 dark:text-neutral-500">Antes</div>
               <div class="text-[13px] font-medium tabular-nums text-neutral-700 dark:text-neutral-200">
@@ -166,7 +166,7 @@ function accentFor(key: string): string {
                 {{ r.valor_despues | number }}
               </div>
             </div>
-          </div>
+          </div-->
         }
       </div>
 

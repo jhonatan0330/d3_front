@@ -12,7 +12,6 @@ export class BasicFilterDTO {
   filtroParametro: string;
   llaveTabla: string;
   estado: string;
-  securityToken: string;
 }
 
 

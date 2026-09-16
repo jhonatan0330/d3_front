@@ -119,7 +119,6 @@ export class MessageTemplateListComponent implements OnInit, AfterViewInit, OnDe
         paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
-        securityToken: ''
     };
 
     ngOnInit(): void {

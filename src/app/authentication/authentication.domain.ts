@@ -96,5 +96,6 @@ export class UsuarioAutenticacionFilterDTO extends BasicFilterDTO {
   ip: string;
   autorizacionCrea: string;
   autorizacionElimina: string;
+  securityToken: string;
 }
 

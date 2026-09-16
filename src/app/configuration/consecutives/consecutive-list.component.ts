@@ -136,7 +136,6 @@ export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestro
         paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
-        securityToken: ''
     };
 
     ngOnInit(): void {
