@@ -12,13 +12,15 @@
         <!--mat-progress-bar  class="w-full right-16 sm:right-18" mode="indeterminate" *ngIf="isLoading"></mat-progress-bar-->
         <mat-autocomplete class="max-h-128 sm:px-2 border-t rounded-b shadow-md" [autoSelectActiveOption]="true"
             [disableRipple]="true" #matAutocomplete="matAutocomplete" [displayWith]="autoCompleteDisplay">
-            <mat-option *ngFor="let document of resultSets" [value]="document">
+            @for (document of resultSets; track document.llaveTabla) {
+            <mat-option [value]="document">
                 <div class="flex flex-row">
                     <img class="h-6" [src]="document.imagen" />
                     <span>{{ document.nombre }}</span> |
                     <small>{{ document.descripcion }}</small>
                 </div>
             </mat-option>
+            }
         </mat-autocomplete>
 
         <button class="absolute top-1/2 right-5 sm:right-7 shrink-0 w-10 h-10 -mt-5" mat-icon-button (click)="close()">

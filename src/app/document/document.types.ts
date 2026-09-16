@@ -296,7 +296,6 @@ export class PedidoVentaFilterDTO extends BasicFilterDTO {
     campoPropiedad: string;
     ordenNombre: string;
     ascendente: string;
-    securityToken: string;
 }
 
 export class PedidoVentaCaracteristicaFilterDTO extends BasicFilterDTO {
@@ -313,7 +312,6 @@ export class PedidoVentaCaracteristicaFilterDTO extends BasicFilterDTO {
     dependientes: PedidoVentaCaracteristicaDTO[];
     expedientes: PedidoVentaDTO[];
     mensaje: string;
-    securityToken: string;
 }
 
 export class ProcesoTransicionFilterDTO extends BasicFilterDTO {
@@ -456,7 +454,6 @@ export class WebServiceEjecucionFilterDTO extends BasicFilterDTO {
     masivo: string;
     textoRespuesta: string;
     sincrona: string;
-    securityToken: string;
 }
 
 export class MensajePlantillaCorreoDTO extends BasicDTO {
@@ -501,7 +498,6 @@ export class MensajeFilterDTO extends BasicFilterDTO {
     adjuntoURL: string;
     reporte: string;
     transaccion: string;
-    securityToken: string;
 }
 
 export class ProcesoTransicionAutomaticaDTO extends BasicDTO {
@@ -615,7 +611,6 @@ export class ProcesoFilterDTO extends BasicFilterDTO {
     nombre: string;
     codigo: string;
     macroNombre: string;
-    securityToken: string;
 }
 
 export class TarifaDTO extends BasicDTO {

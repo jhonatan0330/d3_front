@@ -35,6 +35,27 @@ export interface AssistantResult {
     close?:boolean;
 }
 
+export type DocumentActionFieldType = 'text' | 'number' | 'date' | 'option';
+
+export interface DocumentActionField {
+    codigo: string;
+    tipo: DocumentActionFieldType;
+    valor: string | number;
+}
+
+export interface CreateDocumentAction {
+    accion: 'crear-documento';
+    plantilla: string;
+    campos: DocumentActionField[];
+    requiereConfirmacion: true;
+}
+
+export interface ParsedAssistantResponse {
+    text: string;
+    action?: CreateDocumentAction;
+    json?: string;
+}
+
 
 export interface AssistantMessage {
     id: string;
@@ -43,6 +64,8 @@ export interface AssistantMessage {
     date: Date;
     documents?: DocumentSearchResult[];
     templates?: TemplateSearchResult[];
+    action?: CreateDocumentAction;
+    actionJson?: string;
 }
 
 export interface TemplateData {

@@ -102,8 +102,7 @@ export class DocumentTemplateListComponent implements OnInit, AfterViewInit, OnD
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
         filtroParametro: '',
-        llaveTabla: '',
-        securityToken: ''
+        llaveTabla: ''
     };
 
     ngOnInit(): void {

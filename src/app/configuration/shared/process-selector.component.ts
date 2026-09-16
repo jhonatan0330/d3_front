@@ -88,8 +88,7 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
             paginacionRegistroInicial: 0,
             paginacionRegistroFinal: 1000,
             filtroParametro: '',
-            llaveTabla: '',
-            securityToken: ''
+            llaveTabla: ''
         }).subscribe({
             next: (res) => {
                 this.procesos = res;

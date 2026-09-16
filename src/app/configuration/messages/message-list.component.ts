@@ -139,8 +139,7 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
         filtroParametro: '',
-        llaveTabla: '',
-        securityToken: ''
+        llaveTabla: ''
     };
 
     datesValid(): boolean {

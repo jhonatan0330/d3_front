@@ -113,7 +113,6 @@ export class ApiService {
         const filter: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
         // Fijo se necesitan
         filter.campo = campo.campo;
-        filter.securityToken = campo.securityToken;
         filter.llaveTabla = campo.llaveTabla;
         filter.filtroParametro = campo.filtroParametro;
         filter.documento = campo.documento;

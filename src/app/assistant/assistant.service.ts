@@ -1,8 +1,9 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, delay, switchMap } from 'rxjs';
-import { AssistantIntent, AssistantMessage, AssistantResult, ChatMessage, DocumentSearchResult, TemplateSearchResult } from './assistant.models';
+import { AssistantIntent, AssistantMessage, AssistantResult, ChatMessage, CreateDocumentAction, DocumentActionField, DocumentSearchResult, TemplateSearchResult } from './assistant.models';
+import { parseAssistantResponse } from './assistant-response.parser';
 import { TemplateService } from 'app/document/service/template.service';
-import { DocumentoPlantillaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
+import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
 import { DocumentoPlantillaTipoEnum } from 'app/document/form/form.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { ApiService } from 'app/document/document.api';
@@ -212,29 +213,43 @@ export class AssistantService {
                 return this.chatService
                     .sendMessage(this.messages).pipe(
                         switchMap((response) => {
-                    
-                            const assistantMessage =
-                                response.choices[0]?.message;
-
-                            
-                            if (assistantMessage) {
-                                
-                                this.messages.push({
-                                    role: 'assistant',
-                                    content: assistantMessage.content
+                            const assistantMessage = response.choices[0]?.message;
+                            if (!assistantMessage?.content) {
+                                return of<AssistantResult>({
+                                    state: 'error',
+                                    message: this.crearMensaje('No recibí una respuesta válida del asistente.'),
                                 });
-                                
                             }
+
+                            this.messages.push({
+                                role: 'assistant',
+                                content: assistantMessage.content,
+                            });
+
+                            const parsedResponse = parseAssistantResponse(assistantMessage.content);
+                            if (!parsedResponse.action) {
+                                return of<AssistantResult>({
+                                    state: 'success',
+                                    message: this.crearMensaje(parsedResponse.text),
+                                });
+                            }
+
+                            const resolved = this.resolverAccion(parsedResponse.action);
+                            if (resolved.error) {
+                                return of<AssistantResult>({
+                                    state: 'error',
+                                    message: this.crearMensaje(resolved.error),
+                                });
+                            }
+
                             return of<AssistantResult>({
                                 state: 'success',
                                 message: {
-                                    id: crypto.randomUUID(),
-                                    type: 'assistant',
-                                    text: assistantMessage.content,
-                                    date: new Date(),
+                                    ...this.crearMensaje(parsedResponse.text || 'Preparé los datos para el formulario.'),
+                                    action: parsedResponse.action,
+                                    actionJson: parsedResponse.json,
                                 },
                             });
-                            
                         })
                         
                     );
@@ -253,6 +268,93 @@ export class AssistantService {
                 });*/
             
         }
+    }
+
+    abrirAccionDocumento(action: CreateDocumentAction): void {
+        const resolved = this.resolverAccion(action);
+        if (resolved.pedido) {
+            this.utilsService.modalWithParams(resolved.pedido);
+        }
+    }
+
+    private resolverAccion(action: CreateDocumentAction): { pedido?: PedidoVentaDTO; error?: string } {
+        const plantilla = this.resolverPlantilla(action.plantilla);
+        if (!plantilla) {
+            return { error: `No encontré una plantilla documental visible llamada "${action.plantilla}".` };
+        }
+
+        const caracteristicas: PedidoVentaCaracteristicaDTO[] = [];
+        for (const campo of action.campos) {
+            const definicion = plantilla.caracteristicas?.find(item => this.coincideCampo(item, campo.codigo));
+            if (!definicion) {
+                return { error: `El campo "${campo.codigo}" no existe en la plantilla "${plantilla.nombre}".` };
+            }
+
+            const caracteristica = new PedidoVentaCaracteristicaDTO();
+            caracteristica.campo = definicion.llaveTabla;
+            caracteristica.campoDTO = definicion;
+            const conversionError = this.asignarValor(caracteristica, campo);
+            if (conversionError) {
+                return { error: `No pude interpretar el campo "${campo.codigo}": ${conversionError}` };
+            }
+            caracteristicas.push(caracteristica);
+        }
+
+        const pedido = new PedidoVentaDTO();
+        pedido.plantilla = plantilla.llaveTabla;
+        pedido.caracteristicas = caracteristicas;
+        return { pedido };
+    }
+
+    private resolverPlantilla(identifier: string): DocumentoPlantillaDTO | undefined {
+        const normalized = this.normalizar(identifier);
+        const matches = this.templateService.template().filter(item => {
+            const visible = PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
+                && (item.tipo === DocumentoPlantillaTipoEnum.PRINCIPAL || item.tipo === DocumentoPlantillaTipoEnum.ROL);
+            return visible && (this.normalizar(item.codigo) === normalized || this.normalizar(item.nombre) === normalized);
+        });
+        return matches.length === 1 ? matches[0] : undefined;
+    }
+
+    private coincideCampo(definicion: DocumentoPlantillaDTO['caracteristicas'][number], identifier: string): boolean {
+        return this.normalizar(definicion.codigo) === this.normalizar(identifier)
+            || this.normalizar(definicion.nombre) === this.normalizar(identifier)
+            || this.normalizar(definicion.llaveTabla) === this.normalizar(identifier);
+    }
+
+    private asignarValor(caracteristica: PedidoVentaCaracteristicaDTO, campo: DocumentActionField): string | undefined {
+        switch (campo.tipo) {
+            case 'number':
+                caracteristica.valorNumero = campo.valor as number;
+                return undefined;
+            case 'date': {
+                const date = new Date(`${campo.valor}T00:00:00`);
+                if (Number.isNaN(date.getTime())) {
+                    return 'la fecha no es válida';
+                }
+                caracteristica.valorFecha = date;
+                return undefined;
+            }
+            case 'option':
+                caracteristica.valorOpcion = campo.valor as string;
+                return undefined;
+            case 'text':
+                caracteristica.valorText = campo.valor as string;
+                return undefined;
+        }
+    }
+
+    private normalizar(value: string | undefined): string {
+        return (value ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    }
+
+    private crearMensaje(text: string): AssistantMessage {
+        return {
+            id: crypto.randomUUID(),
+            type: 'assistant',
+            text,
+            date: new Date(),
+        };
     }
 
 

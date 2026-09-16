@@ -175,16 +175,6 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
         this.opened = false;
     }
 
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any {
-        return item.id || index;
-    }
-
     searchDocument() {
         const texto = this.searchControl.value;
         if (texto && texto.llaveTabla) {

@@ -160,8 +160,7 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
         filtroParametro: '',
-        llaveTabla: '',
-securityToken: ''
+        llaveTabla: ''
     };
 
     // Tree

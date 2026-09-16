@@ -125,7 +125,7 @@ export class WebServiceExecuteListComponent implements OnInit, AfterViewInit, On
     execData = signal<WebServiceEjecucionDTO[]>([]);
     execCurrentPage = signal(0);
     execHasMore = signal(true);
-    execFilter: WebServiceEjecucionFilterDTO = { servicio: '', usuario: '', fechaEjecucionMin: undefined, fechaEjecucionMax: undefined, documento: '', modificador: '', transaccion: '', entrada: '', salida: '', masivo: '', textoRespuesta: '', sincrona: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25, filtroParametro: '', llaveTabla: '', estado: 'A', securityToken: '' };
+    execFilter: WebServiceEjecucionFilterDTO = { servicio: '', usuario: '', fechaEjecucionMin: undefined, fechaEjecucionMax: undefined, documento: '', modificador: '', transaccion: '', entrada: '', salida: '', masivo: '', textoRespuesta: '', sincrona: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25, filtroParametro: '', llaveTabla: '', estado: 'A' };
     execDisplayedColumns = ['servicio', 'usuario', 'fechaEjecucion', 'entrada', 'salida', 'error', 'sincrona'];
 
     datesValid(): boolean {

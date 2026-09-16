@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AssistantMessage, AssistantState, DocumentSearchResult, TemplateSearchResult } from '../assistant.models';
+import { AssistantMessage, AssistantState, CreateDocumentAction, DocumentSearchResult, TemplateSearchResult } from '../assistant.models';
 import { AssistantService } from '../assistant.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { LoginService } from 'app/authentication/login.service';
@@ -125,6 +125,17 @@ export class AssistantPanelComponent implements OnInit, AfterViewInit {
             id: crypto.randomUUID(),
             type: 'assistant',
             text: 'Plantilla abierta',
+            date: new Date(),
+        });
+        this.cerrar();
+    }
+
+    ejecutarAccion(action: CreateDocumentAction): void {
+        this.assistantService.abrirAccionDocumento(action);
+        this.agregarMensaje({
+            id: crypto.randomUUID(),
+            type: 'assistant',
+            text: 'Formulario preparado para revisión.',
             date: new Date(),
         });
         this.cerrar();
