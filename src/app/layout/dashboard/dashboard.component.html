@@ -5,15 +5,35 @@
     <div class="flex flex-col shadow">
       <!-- Cover image -->
       @if (slides.length) {
-      <div>
-        <swiper-container class="h-40 lg:h-50 w-full" autoplay="true" autoplay-delay="5000" loop="true"
-          navigation="true" keyboard="true" slides-per-view="1">
+      <div class="relative w-full">
+        <div #carouselViewport class="flex h-40 w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth lg:h-50"
+          role="region" aria-label="Imágenes de portada" tabindex="0" (scroll)="onCarouselScroll($event)"
+          (keydown)="onCarouselKeydown($event)" (mouseenter)="stopAutoplay()" (mouseleave)="startAutoplay()"
+          (focusin)="stopAutoplay()" (focusout)="startAutoplay()">
           @for (slide of slides; track slide) {
-          <swiper-slide class="flex">
-            <img class="h-40 lg:h-50 object-cover w-full" [src]="slide" alt="">
-          </swiper-slide>
+          <div class="h-40 min-w-full shrink-0 snap-start lg:h-50">
+            <img class="h-full w-full object-cover" [src]="slide" [alt]="'Imagen de portada ' + ($index + 1)">
+          </div>
           }
-        </swiper-container>
+        </div>
+        @if (slides.length > 1) {
+        <button type="button" class="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-2xl text-white transition hover:bg-black/65 focus:outline-none focus:ring-2 focus:ring-white"
+          aria-label="Imagen anterior" (click)="previousSlide()">
+          <span aria-hidden="true">&#8249;</span>
+        </button>
+        <button type="button" class="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-2xl text-white transition hover:bg-black/65 focus:outline-none focus:ring-2 focus:ring-white"
+          aria-label="Imagen siguiente" (click)="nextSlide()">
+          <span aria-hidden="true">&#8250;</span>
+        </button>
+        <div class="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2" aria-label="Seleccionar imagen">
+          @for (slide of slides; track slide; let index = $index) {
+          <button type="button" class="h-2.5 w-2.5 rounded-full border border-white/80 transition focus:outline-none focus:ring-2 focus:ring-white"
+            [class.bg-white]="activeSlide() === index" [class.bg-white\/40]="activeSlide() !== index"
+            [attr.aria-label]="'Ir a la imagen ' + (index + 1)" [attr.aria-current]="activeSlide() === index ? 'true' : null"
+            (click)="goToSlide(index)"></button>
+          }
+        </div>
+        }
       </div>
       }
       <!-- User info -->

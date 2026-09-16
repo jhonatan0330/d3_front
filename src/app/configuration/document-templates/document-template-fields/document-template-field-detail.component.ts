@@ -96,7 +96,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
     }
 
     editarCampo(): void {
-        this.utilsService.fieldEditModalFlex(this.field.llaveTabla);
+        this.utilsService.fieldEditModalFlex(this.field);
     }
 
     editarPropiedad(pPropiedad?: PropiedadDTO): void {

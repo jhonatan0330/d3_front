@@ -1,7 +1,6 @@
 import { enableProdMode, provideZonelessChangeDetection, ErrorHandler, importProvidersFrom, provideAppInitializer, inject, isDevMode } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
-import 'swiper/element/bundle';
 import { environment } from 'environments/environment';
 
 import { ErrorHandlerService } from './app/shared/error-handler.service';

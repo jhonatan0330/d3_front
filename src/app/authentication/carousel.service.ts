@@ -13,6 +13,42 @@ export class CarouselService {
   readonly landing = signal<string[]>([]);
   readonly headerSection = signal<string[]>([]);
 
+  private sanitizeLayoutHtml(value: string): string {
+    if (!value) { return ''; }
+
+    const documentFragment = new DOMParser().parseFromString(value, 'text/html');
+    const allowedTags = new Set([
+      'A', 'B', 'BR', 'CAPTION', 'CODE', 'COL', 'COLGROUP', 'DIV', 'EM', 'FIGCAPTION',
+      'FIGURE', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HR', 'I', 'IMG', 'LI', 'OL', 'P',
+      'PRE', 'S', 'SMALL', 'SPAN', 'STRONG', 'TABLE', 'TBODY', 'TD', 'TFOOT', 'TH',
+      'THEAD', 'TR', 'U', 'UL'
+    ]);
+    const allowedAttributes = new Set([
+      'alt', 'class', 'colspan', 'height', 'href', 'rel', 'rowspan', 'src', 'target', 'width'
+    ]);
+    const safeUrl = /^(?:https?:|mailto:|tel:|\/|#)/i;
+
+    for (const element of Array.from(documentFragment.body.querySelectorAll('*'))) {
+      if (!allowedTags.has(element.tagName)) {
+        element.remove();
+        continue;
+      }
+
+      for (const attribute of Array.from(element.attributes)) {
+        const name = attribute.name.toLowerCase();
+        if (!allowedAttributes.has(name)) {
+          element.removeAttribute(attribute.name);
+          continue;
+        }
+        if ((name === 'href' || name === 'src') && !safeUrl.test(attribute.value.trim())) {
+          element.removeAttribute(attribute.name);
+        }
+      }
+    }
+
+    return documentFragment.body.innerHTML;
+  }
+
   loadFromOrganization(_company: OrganizacionDTO, isAuthenticated: boolean) {
     const slides: string[] = [];
     const landing: string[] = [];
@@ -42,14 +78,14 @@ export class CarouselService {
       const _iHeaders = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.LANDING_PAGE);
       if (_iHeaders && _iHeaders.length !== 0) {
         _iHeaders.forEach((element: PropiedadDTO) => {
-          landing.push(element.valor);
+          landing.push(this.sanitizeLayoutHtml(element.valor));
         });
       }
       const _iFooters = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.HEADER_PAGE);
       if (_iFooters && _iFooters.length !== 0) {
         headerSection = [];
         _iFooters.forEach((element: PropiedadDTO) => {
-          headerSection.push(element.valor);
+          headerSection.push(this.sanitizeLayoutHtml(element.valor));
         });
       }
     }

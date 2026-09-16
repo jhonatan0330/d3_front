@@ -71,7 +71,6 @@ export class LoginService {
       if (!tokenAuto) { return null; };
       const _user = this.getUser()
       if(_user)autenticacion.usuario = _user.llaveTabla;
-      autenticacion.securityToken = tokenAuto;
     }
     return this.http
       .post<UsuarioAutenticacionDTO>(
@@ -138,14 +137,13 @@ export class LoginService {
     }
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
     autenticacion.claveAnterior = `${environment.dateCompile}`;
-    autenticacion.securityToken = tokenLocal;
     return this.http
       .post<UsuarioAutenticacionDTO>(
         this.ls.getUrlAccess('/document/main/checkToken'),
         autenticacion
       )
       .pipe(
-        switchMap((profile: UsuarioAutenticacionDTO) => {
+        switchMap(() => {
           return this.signin(null!, null!, tokenLocal)!.pipe(
             map((data: UsuarioAutenticacionDTO) => {
               this.authenticationOK(data);
@@ -153,7 +151,7 @@ export class LoginService {
             })
           );
         }),
-        catchError((error) => {
+        catchError(() => {
           this.signout();
           return of(false);
         })

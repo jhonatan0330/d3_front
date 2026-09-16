@@ -13,7 +13,9 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error) => {
       let errorMessage = '';
-      if (error.error &&  error.error.message) { // client-side error
+      if (error.status === 401) {
+        jwtAuth.signout();
+      } else if (error.error &&  error.error.message) { // client-side error
         errorMessage = error.error.message;
         if (errorMessage.indexOf('CODE:caud_usuario') !== -1 || errorMessage.indexOf("Required request header 'Authorization'") !== -1) {
           jwtAuth.signout();

@@ -54,12 +54,6 @@ export class DocumentoPlantillaCaracteristicaDTO extends BasicParamDTO {
     mostrarSelectorFormato?: boolean;
     editando?: boolean;
     _editValue?: string;
-    longitudMaxima?: number;
-    valorPorDefecto?: string;
-    opciones?: string;
-    validacion?: string;
-    requerido?: boolean;
-    soloLectura?: boolean;
 }
 
 export class propiedadCampo extends BasicDTO {

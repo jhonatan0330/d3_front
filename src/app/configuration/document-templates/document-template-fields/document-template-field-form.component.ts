@@ -1,12 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO } from 'app/document/document.types';
 import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { DocumentTemplateService } from '../../configuracion.api';
 import { ImageUploaderComponent } from '../../../upload/image-uploader/image-uploader.component';
+import { PropertyPanelComponent } from '../../shared/property-panel.component';
 import Swal from 'sweetalert2';
 
 interface FieldFormData {
@@ -62,47 +63,15 @@ interface FieldFormData {
             </div>
           </div>
 
-          @if (field.formato === 'D' || field.formato === 'P') {
-            <div>
-              <label class="block text-sm font-semibold mb-1">Productos / Detalle</label>
-              <p class="text-sm text-gray-500 dark:text-gray-400">Configuración de productos se maneja en el formulario principal</p>
-            </div>
-          }
-
-          @if (field.formato === 'T' || field.formato === 'N') {
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-semibold mb-1">Longitud Máxima</label>
-                <input type="number" [(ngModel)]="field.longitudMaxima" name="longitudMaxima" min="1" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
-              <div>
-                <label class="block text-sm font-semibold mb-1">Valor Por Defecto</label>
-                <input type="text" [(ngModel)]="field.valorPorDefecto" name="valorPorDefecto" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
-            </div>
-          }
-
-          @if (field.formato === 'O' || field.formato === 'M') {
-            <div>
-              <label class="block text-sm font-semibold mb-1">Opciones (JSON)</label>
-              <textarea [(ngModel)]="field.opciones" name="opciones" rows="4" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm" placeholder='[{"value": "1", "label": "Opción 1"}, {"value": "2", "label": "Opción 2"}]'></textarea>
-            </div>
-          }
-
           <div>
-            <label class="block text-sm font-semibold mb-1">Validación (Regex)</label>
-            <input type="text" [(ngModel)]="field.validacion" name="validacion" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm" placeholder="Ej: ^[0-9]{10}$" />
+            <label class="block text-sm font-semibold mb-1">Objetivo</label>
+            <textarea rows="3" [(ngModel)]="field.objetivo" name="objetivo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
           </div>
 
-          <div class="flex items-center gap-2">
-            <input type="checkbox" [(ngModel)]="field.requerido" name="requerido" id="requerido" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-            <label for="requerido" class="text-sm">Campo Requerido</label>
-            <input type="checkbox" [(ngModel)]="field.soloLectura" name="soloLectura" id="soloLectura" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 ml-4" />
-            <label for="soloLectura" class="text-sm">Solo Lectura</label>
-          </div>
         </div>
 
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!field.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
           <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
           <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data.field?.llaveTabla ? 'Actualizar' : 'Crear') }}</button>
         </div>
@@ -115,6 +84,7 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<DocumentTemplateFieldFormComponent>>(MatDialogRef);
     public data = inject<FieldFormData>(MAT_DIALOG_DATA);
 
+    private dialog = inject(MatDialog);
     private service = inject(DocumentTemplateService);
 
     field: DocumentoPlantillaCaracteristicaDTO = new DocumentoPlantillaCaracteristicaDTO();
@@ -124,15 +94,30 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
     ngOnInit(): void {
         if (this.data.field) {
             this.field = { ...this.data.field };
+            this.field.propiedades = this.field.propiedades || [];
         } else {
             this.field = new DocumentoPlantillaCaracteristicaDTO();
             this.field.estado = 'A';
             this.field.formato = 'T';
             this.field.plantilla = this.data.template.llaveTabla;
             this.field.orden = (this.data.template.caracteristicas?.length || 0) + 1;
-            this.field.requerido = false;
-            this.field.soloLectura = false;
         }
+    }
+
+    openPropiedades(): void {
+      if (!this.field.llaveTabla) return;
+      this.dialog.open(PropertyPanelComponent, {
+        width: '800px',
+        maxWidth: '95vw',
+        maxHeight: '90vh',
+        disableClose: true,
+        data: {
+          campoKey: this.field.llaveTabla,
+          tipoOrigen: 'C',
+          origenCategoria: this.field.formato,
+          titulo: this.field.nombre
+        }
+      });
     }
 
     getFormatoIcon(formato: string): string {
