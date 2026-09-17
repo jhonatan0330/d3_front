@@ -1,0 +1,38 @@
+
+    <div class="relative">
+      @if (label) { <label class="block text-sm font-semibold mb-1">{{ label }}</label> }
+      <div class="relative">
+        <input type="text"
+          [value]="query || displayValue"
+          [disabled]="disabled"
+          (input)="onInput($event)"
+          (focus)="onFocus()"
+          (blur)="onBlur()"
+          (keydown.escape)="showDropdown = false"
+          [placeholder]="placeholder"
+          class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 pr-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 [disabled]:bg-gray-100 dark:[disabled]:bg-gray-700 [disabled]:cursor-not-allowed" />
+        @if (displayValue) {
+          <button type="button"
+            [disabled]="disabled"
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            (click)="clear($event)">
+            <mat-icon class="text-sm">clear</mat-icon>
+          </button>
+        }
+      </div>
+
+      @if (showDropdown && filteredProcesos.length > 0) {
+        <div class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          @for (process of filteredProcesos; track process.llaveTabla) {
+            <button type="button"
+              class="w-full px-3 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+              (click)="selectProcess(process)">
+              <mat-icon class="text-gray-400">account_tree</mat-icon>
+              <span class="text-sm text-gray-900 dark:text-gray-100">{{ process.nombre }}</span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">({{ process.codigo }})</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  

@@ -1,0 +1,53 @@
+
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold flex items-center gap-2">
+          <mat-icon class="text-blue-500">play_arrow</mat-icon>
+          Ejecutar Web Service: {{ data.webService.nombre }}
+        </h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
+
+      <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
+        <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Código:</strong> {{ data.webService.codigo }}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Proceso:</strong> {{ data.webService.proceso }}</p>
+      </div>
+
+      <form #form="ngForm" (ngSubmit)="onExecute()">
+        <div>
+          <label class="block text-sm font-semibold mb-1">Parámetros (JSON)</label>
+          <textarea
+            [(ngModel)]="parametros"
+            name="parametros"
+            rows="8"
+            class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+            placeholder='{}'
+            required></textarea>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Parámetros por defecto del web service se fusionarán con estos</p>
+        </div>
+
+        @if (lastExecution) {
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-3">
+            <h3 class="font-medium">Última Ejecución</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div><span class="text-gray-500 dark:text-gray-400">Resultado:</span> <span class="badge ml-2" [class.badge-exec-error]="lastExecution.error" [class.badge-exec-success]="!lastExecution.error">{{ lastExecution.error ? 'Error' : 'Exitoso' }}</span></div>
+              <div><span class="text-gray-500 dark:text-gray-400">Fecha:</span> <span class="ml-2">{{ lastExecution.fechaEjecucion | date:'dd/MM/yyyy HH:mm:ss' }}</span></div>
+              <div class="col-span-2"><span class="text-gray-500 dark:text-gray-400">Parámetros enviados:</span> <pre class="mt-1 text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded font-mono overflow-auto">{{ lastExecution.entrada }}</pre></div>
+              <div class="col-span-2"><span class="text-gray-500 dark:text-gray-400">Resultado:</span> <pre class="mt-1 text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded font-mono overflow-auto">{{ lastExecution.salida }}</pre></div>
+              @if (lastExecution.error) {
+                <div class="col-span-2"><span class="text-red-600 dark:text-red-400">Error:</span> <pre class="mt-1 text-xs bg-red-50 dark:bg-red-900/30 p-2 rounded font-mono overflow-auto">{{ lastExecution.error }}</pre></div>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="dialogRef.close()">Cerrar</button>
+          <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">
+            <mat-icon *ngIf="cargando" class="animate-spin">refresh</mat-icon>
+            {{ cargando ? 'Ejecutando...' : 'Ejecutar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  

@@ -1,0 +1,59 @@
+
+    <div class="max-w-3xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">{{ data?.llaveTabla ? 'Editar Servidor' : 'Nuevo Servidor' }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
+
+      <form #form="ngForm" (ngSubmit)="onSubmit()">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold mb-1">Nombre *</label>
+            <input type="text" [(ngModel)]="servidor.nombre" name="nombre" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Tipo *</label>
+            <mat-form-field appearance="outline" class="w-full"><mat-select [(ngModel)]="servidor.tipo" name="tipo" required><mat-option value="F">FTP</mat-option><mat-option value="W">Web</mat-option><mat-option value="B">Base de Datos</mat-option><mat-option value="E">Correo</mat-option><mat-option value="L">FTP Local</mat-option></mat-select></mat-form-field>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-semibold mb-1">URL</label>
+            <input type="text" [(ngModel)]="servidor.url" name="url" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Orden</label>
+            <input type="number" [(ngModel)]="servidor.orden" name="orden" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Puerto</label>
+            <input type="text" [(ngModel)]="servidor.puerto" name="puerto" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Usuario</label>
+            <input type="text" [(ngModel)]="servidor.usuario" name="usuario" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Clave</label>
+            <input type="password" [(ngModel)]="servidor.clave" name="clave" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">Base</label>
+            <input type="text" [(ngModel)]="servidor.base" name="base" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-1">URL Conexión</label>
+            <input type="text" [(ngModel)]="servidor.urlConexion" name="urlConexion" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-semibold mb-1">Servidor Respaldo</label>
+            <input type="text" [(ngModel)]="servidor.servidorRespaldo" name="servidorRespaldo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!servidor.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
+          <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
+          <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data?.llaveTabla ? 'Actualizar' : 'Crear') }}</button>
+        </div>
+      </form>
+    </div>
+  

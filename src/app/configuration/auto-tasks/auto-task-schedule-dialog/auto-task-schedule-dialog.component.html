@@ -1,0 +1,128 @@
+
+    <div class="max-w-md w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">
+          <mat-icon class="text-blue-500 mr-2 align-middle">schedule</mat-icon>
+          Programar Tarea: {{ data.task.plantillaNombre }}
+        </h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
+
+      <form #form="ngForm" (ngSubmit)="onSchedule()">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Tipo de Programación</label>
+            <div class="space-y-2">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" [(ngModel)]="scheduleType" name="scheduleType" value="cron" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
+                <span>Expresión Cron</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" [(ngModel)]="scheduleType" name="scheduleType" value="once" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
+                <span>Fecha Única</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" [(ngModel)]="scheduleType" name="scheduleType" value="recurring" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
+                <span>Recurrente (diario/semanal/mensual)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" [(ngModel)]="scheduleType" name="scheduleType" value="clear" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
+                <span class="text-red-600">Quitar Programación</span>
+              </label>
+            </div>
+          </div>
+
+          @if (scheduleType === 'cron') {
+            <div>
+              <label class="block text-sm font-semibold mb-1">Expresión Cron *</label>
+              <input type="text" [(ngModel)]="cronExpression" name="cronExpression" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm" placeholder="0 0 * * * (diario medianoche)" />
+              <div class="mt-2 space-y-1 text-xs text-gray-500 dark:text-gray-400 font-mono">
+                <div>┌───────────── minuto (0 - 59)</div>
+                <div>│ ┌───────────── hora (0 - 23)</div>
+                <div>│ │ ┌───────────── día del mes (1 - 31)</div>
+                <div>│ │ │ ┌───────────── mes (1 - 12)</div>
+                <div>│ │ │ │ ┌───────────── día de la semana (0 - 7) (dom=0 o 7)</div>
+                <div>│ │ │ │ │</div>
+                <div>* * * * *</div>
+              </div>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <button type="button" class="btn-sm btn-flat-secondary" (click)="setCron('0 0 * * *')">Diario 00:00</button>
+                <button type="button" class="btn-sm btn-flat-secondary" (click)="setCron('0 12 * * *')">Diario 12:00</button>
+                <button type="button" class="btn-sm btn-flat-secondary" (click)="setCron('0 0 * * 1')">Lunes 00:00</button>
+                <button type="button" class="btn-sm btn-flat-secondary" (click)="setCron('0 0 1 * *')">1ro del mes</button>
+              </div>
+            </div>
+          }
+
+          @if (scheduleType === 'once') {
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="dpDate" [(ngModel)]="onceDate" name="onceDate" required />
+                <mat-datepicker-toggle matIconSuffix [for]="dpDate"></mat-datepicker-toggle>
+                <mat-datepicker #dpDate></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Hora</mat-label>
+                <input matInput type="time" [(ngModel)]="onceTime" name="onceTime" required />
+              </mat-form-field>
+            </div>
+          }
+
+          @if (scheduleType === 'recurring') {
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-semibold mb-1">Frecuencia</label>
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-select [(ngModel)]="recurringFreq" name="recurringFreq" required>
+                    <mat-option value="daily">Diario</mat-option>
+                    <mat-option value="weekly">Semanal</mat-option>
+                    <mat-option value="monthly">Mensual</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-1">Hora</label>
+                <input type="time" [(ngModel)]="recurringTime" name="recurringTime" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              @if (recurringFreq === 'weekly') {
+                <div>
+                  <label class="block text-sm font-semibold mb-1">Días de la semana</label>
+                  <div class="flex flex-wrap gap-2">
+                    @for (day of weekDays; track day.value) {
+                      <label class="flex items-center gap-1 cursor-pointer px-2 py-1 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <input type="checkbox" [(ngModel)]="day.selected" [name]="'weekday_' + day.value" class="w-4 h-4 text-blue-600 border-gray-300 rounded" />
+                        <span class="text-sm">{{ day.label }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+              }
+              @if (recurringFreq === 'monthly') {
+                <div>
+                  <label class="block text-sm font-semibold mb-1">Día del mes (1-31)</label>
+                  <input type="number" min="1" max="31" [(ngModel)]="monthlyDay" name="monthlyDay" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+              }
+              <div>
+                <label class="block text-sm font-semibold mb-1">Fecha Inicio</label>
+                <mat-form-field appearance="outline" class="w-full">
+                  <mat-label>Desde</mat-label>
+                  <input matInput [matDatepicker]="dpStart" [(ngModel)]="recurringStart" name="recurringStart" />
+                  <mat-datepicker-toggle matIconSuffix [for]="dpStart"></mat-datepicker-toggle>
+                  <mat-datepicker #dpStart></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
+          <button type="submit" class="btn-flat-primary" [disabled]="cargando || (scheduleType !== 'clear' && !form.valid)">
+            {{ cargando ? 'Programando...' : 'Programar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  

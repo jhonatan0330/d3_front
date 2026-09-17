@@ -10,11 +10,11 @@ import { ManualFormComponent } from 'app/accounting/manual-form/manual-form.comp
 import { ContactsDetailsComponent } from 'app/users/detail_persons/detail-person.component';
 import { SettingsSecurityComponent } from 'app/authentication/security/security.component';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
-import { DocumentTemplateFormComponent } from 'app/configuration/document-templates/document-template-form.component';
+import { DocumentTemplateFormComponent } from 'app/configuration/document-templates/document-template-form/document-template-form.component';
 import { dfaComponent } from 'app/authentication/DFA/dfa';
-import { DocumentTemplateFieldFormComponent } from 'app/configuration/document-templates/document-template-fields/document-template-field-form.component';
+import { DocumentTemplateFieldFormComponent } from 'app/configuration/document-templates/document-template-fields/document-template-field-form/document-template-field-form.component';
 import { DocumentTemplateFieldDetailComponent } from 'app/configuration/document-templates/document-template-fields/document-template-field-detail.component';
-import { PropertyModalComponent } from 'app/configuration/shared/property-modal.component';
+import { PropertyModalComponent } from 'app/configuration/shared/property-modal/property-modal.component';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 
 @Injectable({

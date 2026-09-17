@@ -1,0 +1,55 @@
+
+    <div class="p-4 sm:p-6 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Tareas Automáticas</h1>
+        <button type="button" class="btn-flat-primary" (click)="openForm()"><mat-icon>add</mat-icon> Nueva Tarea</button>
+      </div>
+
+      <!-- Filtros -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Plantilla Nombre</mat-label><input matInput [(ngModel)]="filter.plantillaNombre" (ngModelChange)="onFilterChange()" placeholder="Filtrar por plantilla nombre" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Plantilla</mat-label><input matInput [(ngModel)]="filter.plantilla" (ngModelChange)="onFilterChange()" placeholder="Filtrar por plantilla" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Transición</mat-label><input matInput [(ngModel)]="filter.transicion" (ngModelChange)="onFilterChange()" placeholder="Filtrar por transición" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Propiedad</mat-label><input matInput [(ngModel)]="filter.propiedad" (ngModelChange)="onFilterChange()" placeholder="Filtrar por propiedad" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Fecha Desde</mat-label><input matInput [matDatepicker]="dp1" [(ngModel)]="filter.fechaMin" (ngModelChange)="onFilterChange()" placeholder="DD/MM/YYYY" /><mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle><mat-datepicker #dp1></mat-datepicker></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Fecha Hasta</mat-label><input matInput [matDatepicker]="dp2" [(ngModel)]="filter.fechaMax" (ngModelChange)="onFilterChange()" placeholder="DD/MM/YYYY" /><mat-datepicker-toggle matIconSuffix [for]="dp2"></mat-datepicker-toggle><mat-datepicker #dp2></mat-datepicker></mat-form-field>
+        </div>
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <mat-form-field appearance="outline" class="w-full"><mat-label>Estado</mat-label><mat-select [(ngModel)]="filter.estado" (ngModelChange)="onFilterChange()"><mat-option value="A">Activo</mat-option><mat-option value="I">Inactivo</mat-option><mat-option value="">Todos</mat-option></mat-select></mat-form-field>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        @if (loading() && data().length === 0) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
+          <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @for (element of data(); track element.llaveTabla) {
+              <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex items-center gap-3 min-w-0 cursor-pointer rounded-lg p-1 -m-1 transition hover:bg-gray-900/5 dark:hover:bg-white/10" (click)="openForm(element)">
+                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">schedule</mat-icon></div>
+                    <div class="min-w-0">
+                      <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.plantillaNombre }}</h3>
+                    </div>
+                  </div>
+                  <app-dropdown>
+                    <button type="button" class="btn-icon" trigger aria-label="Acciones"><mat-icon>more_vert</mat-icon></button>
+                    <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
+                    <app-dropdown-item (clicked)="openScheduleDialog(element)"><mat-icon class="text-base">schedule</mat-icon> Programar</app-dropdown-item>
+                    <app-dropdown-item (clicked)="executeNow(element)"><mat-icon class="text-base">play_circle_filled</mat-icon> Ejecutar ahora</app-dropdown-item>
+                    <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
+                  </app-dropdown>
+                </div>
+              </div>
+            }
+          </div>
+          <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
+            <span class="text-sm text-gray-500 dark:text-gray-400">Mostrando {{ data().length }} registros</span>
+            @if (loading()) { <div class="w-40 h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> }
+          </div>
+        }
+        @if (!loading() && data().length === 0) { <div class="text-center py-12 text-gray-500 dark:text-gray-400">No hay tareas automáticas registradas</div> }
+      </div>
+      <div #loadMore></div>
+    </div>
+  

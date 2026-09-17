@@ -1,0 +1,21 @@
+@if (attachments.length > 0) {
+  <div class="space-y-2">
+    <h4 class="font-medium text-gray-900 dark:text-gray-100">Adjuntos ({{ attachments.length }})</h4>
+    <div class="flex flex-wrap gap-2">
+      @for (att of attachments; track att.url) {
+        <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 p-2 dark:border-gray-700 dark:bg-gray-800">
+          <mat-icon [class.text-blue-500]="att.isImage" [class.text-green-500]="!att.isImage" class="text-xl">
+            {{ att.isImage ? 'image' : 'insert_drive_file' }}
+          </mat-icon>
+          <span class="max-w-xs truncate text-sm text-gray-900 dark:text-gray-100">{{ att.name }}</span>
+          <button type="button" class="btn-icon btn-flat-primary ml-auto" (click)="openAttachment(att)" aria-label="Ver adjunto">
+            <mat-icon>open_in_new</mat-icon>
+          </button>
+          <button type="button" class="btn-icon btn-flat" (click)="downloadAttachment(att)" aria-label="Descargar adjunto">
+            <mat-icon>download</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}

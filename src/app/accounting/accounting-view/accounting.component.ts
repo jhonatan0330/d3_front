@@ -15,8 +15,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { NgClass, UpperCasePipe, DecimalPipe, DatePipe } from '@angular/common';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
-import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 
 interface AccountNode {
     account: AccountDTO;

@@ -33,8 +33,8 @@ import { MatIcon } from '@angular/material/icon';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { MatTable, MatColumnDef, MatCellDef, MatCell, MatRowDef, MatRow } from '@angular/material/table';
 import { MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker } from '@angular/material/datepicker';
-import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
-import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { ImageFormatPipe } from 'app/shared/local-image';
 
 @Component({

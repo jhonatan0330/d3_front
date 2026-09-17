@@ -1,0 +1,94 @@
+
+    <div class="max-w-md w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">{{ data?.llaveTabla ? 'Editar Consecutivo' : 'Nuevo Consecutivo' }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
+
+      <form #form="ngForm" (ngSubmit)="onSubmit()">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold mb-1">Nombre *</label>
+            <input type="text"
+              [(ngModel)]="consecutivo.nombre"
+              name="nombre"
+              required
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">Prefijo</label>
+              <input type="text"
+                [(ngModel)]="consecutivo.prefijo"
+                name="prefijo"
+                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">Sufijo</label>
+              <input type="text"
+                [(ngModel)]="consecutivo.sufijo"
+                name="sufijo"
+                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">Número Inicial</label>
+              <input type="number" min="0"
+                [(ngModel)]="consecutivo.numeroInicial"
+                name="numeroInicial"
+                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">Número Final</label>
+              <input type="number" min="0"
+                [(ngModel)]="consecutivo.numeroFinal"
+                name="numeroFinal"
+                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">Número Actual</label>
+              <input type="number" min="0"
+                [(ngModel)]="consecutivo.numeroActual"
+                name="numeroActual"
+                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">Padding</label>
+              <input type="number" min="0"
+                [(ngModel)]="consecutivo.padding"
+                name="padding"
+                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-1">Consecutivo Actual</label>
+            <input type="text"
+              [(ngModel)]="consecutivo.consecutivoActual"
+              name="consecutivoActual"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" [(ngModel)]="consecutivo.manual" name="manual" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+              <span class="text-sm">Manual</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
+          <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">
+            {{ cargando ? 'Guardando...' : (data?.llaveTabla ? 'Actualizar' : 'Crear') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  

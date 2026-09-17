@@ -1,0 +1,48 @@
+
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">Propiedades de {{ data.titulo }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
+
+      <div class="flex justify-end">
+        <button type="button" class="btn-flat-primary" (click)="openModal()">
+          <mat-icon class="text-base">add</mat-icon>
+          Nueva Propiedad
+        </button>
+      </div>
+
+      @if (loading()) {
+        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+        </div>
+      } @else if (propiedades().length === 0) {
+        <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-6 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
+          Sin propiedades configuradas
+        </div>
+      } @else {
+        <div class="space-y-2 max-h-96 overflow-y-auto">
+          @for (prop of propiedades(); track prop.llaveTabla) {
+            <div class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <p class="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">{{ prop.nombre }}</p>
+                  <span class="text-xs font-mono text-gray-500 dark:text-gray-400 shrink-0">{{ prop.key }}</span>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ prop.texto || prop.valor }}</p>
+                <p class="text-xs text-gray-400 dark:text-gray-500 truncate">{{ prop.motivo }}</p>
+              </div>
+              <div class="flex items-center gap-1">
+                <button type="button" class="btn-icon btn-flat-primary" (click)="openModal(prop)" title="Editar propiedad" aria-label="Editar propiedad">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button type="button" class="btn-icon btn-flat-accent" (click)="inactivar(prop)" title="Anular propiedad" aria-label="Anular propiedad">
+                  <mat-icon>block</mat-icon>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  

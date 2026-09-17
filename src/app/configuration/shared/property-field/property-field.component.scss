@@ -1,0 +1,24 @@
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    .btn-flat-primary {
+      background-color: #3f51b5;
+      color: white;
+    }
+    .btn-flat-primary:hover {
+      background-color: #303f9f;
+    }
+    .btn-flat-accent {
+      background-color: #f44336;
+      color: white;
+    }
+    .btn-flat-accent:hover {
+      background-color: #d32f2f;
+    }
+  

@@ -22,8 +22,8 @@ import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { NgClass, AsyncPipe, I18nPluralPipe } from '@angular/common';
-import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
-import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 
 
 @Component({

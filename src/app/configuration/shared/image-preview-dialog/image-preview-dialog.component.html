@@ -1,0 +1,11 @@
+<div class="bg-black p-4">
+  <div class="mb-4 flex items-center justify-between text-white">
+    <h3 class="font-medium">{{ data.name }}</h3>
+    <button type="button" class="btn-icon" (click)="dialogRef.close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="flex max-h-[70vh] items-center justify-center">
+    <img [src]="data.url" class="max-h-full max-w-full object-contain" alt="Vista previa" />
+  </div>
+</div>

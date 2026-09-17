@@ -1,0 +1,59 @@
+
+    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+        <h2 class="text-xl font-bold">{{ data.field?.llaveTabla ? 'Editar Campo' : 'Nuevo Campo' }}</h2>
+        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+      </div>
+
+      <form #form="ngForm" (ngSubmit)="onSubmit()" class="flex-1 overflow-y-auto">
+        <div class="space-y-4">
+          <div class="flex items-center gap-4">
+            <div class="flex-1">
+              <label class="block text-sm font-semibold mb-1">Formato</label>
+              <div class="relative">
+                <select [(ngModel)]="field.formato" name="formato" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none pr-10">
+                  @for (f of formatos; track f) {
+                    <option [value]="f">{{ getFormatoLabel(f) }} ({{ getFormatoIcon(f) }})</option>
+                  }
+                </select>
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl pointer-events-none">{{ getFormatoIcon(field.formato) }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-1">Nombre *</label>
+            <input type="text" [(ngModel)]="field.nombre" name="nombre" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-1">Código</label>
+            <input type="text" [(ngModel)]="field.codigo" name="codigo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Código único para el campo" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1">Orden</label>
+              <input type="number" [(ngModel)]="field.orden" name="orden" min="1" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-1">Imagen</label>
+              <app-image-uploader [(value)]="field.imagen"></app-image-uploader>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold mb-1">Objetivo</label>
+            <textarea rows="3" [(ngModel)]="field.objetivo" name="objetivo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!field.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
+          <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
+          <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data.field?.llaveTabla ? 'Actualizar' : 'Crear') }}</button>
+        </div>
+      </form>
+    </div>
+  

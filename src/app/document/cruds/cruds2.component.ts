@@ -32,8 +32,8 @@ import { MatInput } from '@angular/material/input';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ImageFormatPipe } from 'app/shared/local-image';
-import { DropdownComponent } from 'app/shared/components/dropdown/dropdown.component';
-import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item.component';
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 
 @Component({
     selector: 'app-cruds',

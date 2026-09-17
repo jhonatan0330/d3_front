@@ -8,24 +8,7 @@ import { IndicatorCardComponent } from './indicator-card.component';
 @Component({
   selector: 'indicators-cards',
   imports: [IndicatorCardComponent],
-  template: `
-    <div class="flex flex-col gap-4 p-6 sm:gap-6 lg:p-10">
-      <div
-        class="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4 xl:gap-6"
-      >
-        @for (indicador of indicadores(); track indicador.llaveTabla) {
-          <indicator-card [indicador]="indicador" />
-        } @empty {
-          <div
-            class="col-span-full rounded-2xl border border-neutral-100 bg-white p-10 text-center text-neutral-400
-            dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-500"
-          >
-            No hay indicadores disponibles
-          </div>
-        }
-      </div>
-    </div>
-  `,
+  templateUrl: './indicators-cards.component.html',
 })
 export class IndicatorsCardsComponent {
   private destroyRef = inject(DestroyRef);
