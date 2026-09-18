@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output, signal } from '@angu
 import { NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
-import { FuseNavigationItem } from 'app/layout/layout.types';
+import { FuseNavigationItem } from 'app/layout/domain/layout.types';
 
 @Component({
     selector: 'simple-nav-item',

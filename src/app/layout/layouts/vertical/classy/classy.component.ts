@@ -7,18 +7,19 @@ import { OrganizacionDTO, UsuarioDTO } from 'app/authentication/authentication.d
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
-import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
+import { NotificationButtonComponent } from '../../../../notification/components/notification-button/notification-button.component';
 import { UserComponent } from '../../../user/user.component';
 import { SimpleNavComponent } from '../../../simple-nav/simple-nav.component';
 import { DatePipe } from '@angular/common';
 import { ImageFormatPipe } from '../../../../shared/local-image';
 import { SearchComponent } from 'app/layout/search/search.component';
+import { TenantSwitcherComponent } from '../../../tenant/tenant-switcher.component';
 
 @Component({
     selector: 'classy-layout',
     templateUrl: './classy.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [SimpleNavComponent, RouterLink, MatIcon,  ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe, SearchComponent]
+    imports: [SimpleNavComponent, RouterLink, MatIcon,  ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe, SearchComponent, TenantSwitcherComponent]
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
     _loginService = inject(LoginService);

@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { LoginService } from 'app/authentication/login.service';
 import Swal from 'sweetalert2';
-import { ImageUploaderComponent } from 'app/upload/image-uploader/image-uploader.component';
+import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 @Component({
     selector: 'app-change-picture',
     templateUrl: './change-picture.component.html',

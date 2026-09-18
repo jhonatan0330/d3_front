@@ -1,7 +1,7 @@
 import { Component, OnChanges, SimpleChanges, OnInit, HostListener, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { NotificationCenterService } from 'app/notification/notification-center.service';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { BpmLeafDiagramComponent } from '../bpm-leaf-diagram/bpm-leaf-diagram.component';
 
 export interface Proceso {

@@ -12,7 +12,7 @@ import { MatInput } from '@angular/material/input';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
-import { UploadService } from 'app/upload/upload.service';
+import { UploadService } from 'app/upload/upload.api';
 
 interface RenderItem {
   exp: PedidoVentaDTO;

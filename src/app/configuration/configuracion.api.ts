@@ -18,13 +18,13 @@ import {
     RelacionInternaDTO, RelacionInternaFilterDTO,
 } from 'app/shared/shared.domain';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
-import { DocumentoPlantillaFilterDTO, IndicatorDTO, IndicatorFilterDTO, ArbolConfiguracionFilterDTO, TreeNodeDTO, DiferenciaDTO, SincronizacionSeleccionadaDTO, CompararArbolRequest } from './configuration.types';
+import { DocumentoPlantillaFilterDTO, IndicatorDTO, IndicatorFilterDTO, ArbolConfiguracionFilterDTO, TreeNodeDTO, DiferenciaDTO, SincronizacionSeleccionadaDTO, CompararArbolRequest } from './domain/configuration.types';
 
 @Injectable({ providedIn: 'root' })
 export class ConsecutiveService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/consecutives';
+    private baseUrl = '/configuration/consecutives';
 
     getConsecutivos(filter?: ConsecutivoFilterDTO): Observable<ConsecutivoDTO[]> {
         return this.http.post<ConsecutivoDTO[]>(
@@ -67,7 +67,7 @@ export class ConsecutiveService {
 export class MessageService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/messages';
+    private baseUrl = '/configuration/messages';
 
     getMessages(filter?: MensajeFilterDTO): Observable<MensajeDTO[]> {
         return this.http.post<MensajeDTO[]>(
@@ -92,7 +92,7 @@ export class MessageService {
 export class AutoTaskService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/auto-tasks';
+    private baseUrl = '/configuration/auto-tasks';
 
     getAutoTasks(filter?: ProcesoTransicionAutomaticaFilterDTO): Observable<ProcesoTransicionAutomaticaDTO[]> {
         return this.http.post<ProcesoTransicionAutomaticaDTO[]>(
@@ -141,7 +141,7 @@ export class AutoTaskService {
 export class DocumentTemplateService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/document-templates';
+    private baseUrl = '/configuration/document-templates';
 
     getTemplates(filter?: DocumentoPlantillaFilterDTO): Observable<DocumentoPlantillaDTO[]> {
         return this.http.post<DocumentoPlantillaDTO[]>(
@@ -206,13 +206,13 @@ export class DocumentTemplateService {
     getTemplateProperties(templateKey: string): Observable<PropiedadDTO[]> {
         const payload = { estado: 'A', campo: templateKey };
         return this.http.post<PropiedadDTO[]>(
-            this.ls.getUrlAccess('/api/config/properties/list'), payload
+            this.ls.getUrlAccess('/configuration/properties/list'), payload
         );
     }
 
     inactivateProperty(property: PropiedadDTO): Observable<PropiedadDTO> {
         return this.http.post<PropiedadDTO>(
-            this.ls.getUrlAccess('/api/config/properties/inactivate'), property
+            this.ls.getUrlAccess('/configuration/properties/inactivate'), property
         );
     }
 
@@ -276,7 +276,7 @@ export class DocumentTemplateService {
 export class MessageTemplateService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/message-templates';
+    private baseUrl = '/configuration/message-templates';
 
     getTemplates(filter?: MensajePlantillaCorreoFilterDTO): Observable<MensajePlantillaCorreoDTO[]> {
         return this.http.post<MensajePlantillaCorreoDTO[]>(
@@ -313,7 +313,7 @@ export class MessageTemplateService {
 export class PropertyValueService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/property-values';
+    private baseUrl = '/configuration/property-values';
 
     getPropertyValues(filter?: PropiedadValorDefinidoFilterDTO): Observable<PropiedadValorDefinidoDTO[]> {
         return this.http.post<PropiedadValorDefinidoDTO[]>(
@@ -357,7 +357,7 @@ export class PropertyValueService {
 export class WebServiceConfigService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/web-services';
+    private baseUrl = '/configuration/web-services';
 
     getWebServices(filter?: WebServiceFilterDTO): Observable<WebServiceDTO[]> {
         return this.http.post<WebServiceDTO[]>(
@@ -412,7 +412,7 @@ export class WebServiceConfigService {
 export class ServerService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/servers';
+    private baseUrl = '/configuration/servers';
 
     getServidores(filter?: ServidorFilterDTO): Observable<ServidorDTO[]> {
         return this.http.post<ServidorDTO[]>(
@@ -449,7 +449,7 @@ export class ServerService {
 export class OrganizationService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/organizations';
+    private baseUrl = '/configuration/organizations';
 
     getOrganizaciones(filter?: OrganizacionFilterDTO): Observable<OrganizacionDTO[]> {
         return this.http.post<OrganizacionDTO[]>(
@@ -492,7 +492,7 @@ export class OrganizationService {
 export class ProcessService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/processes';
+    private baseUrl = '/configuration/processes';
 
     getProcesses(filter?: ProcesoFilterDTO): Observable<ProcesoDTO[]> {
         return this.http.post<ProcesoDTO[]>(
@@ -573,7 +573,7 @@ export class ProcessService {
 export class PropertyService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/properties';
+    private baseUrl = '/configuration/properties';
 
     getProperties(filter?: { campo?: string; estado?: string }): Observable<PropiedadDTO[]> {
         return this.http.post<PropiedadDTO[]>(
@@ -583,7 +583,7 @@ export class PropertyService {
 
     getRoles(filter?: RolAccesoFilterDTO): Observable<RolAccesoFilterDTO[]> {
         return this.http.post<RolAccesoFilterDTO[]>(
-            this.ls.getUrlAccess('/api/config/roles/list'),
+            this.ls.getUrlAccess('/configuration/roles/list'),
             filter ?? { estado: 'A' }
         );
     }
@@ -641,7 +641,7 @@ export class PropertyService {
 export class ConfigUserService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/users';
+    private baseUrl = '/configuration/users';
 
     searchUsers(filter?: { estado?: string; filtroParametro?: string }): Observable<UsuarioDTO[]> {
         return this.http.post<UsuarioDTO[]>(
@@ -660,7 +660,7 @@ export class ConfigUserService {
 export class IndicatorConfigService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/indicators';
+    private baseUrl = '/configuration/indicators';
 
     getIndicadores(filter?: IndicatorFilterDTO): Observable<IndicatorDTO[]> {
         return this.http.post<IndicatorDTO[]>(
@@ -697,7 +697,7 @@ export class IndicatorConfigService {
 export class TreeConfigService {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
-    private baseUrl = '/api/config/tree';
+    private baseUrl = '/configuration/tree';
 
     getTree(filter?: ArbolConfiguracionFilterDTO): Observable<TreeNodeDTO> {
         return this.http.post<TreeNodeDTO>(

@@ -3,7 +3,7 @@ import {
   HttpInterceptorFn,
 } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
-import { NotificationCenterService } from 'app/notification/notification-center.service';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { LoginService } from '../authentication/login.service';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {

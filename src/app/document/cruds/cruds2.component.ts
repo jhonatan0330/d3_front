@@ -14,7 +14,7 @@ import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { FormReportService } from 'app/report/form-report.service';
+import { FormReportService } from 'app/report/business/form-report.service';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/document/form/form.enum';
 import { SelectionModel } from '@angular/cdk/collections';
 import Swal from 'sweetalert2';

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
-import { FuseNavigationItem } from 'app/layout/layout.types';
+import { FuseNavigationItem } from 'app/layout/domain/layout.types';
 import { SimpleNavItemComponent } from './simple-nav-item.component';
 
 @Component({

@@ -10,7 +10,7 @@ import { MatIcon } from '@angular/material/icon';
 
 
 import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
-import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
+import { NotificationButtonComponent } from '../../../../notification/components/notification-button/notification-button.component';
 import { SimpleNavComponent } from '../../../simple-nav/simple-nav.component';
 import { RouterOutlet } from '@angular/router';
 import { ImageFormatPipe } from '../../../../shared/local-image';

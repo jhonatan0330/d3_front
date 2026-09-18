@@ -8,7 +8,7 @@ export function formatImageUrl(ls: LocalStoreService, url: string | undefined) {
     url = 'http://' + url;
   }
   if (!url.startsWith('http')) {
-    url = (ls.getItem(LocalConstants.URL_CONF) || '') + '/files' + url;
+    url = (ls.getItem(LocalConstants.URL_CONF) || '') + '/upload' + url;
   }
   return url;
 }
@@ -19,7 +19,7 @@ export function formatImageUrl(ls: LocalStoreService, url: string | undefined) {
         if (/^https?:\/\//i.test(url)) return url;
         const ruta = url.replace(/\\/g, '/');
         const path = ruta.startsWith('/') ? ruta : '/' + ruta;
-        return this.ls.getUrlAccess('/files').concat(path);
+        return this.ls.getUrlAccess('/upload').concat(path);
     });
     */
 

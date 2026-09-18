@@ -28,9 +28,11 @@ export class Profile {
 
 ## Metadata Options
 
+> **Project rule (d3_front):** Templates MUST always be split from the TypeScript — use `templateUrl` pointing to the component's own `<nombre>.component.html`. Inline `template` in the decorator is **forbidden** (an exception to the generic "preferred" guidance below). This applies to every component, including trivial ones.
+
 - `selector`: The CSS selector that identifies this component in templates.
-- `template`: Inline HTML template (preferred for small templates).
-- `templateUrl`: Path to an external HTML file.
+- `template`: Inline HTML template. Generic Angular guidance prefers this for small templates — **but this project requires `templateUrl` for all components** (see project rule above).
+- `templateUrl`: Path to an external HTML file. **Always used in this project.**
 - `styles`: Inline CSS styles.
 - `styleUrl` / `styleUrls`: Path(s) to external CSS file(s).
 - `imports`: Lists the components, directives, or pipes used in this component's template.

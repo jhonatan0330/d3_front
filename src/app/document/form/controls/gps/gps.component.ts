@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/cor
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { NotificationCenterService } from 'app/notification/notification-center.service';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { BaseComponent } from '../base/base.component';
 import { OlMapComponent } from './ol-map/ol-map.component';
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';

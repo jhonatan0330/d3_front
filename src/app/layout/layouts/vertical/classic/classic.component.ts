@@ -10,7 +10,7 @@ import { MatIcon } from '@angular/material/icon';
 
 
 import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
-import { NotificationButtonComponent } from '../../../../notification/notification-button/notification-button.component';
+import { NotificationButtonComponent } from '../../../../notification/components/notification-button/notification-button.component';
 import { UserComponent } from '../../../user/user.component';
 import { SimpleNavComponent } from '../../../simple-nav/simple-nav.component';
 import { DatePipe } from '@angular/common';

@@ -63,7 +63,7 @@ For each new feature (or bug changing contract):
 - `src/main.ts` — entry, `bootstrapApplication` con `provideZonelessChangeDetection()` (zoneless).
 - `src/app/app.routing.ts` — all routes. Admin section guarded by `AuthGuard`; lazy-loaded modules: `authorization` (Profile), `cruds`, `tasks`, `massive`, `accounting`, `recover-password`, `new-password`. (`persons` currently eager — see PlanMejoras.md limpieza).
 - `src/@fuse/` — FuseAdmin template (keep as-is during migration). Contains `FuseModule`, servicios (config, loading, media-watcher, platform), y los style entry points (`tailwind.scss`, `themes.scss`, `main.scss`). La navegación de Fuse fue reemplazada: **todos los layouts usan `mat-sidenav` + `simple-nav`** (`src/app/layout/common/simple-nav/`); de `@fuse/components/navigation` solo queda `navigation.types.ts` (tipo `FuseNavigationItem`).
-- `src/app/configuration/` — **Formularios de Administración** migrados de Flex a `/api/config/` (ver `PLAN_MIGRACION_CONFIGURACION.md`). 12 módulos bajo `configuration-forms/` (web-services, messages, message-templates, document-templates, auto-tasks, processes, organizations, consecutives, servers, property-values, properties) + base compartida en `shared/`. Accedidos vía ruta lazy `/config` cuyo contenedor es `ConfigComponent` (`configuration-forms/config.component.ts`, selector `app-config`) con navegación por pestañas.
+- `src/app/configuration/` — **Formularios de Administración** migrados de Flex a `/configuration/` (ver `PLAN_MIGRACION_CONFIGURACION.md`). 12 módulos bajo `configuration-forms/` (web-services, messages, message-templates, document-templates, auto-tasks, processes, organizations, consecutives, servers, property-values, properties) + base compartida en `shared/`. Accedidos vía ruta lazy `/config` cuyo contenedor es `ConfigComponent` (`configuration-forms/config.component.ts`, selector `app-config`) con navegación por pestañas.
 - `src/app/document/` — **critical, complex** dynamic-forms engine (18 dynamic control types under `form/controls/`: archivo, base, binario, configuracion, croquis, detalle, disponibilidad, fecha, gps, gps-map, informative, numero, proceso, product, producto-lista, seccion, texto, vinculo). Treat as high-risk; migrate last and with care.
 - Other domains: `accounting`, `authentication`, `authorization`, `configuration-forms`, `cruds`, `document-transition`, `layout`, `massive`, `notification`, `persons`, `shared`, `tasks`.
 
@@ -85,10 +85,12 @@ src/app/<dominio>/
 - Services: always at domain root, not in subfolders
 - Types: always at domain root, not in subfolders
 - Auxiliary files (helpers, utils specific to domain): at domain root alongside service
+- **HTML always separated from TS (mandatory)**: every component MUST use `templateUrl` pointing to its own `<componente>.component.html`. Inline `template` in the decorator is **forbidden** — no `template: \`...\`` in `@Component` metadata.
 
 ### Conventions
 - `baseUrl: ./src` in `tsconfig.json`; use path-less imports from `src`, e.g. `import ... from 'app/...'`, `from 'environments/...'`.
 - Components use SCSS (`inlineStyleLanguage: scss`), `ViewEncapsulation.None` + `ChangeDetectionStrategy.OnPush` where the template sets it.
+- **Components always split template from logic**: the `.ts` uses `templateUrl: './<nombre>.component.html'` (never `template:`); the `.html` only contains markup, the `.ts` only contains logic — no mixing (see Frontend Folder Convention above).
 - ESLint: `@angular-eslint` ng-cli-compat rules, **kebab-case** component/directive selectors with **empty prefix**. Files sometimes use `// @formatter:off` / `/* eslint-disable */` blocks — preserve them.
 - Do NOT add comments to code unless asked.
 
@@ -146,7 +148,7 @@ Error codes: `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `VALIDATION_ERROR`, `DUPL
 - Recently removed from the codebase (do not recreate unless asked): several `@fuse` sub-features (drawer, fullscreen, animations, `scroll-reset` directive, `find-by-key` pipe, navigation components, `scrollbar` directive, `utils` service).
 - `flex.service.ts` (en `src/app/configuration/`) — **código muerto**: ya no es importado por ningún componente y aún apunta a endpoints `/flex/`. Debe eliminarse al completar FASE 4.5 del `PLAN_MIGRACION_CONFIGURACION.md`.
 
-## Configuration Forms Migration (Flex → /api/config/)
+## Configuration Forms Migration (Flex → /configuration/)
 
 Ver `PLAN_MIGRACION_CONFIGURACION.md` (fuente de verdad de esta migración). Estado resumido:
 

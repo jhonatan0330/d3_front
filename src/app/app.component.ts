@@ -3,9 +3,9 @@ import { Title } from '@angular/platform-browser';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { LoginService } from './authentication/login.service';
-import { AssistantButtonComponent } from './assistant/assistant-button/assistant-button.component';
-import { AssistantPanelComponent } from './assistant/assistant-panel/assistant-panel.component';
-import { AssistantService } from './assistant/assistant.service';
+import { AssistantButtonComponent } from './assistant/components/assistant-button/assistant-button.component';
+import { AssistantPanelComponent } from './assistant/components/assistant-panel/assistant-panel.component';
+import { AssistantService } from './assistant/business/assistant.service';
 
 @Component({
     selector: 'app-root',

@@ -11,7 +11,7 @@ import { formatImageUrl, ImageFormatPipe } from 'app/shared/local-image';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
-import { UploadService } from 'app/upload/upload.service';
+import { UploadService } from 'app/upload/upload.api';
 
 @Component({
     selector: 'app-archivo',

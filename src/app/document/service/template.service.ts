@@ -187,7 +187,7 @@ export class TemplateService {
     filtro.estado = StatesEnum.ACTIVE;
     filtro.propiedad = propiedad;
     return this.http.post<RelacionInternaDTO[]>(
-    this.ls.getUrlAccess('/template/getPropertyRelations'),
+    this.ls.getUrlAccess('/configuration/getPropertyRelations'),
       filtro
     ).pipe(
       tap(relations => this.addRelations(relations))
@@ -210,7 +210,7 @@ export class TemplateService {
   filtro.propiedad = propiedad;
 
   return this.http.post<RelacionInternaDTO[]>(
-    this.ls.getUrlAccess('/template/getPropertyRelations'),
+    this.ls.getUrlAccess('/configuration/getPropertyRelations'),
     filtro
   ).pipe(
     map(relations => {

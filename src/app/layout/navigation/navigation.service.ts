@@ -1,6 +1,6 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Navigation } from 'app/layout/navigation/navigation.types';
-import { FuseNavigationItem } from 'app/layout/layout.types';
+import { FuseNavigationItem } from 'app/layout/domain/layout.types';
 import { DocumentoPlantillaDTO } from 'app/document/document.types';
 import { DocumentoPlantillaTipoEnum } from 'app/document/form/form.enum';
 import { PropiedadDTO } from 'app/shared/shared.domain';

@@ -6,13 +6,13 @@ import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } f
 import { TemplateService } from "app/document/service/template.service";
 import { UtilsService } from "app/document/service/utils.service";
 import { PlantillaHelper } from "app/shared/plantilla-helper";
-import { NotificationCenterService } from 'app/notification/notification-center.service';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { ApiService } from '../document.api';
 import { DocumentoRelacionGestorFilterDTO } from "../document.types";
 import { DocumentoRelacionGestorDTO } from "../document.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
 import { SharedIdResponse } from "app/shared/api-types";
-import { VoucherPrepareRequest } from "app/accounting/accounting.domain";
+import { VoucherPrepareRequest } from "app/accounting/domain/accounting.domain";
 import { StatesEnum } from "app/document/form/form.enum";
 import { CdkDrag, CdkDragHandle } from "@angular/cdk/drag-drop";
 import { MatIcon } from "@angular/material/icon";
