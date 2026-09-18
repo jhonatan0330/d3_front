@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed, DestroyRef } from '@angular/core';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { UsersService } from '../users.services';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -9,7 +8,8 @@ import { LoginService } from 'app/authentication/login.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { MatIcon } from '@angular/material/icon';
-import { ChangePictureComponent } from '../../layout/change-picture/change-picture.component';
+import { ChangePictureComponent } from 'app/layout/change-picture/change-picture.component';
+import { UsersService } from 'app/users/business/users.services';
 
 @Component({
     selector: 'contacts-details',

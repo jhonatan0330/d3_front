@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subscription, debounceTime, pairwise, startWith, map } from 'rxjs';
-import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, ManualDTO, VoucherLine } from '../accounting.domain';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { ReporteBaseDTO } from 'app/document/document.types';
@@ -18,6 +17,7 @@ import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from '@angular/material/autocomplete';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { AccountingService } from 'app/accounting/accounting.api';
+import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, ManualDTO, VoucherLine } from 'app/accounting/domain/accounting.domain';
 
 @Component({
     selector: 'account-manual-form',

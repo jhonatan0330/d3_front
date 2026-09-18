@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { Indicador, IndicadorDTO } from 'app/accounting/domain/accounting.types';
-import { IndicadoresService } from 'app/accounting/indicators-cards/indicadores.service';
+import { IndicadoresService } from 'app/accounting/business/indicadores.service';
 import { IndicatorCardComponent } from './indicator-card.component';
 
 @Component({

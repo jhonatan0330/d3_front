@@ -6,10 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AssistantMessage, AssistantState, CreateDocumentAction, DocumentSearchResult, TemplateSearchResult } from '../assistant.models';
-import { AssistantService } from '../assistant.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { LoginService } from 'app/authentication/login.service';
+import { AssistantService } from 'app/assistant/business/assistant.service';
+import { AssistantMessage, AssistantState, CreateDocumentAction, DocumentSearchResult, TemplateSearchResult } from 'app/assistant/domain/assistant.models';
 
 
 @Component({

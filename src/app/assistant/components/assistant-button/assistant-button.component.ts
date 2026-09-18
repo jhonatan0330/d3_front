@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 
 import { MatIconModule } from '@angular/material/icon';
-import { AssistantService } from '../assistant.service';
+import { AssistantService } from 'app/assistant/business/assistant.service';
 
 @Component({
     selector: 'app-assistant-button',

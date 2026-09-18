@@ -6,7 +6,7 @@ import {
   DatoTablaDTO,
   Indicador,
 } from 'app/accounting/domain/accounting.types';
-import { IndicadoresService } from 'app/accounting/indicators-cards/indicadores.service';
+import { IndicadoresService } from 'app/accounting/business/indicadores.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 
 interface IndicatorTableData {

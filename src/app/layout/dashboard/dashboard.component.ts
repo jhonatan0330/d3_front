@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from 'app/authentication/authentication.service';
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO } from 'app/authentication/authentication.domain';
-import { IndicatorsCardsComponent } from '../../accounting/indicators-cards';
+import { IndicatorsCardsComponent } from 'app/accounting/components/indicators-cards';
 
 @Component({
     selector: 'dashboard',

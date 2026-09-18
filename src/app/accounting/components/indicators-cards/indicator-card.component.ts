@@ -17,7 +17,7 @@ import {
   IndicadorResultadoDTO,
   PeriodoDTO,
 } from 'app/accounting/domain/accounting.types';
-import { IndicadoresService } from 'app/accounting/indicators-cards/indicadores.service';
+import { IndicadoresService } from 'app/accounting/business/indicadores.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { PedidoVentaDTO } from 'app/document/document.types';

@@ -1,14 +1,9 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TreeConfigService } from '../configuracion.api';
-import {
-    ArbolConfiguracionFilterDTO,
-    DiferenciaDTO,
-    SeleccionSincronizacionDTO,
-    SincronizacionSeleccionadaDTO,
-    TreeNodeDTO,
-} from '../configuration.types';
+
+import { TreeConfigService } from 'app/configuration/configuracion.api';
+import { ArbolConfiguracionFilterDTO, DiferenciaDTO, SeleccionSincronizacionDTO, SincronizacionSeleccionadaDTO, TreeNodeDTO } from 'app/configuration/domain/configuration.types';
 
 interface FilaDiferencia {
     camino: string;

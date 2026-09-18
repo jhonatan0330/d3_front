@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, signal, viewChild, ElementRef, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from '../accounting.domain';
+import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from 'app/accounting/domain/accounting.domain';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AccountingService } from '../accounting.api';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow } from '@angular/material/table';
@@ -17,6 +16,7 @@ import { NgClass, UpperCasePipe, DecimalPipe, DatePipe } from '@angular/common';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
+import { AccountingService } from 'app/accounting/accounting.api';
 
 interface AccountNode {
     account: AccountDTO;
