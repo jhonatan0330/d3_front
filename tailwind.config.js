@@ -65,7 +65,7 @@ const themes = {
  */
 const config = {
     darkMode   : 'class',
-    content    : ['./src/**/*.{html,scss,ts}'],
+    content    : ['./src/**/*.{html,ts}'],
     important  : true,
     theme      : {
         fontSize: {
