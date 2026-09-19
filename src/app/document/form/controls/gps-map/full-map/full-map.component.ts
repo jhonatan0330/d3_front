@@ -24,6 +24,7 @@ export const DEFAULT_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAA
 @Component({
     selector: 'app-full-map',
     templateUrl: './full-map.component.html',
+    styleUrls: ['./full-map.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager
 })
 export class FullMapComponent implements OnInit, AfterViewInit {

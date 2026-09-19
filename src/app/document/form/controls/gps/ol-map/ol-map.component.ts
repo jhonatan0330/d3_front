@@ -25,6 +25,7 @@ export const DEFAULT_TEXT = '';
 @Component({
     selector: 'app-ol-map',
     templateUrl: './ol-map.component.html',
+    styleUrls: ['./ol-map.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatFormField,MatLabel,MatPrefix,MatIcon,MatInput,FormsModule,ReactiveFormsModule,MatSuffix]
 })

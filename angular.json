@@ -45,8 +45,7 @@
                             "src/styles/fuse/themes.scss",
                             "src/styles/fuse/main.scss",
                             "src/styles/styles.scss",
-                            "src/styles/tailwind.scss",
-                            "node_modules/ol/ol.css"
+                            "src/styles/tailwind.scss"
                         ],
                         "scripts": [
 
