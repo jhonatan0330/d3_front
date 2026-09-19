@@ -1,55 +1,6 @@
-import { DefaultUrlSerializer, UrlHandlingStrategy, UrlTree } from '@angular/router';
-import { TenantUrlService } from 'app/multitenancy/tenant-url.service';
-
 export interface TenantResolveResult {
     tenantId: string;
     rest: string;
-}
-
-/**
- * Mantiene el prefijo de tenant (ej: "/bytec/pioexpress") visible en la URL del
- * navegador. El Router trabaja internamente con la ruta "limpia"; extract
- * elimina el prefijo de la URL del navegador y merge lo vuelve a anteponer en
- * cada navegación.
- */
-export class TenantUrlHandlingStrategy extends UrlHandlingStrategy {
-    private readonly serializer = new DefaultUrlSerializer();
-
-    constructor(private tenantUrl: TenantUrlService) {
-        super();
-    }
-
-    shouldProcessUrl(url: UrlTree): boolean {
-        return true;
-    }
-
-    extract(url: UrlTree): UrlTree {
-        const prefix = this.tenantUrl.prefix;
-        if (!prefix) {
-            return url;
-        }
-        const full = this.serializer.serialize(url);
-        if (full === prefix) {
-            return this.serializer.parse('/');
-        }
-        if (full.startsWith(prefix + '/')) {
-            return this.serializer.parse(full.substring(prefix.length));
-        }
-        if (full.startsWith(prefix + '?')) {
-            return this.serializer.parse(full.substring(prefix.length));
-        }
-        return url;
-    }
-
-    merge(newUrlPart: UrlTree, wholeUrl: UrlTree): UrlTree {
-        const prefix = this.tenantUrl.prefix;
-        if (!prefix) {
-            return newUrlPart;
-        }
-        const part = this.serializer.serialize(newUrlPart);
-        const merged = part === '/' ? prefix : prefix + part;
-        return this.serializer.parse(merged);
-    }
 }
 
 /**

@@ -17,8 +17,6 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormReportService } from 'app/report/business/form-report.service';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/document/form/form.enum';
 import { SelectionModel } from '@angular/cdk/collections';
-import Swal from 'sweetalert2';
-import { LocalStoreService } from 'app/shared/local-store.service';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/document/form/controls/base/base.component';
 import { getComponent } from 'app/document/form/form-helper';
@@ -34,6 +32,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-cruds',
@@ -53,7 +52,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private api = inject(ApiService);
     private router = inject(Router);
     private formBuilder = inject(FormBuilder);
-    private ls = inject(LocalStoreService);
+    private notificationCenter = inject(NotificationCenterService);
     private utilsService = inject(UtilsService);
     private dialog = inject(MatDialog);
     private reportService = inject(FormReportService);
@@ -297,7 +296,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         entity.proceso = this.procesoId!;
         if (this.fControlCheck.value) {
             if (!this.fControlSearch.value) {
-                Swal.fire({
+                this.notificationCenter.fire({
                     icon: 'warning',
                     title: 'Oops...',
                     text: 'Seleccionaste la opcion codigo exacto, ayudanos colocando el codigo del documento. Gracias'
@@ -310,7 +309,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             entity.nombre = null!;
             entity.filtroParametro = this.fControlSearch.value;
             if (this.solicitarFechas && (!this.fCDateStart.value || !this.fCDateEnd.value)) {
-                Swal.fire({
+                this.notificationCenter.fire({
                     icon: 'warning',
                     title: 'Oops...',
                     text: 'Por favor coloca una fecha de inicio y una fecha de fin, esto nos ayudara a mejorar el resultado de tu busqueda'
@@ -341,7 +340,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 }
             }
             if (!entity.estadoExpediente) {
-                Swal.fire('Filtros', 'Estas enviando una consulta y no tienes seleccionado ningun estado del filtro, te agradecemos selecciones minimo uno y vuelvas a enviar la consulta. Otra opción es consultar por el nombre exacto', 'info');
+                this.notificationCenter.fire('Filtros', 'Estas enviando una consulta y no tienes seleccionado ningun estado del filtro, te agradecemos selecciones minimo uno y vuelvas a enviar la consulta. Otra opción es consultar por el nombre exacto', 'info');
                 return;
             } else {
                 if (entity.estadoExpediente === ';A') {
@@ -475,7 +474,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         if (this.selection && this.selection.selected.length >= 1) {
             let msj = 'Vas a imprimir ' + (this.selection.selected.length).toString() + ' documentos .';
             if(this.selection.selected.length> 50) { msj = msj + 'Lo haremos abriendo ' + Math.ceil(this.selection.selected.length/50).toString() + ' pestañas en tu explorador, ¿estas deacuerdo?';}
-            Swal.fire({
+            this.notificationCenter.fire({
                 title: 'Impresion de varios documentos',
                 text: msj,
                 icon: 'info',
@@ -608,7 +607,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 return dp;
             }
         } else {
-            Swal.fire('Autorizacion', 'No tienes permisos para ver este documento.', 'info');
+            this.notificationCenter.fire('Autorizacion', 'No tienes permisos para ver este documento.', 'info');
             return null!;
         }
     }
@@ -645,7 +644,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private ValidarFecha(fechaMin: Date, fechaMax: Date): boolean {
         if (fechaMin && fechaMax) {
             if ((fechaMax.getTime() - fechaMin.getTime()) <= 0) {
-                Swal.fire({
+                this.notificationCenter.fire({
                     icon: 'warning',
                     title: 'Oops...',
                     text: 'Estas seguro que la fecha maxima es menor que la fecha minima??'

@@ -11,6 +11,7 @@ import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { environment } from 'environments/environment';
 import { MatInput } from '@angular/material/input';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ImageFormatPipe } from '../../shared/local-image';
 import { ParticleBackgroundDirective } from '../shared/particle-background';
 
@@ -29,6 +30,8 @@ export class SignInSplitScreenReversedComponent implements OnInit {
     private router = inject(Router);
     private utilsService = inject(UtilsService);
     private destroyRef = inject(DestroyRef);
+    private dialogRef = inject(MatDialogRef<SignInSplitScreenReversedComponent>, { optional: true });
+    readonly dialogData = inject<{ redirectURL?: string; isDialog?: boolean }>(MAT_DIALOG_DATA, { optional: true });
 
 
     templateNewUser: string;
@@ -87,7 +90,7 @@ export class SignInSplitScreenReversedComponent implements OnInit {
         this.isLoading = true;
         // Sign in
         const formValue = this.signInForm.value as any;
-        this.loginservice.signin(formValue.username, formValue.password, null!)!
+        this.loginservice.signin(formValue.username, formValue.password, null!, !this.dialogRef)!
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (_val: UsuarioAutenticacionDTO) => {
@@ -101,8 +104,8 @@ export class SignInSplitScreenReversedComponent implements OnInit {
                             .subscribe((result) => {
                             if (result) {
                                 this.loginservice.authenticationOK(_val);
-                                const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL') || '/main';
-                                this.router.navigateByUrl(redirectURL);
+                                const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL') || this.dialogData?.redirectURL || '/main';
+                                this.closeOrNavigate(redirectURL);
                             } else {
                                 console.warn('Autenticación cancelada o código incorrecto');
                             }
@@ -110,9 +113,8 @@ export class SignInSplitScreenReversedComponent implements OnInit {
                         );
                     } else {
                         this.loginservice.authenticationOK(_val);
-                        const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL') || '/main';
-                        // Navigate to the redirect url
-                        this.router.navigateByUrl(redirectURL);
+                        const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL') || this.dialogData?.redirectURL || '/main';
+                        this.closeOrNavigate(redirectURL);
                     }
 
                 },
@@ -130,6 +132,18 @@ export class SignInSplitScreenReversedComponent implements OnInit {
 
     recoverPassword() {
         this.router.navigateByUrl('/sessions/recover');
+    }
+
+    closeDialog(): void {
+        this.dialogRef?.close(false);
+    }
+
+    private closeOrNavigate(redirectURL: string): void {
+        if (this.dialogRef) {
+            this.dialogRef.close(true);
+            return;
+        }
+        this.router.navigateByUrl(redirectURL);
     }
 
     newUser() {

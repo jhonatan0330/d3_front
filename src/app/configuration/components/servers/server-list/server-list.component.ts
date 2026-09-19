@@ -11,7 +11,7 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
 import { ServidorDTO, ServidorFilterDTO } from 'app/document/document.types';
 import { ServerService } from 'app/configuration/configuracion.api';
 import { ServerFormComponent } from '../server-form/server-form.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-server-list',
@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
     templateUrl: './server-list.component.html',
 })
 export class ServerListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(ServerService);
     private dialog = inject(MatDialog);
     @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
@@ -91,7 +92,7 @@ export class ServerListComponent implements OnInit, AfterViewInit, OnDestroy {
     toggleStatus(item: ServidorDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} servidor?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateServidor(updated).subscribe({ next: () => { Swal.fire('Éxito', `Servidor ${action}do correctamente`, 'success'); this.reload(); }, error: () => Swal.fire('Error', `No se pudo ${action} el servidor`, 'error') }); }});
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} servidor?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateServidor(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Servidor ${action}do correctamente`, 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el servidor`, 'error') }); }});
     }
 }

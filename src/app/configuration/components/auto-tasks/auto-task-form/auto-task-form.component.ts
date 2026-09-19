@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { ProcesoTransicionAutomaticaDTO } from 'app/document/document.types';
 import { AutoTaskService } from 'app/configuration/configuracion.api';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-auto-task-form',
@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
 export class AutoTaskFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<AutoTaskFormComponent>>(MatDialogRef);
     public data = inject<ProcesoTransicionAutomaticaDTO | null>(MAT_DIALOG_DATA);
-
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(AutoTaskService);
 
     task: ProcesoTransicionAutomaticaDTO = new ProcesoTransicionAutomaticaDTO();
@@ -41,12 +41,12 @@ export class AutoTaskFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Tarea automática guardada correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Tarea automática guardada correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar la tarea automática', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar la tarea automática', 'error');
             }
         });
     }

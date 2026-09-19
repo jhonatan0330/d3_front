@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -12,7 +13,6 @@ import { IndicatorDTO, IndicatorFilterDTO } from 'app/configuration/domain/confi
 import { IndicatorConfigService } from 'app/configuration/configuracion.api';
 import { IndicatorFormComponent } from '../indicator-form/indicator-form.component';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
-import Swal from 'sweetalert2';
 import { ImageFormatPipe } from 'app/shared/local-image';
 
 @Component({
@@ -22,6 +22,7 @@ import { ImageFormatPipe } from 'app/shared/local-image';
     templateUrl: './indicator-list.component.html',
 })
 export class IndicatorListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(IndicatorConfigService);
     private dialog = inject(MatDialog);
     @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
@@ -86,7 +87,7 @@ export class IndicatorListComponent implements OnInit, AfterViewInit, OnDestroy 
     toggleStatus(item: IndicatorDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} indicador?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateIndicador(updated).subscribe({ next: () => { Swal.fire('Éxito', `Indicador ${action}do correctamente`, 'success'); this.reload(); }, error: () => Swal.fire('Error', `No se pudo ${action} el indicador`, 'error') }); }});
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} indicador?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateIndicador(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Indicador ${action}do correctamente`, 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el indicador`, 'error') }); }});
     }
 }

@@ -1,18 +1,20 @@
-<div
-    class="assistant-floating">
-    <button
-        class="assistant-button btn-icon"
-        type="button"
-        [attr.tabindex]="assistantService.isOpenPanel() ? -1 : 0"
-        [attr.aria-hidden]="assistantService.isOpenPanel() ? 'true' : null"
-        aria-label="Abrir asistente"
-        (click)="onAssistantClick()">
+@if (loginService.isLoggedIn()) {
+    <div
+        class="assistant-floating">
+        <button
+            class="assistant-button btn-icon"
+            type="button"
+            [attr.tabindex]="assistantService.isOpenPanel() ? -1 : 0"
+            [attr.aria-hidden]="assistantService.isOpenPanel() ? 'true' : null"
+            aria-label="Abrir asistente"
+            (click)="onAssistantClick()">
 
-        <img
-            src="assets/images/assistant.gif"
-            alt="Asistente"
-            class="assistant-gif">
+            <img
+                src="assets/images/assistant.gif"
+                alt="Asistente"
+                class="assistant-gif">
 
-    </button>
+        </button>
 
-</div>
+    </div>
+}

@@ -25,6 +25,7 @@ import { ImageFormatPipe } from "../../../shared/local-image";
 })
 export class TransferFormComponent implements OnInit {
   private notificationService = inject(NotificationsService);
+  private notificationCenter = inject(NotificationCenterService);
   private destroyRef = inject(DestroyRef);
   data = inject(MAT_DIALOG_DATA);
   dialogRef = inject<MatDialogRef<TransferFormComponent>>(MatDialogRef);
@@ -45,8 +46,7 @@ export class TransferFormComponent implements OnInit {
       this.data.template
     );
     if (!this.plantilla || !this.plantilla.estados || this.plantilla.estados.length === 0) {
-      const notificationCenter = new NotificationCenterService();
-      notificationCenter.warn('No estados', 'Esta plantilla no tiene estados y no permite gestionar la transferencia');
+      this.notificationCenter.warn('No estados', 'Esta plantilla no tiene estados y no permite gestionar la transferencia');
       this.dialogRef.close(false);
       return;
     }
@@ -60,8 +60,7 @@ export class TransferFormComponent implements OnInit {
           PlantillaHelper.ROL
         );
         if (!rolPropiedad) {
-          const notificationCenter = new NotificationCenterService();
-          notificationCenter.warn('No roles', 'El estado ' + estadoModificable.nombre + ' no tiene configurada la propiedad ROL');
+          this.notificationCenter.warn('No roles', 'El estado ' + estadoModificable.nombre + ' no tiene configurada la propiedad ROL');
           this.dialogRef.close(false);
           return;
         }
@@ -79,8 +78,7 @@ export class TransferFormComponent implements OnInit {
         this.isTransfering = false;
         this.users = value;
         if (!value || value.length ===0) {
-          const notificationCenter = new NotificationCenterService();
-          notificationCenter.warn('No users', 'No tenemos usuarios en el rol ' + rolPropiedad!.texto + ' al cual puedas realizar la transferencia del documento');
+          this.notificationCenter.warn('No users', 'No tenemos usuarios en el rol ' + rolPropiedad!.texto + ' al cual puedas realizar la transferencia del documento');
           this.dialogRef.close(false);
           return;
         }       
@@ -94,8 +92,7 @@ export class TransferFormComponent implements OnInit {
   transfer() {
     const transferData = this.transferForm.value as any;
     if (!transferData.responsable || !transferData.responsable.llaveTabla) {
-      const notificationCenter = new NotificationCenterService();
-      notificationCenter.info('Responsable', 'Selecciona el nuevo responsable');
+      this.notificationCenter.info('Responsable', 'Selecciona el nuevo responsable');
     } else {
       const reasignacion: ActividadDTO = new ActividadDTO();
       reasignacion.documento = this.data.document;

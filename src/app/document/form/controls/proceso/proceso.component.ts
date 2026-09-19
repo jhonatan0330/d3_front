@@ -8,8 +8,7 @@ import {
   PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
   PedidoVentaFilterDTO,
-  RelacionInternaDTO,
-  RelacionInternaFilterDTO,
+  RelacionInternaDTO
 } from 'app/document/document.types';
 import {
   DocumentoPlantillaCaracteristicaEnum,
@@ -20,7 +19,6 @@ import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
-import Swal from 'sweetalert2';
 import { BarcodeFormat } from '@zxing/library';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -36,6 +34,7 @@ import { MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDa
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { ImageFormatPipe } from 'app/shared/local-image';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-proceso',
@@ -49,6 +48,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   private api = inject(ApiService);
   private utilsService = inject(UtilsService);
   private sanitizer = inject(DomSanitizer);
+  private notificationCenter = inject(NotificationCenterService);
 
   fControl = new FormControl<any>(null);
   filteredDocuments: PedidoVentaDTO[];
@@ -249,7 +249,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           .subscribe({
           next: (value: RelacionInternaDTO[]) => {
             if (!value || value.length === 0) {
-              Swal.fire(this.structure.nombre, 'La propiedad ALERTAR no tiene relaciones para determinar que alertar', 'error');
+              this.notificationCenter.fire(this.structure.nombre, 'La propiedad ALERTAR no tiene relaciones para determinar que alertar', 'error');
             } else {
               this.relacionesAlerta = value;
               this.isLoadingList.set(false);
@@ -268,7 +268,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       for (let j = 0; j < this.proceso.caracteristicas.length; j++) {
         const campo = this.proceso.caracteristicas[j];
         if (campo.campoDTO && campo.campoDTO.llaveTabla === element.campo) {
-          Swal.fire(this.structure.nombre, campo.valorText, 'info');
+          this.notificationCenter.fire(this.structure.nombre, campo.valorText, 'info');
           break;
         }
       }
@@ -1351,7 +1351,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       // Valido Fechas
       if (this.fControlCheck.value) {
         if (!this.fControlSearch.value) {
-          Swal.fire('Campo requerido', 'Seleccionaste la opcion de buscar por codigo exacto, Por favor coloca el nombre del documento para ayudarte ', 'warning');
+          this.notificationCenter.fire('Campo requerido', 'Seleccionaste la opcion de buscar por codigo exacto, Por favor coloca el nombre del documento para ayudarte ', 'warning');
           return;
         }
         entity.nombre = this.fControlSearch.value;
@@ -1485,7 +1485,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         if (this.fControlCheck) {
           if (this.fControlCheck.value) {
             if (this.dataProvider.length === 0) {
-              Swal.fire('Sin resultados', 'No encontramos resultados que concuerden con tu busqueda ' + this.fControlSearch.value, 'info');
+              this.notificationCenter.fire('Sin resultados', 'No encontramos resultados que concuerden con tu busqueda ' + this.fControlSearch.value, 'info');
               this.fControlSearch.setValue(null);
             } else {
               if (this.dataProvider.length === 1) {

@@ -1,7 +1,8 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { LoginService } from 'app/authentication/login.service';
-import Swal from 'sweetalert2';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
+import { AuthenticationService } from 'app/authentication/authentication.service';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 @Component({
     selector: 'app-change-picture',
     templateUrl: './change-picture.component.html',
@@ -10,6 +11,8 @@ import { ImageUploaderComponent } from 'app/upload/components/image-uploader/ima
 })
 export class ChangePictureComponent {
   jwtAuth = inject(LoginService);
+  authenticationService = inject(AuthenticationService);
+  private notificationCenter = inject(NotificationCenterService);
   submitted = false;
 
   get imagen(): string {
@@ -19,15 +22,15 @@ export class ChangePictureComponent {
   onChanged(url: string | null) {
     if (!url) return;
     this.submitted = true;
-    this.jwtAuth.changePicture(url).subscribe({
+    this.authenticationService.changePicture(url).subscribe({
       next: (data) => {
         this.jwtAuth.user.set(data);
         this.submitted = false;
-        Swal.fire('Video', 'Cambio exitoso', 'success');
+        this.notificationCenter.fire('Video', 'Cambio exitoso', 'success');
       },
       error: (error) => {
         this.submitted = false;
-        Swal.fire('Video', error, 'error');
+        this.notificationCenter.fire('Video', error, 'error');
       }
     });
   }

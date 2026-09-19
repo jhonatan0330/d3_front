@@ -8,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { PropertyValueService } from 'app/configuration/configuracion.api';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-property-value-form',
@@ -17,6 +17,7 @@ import Swal from 'sweetalert2';
     templateUrl: './property-value-form.component.html',
 })
 export class PropertyValueFormComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<PropertyValueFormComponent>>(MatDialogRef);
     public data = inject<PropiedadValorDefinidoDTO | null>(MAT_DIALOG_DATA);
 
@@ -57,12 +58,12 @@ export class PropertyValueFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Valor guardado correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Valor guardado correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar el valor', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar el valor', 'error');
             }
         });
     }

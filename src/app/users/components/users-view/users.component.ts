@@ -37,6 +37,7 @@ export class PersonsComponent implements OnInit {
     private _contactsService = inject(UsersService);
     private _router = inject(Router);
     private utilService = inject(UtilsService);
+    private notificationCenter = inject(NotificationCenterService);
     private destroyRef = inject(DestroyRef);
 
     readonly contacts = this._contactsService.contacts;
@@ -97,8 +98,7 @@ export class PersonsComponent implements OnInit {
     cambiar_clave(pUsuario: UsuarioDTO) {
         //this.utilService.modalUserChangePassOther(pUsuario).subscribe();
         this._jwt.recoverPassword(pUsuario.identificacion, pUsuario.correo).subscribe({ next: () => {
-            const notificationCenter = new NotificationCenterService();
-            notificationCenter.success('Correo Enviado', 'Revisa el correo ' + pUsuario.correo + '.');
+            this.notificationCenter.success('Correo Enviado', 'Revisa el correo ' + pUsuario.correo + '.');
         }, error: () => {} });
 
     }

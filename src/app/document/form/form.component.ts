@@ -29,7 +29,6 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { UtilsService } from 'app/document/service/utils.service';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { getComponent } from 'app/document/form/form-helper';
-import Swal from 'sweetalert2';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { Router } from '@angular/router';
@@ -45,9 +44,11 @@ import { SlicePipe, TitleCasePipe, CurrencyPipe, DatePipe } from '@angular/commo
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { CopierService } from 'app/shared/copier.service';
-import { FormReportService } from 'app/report/form-report.service';
+import { FormReportService } from 'app/report/business/form-report.service';
 import { FormTransitionService } from 'app/document/form/form-transition.service';
+import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-form',
@@ -69,6 +70,8 @@ export class FormComponent implements OnInit, AfterViewInit {
     private copier = inject(CopierService);
     private reportService = inject(FormReportService);
     private transitionService = inject(FormTransitionService);
+    private tenantUrlService = inject(TenantUrlService);
+    private notificationCenter = inject(NotificationCenterService);
 
     // Variables para el control de los campos
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
@@ -290,7 +293,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             pedidoVenta.messages = value.messages;
             this.utilsService.modalWithParams(pedidoVenta);
         } else {
-            Swal.fire({
+            this.notificationCenter.fire({
                 position: 'top-end',
                 icon: 'success',
                 title: value.nombre,
@@ -370,7 +373,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                         const element = _value.messages[i];
                         mensajeToShow += element.message + '\n';
                     }
-                    Swal.fire('Validacion', mensajeToShow, 'info');
+                    this.notificationCenter.fire('Validacion', mensajeToShow, 'info');
                     this.dialogRef.close();
                 } else {
                     this.pedido.set(this.setPedido(this.copiarPedidoBase(this.pedidoBase!, false)));
@@ -392,7 +395,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             if (!this.pedidoBase!.llaveTabla && PlantillaHelper.isEmpty(dp.propiedades,
                 PlantillaHelper.PERMISO_PLANTILLA_CREAR
             )) {
-                Swal.fire('Autorizacion', 'No tienes permisos para crear registros este tipo de documento. ' + dp.nombre, 'info');
+                this.notificationCenter.fire('Autorizacion', 'No tienes permisos para crear registros este tipo de documento. ' + dp.nombre, 'info');
                 this.dialogRef.close();
                 return undefined!;
             }
@@ -417,7 +420,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 return dp;
             }
         } else {
-            Swal.fire('Autorizacion', 'No tienes permisos para ver este documento.', 'info');
+            this.notificationCenter.fire('Autorizacion', 'No tienes permisos para ver este documento.', 'info');
             this.dialogRef.close();
             return undefined!;
         }
@@ -823,7 +826,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     crearPlantilla(pNextTemplate: string, pDocument: PedidoVentaDTO) {
         if (!pNextTemplate) return;
         if (this.formIsModified()) {
-            Swal.fire('Guarda documento', 'Por favor guarda los cambios del documento antes de crear una nueva accion', 'info');
+            this.notificationCenter.fire('Guarda documento', 'Por favor guarda los cambios del documento antes de crear una nueva accion', 'info');
             return;
         }
         this.auxPlantillaProxima = pNextTemplate;
@@ -988,7 +991,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (this.canChangeState()) {
             const formData = this.changeStateForm!.value;
             if (!formData.estadoFinal || !formData.estadoFinal.llaveTabla) {
-                Swal.fire('Nuevo estado', 'Selecciona el nuevo responsable', 'info');
+                this.notificationCenter.fire('Nuevo estado', 'Selecciona el nuevo responsable', 'info');
             } else {
                 const ajuste: PedidoVentaAjusteDTO = new PedidoVentaAjusteDTO();
                 ajuste.documento = this.pedido()!.llaveTabla;
@@ -1010,7 +1013,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
 
     getURLDocument(): string {
-        return window.location.origin + '/main/' + this.plantilla()!.llaveTabla + '/' + this.pedidoBase!.llaveTabla;
+        return window.location.origin + this.tenantUrlService.prefix + '/main/' + this.plantilla()!.llaveTabla + '/' + this.pedidoBase!.llaveTabla;
     }
 
 
@@ -1022,7 +1025,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     copyUrl() {
         this.copier.copyText(this.getURLDocument()).then(ok => {
             if (ok) {
-                Swal.fire({
+                this.notificationCenter.fire({
                     position: 'top-end',
                     icon: 'info',
                     title: 'Ya puedes pegar tu link al correo o compartirlo en tus redes sociales',
@@ -1038,7 +1041,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (this.pedido()) {
             this.copier.copyText(this.pedido()!.nombre).then(ok => {
                 if (ok) {
-                    Swal.fire({
+                    this.notificationCenter.fire({
                         position: 'top-end',
                         icon: 'success',
                         title: this.pedido()!.nombre + ' Copiado al portapeles',

@@ -2,10 +2,10 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
-import Swal from 'sweetalert2';
 import { LoginService } from '../login.service';
 import { Router, RouterLink } from '@angular/router';
 import { ParticleBackgroundDirective } from '../shared/particle-background';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-recover-password',
@@ -18,6 +18,7 @@ export class RecoverPasswordComponent implements OnInit {
   private loginService = inject(LoginService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+private notificationCenter = inject(NotificationCenterService);
 
   recoverForm: FormGroup<{ identificacion: FormControl<string | null>, correo: FormControl<string | null> }>;
   errorMsg = '';
@@ -41,7 +42,7 @@ export class RecoverPasswordComponent implements OnInit {
       .subscribe({
       next: () => {
         this.loginService.signout();
-        Swal.fire('Revisa tu correo', 'Hemos enviado un mensaje a tu correo electronico, hay puedes obtener el link para crear una clave y tambien tendras el codigo de seguridad.','info');
+        this.notificationCenter.fire('Revisa tu correo', 'Hemos enviado un mensaje a tu correo electronico, hay puedes obtener el link para crear una clave y tambien tendras el codigo de seguridad.','info');
         this.router.navigateByUrl('main');
       },
       error: () => {

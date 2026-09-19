@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { WebServiceDTO, WebServiceEjecucionDTO } from 'app/document/document.types';
 import { WebServiceConfigService } from 'app/configuration/configuracion.api';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 interface ExecuteDialogData {
     webService: WebServiceDTO;
@@ -22,6 +22,7 @@ export class WebServiceExecuteDialogComponent implements OnInit {
     private service = inject(WebServiceConfigService);
     public dialogRef = inject<MatDialogRef<WebServiceExecuteDialogComponent>>(MatDialogRef);
     public data = inject<ExecuteDialogData>(MAT_DIALOG_DATA);
+    private notificationCenter = inject(NotificationCenterService);
 
     parametros = '{}';
     lastExecution: WebServiceEjecucionDTO | null = null;
@@ -47,7 +48,7 @@ export class WebServiceExecuteDialogComponent implements OnInit {
             next: (result) => {
                 this.cargando = false;
                 this.lastExecution = result;
-                Swal.fire({
+                this.notificationCenter.fire({
                     title: result.error ? 'Error' : 'Éxito',
                     text: result.error ? (result.error || 'Error en la ejecución') : 'Web Service ejecutado correctamente',
                     icon: result.error ? 'error' : 'success',
@@ -57,7 +58,7 @@ export class WebServiceExecuteDialogComponent implements OnInit {
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo ejecutar el web service', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo ejecutar el web service', 'error');
             }
         });
     }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild, ViewEncapsulation , inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
@@ -7,8 +7,8 @@ import { ApiService } from 'app/document/document.api';
 import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { Subject } from 'rxjs';
-import Swal from 'sweetalert2';
 
 @Component({
     selector: 'search',
@@ -29,6 +29,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     searchControl: UntypedFormControl = new UntypedFormControl();
     private _matAutocomplete: MatAutocomplete;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private notificationCenter = inject(NotificationCenterService);
 
     /**
      * Constructor
@@ -183,7 +184,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
         }
         if (!texto || texto.length === 0) {
             // pasar esto a util para usar menos codigo
-            Swal.fire({
+            this.notificationCenter.fire({
                 icon: 'error',
                 title: 'Oops...',
                 text: 'Coloque el codigo exacto del documento',

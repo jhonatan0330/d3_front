@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { OrganizacionDTO } from 'app/document/document.types';
 import { OrganizationService } from 'app/configuration/configuracion.api';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { MatIconModule } from '@angular/material/icon';
-import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-organization-form',
@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
     templateUrl: './organization-form.component.html',
 })
 export class OrganizationFormComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<OrganizationFormComponent>>(MatDialogRef);
     public data = inject<OrganizacionDTO | null>(MAT_DIALOG_DATA);
 
@@ -53,12 +54,12 @@ export class OrganizationFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Organización guardada correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Organización guardada correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar la organización', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar la organización', 'error');
             }
         });
     }

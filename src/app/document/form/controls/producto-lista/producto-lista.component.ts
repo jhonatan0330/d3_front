@@ -1,10 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from 'app/document/document.api';
-import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { PedidoVentaCaracteristicaFilterDTO, ProductoDTO, UsuarioRolProductoDTO } from '../../../document.types';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
@@ -12,6 +10,7 @@ import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { DecimalPipe, TitleCasePipe } from '@angular/common';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-producto-lista',
@@ -21,7 +20,7 @@ import { DecimalPipe, TitleCasePipe } from '@angular/common';
 })
 export class ProductoListaComponent extends BaseComponent implements OnInit {
   private api = inject(ApiService);
-  private utils = inject(UtilsService);
+  private notificationCenter = inject(NotificationCenterService);
 
 
   fControl = new FormControl('') ; // Texto que digita el usuario para filtrar
@@ -74,7 +73,7 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
 
   listar():void{
     if (this.fControl.value && this.fControl.value.length === 0) {
-      Swal.fire('', 'Selecciona un valor a buscar', 'info')
+      this.notificationCenter.fire('', 'Selecciona un valor a buscar', 'info')
       return;
     }
     this.isLoading.set(true);
@@ -88,7 +87,7 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
         this.isLoading.set(false);
         this.productosDisponibles = Object.assign([], _value.campoDTO.productos);
           if (this.productosDisponibles.length === 0) {
-            Swal.fire ('Sin resultados', 'No encontramos resultados por el filtro' + this.fControl.value,  'info');
+            this.notificationCenter.fire ('Sin resultados', 'No encontramos resultados por el filtro' + this.fControl.value,  'info');
           } else {
             this.productosFiltrados = this.productosDisponibles;
           }

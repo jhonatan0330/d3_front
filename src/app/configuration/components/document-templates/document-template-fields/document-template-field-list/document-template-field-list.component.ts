@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -10,7 +11,6 @@ import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO } from 'app/
 import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { DocumentTemplateFieldFormComponent } from '../document-template-field-form/document-template-field-form.component';
-import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-document-template-field-list',
@@ -20,6 +20,7 @@ import Swal from 'sweetalert2';
     styleUrl: './document-template-field-list.component.scss'
 })
 export class DocumentTemplateFieldListComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(DocumentTemplateService);
     private dialog = inject(MatDialog);
 
@@ -78,8 +79,8 @@ export class DocumentTemplateFieldListComponent implements OnInit {
     }
 
     deleteField(field: DocumentoPlantillaCaracteristicaDTO): void {
-        Swal.fire({ title: '¿Eliminar campo?', text: 'Esta acción no se puede deshacer.', icon: 'warning', showCancelButton: true, confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { this.service.inactivateField(field).subscribe({ next: () => { Swal.fire('Eliminado', 'Campo eliminado correctamente', 'success'); this.loadFields(); }, error: () => Swal.fire('Error', 'No se pudo eliminar el campo', 'error') }); }});
+        this.notificationCenter.fire({ title: '¿Eliminar campo?', text: 'Esta acción no se puede deshacer.', icon: 'warning', showCancelButton: true, confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { this.service.inactivateField(field).subscribe({ next: () => { this.notificationCenter.fire('Eliminado', 'Campo eliminado correctamente', 'success'); this.loadFields(); }, error: () => this.notificationCenter.fire('Error', 'No se pudo eliminar el campo', 'error') }); }});
     }
 
     getFormatoIcon(formato: string): string {

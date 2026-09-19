@@ -1,9 +1,7 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ChangeDetectionStrategy, inject,  } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogContent, MatDialogClose } from '@angular/material/dialog';
-import Swal from 'sweetalert2';
-import { firstValueFrom } from 'rxjs';
 
 import { BaseComponent } from '../base/base.component';
 import { PedidoVentaDTO } from '../../../document.types';
@@ -13,6 +11,7 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
 import { UploadService } from 'app/upload/upload.api';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 interface RenderItem {
   exp: PedidoVentaDTO;
@@ -34,6 +33,7 @@ export class CroquisComponent extends BaseComponent
   implements OnInit, AfterViewInit, OnDestroy {
   private uploadApi = inject(UploadService);
   private dialog = inject(MatDialog);
+  private notificationCenter = inject(NotificationCenterService);
 
 
   private canvas?: HTMLCanvasElement;
@@ -126,13 +126,13 @@ export class CroquisComponent extends BaseComponent
 
     const canvas = document.getElementById('croquisCanvas') as HTMLCanvasElement | null;
     if (!canvas) {
-      Swal.fire('Error', 'No se encontró el canvas del croquis', 'error');
+      this.notificationCenter.fire('Error', 'No se encontró el canvas del croquis', 'error');
       return;
     }
 
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-      Swal.fire('Error', 'No se pudo inicializar el canvas', 'error');
+      this.notificationCenter.fire('Error', 'No se pudo inicializar el canvas', 'error');
       return;
     }
 
@@ -258,12 +258,12 @@ export class CroquisComponent extends BaseComponent
     if (!this.isEnabled) return;
 
     if (!this.baseLoaded) {
-      Swal.fire('Advertencia', 'Primero sube el plano', 'warning');
+      this.notificationCenter.fire('Advertencia', 'Primero sube el plano', 'warning');
       return;
     }
 
     if (!this.nombreCtrl.value?.trim()) {
-      Swal.fire('Advertencia', 'Escribe un nombre para el componente', 'warning');
+      this.notificationCenter.fire('Advertencia', 'Escribe un nombre para el componente', 'warning');
       return;
     }
 
@@ -283,7 +283,7 @@ export class CroquisComponent extends BaseComponent
         this.valorTextCtrl.setValue(value.url);
         this.loadBaseFromUrl(value.url);
         this.avisarModificacion();
-        Swal.fire('Éxito', 'Plano subido correctamente', 'success');
+        this.notificationCenter.fire('Éxito', 'Plano subido correctamente', 'success');
       },
       error: () => {
 
@@ -300,7 +300,7 @@ export class CroquisComponent extends BaseComponent
     if (!file) return;
 
     if (!this.nombreCtrl.value?.trim()) {
-      Swal.fire('Advertencia', 'Escribe un nombre para el componente', 'warning');
+      this.notificationCenter.fire('Advertencia', 'Escribe un nombre para el componente', 'warning');
       return;
     }
 
@@ -329,7 +329,7 @@ export class CroquisComponent extends BaseComponent
         this.pushRenderItemFromExp(nuevoExp);
         this.nombreCtrl.setValue('');
         this.avisarModificacion();
-        Swal.fire('Éxito', 'Componente agregado', 'success');
+        this.notificationCenter.fire('Éxito', 'Componente agregado', 'success');
       },
       error: () => {
 
@@ -379,7 +379,7 @@ export class CroquisComponent extends BaseComponent
 
         console.error('Error cargando imagen', error, url);
         this.baseLoaded = false;
-        Swal.fire('Error', 'No se pudo cargar el plano', 'error');
+        this.notificationCenter.fire('Error', 'No se pudo cargar el plano', 'error');
         this.draw();
       };
 
@@ -504,7 +504,7 @@ export class CroquisComponent extends BaseComponent
 
     this.draw();
     this.avisarModificacion();
-    Swal.fire('Eliminado', 'Componente retirado', 'success');
+    this.notificationCenter.fire('Eliminado', 'Componente retirado', 'success');
   };
 
   private pickTopmost(x: number, y: number): RenderItem | null {
@@ -523,7 +523,7 @@ export class CroquisComponent extends BaseComponent
   // ---------- Guardado ----------
   guardar(): void {
     this.avisarModificacion();
-    Swal.fire('Guardado', 'Posiciones guardadas correctamente', 'success');
+    this.notificationCenter.fire('Guardado', 'Posiciones guardadas correctamente', 'success');
   }
 
 }

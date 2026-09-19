@@ -8,13 +8,13 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../form.enum';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormComponent } from '../../form.component';
-import Swal from 'sweetalert2';
 import { ApiService } from '../../../document.api';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TitleCasePipe } from '@angular/common';
 import { FormTransitionService } from 'app/document/form/form-transition.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-vinculo',
@@ -28,7 +28,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
   private api = inject(ApiService);
   private transitionService = inject(FormTransitionService);
-
+  private notificationCenter = inject(NotificationCenterService);
 
   proceso: PedidoVentaDTO; // Contiene el documento seleccionado
 
@@ -132,7 +132,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   crearPlantilla(pNextTemplate: string, pDocument: PedidoVentaDTO) {
     if (!pNextTemplate) return;
     /*if (this.formIsModified) {
-        Swal.fire('Guarda documento', 'Por favor guarda los cambios del documento antes de crear una nueva accion', 'info');
+        this.notificationCenter.fire('Guarda documento', 'Por favor guarda los cambios del documento antes de crear una nueva accion', 'info');
         return;
     }*/
     this.auxPlantillaProxima = pNextTemplate;
@@ -247,7 +247,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
       if (!this.proceso.llaveTabla && PlantillaHelper.isEmpty(dp.propiedades,
         PlantillaHelper.PERMISO_PLANTILLA_CREAR
       )) {
-        Swal.fire('Autorizacion', 'No tienes permisos para crear registros este tipo de documento. ' + dp.nombre, 'info');
+        this.notificationCenter.fire('Autorizacion', 'No tienes permisos para crear registros este tipo de documento. ' + dp.nombre, 'info');
         this.dialogRef.close();
         return;
       }
@@ -272,7 +272,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
         return dp;
       }
     } else {
-      Swal.fire('Autorizacion', 'No tienes permisos para ver este documento.', 'info');
+      this.notificationCenter.fire('Autorizacion', 'No tienes permisos para ver este documento.', 'info');
       this.dialogRef.close();
       return;
     }

@@ -5,10 +5,10 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 
-import Swal from 'sweetalert2';
 import { MatFormField, MatLabel, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 @Component({
     selector: 'settings-security',
     templateUrl: './security.component.html',
@@ -22,6 +22,7 @@ export class SettingsSecurityComponent implements OnInit {
     private _formBuilder = inject(FormBuilder);
     private jwtAuth = inject(LoginService);
     private destroyRef = inject(DestroyRef);
+    private notificationCenter = inject(NotificationCenterService);
 
     securityForm: FormGroup<{ oldPwd: FormControl<string | null>, newPwd: FormControl<string | null>, repeatPwd: FormControl<string | null> }>;
     isLoading = signal(false);
@@ -51,7 +52,7 @@ export class SettingsSecurityComponent implements OnInit {
     changePwd() {
         const signinData = this.securityForm.value;
         if (signinData.newPwd !== signinData.repeatPwd) {
-            Swal.fire(
+            this.notificationCenter.fire(
                 'Nueva clave',
                 'La nueva clave no concuerda con la que se repite',
                 'info'
@@ -67,7 +68,7 @@ export class SettingsSecurityComponent implements OnInit {
                 .subscribe({
                 next: () => {
                     this.isLoading.set(false);
-                    Swal.fire(
+                    this.notificationCenter.fire(
                         'Cambio Exitoso',
                         'La nueva clave del usuario '+this.keyData()!.nombre+' se cambio de forma exitosa',
                         'success'
@@ -83,7 +84,7 @@ export class SettingsSecurityComponent implements OnInit {
                 .subscribe({
                 next: () => {
                     this.isLoading.set(false);
-                    Swal.fire(
+                    this.notificationCenter.fire(
                         'Cambio Exitoso',
                         'La nueva clave se cambio de forma exitosa',
                         'success'

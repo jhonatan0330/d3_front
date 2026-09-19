@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -9,7 +10,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReporteBaseDTO, ReporteBaseFilterDTO } from 'app/document/document.types';
 import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { DocumentTemplateReportFormComponent } from '../document-template-report-form/document-template-report-form.component';
-import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-document-template-report-list',
@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
     templateUrl: './document-template-report-list.component.html',
 })
 export class DocumentTemplateReportListComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(DocumentTemplateService);
     private dialog = inject(MatDialog);
 
@@ -59,7 +60,7 @@ export class DocumentTemplateReportListComponent implements OnInit {
     toggleStatus(item: ReporteBaseDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} reporte?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateReport(updated).subscribe({ next: () => { Swal.fire('Éxito', `Reporte ${action}do correctamente`, 'success'); this.loadReports(); }, error: () => Swal.fire('Error', `No se pudo ${action} el reporte`, 'error') }); }});
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} reporte?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateReport(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Reporte ${action}do correctamente`, 'success'); this.loadReports(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el reporte`, 'error') }); }});
     }
 }

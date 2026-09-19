@@ -1,8 +1,6 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ChangeDetectionStrategy, inject, viewChild, signal, effect, DestroyRef } from '@angular/core';
+import {  Component, ElementRef, HostListener, OnInit, ChangeDetectionStrategy, inject, viewChild, signal, effect, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ApiService } from 'app/document/document.api';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import SignaturePad from 'signature_pad';
@@ -12,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
 import { UploadService } from 'app/upload/upload.api';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-archivo',
@@ -28,6 +27,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
   private uploadApi = inject(UploadService);
   private imageCompress = inject(NgxImageCompressService);
   private ls = inject(LocalStoreService);
+  private notificationCenter = inject(NotificationCenterService);
 
   readonly signatureCanvas = viewChild<ElementRef<HTMLCanvasElement>>('signatureCanvas');
   signaturePad?: SignaturePad;
@@ -146,7 +146,7 @@ resizeCanvas(): void {
       for (let j = 0; j < files.length; j++) {
         const iFile: File = files.item(j)!;
         if (iFile.size / 1024 > this.maximoSize) {
-          Swal.fire(
+          this.notificationCenter.fire(
             'Espacio maximo superado.',
             iFile.name + '.  ' + this.maximoSize + 'KB. - ' + iFile.size / 1024,
             'error'
@@ -167,7 +167,7 @@ resizeCanvas(): void {
     if (this.validateOrientation && this.isEnabled) {
       if (this.validateOrientation === '1') {
         if (image.width < image.height) {
-          Swal.fire(
+          this.notificationCenter.fire(
             'Orientacion Horizontal',
             'El ancho de la imagen es menor al alto. ' +
             image.width +
@@ -181,7 +181,7 @@ resizeCanvas(): void {
         }
       } else {
         if (image.width > image.height) {
-          Swal.fire(
+          this.notificationCenter.fire(
             'Orientacion Vertical',
             'El alto de la imagen es menor al ancho. ' +
             image.width +
@@ -453,7 +453,7 @@ resizeCanvas(): void {
 
   send2Server(): boolean {
     if (this.hasPendingLoadFiles()) {
-      Swal.fire(
+      this.notificationCenter.fire(
         'Carga de imagenes',
         'Todavia tienes imagenes pendientes por cargar, danos un minuto mas',
         'info'

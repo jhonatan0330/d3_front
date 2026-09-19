@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,7 +10,6 @@ import {
     propiedadCampo
 } from 'app/document/document.types';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import Swal from 'sweetalert2';
 import { DocumentTemplateService } from '../../../configuracion.api';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
@@ -21,6 +21,7 @@ import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
     imports: [CommonModule, MatIconModule]
 })
 export class DocumentTemplateFieldDetailComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     data = inject(MAT_DIALOG_DATA);
     private documentTemplateService = inject(DocumentTemplateService);
     private utilsService = inject(UtilsService);
@@ -45,7 +46,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
 
     ngOnInit(): void {
         if (!this.data?.template) {
-            Swal.fire('Advertencia', 'No se recibió información .', 'warning');
+            this.notificationCenter.fire('Advertencia', 'No se recibió información .', 'warning');
             return;
         }
 
@@ -74,7 +75,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
             error: (err) => {
                 console.error('Error al cargar campo:', err);
                 this.isLoading = false;
-                Swal.fire('Error', 'No se pudo cargar la información del campo.', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo cargar la información del campo.', 'error');
             }
         });
     }
@@ -90,7 +91,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
             },
             error: () => {
                 this.propiedadesCampo = [];
-                Swal.fire('Error', 'No se pudieron cargar las propiedades del campo.', 'error');
+                this.notificationCenter.fire('Error', 'No se pudieron cargar las propiedades del campo.', 'error');
             }
         });
     }
@@ -163,7 +164,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
     listarRelacionesPropiedad(prop: propiedadCampo): void {}
 
     eliminarPropiedad(pPropiedad: any): void {
-        Swal.fire({
+        this.notificationCenter.fire({
             title: '¿Estás seguro?',
             text: 'Esta acción eliminará la propiedad seleccionada.',
             icon: 'warning',
@@ -174,23 +175,23 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
             cancelButtonColor: '#d33'
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
+                this.notificationCenter.fire({
                     title: 'Eliminando...',
                     text: 'Por favor espera',
                     allowOutsideClick: false,
                     didOpen: () => {
-                        Swal.showLoading();
+                        this.notificationCenter.showLoading();
                     }
                 });
 
                 this.documentTemplateService.inactivateProperty(pPropiedad).subscribe({
                     next: () => {
-                        Swal.fire('Eliminado', 'La propiedad fue eliminada correctamente.', 'success');
+                        this.notificationCenter.fire('Eliminado', 'La propiedad fue eliminada correctamente.', 'success');
                         this.cargarCampo();
                     },
                     error: (err) => {
                         console.error('Error al eliminar la propiedad de campo:', err);
-                        Swal.fire('Error', 'No se pudo eliminar la propiedad.', 'error');
+                        this.notificationCenter.fire('Error', 'No se pudo eliminar la propiedad.', 'error');
                     }
                 });
             }

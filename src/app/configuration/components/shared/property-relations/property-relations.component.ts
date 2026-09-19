@@ -5,7 +5,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/document/document.types';
 import { PropertyService } from 'app/configuration/configuracion.api';
 import { RelationFormComponent } from '../relation-form/relation-form.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-property-relations',
@@ -15,8 +15,10 @@ import Swal from 'sweetalert2';
     styleUrl: './property-relations.component.scss'
 })
 export class PropertyRelationsComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     private propertyService = inject(PropertyService);
     private dialog = inject(MatDialog);
+    
 
     @Input() propiedadKey!: string;
     @Input() propiedadEstado: string = 'A';
@@ -66,7 +68,7 @@ export class PropertyRelationsComponent implements OnInit {
     }
 
     deleteRelation(rel: RelacionInternaDTO): void {
-        Swal.fire({
+        this.notificationCenter.fire({
             title: '¿Eliminar relación?',
             text: 'Esta acción no se puede deshacer.',
             icon: 'warning',
@@ -77,11 +79,11 @@ export class PropertyRelationsComponent implements OnInit {
             if (result.isConfirmed) {
                 this.propertyService.inactivateRelation(rel).subscribe({
                     next: () => {
-                        Swal.fire('Eliminado', 'Relación eliminada correctamente', 'success');
+                        this.notificationCenter.fire('Eliminado', 'Relación eliminada correctamente', 'success');
                         this.loadRelations();
                     },
                     error: () => {
-                        Swal.fire('Error', 'No se pudo eliminar la relación', 'error');
+                        this.notificationCenter.fire('Error', 'No se pudo eliminar la relación', 'error');
                     }
                 });
             }

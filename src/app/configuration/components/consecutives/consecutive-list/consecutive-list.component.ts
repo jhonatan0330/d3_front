@@ -11,7 +11,7 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
 import { ConsecutivoDTO, ConsecutivoFilterDTO } from 'app/document/document.types';
 import { ConsecutiveService } from 'app/configuration/configuracion.api';
 import { ConsecutiveFormComponent } from '../consecutive-form/consecutive-form.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-consecutive-list',
@@ -27,6 +27,7 @@ import Swal from 'sweetalert2';
     templateUrl: './consecutive-list.component.html',
 })
 export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(ConsecutiveService);
     private dialog = inject(MatDialog);
     @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
@@ -116,7 +117,7 @@ export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestro
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
 
-        Swal.fire({
+        this.notificationCenter.fire({
             title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} consecutivo?`,
             icon: 'question',
             showCancelButton: true,
@@ -127,10 +128,10 @@ export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestro
                 const updated = { ...item, estado: newEstado };
                 this.service.inactivateConsecutivo(updated).subscribe({
                     next: () => {
-                        Swal.fire('Éxito', `Consecutivo ${action}do correctamente`, 'success');
+                        this.notificationCenter.fire('Éxito', `Consecutivo ${action}do correctamente`, 'success');
                         this.reload();
                     },
-                    error: () => Swal.fire('Error', `No se pudo ${action} el consecutivo`, 'error')
+                    error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el consecutivo`, 'error')
                 });
             }
         });
@@ -139,10 +140,10 @@ export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestro
     assignConsecutivo(item: ConsecutivoDTO): void {
         this.service.assignConsecutivo(item).subscribe({
             next: (res) => {
-                Swal.fire('Asignado', `Consecutivo asignado: ${res.consecutivoActual}`, 'success');
+                this.notificationCenter.fire('Asignado', `Consecutivo asignado: ${res.consecutivoActual}`, 'success');
                 this.reload();
             },
-            error: () => Swal.fire('Error', 'No se pudo asignar el consecutivo', 'error')
+            error: () => this.notificationCenter.fire('Error', 'No se pudo asignar el consecutivo', 'error')
         });
     }
 }

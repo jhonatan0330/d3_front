@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -6,7 +7,6 @@ import { ReporteBaseDTO } from 'app/document/document.types';
 import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { PropertyPanelComponent } from '../../../shared/property-panel/property-panel.component';
 import { MatIconModule } from '@angular/material/icon';
-import Swal from 'sweetalert2';
 
 interface ReportFormData {
     report?: ReporteBaseDTO;
@@ -20,6 +20,7 @@ interface ReportFormData {
     templateUrl: './document-template-report-form.component.html',
 })
 export class DocumentTemplateReportFormComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<DocumentTemplateReportFormComponent>>(MatDialogRef);
     public data = inject<ReportFormData>(MAT_DIALOG_DATA);
 
@@ -61,12 +62,12 @@ export class DocumentTemplateReportFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Reporte guardado correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Reporte guardado correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar el reporte', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar el reporte', 'error');
             }
         });
     }

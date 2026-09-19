@@ -14,7 +14,7 @@ import { ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO } 
 import { AutoTaskService } from 'app/configuration/configuracion.api';
 import { AutoTaskFormComponent } from '../auto-task-form/auto-task-form.component';
 import { AutoTaskScheduleDialogComponent } from '../auto-task-schedule-dialog/auto-task-schedule-dialog.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-auto-task-list',
@@ -27,7 +27,7 @@ export class AutoTaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     private dialog = inject(MatDialog);
     @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
     private observer?: IntersectionObserver;
-
+    private notificationCenter = inject(NotificationCenterService);
     loading = signal(false);
     data = signal<ProcesoTransicionAutomaticaDTO[]>([]);
     currentPage = signal(0);
@@ -96,7 +96,7 @@ export class AutoTaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     executeNow(task: ProcesoTransicionAutomaticaDTO): void {
-        Swal.fire({
+        this.notificationCenter.fire({
             title: '¿Ejecutar ahora?',
             text: `Se ejecutará la tarea "${task.plantillaNombre}" inmediatamente.`,
             icon: 'question',
@@ -107,8 +107,8 @@ export class AutoTaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         }).then((result) => {
             if (result.isConfirmed) {
                 this.service.executeAutoTask(task.llaveTabla).subscribe({
-                    next: (res) => { Swal.fire('Ejecutado', 'Tarea ejecutada correctamente', 'success'); this.reload(); },
-                    error: () => Swal.fire('Error', 'No se pudo ejecutar la tarea', 'error')
+                    next: (res) => { this.notificationCenter.fire('Ejecutado', 'Tarea ejecutada correctamente', 'success'); this.reload(); },
+                    error: () => this.notificationCenter.fire('Error', 'No se pudo ejecutar la tarea', 'error')
                 });
             }
         });
@@ -117,7 +117,7 @@ export class AutoTaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     toggleStatus(item: ProcesoTransicionAutomaticaDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} tarea?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateAutoTask(updated).subscribe({ next: () => { Swal.fire('Éxito', `Tarea ${action}da correctamente`, 'success'); this.reload(); }, error: () => Swal.fire('Error', `No se pudo ${action} la tarea`, 'error') }); }});
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} tarea?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateAutoTask(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Tarea ${action}da correctamente`, 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} la tarea`, 'error') }); }});
     }
 }

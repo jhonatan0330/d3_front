@@ -1,11 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
-import Swal from 'sweetalert2';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FullMapComponent } from './full-map/full-map.component';
 import { ApiService } from '../../../document.api';
 import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from '../../../document.types';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-gps-map',
@@ -16,6 +16,7 @@ import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaCaracteristicaDTO, Pedi
 export class GpsMapComponent extends BaseComponent implements OnInit {
   dialog = inject(MatDialog);
   private api = inject(ApiService);
+  private notificationCenter = inject(NotificationCenterService);
 
 
   lat;
@@ -39,12 +40,12 @@ export class GpsMapComponent extends BaseComponent implements OnInit {
         maximumAge: 0
       });
     } else {
-      Swal.fire("Change Browser", "Geolocation is not supported by this browser.", 'warning');
+      this.notificationCenter.fire("Change Browser", "Geolocation is not supported by this browser.", 'warning');
     }
   }
 
   error(err) {
-    Swal.fire(`ERROR(${err.code})`, err.message, "error");
+    this.notificationCenter.fire(`ERROR(${err.code})`, err.message, "error");
   }
 
   showMap() {

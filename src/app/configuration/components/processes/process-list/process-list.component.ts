@@ -15,7 +15,7 @@ import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { ProcessFormComponent } from '../process-form/process-form.component';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 interface TreeNode {
     proceso: ProcesoDTO;
@@ -32,6 +32,7 @@ interface TreeNode {
     templateUrl: './process-list.component.html',
 })
 export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(ProcessService);
     private dialog = inject(MatDialog);
     @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
@@ -187,7 +188,7 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
     toggleStatus(item: ProcesoDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} proceso?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateProcess(updated).subscribe({ next: () => { Swal.fire('Éxito', `Proceso ${action}do correctamente`, 'success'); this.reload(); if (this.activeTab() === 1) this.loadTree(); }, error: () => Swal.fire('Error', `No se pudo ${action} el proceso`, 'error') }); }});
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} proceso?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateProcess(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Proceso ${action}do correctamente`, 'success'); this.reload(); if (this.activeTab() === 1) this.loadTree(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el proceso`, 'error') }); }});
     }
 }

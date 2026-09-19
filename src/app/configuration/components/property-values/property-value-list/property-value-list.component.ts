@@ -8,10 +8,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
-import { PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO, BasicFilterDTO } from 'app/shared/shared.domain';
+import { PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO } from 'app/shared/shared.domain';
 import { PropertyValueService } from 'app/configuration/configuracion.api';
 import { PropertyValueFormComponent } from '../property-value-form/property-value-form.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-property-value-list',
@@ -28,6 +28,7 @@ import Swal from 'sweetalert2';
     templateUrl: './property-value-list.component.html',
 })
 export class PropertyValueListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(PropertyValueService);
     private dialog = inject(MatDialog);
     @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
@@ -109,13 +110,13 @@ export class PropertyValueListComponent implements OnInit, AfterViewInit, OnDest
     toggleStatus(item: PropiedadValorDefinidoDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} valor?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} valor?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
             .then((result) => {
                 if (result.isConfirmed) {
                     const updated = { ...item, estado: newEstado };
                     this.service.inactivatePropertyValue(updated).subscribe({
-                        next: () => { Swal.fire('Éxito', `Valor ${action}do correctamente`, 'success'); this.reload(); },
-                        error: () => Swal.fire('Error', `No se pudo ${action} el valor`, 'error')
+                        next: () => { this.notificationCenter.fire('Éxito', `Valor ${action}do correctamente`, 'success'); this.reload(); },
+                        error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el valor`, 'error')
                     });
                 }
             });

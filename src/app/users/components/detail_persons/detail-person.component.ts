@@ -8,8 +8,8 @@ import { LoginService } from 'app/authentication/login.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { MatIcon } from '@angular/material/icon';
-import { ChangePictureComponent } from 'app/layout/change-picture/change-picture.component';
 import { UsersService } from 'app/users/business/users.services';
+import { ChangePictureComponent } from 'app/layout/change-picture/change-picture.component';
 
 @Component({
     selector: 'contacts-details',

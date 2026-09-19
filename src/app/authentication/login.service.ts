@@ -1,19 +1,19 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { of, throwError, Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 import { MatDialog } from '@angular/material/dialog';
-import Swal from 'sweetalert2';
 import { TemplateService } from 'app/document/service/template.service';
-import { NotificationsService } from 'app/notification/notification.service';
+import { NotificationsService } from 'app/notification/notification.api';
 import { ApiService } from 'app/document/document.api';
-import { OrganizacionDTO, UsuarioAutenticacionAutorizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO, UsuarioOrganizacionDTO } from './authentication.domain';
+import { OrganizacionDTO, UsuarioAutenticacionAutorizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO } from './authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { CarouselService } from './carousel.service';
 import { DateNotificationService } from './date-notification.service';
+import { AuthenticationService } from './authentication.service';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -23,10 +23,11 @@ export class LoginService {
   private dialog = inject(MatDialog);
   private templateService = inject(TemplateService);
   private notificationService = inject(NotificationsService);
+  private notificationCenter = inject(NotificationCenterService);
   private apiService = inject(ApiService);
   private carouselService = inject(CarouselService);
   private dateNotificationService = inject(DateNotificationService);
-  private http = inject(HttpClient);
+  private authenticationService = inject(AuthenticationService);
 
 
   token: string;
@@ -61,31 +62,27 @@ export class LoginService {
   }
 
 
-  public signin(username: string, password: string, tokenAuto: string) {
+  public signin(username: string, password: string, tokenAuto: string, navigateOnError = true) {
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
     autenticacion.sesion = username;
     autenticacion.clave = password;
     autenticacion.claveAnterior = `${environment.dateCompile}`;
+    if (username != null) { this.ls.setItem(LocalConstants.LOGIN_ID, username); }
     //Esto lo hice porque me estoy autenticando 2 veces, tengo que mejorar esta parte
     if (username === null && password === null) {
       if (!tokenAuto) { return null; };
       const _user = this.getUser()
-      if(_user)autenticacion.usuario = _user.llaveTabla;
+      if (_user) autenticacion.usuario = _user.llaveTabla;
     }
-    return this.http
-      .post<UsuarioAutenticacionDTO>(
-        this.ls.getUrlAccess('/document/main/autenticarUsuarioAutenticacion'),
-        autenticacion
-      )
+    return this.authenticationService.authenticate(autenticacion)
       .pipe(
         map((res: UsuarioAutenticacionDTO) => {
-
-
-
           return res;
         }),
         catchError((error) => {
-          this.signout();
+          if (navigateOnError) {
+            this.signout();
+          }
           return throwError(() => error);
         })
       );
@@ -97,7 +94,8 @@ export class LoginService {
     this.setUserAndToken(res, res.organizacion);
     this.setCompany(res.organizacion)
     this.getUserDataFull(res);
-    if(res) {this.setDate(res.fechaMaxima); } else{ this.clearDate(); }
+    if (res.token) { this.setTenantToken(this.getCurrentTenantKey(), res.token); }
+    if (res) { this.setDate(res.fechaMaxima); } else { this.clearDate(); }
   }
 
   private setCompany(_company: OrganizacionDTO) {
@@ -110,19 +108,12 @@ export class LoginService {
       }
     }
 
-    if (this.company() && this.company().llaveTabla === _company?.llaveTabla) {
-      // se presentaba un bug en los modulos 
-      this.company().propiedades = _company.propiedades;
-      //Evito que se vuelva a consultar los template coverad
-      return;
-    }
-
     this.company.set(_company);
   }
 
 
 
-  public checkTokenIsValid() {
+  public checkTokenIsValid(forceRefresh = false, navigateOnError = true) {
     const tokenLocal = this.getJwtToken();
     if (!tokenLocal) { return of(false) };
     if (!this.urlService) {
@@ -132,27 +123,27 @@ export class LoginService {
       return of(false);
     }
     // Check if the user is logged in
-    if (this.isAuthenticated) {
+    if (this.isAuthenticated && !forceRefresh) {
       return of(true);
     }
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
     autenticacion.claveAnterior = `${environment.dateCompile}`;
-    return this.http
-      .post<UsuarioAutenticacionDTO>(
-        this.ls.getUrlAccess('/document/main/checkToken'),
-        autenticacion
-      )
+    return this.authenticationService.checkToken(autenticacion)
       .pipe(
-        switchMap(() => {
-          return this.signin(null!, null!, tokenLocal)!.pipe(
-            map((data: UsuarioAutenticacionDTO) => {
-              this.authenticationOK(data);
-              return true;
-            })
-          );
+        map((data: UsuarioAutenticacionDTO) => {
+          this.authenticationOK({
+            ...data,
+            token: data.token || tokenLocal
+          });
+          return true;
         }),
         catchError(() => {
-          this.signout();
+          if (navigateOnError) {
+            this.signout();
+          } else {
+            this.isAuthenticated = false;
+            this.token = null as any;
+          }
           return of(false);
         })
       );
@@ -166,7 +157,7 @@ export class LoginService {
 
     if (response && response.mensaje) {
 
-      Swal.fire({
+      this.notificationCenter.fire({
         position: 'top-end',
         title: response.mensaje,
         showConfirmButton: false,
@@ -176,13 +167,16 @@ export class LoginService {
     }
     if (!this.user()) { return; }
     this.apiService.listarPlantillas("USER")
-      .subscribe({ next: (templates) => {
-        this.templateService.setTemplates(templates);
-      }, error: () => {} });
+      .subscribe({
+        next: (templates) => {
+          this.templateService.setTemplates(templates);
+        }, error: () => { }
+      });
   }
 
   signout() {
 
+    this.clearTenantTokens();
     this.setUserAndToken(null!, null!);
     this.templateService.clear();
     this.notificationService.clear();
@@ -197,11 +191,7 @@ export class LoginService {
     autenticacion.usuario = this.user().llaveTabla;
     autenticacion.claveAnterior = oldPwd;
     autenticacion.clave = newPwd;
-    return this.http
-      .post<UsuarioAutenticacionDTO>(
-        this.ls.getUrlAccess('/document/main/cambiarClave'),
-        autenticacion
-      );
+    return this.authenticationService.changePassword(autenticacion);
   }
 
   changePwdOther(user: string, oldPwd: string, newPwd: string, autorizacion: string) {
@@ -210,28 +200,12 @@ export class LoginService {
     autenticacion.usuario = user;
     autenticacion.claveAnterior = oldPwd;
     autenticacion.clave = newPwd;
-    return this.http
-      .post<UsuarioAutenticacionDTO>(
-        this.ls.getUrlAccess('/document/main/cambiarClave'),
-        autenticacion
-      );
+    return this.authenticationService.changePassword(autenticacion);
   }
 
-
-  changePwdOtherSystem(autenticacion: UsuarioOrganizacionDTO) {
-    return this.http
-      .post<UsuarioOrganizacionDTO>(
-        this.ls.getUrlAccess('/document/main/cambiarClaveOtherSystem'),
-        autenticacion
-      );
-  }
 
   recoverPassword(identificacion: string, correo: string): Observable<UsuarioAutenticacionAutorizacionDTO> {
-    const autenticacion = new UsuarioAutenticacionDTO();
-    autenticacion.usuarioDTO = new UsuarioDTO();
-    autenticacion.usuarioDTO.identificacion = identificacion;
-    autenticacion.usuarioDTO.correo = correo;
-    return this.http.post<UsuarioAutenticacionAutorizacionDTO>(this.ls.getUrlAccess('/document/main/solicitarNuevaClave'), autenticacion);
+    return this.authenticationService.recoverPassword(identificacion, correo);
   }
 
   isLoggedIn(): boolean {
@@ -280,22 +254,37 @@ export class LoginService {
     this.ls.setItem(LocalConstants.URL_CONF, url);
   }
 
-  // CU01
-  obtenerPrincipalOrganizacion(): Observable<OrganizacionDTO> {
-    return this.http.get<OrganizacionDTO>(
-      this.ls.getUrlAccess('/document/main/obtenerPrincipalOrganizacion')
-    );
+  private setTenantToken(tenantKey: string, token: string) {
+    if (!tenantKey) { return; }
+    const tokens = this.getTenantTokens();
+    tokens[tenantKey] = token;
+    this.ls.setItem(this.tenantTokensKey(), tokens);
   }
 
-  private _jsonURL = '/assets/conf.xml';
+  private getCurrentTenantKey(): string {
+    return this.ls.getItem(LocalConstants.TENANT_ID) || 'default';
+  }
+
+  private clearTenantTokens() {
+    this.ls.setItem(this.tenantTokensKey(), null);
+  }
+
+  //Estos 2 metodos estan duplicados en login y en tenant despues los ajusto
+  private getTenantTokens(): { [key: string]: string } {
+    const tokens = this.ls.getItem(this.tenantTokensKey());
+    return tokens && typeof tokens === 'object' ? tokens : {};
+  }
+  //Estos 2 metodos estan duplicados en login y en tenant despues los ajusto
+  private tenantTokensKey(): string {
+    const login = this.ls.getItem(LocalConstants.LOGIN_ID);
+    return LocalConstants.TENANT_TOKENS_BASE + (login || 'ANON');
+  }
+  
+
+
 
   getURL(): Observable<string> {
-    return this.http.get(this._jsonURL, { responseType: 'text' });
-  }
-
-  changePicture(url: string): Observable<UsuarioDTO> {
-    const endpoint = this.ls.getUrlAccess('/document/api/changePicture');
-    return this.http.post<UsuarioDTO>(endpoint, { url });
+    return this.authenticationService.getConfigUrl();
   }
 
   getUrlServices() {
@@ -303,8 +292,21 @@ export class LoginService {
       this.configureOrganization(this.company());
       return;
     }
-    this.getURL().subscribe({
-      next: (data) => {
+    this.ensureBaseUrl().subscribe({
+      next: () => {
+        this.getOrganization();
+      },
+      error: () => { }
+    });
+  }
+
+  ensureBaseUrl(): Observable<string> {
+    const configured = this.getConfUrl();
+    if (configured) {
+      return of(configured);
+    }
+    return this.getURL().pipe(
+      map((data) => {
         if (data !== '' && data !== 'SW42') {
           if (!data.endsWith('/')) {
             data = data + '/';
@@ -313,17 +315,17 @@ export class LoginService {
         } else {
           this.setConfUrl(location.origin);
         }
-        this.getOrganization();
-      },
-      error: () => {
+        return this.getConfUrl();
+      }),
+      catchError(() => {
         this.setConfUrl(location.origin);
-        this.getOrganization();
-      }
-    });
+        return of(location.origin);
+      })
+    );
   }
 
   getOrganization() {
-    this.obtenerPrincipalOrganizacion().subscribe({
+    this.authenticationService.getOrganization().subscribe({
       next: (organization) => {
         this.configureOrganization(organization);
       },
@@ -336,7 +338,7 @@ export class LoginService {
     if (organization && organization.publicToken) {
       this.token = organization.publicToken;
       this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
-      this.checkTokenIsValid().subscribe({ error: () => {} });
+      this.checkTokenIsValid().subscribe({ error: () => { } });
       //Si no coloco esto se va a crear un ciclo infintio solicitando el token
       //if (!this.isOpenPopOfAuthenticate) { 
 
@@ -345,20 +347,20 @@ export class LoginService {
   }
 
   validateAccessModule(pModuleKey: string): boolean {
-    
-        if (this.company()) {
-            const _modules = PlantillaHelper.buscarValorMultiple(this.company().propiedades, PlantillaHelper.APP_MODULES);
-            if (_modules) {
-                for (let index = 0; index < _modules.length; index++) {
-                    const element = _modules[index];
-                    if (element.valor === pModuleKey) {
-                        return true;
-                        
-                    }
-                }
-            }
+
+    if (this.company()) {
+      const _modules = PlantillaHelper.buscarValorMultiple(this.company().propiedades, PlantillaHelper.APP_MODULES);
+      if (_modules) {
+        for (let index = 0; index < _modules.length; index++) {
+          const element = _modules[index];
+          if (element.valor === pModuleKey) {
+            return true;
+
+          }
         }
-        return false;
       }
+    }
+    return false;
+  }
 
 }

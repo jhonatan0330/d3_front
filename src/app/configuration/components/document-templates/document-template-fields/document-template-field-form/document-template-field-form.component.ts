@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -8,7 +9,6 @@ import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'a
 import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { PropertyPanelComponent } from '../../../shared/property-panel/property-panel.component';
-import Swal from 'sweetalert2';
 
 interface FieldFormData {
     field?: DocumentoPlantillaCaracteristicaDTO;
@@ -22,6 +22,7 @@ interface FieldFormData {
     templateUrl: './document-template-field-form.component.html',
 })
 export class DocumentTemplateFieldFormComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<DocumentTemplateFieldFormComponent>>(MatDialogRef);
     public data = inject<FieldFormData>(MAT_DIALOG_DATA);
 
@@ -80,12 +81,12 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Campo guardado correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Campo guardado correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar el campo', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar el campo', 'error');
             }
         });
     }

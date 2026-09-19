@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -12,7 +13,6 @@ import { ProcessSelectorComponent } from '../../shared/process-selector/process-
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { DocumentTemplateFieldListComponent } from '../document-template-fields/document-template-field-list/document-template-field-list.component';
 import { DocumentTemplateReportListComponent } from '../document-template-reports/document-template-report-list/document-template-report-list.component';
-import Swal from 'sweetalert2';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -22,6 +22,7 @@ import { forkJoin } from 'rxjs';
     templateUrl: './document-template-form.component.html',
 })
 export class DocumentTemplateFormComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<DocumentTemplateFormComponent>>(MatDialogRef);
     public data = inject<DocumentoPlantillaDTO | { template: string } | null>(MAT_DIALOG_DATA);
 
@@ -72,7 +73,7 @@ export class DocumentTemplateFormComponent implements OnInit {
             },
             error: () => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo consultar la plantilla de documento', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo consultar la plantilla de documento', 'error');
             }
         });
     }
@@ -113,12 +114,12 @@ export class DocumentTemplateFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Plantilla de documento guardada correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Plantilla de documento guardada correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar la plantilla de documento', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar la plantilla de documento', 'error');
             }
         });
     }

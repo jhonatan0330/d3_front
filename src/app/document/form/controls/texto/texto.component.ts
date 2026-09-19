@@ -1,16 +1,16 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy , inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {  PedidoVentaCaracteristicaFilterDTO } from 'app/document/document.types';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { BarcodeFormat } from '@zxing/library';
-import Swal from 'sweetalert2';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { DireccionesComponent } from './direcciones/direcciones.component';
 import { TitleCasePipe } from '@angular/common';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-texto',
@@ -25,7 +25,7 @@ export class TextoComponent extends BaseComponent implements OnInit {
   formatText = '';
   allowedFormats = [BarcodeFormat.QR_CODE, BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX];
   readingQR = false;
-
+private notificationCenter = inject(NotificationCenterService);
   valorDefecto: string;
 
   fControl = new FormControl('');
@@ -102,7 +102,7 @@ export class TextoComponent extends BaseComponent implements OnInit {
     audio.load();
     audio.play();
     this.fControl.setValue(resultString + this.fControl.value);
-    Swal.fire({
+    this.notificationCenter.fire({
       position: 'center',
       icon: 'info',
       title: resultString,

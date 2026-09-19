@@ -11,7 +11,6 @@ import { PropiedadCampoDTO, PropiedadDTO, PropiedadValorDefinidoDTO, RelacionInt
 import { UsuarioDTO, RolAccesoFilterDTO } from 'app/authentication/authentication.domain';
 import { PropertyService, PropertyValueService } from 'app/configuration/configuracion.api';
 import { PropertyRelationsComponent } from '../property-relations/property-relations.component';
-import Swal from 'sweetalert2';
 
 interface ModalData {
     propiedad?: PropiedadCampoDTO;
@@ -223,7 +222,7 @@ export class PropertyModalComponent implements OnInit {
             },
             error: (err) => {
                 this.cargando.set(false);
-                //Swal.fire('Error', 'No se pudo guardar la propiedad', 'error');
+                //this.notificationCenter.fire('Error', 'No se pudo guardar la propiedad', 'error');
             }
         });
     }

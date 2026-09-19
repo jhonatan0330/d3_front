@@ -2,9 +2,9 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import Swal from 'sweetalert2';
 import { LoginService } from '../login.service';
 import { ParticleBackgroundDirective } from '../shared/particle-background';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-new-password',
@@ -17,6 +17,7 @@ export class NewPasswordComponent implements OnInit {
   private router = inject(Router);
   private loginService = inject(LoginService);
   private destroyRef = inject(DestroyRef);
+  private notificationCenter = inject(NotificationCenterService);
 
 
   recoverForm: FormGroup<{ first: FormControl<string | null>, second: FormControl<string | null> }>;
@@ -44,7 +45,7 @@ export class NewPasswordComponent implements OnInit {
     const signinData = this.recoverForm.value;
 
     if(signinData.first !== signinData.second){
-      Swal.fire('Confirma el password', 'Tu nueva clave no concuerda con la segunda clave.','error');
+      this.notificationCenter.fire('Confirma el password', 'Tu nueva clave no concuerda con la segunda clave.','error');
       return;
     }
 
@@ -54,7 +55,7 @@ export class NewPasswordComponent implements OnInit {
       .subscribe({
       next: () => {
         this.loginService.signout();
-        Swal.fire('Todo perfecto', 'Tu nueva clave se ha confirmado, agradecemos tu paciencia, mejoramos para cuidar tu seguridad.','info');
+        this.notificationCenter.fire('Todo perfecto', 'Tu nueva clave se ha confirmado, agradecemos tu paciencia, mejoramos para cuidar tu seguridad.','info');
         this.router.navigateByUrl('sign-in');
       },
       error: (err:string) => {

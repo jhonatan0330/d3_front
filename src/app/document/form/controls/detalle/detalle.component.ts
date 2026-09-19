@@ -8,13 +8,11 @@ import {
   PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
   ProductoDTO,
-  RelacionInternaDTO,
-  RelacionInternaFilterDTO
+  RelacionInternaDTO
 } from 'app/document/document.types';
 import { ApiService } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import Swal from 'sweetalert2';
 import { BaseComponent } from '../base/base.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
@@ -26,6 +24,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow } from '@angular/material/table';
 import { DecimalPipe, TitleCasePipe } from '@angular/common';
 import { ImageFormatPipe } from 'app/shared/local-image';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 
 @Component({
@@ -41,6 +40,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   private cd = inject(ChangeDetectorRef);
   private utilsService = inject(UtilsService);
   private dialog = inject(MatDialog);
+  private notificationCenter = inject(NotificationCenterService);
 
   unicoProducto = false;
   fControl = new FormControl(''); // Texto que digita el usuario para filtrar
@@ -226,7 +226,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         } else {
           this.productosDisponibles = Object.assign([], _value.campoDTO.productos);
           if (this.productosDisponibles.length === 0) {
-            Swal.fire('Sin resultados', 'No encontramos resultados por el filtro' + this.fControl.value, 'info');
+            this.notificationCenter.fire('Sin resultados', 'No encontramos resultados por el filtro' + this.fControl.value, 'info');
           } else {
             if (this.productosDisponibles.length === 1) {
               this.addProduct(this.productosDisponibles[0]);

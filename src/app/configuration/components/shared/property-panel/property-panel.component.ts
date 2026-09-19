@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { PropiedadDTO, PropiedadCampoDTO } from 'app/shared/shared.domain';
 import { PropertyService } from 'app/configuration/configuracion.api';
 import { PropertyModalComponent } from '../property-modal/property-modal.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 interface PropertyPanelData {
     campoKey: string;
@@ -21,6 +21,7 @@ interface PropertyPanelData {
     templateUrl: './property-panel.component.html',
 })
 export class PropertyPanelComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     private propertyService = inject(PropertyService);
     private dialog = inject(MatDialog);
     public dialogRef = inject<MatDialogRef<PropertyPanelComponent>>(MatDialogRef);
@@ -63,7 +64,7 @@ export class PropertyPanelComponent implements OnInit {
     }
 
     inactivar(prop: PropiedadDTO): void {
-        Swal.fire({
+        this.notificationCenter.fire({
             title: '¿Anular propiedad?',
             text: `Se anulará la propiedad ${prop.nombre}. Esta acción no se puede deshacer.`,
             icon: 'warning',
@@ -74,11 +75,11 @@ export class PropertyPanelComponent implements OnInit {
             if (result.isConfirmed) {
                 this.propertyService.inactivateProperty(prop).subscribe({
                     next: () => {
-                        Swal.fire('Anulada', 'Propiedad anulada correctamente', 'success');
+                        this.notificationCenter.fire('Anulada', 'Propiedad anulada correctamente', 'success');
                         this.loadPropiedades();
                     },
                     error: () => {
-                        Swal.fire('Error', 'No se pudo anular la propiedad', 'error');
+                        this.notificationCenter.fire('Error', 'No se pudo anular la propiedad', 'error');
                     }
                 });
             }

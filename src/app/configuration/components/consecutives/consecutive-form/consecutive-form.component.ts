@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { ConsecutivoDTO } from 'app/document/document.types';
 import { ConsecutiveService } from 'app/configuration/configuracion.api';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-consecutive-form',
@@ -18,7 +18,7 @@ export class ConsecutiveFormComponent implements OnInit {
     public data = inject<ConsecutivoDTO | null>(MAT_DIALOG_DATA);
 
     private service = inject(ConsecutiveService);
-
+    private notificationCenter = inject(NotificationCenterService);
     consecutivo: ConsecutivoDTO = new ConsecutivoDTO();
     cargando = false;
 
@@ -47,12 +47,12 @@ export class ConsecutiveFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Consecutivo guardado correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Consecutivo guardado correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar el consecutivo', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar el consecutivo', 'error');
             }
         });
     }

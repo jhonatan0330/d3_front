@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -8,7 +9,6 @@ import { IndicatorConfigService } from 'app/configuration/configuracion.api';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-indicator-form',
@@ -17,6 +17,7 @@ import Swal from 'sweetalert2';
   templateUrl: './indicator-form.component.html',
 })
 export class IndicatorFormComponent implements OnInit {
+  private notificationCenter = inject(NotificationCenterService);
   public dialogRef = inject<MatDialogRef<IndicatorFormComponent>>(MatDialogRef);
   public data = inject<IndicatorDTO | null>(MAT_DIALOG_DATA);
   private dialog = inject(MatDialog);
@@ -51,12 +52,12 @@ export class IndicatorFormComponent implements OnInit {
     request.subscribe({
       next: (res) => {
         this.cargando = false;
-        Swal.fire('Éxito', this.indicador.llaveTabla ? 'Indicador actualizado correctamente' : 'Indicador creado correctamente', 'success');
+        this.notificationCenter.fire('Éxito', this.indicador.llaveTabla ? 'Indicador actualizado correctamente' : 'Indicador creado correctamente', 'success');
         this.dialogRef.close(res);
       },
       error: () => {
         this.cargando = false;
-        Swal.fire('Error', 'No se pudo guardar el indicador', 'error');
+        this.notificationCenter.fire('Error', 'No se pudo guardar el indicador', 'error');
       },
     });
   }

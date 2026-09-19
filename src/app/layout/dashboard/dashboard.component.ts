@@ -1,4 +1,4 @@
-import { Component, effect, AfterViewInit, ChangeDetectionStrategy, DestroyRef, ElementRef, inject, OnDestroy, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, AfterViewInit, ChangeDetectionStrategy, DestroyRef, ElementRef, inject, OnDestroy, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PedidoVentaDTO } from 'app/document/document.types';
@@ -30,17 +30,15 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   readonly activeSlide = signal(0);
   private autoplayId?: ReturnType<typeof setInterval>;
 
-  company: OrganizacionDTO | undefined;
+  readonly company = computed<OrganizacionDTO | undefined>(() => {
+    const company = this.loginservice.company();
+    return (company && company.llaveTabla) ? company : undefined;
+  });
 
   tempTemplateOpen;
   tempIdOpen;
 
   constructor() {
-    effect(() => {
-      const company = this.loginservice.company();
-      this.company = (company && company.llaveTabla) ? company : undefined;
-    });
-
     effect(() => {
       const date = this.loginservice.date();
       if (!date) { return; }

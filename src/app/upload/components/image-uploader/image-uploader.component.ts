@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { UploadService } from 'app/upload/upload.api';
-import Swal from 'sweetalert2';
 import { ImageFormatPipe } from 'app/shared/local-image';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-image-uploader',
@@ -22,6 +22,7 @@ export class ImageUploaderComponent {
     private uploadService = inject(UploadService);
     private ls = inject(LocalStoreService);
     private destroyRef = inject(DestroyRef);
+    private notificationCenter = inject(NotificationCenterService);
 
     private static IMAGE_TYPE = 'image/jpeg';
     private static IMAGE_QUALITY = 0.92;
@@ -61,7 +62,7 @@ export class ImageUploaderComponent {
 
     async abrirCamara(): Promise<void> {
         if (!navigator.mediaDevices?.getUserMedia) {
-            Swal.fire('Cámara', 'No se dispone de dispositivo de video', 'error');
+            this.notificationCenter.fire('Cámara', 'No se dispone de dispositivo de video', 'error');
             return;
         }
         try {
@@ -75,7 +76,7 @@ export class ImageUploaderComponent {
                 this.dataUrl.set(null);
             }
         } catch (e: any) {
-            Swal.fire('Cámara', e?.message || 'Error desconocido', 'error');
+            this.notificationCenter.fire('Cámara', e?.message || 'Error desconocido', 'error');
         }
     }
 
@@ -130,11 +131,11 @@ export class ImageUploaderComponent {
                     this.dataUrl.set(null);
                     this.revisando.set(false);
                     this.subiendo.set(false);
-                    Swal.fire('Éxito', 'Imagen subida correctamente', 'success');
+                    this.notificationCenter.fire('Éxito', 'Imagen subida correctamente', 'success');
                 },
                 error: () => {
                     this.subiendo.set(false);
-                    Swal.fire('Error', 'No se pudo subir la imagen', 'error');
+                    this.notificationCenter.fire('Error', 'No se pudo subir la imagen', 'error');
                 }
             });
     }

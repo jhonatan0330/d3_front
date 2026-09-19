@@ -8,7 +8,7 @@ import { ServidorDTO } from 'app/document/document.types';
 import { ServerService } from 'app/configuration/configuracion.api';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
 import { MatIconModule } from '@angular/material/icon';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-server-form',
@@ -25,6 +25,8 @@ export class ServerFormComponent implements OnInit {
 
     servidor: ServidorDTO = new ServidorDTO();
     cargando = false;
+
+    private notificationCenter = inject(NotificationCenterService);
 
     ngOnInit(): void {
         if (this.data) { this.servidor = { ...this.data }; }
@@ -53,12 +55,12 @@ export class ServerFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Servidor guardado correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Servidor guardado correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar el servidor', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar el servidor', 'error');
             }
         });
     }

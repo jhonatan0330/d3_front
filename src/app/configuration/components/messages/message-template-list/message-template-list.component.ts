@@ -10,8 +10,8 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropd
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { MensajePlantillaCorreoDTO, MensajePlantillaCorreoFilterDTO } from 'app/document/document.types';
 import { MessageTemplateService } from 'app/configuration/configuracion.api';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { MessageTemplateFormComponent } from '../../message-templates/message-template-form/message-template-form.component';
-import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-message-template-list',
@@ -30,6 +30,7 @@ import Swal from 'sweetalert2';
     templateUrl: './message-template-list.component.html',
 })
 export class MessageTemplateListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private notificationCenter = inject(NotificationCenterService);
     private templateService = inject(MessageTemplateService);
     private dialog = inject(MatDialog);
     @ViewChild('loadMoreTpl') loadMoreTplRef!: ElementRef<HTMLDivElement>;
@@ -104,7 +105,7 @@ export class MessageTemplateListComponent implements OnInit, AfterViewInit, OnDe
     toggleTemplateStatus(item: MensajePlantillaCorreoDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({
+        this.notificationCenter.fire({
             title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} plantilla?`,
             icon: 'question', showCancelButton: true,
             confirmButtonText: 'Sí', cancelButtonText: 'Cancelar'
@@ -112,8 +113,8 @@ export class MessageTemplateListComponent implements OnInit, AfterViewInit, OnDe
             if (result.isConfirmed) {
                 const updated = { ...item, estado: newEstado };
                 this.templateService.inactivateTemplate(updated).subscribe({
-                    next: () => { Swal.fire('Éxito', `Plantilla ${action}da correctamente`, 'success'); this.reload(); },
-                    error: () => Swal.fire('Error', `No se pudo ${action} la plantilla`, 'error')
+                    next: () => { this.notificationCenter.fire('Éxito', `Plantilla ${action}da correctamente`, 'success'); this.reload(); },
+                    error: () => this.notificationCenter.fire('Error', `No se pudo ${action} la plantilla`, 'error')
                 });
             }
         });

@@ -8,8 +8,8 @@ import {
 
 import { formatDate } from '@angular/common';
 
-import Swal from 'sweetalert2';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 export function getFieldFromTemplate(template: DocumentoPlantillaDTO, fieldId: string): DocumentoPlantillaCaracteristicaDTO | null {
   if (!template || !template.caracteristicas) return null;
@@ -42,7 +42,8 @@ export function getXMLBase(
 }
 
 export function procesarXMLBase(
-  pCampo: PedidoVentaCaracteristicaDTO
+  pCampo: PedidoVentaCaracteristicaDTO,
+  notificationCenter: NotificationCenterService
 ): PedidoVentaCaracteristicaDTO | null {
   const result: PedidoVentaCaracteristicaDTO = pCampo;
   switch (pCampo.campoDTO.formato) {
@@ -78,12 +79,12 @@ export function procesarXMLBase(
             //Cambio el orden de la fecha
             if (!pCampo.valorText.match(formatoDate)) {
               if (fechaHora) {
-                Swal.fire('Formato incorrecto',
+                notificationCenter.fire('Formato incorrecto',
                 'El valor fecha no esta con el formato correcto utiliza el formato año/Mes/dia hora:minuto como el siguiente ejemplo 2023/04/26 23:59.      La fecha actualmente tiene este formato ' + pCampo.valorText,
                 'error'
               );
               } else { 
-                Swal.fire('Formato incorrecto',
+                notificationCenter.fire('Formato incorrecto',
                 'El valor fecha no esta con el formato correcto utiliza el formato año/Mes/dia como el siguiente ejemplo 2023/04/26.      La fecha actualmente tiene este formato ' + pCampo.valorText,
                 'error'
               );
@@ -149,13 +150,13 @@ export function procesarXMLBase(
                   return pCampo;
                 }
               }
-              Swal.fire('Info',
+              notificationCenter.fire('Info',
                 'El codigo del documento no se encuentra en los que tiene cargados el campo : ' +
                 pCampo.valorText, 'error'
               );
               return null;
             } else {
-              Swal.fire('Info', 'El campo es autoload pero no tiene cargado items', 'error');
+              notificationCenter.fire('Info', 'El campo es autoload pero no tiene cargado items', 'error');
               return null;
             }
           } else {*/
@@ -164,7 +165,7 @@ export function procesarXMLBase(
               PlantillaHelper.PLANTILLA_AUXILIAR
             );
             if (!plantilla) {
-              Swal.fire('Falta configurar campo',
+              notificationCenter.fire('Falta configurar campo',
                 'El campo '  + pCampo.campoDTO.nombre +' no tiene una fuente de datos en donde pueda buscar el numero del documento.',
                 'info'
               );

@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ProcesoDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { ProcessTransitionFormComponent } from '../process-transition-form/process-transition-form.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-process-transition-list',
@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
     templateUrl: './process-transition-list.component.html',
 })
 export class ProcessTransitionListComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(ProcessService);
     private dialog = inject(MatDialog);
 
@@ -60,7 +61,7 @@ export class ProcessTransitionListComponent implements OnInit {
     toggleStatus(item: ProcesoTransicionDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} transición?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateTransition(updated).subscribe({ next: () => { Swal.fire('Éxito', `Transición ${action}da correctamente`, 'success'); this.loadTransitions(); }, error: () => Swal.fire('Error', `No se pudo ${action} la transición`, 'error') }); }});
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} transición?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateTransition(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Transición ${action}da correctamente`, 'success'); this.loadTransitions(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} la transición`, 'error') }); }});
     }
 }

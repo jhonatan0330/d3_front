@@ -6,11 +6,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
 import { ProcesoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
 import { ProcessTransitionListComponent } from '../process-transitions/process-transition-list/process-transition-list.component';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
-import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-process-form',
@@ -19,6 +19,7 @@ import Swal from 'sweetalert2';
     templateUrl: './process-form.component.html',
 })
 export class ProcessFormComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<ProcessFormComponent>>(MatDialogRef);
     public data = inject<ProcesoDTO | null>(MAT_DIALOG_DATA);
 
@@ -65,12 +66,12 @@ export class ProcessFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Proceso guardado correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Proceso guardado correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar el proceso', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar el proceso', 'error');
             }
         });
     }

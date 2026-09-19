@@ -9,7 +9,6 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO } from 'app/document/document.types';
 import { WebServiceConfigService } from 'app/configuration/configuracion.api';
-import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-web-service-execute-list',

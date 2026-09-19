@@ -10,7 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ProcesoTransicionAutomaticaDTO } from 'app/document/document.types';
 import { AutoTaskService } from 'app/configuration/configuracion.api';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 interface ScheduleDialogData {
     task: ProcesoTransicionAutomaticaDTO;
@@ -27,7 +27,7 @@ export class AutoTaskScheduleDialogComponent implements OnInit {
     private service = inject(AutoTaskService);
     public dialogRef = inject<MatDialogRef<AutoTaskScheduleDialogComponent>>(MatDialogRef);
     public data = inject<ScheduleDialogData>(MAT_DIALOG_DATA);
-
+    private notificationCenter = inject(NotificationCenterService);
     scheduleType = 'cron';
     cronExpression = '';
     onceDate: Date | null = null;
@@ -94,12 +94,12 @@ export class AutoTaskScheduleDialogComponent implements OnInit {
         this.service.scheduleAutoTask(this.data.task.llaveTabla, programacion).subscribe({
             next: () => {
                 this.cargando = false;
-                Swal.fire('Programado', 'Tarea programada correctamente', 'success');
+                this.notificationCenter.fire('Programado', 'Tarea programada correctamente', 'success');
                 this.dialogRef.close(true);
             },
             error: () => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo programar la tarea', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo programar la tarea', 'error');
             }
         });
     }

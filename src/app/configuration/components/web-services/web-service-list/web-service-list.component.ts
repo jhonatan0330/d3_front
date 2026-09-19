@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,13 +17,12 @@ import { WebServiceFormComponent } from '../web-service-form/web-service-form.co
 import { WebServiceExecuteDialogComponent } from '../web-service-execute-dialog/web-service-execute-dialog.component';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-web-service-list',
     standalone: true,
     imports: [
-        CommonModule,
         FormsModule,
         MatDialogModule,
         MatIconModule,
@@ -43,6 +41,7 @@ export class WebServiceListComponent implements OnInit, AfterViewInit, OnDestroy
     private dialog = inject(MatDialog);
     @ViewChild('loadMoreWs') loadMoreWsRef!: ElementRef<HTMLDivElement>;
     private wsObserver?: IntersectionObserver;
+    private notificationCenter = inject(NotificationCenterService);   
 
     private readonly pageSize = 25;
 
@@ -122,7 +121,7 @@ export class WebServiceListComponent implements OnInit, AfterViewInit, OnDestroy
     toggleStatus(item: WebServiceDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} web service?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateWebService(updated).subscribe({ next: () => { Swal.fire('Éxito', `Web Service ${action}do correctamente`, 'success'); this.reload(); }, error: () => Swal.fire('Error', `No se pudo ${action} el web service`, 'error') }); }});
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} web service?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateWebService(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Web Service ${action}do correctamente`, 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el web service`, 'error') }); }});
     }
 }

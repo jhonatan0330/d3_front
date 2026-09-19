@@ -38,9 +38,29 @@ export class NotificationCenterService {
     this.info('Fecha recibida', text);
   }
 
-  // Forward any swal options directly and return the promise
-  fire(options: any): Promise<any> {
-    return Swal.fire(options);
+  // Forward SweetAlert2 arguments directly and return the promise
+  fire(...args: any[]): Promise<any> {
+    return (Swal.fire as (...args: any[]) => Promise<any>)(...args);
+  }
+
+  showLoading(): void {
+    Swal.showLoading();
+  }
+
+  getPopup(): HTMLElement | null {
+    return Swal.getPopup();
+  }
+
+  getTimerLeft(): number {
+    return Swal.getTimerLeft() ?? 0;
+  }
+
+  close(): void {
+    Swal.close();
+  }
+
+  isVisible(): boolean {
+    return Swal.isVisible();
   }
 
   // Simple toast helper (uses Swal's toast mode)

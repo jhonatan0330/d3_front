@@ -9,7 +9,6 @@ import { ReporteBaseDTO } from 'app/document/document.types';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { FormReportService } from 'app/report/business/form-report.service';
 
-import Swal from 'sweetalert2';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -199,7 +198,7 @@ export class ManualFormComponent implements OnInit {
     
     deleteVouchers(voucher: ManualDTO) {
     
-            Swal.fire({
+            this.notificationCenter.fire({
                 title: '¿Desea eliminar el comprobante?',
                 text: voucher.code,
                 icon: "warning",

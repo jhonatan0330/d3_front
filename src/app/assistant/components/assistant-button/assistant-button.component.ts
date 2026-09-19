@@ -5,6 +5,7 @@ import {
 
 import { MatIconModule } from '@angular/material/icon';
 import { AssistantService } from 'app/assistant/business/assistant.service';
+import { LoginService } from 'app/authentication/login.service';
 
 @Component({
     selector: 'app-assistant-button',
@@ -17,6 +18,7 @@ import { AssistantService } from 'app/assistant/business/assistant.service';
 export class AssistantButtonComponent  {
 
     readonly assistantService = inject(AssistantService);
+    readonly loginService = inject(LoginService);
 
     onAssistantClick(): void {
         this.assistantService.togglePanel();

@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -15,7 +16,6 @@ import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
 import { DocumentTemplateFormComponent } from '../document-template-form/document-template-form.component';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
-import Swal from 'sweetalert2';
 import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/configuration.types';
 
 @Component({
@@ -25,6 +25,7 @@ import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/configurat
     templateUrl: './document-template-list.component.html',
 })
 export class DocumentTemplateListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(DocumentTemplateService);
     private dialog = inject(MatDialog);
     @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
@@ -109,14 +110,14 @@ export class DocumentTemplateListComponent implements OnInit, AfterViewInit, OnD
     }
 
     duplicateTemplate(item: DocumentoPlantillaDTO): void {
-        Swal.fire({ title: '¿Duplicar plantilla?', text: 'Se creará una copia con los mismos campos y reportes.', icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, duplicar', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { this.service.duplicateTemplate(item.llaveTabla).subscribe({ next: () => { Swal.fire('Duplicado', 'Plantilla duplicada correctamente', 'success'); this.reload(); }, error: () => Swal.fire('Error', 'No se pudo duplicar la plantilla', 'error') }); }});
+        this.notificationCenter.fire({ title: '¿Duplicar plantilla?', text: 'Se creará una copia con los mismos campos y reportes.', icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, duplicar', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { this.service.duplicateTemplate(item.llaveTabla).subscribe({ next: () => { this.notificationCenter.fire('Duplicado', 'Plantilla duplicada correctamente', 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', 'No se pudo duplicar la plantilla', 'error') }); }});
     }
 
     toggleStatus(item: DocumentoPlantillaDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} plantilla?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateTemplate(updated).subscribe({ next: () => { Swal.fire('Éxito', `Plantilla ${action}da correctamente`, 'success'); this.reload(); }, error: () => Swal.fire('Error', `No se pudo ${action} la plantilla`, 'error') }); }});
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} plantilla?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateTemplate(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Plantilla ${action}da correctamente`, 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} la plantilla`, 'error') }); }});
     }
 }

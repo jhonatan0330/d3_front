@@ -11,8 +11,8 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropd
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { MensajeDTO, MensajeFilterDTO } from 'app/document/document.types';
 import { MessageService } from 'app/configuration/configuracion.api';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { MessageDetailComponent } from '../message-detail/message-detail.component';
-import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-message-list',
@@ -32,6 +32,7 @@ import Swal from 'sweetalert2';
     templateUrl: './message-list.component.html',
 })
 export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private notificationCenter = inject(NotificationCenterService);
     private messageService = inject(MessageService);
     private dialog = inject(MatDialog);
     @ViewChild('loadMoreMsg') loadMoreMsgRef!: ElementRef<HTMLDivElement>;
@@ -126,7 +127,7 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     resendMessage(msg: MensajeDTO): void {
-        Swal.fire({
+        this.notificationCenter.fire({
             title: '¿Reenviar mensaje?',
             text: 'Se intentará enviar nuevamente el mensaje.',
             icon: 'question', showCancelButton: true,
@@ -135,8 +136,8 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
         }).then((result) => {
             if (result.isConfirmed) {
                 this.messageService.resendMessage(msg.llaveTabla).subscribe({
-                    next: () => { Swal.fire('Éxito', 'Mensaje reenviado correctamente', 'success'); this.reload(); },
-                    error: () => Swal.fire('Error', 'No se pudo reenviar el mensaje', 'error')
+                    next: () => { this.notificationCenter.fire('Éxito', 'Mensaje reenviado correctamente', 'success'); this.reload(); },
+                    error: () => this.notificationCenter.fire('Error', 'No se pudo reenviar el mensaje', 'error')
                 });
             }
         });

@@ -10,10 +10,7 @@ export class FormReportService {
   private templateService = inject(TemplateService);
 
   buildReportUrl(reporte: ReporteBaseDTO, pKey: string): string {
-    let serverUrl = reporte.servidorUrl;
-    if (!serverUrl) {
-      serverUrl = this.ls.getItem(LocalConstants.URL_CONF);
-    }
+    const serverUrl = (reporte.servidorUrl || this.ls.getItem(LocalConstants.URL_CONF) || '').replace(/\/+$/, '');
     const tenantId = this.ls.getItem(LocalConstants.TENANT_ID);
     const reportPath = tenantId ? '/' + tenantId + '/report/generate' : '/report/generate';
     let url = serverUrl + reportPath + '?nombre=' + reporte.llaveTabla + '&P_KEY=' + pKey + '&P_TOKEN=' + this.templateService.getTokenConnection(serverUrl);

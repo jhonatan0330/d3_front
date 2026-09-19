@@ -5,7 +5,6 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow } from '@angular/material/table';
-import Swal from 'sweetalert2';
 import { UtilsService } from 'app/document/service/utils.service';
 import { LoginService } from 'app/authentication/login.service';
 import { Router } from '@angular/router';
@@ -17,6 +16,7 @@ import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { AccountingService } from 'app/accounting/accounting.api';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 interface AccountNode {
     account: AccountDTO;
@@ -45,6 +45,8 @@ export class AccountComponent implements OnInit, OnDestroy {
     private _jwt = inject(LoginService);
     private _router = inject(Router);
     private destroyRef = inject(DestroyRef);
+    private notificationCenter = inject(NotificationCenterService);
+    
 
     readonly drawer = viewChild<ElementRef>('drawer');
 
@@ -143,7 +145,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     deleteVouchers(voucher: ManualDTO) {
 
-        Swal.fire({
+        this.notificationCenter.fire({
             title: '¿Desea eliminar el comprobante?',
             text: voucher.code,
             icon: "warning",

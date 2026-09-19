@@ -7,7 +7,7 @@ import { ProcessService } from 'app/configuration/configuracion.api';
 import { PropertyPanelComponent } from '../../../shared/property-panel/property-panel.component';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { MatIconModule } from '@angular/material/icon';
-import Swal from 'sweetalert2';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 interface TransitionFormData {
     transition?: ProcesoTransicionDTO;
@@ -21,6 +21,7 @@ interface TransitionFormData {
     templateUrl: './process-transition-form.component.html',
 })
 export class ProcessTransitionFormComponent implements OnInit {
+    private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<ProcessTransitionFormComponent>>(MatDialogRef);
     public data = inject<TransitionFormData>(MAT_DIALOG_DATA);
 
@@ -62,12 +63,12 @@ export class ProcessTransitionFormComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando = false;
-                Swal.fire('Éxito', 'Transición guardada correctamente', 'success');
+                this.notificationCenter.fire('Éxito', 'Transición guardada correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: (err) => {
                 this.cargando = false;
-                Swal.fire('Error', 'No se pudo guardar la transición', 'error');
+                this.notificationCenter.fire('Error', 'No se pudo guardar la transición', 'error');
             }
         });
     }

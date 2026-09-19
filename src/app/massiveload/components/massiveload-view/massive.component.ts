@@ -18,7 +18,6 @@ import { saveAs } from 'file-saver';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import * as XLSX from 'xlsx';
-import Swal from 'sweetalert2';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
@@ -28,6 +27,7 @@ import { MatIcon } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { UploadService } from 'app/upload/upload.api';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'app-massive',
@@ -37,6 +37,7 @@ import { UploadService } from 'app/upload/upload.api';
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MassiveComponent implements OnInit {
+  private notificationCenter = inject(NotificationCenterService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private templateService = inject(TemplateService);
@@ -138,7 +139,7 @@ export class MassiveComponent implements OnInit {
         );
 
         if (!crudProperty) {
-          Swal.fire(
+          this.notificationCenter.fire(
             'Unsupported',
             'No encotramos la propiedad CRUD del campo ' + fieldMultiple.nombre
           );
@@ -188,7 +189,7 @@ export class MassiveComponent implements OnInit {
       }
     }
     if (!this.fieldIdInTemplateSecondary()) {
-      Swal.fire(
+      this.notificationCenter.fire(
         'Unsupported',
         'En la plantilla ' +
         template.nombre +
@@ -221,7 +222,7 @@ export class MassiveComponent implements OnInit {
 
   validateCamposPlantilla(template: DocumentoPlantillaDTO): boolean {
     if (template.caracteristicas === null) {
-      Swal.fire(
+      this.notificationCenter.fire(
         '',
         'Revisa porque no tienes caracteristicas de la plantilla ' +
         template.nombre,
@@ -254,7 +255,7 @@ export class MassiveComponent implements OnInit {
       this.isLoading.set(false);
       return xmlBase.toString();
     } catch (error) {
-      Swal.fire('', error.message, 'error');
+      this.notificationCenter.fire('', error.message, 'error');
       this.isLoading.set(false);
     }
     return '';
@@ -274,7 +275,7 @@ export class MassiveComponent implements OnInit {
       this.isLoading.set(false);
       return xmlBase.toString();
     } catch (error) {
-      Swal.fire('', error.message, 'error');
+      this.notificationCenter.fire('', error.message, 'error');
       this.isLoading.set(false);
     }
     return '';
@@ -303,7 +304,7 @@ export class MassiveComponent implements OnInit {
 
   handleFileInputMultiple(files: FileList) {
     if (!this.fieldIdInTemplateSecondary()) {
-      Swal.fire(
+      this.notificationCenter.fire(
         'Unsupported',
         'No encontramos la propiedad carga masiva plantilla multiple '
       );
@@ -332,7 +333,7 @@ export class MassiveComponent implements OnInit {
         return;
       }
     } else {
-      Swal.fire('Carga plantilla',
+      this.notificationCenter.fire('Carga plantilla',
         'No encontramos la informacion de la plantilla',
         'info'
       );
@@ -385,7 +386,7 @@ export class MassiveComponent implements OnInit {
       encabezado = 1;
     } else {
       if (!window.DOMParser) {
-        Swal.fire('Unsupported', 'Intente en explorador chrome');
+        this.notificationCenter.fire('Unsupported', 'Intente en explorador chrome');
         return;
       }
 
@@ -400,7 +401,7 @@ export class MassiveComponent implements OnInit {
     }
 
     if (documentos.length > 20000) {
-      Swal.fire(
+      this.notificationCenter.fire(
         'Cantidad maxima',
         'El maximo de documentos a cargar son 20000',
         'info'
@@ -425,7 +426,7 @@ export class MassiveComponent implements OnInit {
         this.dataSource.set(new MatTableDataSource(this.documentosGenerados()));
         if (!this.documentosGenerados() || this.documentosGenerados().length === 0) {
           this.lblCarga.set(this.lblCarga() + 'Revisa la carga debido a que no se generaron documentos');
-          //Swal.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
+          //this.notificationCenter.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
           return;
         }
         this.inicio = new Date();
@@ -442,7 +443,7 @@ export class MassiveComponent implements OnInit {
           template
         ));
         if (!this.documentosGeneradosMultiple() || this.documentosGeneradosMultiple().length === 0) {
-          Swal.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
+          this.notificationCenter.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
           return;
         }
         this.inicio = new Date();
@@ -501,7 +502,7 @@ export class MassiveComponent implements OnInit {
             if (this.formatStringXML(iCampo.nombre) === nombreCampoXML) {
               campo.valorText = camposTexto[j].textContent;
               if(campo.valorText) {campo.valorText = campo.valorText.trim();}
-              campo = procesarXMLBase(campo)!;
+              campo = procesarXMLBase(campo, this.notificationCenter)!;
               break;
             }
           }
@@ -513,7 +514,7 @@ export class MassiveComponent implements OnInit {
                 campo.valorText = source[i][j].toString();
                 if(campo.valorText) {campo.valorText = campo.valorText.trim();}
               }
-              campo = procesarXMLBase(campo)!;
+              campo = procesarXMLBase(campo, this.notificationCenter)!;
               break;
             }
           }
@@ -571,7 +572,7 @@ export class MassiveComponent implements OnInit {
       for (const key of map.keys()) {
         if (!key.endsWith("_NUMID") && !key.startsWith("UPDATE_")) { camposSinValidar = key + ", " + camposSinValidar; }
       }
-      if (camposSinValidar) Swal.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar, "warning");
+      if (camposSinValidar) this.notificationCenter.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar, "warning");
     }
   }
 
@@ -613,11 +614,11 @@ export class MassiveComponent implements OnInit {
     )
       return;
     if (!campo || !campo.llaveTabla) {
-      Swal.fire('', 'No se puede acumular un proceso sin campo', 'info');
+      this.notificationCenter.fire('', 'No se puede acumular un proceso sin campo', 'info');
       return;
     }
     if (!id) {
-      Swal.fire('', 'No se puede acumular un proceso sin id', 'info');
+      this.notificationCenter.fire('', 'No se puede acumular un proceso sin id', 'info');
       return;
     }
     for (let index = 0; index < this.camposConsultar.length; index++) {
@@ -810,7 +811,7 @@ export class MassiveComponent implements OnInit {
 
         if(tiempoEspera > 2){
           let timerInterval;
-          Swal.fire({
+          this.notificationCenter.fire({
             title: "Esperando!",
             html: "Se guardara el siguiente registro en <b></b> milliseconds.",
             timer: tiempoEspera * 1000,
@@ -818,10 +819,10 @@ export class MassiveComponent implements OnInit {
             position: "top-end",
             toast: true,
             didOpen: () => {
-              Swal.showLoading();
-              const timer = Swal.getPopup()!.querySelector("b");
+              this.notificationCenter.showLoading();
+              const timer = this.notificationCenter.getPopup()!.querySelector("b");
               timerInterval = setInterval(() => {
-                timer!.textContent = `${Swal.getTimerLeft()}`;
+                timer!.textContent = `${this.notificationCenter.getTimerLeft()}`;
               }, 100);
             },
             willClose: () => {
@@ -861,7 +862,7 @@ export class MassiveComponent implements OnInit {
                   if(this.skipSelected){
                     this.procesarDocumentos();
                   }else{
-                    Swal.fire({
+                    this.notificationCenter.fire({
                       title: 'Se ha presentado un error, ' + err + ' continuamos?',
                       text: err,
                       icon: 'warning',
@@ -888,7 +889,7 @@ export class MassiveComponent implements OnInit {
       this.lblProcesar.set(detalle);
       this.cantidadProcesada++;
     } else {
-      Swal.fire('Carga masiva completa', '', 'success');
+      this.notificationCenter.fire('Carga masiva completa', '', 'success');
       this.isProcessing.set(false);
       this.isValidate.set(false);
     }
@@ -932,7 +933,7 @@ export class MassiveComponent implements OnInit {
                 error: (err: any) => {
                   this.isProcessing.set(false);
                   if (err) {
-                    Swal.fire({
+                    this.notificationCenter.fire({
                       title: 'Se ha presentado un error, continuamos?',
                       text: err,
                       icon: 'warning',
@@ -1015,7 +1016,7 @@ export class MassiveComponent implements OnInit {
         const iCampo = pDocumento.caracteristicas[b];
         if (iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO) {
           if (iCampo.valorText ===  'SIN CARGAR'){
-            Swal.fire(
+            this.notificationCenter.fire(
               'Unsupported',
               'Existen campos que no cargaron imagenes'
             );

@@ -10,9 +10,9 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropd
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { OrganizacionDTO, OrganizacionFilterDTO } from 'app/document/document.types';
 import { OrganizationService } from 'app/configuration/configuracion.api';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { OrganizationFormComponent } from '../organization-form/organization-form.component';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
-import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-organization-list',
@@ -21,6 +21,7 @@ import Swal from 'sweetalert2';
     templateUrl: './organization-list.component.html',
 })
 export class OrganizationListComponent implements OnInit, AfterViewInit, OnDestroy {
+    private notificationCenter = inject(NotificationCenterService);
     private service = inject(OrganizationService);
     private dialog = inject(MatDialog);
     @ViewChild('loadMore') loadMoreRef!: ElementRef<HTMLDivElement>;
@@ -90,7 +91,7 @@ export class OrganizationListComponent implements OnInit, AfterViewInit, OnDestr
     toggleStatus(item: OrganizacionDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
-        Swal.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} organización?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateOrganizacion(updated).subscribe({ next: () => { Swal.fire('Éxito', `Organización ${action}da correctamente`, 'success'); this.reload(); }, error: () => Swal.fire('Error', `No se pudo ${action} la organización`, 'error') }); }});
+        this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} organización?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateOrganizacion(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Organización ${action}da correctamente`, 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} la organización`, 'error') }); }});
     }
 }

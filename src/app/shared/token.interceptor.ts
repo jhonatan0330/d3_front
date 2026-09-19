@@ -7,21 +7,24 @@ import {
 } from '@angular/common/http';
 import { map } from 'rxjs';
 import { TemplateService } from 'app/document/service/template.service';
+import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const templateService = inject(TemplateService);
+  const localStore = inject(LocalStoreService);
 
   const token = templateService.getTokenConnection(req.url);
-  let changedReq: HttpRequest<any>;
+  const setHeaders: Record<string, string> = {};
   if (token && !req.url.includes('openrouter.ai')) {
-    changedReq = req.clone({
-      setHeaders: {
-        Authorization: `${token}`,
-      },
-    });
-  } else {
-    changedReq = req;
+    setHeaders['Authorization'] = `${token}`;
   }
+  const tenantId = localStore.getItem(LocalConstants.TENANT_ID);
+  if (tenantId && !req.url.includes('/multi-tenancy')) {
+    setHeaders['X-Tenant-ID'] = `${tenantId}`;
+  }
+  const changedReq = Object.keys(setHeaders).length > 0
+    ? req.clone({ setHeaders })
+    : req;
   convert(changedReq.body);
   return next(changedReq).pipe(
     map((event: HttpEvent<any>) => {
