@@ -16,7 +16,12 @@ import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from '@angular/material/autocomplete';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { AccountingService } from 'app/accounting/accounting.api';
-import { AccountDTO, CatalogDTO, ManualAccountAuxiliarDTO, ManualAccountDTO, ManualDTO, VoucherLine } from 'app/accounting/domain/accounting.domain';
+import { AccountDTO } from 'app/accounting/domain/AccountDTO';
+import { CatalogDTO } from 'app/accounting/domain/CatalogDTO';
+import { ManualAccountAuxiliarDTO } from 'app/accounting/domain/ManualAccountAuxiliarDTO';
+import { ManualAccountDTO } from 'app/accounting/domain/ManualAccountDTO';
+import { ManualDTO } from 'app/accounting/domain/ManualDTO';
+import { VoucherLine } from 'app/accounting/domain/VoucherLine';
 
 @Component({
     selector: 'account-manual-form',

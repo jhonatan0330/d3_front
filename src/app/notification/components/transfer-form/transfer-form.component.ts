@@ -7,7 +7,7 @@ import { TemplateService } from "app/document/service/template.service";
 import { NotificationsService } from 'app/notification/notification.api';
 import { PlantillaHelper } from "app/shared/plantilla-helper";
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
-import { ActividadDTO } from "../../domain/notification.types";
+import { ActividadDTO } from "../../domain/ActividadDTO";
 import { PropiedadDTO } from "app/shared/shared.domain";
 import { UsuarioDTO } from "app/authentication/authentication.domain";
 import { MatFormField } from "@angular/material/form-field";

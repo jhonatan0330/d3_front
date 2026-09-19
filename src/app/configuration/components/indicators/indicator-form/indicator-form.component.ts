@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { IndicatorDTO } from 'app/configuration/domain/configuration.types';
+import { IndicatorDTO } from 'app/configuration/domain/IndicatorDTO';
 import { IndicatorConfigService } from 'app/configuration/configuracion.api';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';

@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO, Voucher, VoucherPrepareRequest } from './domain/accounting.domain';
+import { AccountDTO } from './domain/AccountDTO';
+import { CatalogDTO } from './domain/CatalogDTO';
+import { ManualDTO } from './domain/ManualDTO';
+import { ResultMapDTO } from './domain/ResultMapDTO';
+import { Voucher } from './domain/Voucher';
+import { VoucherPrepareRequest } from './domain/VoucherPrepareRequest';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { SharedIdResponse } from 'app/shared/api-types';
 

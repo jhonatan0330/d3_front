@@ -3,7 +3,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { TreeConfigService } from 'app/configuration/configuracion.api';
-import { ArbolConfiguracionFilterDTO, DiferenciaDTO, SeleccionSincronizacionDTO, SincronizacionSeleccionadaDTO, TreeNodeDTO } from 'app/configuration/domain/configuration.types';
+import { ArbolConfiguracionFilterDTO } from 'app/configuration/domain/ArbolConfiguracionFilterDTO';
+import { DiferenciaDTO } from 'app/configuration/domain/DiferenciaDTO';
+import { SeleccionSincronizacionDTO } from 'app/configuration/domain/SeleccionSincronizacionDTO';
+import { SincronizacionSeleccionadaDTO } from 'app/configuration/domain/SincronizacionSeleccionadaDTO';
+import { TreeNodeDTO } from 'app/configuration/domain/TreeNodeDTO';
 
 interface FilaDiferencia {
     camino: string;

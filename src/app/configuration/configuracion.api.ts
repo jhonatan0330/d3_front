@@ -18,7 +18,14 @@ import {
     RelacionInternaDTO, RelacionInternaFilterDTO,
 } from 'app/shared/shared.domain';
 import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
-import { DocumentoPlantillaFilterDTO, IndicatorDTO, IndicatorFilterDTO, ArbolConfiguracionFilterDTO, TreeNodeDTO, DiferenciaDTO, SincronizacionSeleccionadaDTO, CompararArbolRequest } from './domain/configuration.types';
+import { ArbolConfiguracionFilterDTO } from './domain/ArbolConfiguracionFilterDTO';
+import { CompararArbolRequest } from './domain/CompararArbolRequest';
+import { DiferenciaDTO } from './domain/DiferenciaDTO';
+import { DocumentoPlantillaFilterDTO } from './domain/DocumentoPlantillaFilterDTO';
+import { IndicatorDTO } from './domain/IndicatorDTO';
+import { IndicatorFilterDTO } from './domain/IndicatorFilterDTO';
+import { SincronizacionSeleccionadaDTO } from './domain/SincronizacionSeleccionadaDTO';
+import { TreeNodeDTO } from './domain/TreeNodeDTO';
 
 @Injectable({ providedIn: 'root' })
 export class ConsecutiveService {

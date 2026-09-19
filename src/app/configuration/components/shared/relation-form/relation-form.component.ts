@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { RelacionInternaDTO } from 'app/document/document.types';
 import { PropertyService, DocumentTemplateService } from 'app/configuration/configuracion.api';
-import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/configuration.types';
+import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/DocumentoPlantillaFilterDTO';
 
 interface ModalData {
     relacion?: RelacionInternaDTO;

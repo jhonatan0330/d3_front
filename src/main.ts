@@ -13,11 +13,11 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideServiceWorker } from '@angular/service-worker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule, ExtraOptions, UrlHandlingStrategy } from '@angular/router';
+import { RouterModule, ExtraOptions } from '@angular/router';
 import { appRoutes } from 'app/app.routing';
 import { FuseConfigModule } from 'app/layout/core/config/fuse-config.module';
 import { appConfig } from 'app/layout/core/config/app.config';
-import { TenantUrlHandlingStrategy, resolveTenantFromUrl } from 'app/multitenancy/business/tenant-url.strategy';
+import { resolveTenantFromUrl, TenantResolveResult } from 'app/multitenancy/business/tenant-url.strategy';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { LocalStoreService, LocalConstants } from 'app/shared/local-store.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -60,22 +60,27 @@ function readLocalStore(): LocalStoreService {
     return new LocalStoreService();
 }
 
-async function resolveInitialTenantId(): Promise<string> {
+async function resolveInitialTenant(): Promise<TenantResolveResult | null> {
     const path = window.location.pathname;
     const first = path.split('/').find(Boolean)?.toLowerCase() || '';
     if (!first || RESERVED_FIRST_SEGMENTS.has(first)) {
-        return '';
+        return null;
     }
     const localStore = readLocalStore();
     const base = localStore.getItem(LocalConstants.URL_CONF) || window.location.origin;
-    const result = await resolveTenantFromUrl(base, path + window.location.search);
-    return result?.tenantId || '';
+    return resolveTenantFromUrl(base, path + window.location.search);
 }
 
 async function bootstrap(): Promise<void> {
     const tenantUrl = new TenantUrlService();
-    const tenantStrategy = new TenantUrlHandlingStrategy(tenantUrl);
-    const tenantId = await resolveInitialTenantId();
+    const tenantResolution = await resolveInitialTenant();
+    const tenantId = tenantResolution?.tenantId || '';
+    if (tenantResolution?.rest) {
+        const cleanPath = tenantResolution.rest.startsWith('/')
+            ? tenantResolution.rest
+            : '/' + tenantResolution.rest;
+        window.history.replaceState(window.history.state, '', cleanPath);
+    }
     const localStore = readLocalStore();
     if (tenantId) {
         localStore.setItem(LocalConstants.TENANT_ID, tenantId);
@@ -94,7 +99,6 @@ async function bootstrap(): Promise<void> {
         ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule),
         provideHttpClient(withInterceptors([tokenInterceptor, httpErrorInterceptor])),
         { provide: ErrorHandler, useClass: ErrorHandlerService },
-        { provide: UrlHandlingStrategy, useValue: tenantStrategy },
         { provide: TenantUrlService, useValue: tenantUrl },
         {
             provide: OVERLAY_DEFAULT_CONFIG,

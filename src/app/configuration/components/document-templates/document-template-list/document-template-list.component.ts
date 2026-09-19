@@ -16,7 +16,7 @@ import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
 import { DocumentTemplateFormComponent } from '../document-template-form/document-template-form.component';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
-import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/configuration.types';
+import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/DocumentoPlantillaFilterDTO';
 
 @Component({
     selector: 'app-document-template-list',

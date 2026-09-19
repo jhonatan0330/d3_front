@@ -108,6 +108,13 @@ export class LoginService {
       }
     }
 
+    if (this.company() && this.company().llaveTabla === _company?.llaveTabla) {
+      // se presentaba un bug en los modulos 
+      this.company().propiedades = _company.propiedades;
+      //Evito que se vuelva a consultar los template coverad
+      return;
+    }
+
     this.company.set(_company);
   }
 

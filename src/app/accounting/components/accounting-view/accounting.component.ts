@@ -1,6 +1,9 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, signal, viewChild, ElementRef, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AccountDTO, CatalogDTO, ManualDTO, ResultMapDTO } from 'app/accounting/domain/accounting.domain';
+import { AccountDTO } from 'app/accounting/domain/AccountDTO';
+import { CatalogDTO } from 'app/accounting/domain/CatalogDTO';
+import { ManualDTO } from 'app/accounting/domain/ManualDTO';
+import { ResultMapDTO } from 'app/accounting/domain/ResultMapDTO';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';

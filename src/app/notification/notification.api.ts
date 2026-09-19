@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { ActividadDTO } from 'app/notification/domain/notification.types';
+import { ActividadDTO } from 'app/notification/domain/ActividadDTO';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { UsuarioDTO } from 'app/authentication/authentication.domain';
 
