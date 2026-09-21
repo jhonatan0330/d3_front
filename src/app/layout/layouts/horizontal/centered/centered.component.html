@@ -17,13 +17,13 @@
 
             <!-- Logo -->
             <div class="flex items-center justify-center h-28 pt-5 pb-5 px-8">
-                @if (company?.imagen) {
-                    <img class="h-16 w-auto max-w-xs object-contain px-2" src="{{ company.imagen | imageFormat }}" alt="Logo image" />
+                @if (company().imagen) {
+                    <img class="h-16 w-auto max-w-xs object-contain px-2" src="{{ company().imagen | imageFormat }}" alt="Logo image" />
                 }
             </div>
 
             <!-- Navigation items -->
-            <simple-nav [items]="navigation.default" (navigate)="closeNavOnSmall()"></simple-nav>
+            <simple-nav [items]="navigation().default" (navigate)="closeNavOnSmall()"></simple-nav>
 
             <!-- Navigation footer -->
             <div class="flex flex-0 items-center justify-center h-16 pr-6 pl-2 mt-2 mb-4 opacity-12"></div>
@@ -43,8 +43,8 @@
                         <!-- Logo -->
                         <div class="flex items-center mx-2 lg:mr-8">
                             <div class="hidden lg:flex">
-                                @if (company?.imagen) {
-                                    <img class="h-12 w-auto max-w-xs object-contain px-2" src="{{ company.imagen | imageFormat }}" alt="Logo image" />
+                                @if (company().imagen) {
+                                    <img class="h-12 w-auto max-w-xs object-contain px-2" src="{{ company().imagen | imageFormat }}" alt="Logo image" />
                                 }
                             </div>
                         </div>
@@ -63,9 +63,9 @@
                     </div>
                 </div>
 
-                @if (headerSection && headerSection.length !== 0) {
+                @if (headerSection() && headerSection().length !== 0) {
                     <div class="w-full">
-                        @for (iHeader of headerSection; track iHeader) {
+                        @for (iHeader of headerSection(); track iHeader) {
                             <div [innerHTML]="iHeader"></div>
                         }
                     </div>
@@ -81,9 +81,9 @@
                 </div>
 
                 <!-- Footer -->
-                @if (landing && landing.length !== 0) {
+                @if (landing() && landing().length !== 0) {
                     <div class="w-full">
-                        @for (iFooter of landing; track iFooter) {
+                        @for (iFooter of landing(); track iFooter) {
                             <div [innerHTML]="iFooter" class="w-full"></div>
                         }
                     </div>

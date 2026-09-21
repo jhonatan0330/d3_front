@@ -3,7 +3,6 @@ import {
   DocumentMessage,
   DocumentoPlantillaCaracteristicaDTO,
   DocumentoPlantillaDTO,
-  PedidoVentaCaracteristicaDTO,
   PedidoVentaDTO,
 } from 'app/document/document.types';
 import { ApiService } from 'app/document/document.api';
@@ -11,13 +10,9 @@ import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import {
   getFieldFromTemplate,
-  getXMLBase,
-  procesarXMLBase,
 } from '../../business/massive-helper';
-import { saveAs } from 'file-saver';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import * as XLSX from 'xlsx';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
@@ -28,6 +23,11 @@ import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { UploadService } from 'app/upload/upload.api';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { LocalStoreService } from 'app/shared/local-store.service';
+import { formatImageUrl } from 'app/shared/local-image';
+import { FileHandlerService } from 'app/shared/file-handler.service';
+import { MassiveApiService } from 'app/massiveload/massive.api';
+import { MassiveParseResponse, PlantillaBaseResponse } from 'app/massiveload/massive.types';
 
 @Component({
     selector: 'app-massive',
@@ -45,6 +45,9 @@ export class MassiveComponent implements OnInit {
   private uploadApi = inject(UploadService);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
+  private ls = inject(LocalStoreService);
+  private fileHandler = inject(FileHandlerService);
+  private massiveApi = inject(MassiveApiService);
   private pendingSaveTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
@@ -206,17 +209,28 @@ export class MassiveComponent implements OnInit {
       if (!this.validateCamposPlantilla(this.plantilla()!)) {
         return;
       }
-      if (type === 'xml') {
-        const blob = new Blob([this.generateXMLBase()], {
-          type: 'text/plain;charset=utf-8',
+      const format = type === 'xml' ? 'xml' : 'xlsx';
+      this.lblCarga.set('GENERANDO ARCHIVO BASE');
+      this.isLoading.set(true);
+      this.massiveApi.generarBasePlantilla(this.plantilla()!.llaveTabla, format)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response: PlantillaBaseResponse) => {
+            this.api.getImage(formatImageUrl(this.ls, response.url)!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+              next: (blob: Blob) => {
+                this.fileHandler.descargarArchivo(blob, this.plantilla()!.nombre + '.' + format);
+                this.isLoading.set(false);
+                this.lblCarga.set('');
+              },
+              error: () => {
+                this.isLoading.set(false);
+              },
+            });
+          },
+          error: () => {
+            this.isLoading.set(false);
+          },
         });
-        saveAs(blob, this.plantilla()!.nombre + '.xml');
-      } else {
-        const blob = new Blob([this.generateXMLBaseExcel()], {
-          type: 'text/csv;charset=utf-8;',
-        });
-        saveAs(blob, this.plantilla()!.nombre + '.csv');
-      }
     }
   }
 
@@ -232,74 +246,7 @@ export class MassiveComponent implements OnInit {
     return true;
   }
 
-  generateXMLBase(): string {
-    this.lblCarga.set('GENERANDO  XML');
-    this.isLoading.set(true);
-    try {
-      let xmlBase = '<root>';
-      const nombre = this.formatStringXML(this.plantilla()!.codigo);
-      for (let index = 1; index <= 2; index++) {
-        xmlBase = xmlBase + '<' + nombre + '>';
-        for (let i = 0; i < this.plantilla()!.caracteristicas.length; i++) {
-          const iCampo = this.plantilla()!.caracteristicas[i];
-          if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION){
-            const campoNombre: string = this.formatStringXML(iCampo.nombre);
-            xmlBase = xmlBase + '<' + campoNombre + '>';
-            xmlBase = xmlBase + getXMLBase(iCampo);
-            xmlBase = xmlBase + '</' + campoNombre + '>';
-          }
-        }
-        xmlBase = xmlBase + '</' + nombre + '>';
-      }
-      xmlBase = xmlBase + '</root>';
-      this.isLoading.set(false);
-      return xmlBase.toString();
-    } catch (error) {
-      this.notificationCenter.fire('', error.message, 'error');
-      this.isLoading.set(false);
-    }
-    return '';
-  }
-
-  generateXMLBaseExcel(): string {
-    this.lblCarga.set('GENERANDO  EXCEL');
-    this.isLoading.set(true);
-    try {
-      let xmlBase = '';
-      for (const iCampo of this.plantilla()!.caracteristicas) {
-        if(iCampo.formato!==DocumentoPlantillaCaracteristicaEnum.SECCION){
-          const campoNombre: string = this.formatStringXML(iCampo.nombre);
-          xmlBase = xmlBase + campoNombre + ';';
-        }
-      }
-      this.isLoading.set(false);
-      return xmlBase.toString();
-    } catch (error) {
-      this.notificationCenter.fire('', error.message, 'error');
-      this.isLoading.set(false);
-    }
-    return '';
-  }
-
   //tambien esta en tipo numero toca centralizarla
-  formatStringXML(texto: string): string {
-    if (!texto) {
-      return 'EMPTY';
-    }
-    texto = texto.replace(new RegExp(' ', 'g'), '_');
-    texto = texto.replace('Ñ', 'N');
-    texto = texto.replace('(', '');
-    texto = texto.replace(':', '');
-    texto = texto.replace(')', '');
-    texto = texto.trim();
-    const de = 'ÁÃÀÄÂÉËÈÊÍÏÌÎÓÖÒÔÚÜÙÛÑÇáãàäâéëèêíïìîóöòôúüùûñç',
-        a = 'AAAAAEEEEIIIIOOOOUUUUNCaaaaaeeeeiiiioooouuuunc',
-        re = new RegExp('['+de+']' , 'ug');
-  
-    texto = texto.replace( re, match => a.charAt(de.indexOf(match)));
-    return texto;
-  }
-
   /////////////CARGAR MULTIPLE///////////////////////////////////
 
   handleFileInputMultiple(files: FileList) {
@@ -315,12 +262,17 @@ export class MassiveComponent implements OnInit {
     )!;
     this.validateCamposPlantilla(template);
     for (let i = 0; i < files.length; i++) {
-      this.lblCarga.set('CARGANDO XML MULTIPLE ' + '<--' + this.lblCarga());
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.onDataLoaded(reader.result!.toString(), template, 1);
-      };
-      reader.readAsText(files[i]);
+      this.lblCarga.set('CARGANDO PLANTILLA MULTIPLE ' + '<--' + this.lblCarga());
+      this.massiveApi.parseArchivo(files[i], template.llaveTabla)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response: MassiveParseResponse) => {
+            this.hidratarLineas(response, template);
+          },
+          error: () => {
+            this.isLoading.set(false);
+          },
+        });
     }
   }
 
@@ -339,24 +291,17 @@ export class MassiveComponent implements OnInit {
       );
     }
     for (let i = 0; i < files.length; i++) {
-      this.lblCarga.set('CARGANDO XML' + ' <-- ' + this.lblCarga());
-      const reader = new FileReader();
-      const fileUpload = files[i];
-      if (fileUpload.name.endsWith('.xml')) {
-        reader.onload = () => {
-          this.onDataLoaded(reader.result!.toString(), this.plantilla()!, 1);
-        };
-        reader.readAsText(fileUpload);
-      } else {
-        reader.onload = (e: any) => {
-          if (e.target && e.target.result instanceof ArrayBuffer) {
-            const decoder = new TextDecoder("utf-8"); // Especifica el encoding si es necesario
-            const text = decoder.decode(e.target.result);
-            this.onDataLoaded(text, this.plantilla()!, 2);
-          }
-        };
-        reader.readAsArrayBuffer(fileUpload);
-      }
+      this.lblCarga.set('CARGANDO ARCHIVO' + ' <-- ' + this.lblCarga());
+      this.massiveApi.parseArchivo(files[i], this.plantilla()!.llaveTabla)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response: MassiveParseResponse) => {
+            this.hidratarLineas(response, this.plantilla()!);
+          },
+          error: () => {
+            this.isLoading.set(false);
+          },
+        });
     }
   }
 
@@ -374,234 +319,94 @@ export class MassiveComponent implements OnInit {
 
   }
 
-  onDataLoaded(_file: string, template: DocumentoPlantillaDTO, format: number) {
-    let documentos;
-    let encabezado = 0;
-    if (format === 2) {
-      const wb: XLSX.WorkBook = XLSX.read(_file, { type: 'string' });
-      const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-      //Coloco raw false y dateNf string para validar que coloquen el formato correcto de la fecha
-      documentos = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, dateNF: 'number', blankrows:false });
-      encabezado = 1;
-    } else {
-      if (!window.DOMParser) {
-        this.notificationCenter.fire('Unsupported', 'Intente en explorador chrome');
-        return;
+  private hidratarLineas(response: MassiveParseResponse, template: DocumentoPlantillaDTO) {
+    if (response.camposSinValidar && response.camposSinValidar.length > 0) {
+      let camposSinValidar = '';
+      for (const key of response.camposSinValidar) {
+        camposSinValidar = key + ", " + camposSinValidar;
       }
-
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(_file, 'text/xml');
-
-      if (template) {
-        documentos = xml.getElementsByTagName(
-          this.formatStringXML(template.codigo)
-        );
-      }
+      this.notificationCenter.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar, "warning");
     }
 
-    if (documentos.length > 20000) {
-      this.notificationCenter.fire(
-        'Cantidad maxima',
-        'El maximo de documentos a cargar son 20000',
-        'info'
+    const documentos: LoadLineDTO[] = [];
+    for (const element of response.lines) {
+      const line: LoadLineDTO = new LoadLineDTO();
+      line.orderNumber = element.orderNumber;
+      line.updateId = element.updateId;
+      line.status = element.status;
+      line.messages = element.messages;
+      line.document = element.document;
+      if (line.document.caracteristicas) {
+        for (const iCampo of line.document.caracteristicas) {
+          const campoTemplate = getFieldFromTemplate(template, iCampo.campo);
+          iCampo.campoDTO = campoTemplate as DocumentoPlantillaCaracteristicaDTO;
+        }
+      }
+      documentos.push(line);
+    }
+
+    this.camposConsultar = [];
+    this.construirCamposConsulta(documentos);
+
+    this.isValidate.set(false);
+    this.failedDocuments.set([]);
+    this.lblProcesar.set('');
+    this.lblCarga.set(
+      'CARGANDO ' +
+      documentos.length +
+      ' DOCUMENTOS ' +
+      ' <-- ' +
+      this.lblCarga()
+    );
+    this.inicio = new Date();
+    this.isUpdate = documentos.some(line => !!line.updateId);
+    if (template.llaveTabla === this.plantilla()!.llaveTabla) {
+      this.documentosGenerados.set(documentos);
+      this.generateColumnNames(this.plantilla()!);
+      this.dataSource.set(new MatTableDataSource(this.documentosGenerados()));
+      if (!this.documentosGenerados() || this.documentosGenerados().length === 0) {
+        this.lblCarga.set(this.lblCarga() + 'Revisa la carga debido a que no se generaron documentos');
+        return;
+      }
+      this.inicio = new Date();
+      this.cantidadProcesada = 1;
+      this.inicialCamposConsultar = this.camposConsultar.length;
+      this.procesarCamposProceso(
+        this.camposConsultar,
+        template,
+        this.documentosGenerados()
       );
     } else {
-      this.isValidate.set(false);
-      this.failedDocuments.set([]);
-      this.lblProcesar.set('');
-
-      this.camposConsultar = [];
-      this.lblCarga.set(
-        'CARGANDO ' +
-        (documentos.length - encabezado).toString() +
-        ' DOCUMENTOS ' +
-        ' <-- ' +
-        this.lblCarga()
-      );
-      this.inicio = new Date();
-      if (template.llaveTabla === this.plantilla()!.llaveTabla) {
-        this.documentosGenerados.set(this.generateVO(documentos, template));
-        this.generateColumnNames(this.plantilla()!);
-        this.dataSource.set(new MatTableDataSource(this.documentosGenerados()));
-        if (!this.documentosGenerados() || this.documentosGenerados().length === 0) {
-          this.lblCarga.set(this.lblCarga() + 'Revisa la carga debido a que no se generaron documentos');
-          //this.notificationCenter.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
-          return;
-        }
-        this.inicio = new Date();
-        this.cantidadProcesada = 1;
-        this.inicialCamposConsultar = this.camposConsultar.length;
-        this.procesarCamposProceso(
-          this.camposConsultar,
-          template,
-          this.documentosGenerados()
-        );
-      } else {
-        this.documentosGeneradosMultiple.set(this.generateVO(
-          documentos,
-          template
-        ));
-        if (!this.documentosGeneradosMultiple() || this.documentosGeneradosMultiple().length === 0) {
-          this.notificationCenter.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
-          return;
-        }
-        this.inicio = new Date();
-        this.cantidadProcesada = 1;
-        this.inicialCamposConsultar = this.camposConsultar.length;
-        this.procesarCamposProceso(
-          this.camposConsultar,
-          template,
-          this.documentosGeneradosMultiple()
-        );
+      this.documentosGeneradosMultiple.set(documentos);
+      if (!this.documentosGeneradosMultiple() || this.documentosGeneradosMultiple().length === 0) {
+        this.notificationCenter.fire('No documents', 'Revisa la carga debido a que no se generaron documentos', 'error');
+        return;
       }
+      this.inicio = new Date();
+      this.cantidadProcesada = 1;
+      this.inicialCamposConsultar = this.camposConsultar.length;
+      this.procesarCamposProceso(
+        this.camposConsultar,
+        template,
+        this.documentosGeneradosMultiple()
+      );
     }
   }
 
-  generateVO(source, template: DocumentoPlantillaDTO): LoadLineDTO[] {
-    if (!template || !template.caracteristicas) return [];
-    const documentosNewsFromXML: LoadLineDTO[] = [];
-    let pedido: PedidoVentaDTO;
-    let indexInicialProcesar = 0;
-    if (!(source instanceof HTMLCollection)) {
-      indexInicialProcesar = 1;
-    }
-    for (let i = indexInicialProcesar; i < source.length; i++) {
-      pedido = new PedidoVentaDTO();
-      pedido.textoFiltro = (documentosNewsFromXML.length +1).toString();//Esto es para colocar una columna de cantidad
-      pedido.imagen = template.imagen;
-      pedido.plantilla = template.llaveTabla;
-      pedido.caracteristicas = [];
-
-      //Esto es para las cargas de update
-      if (source instanceof HTMLCollection) {
-        if (("UPDATE_" + template.codigo) === source[i].children[0].localName) {
-          pedido.nombre = source[i].children[0].textContent;
-          this.isUpdate = true;
-        }
-      } else{
-        if (("UPDATE_" + template.codigo) === this.formatStringXML(source[0][0])) {
-          pedido.nombre = source[i][0];
-          this.isUpdate = true;
-        }
-      }
-
-      for (let k = 0; k < template.caracteristicas.length; k++) {
-        const iCampo = template.caracteristicas[k];
-        let campo: PedidoVentaCaracteristicaDTO =
-          new PedidoVentaCaracteristicaDTO();
-        campo.campo = iCampo.llaveTabla;
-        campo.campoDTO = iCampo;
-
-        if (source instanceof HTMLCollection) {
-          const camposTexto = source[i].children;
-          for (let j = 0; j < camposTexto.length; j++) {
-            const nombreCampoXML = this.formatStringXML(
-              camposTexto[j].localName
-            );
-            if (this.formatStringXML(iCampo.nombre) === nombreCampoXML) {
-              campo.valorText = camposTexto[j].textContent;
-              if(campo.valorText) {campo.valorText = campo.valorText.trim();}
-              campo = procesarXMLBase(campo, this.notificationCenter)!;
-              break;
-            }
-          }
-        } else {
-          for (let j = 0; j < source[i].length; j++) {
-            const nombreCampoXML = this.formatStringXML(source[0][j]);
-            if (this.formatStringXML(iCampo.nombre) === nombreCampoXML) {
-              if (source[i][j] || source[i][j]===0) {
-                campo.valorText = source[i][j].toString();
-                if(campo.valorText) {campo.valorText = campo.valorText.trim();}
-              }
-              campo = procesarXMLBase(campo, this.notificationCenter)!;
-              break;
-            }
-          }
-        }
-
-        if (!campo) {
-          this.mensajeValidacion(pedido, i);
-          this.isLoading.set(false);
-          return [];
-        }
-
+  private construirCamposConsulta(documentos: LoadLineDTO[]) {
+    for (const line of documentos) {
+      if (line.status !== 'OK') continue;
+      for (const campo of line.document.caracteristicas) {
         if (
-          campo.campoDTO.formato ===
-          DocumentoPlantillaCaracteristicaEnum.PROCESO &&
+          campo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO &&
           !campo.valorOpcion &&
           !PlantillaHelper.buscarValor(campo.campoDTO.propiedades, PlantillaHelper.DEPENDE) &&
           campo.valorText
         ) {
           this.acumularProcesosConsulta(campo.campoDTO, campo.valorText);
         }
-        pedido.caracteristicas.push(campo);
-      }
-      const line = new LoadLineDTO();
-      line.document = pedido;
-      line.updateId = pedido.nombre;
-      line.orderNumber = documentosNewsFromXML.length + 1;
-      documentosNewsFromXML.push(line);
-    }
-    this.reviewFieldsOfTemplate(source, template);
-    return documentosNewsFromXML;
-  }
-
-  private reviewFieldsOfTemplate(source: any, template: DocumentoPlantillaDTO) {
-    const map = new Map();
-    if (source instanceof HTMLCollection) {
-      const camposTexto = source[0].children;
-      for (let j = 0; j < camposTexto.length; j++) {
-        const nombreCampoXML = this.formatStringXML(
-          camposTexto[j].localName
-        );
-        map.set(nombreCampoXML, true);
-      }
-    } else {
-      for (let j = 0; j < source[0].length; j++) {
-        const nombreCampoXML = this.formatStringXML(source[0][j]);
-        map.set(nombreCampoXML, true);
       }
     }
-    for (let k = 0; k < template.caracteristicas.length; k++) {
-      const iCampo = template.caracteristicas[k];
-      map.delete(this.formatStringXML(iCampo.nombre));
-    }
-    if (map.size > 0) {
-      let camposSinValidar = '';
-      for (const key of map.keys()) {
-        if (!key.endsWith("_NUMID") && !key.startsWith("UPDATE_")) { camposSinValidar = key + ", " + camposSinValidar; }
-      }
-      if (camposSinValidar) this.notificationCenter.fire("Atencion", "CIUDADO hay campos que no se tienen en cuenta. " + camposSinValidar, "warning");
-    }
-  }
-
-  mensajeValidacion(pedido: PedidoVentaDTO, i: number) {
-    let detalle =
-      'VALIDANDO DOCUMENTO # ' +
-      i +
-      ' INICIO : ' +
-      this.inicio.toISOString() +
-      ' HORA ACTUAL : ' +
-      new Date().toISOString() +
-      ' DURACION : ' +
-      (new Date().getTime() - this.inicio.getTime()) / 1000 +
-      'seg';
-    if (pedido != null) {
-      let valorTexto = '';
-      for (let k = 0; k < pedido.caracteristicas.length; k++) {
-        const iCampoPedido = pedido.caracteristicas[k];
-        valorTexto =
-          iCampoPedido.valorText == null ? '' : iCampoPedido.valorText;
-        detalle =
-          detalle +
-          '<br/>      ' +
-          iCampoPedido.campoDTO.nombre +
-          ' : ' +
-          valorTexto;
-      }
-    }
-    this.lblCarga.set(detalle);
   }
 
   acumularProcesosConsulta(

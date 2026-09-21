@@ -14,6 +14,7 @@ import { CarouselService } from './carousel.service';
 import { DateNotificationService } from './date-notification.service';
 import { AuthenticationService } from './authentication.service';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { UsersApiService } from 'app/users/users.api';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -28,14 +29,15 @@ export class LoginService {
   private carouselService = inject(CarouselService);
   private dateNotificationService = inject(DateNotificationService);
   private authenticationService = inject(AuthenticationService);
+  private readonly usersService = inject(UsersApiService);
 
-
-  token: string;
-  urlService: string;
-  private isAuthenticated = false;
   readonly user = signal<UsuarioDTO>(new UsuarioDTO());
-  returnPath: string;
   readonly company = signal<OrganizacionDTO>(new OrganizacionDTO());
+
+  urlService: string;
+  token: string | null = null;
+  returnPath: string;
+  readonly isAuthenticated = signal<boolean>(false);
   isAdmin = false;
   isReader = false;
 
@@ -89,35 +91,13 @@ export class LoginService {
   }
 
   public authenticationOK(res: UsuarioAutenticacionDTO) {
-    this.isAuthenticated = true;
+    this.isAuthenticated.set(true);
     //Coloque primero la autenticacion ya que la company trae el carrousel y este carrousel necesita el token
-    this.setUserAndToken(res, res.organizacion);
-    this.setCompany(res.organizacion)
+    this.setUserAndToken(res);
     this.getUserDataFull(res);
     if (res.token) { this.setTenantToken(this.getCurrentTenantKey(), res.token); }
     if (res) { this.setDate(res.fechaMaxima); } else { this.clearDate(); }
   }
-
-  private setCompany(_company: OrganizacionDTO) {
-    if (_company) {
-      this.carouselService.loadFromOrganization(_company, this.isAuthenticated);
-      if (_company.propiedades) {
-        this.isAdmin = !PlantillaHelper.isEmpty(_company.propiedades, PlantillaHelper.APP_ADMIN);
-        this.isReader = !PlantillaHelper.isEmpty(_company.propiedades, PlantillaHelper.APP_READER);
-        this.templateService.setModules(PlantillaHelper.buscarValorMultiple(_company.propiedades!, PlantillaHelper.APP_MODULES)!);
-      }
-    }
-
-    if (this.company() && this.company().llaveTabla === _company?.llaveTabla) {
-      // se presentaba un bug en los modulos 
-      this.company().propiedades = _company.propiedades;
-      //Evito que se vuelva a consultar los template coverad
-      return;
-    }
-
-    this.company.set(_company);
-  }
-
 
 
   public checkTokenIsValid(forceRefresh = false, navigateOnError = true) {
@@ -130,7 +110,7 @@ export class LoginService {
       return of(false);
     }
     // Check if the user is logged in
-    if (this.isAuthenticated && !forceRefresh) {
+    if (this.isAuthenticated() && !forceRefresh) {
       return of(true);
     }
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
@@ -148,8 +128,8 @@ export class LoginService {
           if (navigateOnError) {
             this.signout();
           } else {
-            this.isAuthenticated = false;
-            this.token = null as any;
+            this.isAuthenticated.set(false);
+            this.token = null;
           }
           return of(false);
         })
@@ -160,10 +140,8 @@ export class LoginService {
     // Store the access token in the local storage
     this.token = response.token;
     // Set the authenticated flag to true
-    this.isAuthenticated = true;
-
+    this.isAuthenticated.set(true);
     if (response && response.mensaje) {
-
       this.notificationCenter.fire({
         position: 'top-end',
         title: response.mensaje,
@@ -172,7 +150,7 @@ export class LoginService {
         timerProgressBar: true
       })
     }
-    if (!this.user()) { return; }
+    if (!this.user().llaveTabla) { return; }
     this.apiService.listarPlantillas("USER")
       .subscribe({
         next: (templates) => {
@@ -184,7 +162,7 @@ export class LoginService {
   signout() {
 
     this.clearTenantTokens();
-    this.setUserAndToken(null!, null!);
+    this.setUserAndToken(null!);
     this.templateService.clear();
     this.notificationService.clear();
     this.dialog.closeAll();
@@ -215,13 +193,13 @@ export class LoginService {
     return this.authenticationService.recoverPassword(identificacion, correo);
   }
 
-  isLoggedIn(): boolean {
+  /*isLoggedIn(): boolean {
     if (!this.token) { this.token = this.getJwtToken(); }
     if (!this.token) { return false; }
     if (!this.urlService) { this.urlService = this.getConfUrl(); }
     if (!this.urlService) { return false; }
     return true;
-  }
+  }*/
 
   getJwtToken() {
     return this.ls.getItem(LocalConstants.JWT_TOKEN);
@@ -236,15 +214,24 @@ export class LoginService {
   }
 
 
-  setUserAndToken(authDTO: UsuarioAutenticacionDTO, _company: OrganizacionDTO) {
+  setUserAndToken(authDTO: UsuarioAutenticacionDTO) {
     if (authDTO) {
-      this.isAuthenticated = true;
+      this.isAuthenticated.set(true);
       this.token = authDTO.token;
-      this.user.set(authDTO.usuarioDTO);
+      if (authDTO.usuario && authDTO.usuario !== this.user().llaveTabla) {
+        this.usersService.getUserById(authDTO.usuario)
+          .subscribe({
+            next: (value) => {
+              this.user.set(value);
+              this.getOrganization();
+            }, error: () => { }
+          });
+
+      }
     } else {
-      this.isAuthenticated = false;
-      this.token = null as any;
-      this.user.set(null as any);
+      this.isAuthenticated.set(false);
+      this.token = null;
+      this.user.set(new UsuarioDTO());
     }
 
 
@@ -286,7 +273,7 @@ export class LoginService {
     const login = this.ls.getItem(LocalConstants.LOGIN_ID);
     return LocalConstants.TENANT_TOKENS_BASE + (login || 'ANON');
   }
-  
+
 
 
 
@@ -295,10 +282,6 @@ export class LoginService {
   }
 
   getUrlServices() {
-    if (this.company() && this.company().llaveTabla) {
-      this.configureOrganization(this.company());
-      return;
-    }
     this.ensureBaseUrl().subscribe({
       next: () => {
         this.getOrganization();
@@ -334,24 +317,39 @@ export class LoginService {
   getOrganization() {
     this.authenticationService.getOrganization().subscribe({
       next: (organization) => {
-        this.configureOrganization(organization);
+        if (!organization) { return; }
+
+        this.carouselService.loadFromOrganization(organization, this.isAuthenticated());
+        if (organization.propiedades) {
+          this.isAdmin = !PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_ADMIN);
+          this.isReader = !PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_READER);
+          this.templateService.setModules(PlantillaHelper.buscarValorMultiple(organization.propiedades!, PlantillaHelper.APP_MODULES)!);
+        }
+        if (this.company() && this.company().llaveTabla === organization?.llaveTabla) {
+          // se presentaba un bug en los modulos 
+          this.company().propiedades = organization.propiedades;
+          //Evito que se vuelva a consultar los template coverad
+          return;
+        }
+
+        this.company.set(organization);
+
+
+        if (organization && organization.publicToken) {
+          this.token = organization.publicToken;
+          this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
+
+          //Si no coloco esto se va a crear un ciclo infintio solicitando el token
+          //if (!this.isOpenPopOfAuthenticate) { 
+
+          //}
+        }
       },
       error: () => { }
     });
   }
 
-  configureOrganization(organization: OrganizacionDTO) {
-    this.setCompany(organization);
-    if (organization && organization.publicToken) {
-      this.token = organization.publicToken;
-      this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
-      this.checkTokenIsValid().subscribe({ error: () => { } });
-      //Si no coloco esto se va a crear un ciclo infintio solicitando el token
-      //if (!this.isOpenPopOfAuthenticate) { 
 
-      //}
-    }
-  }
 
   validateAccessModule(pModuleKey: string): boolean {
 

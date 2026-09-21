@@ -10,15 +10,15 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
     providedIn: 'root'
 })
 export class NavigationService {
-    private _navigation: WritableSignal<Navigation> = signal(null!);
+    private readonly _navigation = signal<Navigation>({
+    default: [],
+    compact: [],
+    futuristic: [],
+    horizontal: []
+});
 
-    constructor() {
-        this.generate(null!, null!, null!);
-    }
+    readonly navigation = this._navigation.asReadonly();
 
-    get navigation(): Navigation {
-        return this._navigation();
-    }
 
     generate(process: DocumentoPlantillaDTO[], modules: PropiedadDTO[], templates: DocumentoPlantillaDTO[]) {
 

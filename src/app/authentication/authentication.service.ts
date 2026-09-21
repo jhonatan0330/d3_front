@@ -40,10 +40,9 @@ export class AuthenticationService {
     }
 
     recoverPassword(identificacion: string, correo: string): Observable<UsuarioAutenticacionAutorizacionDTO> {
-        const authentication = new UsuarioAutenticacionDTO();
-        authentication.usuarioDTO = new UsuarioDTO();
-        authentication.usuarioDTO.identificacion = identificacion;
-        authentication.usuarioDTO.correo = correo;
+        const authentication = new UsuarioDTO();        
+        authentication.identificacion = identificacion;
+        authentication.correo = correo;
         return this.http.post<UsuarioAutenticacionAutorizacionDTO>(
             this.ls.getUrlAccess('/authentication/solicitarNuevaClave'),
             authentication

@@ -2,8 +2,6 @@ import { Component, ElementRef, OnDestroy, ChangeDetectionStrategy, inject, view
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { PdfService } from 'app/shared/pdf.service';
-
 
 @Component({
     selector: 'app-visor-pdf-dialog',
@@ -13,8 +11,6 @@ import { PdfService } from 'app/shared/pdf.service';
     templateUrl: './visor-pdf-dialog.component.html'
 })
 export class VisorPdfDialogComponent implements OnDestroy {
-  private pdfService = inject(PdfService);
-  private sanitizer = inject(DomSanitizer);
   private dialogRef = inject<MatDialogRef<VisorPdfDialogComponent>>(MatDialogRef);
   data = inject(MAT_DIALOG_DATA);
 
@@ -30,7 +26,7 @@ export class VisorPdfDialogComponent implements OnDestroy {
   }
 
   cargarPdf() {
-    this.pdfService.obtenerPdf(this.data?.params).subscribe({
+    /*this.pdfService.obtenerPdf(this.data?.params).subscribe({
       next: (blob) => {
         this.objectUrl = URL.createObjectURL(blob);
         this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.objectUrl);
@@ -40,7 +36,7 @@ export class VisorPdfDialogComponent implements OnDestroy {
         console.error('Error cargando PDF', err);
         this.loading = false;
       }
-    });
+    });*/
   }
 
   imprimir() {

@@ -49,7 +49,7 @@ export class dfaComponent {
         }
 
         const _user: UsuarioAutenticacionDTO = new UsuarioAutenticacionDTO();
-        _user.usuario = this.data.key.llaveTabla;
+        _user.usuario = this.data;
         _user.token = this.recoverForm.value.code;
 
         this.apiService.verificarToken(_user)

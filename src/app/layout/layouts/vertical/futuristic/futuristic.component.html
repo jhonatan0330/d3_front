@@ -18,20 +18,20 @@
 
             <!-- Logo -->
             <div class="flex items-center h-20 px-4 py-2">
-                @if (company?.imagen) {
-                    <img class="w-auto max-h-full mx-2" src="{{ company.imagen | imageFormat }}" alt="Logo image" />
+                @if (company().imagen) {
+                    <img class="w-auto max-h-full mx-2" src="{{ company().imagen | imageFormat }}" alt="Logo image" />
                 }
             </div>
 
             <!-- Navigation items -->
-            <simple-nav [items]="navigation.futuristic" (navigate)="closeNavOnSmall()"></simple-nav>
+            <simple-nav [items]="navigation().futuristic" (navigate)="closeNavOnSmall()"></simple-nav>
 
             <!-- Navigation footer -->
             <div class="flex items-center w-full px-6 py-8 border-t">
                 <user></user>
                 <div class="flex flex-col w-full ml-4 overflow-hidden">
                     <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden leading-normal text-current opacity-80">
-                        {{ user?.nombre }}
+                        {{ user().nombre }}
                     </div>
                 </div>
             </div>
@@ -58,9 +58,9 @@
                 </div>
             </div>
 
-            @if (headerSection && headerSection.length !== 0) {
+            @if (headerSection() && headerSection().length !== 0) {
                 <div class="w-full">
-                    @for (iHeader of headerSection; track iHeader) {
+                    @for (iHeader of headerSection(); track iHeader) {
                         <div [innerHTML]="iHeader"></div>
                     }
                 </div>
@@ -76,9 +76,9 @@
             </div>
 
             <!-- Footer -->
-            @if (landing && landing.length !== 0) {
+            @if (landing() && landing().length !== 0) {
                 <div class="w-full">
-                    @for (iFooter of landing; track iFooter) {
+                    @for (iFooter of landing(); track iFooter) {
                         <div [innerHTML]="iFooter" class="w-full"></div>
                     }
                 </div>

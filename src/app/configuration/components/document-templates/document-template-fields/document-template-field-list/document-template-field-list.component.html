@@ -16,7 +16,7 @@
           <button type="button" class="btn-flat-primary mt-4" (click)="openFieldForm()"><mat-icon>add</mat-icon> Crear primer campo</button>
         </div>
       } @else {
-        <div class="flex-1 overflow-y-auto">
+        <div class="flex-1 overflow-y-auto max-h-[70vh]">
           <div class="space-y-2" cdkDropList (cdkDropListDropped)="drop($event)">
             @for (field of fields(); track field.llaveTabla; let i = $index) {
               <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-800 flex items-center gap-3 cdk-drag" cdkDrag [cdkDragData]="field">

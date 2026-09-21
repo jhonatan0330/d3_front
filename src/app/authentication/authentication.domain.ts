@@ -74,8 +74,6 @@ export class UsuarioAutenticacionDTO extends BasicDTO {
   clave: string;
   usuarioNombre: string;
   claveAnterior: string;
-  usuarioDTO: UsuarioDTO;
-  organizacion: OrganizacionDTO;
   mensaje: string;
   token: string;
   fechaCreacion: Date;

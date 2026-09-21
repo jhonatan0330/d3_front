@@ -62,6 +62,10 @@ export class FileHandlerService {
     });
   }
 
+  descargarArchivo(blob: Blob, filename: string) {
+    this.downloadFile(blob, filename);
+  }
+
   private downloadFile(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
 

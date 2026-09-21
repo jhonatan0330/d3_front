@@ -1,26 +1,27 @@
+@if(tenants() && tenants().length>1){
 <app-dropdown>
   <!-- Button trigger -->
   <button
     class="flex items-center gap-1 rounded-lg px-2 py-1 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
     trigger>
-    <span class="max-w-36 truncate">{{ currentTenantName }}</span>
+    <span class="max-w-36 truncate">{{ currentTenantName() }}</span>
     <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:chevron-down'"></mat-icon>
   </button>
 
   <!-- Header info -->
   <div class="flex flex-col items-center justify-center px-4 py-3 leading-none text-center">
     <span class="text-xs">Cambiar de tenant</span>
-    <span class="mt-1.5 text-sm font-medium">{{ currentTenantName }}</span>
+    <span class="mt-1.5 text-sm font-medium">{{ currentTenantName() }}</span>
   </div>
 
   <!-- Divider -->
   <div class="my-2 border-t border-gray-200 dark:border-gray-700"></div>
 
   <!-- Tenant list -->
-  @for (tenant of tenants; track tenant.key) {
+  @for (tenant of tenants(); track tenant.key) {
     <app-dropdown-item (clicked)="selectTenant(tenant)">
       <span class="flex-1 truncate">{{ tenant.name }}</span>
-      @if (tenant.key === currentTenantId) {
+      @if (tenant.key === currentTenantId()) {
         <span class="text-xs text-blue-500">Actual</span>
       }
     </app-dropdown-item>
@@ -28,3 +29,4 @@
     <app-dropdown-item>No hay tenants disponibles</app-dropdown-item>
   }
 </app-dropdown>
+}

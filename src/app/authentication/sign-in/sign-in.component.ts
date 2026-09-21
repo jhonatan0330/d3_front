@@ -66,17 +66,16 @@ export class SignInSplitScreenReversedComponent implements OnInit {
 
 
     ngOnInit(): void {
-
+        this.loginservice.getOrganization();
         this.signInForm = this._formBuilder.group({
             username: ['', [Validators.required]],
             password: ['', Validators.required]
         });
         this.loginservice.checkTokenIsValid()
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((result: boolean) => {
-                if (!result) { this.loginservice.getUrlServices(); }
-            });
+            .subscribe();
 
+        
     }
 
 
@@ -97,9 +96,9 @@ export class SignInSplitScreenReversedComponent implements OnInit {
                     this.isLoading = false;
                     this.signInForm.enable();
                     this.signInForm.controls['password'].setValue('');
-                    const APP_DFA = PlantillaHelper.buscarValor(_val.organizacion.propiedades, PlantillaHelper.APP_DFA);
+                    const APP_DFA = PlantillaHelper.buscarValor(this.company?.propiedades??[], PlantillaHelper.APP_DFA);
                     if (APP_DFA) {
-                        this.utilsService.modalUserChangePassOther(_val.usuarioDTO)
+                        this.utilsService.modalUserChangePassOther(_val.usuario)
                             .pipe(takeUntilDestroyed(this.destroyRef))
                             .subscribe((result) => {
                             if (result) {

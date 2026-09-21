@@ -25,7 +25,7 @@ export class NewPasswordComponent implements OnInit {
   autorizationId: string;
 
   ngOnInit() {
-    this.loginService.getUrlServices();
+    this.loginService.getOrganization();
     this.recoverForm = new FormGroup({
       first: new FormControl('', Validators.required),
       second: new FormControl('', Validators.required)

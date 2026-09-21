@@ -18,13 +18,13 @@
 
             <!-- Logo -->
             <div class="flex items-center justify-center h-20 mt-3 mb-4">
-                @if (company?.imagen) {
-                    <img class="w-full px-2" src="{{ company.imagen | imageFormat }}" alt="Logo image" />
+                @if (company().imagen) {
+                    <img class="w-full px-2" src="{{ company().imagen | imageFormat }}" alt="Logo image" />
                 }
             </div>
 
             <!-- Navigation items -->
-            <simple-nav [items]="navigation.compact" (navigate)="closeNavOnSmall()"></simple-nav>
+            <simple-nav [items]="navigation().compact" (navigate)="closeNavOnSmall()"></simple-nav>
 
             <!-- Navigation footer -->
             <div class="flex flex-0 items-center justify-center h-16 pr-6 pl-2 mt-2 mb-4 opacity-12"></div>
@@ -50,9 +50,9 @@
                 </div>
             </div>
 
-            @if (headerSection && headerSection.length !== 0) {
+            @if (headerSection() && headerSection().length !== 0) {
                 <div class="w-full">
-                    @for (iHeader of headerSection; track iHeader) {
+                    @for (iHeader of headerSection(); track iHeader) {
                         <div [innerHTML]="iHeader"></div>
                     }
                 </div>
@@ -68,9 +68,9 @@
             </div>
 
             <!-- Footer -->
-            @if (landing && landing.length !== 0) {
+            @if (landing() && landing().length !== 0) {
                 <div class="w-full">
-                    @for (iFooter of landing; track iFooter) {
+                    @for (iFooter of landing(); track iFooter) {
                         <div [innerHTML]="iFooter" class="w-full"></div>
                     }
                 </div>

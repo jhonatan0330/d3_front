@@ -129,10 +129,10 @@ export class UtilsService {
     return dialogRef.afterClosed();
   }
 
-  modalUserChangePassOther(pUsuario: UsuarioDTO) {
+  modalUserChangePassOther(pUsuario: string) {
     const dialogRef: MatDialogRef<any> = this.dialog.open(dfaComponent, {
       disableClose: false,
-      data: { key: pUsuario },
+      data: pUsuario ,
     });
     return dialogRef.afterClosed();
   }

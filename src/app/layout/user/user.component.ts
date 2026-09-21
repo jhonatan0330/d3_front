@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect,  inject 
 import { TemplateService } from 'app/document/service/template.service';
 import { ApiService } from 'app/document/document.api';
 import { LoginService } from 'app/authentication/login.service';
-import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { environment } from 'environments/environment';
 import { UtilsService } from 'app/document/service/utils.service';
 import { MatIcon } from '@angular/material/icon';
@@ -17,25 +16,14 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
     imports: [MatIcon, DropdownComponent, DropdownItemComponent]
 })
 export class UserComponent {
-    private _changeDetectorRef = inject(ChangeDetectorRef);
-    jwtAuth = inject(LoginService);
+    readonly jwtAuth = inject(LoginService);
+
     private apiService = inject(ApiService);
     private templateService = inject(TemplateService);
     private utilService = inject(UtilsService);
 
-
-    user: UsuarioDTO;
     time = new Date();
     currentApplicationVersion = environment.appVersion;
-
-    constructor() {
-        effect(() => {
-            this.user = this.jwtAuth.user();
-            this._changeDetectorRef.markForCheck();
-        });
-    }
-
-
 
     signOut(): void {
         this.jwtAuth.signout();
