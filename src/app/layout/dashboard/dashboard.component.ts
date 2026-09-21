@@ -9,12 +9,13 @@ import { AuthenticationService } from 'app/authentication/authentication.service
 import { LoginService } from 'app/authentication/login.service';
 import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { IndicatorsCardsComponent } from 'app/accounting/components/indicators-cards';
+import { TaskListComponent } from 'app/task/components/task-list/task-list.component';
 
 @Component({
     selector: 'dashboard',
     templateUrl: './dashboard.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, IndicatorsCardsComponent]
+    imports: [FormsModule, ReactiveFormsModule, IndicatorsCardsComponent, TaskListComponent]
 })
 export class DashboardComponent implements AfterViewInit, OnDestroy {
   private templateService = inject(TemplateService);

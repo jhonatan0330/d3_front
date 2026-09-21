@@ -34,7 +34,6 @@ export const appRoutes: Route[] = [
       { path: 'main/:type/:id', loadComponent: () => import('app/layout/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'list/:type/:id', loadComponent: () => import('app/document/cruds/cruds2.component').then(m => m.Cruds2Component) },
       { path: 'list/:type/:id/:server_id', loadComponent: () => import('app/document/cruds/cruds2.component').then(m => m.Cruds2Component) },
-      { path: 'tasks', loadComponent: () => import('app/task/components/task-view/tasks.component').then(m => m.TasksListComponent) },
       { path: 'massive/:template', loadComponent: () => import('app/massiveload/components/massiveload-view/massive.component').then(m => m.MassiveComponent) },
       { path: 'massive/:template/:server', loadComponent: () => import('app/massiveload/components/massiveload-view/massive.component').then(m => m.MassiveComponent) },
       { path: 'account', loadComponent: () => import('app/accounting/components/accounting-view/accounting.component').then(m => m.AccountComponent) },

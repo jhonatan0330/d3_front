@@ -15,6 +15,7 @@ import { DateNotificationService } from './date-notification.service';
 import { AuthenticationService } from './authentication.service';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { UsersApiService } from 'app/users/users.api';
+import { TasksService } from 'app/task/business/task.service';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -30,6 +31,7 @@ export class LoginService {
   private dateNotificationService = inject(DateNotificationService);
   private authenticationService = inject(AuthenticationService);
   private readonly usersService = inject(UsersApiService);
+  private readonly taskService = inject(TasksService);
 
   readonly user = signal<UsuarioDTO>(new UsuarioDTO());
   readonly company = signal<OrganizacionDTO>(new OrganizacionDTO());
@@ -193,14 +195,6 @@ export class LoginService {
     return this.authenticationService.recoverPassword(identificacion, correo);
   }
 
-  /*isLoggedIn(): boolean {
-    if (!this.token) { this.token = this.getJwtToken(); }
-    if (!this.token) { return false; }
-    if (!this.urlService) { this.urlService = this.getConfUrl(); }
-    if (!this.urlService) { return false; }
-    return true;
-  }*/
-
   getJwtToken() {
     return this.ls.getItem(LocalConstants.JWT_TOKEN);
   }
@@ -224,6 +218,7 @@ export class LoginService {
             next: (value) => {
               this.user.set(value);
               this.getOrganization();
+              this.taskService.getTasks();
             }, error: () => { }
           });
 

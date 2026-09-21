@@ -1,0 +1,43 @@
+<form
+    class="flex max-h-[calc(100vh-32px)] min-h-96 flex-col overflow-y-auto p-6 sm:p-8"
+    [formGroup]="taskForm">
+
+    <div class="flex items-center justify-between">
+
+        <mat-form-field class="w-full pr-4">
+            <mat-label>Título</mat-label>
+
+            <input
+                #titleField
+                matInput
+                formControlName="title"
+                [spellcheck]="false"
+                (blur)="onTitleEmpty()">
+        </mat-form-field>
+
+        <button
+            type="button"
+            class="btn-icon"
+            aria-label="Cerrar editor"
+            (click)="closeDrawer()">
+
+            <mat-icon
+                [svgIcon]="'heroicons_outline:x-mark'">
+            </mat-icon>
+
+        </button>
+
+    </div>
+
+    <ngx-editor-menu
+        [editor]="editor"
+        class="py-8"
+        [toolbar]="toolbar">
+    </ngx-editor-menu>
+
+    <ngx-editor
+        [editor]="editor"
+        formControlName="notes">
+    </ngx-editor>
+
+</form>
