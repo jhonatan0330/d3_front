@@ -2,9 +2,10 @@ import { Component, ChangeDetectionStrategy, inject, DestroyRef } from '@angular
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from 'app/document/document.api';
-import { UsuarioAutenticacionDTO } from '../authentication.domain';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ParticleBackgroundDirective } from '../shared/particle-background';
+import { ParticleBackgroundDirective } from '../../business/particle-background';
+import { UsuarioAutenticacionDTO } from 'app/authentication/domain/UsuarioAutenticacionDTO';
+import { AuthenticationApi } from 'app/authentication/authentication.api';
 
 
 @Component({
@@ -18,7 +19,7 @@ import { ParticleBackgroundDirective } from '../shared/particle-background';
 })
 export class dfaComponent {
     private fb = inject(FormBuilder);
-    private apiService = inject(ApiService);
+    private readonly apiService = inject(AuthenticationApi);
     data = inject(MAT_DIALOG_DATA);
     private dialogRef = inject<MatDialogRef<dfaComponent>>(MatDialogRef);
     private destroyRef = inject(DestroyRef);

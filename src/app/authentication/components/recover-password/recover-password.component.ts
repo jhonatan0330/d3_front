@@ -2,23 +2,24 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { LoginService } from '../login.service';
 import { Router, RouterLink } from '@angular/router';
-import { ParticleBackgroundDirective } from '../shared/particle-background';
+import { ParticleBackgroundDirective } from '../../business/particle-background';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { LoginService } from 'app/authentication/login.service';
+import { AuthenticationApi } from 'app/authentication/authentication.api';
 
 @Component({
     selector: 'app-recover-password',
     providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }],
     templateUrl: './recover-password.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [FormsModule, ReactiveFormsModule, RouterLink, ParticleBackgroundDirective]
 })
 export class RecoverPasswordComponent implements OnInit {
   private loginService = inject(LoginService);
+  private authenticationApi = inject(AuthenticationApi);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
-private notificationCenter = inject(NotificationCenterService);
+  private notificationCenter = inject(NotificationCenterService);
 
   recoverForm: FormGroup<{ identificacion: FormControl<string | null>, correo: FormControl<string | null> }>;
   errorMsg = '';
@@ -37,7 +38,7 @@ private notificationCenter = inject(NotificationCenterService);
 
     this.submitting = true;
 
-    this.loginService.recoverPassword(signinData.identificacion!, signinData.correo!)
+    this.authenticationApi.recoverPassword(signinData.identificacion!, signinData.correo!)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: () => {

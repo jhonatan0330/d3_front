@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, inject, OnInit } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { UsuarioDTO } from 'app/authentication/authentication.domain';
+import { UsuarioDTO } from 'app/authentication/domain/authentication.domain';
 import { ConfigUserService } from 'app/configuration/configuracion.api';
 
 @Component({

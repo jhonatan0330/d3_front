@@ -8,9 +8,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { PropiedadCampoDTO, PropiedadDTO, PropiedadValorDefinidoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/shared/shared.domain';
-import { UsuarioDTO, RolAccesoFilterDTO } from 'app/authentication/authentication.domain';
 import { PropertyService, PropertyValueService } from 'app/configuration/configuracion.api';
 import { PropertyRelationsComponent } from '../property-relations/property-relations.component';
+import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO';
+import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
 
 interface ModalData {
     propiedad?: PropiedadCampoDTO;

@@ -15,7 +15,7 @@ import { catchError, map, of, switchMap } from 'rxjs';
 import { TenantPublicDTO } from 'app/multitenancy/domain/multitenancy.types';
 import { MultitenancyApi } from 'app/multitenancy/multitenancy.api';
 import { LoginService } from 'app/authentication/login.service';
-import { SignInSplitScreenReversedComponent } from 'app/authentication/sign-in/sign-in.component';
+import { SignInSplitScreenReversedComponent } from 'app/authentication/components/sign-in/sign-in.component';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';

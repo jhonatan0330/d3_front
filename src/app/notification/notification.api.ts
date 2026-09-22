@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { ActividadDTO } from 'app/notification/domain/ActividadDTO';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
   providedIn: 'root'
@@ -57,13 +56,6 @@ export class NotificationsService {
     return this.http.post<ActividadDTO>(
       this.ls.getUrlAccess('/notification/transfer'),
       plantilla
-    );
-  }
-
-  usersToTransfer(documentId: string): Observable<UsuarioDTO[]> {
-    return this.http.post<UsuarioDTO[]>(
-      this.ls.getUrlAccess('/users/userToTransfer/' + documentId),
-      null
     );
   }
 

@@ -30,9 +30,8 @@ import { UtilsService } from 'app/document/service/utils.service';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { getComponent } from 'app/document/form/form-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+import { LocalStoreService } from 'app/shared/local-store.service';
 import { Router } from '@angular/router';
-import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { MatIcon } from '@angular/material/icon';
@@ -49,6 +48,7 @@ import { FormTransitionService } from 'app/document/form/form-transition.service
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { UsersApiService } from 'app/users/users.api';
 
 @Component({
     selector: 'app-form',
@@ -72,6 +72,8 @@ export class FormComponent implements OnInit, AfterViewInit {
     private transitionService = inject(FormTransitionService);
     private tenantUrlService = inject(TenantUrlService);
     private notificationCenter = inject(NotificationCenterService);
+
+    readonly userApi = inject(UsersApiService);
 
     // Variables para el control de los campos
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
@@ -1086,9 +1088,9 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     abrirUsuario(pUsuario: string) {
-        this.api.searchUserByRol(pUsuario)
+        this.userApi.searchUserByRol(pUsuario)
             .pipe(takeUntilDestroyed(this._destroyRef))
-            .subscribe({ next: (contact: UsuarioDTO) => {
+            .subscribe({ next: (contact) => {
             this.utilsService.modalUser(contact.llaveTabla)
                 .pipe(takeUntilDestroyed(this._destroyRef))
                 .subscribe({ error: () => {} });

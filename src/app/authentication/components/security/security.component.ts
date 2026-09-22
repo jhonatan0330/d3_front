@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, OnInit,  inject, signal, DestroyRef
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UsuarioDTO } from 'app/authentication/authentication.domain';
 import { LoginService } from 'app/authentication/login.service';
 
 import { MatFormField, MatLabel, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
 @Component({
     selector: 'settings-security',
     templateUrl: './security.component.html',

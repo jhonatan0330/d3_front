@@ -1,13 +1,12 @@
-import { Component, computed, effect, AfterViewInit, ChangeDetectionStrategy, DestroyRef, ElementRef, inject, OnDestroy, signal, ViewChild } from '@angular/core';
+import { Component,  effect, AfterViewInit, ChangeDetectionStrategy, DestroyRef, ElementRef, inject, OnDestroy, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AuthenticationService } from 'app/authentication/authentication.service';
+import { AuthenticationApi } from 'app/authentication/authentication.api';
 import { LoginService } from 'app/authentication/login.service';
-import { OrganizacionDTO } from 'app/authentication/authentication.domain';
 import { IndicatorsCardsComponent } from 'app/accounting/components/indicators-cards';
 import { TaskListComponent } from 'app/task/components/task-list/task-list.component';
 
@@ -19,7 +18,7 @@ import { TaskListComponent } from 'app/task/components/task-list/task-list.compo
 })
 export class DashboardComponent implements AfterViewInit, OnDestroy {
   private templateService = inject(TemplateService);
-  _jwtAuth = inject(AuthenticationService);
+  _jwtAuth = inject(AuthenticationApi);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private _utilsService = inject(UtilsService);
@@ -30,11 +29,6 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   slides: string[] = [];
   readonly activeSlide = signal(0);
   private autoplayId?: ReturnType<typeof setInterval>;
-
-  readonly company = computed<OrganizacionDTO | undefined>(() => {
-    const company = this.loginservice.company();
-    return (company && company.llaveTabla) ? company : undefined;
-  });
 
   tempTemplateOpen;
   tempIdOpen;

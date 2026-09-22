@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed, DestroyRef } from '@angular/core';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
@@ -10,12 +9,14 @@ import { PedidoVentaDTO } from 'app/document/document.types';
 import { MatIcon } from '@angular/material/icon';
 import { UsersService } from 'app/users/business/users.services';
 import { ChangePictureComponent } from 'app/layout/change-picture/change-picture.component';
+import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
+import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO';
 
 @Component({
     selector: 'contacts-details',
     templateUrl: 'detail-person.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [  MatIcon,ChangePictureComponent]
+    imports: [MatIcon, ChangePictureComponent]
 })
 export class ContactsDetailsComponent {
     private _contactsService = inject(UsersService);
@@ -53,7 +54,7 @@ export class ContactsDetailsComponent {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (value) => this.tags.set(value),
-                error: () => {}
+                error: () => { }
             });
     }
 

@@ -8,10 +8,9 @@ import { TrazabilityComponent } from 'app/document/trazability/trazability.compo
 import { SuccessComponent } from '../form/success/success.component';
 import { ManualFormComponent } from 'app/accounting/components/manual-form/manual-form.component';
 import { ContactsDetailsComponent } from 'app/users/components/detail_persons/detail-person.component';
-import { SettingsSecurityComponent } from 'app/authentication/security/security.component';
-import { UsuarioDTO } from 'app/authentication/authentication.domain';
+import { SettingsSecurityComponent } from 'app/authentication/components/security/security.component';
 import { DocumentTemplateFormComponent } from 'app/configuration/components/document-templates/document-template-form/document-template-form.component';
-import { dfaComponent } from 'app/authentication/DFA/dfa';
+import { dfaComponent } from 'app/authentication/components/DFA/dfa';
 import { DocumentTemplateFieldFormComponent } from 'app/configuration/components/document-templates/document-template-fields/document-template-field-form/document-template-field-form.component';
 import { DocumentTemplateFieldDetailComponent } from 'app/configuration/components/document-templates/document-template-fields/document-template-field-detail.component';
 import { PropertyModalComponent } from 'app/configuration/components/shared/property-modal/property-modal.component';

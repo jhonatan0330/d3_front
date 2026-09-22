@@ -17,7 +17,6 @@ import {
 } from './document.types';
 import { SharedIdResponse } from 'app/shared/api-types';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { UsuarioAutenticacionDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 
 @Injectable({
     providedIn: 'root',
@@ -101,12 +100,6 @@ export class ApiService {
         );
     }
 
-    verificarToken(usuario: UsuarioAutenticacionDTO): Observable<UsuarioAutenticacionDTO> {
-        return this.http.post<UsuarioAutenticacionDTO>(
-            this.ls.getUrlAccess('/authentication/dfa'), usuario);
-
-    }
-
     consultarDatosBase(
         campo: PedidoVentaCaracteristicaFilterDTO
     ): Observable<PedidoVentaCaracteristicaFilterDTO> {
@@ -183,12 +176,6 @@ export class ApiService {
     getMessageInFiledProccess(property: string, value: string): Observable<SharedIdResponse> {
         const endpoint = this.ls.getUrlAccess('/document/api/getMessageToProcessField/' + property + '/' + value);
         return this.http.get<SharedIdResponse>(endpoint);
-    }
-
-
-    searchUserByRol(query: string): Observable<UsuarioDTO> {
-        return this.http
-            .get<UsuarioDTO>(this.ls.getUrlAccess('/users/document/' + query));
     }
 
     getTrace(

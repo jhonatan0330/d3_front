@@ -1,19 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import {
-    OrganizacionDTO,
-    UsuarioAutenticacionAutorizacionDTO,
-    UsuarioAutenticacionDTO,
-    UsuarioAutenticacionFilterDTO,
-    UsuarioDTO
-} from './authentication.domain';
 import { Observable } from 'rxjs';
+import { RolAccesoFilterDTO } from './domain/RolAccesoFilterDTO';
+import { UsuarioAutenticacionFilterDTO } from './domain/UsuarioAutenticacionFilterDTO';
+import { UsuarioAutenticacionDTO } from './domain/UsuarioAutenticacionDTO';
+import { UsuarioAutenticacionAutorizacionDTO } from './domain/UsuarioAutenticacionAutorizacionDTO';
+import { OrganizacionDTO } from 'app/document/document.types';
+import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
 
 @Injectable({
     providedIn: 'root'
 })
-export class AuthenticationService {
+export class AuthenticationApi {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
 
@@ -40,7 +39,7 @@ export class AuthenticationService {
     }
 
     recoverPassword(identificacion: string, correo: string): Observable<UsuarioAutenticacionAutorizacionDTO> {
-        const authentication = new UsuarioDTO();        
+        const authentication = new UsuarioDTO();
         authentication.identificacion = identificacion;
         authentication.correo = correo;
         return this.http.post<UsuarioAutenticacionAutorizacionDTO>(
@@ -59,10 +58,23 @@ export class AuthenticationService {
         return this.http.get('/assets/conf.xml', { responseType: 'text' });
     }
 
-    changePicture(url: string): Observable<UsuarioDTO> {
-        return this.http.post<UsuarioDTO>(
-            this.ls.getUrlAccess('/users/changePicture'),
-            { url }
-        );
+
+
+    getRoles(): Observable<RolAccesoFilterDTO[]> {
+        return this.http.get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/authentication/getRole'));
     }
+
+    getRolesByUserId(userId: string): Observable<RolAccesoFilterDTO[]> {
+        return this.http.get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/authentication/roles/' + userId));
+    }
+
+    validateDFA(auth: UsuarioAutenticacionDTO): Observable<void> {
+        return this.http.post<void>(this.ls.getUrlAccess('/authentication/dfa'), auth);
+    }
+
+     verificarToken(usuario: UsuarioAutenticacionDTO): Observable<UsuarioAutenticacionDTO> {
+            return this.http.post<UsuarioAutenticacionDTO>(
+                this.ls.getUrlAccess('/authentication/dfa'), usuario);
+    
+        }
 }

@@ -13,4 +13,4 @@ export {
     UsuarioAutenticacionDTO,
     UsuarioAutenticacionFilterDTO,
     PermisosDTO,
-} from 'app/authentication/authentication.domain';
+} from 'app/authentication/domain/authentication.domain';

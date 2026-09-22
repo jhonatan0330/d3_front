@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LoginService } from '../login.service';
-import { ParticleBackgroundDirective } from '../shared/particle-background';
+import { LoginService } from '../../login.service';
+import { ParticleBackgroundDirective } from '../../business/particle-background';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({

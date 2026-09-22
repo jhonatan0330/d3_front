@@ -1,7 +1,8 @@
 import { Route } from '@angular/router';
 import { LayoutComponent } from 'app/layout/layout.component';
-import { AuthGuard } from './authentication/authentication.guard';
-import { SignInSplitScreenReversedComponent } from './authentication/sign-in/sign-in.component';
+import { AuthGuard } from './authentication/business/authentication.guard';
+import { SignInSplitScreenReversedComponent } from './authentication/components/sign-in/sign-in.component';
+
 
 // @formatter:off
 
@@ -19,8 +20,8 @@ export const appRoutes: Route[] = [
     },
     children: [
       { path: 'sign-in', component: SignInSplitScreenReversedComponent},
-      { path: 'sessions/recover', loadComponent: () => import('app/authentication/recover-password/recover-password.component').then(m => m.RecoverPasswordComponent) },
-      { path: 'sessions/new/:id', loadComponent: () => import('app/authentication/new-password/new-password.component').then(m => m.NewPasswordComponent) },
+      { path: 'sessions/recover', loadComponent: () => import('app/authentication/components/recover-password/recover-password.component').then(m => m.RecoverPasswordComponent) },
+      { path: 'sessions/new/:id', loadComponent: () => import('app/authentication/components/new-password/new-password.component').then(m => m.NewPasswordComponent) },
     ]
   },
    // Admin routes

@@ -1,7 +1,9 @@
 import { inject, Injectable,  signal } from '@angular/core';
 import { catchError, map, Observable, of, switchMap, tap, } from 'rxjs';
-import { RolAccesoFilterDTO, UsuarioDTO } from 'app/authentication/authentication.domain';
 import { UsersApiService } from '../users.api';
+import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO';
+import { UsuarioDTO } from '../domain/UsuarioDTO';
+import { AuthenticationApi } from 'app/authentication/authentication.api';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
@@ -9,6 +11,7 @@ export class UsersService {
     private readonly _contact = signal<UsuarioDTO | null>(null);
     private readonly _contacts = signal<UsuarioDTO[] | null>(null);
     private userApiService = inject(UsersApiService);
+    private readonly authenticationApi = inject(AuthenticationApi);
 
     get contact() {
         return this._contact.asReadonly();
@@ -19,11 +22,11 @@ export class UsersService {
     }
 
     searchTags(): Observable<RolAccesoFilterDTO[]> {
-        return this.userApiService.getRoles();
+        return this.authenticationApi.getRoles();
     }
 
     searchTagsById(query: string): Observable<RolAccesoFilterDTO[]> {
-        return this.userApiService.getRolesByUserId(query);         ;
+        return this.authenticationApi.getRolesByUserId(query);         ;
     }
 
     getContacts() {

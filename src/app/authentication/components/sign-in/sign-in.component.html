@@ -9,12 +9,12 @@
     <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
       <!-- Logo -->
       <div class="text-center p-4">
-        <img class="m-auto" src="{{ $any(company?.imagen) | imageFormat }}" alt="">
+        <img class="m-auto" src="{{ $any(company().imagen) | imageFormat }}" alt="">
       </div>
 
       <!-- Title -->
       <div class="mt-8 text-4xl font-extrabold leading-tight tracking-tight">
-        {{company?.nombre}}
+        {{company().nombre}}
       </div>
       <!--div class="mt-0.5 flex items-baseline font-medium">
       <div>Don't have an account?</div>
@@ -82,7 +82,7 @@
           </button>
         </div-->
       </form>
-      @if (templateNewUser) {
+      @if (templateNewUser()) {
         <button (click)="newUser()"
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Nuevo usuario</button>
       }

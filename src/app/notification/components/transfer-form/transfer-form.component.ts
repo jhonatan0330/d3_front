@@ -9,12 +9,13 @@ import { PlantillaHelper } from "app/shared/plantilla-helper";
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { ActividadDTO } from "../../domain/ActividadDTO";
 import { PropiedadDTO } from "app/shared/shared.domain";
-import { UsuarioDTO } from "app/authentication/authentication.domain";
 import { MatFormField } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from "@angular/material/autocomplete";
 import { MatIcon } from "@angular/material/icon";
 import { ImageFormatPipe } from "../../../shared/local-image";
+import { UsersApiService } from "app/users/users.api";
+import { UsuarioDTO } from "app/users/domain/UsuarioDTO";
 
 @Component({
     selector: 'transfer-form',
@@ -25,6 +26,7 @@ import { ImageFormatPipe } from "../../../shared/local-image";
 })
 export class TransferFormComponent implements OnInit {
   private notificationService = inject(NotificationsService);
+  private userApi = inject(UsersApiService);
   private notificationCenter = inject(NotificationCenterService);
   private destroyRef = inject(DestroyRef);
   data = inject(MAT_DIALOG_DATA);
@@ -71,7 +73,7 @@ export class TransferFormComponent implements OnInit {
     const filter: ActividadDTO = new ActividadDTO();
     filter.documento = this.data.document;
     this.isTransfering = true;
-      this.notificationService.usersToTransfer(filter.documento!)
+      this.userApi.usersToTransfer(filter.documento!)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (value) => {

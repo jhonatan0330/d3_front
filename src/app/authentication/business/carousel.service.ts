@@ -1,9 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiService } from 'app/document/document.api';
-import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
+import { OrganizacionDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { OrganizacionDTO } from './authentication.domain';
 
 @Injectable({ providedIn: 'root' })
 export class CarouselService {

@@ -8,14 +8,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { TemplateService } from 'app/document/service/template.service';
 import { NotificationsService } from 'app/notification/notification.api';
 import { ApiService } from 'app/document/document.api';
-import { OrganizacionDTO, UsuarioAutenticacionAutorizacionDTO, UsuarioAutenticacionDTO, UsuarioAutenticacionFilterDTO, UsuarioDTO } from './authentication.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { CarouselService } from './carousel.service';
-import { DateNotificationService } from './date-notification.service';
-import { AuthenticationService } from './authentication.service';
+import { DateNotificationService } from './business/date-notification.service';
+import { AuthenticationApi } from './authentication.api';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { UsersApiService } from 'app/users/users.api';
 import { TasksService } from 'app/task/business/task.service';
+import { OrganizationLayoutService } from '../layout/layout.service';
+import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
+import { OrganizacionDTO } from 'app/document/document.types';
+import { UsuarioAutenticacionDTO } from './domain/UsuarioAutenticacionDTO';
+import { UsuarioAutenticacionFilterDTO } from './domain/UsuarioAutenticacionFilterDTO';
+import { UsuarioAutenticacionAutorizacionDTO } from './domain/UsuarioAutenticacionAutorizacionDTO';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -27,9 +31,9 @@ export class LoginService {
   private notificationService = inject(NotificationsService);
   private notificationCenter = inject(NotificationCenterService);
   private apiService = inject(ApiService);
-  private carouselService = inject(CarouselService);
   private dateNotificationService = inject(DateNotificationService);
-  private authenticationService = inject(AuthenticationService);
+  private authenticationService = inject(AuthenticationApi);
+  private readonly organizationLayoutService = inject(OrganizationLayoutService);
   private readonly usersService = inject(UsersApiService);
   private readonly taskService = inject(TasksService);
 
@@ -43,9 +47,9 @@ export class LoginService {
   isAdmin = false;
   isReader = false;
 
-  readonly slides = this.carouselService.slides;
-  readonly landing = this.carouselService.landing;
-  readonly headerSection = this.carouselService.headerSection;
+  readonly slides = this.organizationLayoutService.slides;
+  readonly landing = this.organizationLayoutService.landing;
+  readonly headerSection = this.organizationLayoutService.headerSection;
 
   constructor() {
     this.route.queryParams.subscribe(
@@ -66,7 +70,12 @@ export class LoginService {
   }
 
 
-  public signin(username: string, password: string, tokenAuto: string, navigateOnError = true) {
+  public signin(
+    username: string,
+    password: string,
+    tokenAuto: string | null,
+    navigateOnError = true
+  ): Observable<UsuarioAutenticacionDTO> | null {
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
     autenticacion.sesion = username;
     autenticacion.clave = password;
@@ -74,8 +83,8 @@ export class LoginService {
     if (username != null) { this.ls.setItem(LocalConstants.LOGIN_ID, username); }
     //Esto lo hice porque me estoy autenticando 2 veces, tengo que mejorar esta parte
     if (username === null && password === null) {
-      if (!tokenAuto) { return null; };
-      const _user = this.getUser()
+      if (!tokenAuto) { return null; }
+      const _user = this.getUser();
       if (_user) autenticacion.usuario = _user.llaveTabla;
     }
     return this.authenticationService.authenticate(autenticacion)
@@ -190,10 +199,6 @@ export class LoginService {
     return this.authenticationService.changePassword(autenticacion);
   }
 
-
-  recoverPassword(identificacion: string, correo: string): Observable<UsuarioAutenticacionAutorizacionDTO> {
-    return this.authenticationService.recoverPassword(identificacion, correo);
-  }
 
   getJwtToken() {
     return this.ls.getItem(LocalConstants.JWT_TOKEN);
@@ -310,57 +315,32 @@ export class LoginService {
   }
 
   getOrganization() {
-    this.authenticationService.getOrganization().subscribe({
-      next: (organization) => {
-        if (!organization) { return; }
+    this.organizationLayoutService.loadCurrentOrganization(this.isAuthenticated(), (organization) => {
+      if (!organization) {
+        return;
+      }
 
-        this.carouselService.loadFromOrganization(organization, this.isAuthenticated());
-        if (organization.propiedades) {
-          this.isAdmin = !PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_ADMIN);
-          this.isReader = !PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_READER);
-          this.templateService.setModules(PlantillaHelper.buscarValorMultiple(organization.propiedades!, PlantillaHelper.APP_MODULES)!);
-        }
-        if (this.company() && this.company().llaveTabla === organization?.llaveTabla) {
-          // se presentaba un bug en los modulos 
-          this.company().propiedades = organization.propiedades;
-          //Evito que se vuelva a consultar los template coverad
-          return;
-        }
+      if (organization.propiedades) {
+        this.isAdmin = !PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_ADMIN);
+        this.isReader = !PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_READER);
+      }
 
-        this.company.set(organization);
+      if (this.company() && this.company().llaveTabla === organization?.llaveTabla) {
+        this.company().propiedades = organization.propiedades;
+        return;
+      }
 
+      this.company.set(organization);
 
-        if (organization && organization.publicToken) {
-          this.token = organization.publicToken;
-          this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
-
-          //Si no coloco esto se va a crear un ciclo infintio solicitando el token
-          //if (!this.isOpenPopOfAuthenticate) { 
-
-          //}
-        }
-      },
-      error: () => { }
+      if (organization.publicToken) {
+        this.token = organization.publicToken;
+        this.ls.setItem(LocalConstants.JWT_TOKEN, organization.publicToken);
+      }
     });
   }
 
-
-
   validateAccessModule(pModuleKey: string): boolean {
-
-    if (this.company()) {
-      const _modules = PlantillaHelper.buscarValorMultiple(this.company().propiedades, PlantillaHelper.APP_MODULES);
-      if (_modules) {
-        for (let index = 0; index < _modules.length; index++) {
-          const element = _modules[index];
-          if (element.valor === pModuleKey) {
-            return true;
-
-          }
-        }
-      }
-    }
-    return false;
+    return this.organizationLayoutService.validateAccessModule(this.company(), pModuleKey);
   }
 
 }
