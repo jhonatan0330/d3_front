@@ -17,7 +17,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
-import { LoadLineDTO } from '../../domain/massive.domain';
+import { LoadLineDTO } from '../../domain/LoadLineDTO';
 import { MatIcon } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
@@ -27,7 +27,8 @@ import { LocalStoreService } from 'app/shared/local-store.service';
 import { formatImageUrl } from 'app/shared/local-image';
 import { FileHandlerService } from 'app/shared/file-handler.service';
 import { MassiveApiService } from 'app/massiveload/massive.api';
-import { MassiveParseResponse, PlantillaBaseResponse } from 'app/massiveload/massive.types';
+import { MassiveParseResponse } from 'app/massiveload/domain/MassiveParseResponse';
+import { PlantillaBaseResponse } from 'app/massiveload/domain/PlantillaBaseResponse';
 
 @Component({
     selector: 'app-massive',

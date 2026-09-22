@@ -161,13 +161,6 @@ export class LoginService {
         timerProgressBar: true
       })
     }
-    if (!this.user().llaveTabla) { return; }
-    this.apiService.listarPlantillas("USER")
-      .subscribe({
-        next: (templates) => {
-          this.templateService.setTemplates(templates);
-        }, error: () => { }
-      });
   }
 
   signout() {
@@ -224,6 +217,14 @@ export class LoginService {
               this.user.set(value);
               this.getOrganization();
               this.taskService.getTasks();
+              this.ls.setItem(LocalConstants.APP_USER, this.user());
+              if (!this.user().llaveTabla) { return; }
+              this.apiService.listarPlantillas("USER")
+                .subscribe({
+                  next: (templates) => {
+                    this.templateService.setTemplates(templates);
+                  }, error: () => { }
+                });
             }, error: () => { }
           });
 
@@ -232,12 +233,10 @@ export class LoginService {
       this.isAuthenticated.set(false);
       this.token = null;
       this.user.set(new UsuarioDTO());
+      this.ls.setItem(LocalConstants.APP_USER, this.user());
     }
 
-
-
     this.ls.setItem(LocalConstants.JWT_TOKEN, this.token);
-    this.ls.setItem(LocalConstants.APP_USER, this.user());
   }
 
   setConfUrl(url: string) {

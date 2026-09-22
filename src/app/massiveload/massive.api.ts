@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { MassiveParseResponse, PlantillaBaseResponse } from './massive.types';
+import { MassiveParseResponse } from './domain/MassiveParseResponse';
+import { PlantillaBaseResponse } from './domain/PlantillaBaseResponse';
 
 @Injectable({
 	providedIn: 'root'
