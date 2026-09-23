@@ -1,6 +1,6 @@
 import { inject, Injectable,  signal } from '@angular/core';
 import { catchError, map, Observable, of, switchMap, tap, } from 'rxjs';
-import { UsersApiService } from '../users.api';
+import { UsersApi } from '../users.api';
 import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO';
 import { UsuarioDTO } from '../domain/UsuarioDTO';
 import { AuthenticationApi } from 'app/authentication/authentication.api';
@@ -10,7 +10,7 @@ export class UsersService {
     
     private readonly _contact = signal<UsuarioDTO | null>(null);
     private readonly _contacts = signal<UsuarioDTO[] | null>(null);
-    private userApiService = inject(UsersApiService);
+    private userApiService = inject(UsersApi);
     private readonly authenticationApi = inject(AuthenticationApi);
 
     get contact() {

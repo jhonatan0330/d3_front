@@ -6,7 +6,7 @@ import { TemplateService } from 'app/document/service/template.service';
 import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
 import { DocumentoPlantillaTipoEnum } from 'app/document/form/form.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { UtilsService } from 'app/document/service/utils.service';
 import { Router } from '@angular/router';
 import { ChatService } from '../assistant.api';
@@ -14,7 +14,7 @@ import { ChatService } from '../assistant.api';
 @Injectable({ providedIn: 'root' })
 export class AssistantService {
     private readonly templateService = inject(TemplateService);
-    private readonly api = inject(ApiService);
+    private readonly api = inject(DocumentApi);
     private readonly utilsService = inject(UtilsService);
     private router = inject(Router);
 

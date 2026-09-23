@@ -18,8 +18,8 @@
 
             <!-- Logo -->
             <div class="flex items-center justify-center h-20">
-                @if (company().imagen) {
-                    <img class="w-full px-2" src="{{ company().imagen | imageFormat }}" alt="Logo image" />
+                @if (layoutService.company().imagen) {
+                    <img class="w-full px-2" src="{{ layoutService.company().imagen | imageFormat }}" alt="Logo image" />
                 }
             </div>
 
@@ -53,9 +53,9 @@
                 </div>
             </div>
 
-            @if (headerSection() && headerSection().length !== 0) {
+            @if (carouselService.headerSection() && carouselService.headerSection().length !== 0) {
                 <div class="w-full">
-                    @for (iHeader of headerSection(); track iHeader) {
+                    @for (iHeader of carouselService.headerSection(); track iHeader) {
                         <div [innerHTML]="iHeader"></div>
                     }
                 </div>
@@ -71,9 +71,9 @@
             </div>
 
             <!-- Footer -->
-            @if (landing() && landing().length !== 0) {
+            @if (carouselService.landing() && carouselService.landing().length !== 0) {
                 <div class="w-full">
-                    @for (iFooter of landing(); track iFooter) {
+                    @for (iFooter of carouselService.landing(); track iFooter) {
                         <div [innerHTML]="iFooter" class="w-full"></div>
                     }
                 </div>

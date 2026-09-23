@@ -14,7 +14,7 @@ import { MatInput } from "@angular/material/input";
 import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from "@angular/material/autocomplete";
 import { MatIcon } from "@angular/material/icon";
 import { ImageFormatPipe } from "../../../shared/local-image";
-import { UsersApiService } from "app/users/users.api";
+import { UsersApi } from "app/users/users.api";
 import { UsuarioDTO } from "app/users/domain/UsuarioDTO";
 
 @Component({
@@ -26,7 +26,7 @@ import { UsuarioDTO } from "app/users/domain/UsuarioDTO";
 })
 export class TransferFormComponent implements OnInit {
   private notificationService = inject(NotificationsService);
-  private userApi = inject(UsersApiService);
+  private userApi = inject(UsersApi);
   private notificationCenter = inject(NotificationCenterService);
   private destroyRef = inject(DestroyRef);
   data = inject(MAT_DIALOG_DATA);

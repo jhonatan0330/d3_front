@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 
 export const LocalConstants = {
   JWT_TOKEN: 'JWT_TOKEN',
-  PUBLIC_TOKEN: 'PUBLIC_TOKEN',
-  APP_USER: 'EGRET_USER',
-  TEMPLATES: 'D3_TEMPLATES',
   URL_CONF: 'URL_CONF',
   TENANT_ID: 'TENANT_ID',
   TENANT_NAME: 'TENANT_NAME',
@@ -19,17 +16,13 @@ export class LocalStoreService {
 
   private ls = window.localStorage;
 
-  constructor(
-
-  ) { }
-
-  public setItem(key: string , value: any) {
+  private setItem(key: string, value: any) {
     value = JSON.stringify(value);
     this.ls.setItem(key, value);
     return true
   }
 
-  public getItem(key: string) {
+  private getItem(key: string) {
     const value = this.ls.getItem(key);
     try {
       return JSON.parse(value!);
@@ -42,12 +35,36 @@ export class LocalStoreService {
     this.ls.clear();
   }
 
-  getUrlAccess(endpoint: string): string {
+  public getUrlAccess(endpoint: string): string {
     if (!endpoint.startsWith('/')) {
       endpoint = '/' + endpoint;
     }
     const url: string | null = this.getItem(LocalConstants.URL_CONF);
     const result = url!.concat(endpoint.toString());
     return result;
+  }
+
+  public setTenantId(tenantId: string | null) {
+    this.setItem(LocalConstants.TENANT_ID, tenantId);
+  }
+
+  public getTenantId(): string | null {
+    return this.getItem(LocalConstants.TENANT_ID);
+  }
+
+  public setUrlConf(url: string | null) {
+     this.setItem(LocalConstants.URL_CONF, url);
+  }
+
+  public getUrlConf(): string | null {
+    return this.getItem(LocalConstants.URL_CONF);
+  }
+
+  public setJwtToken(token: string | null) {
+    this.setItem(LocalConstants.JWT_TOKEN, token);
+  }
+
+  public getJwtToken(): string | null {
+    return this.getItem(LocalConstants.JWT_TOKEN);
   }
 }

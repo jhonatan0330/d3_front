@@ -10,7 +10,7 @@ import {
     ReporteBaseDTO,
 } from 'app/document/document.types';
 import { PedidoVentaFilterDTO } from 'app/document/document.types';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -49,7 +49,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private route = inject(ActivatedRoute);
     private templateService = inject(TemplateService);
-    private api = inject(ApiService);
+    private api = inject(DocumentApi);
     private router = inject(Router);
     private formBuilder = inject(FormBuilder);
     private notificationCenter = inject(NotificationCenterService);

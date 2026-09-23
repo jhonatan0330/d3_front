@@ -7,10 +7,9 @@ import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PedidoVentaDTO } from 'app/document/document.types';
-import { LoginService } from 'app/authentication/login.service';
 import { AssistantService } from 'app/assistant/business/assistant.service';
 import { AssistantMessage, AssistantState, CreateDocumentAction, DocumentSearchResult, TemplateSearchResult } from 'app/assistant/domain/assistant.models';
-
+import { LayoutService } from 'app/layout/layout.service';
 
 @Component({
     selector: 'app-assistant-panel',
@@ -18,7 +17,6 @@ import { AssistantMessage, AssistantState, CreateDocumentAction, DocumentSearchR
     imports: [FormsModule, MatIconModule, MatFormFieldModule, MatInputModule, RouterModule],
     templateUrl: './assistant-panel.component.html',
     styleUrl: './assistant-panel.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssistantPanelComponent implements OnInit, AfterViewInit {
     isDarkMode = false;
@@ -26,7 +24,7 @@ export class AssistantPanelComponent implements OnInit, AfterViewInit {
     @ViewChild('messageInput', { read: MatInput }) private messageInput!: MatInput;
     private readonly assistantService = inject(AssistantService);
     private readonly destroyRef = inject(DestroyRef);
-    private readonly jwtAuth = inject(LoginService);
+    private readonly jwtAuth = inject(LayoutService);
     imagenUsuario = signal<string>('');
     readonly estado = signal<AssistantState>('idle');
     pregunta = '';

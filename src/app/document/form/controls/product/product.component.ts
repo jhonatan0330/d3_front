@@ -6,7 +6,7 @@ import {
   ProductoInventarioDTO
 } from 'app/document/document.types';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { getComponent } from 'app/document/form/form-helper';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { IDynamicControl } from '../base/base.component';
@@ -25,7 +25,7 @@ import { DecimalPipe } from '@angular/common';
 export class ProductComponent implements OnInit, AfterViewInit {
   data = inject(MAT_DIALOG_DATA);
   dialogRef = inject<MatDialogRef<ProductComponent>>(MatDialogRef);
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
   private destroyRef = inject(DestroyRef);
 
 

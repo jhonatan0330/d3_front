@@ -54,12 +54,6 @@ export class AuthenticationApi {
         );
     }
 
-    getConfigUrl(): Observable<string> {
-        return this.http.get('/assets/conf.xml', { responseType: 'text' });
-    }
-
-
-
     getRoles(): Observable<RolAccesoFilterDTO[]> {
         return this.http.get<RolAccesoFilterDTO[]>(this.ls.getUrlAccess('/authentication/getRole'));
     }

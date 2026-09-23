@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../document.types';
-import { ApiService } from '../../../document.api';
+import { DocumentApi } from '../../../document.api';
 import { DocumentoPlantillaCaracteristicaEnum } from '../../form.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
@@ -12,7 +12,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
     changeDetection: ChangeDetectionStrategy.Eager
 })
 export class SeccionComponent extends BaseComponent implements OnInit {
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
 
 
   ngOnInit(): void {

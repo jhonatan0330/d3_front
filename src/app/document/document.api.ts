@@ -21,7 +21,7 @@ import { LocalStoreService } from 'app/shared/local-store.service';
 @Injectable({
     providedIn: 'root',
 })
-export class ApiService {
+export class DocumentApi {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
 

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { TenantPublicDTO } from 'app/multitenancy/domain/multitenancy.types';
+import { TenantPublicDTO } from 'app/multitenancy/domain/TenantPublicDTO';
 
 @Injectable({
     providedIn: 'root',

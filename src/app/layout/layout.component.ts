@@ -1,12 +1,10 @@
-import { Component, effect, OnDestroy, OnInit, ChangeDetectionStrategy, inject, ViewEncapsulation, DestroyRef } from '@angular/core';
+import { Component, effect,  OnInit, inject,  DestroyRef, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { FuseConfigService } from 'app/layout/core/config/fuse-config.service';
 import { Layout } from 'app/layout/domain/layout.types';
 import { AppConfig } from 'app/layout/core/config/app.config';
-import { LoginService } from 'app/authentication/login.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { EmptyLayoutComponent } from './layouts/empty/empty.component';
 import { CenteredLayoutComponent } from './layouts/horizontal/centered/centered.component';
@@ -19,6 +17,7 @@ import { CompactLayoutComponent } from './layouts/vertical/compact/compact.compo
 import { DenseLayoutComponent } from './layouts/vertical/dense/dense.component';
 import { FuturisticLayoutComponent } from './layouts/vertical/futuristic/futuristic.component';
 import { ThinLayoutComponent } from './layouts/vertical/thin/thin.component';
+import { LayoutService } from './layout.service';
 
 @Component({
     selector: 'layout',
@@ -32,7 +31,7 @@ export class LayoutComponent implements OnInit {
     private _activatedRoute = inject(ActivatedRoute);
     private _router = inject(Router);
     private _fuseConfigService = inject(FuseConfigService);
-    private _userService = inject(LoginService);
+    private layoutService = inject(LayoutService);
     private _destroyRef = inject(DestroyRef);
 
     config: AppConfig;
@@ -40,7 +39,7 @@ export class LayoutComponent implements OnInit {
 
     constructor() {
         effect(() => {
-            const company = this._userService.company();
+            const company = this.layoutService.company();
             if (company) {
                 if (this.config) {
                     let layoutCompany: string = PlantillaHelper.buscarValor(company.propiedades, PlantillaHelper.LAYOUT_APP);

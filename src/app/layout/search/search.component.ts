@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/f
 import { MatAutocomplete, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
@@ -35,7 +35,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
      * Constructor
      */
     constructor(
-        private api: ApiService,
+        private api: DocumentApi,
         private templateService: TemplateService,
         private utilsService: UtilsService
     ) {

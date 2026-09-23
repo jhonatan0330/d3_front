@@ -9,12 +9,12 @@
     <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">
       <!-- Logo -->
       <div class="text-center p-4">
-        <img class="m-auto" src="{{ $any(company().imagen) | imageFormat }}" alt="">
+        <img class="m-auto" src="{{ $any(layoutService.company().imagen) | imageFormat }}" alt="">
       </div>
 
       <!-- Title -->
       <div class="mt-8 text-4xl font-extrabold leading-tight tracking-tight">
-        {{company().nombre}}
+        {{layoutService.company().nombre}}
       </div>
       <!--div class="mt-0.5 flex items-baseline font-medium">
       <div>Don't have an account?</div>

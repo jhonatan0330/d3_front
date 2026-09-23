@@ -1,24 +1,24 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect,  inject } from '@angular/core';
+import { Component,  inject } from '@angular/core';
 import { TemplateService } from 'app/document/service/template.service';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { LoginService } from 'app/authentication/login.service';
 import { environment } from 'environments/environment';
 import { UtilsService } from 'app/document/service/utils.service';
 import { MatIcon } from '@angular/material/icon';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
+import { LayoutService } from '../layout.service';
 
 @Component({
     selector: 'user',
     templateUrl: './user.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    exportAs: 'user',
     imports: [MatIcon, DropdownComponent, DropdownItemComponent]
 })
 export class UserComponent {
     readonly jwtAuth = inject(LoginService);
+    readonly layoutService = inject(LayoutService);
 
-    private apiService = inject(ApiService);
+    private apiService = inject(DocumentApi);
     private templateService = inject(TemplateService);
     private utilService = inject(UtilsService);
 

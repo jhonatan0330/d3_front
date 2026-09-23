@@ -1,17 +1,15 @@
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { NavigationService } from 'app/layout/navigation/navigation.service';
 import { environment } from 'environments/environment';
-import { LoginService } from 'app/authentication/login.service';
 import { UserComponent } from '../../../user/user.component';
 import { MatIcon } from '@angular/material/icon';
-
-
-
 import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
 import { NotificationButtonComponent } from '../../../../notification/components/notification-button/notification-button.component';
 import { SimpleNavComponent } from '../../../simple-nav/simple-nav.component';
 import { RouterOutlet } from '@angular/router';
 import { ImageFormatPipe } from '../../../../shared/local-image';
+import { LayoutService } from 'app/layout/layout.service';
+import { CarouselService } from 'app/authentication/business/carousel.service';
 
 @Component({
     selector: 'futuristic-layout',
@@ -20,17 +18,14 @@ import { ImageFormatPipe } from '../../../../shared/local-image';
     imports: [SimpleNavComponent, UserComponent, MatIcon,  ShortcutsComponent, NotificationButtonComponent, RouterOutlet, ImageFormatPipe]
 })
 export class FuturisticLayoutComponent implements OnInit, OnDestroy {
-    readonly loginService = inject(LoginService);
+    public readonly layoutService = inject(LayoutService);
+    readonly carouselService = inject(CarouselService);
     private readonly navigationService = inject(NavigationService);
 
     readonly isScreenSmall = signal(false);
     readonly sidenavOpened = signal(false);
     readonly time = signal(new Date());
 
-    readonly user = this.loginService.user;
-    readonly company = this.loginService.company;
-    readonly headerSection = this.loginService.headerSection;
-    readonly landing = this.loginService.landing;
 
     readonly navigation = this.navigationService.navigation;
 

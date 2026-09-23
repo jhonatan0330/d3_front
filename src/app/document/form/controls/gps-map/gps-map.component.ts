@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FullMapComponent } from './full-map/full-map.component';
-import { ApiService } from '../../../document.api';
+import { DocumentApi } from '../../../document.api';
 import { DocumentoPlantillaCaracteristicaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from '../../../document.types';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
@@ -15,7 +15,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 })
 export class GpsMapComponent extends BaseComponent implements OnInit {
   dialog = inject(MatDialog);
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
   private notificationCenter = inject(NotificationCenterService);
 
 

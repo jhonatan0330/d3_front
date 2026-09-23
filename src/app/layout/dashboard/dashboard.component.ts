@@ -6,9 +6,10 @@ import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationApi } from 'app/authentication/authentication.api';
-import { LoginService } from 'app/authentication/login.service';
 import { IndicatorsCardsComponent } from 'app/accounting/components/indicators-cards';
 import { TaskListComponent } from 'app/task/components/task-list/task-list.component';
+import { LayoutService } from '../layout.service';
+import { CarouselService } from 'app/authentication/business/carousel.service';
 
 @Component({
     selector: 'dashboard',
@@ -17,12 +18,16 @@ import { TaskListComponent } from 'app/task/components/task-list/task-list.compo
     imports: [FormsModule, ReactiveFormsModule, IndicatorsCardsComponent, TaskListComponent]
 })
 export class DashboardComponent implements AfterViewInit, OnDestroy {
+
+  readonly layoutservice = inject(LayoutService);
+  private readonly carrouselservice = inject(CarouselService);
+
   private templateService = inject(TemplateService);
   _jwtAuth = inject(AuthenticationApi);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private _utilsService = inject(UtilsService);
-  loginservice = inject(LoginService);
+  
   private destroyRef = inject(DestroyRef);
   @ViewChild('carouselViewport') private carouselViewport?: ElementRef<HTMLElement>;
 
@@ -34,21 +39,9 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   tempIdOpen;
 
   constructor() {
-    effect(() => {
-      const date = this.loginservice.date();
-      if (!date) { return; }
-      const now = new Date();
-      const received = (date instanceof Date) ? date : new Date(date);
-      // If the received date is greater than now, show a pop-up
-      if (received < now) {
-        this._utilsService.modalUserChangePass()
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({ error: () => {} });
-      }
-    });
 
     effect(() => {
-      this.slides = this.loginservice.slides();
+      this.slides = this.carrouselservice.slides();
       this.activeSlide.set(0);
       this.startAutoplay();
     });

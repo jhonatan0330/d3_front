@@ -1,7 +1,6 @@
 import { Component,  OnDestroy, OnInit, inject, signal, computed } from '@angular/core';
 import { NavigationService } from 'app/layout/navigation/navigation.service';
 import { environment } from 'environments/environment';
-import { LoginService } from 'app/authentication/login.service';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { ShortcutsComponent } from '../../../shortcuts/shortcuts.component';
@@ -12,6 +11,8 @@ import { DatePipe } from '@angular/common';
 import { ImageFormatPipe } from '../../../../shared/local-image';
 import { SearchComponent } from 'app/layout/search/search.component';
 import { TenantSwitcherComponent } from '../../../tenant/tenant-switcher.component';
+import { LayoutService } from 'app/layout/layout.service';
+import { CarouselService } from 'app/authentication/business/carousel.service';
 
 @Component({
     selector: 'classy-layout',
@@ -19,17 +20,14 @@ import { TenantSwitcherComponent } from '../../../tenant/tenant-switcher.compone
     imports: [SimpleNavComponent, RouterLink, MatIcon, ShortcutsComponent, NotificationButtonComponent, UserComponent, RouterOutlet, DatePipe, ImageFormatPipe, SearchComponent, TenantSwitcherComponent]
 })
 export class ClassyLayoutComponent implements OnInit, OnDestroy {
-    readonly loginService = inject(LoginService);
+    readonly carouselService = inject(CarouselService);
+    readonly layoutService = inject(LayoutService);
     private readonly navigationService = inject(NavigationService);
 
     readonly isScreenSmall = signal(false);
     readonly sidenavOpened = signal(false);
     readonly time = signal(new Date());
 
-    readonly user = this.loginService.user;
-    readonly company = this.loginService.company;
-    readonly headerSection = this.loginService.headerSection;
-    readonly landing = this.loginService.landing;
 
     readonly navigation = this.navigationService.navigation;
 

@@ -22,7 +22,7 @@ import {
     DocumentoPlantillaCaracteristicaEnum,
     StatesEnum,
 } from 'app/document/form/form.enum';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { IDynamicControl } from './controls/base/base.component';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -30,7 +30,6 @@ import { UtilsService } from 'app/document/service/utils.service';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { getComponent } from 'app/document/form/form-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import { LocalStoreService } from 'app/shared/local-store.service';
 import { Router } from '@angular/router';
 import { LoginService } from 'app/authentication/login.service';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
@@ -48,7 +47,7 @@ import { FormTransitionService } from 'app/document/form/form-transition.service
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
-import { UsersApiService } from 'app/users/users.api';
+import { UsersApi } from 'app/users/users.api';
 
 @Component({
     selector: 'app-form',
@@ -60,9 +59,8 @@ export class FormComponent implements OnInit, AfterViewInit {
     data = inject(MAT_DIALOG_DATA);
     dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
     private templateService = inject(TemplateService);
-    private api = inject(ApiService);
+    private api = inject(DocumentApi);
     _jwt = inject(LoginService);
-    private ls = inject(LocalStoreService);
     private utilsService = inject(UtilsService);
     private _router = inject(Router);
     private _injector = inject(Injector);
@@ -73,7 +71,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private tenantUrlService = inject(TenantUrlService);
     private notificationCenter = inject(NotificationCenterService);
 
-    readonly userApi = inject(UsersApiService);
+    readonly userApi = inject(UsersApi);
 
     // Variables para el control de los campos
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
@@ -157,7 +155,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             return;
         }
         
-        if (this._jwt.token !== this._jwt.getJwtToken()) {
+        if (this._jwt.isSameToken()) {
             location.reload();
             this.dialogRef.close(false);
             return;
@@ -733,10 +731,8 @@ export class FormComponent implements OnInit, AfterViewInit {
     // Resuelve las propiedades de la plantilla
     resolvePropiertiesForm() {
 
+        this.esRol.set(!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.PLANTILLA_TIPO_ROL));
 
-        if (this._jwt.isAdmin) {
-            this.esRol.set(!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.PLANTILLA_TIPO_ROL));
-        }
         this.canMassive.set(!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CARGA_MASIVA));
         if (this.pedido()!.llaveTabla) {
             this.hasVoucher.set(!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.TEMPLATE_VOUCHER));
@@ -1097,9 +1093,9 @@ export class FormComponent implements OnInit, AfterViewInit {
         }, error: () => {} });
     }
 
-    flex() {
+    /*flex() {
         this.utilsService.modalFlex(this.plantilla()!.llaveTabla);
-    }
+    }*/
 
     duplicate() {
 

@@ -9,7 +9,6 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow } from '@angular/material/table';
 import { UtilsService } from 'app/document/service/utils.service';
-import { LoginService } from 'app/authentication/login.service';
 import { Router } from '@angular/router';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -20,6 +19,7 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropd
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { AccountingService } from 'app/accounting/accounting.api';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { LayoutService } from 'app/layout/layout.service';
 
 interface AccountNode {
     account: AccountDTO;
@@ -45,7 +45,7 @@ interface AccountFlatNode {
 export class AccountComponent implements OnInit, OnDestroy {
     private utilsService = inject(UtilsService);
     accountingService = inject(AccountingService);
-    private _jwt = inject(LoginService);
+    private layoutService = inject(LayoutService);
     private _router = inject(Router);
     private destroyRef = inject(DestroyRef);
     private notificationCenter = inject(NotificationCenterService);
@@ -96,7 +96,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     dataSource = signal(new MatTreeFlatDataSource(this.treeControl, this.treeFlattener));
 
     ngOnInit(): void {
-        if (!this._jwt.validateAccessModule('account')) {
+        if (!this.layoutService.validateAccessModule('account')) {
             this._router.navigate(['/main']);
             return;
         }

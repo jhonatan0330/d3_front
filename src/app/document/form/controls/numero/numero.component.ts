@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from 'app/document/document.types';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormulaHelper } from 'app/document/form/formula.helper';
 import { BaseComponent } from '../base/base.component';
@@ -20,7 +20,7 @@ import { MatInput } from '@angular/material/input';
     imports: [  MatFormField,MatLabel,MatInput,FormsModule,ReactiveFormsModule,TitleCasePipe]
 })
 export class NumeroComponent extends BaseComponent implements OnInit {
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
 
 
   fControl = new FormControl<any>(0, {

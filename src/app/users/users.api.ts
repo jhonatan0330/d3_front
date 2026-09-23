@@ -6,7 +6,7 @@ import { UsuarioFilterDTO } from './domain/UsuarioFilterDTO';
 import { UsuarioDTO } from './domain/UsuarioDTO';
 
 @Injectable({ providedIn: 'root' })
-export class UsersApiService {
+export class UsersApi {
     private http = inject(HttpClient);
     private ls = inject(LocalStoreService);
 

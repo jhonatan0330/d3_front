@@ -1,46 +1,20 @@
-import {
-    ChangeDetectionStrategy,
-    Component,
-    DestroyRef,
-    computed,
-    inject,
-    signal
-} from '@angular/core';
-
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
-import {
-    FormBuilder,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators
-} from '@angular/forms';
-
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import {
-    MAT_DIALOG_DATA,
-    MatDialogRef
-} from '@angular/material/dialog';
-
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInput } from '@angular/material/input';
-
-import {  EMPTY, finalize, switchMap, tap } from 'rxjs';
-
-
+import { EMPTY, finalize, switchMap, tap } from 'rxjs';
 import { LoginService } from 'app/authentication/login.service';
-
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { UtilsService } from 'app/document/service/utils.service';
-
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-
 import { ImageFormatPipe } from '../../../shared/local-image';
 import { ParticleBackgroundDirective } from '../../business/particle-background';
 import { environment } from 'environments/environment';
 import { SafeHtml } from '@angular/platform-browser';
 import { UsuarioAutenticacionDTO } from 'app/authentication/domain/UsuarioAutenticacionDTO';
-
+import { LayoutService } from 'app/layout/layout.service';
 
 @Component({
     selector: 'sign-in-split-screen-reversed',
@@ -54,9 +28,9 @@ import { UsuarioAutenticacionDTO } from 'app/authentication/domain/UsuarioAutent
     ]
 })
 export class SignInSplitScreenReversedComponent {
-
+    public readonly layoutService = inject(LayoutService);
     private readonly formBuilder = inject(FormBuilder);
-    readonly loginService = inject(LoginService);
+    private readonly loginService = inject(LoginService);
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
     private readonly utilsService = inject(UtilsService);
@@ -67,10 +41,7 @@ export class SignInSplitScreenReversedComponent {
         { optional: true }
     );
 
-    readonly dialogData = inject<{
-        redirectURL?: string;
-        isDialog?: boolean;
-    }>(
+    readonly dialogData = inject<{ redirectURL?: string; isDialog?: boolean; }>(
         MAT_DIALOG_DATA,
         { optional: true }
     );
@@ -81,7 +52,7 @@ export class SignInSplitScreenReversedComponent {
     // State
     // -------------------------------------------------------------------------
 
-    readonly company = this.loginService.company;
+    readonly company = this.layoutService.company;
 
     readonly isLoading = signal(false);
 
@@ -93,21 +64,21 @@ export class SignInSplitScreenReversedComponent {
 
     readonly templateNewUser = computed(() =>
         PlantillaHelper.buscarValor(
-            this.company()?.propiedades ?? [],
+            this.layoutService.company()?.propiedades ?? [],
             PlantillaHelper.PLANTILLA_NUEVO_USUARIO
         )
     );
 
     readonly logo = computed<SafeHtml | null>(() =>
         PlantillaHelper.buscarValor(
-            this.company()?.propiedades ?? [],
+            this.layoutService.company()?.propiedades ?? [],
             PlantillaHelper.LOGIN_HTML
         ) ?? null
     );
 
     readonly isDfaEnabled = computed(() =>
         !!PlantillaHelper.buscarValor(
-            this.company()?.propiedades ?? [],
+            this.layoutService.company()?.propiedades ?? [],
             PlantillaHelper.APP_DFA
         )
     );
@@ -126,7 +97,7 @@ export class SignInSplitScreenReversedComponent {
     // -------------------------------------------------------------------------
 
     constructor() {
-        this.loginService.getOrganization();
+        this.layoutService.getOrganization();
 
         this.loginService
             .checkTokenIsValid()
@@ -218,14 +189,14 @@ export class SignInSplitScreenReversedComponent {
                     }
                 }
             });
-        
+
     }
 
     private completeAuthentication(
         response: UsuarioAutenticacionDTO
     ) {
 
-        this.loginService.authenticationOK(response);
+
 
         const redirectURL = this.redirectURL();
 

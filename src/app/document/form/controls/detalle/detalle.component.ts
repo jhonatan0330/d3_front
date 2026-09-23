@@ -10,7 +10,7 @@ import {
   ProductoDTO,
   RelacionInternaDTO
 } from 'app/document/document.types';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
@@ -36,7 +36,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 })
 export class DetalleComponent extends BaseComponent implements OnInit, AfterViewInit {
   private templateService = inject(TemplateService);
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
   private cd = inject(ChangeDetectorRef);
   private utilsService = inject(UtilsService);
   private dialog = inject(MatDialog);

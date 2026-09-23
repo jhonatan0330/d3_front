@@ -10,36 +10,16 @@ export class AuthGuard  {
     private _authService = inject(LoginService);
     private _router = inject(Router);
 
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Can activate
-     *
-     * @param route
-     * @param state
-     */
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
         const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
         return this._check(redirectUrl);
     }
 
-    /**
-     * Can activate child
-     *
-     * @param childRoute
-     * @param state
-     */
     canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
         const redirectUrl = state.url === '/sign-out' ? '/' : state.url;
         return this._check(redirectUrl);
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
     private _check(redirectURL: string): Observable<boolean> {
         // Check the authentication status
         return this._authService.checkTokenIsValid()
@@ -47,8 +27,11 @@ export class AuthGuard  {
                 switchMap((authenticated) => {
                     // If the user is not authenticated...
                     if (!authenticated) {
-                        // Redirect to the main page
-                        this._router.navigate(['sign-in'], { queryParams: { redirectURL } });
+                        if(!redirectURL || redirectURL ==='/main'){
+                            this._router.navigate(['sign-in']);
+                        }else{
+                            this._router.navigate(['sign-in'], { queryParams: { redirectURL } });
+                        }
                         // Prevent the access
                         return of(false);
                     }

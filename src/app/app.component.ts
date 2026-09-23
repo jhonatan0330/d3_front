@@ -6,6 +6,7 @@ import { LoginService } from './authentication/login.service';
 import { AssistantButtonComponent } from './assistant/components/assistant-button/assistant-button.component';
 import { AssistantPanelComponent } from './assistant/components/assistant-panel/assistant-panel.component';
 import { AssistantService } from './assistant/business/assistant.service';
+import { LayoutService } from './layout/layout.service';
 
 @Component({
     selector: 'app-root',
@@ -17,7 +18,7 @@ import { AssistantService } from './assistant/business/assistant.service';
 export class AppComponent implements OnInit {
   title = inject(Title);
   private router = inject(Router);
-  private jwtAut = inject(LoginService);
+  private layoutService = inject(LayoutService);
   public assistantService = inject(AssistantService);
 
 
@@ -27,10 +28,10 @@ export class AppComponent implements OnInit {
 
   changePageTitle() {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((routeChange) => {
-      if (!this.jwtAut || !this.jwtAut.company() || !this.jwtAut.company().nombre) {
+      if (!this.layoutService || !this.layoutService.company() || !this.layoutService.company().nombre) {
         this.title.setTitle("d3-apps.com");
       } else {
-        this.title.setTitle(this.jwtAut.company().nombre);
+        this.title.setTitle(this.layoutService.company().nombre);
       }
     });
   }

@@ -6,7 +6,7 @@ import { BaseComponent } from '../base/base.component';
 import { timer } from 'rxjs';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO } from '../../../document.types';
 import { DocumentoPlantillaCaracteristicaEnum } from '../../form.enum';
-import { ApiService } from '../../../document.api';
+import { DocumentApi } from '../../../document.api';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker } from '@angular/material/datepicker';
@@ -20,7 +20,7 @@ import { TitleCasePipe } from '@angular/common';
     imports: [MatFormField, MatLabel, MatInput, MatDatepickerInput, FormsModule, ReactiveFormsModule, MatDatepickerToggle, MatSuffix, MatDatepicker, MatDateRangeInput, MatStartDate, MatEndDate, MatDateRangePicker, TitleCasePipe]
 })
 export class FechaComponent extends BaseComponent implements OnInit {
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
 
   conHora = false; // Define si se pide las fechas con hora
   sinCalendar = false; // Define si solo pide el time

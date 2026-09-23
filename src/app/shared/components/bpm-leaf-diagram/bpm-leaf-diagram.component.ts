@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { UtilsService } from 'app/document/service/utils.service';
 
 interface Estado {
@@ -25,7 +25,7 @@ interface Transicion {
 export class BpmLeafDiagramComponent implements OnInit {
   data = inject(MAT_DIALOG_DATA);
   dialogRef = inject<MatDialogRef<BpmLeafDiagramComponent>>(MatDialogRef);
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
   private utils = inject(UtilsService);
 
   procesoId: string;

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewContainerRef, effect, inject, viewChild, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, TemplateRef, ViewContainerRef, effect, inject, viewChild, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -8,10 +8,10 @@ import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { UtilsService } from 'app/document/service/utils.service';
-import { LoginService } from 'app/authentication/login.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
+import { LayoutService } from 'app/layout/layout.service';
 
 
 @Component({
@@ -20,16 +20,16 @@ import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
 
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'notifications',
-    imports: [  MatIcon,MatTooltip,NgClass,DecimalPipe,DatePipe]
+    imports: [MatIcon, MatTooltip, NgClass, DecimalPipe, DatePipe]
 })
-export class NotificationButtonComponent implements  OnDestroy {
+export class NotificationButtonComponent implements OnDestroy {
     private _changeDetectorRef = inject(ChangeDetectorRef);
     private destroyRef = inject(DestroyRef);
     private _notificationsService = inject(NotificationsService);
     private _overlay = inject(Overlay);
     private _viewContainerRef = inject(ViewContainerRef);
     private templateService = inject(TemplateService);
-    private _jwtAuth = inject(LoginService);
+    private readonly layoutService = inject(LayoutService);
     private utilsService = inject(UtilsService);
 
     private readonly _notificationsOrigin = viewChild<ElementRef>('notificationsOrigin');
@@ -153,11 +153,11 @@ export class NotificationButtonComponent implements  OnDestroy {
         this._overlayRef.backdropClick()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => {
-            this.closePanel();
-        });
+                this.closePanel();
+            });
     }
 
-    
+
     private _calculateUnreadCount(): void {
         this.notificationCount = this.notifications.length;
         if (this.notifications && this.notifications.length) {
@@ -180,8 +180,8 @@ export class NotificationButtonComponent implements  OnDestroy {
         this.utilsService.modalWithParams(pedidoVenta)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => {
-            this.refresh();
-        });
+                this.refresh();
+            });
     }
 
     openDocument(document: ActividadDTO) {
@@ -193,11 +193,11 @@ export class NotificationButtonComponent implements  OnDestroy {
             this._notificationsService.readActivity(actividad)
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
-                next: () => {
-                    this.openDocument(actividad);
-                },
-                error: () => {}
-            });
+                    next: () => {
+                        this.openDocument(actividad);
+                    },
+                    error: () => { }
+                });
         } else {
             this.openDocument(actividad);
         }
@@ -205,10 +205,10 @@ export class NotificationButtonComponent implements  OnDestroy {
     }
 
     refresh() {
-        if (this._jwtAuth.user() && this._jwtAuth.user().llaveTabla) {
+        if (this.layoutService.user() && this.layoutService.user().llaveTabla) {
             this._notificationsService.getAll()
                 .pipe(takeUntilDestroyed(this.destroyRef))
-                .subscribe({ error: () => {} });
+                .subscribe({ error: () => { } });
         }
     }
 
@@ -216,7 +216,7 @@ export class NotificationButtonComponent implements  OnDestroy {
         if (this.notifications && this.notifications.length !== 0) {
             const sinleer = this.notifications.filter(x => !x.fechaLeido);
             if (sinleer && sinleer.length !== 0) {
-                if (!PlantillaHelper.buscarPropiedad(this._jwtAuth.company().propiedades, PlantillaHelper.FORCE_NOTIFICATION)) {
+                if (!PlantillaHelper.buscarPropiedad(this.layoutService.company().propiedades, PlantillaHelper.FORCE_NOTIFICATION)) {
                     this.readActivity(sinleer[0]);
                 }
             }

@@ -8,7 +8,7 @@ export function formatImageUrl(ls: LocalStoreService, url: string | undefined) {
     url = 'http://' + url;
   }
   if (!url.startsWith('http')) {
-    url = (ls.getItem(LocalConstants.URL_CONF) || '') + '/upload' + url;
+    url = (ls.getUrlConf() || '') + '/upload' + url;
   }
   return url;
 }

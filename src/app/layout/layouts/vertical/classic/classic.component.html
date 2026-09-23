@@ -18,34 +18,34 @@
 
             <!-- App Logo -->
             <a [routerLink]="'/main'" class="flex items-center justify-center h-16 p-1" (click)="closeNavOnSmall()">
-                @if (company().imagen) {
-                    <img src="{{ company().imagen | imageFormat }}" class="h-full" />
+                @if (layoutService.company().imagen) {
+                    <img src="{{ layoutService.company().imagen | imageFormat }}" class="h-full" />
                 }
             </a>
 
             <!-- Company & user info -->
             <div class="flex flex-col items-center w-full p-1">
-                <h2 class="text-center text-white">{{ company().nombre }}</h2>
-                <span class="text-center text-white/70">{{ company().slogan }}</span>
+                <h2 class="text-center text-white">{{ layoutService.company().nombre }}</h2>
+                <span class="text-center text-white/70">{{ layoutService.company().slogan }}</span>
                 <div class="flex flex-col items-center justify-center w-full">
                     <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-white">
-                        {{ user().nombre }}
+                        {{ layoutService.user().nombre }}
                     </div>
                     <div class="relative w-24 h-24">
-                        @if (user().imagen) {
-                            <img class="w-full h-full rounded-full" [src]="user().imagen" alt="User avatar" />
+                        @if (layoutService.user().imagen) {
+                            <img class="w-full h-full rounded-full" [src]="layoutService.user().imagen" alt="User avatar" />
                         }
-                        @if (!user().imagen) {
+                        @if (!layoutService.user().imagen) {
                             <mat-icon class="icon-size-24 text-white/70" [svgIcon]="'heroicons_outline:user-circle'">
                             </mat-icon>
                         }
                     </div>
                     <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-white/70">
                         <mat-icon svgIcon="heroicons_outline:identification" class="icon-size-4"></mat-icon>
-                        {{ user().identificacion }}
+                        {{ layoutService.user().identificacion }}
                     </div>
                     <div class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center text-md leading-normal font-medium text-white/70">
-                        {{ user().correo }}
+                        {{ layoutService.user().correo }}
                     </div>
                     <span class="text-xs text-white/50">{{ time() | date : "medium" }}</span>
                     <span class="text-xs text-white/50">{{ currentApplicationVersion }}</span>
@@ -79,9 +79,9 @@
                 </div>
             </div>
 
-            @if (headerSection() && headerSection().length !== 0) {
+            @if (carouselService.headerSection() && carouselService.headerSection().length !== 0) {
                 <div class="w-full">
-                    @for (iHeader of headerSection(); track iHeader) {
+                    @for (iHeader of carouselService.headerSection(); track iHeader) {
                         <div [innerHTML]="iHeader"></div>
                     }
                 </div>
@@ -97,9 +97,9 @@
             </div>
 
             <!-- Footer -->
-            @if (landing() && landing().length !== 0) {
+            @if (carouselService.landing() && carouselService.landing().length !== 0) {
                 <div class="w-full">
-                    @for (iFooter of landing(); track iFooter) {
+                    @for (iFooter of carouselService.landing(); track iFooter) {
                         <div [innerHTML]="iFooter" class="w-full"></div>
                     }
                 </div>

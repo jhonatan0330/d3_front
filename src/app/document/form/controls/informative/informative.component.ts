@@ -4,7 +4,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from 'app/document/document.types';
 import { BaseComponent } from '../base/base.component';
 import { UtilsService } from '../../../service/utils.service';
-import { ApiService } from '../../../document.api';
+import { DocumentApi } from '../../../document.api';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TitleCasePipe } from '@angular/common';
@@ -17,7 +17,7 @@ import { TitleCasePipe } from '@angular/common';
 })
 export class InformativeComponent extends BaseComponent implements OnInit {
   private utilsService = inject(UtilsService);
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
 
 
   fControl = new FormControl('');

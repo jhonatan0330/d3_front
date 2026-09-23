@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit,  inject, signal, DestroyRef } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LoginService } from 'app/authentication/login.service';
-
 import { MatFormField, MatLabel, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -12,13 +11,10 @@ import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
 @Component({
     selector: 'settings-security',
     templateUrl: './security.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [FormsModule,ReactiveFormsModule,MatFormField,MatLabel,MatIcon,MatPrefix,MatInput]
+    imports: [FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatIcon, MatPrefix, MatInput]
 })
 export class SettingsSecurityComponent implements OnInit {
-    data = inject<{
-    key: UsuarioDTO;
-}>(MAT_DIALOG_DATA);
+    data = inject<{ key: UsuarioDTO; }>(MAT_DIALOG_DATA);
     private _formBuilder = inject(FormBuilder);
     private jwtAuth = inject(LoginService);
     private destroyRef = inject(DestroyRef);
@@ -28,13 +24,7 @@ export class SettingsSecurityComponent implements OnInit {
     isLoading = signal(false);
     keyData = signal<UsuarioDTO | null>(null);
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks
-    // -----------------------------------------------------------------------------------------------------
 
-    /**
-     * On init
-     */
     ngOnInit(): void {
         // Create the form
         this.securityForm = this._formBuilder.group({
@@ -43,7 +33,7 @@ export class SettingsSecurityComponent implements OnInit {
             repeatPwd: new FormControl('', Validators.required),
         });
 
-        if(this.data){
+        if (this.data) {
             this.keyData.set(this.data?.key ?? null);
         }
     }
@@ -66,34 +56,34 @@ export class SettingsSecurityComponent implements OnInit {
             this.jwtAuth.changePwdOther(this.keyData()!.llaveTabla, signinData.oldPwd!, signinData.newPwd!, null!)
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
-                next: () => {
-                    this.isLoading.set(false);
-                    this.notificationCenter.fire(
-                        'Cambio Exitoso',
-                        'La nueva clave del usuario '+this.keyData()!.nombre+' se cambio de forma exitosa',
-                        'success'
-                    );
-                },
-                error: () => {
-                    this.isLoading.set(false);
-                },
-            });
+                    next: () => {
+                        this.isLoading.set(false);
+                        this.notificationCenter.fire(
+                            'Cambio Exitoso',
+                            'La nueva clave del usuario ' + this.keyData()!.nombre + ' se cambio de forma exitosa',
+                            'success'
+                        );
+                    },
+                    error: () => {
+                        this.isLoading.set(false);
+                    },
+                });
         } else {
             this.jwtAuth.changePwd(signinData.oldPwd!, signinData.newPwd!, null!)
                 .pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
-                next: () => {
-                    this.isLoading.set(false);
-                    this.notificationCenter.fire(
-                        'Cambio Exitoso',
-                        'La nueva clave se cambio de forma exitosa',
-                        'success'
-                    );
-                },
-                error: () => {
-                    this.isLoading.set(false);
-                },
-            });
+                    next: () => {
+                        this.isLoading.set(false);
+                        this.notificationCenter.fire(
+                            'Cambio Exitoso',
+                            'La nueva clave se cambio de forma exitosa',
+                            'success'
+                        );
+                    },
+                    error: () => {
+                        this.isLoading.set(false);
+                    },
+                });
         }
 
     }

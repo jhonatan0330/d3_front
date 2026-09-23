@@ -8,7 +8,7 @@ import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../form.enum';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormComponent } from '../../form.component';
-import { ApiService } from '../../../document.api';
+import { DocumentApi } from '../../../document.api';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TitleCasePipe } from '@angular/common';
@@ -26,7 +26,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
   private utilsService = inject(UtilsService);
   private templateService = inject(TemplateService);
   dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
   private transitionService = inject(FormTransitionService);
   private notificationCenter = inject(NotificationCenterService);
 

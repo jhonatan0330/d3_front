@@ -235,7 +235,7 @@ export class TemplateService {
 }
 
   getTokenConnection(urlServer: string) {
-    return this.ls.getItem(LocalConstants.JWT_TOKEN);
+    return this.ls.getJwtToken();
   }
 
 }

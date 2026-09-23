@@ -7,7 +7,7 @@ import { TemplateService } from "app/document/service/template.service";
 import { UtilsService } from "app/document/service/utils.service";
 import { PlantillaHelper } from "app/shared/plantilla-helper";
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
-import { ApiService } from '../document.api';
+import { DocumentApi } from '../document.api';
 import { DocumentoRelacionGestorFilterDTO } from "../document.types";
 import { DocumentoRelacionGestorDTO } from "../document.types";
 import { PropiedadDTO } from "app/shared/shared.domain";
@@ -35,7 +35,7 @@ interface OptionTrace {
 export class TrazabilityComponent implements OnInit {
   data = inject(MAT_DIALOG_DATA);
   dialogRef = inject<MatDialogRef<TrazabilityComponent>>(MatDialogRef);
-  private _traceService = inject(ApiService);
+  private _traceService = inject(DocumentApi);
   private templateService = inject(TemplateService);
   private accountingService = inject(AccountingService);
   private utilsService = inject(UtilsService);

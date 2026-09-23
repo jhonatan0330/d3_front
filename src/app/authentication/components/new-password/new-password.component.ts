@@ -5,6 +5,7 @@ import { Validators, FormGroup, FormControl, FormsModule, ReactiveFormsModule } 
 import { LoginService } from '../../login.service';
 import { ParticleBackgroundDirective } from '../../business/particle-background';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { LayoutService } from 'app/layout/layout.service';
 
 @Component({
     selector: 'app-new-password',
@@ -16,6 +17,7 @@ export class NewPasswordComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private loginService = inject(LoginService);
+  private layoutService = inject(LayoutService);
   private destroyRef = inject(DestroyRef);
   private notificationCenter = inject(NotificationCenterService);
 
@@ -25,7 +27,7 @@ export class NewPasswordComponent implements OnInit {
   autorizationId: string;
 
   ngOnInit() {
-    this.loginService.getOrganization();
+    this.layoutService.getOrganization();
     this.recoverForm = new FormGroup({
       first: new FormControl('', Validators.required),
       second: new FormControl('', Validators.required)
@@ -48,7 +50,6 @@ export class NewPasswordComponent implements OnInit {
       this.notificationCenter.fire('Confirma el password', 'Tu nueva clave no concuerda con la segunda clave.','error');
       return;
     }
-
 
     this.loginService.changePwd(signinData.first!, signinData.first!, this.autorizationId)
       .pipe(takeUntilDestroyed(this.destroyRef))

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { PedidoVentaCaracteristicaFilterDTO, ProductoDTO, UsuarioRolProductoDTO } from '../../../document.types';
@@ -19,7 +19,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
     imports: [ MatFormField,MatLabel,MatInput,FormsModule,ReactiveFormsModule,MatSuffix,MatIcon,MatTable,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatCellDef,MatCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow,DecimalPipe,TitleCasePipe]
 })
 export class ProductoListaComponent extends BaseComponent implements OnInit {
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
   private notificationCenter = inject(NotificationCenterService);
 
 

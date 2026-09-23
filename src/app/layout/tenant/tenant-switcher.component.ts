@@ -9,20 +9,15 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
-
 import { catchError, map, of, switchMap } from 'rxjs';
-
-import { TenantPublicDTO } from 'app/multitenancy/domain/multitenancy.types';
+import { TenantPublicDTO } from 'app/multitenancy/domain/TenantPublicDTO';
 import { MultitenancyApi } from 'app/multitenancy/multitenancy.api';
 import { LoginService } from 'app/authentication/login.service';
 import { SignInSplitScreenReversedComponent } from 'app/authentication/components/sign-in/sign-in.component';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
-import {
-    LocalConstants,
-    LocalStoreService
-} from 'app/shared/local-store.service';
+import { LocalStoreService } from 'app/shared/local-store.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -30,11 +25,7 @@ import { Router } from '@angular/router';
     templateUrl: './tenant-switcher.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs: 'tenantSwitcher',
-    imports: [
-        MatIcon,
-        DropdownComponent,
-        DropdownItemComponent
-    ]
+    imports: [ MatIcon, DropdownComponent, DropdownItemComponent ]
 })
 export class TenantSwitcherComponent {
 
@@ -47,7 +38,7 @@ export class TenantSwitcherComponent {
     private readonly router = inject(Router);
 
     readonly tenants = signal<TenantPublicDTO[]>([]);
-
+/*
     readonly currentTenantId = signal<string>(
         this.getSelectedTenant() ?? ''
     );
@@ -73,9 +64,9 @@ export class TenantSwitcherComponent {
                     this.tenants.set([]);
                 }
             });
-    }
+    }*/
 
-    selectTenant(tenant: TenantPublicDTO): void {
+   /* selectTenant(tenant: TenantPublicDTO): void {
         if (tenant.key === this.currentTenantId()) {
             return;
         }
@@ -101,8 +92,8 @@ export class TenantSwitcherComponent {
         this.currentTenantName.set(
             this.getSelectedTenantName() ?? 'Tenant'
         );
-    }
-
+    }*/
+/*
     private getSelectedTenant(): string | null {
         return this.ls.getItem(LocalConstants.TENANT_ID);
     }
@@ -126,10 +117,10 @@ export class TenantSwitcherComponent {
 
         this.currentTenantId.set(tenant.key);
         this.currentTenantName.set(tenant.name);
-    }
+    }*/
 
-    private tenantTokensKey(): string {
-        const login = this.ls.getItem(LocalConstants.LOGIN_ID);
+/*    private tenantTokensKey(): string {
+        //const login = this.ls.getItem(LocalConstants.LOGIN_ID);
 
         return (
             LocalConstants.TENANT_TOKENS_BASE +
@@ -161,9 +152,9 @@ export class TenantSwitcherComponent {
             tokens
         );
     }
-
+*/
     switchTenant(tenant: TenantPublicDTO) {
-        const currentTenantId = this.getSelectedTenant();
+        /*const currentTenantId = this.getSelectedTenant();
 
         if (tenant.key === currentTenantId) {
             return of(true);
@@ -174,7 +165,7 @@ export class TenantSwitcherComponent {
         const previousTenant = {
             id: currentTenantId,
             name: this.getSelectedTenantName(),
-            token: this.ls.getItem(LocalConstants.JWT_TOKEN)
+            token: ''//this.ls.getItem(LocalConstants.JWT_TOKEN)
         };
 
         const cachedToken = this.getTenantTokens()[tenant.key];
@@ -227,6 +218,7 @@ export class TenantSwitcherComponent {
                     )
                 )
             );
+            */
     }
 
     private openLoginDialog(
@@ -251,7 +243,7 @@ export class TenantSwitcherComponent {
                 map((authenticated: boolean) => {
 
                     if (authenticated) {
-                        this.refreshCurrentTenant();
+                     //   this.refreshCurrentTenant();
                         return true;
                     }
 
@@ -267,7 +259,7 @@ export class TenantSwitcherComponent {
         name: string | null;
         token: string | null;
     }): void {
-
+/*
         this.ls.setItem(
             LocalConstants.TENANT_ID,
             previousTenant.id
@@ -290,5 +282,6 @@ export class TenantSwitcherComponent {
         }
 
         this.refreshCurrentTenant();
+        */
     }
 }

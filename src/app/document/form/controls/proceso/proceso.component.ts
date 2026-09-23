@@ -14,7 +14,7 @@ import {
   DocumentoPlantillaCaracteristicaEnum,
   StatesEnum,
 } from 'app/document/form/form.enum';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -45,7 +45,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {
   private templateService = inject(TemplateService);
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
   private utilsService = inject(UtilsService);
   private sanitizer = inject(DomSanitizer);
   private notificationCenter = inject(NotificationCenterService);

@@ -5,7 +5,7 @@ import {
   DocumentoPlantillaDTO,
   PedidoVentaDTO,
 } from 'app/document/document.types';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import {
@@ -42,7 +42,7 @@ export class MassiveComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private templateService = inject(TemplateService);
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
   private uploadApi = inject(UploadService);
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);

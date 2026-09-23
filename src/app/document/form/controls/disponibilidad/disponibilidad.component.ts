@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ChangeDetectionStrategy, inject, viewChi
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -25,7 +25,7 @@ import { TitleCasePipe } from '@angular/common';
     imports: [MatFormField,MatLabel,MatInput,FormsModule,ReactiveFormsModule,MatSuffix,MatIcon,TitleCasePipe]
 })
 export class DisponibilidadComponent extends BaseComponent implements OnInit {
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
   private ls = inject(LocalStoreService);
   private template = inject(TemplateService);
   private utils = inject(UtilsService);

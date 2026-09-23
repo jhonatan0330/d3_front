@@ -26,6 +26,7 @@ import { UsersService } from 'app/users/business/users.services';
 import { AuthenticationApi } from 'app/authentication/authentication.api';
 import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
 import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO';
+import { LayoutService } from 'app/layout/layout.service';
 
 
 @Component({
@@ -35,7 +36,7 @@ import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO
     imports: [MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, NgClass, AsyncPipe, I18nPluralPipe, DropdownComponent, DropdownItemComponent]
 })
 export class PersonsComponent implements OnInit {
-    private _jwt = inject(LoginService);
+    private layoutService = inject(LayoutService);
     private _contactsService = inject(UsersService);
     private _router = inject(Router);
     private utilService = inject(UtilsService);
@@ -55,7 +56,7 @@ export class PersonsComponent implements OnInit {
 
     ngOnInit(): void {
 
-        if (!this._jwt.validateAccessModule('persons')) {
+        if (!this.layoutService.validateAccessModule('persons')) {
             this._router.navigate(['/main']);
             return;
         }

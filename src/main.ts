@@ -13,13 +13,14 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideServiceWorker } from '@angular/service-worker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule, ExtraOptions } from '@angular/router';
+import { RouterModule, ExtraOptions, UrlSerializer } from '@angular/router';
 import { appRoutes } from 'app/app.routing';
 import { FuseConfigModule } from 'app/layout/core/config/fuse-config.module';
 import { appConfig } from 'app/layout/core/config/app.config';
 import { resolveTenantFromUrl, TenantResolveResult } from 'app/multitenancy/business/tenant-url.strategy';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
-import { LocalStoreService, LocalConstants } from 'app/shared/local-store.service';
+import { TenantUrlSerializer } from 'app/multitenancy/business/tenant-url.serializer';
+import { LocalStoreService } from 'app/shared/local-store.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -37,16 +38,13 @@ function registerIcons(): void {
 }
 
 const routerConfig: ExtraOptions = {
-  scrollPositionRestoration: 'enabled',
-  useHash: false,
-  anchorScrolling: 'enabled',
-  onSameUrlNavigation: 'reload'
+    scrollPositionRestoration: 'enabled',
+    useHash: false,
+    anchorScrolling: 'enabled',
+    onSameUrlNavigation: 'reload'
 };
 
-
-
-if ( environment.production )
-{
+if (environment.production) {
     enableProdMode();
 }
 
@@ -56,67 +54,82 @@ const RESERVED_FIRST_SEGMENTS = new Set([
     'error', 'multitenancy'
 ]);
 
-function readLocalStore(): LocalStoreService {
-    return new LocalStoreService();
+async function ensureBaseUrl(localStore: LocalStoreService): Promise<string> {
+    const configured = localStore.getUrlConf();
+    if (configured) {
+        return configured;
+    }
+
+    try {
+        const response = await fetch('/assets/conf.xml');
+        const data = await response.text();
+        if (response.ok && data && data !== 'SW42') {
+            const baseUrl = data.endsWith('/') ? data.slice(0, -1) : data;
+            localStore.setUrlConf(baseUrl);
+            return baseUrl;
+        }
+    } catch {
+    }
+
+    localStore.setUrlConf(location.origin);
+    return location.origin;
 }
 
-async function resolveInitialTenant(): Promise<TenantResolveResult | null> {
+async function resolveInitialTenant(base): Promise<TenantResolveResult | null> {
     const path = window.location.pathname;
     const first = path.split('/').find(Boolean)?.toLowerCase() || '';
     if (!first || RESERVED_FIRST_SEGMENTS.has(first)) {
         return null;
     }
-    const localStore = readLocalStore();
-    const base = localStore.getItem(LocalConstants.URL_CONF) || window.location.origin;
     return resolveTenantFromUrl(base, path + window.location.search);
 }
 
 async function bootstrap(): Promise<void> {
     const tenantUrl = new TenantUrlService();
-    const tenantResolution = await resolveInitialTenant();
+    const localStore = new LocalStoreService();
+    const base = await ensureBaseUrl(localStore);
+    const tenantResolution = await resolveInitialTenant(base);
     const tenantId = tenantResolution?.tenantId || '';
-    if (tenantResolution?.rest) {
-        const cleanPath = tenantResolution.rest.startsWith('/')
-            ? tenantResolution.rest
-            : '/' + tenantResolution.rest;
-        window.history.replaceState(window.history.state, '', cleanPath);
-    }
-    const localStore = readLocalStore();
+    
     if (tenantId) {
-        localStore.setItem(LocalConstants.TENANT_ID, tenantId);
+        localStore.setTenantId(tenantId);
     } else {
-        localStore.setItem(LocalConstants.TENANT_ID, null);
+        localStore.setTenantId(null);
     }
     tenantUrl.setPrefix(tenantId);
 
     await bootstrapApplication(AppComponent, {
-    providers: [
-        provideZonelessChangeDetection(),
-        provideAppInitializer(registerIcons),
-        importProvidersFrom(CommonModule, BrowserModule, BrowserAnimationsModule, RouterModule.forRoot(appRoutes, routerConfig), 
-        // FuseConfig
-        FuseConfigModule.forRoot(appConfig), 
-        ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule),
-        provideHttpClient(withInterceptors([tokenInterceptor, httpErrorInterceptor])),
-        { provide: ErrorHandler, useClass: ErrorHandlerService },
-        { provide: TenantUrlService, useValue: tenantUrl },
-        {
-            provide: OVERLAY_DEFAULT_CONFIG,
-            useValue: {
-                usePopover: false
-            }
-        },
-        { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },
-        {
-            provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-            useValue: {
-                appearance: 'outline'
-            }
-        },
-        provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode() })
-    ]
-})
-                        .catch(err => console.error(err));
+        providers: [
+            provideZonelessChangeDetection(),
+            provideAppInitializer(registerIcons),
+            importProvidersFrom(CommonModule, BrowserModule, BrowserAnimationsModule, RouterModule.forRoot(appRoutes, routerConfig),
+                FuseConfigModule.forRoot(appConfig),
+                ReactiveFormsModule, FormsModule, DragDropModule, MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule),
+            provideHttpClient(withInterceptors([tokenInterceptor, httpErrorInterceptor])),
+            { provide: ErrorHandler, useClass: ErrorHandlerService },
+            { provide: TenantUrlService, useValue: tenantUrl },
+            {
+                provide: UrlSerializer,
+                useFactory: (service: TenantUrlService) => new TenantUrlSerializer(service),
+                deps: [TenantUrlService]
+            },
+            {
+                provide: OVERLAY_DEFAULT_CONFIG,
+                useValue: {
+                    usePopover: false
+                }
+            },
+            { provide: MAT_DATE_LOCALE, useValue: 'en-ZA' },
+            {
+                provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+                useValue: {
+                    appearance: 'outline'
+                }
+            },
+            provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode() })
+        ]
+    })
+        .catch(err => console.error(err));
 }
 
 bootstrap().catch(err => console.error(err));

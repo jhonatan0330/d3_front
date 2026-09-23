@@ -6,7 +6,7 @@ import {
   PedidoVentaCaracteristicaFilterDTO,
   PedidoVentaDTO,
 } from 'app/document/document.types';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -26,7 +26,7 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
 })
 export class ConfiguracionComponent extends BaseComponent implements OnInit {
   private templateService = inject(TemplateService);
-  private api = inject(ApiService);
+  private api = inject(DocumentApi);
 
   fControl: FormControl = new FormControl();
   disponibles: PedidoVentaDTO[] = []; // Contiene los documetnos que resultaron de consultar el servidor

@@ -1,12 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { ApiService } from 'app/document/document.api';
+import { DocumentApi } from 'app/document/document.api';
 import { OrganizacionDTO, PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
 @Injectable({ providedIn: 'root' })
 export class CarouselService {
-  private apiService = inject(ApiService);
+  // Consulta los documentos que son del banner
+  private apiService = inject(DocumentApi);
 
   readonly slides = signal<string[]>([]);
   readonly landing = signal<string[]>([]);
@@ -48,7 +49,7 @@ export class CarouselService {
     return documentFragment.body.innerHTML;
   }
 
-  loadFromOrganization(_company: OrganizacionDTO, isAuthenticated: boolean) {
+  loadFromOrganization(_company: OrganizacionDTO) {
     const slides: string[] = [];
     const landing: string[] = [];
     let headerSection: string[] = [];
@@ -61,7 +62,7 @@ export class CarouselService {
         });
       }
 
-      if (PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE) && isAuthenticated) {
+      if (PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE) ) {
         const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
         entity.plantilla = PlantillaHelper.buscarValor(_company.propiedades, PlantillaHelper.COVERAGE_TEMPLATE);
         this.apiService.listarDocumentos(entity).subscribe({
