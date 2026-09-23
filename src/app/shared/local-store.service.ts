@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
+import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
+import { TenantPublicDTO } from 'app/multitenancy/domain/TenantPublicDTO';
 
 export const LocalConstants = {
-  JWT_TOKEN: 'JWT_TOKEN',
   URL_CONF: 'URL_CONF',
-  TENANT_ID: 'TENANT_ID',
-  TENANT_NAME: 'TENANT_NAME',
-  LOGIN_ID: 'LOGIN_ID',
-  TENANT_TOKENS_BASE: 'D3_TENANT_TOKENS_'
+  TENANTS: 'D3_TENANTS_CACHE'
 };
 
 @Injectable({
@@ -44,14 +42,6 @@ export class LocalStoreService {
     return result;
   }
 
-  public setTenantId(tenantId: string | null) {
-    this.setItem(LocalConstants.TENANT_ID, tenantId);
-  }
-
-  public getTenantId(): string | null {
-    return this.getItem(LocalConstants.TENANT_ID);
-  }
-
   public setUrlConf(url: string | null) {
      this.setItem(LocalConstants.URL_CONF, url);
   }
@@ -60,11 +50,12 @@ export class LocalStoreService {
     return this.getItem(LocalConstants.URL_CONF);
   }
 
-  public setJwtToken(token: string | null) {
-    this.setItem(LocalConstants.JWT_TOKEN, token);
+  public setTenants(tenants: TenantRuntime[]) {
+    this.setItem(LocalConstants.TENANTS, tenants);
   }
 
-  public getJwtToken(): string | null {
-    return this.getItem(LocalConstants.JWT_TOKEN);
+  public getTenants(): TenantRuntime[] {
+    const value = this.getItem(LocalConstants.TENANTS);
+    return Array.isArray(value) ? value as TenantRuntime[] : [];
   }
 }

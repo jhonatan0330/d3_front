@@ -1,21 +1,20 @@
 import { Injectable, inject } from '@angular/core';
 import { ReporteBaseDTO } from 'app/document/document.types';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
+import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
 
 @Injectable({ providedIn: 'root' })
 export class FormReportService {
   private ls = inject(LocalStoreService);
-  private templateService = inject(TemplateService);
 
   buildReportUrl(reporte: ReporteBaseDTO, pKey: string): string {
     const serverUrl = (reporte.servidorUrl || this.ls.getUrlConf() || '').replace(/\/+$/, '');
-    const tenantId = this.ls.getTenantId();
     const reportPath = '/report/generate';
-    let url = serverUrl + reportPath + '?nombre=' + reporte.llaveTabla + '&P_KEY=' + pKey + '&P_TOKEN=' + this.ls.getJwtToken();
-    if (tenantId) {
-      url = url + '&P_TENANT_ID=' + encodeURIComponent(tenantId);
+    let url = serverUrl + reportPath + '?nombre=' + reporte.llaveTabla + '&P_KEY=' + pKey ;
+    if (TenantRuntime.getCurrent()) {
+      if(TenantRuntime.getCurrent()?.token){ url = url + '&P_TOKEN=' + TenantRuntime.getCurrent()?.token; }
+      if(TenantRuntime.getCurrent()?.key){ url = url + '&P_TENANT_ID=' + TenantRuntime.getCurrent()?.key; }
     }
     if (reporte.variables) {
       url = url + '&' + reporte.variables;

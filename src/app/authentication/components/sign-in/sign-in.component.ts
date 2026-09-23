@@ -2,7 +2,6 @@ import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatInput } from '@angular/material/input';
 import { EMPTY, finalize, switchMap, tap } from 'rxjs';
 import { LoginService } from 'app/authentication/login.service';
@@ -36,31 +35,10 @@ export class SignInSplitScreenReversedComponent {
     private readonly utilsService = inject(UtilsService);
     private readonly destroyRef = inject(DestroyRef);
 
-    private readonly dialogRef = inject(
-        MatDialogRef<SignInSplitScreenReversedComponent>,
-        { optional: true }
-    );
-
-    readonly dialogData = inject<{ redirectURL?: string; isDialog?: boolean; }>(
-        MAT_DIALOG_DATA,
-        { optional: true }
-    );
-
-    readonly isDialog = !!this.dialogRef;
-
-    // -------------------------------------------------------------------------
-    // State
-    // -------------------------------------------------------------------------
 
     readonly company = this.layoutService.company;
-
     readonly isLoading = signal(false);
-
     readonly currentApplicationVersion = environment.appVersion;
-
-    // -------------------------------------------------------------------------
-    // Computed
-    // -------------------------------------------------------------------------
 
     readonly templateNewUser = computed(() =>
         PlantillaHelper.buscarValor(
@@ -83,18 +61,12 @@ export class SignInSplitScreenReversedComponent {
         )
     );
 
-    // -------------------------------------------------------------------------
-    // Form
-    // -------------------------------------------------------------------------
 
     readonly signInForm = this.formBuilder.nonNullable.group({
         username: ['', Validators.required],
         password: ['', Validators.required]
     });
 
-    // -------------------------------------------------------------------------
-    // Constructor
-    // -------------------------------------------------------------------------
 
     constructor() {
         this.layoutService.getOrganization();
@@ -129,8 +101,7 @@ export class SignInSplitScreenReversedComponent {
         const authentication$ = this.loginService.signin(
             username,
             password,
-            null,
-            !this.isDialog
+            null
         );
 
         if (!authentication$) {
@@ -144,7 +115,7 @@ export class SignInSplitScreenReversedComponent {
                 switchMap((response: UsuarioAutenticacionDTO) => {
 
                     if (!this.isDfaEnabled()) {
-                        return this.completeAuthentication(response);
+                        return this.redirectURL();
                     }
 
                     return this.utilsService
@@ -163,7 +134,7 @@ export class SignInSplitScreenReversedComponent {
                                     return EMPTY;
                                 }
 
-                                return this.completeAuthentication(response);
+                                return this.redirectURL();
                             })
                         );
                 }),
@@ -192,28 +163,10 @@ export class SignInSplitScreenReversedComponent {
 
     }
 
-    private completeAuthentication(
-        response: UsuarioAutenticacionDTO
-    ) {
-
-
-
-        const redirectURL = this.redirectURL();
-
-        this.closeOrNavigate(redirectURL);
-
-        return EMPTY;
-    }
-
-    // -------------------------------------------------------------------------
-    // Navigation
-    // -------------------------------------------------------------------------
-
     private redirectURL(): string {
 
         return (
             this.route.snapshot.queryParamMap.get('redirectURL') ??
-            this.dialogData?.redirectURL ??
             '/main'
         );
     }
@@ -222,23 +175,6 @@ export class SignInSplitScreenReversedComponent {
         this.router.navigateByUrl('/sessions/recover');
     }
 
-    // -------------------------------------------------------------------------
-    // Dialog
-    // -------------------------------------------------------------------------
-
-    closeDialog(): void {
-        this.dialogRef?.close(false);
-    }
-
-    private closeOrNavigate(redirectURL: string): void {
-
-        if (this.dialogRef) {
-            this.dialogRef.close(true);
-            return;
-        }
-
-        this.router.navigateByUrl(redirectURL);
-    }
 
     // -------------------------------------------------------------------------
     // New user

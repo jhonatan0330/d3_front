@@ -217,6 +217,8 @@ export class MassiveComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (response: PlantillaBaseResponse) => {
+            window.open(formatImageUrl(this.ls, response.url), '_blank');
+            /*
             this.api.getImage(formatImageUrl(this.ls, response.url)!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
               next: (blob: Blob) => {
                 this.fileHandler.descargarArchivo(blob, this.plantilla()!.nombre + '.' + format);
@@ -226,7 +228,7 @@ export class MassiveComponent implements OnInit {
               error: () => {
                 this.isLoading.set(false);
               },
-            });
+            });*/
           },
           error: () => {
             this.isLoading.set(false);

@@ -1,9 +1,5 @@
-<div class="relative flex w-full items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-900" [class.min-h-screen]="!dialogData?.isDialog">
+<div class="relative flex w-full items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-900" >
   <canvas id="background-canvas" class="absolute inset-0 h-full w-full" appParticleBackground></canvas>
-  @if (dialogData?.isDialog) {
-    <button type="button" class="absolute right-3 top-3 z-20 text-2xl text-gray-500 hover:text-gray-900" aria-label="Cerrar" (click)="closeDialog()">&times;</button>
-  }
-  
   <div
     class="relative z-10 w-full px-4 py-8 sm:bg-card sm:w-auto sm:rounded-2xl sm:p-12 sm:shadow md:p-16">
     <div class="mx-auto w-full max-w-80 sm:mx-0 sm:w-80">

@@ -2,7 +2,6 @@ import { enableProdMode, provideZonelessChangeDetection, ErrorHandler, importPro
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material/icon';
 import { environment } from 'environments/environment';
-
 import { ErrorHandlerService } from './app/shared/error-handler.service';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { tokenInterceptor } from './app/shared/token.interceptor';
@@ -20,12 +19,12 @@ import { appConfig } from 'app/layout/core/config/app.config';
 import { resolveTenantFromUrl, TenantResolveResult } from 'app/multitenancy/business/tenant-url.strategy';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { TenantUrlSerializer } from 'app/multitenancy/business/tenant-url.serializer';
+import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
-
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AppComponent } from './app/app.component';
@@ -59,7 +58,6 @@ async function ensureBaseUrl(localStore: LocalStoreService): Promise<string> {
     if (configured) {
         return configured;
     }
-
     try {
         const response = await fetch('/assets/conf.xml');
         const data = await response.text();
@@ -75,27 +73,48 @@ async function ensureBaseUrl(localStore: LocalStoreService): Promise<string> {
     return location.origin;
 }
 
+async function loadTenants(base: string, localStore: LocalStoreService): Promise<void> {
+    const tenantsLocal: TenantRuntime[] = localStore.getTenants();
+    try {
+        const response = await fetch(`${base}/multi-tenancy`);
+        if (response.ok) {
+            const list = await response.json();
+            const tenants = (Array.isArray(list) ? list : []).map(tenant => ({
+                ...tenant, token: tenant?.key ? tenantsLocal?.find(localTenant => localTenant?.key === tenant.key)?.token ?? null
+                    : null
+            }));
+            TenantRuntime.setTenants(tenants);
+            localStore.setTenants(tenants);
+        } else {
+            throw new Error('HTTP ' + response.status);
+        }
+    } catch {
+    }
+}
+
 async function resolveInitialTenant(base): Promise<TenantResolveResult | null> {
     const path = window.location.pathname;
     const first = path.split('/').find(Boolean)?.toLowerCase() || '';
     if (!first || RESERVED_FIRST_SEGMENTS.has(first)) {
+        TenantRuntime.setCurrent(null);
         return null;
     }
-    return resolveTenantFromUrl(base, path + window.location.search);
+    const result = await resolveTenantFromUrl(base, path + window.location.search);
+    const current = result?.tenantId
+        ? (TenantRuntime.findByKey(result.tenantId) ?? {  key: result.tenantId, name: result.tenantId, imagen: undefined, token: null })
+        : null;
+    TenantRuntime.setCurrent(current);
+    return result;
 }
 
 async function bootstrap(): Promise<void> {
     const tenantUrl = new TenantUrlService();
     const localStore = new LocalStoreService();
     const base = await ensureBaseUrl(localStore);
+    await loadTenants(base, localStore);
     const tenantResolution = await resolveInitialTenant(base);
     const tenantId = tenantResolution?.tenantId || '';
     
-    if (tenantId) {
-        localStore.setTenantId(tenantId);
-    } else {
-        localStore.setTenantId(null);
-    }
     tenantUrl.setPrefix(tenantId);
 
     await bootstrapApplication(AppComponent, {

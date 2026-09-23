@@ -5,6 +5,7 @@ import { of, throwError, Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { MatDialog } from '@angular/material/dialog';
+import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
 import { AuthenticationApi } from './authentication.api';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { UsuarioAutenticacionDTO } from './domain/UsuarioAutenticacionDTO';
@@ -29,17 +30,14 @@ export class LoginService {
   // Para comunicarle el cambio de usuario
   private readonly layoutService = inject(LayoutService);
 
-
   private userAuthentication: UsuarioAutenticacionDTO | null = null;
-  private urlService: string | null;
+
   private token: string | null = null;
   readonly isAuthenticated = signal<boolean>(false);
 
-  public checkTokenIsValid(forceRefresh = false, navigateOnError = true) {
-    const tokenLocal = this.ls.getJwtToken();
+  public checkTokenIsValid(forceRefresh = false) {
+    const tokenLocal = TenantRuntime.getCurrent()?.token;// this.ls.getJwtToken();
     if (!tokenLocal) return of(false);
-    if (!this.urlService) this.urlService = this.ls.getUrlConf();
-    if (!this.urlService) return of(false);
     // Check if the user is logged in
     if (this.isAuthenticated() && !forceRefresh) {
       return of(true);
@@ -52,27 +50,23 @@ export class LoginService {
         return true;
       }),
         catchError(() => {
-          if (navigateOnError) { this.signout(); }
-          else {
+
             this.isAuthenticated.set(false);
             this.token = null;
-          }
+          
           return of(false);
         })
       );
   }
 
-  public signin(username: string, password: string, tokenAuto: string | null, navigateOnError = true): Observable<UsuarioAutenticacionDTO> | null {
+  public signin(username: string, password: string, tokenAuto: string | null): Observable<UsuarioAutenticacionDTO> | null {
     const autenticacion: UsuarioAutenticacionFilterDTO = new UsuarioAutenticacionFilterDTO();
     autenticacion.sesion = username;
     autenticacion.clave = password;
     autenticacion.claveAnterior = `${environment.dateCompile}`;
-    // if (username != null) { this.ls.setItem(LocalConstants.LOGIN_ID, username); }
     //Esto lo hice porque me estoy autenticando 2 veces, tengo que mejorar esta parte
     if (username === null && password === null) {
       if (!tokenAuto) { return null; }
-      //const _user = this.getUser();
-      //if (_user) autenticacion.usuario = _user.llaveTabla;
     }
     return this.authenticationApi.authenticate(autenticacion)
       .pipe(
@@ -81,9 +75,6 @@ export class LoginService {
           return res;
         }),
         catchError((error) => {
-          if (navigateOnError) {
-            this.signout();
-          }
           return throwError(() => error);
         })
       );
@@ -95,7 +86,13 @@ export class LoginService {
     this.token = res.token;
     this.layoutService.setUser(res.usuario);
 
-    this.ls.setJwtToken(this.token);
+    if (res.token) {
+      const currentKey = TenantRuntime.getCurrent()?.key;
+      if (currentKey) {
+        TenantRuntime.setToken(currentKey, res.token);
+        this.ls.setTenants(TenantRuntime.getTenants());
+      }
+    }
     if (res && res.mensaje) {
       this.notificationCenter.fire({
         position: 'top-end',
@@ -124,7 +121,8 @@ export class LoginService {
     //this.clearTenantTokens();
     this.isAuthenticated.set(false);
     this.token = null;
-    this.ls.setJwtToken(null);
+    TenantRuntime.setTenants([]);
+    this.ls.setTenants([]);
     this.dialog.closeAll();
     this.router.navigate(['/sign-in']);
   }
@@ -147,39 +145,8 @@ export class LoginService {
   }
 
   isSameToken() {
-    return this.token !== this.ls.getJwtToken();
+    return this.token !== TenantRuntime.getCurrent()?.token;
   }
-
-
-
-
-
-  /*
-  private setTenantToken(tenantKey: string, token: string) {
-    if (!tenantKey) { return; }
-    const tokens = this.getTenantTokens();
-    tokens[tenantKey] = token;
-    this.ls.setItem(this.tenantTokensKey(), tokens);
-  }
-
-  private getCurrentTenantKey(): string {
-    return this.ls.getItem(LocalConstants.TENANT_ID) || 'default';
-  }
-
-  private clearTenantTokens() {
-    this.ls.setItem(this.tenantTokensKey(), null);
-  }
-
-  //Estos 2 metodos estan duplicados en login y en tenant despues los ajusto
-  private getTenantTokens(): { [key: string]: string } {
-    const tokens = this.ls.getItem(this.tenantTokensKey());
-    return tokens && typeof tokens === 'object' ? tokens : {};
-  }
-  //Estos 2 metodos estan duplicados en login y en tenant despues los ajusto
-  private tenantTokensKey(): string {
-    const login = this.ls.getItem(LocalConstants.LOGIN_ID);
-    return LocalConstants.TENANT_TOKENS_BASE + (login || 'ANON');
-  }*/
 
 
 }

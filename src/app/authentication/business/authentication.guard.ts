@@ -27,7 +27,7 @@ export class AuthGuard  {
                 switchMap((authenticated) => {
                     // If the user is not authenticated...
                     if (!authenticated) {
-                        if(!redirectURL || redirectURL ==='/main'){
+                        if(!redirectURL || redirectURL.endsWith('/main')){
                             this._router.navigate(['sign-in']);
                         }else{
                             this._router.navigate(['sign-in'], { queryParams: { redirectURL } });
