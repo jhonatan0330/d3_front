@@ -118,11 +118,13 @@ export class LoginService {
 
   signout() {
     this.userAuthentication = null;
-    //this.clearTenantTokens();
     this.isAuthenticated.set(false);
     this.token = null;
-    TenantRuntime.setTenants([]);
-    this.ls.setTenants([]);
+    const currentKey = TenantRuntime.getCurrent()?.key;
+    if (currentKey) {
+      TenantRuntime.clearToken(currentKey);
+      this.ls.setTenants(TenantRuntime.getTenants());
+    }
     this.dialog.closeAll();
     this.router.navigate(['/sign-in']);
   }

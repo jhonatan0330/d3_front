@@ -1,8 +1,11 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { MatInput } from '@angular/material/input';
+import { MatIcon } from '@angular/material/icon';
+import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
+import { LocalStoreService } from 'app/shared/local-store.service';
 import { EMPTY, finalize, switchMap, tap } from 'rxjs';
 import { LoginService } from 'app/authentication/login.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
@@ -21,6 +24,7 @@ import { LayoutService } from 'app/layout/layout.service';
     imports: [
         FormsModule,
         ReactiveFormsModule,
+        MatIcon,
         MatInput,
         ImageFormatPipe,
         ParticleBackgroundDirective
@@ -33,12 +37,15 @@ export class SignInSplitScreenReversedComponent {
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
     private readonly utilsService = inject(UtilsService);
+    private readonly localStore = inject(LocalStoreService);
     private readonly destroyRef = inject(DestroyRef);
 
 
     readonly company = this.layoutService.company;
     readonly isLoading = signal(false);
     readonly currentApplicationVersion = environment.appVersion;
+    readonly pendingPreviousKey = signal<string | null>(null);
+    readonly showRevert = computed(() => this.pendingPreviousKey() !== null);
 
     readonly templateNewUser = computed(() =>
         PlantillaHelper.buscarValor(
@@ -76,7 +83,48 @@ export class SignInSplitScreenReversedComponent {
             .pipe(
                 takeUntilDestroyed(this.destroyRef)
             )
-            .subscribe();
+            .subscribe(valid => {
+                if (valid && this.route.snapshot.queryParamMap.get('pendingSwitch') !== '1') {
+                    this.redirectURL();
+                }
+            });
+
+        this.route.queryParamMap
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(params => this.applyPendingTenantSwitch(params));
+    }
+
+    private applyPendingTenantSwitch(params: ParamMap): void {
+        if (params.get('pendingSwitch') !== '1') {
+            this.pendingPreviousKey.set(null);
+            return;
+        }
+        const tenantKey = params.get('tenant');
+        if (tenantKey) {
+            let target = TenantRuntime.findByKey(tenantKey);
+            if (!target) {
+                target = { key: tenantKey, name: tenantKey, token: null };
+                TenantRuntime.upsert(target);
+            }
+            TenantRuntime.setCurrent(target);
+            this.localStore.setTenants(TenantRuntime.getTenants());
+            this.layoutService.getOrganization();
+        }
+        this.pendingPreviousKey.set(params.get('previous') || null);
+    }
+
+    revertToPrevious(): void {
+        const previousKey = this.pendingPreviousKey();
+        if (previousKey) {
+            const previous = TenantRuntime.findByKey(previousKey);
+            if (previous) {
+                TenantRuntime.setCurrent(previous);
+                this.localStore.setTenants(TenantRuntime.getTenants());
+                this.layoutService.getOrganization();
+            }
+        }
+        this.pendingPreviousKey.set(null);
+        this.redirectURL();
     }
 
     // -------------------------------------------------------------------------
@@ -148,6 +196,9 @@ export class SignInSplitScreenReversedComponent {
                 takeUntilDestroyed(this.destroyRef)
             )
             .subscribe({
+                next: () => {
+                    this.pendingPreviousKey.set(null);
+                },
                 error: response => {
 
                     if (
@@ -163,9 +214,8 @@ export class SignInSplitScreenReversedComponent {
 
     }
 
-    private redirectURL(): string {
-
-        return (
+    private redirectURL(): Promise<boolean> {
+        return this.router.navigateByUrl(
             this.route.snapshot.queryParamMap.get('redirectURL') ??
             '/main'
         );

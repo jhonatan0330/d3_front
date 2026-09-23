@@ -13,7 +13,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     if (token && !req.url.includes('openrouter.ai')) {
       setHeaders['Authorization'] = `${token}`;
     }
-    if (tenantId && !req.url.includes('/multi-tenancy')) {
+    if (tenantId) {
       setHeaders['X-Tenant-ID'] = `${tenantId}`;
     }
   }

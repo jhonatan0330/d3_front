@@ -19,6 +19,9 @@ export const TenantRuntime = {
     findByKey(key: string): TenantRuntime | undefined {
         return tenants.get(key);
     },
+    upsert(tenant: TenantRuntime): void {
+        tenants.set(tenant.key, tenant);
+    },
     setCurrent(tenant: TenantRuntime | null): void {
         if(!tenant){
             currentTenant = tenants.get('default')?? null;
@@ -36,6 +39,15 @@ export const TenantRuntime = {
         }
         if (currentTenant && currentTenant.key === key) {
             currentTenant.token = token;
+        }
+    },
+    clearToken(key: string): void {
+        const tenant = tenants.get(key);
+        if (tenant) {
+            tenant.token = null;
+        }
+        if (currentTenant && currentTenant.key === key) {
+            currentTenant.token = null;
         }
     }
 };
