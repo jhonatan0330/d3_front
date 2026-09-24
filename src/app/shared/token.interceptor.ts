@@ -1,6 +1,7 @@
 import { HttpEvent, HttpInterceptorFn, HttpResponse, } from '@angular/common/http';
 import { map } from 'rxjs';
 import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
+import { isDefaultTenant } from 'app/multitenancy/business/tenant-url.strategy';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
@@ -13,7 +14,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     if (token && !req.url.includes('openrouter.ai')) {
       setHeaders['Authorization'] = `${token}`;
     }
-    if (tenantId) {
+    if (tenantId && !isDefaultTenant(currentTenant)) {
       setHeaders['X-Tenant-ID'] = `${tenantId}`;
     }
   }

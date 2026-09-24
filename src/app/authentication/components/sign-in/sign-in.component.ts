@@ -5,6 +5,8 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
 import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
+import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
+import { prefixForTenant } from 'app/multitenancy/business/tenant-url.strategy';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { EMPTY, finalize, switchMap, tap } from 'rxjs';
 import { LoginService } from 'app/authentication/login.service';
@@ -38,6 +40,7 @@ export class SignInSplitScreenReversedComponent {
     private readonly router = inject(Router);
     private readonly utilsService = inject(UtilsService);
     private readonly localStore = inject(LocalStoreService);
+    private readonly tenantUrl = inject(TenantUrlService);
     private readonly destroyRef = inject(DestroyRef);
 
 
@@ -215,6 +218,7 @@ export class SignInSplitScreenReversedComponent {
     }
 
     private redirectURL(): Promise<boolean> {
+        this.tenantUrl.setPrefix(prefixForTenant(TenantRuntime.getCurrent()));
         return this.router.navigateByUrl(
             this.route.snapshot.queryParamMap.get('redirectURL') ??
             '/main'

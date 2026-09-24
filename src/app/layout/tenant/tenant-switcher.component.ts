@@ -2,6 +2,7 @@ import {
     ChangeDetectionStrategy,
     Component,
     DestroyRef,
+    effect,
     inject,
     signal
 } from '@angular/core';
@@ -12,6 +13,8 @@ import { Router } from '@angular/router';
 import { Observable, catchError, from, map, switchMap } from 'rxjs';
 import { TenantPublicDTO } from 'app/multitenancy/domain/TenantPublicDTO';
 import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
+import { prefixForTenant, stripTenantPrefix } from 'app/multitenancy/business/tenant-url.strategy';
+import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { MultitenancyApi } from 'app/multitenancy/multitenancy.api';
 import { LoginService } from 'app/authentication/login.service';
 import { LayoutService } from 'app/layout/layout.service';
@@ -33,10 +36,11 @@ export class TenantSwitcherComponent {
     private readonly loginService = inject(LoginService);
     private readonly layoutService = inject(LayoutService);
     private readonly multitenancyApi = inject(MultitenancyApi);
+    private readonly tenantUrl = inject(TenantUrlService);
     private readonly destroyRef = inject(DestroyRef);
     private readonly router = inject(Router);
 
-    readonly tenants = signal<TenantPublicDTO[]>([]);
+    readonly tenants = this.tenantUrl.tenants;
     readonly currentTenant = signal<TenantRuntime | null>(
         TenantRuntime.getCurrent()
     );
@@ -52,17 +56,22 @@ export class TenantSwitcherComponent {
             )
             .subscribe({
                 next: tenants => {
-                    this.tenants.set(tenants);
+                    this.tenantUrl.syncTenants(tenants);
                     this.syncRuntime(tenants);
                 },
                 error: () => {
-                    this.tenants.set([]);
+                    this.syncRuntime(this.tenants());
                 }
             });
     }
 
     private syncRuntime(tenants: TenantPublicDTO[]): void {
         const cached = this.ls.getTenants();
+        for (const stored of cached) {
+            if (stored?.key && !TenantRuntime.findByKey(stored.key)) {
+                TenantRuntime.upsert({ ...stored });
+            }
+        }
         for (const tenant of tenants) {
             const existing = TenantRuntime.findByKey(tenant.key);
             if (existing) {
@@ -100,6 +109,7 @@ export class TenantSwitcherComponent {
 
         TenantRuntime.setCurrent(target);
         this.currentTenant.set(target);
+        this.tenantUrl.setPrefix(prefixForTenant(target));
         this.ls.setTenants(TenantRuntime.getTenants());
 
         const returnTo = this.resolveReturnUrl();
@@ -133,7 +143,11 @@ export class TenantSwitcherComponent {
     }
 
     private resolveReturnUrl(): string {
-        const url = this.router.url ?? '';
+        const url = stripTenantPrefix(
+            this.router.url ?? '',
+            this.tenantUrl.tenants(),
+            this.tenantUrl.prefix
+        );
         if (!url || url.startsWith('/sign-in')) {
             return '/main';
         }

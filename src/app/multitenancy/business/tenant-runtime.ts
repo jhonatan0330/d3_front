@@ -1,4 +1,5 @@
 import { TenantPublicDTO } from 'app/multitenancy/domain/TenantPublicDTO';
+import { isDefaultTenant } from 'app/multitenancy/business/tenant-url.strategy';
 
 export interface TenantRuntime extends TenantPublicDTO {
     token: string | null;
@@ -24,7 +25,9 @@ export const TenantRuntime = {
     },
     setCurrent(tenant: TenantRuntime | null): void {
         if(!tenant){
-            currentTenant = tenants.get('default')?? null;
+            currentTenant = tenants.get('default')
+                ?? [...tenants.values()].find(isDefaultTenant)
+                ?? null;
         }else{
             currentTenant = tenant;
         }

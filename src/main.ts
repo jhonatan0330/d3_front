@@ -16,7 +16,7 @@ import { RouterModule, ExtraOptions, UrlSerializer } from '@angular/router';
 import { appRoutes } from 'app/app.routing';
 import { FuseConfigModule } from 'app/layout/core/config/fuse-config.module';
 import { appConfig } from 'app/layout/core/config/app.config';
-import { resolveTenantFromUrl, TenantResolveResult } from 'app/multitenancy/business/tenant-url.strategy';
+import { resolveTenantFromUrl, resolveTenantSlug, TenantResolveResult } from 'app/multitenancy/business/tenant-url.strategy';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { TenantUrlSerializer } from 'app/multitenancy/business/tenant-url.serializer';
 import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
@@ -74,9 +74,17 @@ async function ensureBaseUrl(localStore: LocalStoreService): Promise<string> {
 }
 
 async function loadTenants(base: string, localStore: LocalStoreService): Promise<void> {
+    await loadTenantsFrom(localStore, `${base}/multi-tenancy`);
+}
+
+async function loadTenantsAlcance(base: string, localStore: LocalStoreService, alcance: string): Promise<boolean> {
+    return loadTenantsFrom(localStore, `${base}/multi-tenancy?alcance=${encodeURIComponent(alcance)}`);
+}
+
+async function loadTenantsFrom(localStore: LocalStoreService, url: string): Promise<boolean> {
     const tenantsLocal: TenantRuntime[] = localStore.getTenants();
     try {
-        const response = await fetch(`${base}/multi-tenancy`);
+        const response = await fetch(url);
         if (response.ok) {
             const list = await response.json();
             const tenants = (Array.isArray(list) ? list : []).map(tenant => ({
@@ -85,37 +93,54 @@ async function loadTenants(base: string, localStore: LocalStoreService): Promise
             }));
             TenantRuntime.setTenants(tenants);
             localStore.setTenants(tenants);
+            return true;
         } else {
             throw new Error('HTTP ' + response.status);
         }
     } catch {
+        return false;
     }
 }
 
-async function resolveInitialTenant(base): Promise<TenantResolveResult | null> {
+async function resolveInitialTenant(base, localStore: LocalStoreService): Promise<TenantResolveResult | null> {
     const path = window.location.pathname;
-    const first = path.split('/').find(Boolean)?.toLowerCase() || '';
-    if (!first || RESERVED_FIRST_SEGMENTS.has(first)) {
+    const first = path.split('/').find(Boolean) || '';
+    if (!first || RESERVED_FIRST_SEGMENTS.has(first.toLowerCase())) {
+        await loadTenants(base, localStore);
         TenantRuntime.setCurrent(null);
         return null;
     }
-    const result = await resolveTenantFromUrl(base, path + window.location.search);
-    const current = result?.tenantId
-        ? (TenantRuntime.findByKey(result.tenantId) ?? {  key: result.tenantId, name: result.tenantId, imagen: undefined, token: null })
-        : null;
-    TenantRuntime.setCurrent(current);
-    return result;
+    const backend = await resolveTenantFromUrl(base, path + window.location.search);
+    if (backend?.tenantId) {
+        const scoped = await loadTenantsAlcance(base, localStore, backend.tenantId);
+        if (!scoped) {
+            await loadTenants(base, localStore);
+        }
+        const current = TenantRuntime.findByKey(backend.tenantId)
+            ?? { key: backend.tenantId, name: backend.tenantId, imagen: undefined, token: null };
+        TenantRuntime.setCurrent(current);
+        return { tenantId: backend.tenantId, rest: backend.rest ?? '', prefix: '/' + first };
+    }
+    await loadTenants(base, localStore);
+    const local = resolveTenantSlug(TenantRuntime.getTenants(), path);
+    if (local) {
+        const current = TenantRuntime.findByKey(local.tenantId)
+            ?? { key: local.tenantId, name: local.tenantId, imagen: undefined, token: null };
+        TenantRuntime.setCurrent(current);
+        return local;
+    }
+    TenantRuntime.setCurrent(null);
+    return null;
 }
 
 async function bootstrap(): Promise<void> {
     const tenantUrl = new TenantUrlService();
     const localStore = new LocalStoreService();
     const base = await ensureBaseUrl(localStore);
-    await loadTenants(base, localStore);
-    const tenantResolution = await resolveInitialTenant(base);
-    const tenantId = tenantResolution?.tenantId || '';
-    
-    tenantUrl.setPrefix(tenantId);
+    const tenantResolution = await resolveInitialTenant(base, localStore);
+    const prefix = tenantResolution?.prefix ?? tenantResolution?.tenantId ?? '';
+
+    tenantUrl.setPrefix(prefix);
 
     await bootstrapApplication(AppComponent, {
         providers: [
