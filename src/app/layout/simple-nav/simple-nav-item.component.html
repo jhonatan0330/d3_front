@@ -64,10 +64,15 @@
                 <button type="button"
                     class="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
                     (click)="item().function!(item())">
-                    @if (item().image) {
-                        <img class="h-5 w-5 " [src]="item().image!" alt="">
+                    @if (hasImage()) {
+                        <span class="relative flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-[11px] font-semibold uppercase text-gray-300">
+                            <span>{{ itemInitial() }}</span>
+                            <img class="absolute inset-0 h-full w-full rounded-full object-cover" [src]="item().image!" (error)="onImageError($event)" alt="">
+                        </span>
                     } @else if (item().icon) {
                         <mat-icon class="icon-size-5 shrink-0 text-gray-400" [svgIcon]="item().icon!"></mat-icon>
+                    } @else {
+                        <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10 text-[11px] font-semibold uppercase text-gray-300">{{ itemInitial() }}</span>
                     }
                     <span class="flex-1 truncate">{{ item().title }}</span>
                     @if (item().badge?.title) {
@@ -78,10 +83,15 @@
                 <a [routerLink]="item().link!" routerLinkActive="bg-white/10 text-white"
                     class="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white"
                     (click)="onNavigate()">
-                    @if (item().image) {
-                        <img class="h-5 w-5" [src]="item().image!" alt="">
+                    @if (hasImage()) {
+                        <span class="relative flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-[11px] font-semibold uppercase text-gray-300">
+                            <span>{{ itemInitial() }}</span>
+                            <img class="absolute inset-0 h-full w-full rounded-full object-cover" [src]="item().image!" (error)="onImageError($event)" alt="">
+                        </span>
                     } @else if (item().icon) {
                         <mat-icon class="icon-size-5 shrink-0 text-gray-400" [svgIcon]="item().icon!"></mat-icon>
+                    } @else {
+                        <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10 text-[11px] font-semibold uppercase text-gray-300">{{ itemInitial() }}</span>
                     }
                     <span class="flex-1 truncate">{{ item().title }}</span>
                     @if (item().badge?.title) {
@@ -90,10 +100,15 @@
                 </a>
             } @else {
                 <div class="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-300">
-                    @if (item().image) {
-                        <img class="h-5 w-5" [src]="item().image!" alt="">
+                    @if (hasImage()) {
+                        <span class="relative flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-[11px] font-semibold uppercase text-gray-300">
+                            <span>{{ itemInitial() }}</span>
+                            <img class="absolute inset-0 h-full w-full rounded-full object-cover" [src]="item().image!" (error)="onImageError($event)" alt="">
+                        </span>
                     } @else if (item().icon) {
                         <mat-icon class="icon-size-5 shrink-0 text-gray-400" [svgIcon]="item().icon!"></mat-icon>
+                    } @else {
+                        <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10 text-[11px] font-semibold uppercase text-gray-300">{{ itemInitial() }}</span>
                     }
                     <span class="flex-1 truncate">{{ item().title }}</span>
                     @if (item().badge?.title) {

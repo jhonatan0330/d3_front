@@ -20,13 +20,10 @@
                         class="w-full whitespace-nowrap text-ellipsis overflow-hidden text-center leading-normal font-medium text-white">
                         {{ layoutService.user().nombre }}
                     </div>
-                    <div class="relative w-24 h-24">
-                        @if (layoutService.user().imagen) {
-                        <img class="w-full h-full rounded-full" [src]="layoutService.user().imagen" alt="User avatar" />
-                        }
-                        @if (!layoutService.user().imagen) {
-                        <mat-icon class="icon-size-24 text-white/70" [svgIcon]="'heroicons_outline:user-circle'">
-                        </mat-icon>
+                    <div class="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-white/10 text-4xl font-semibold uppercase text-white/80">
+                        <span>{{ userInitial() }}</span>
+                        @if (hasUserImage()) {
+                        <img class="absolute inset-0 h-full w-full rounded-full object-cover" [src]="layoutService.user().imagen" (error)="onUserImageError($event)" alt="User avatar" />
                         }
                     </div>
                     <div

@@ -1,11 +1,10 @@
 <app-dropdown>
   <!-- Button trigger -->
   <button class="btn-icon" trigger>
-    <span class="relative">
-      @if (layoutService.user().imagen) {
-        <img class="w-7 h-7 rounded-full" [src]="layoutService.user().imagen">
-      }    @else {
-        <mat-icon [svgIcon]="'heroicons_outline:user-circle'"></mat-icon>
+    <span class="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-sm font-semibold uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+      <span>{{ userInitial() }}</span>
+      @if (hasImage()) {
+        <img class="absolute inset-0 h-full w-full rounded-full object-cover" [src]="layoutService.user().imagen" (error)="onImageError($event)" alt="Avatar de usuario">
       }
     </span>
   </button>

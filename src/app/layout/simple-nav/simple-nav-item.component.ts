@@ -29,6 +29,18 @@ export class SimpleNavItemComponent {
         this.navigate.emit();
     }
 
+    hasImage(): boolean {
+        return !!this.item()?.image?.trim();
+    }
+
+    itemInitial(): string {
+        return this.item()?.title?.charAt(0)?.toUpperCase() ?? '';
+    }
+
+    onImageError(event: Event): void {
+        (event.target as HTMLImageElement).style.display = 'none';
+    }
+
     trackByFn(index: number, item: FuseNavigationItem): any {
         return item.id || index;
     }

@@ -40,8 +40,8 @@
       <div class="flex flex-row flex-0 items-center max-w-5xl w-full mx-auto px-8 lg:h-18">
         <!-- Avatar -->
         <div class=" max-w-32 z-0">
-          <img class="w-full h-full rounded-full ring-4 ring-bg-card bg-white" [src]="layoutservice.company()!.imagen"
-            alt="User avatar">
+          <img class="w-full h-full rounded-full ring-4 ring-bg-card bg-white" [src]="companyImage()"
+            (error)="onCompanyImageError($event)" alt="User avatar">
         </div>
         <!-- Details -->
         <div class="flex flex-col items-center lg:items-start mt-4 mb-4 lg:mt-0 lg:mb-0">

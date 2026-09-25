@@ -25,6 +25,18 @@ export class UserComponent {
     time = new Date();
     currentApplicationVersion = environment.appVersion;
 
+    hasImage(): boolean {
+        return !!this.layoutService.user()?.imagen?.trim();
+    }
+
+    userInitial(): string {
+        return this.layoutService.user()?.nombre?.charAt(0)?.toUpperCase() ?? '';
+    }
+
+    onImageError(event: Event): void {
+        (event.target as HTMLImageElement).style.display = 'none';
+    }
+
     signOut(): void {
         this.jwtAuth.signout();
     }

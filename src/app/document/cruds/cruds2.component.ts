@@ -60,6 +60,18 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
     plantilla = signal<DocumentoPlantillaDTO | null>(null); // Estructura base de la lista
     templatesFromProcess = signal<DocumentoPlantillaDTO[]>([]);
+    readonly defaultTemplateLogo = 'assets/images/logo/dark_264x264.png';
+
+    hasPlantillaImage(): boolean {
+        return !!this.plantilla()?.imagen?.trim();
+    }
+
+    onPlantillaImageError(event: Event): void {
+        const img = event.target as HTMLImageElement;
+        if (img && !img.src.endsWith('dark_264x264.png')) {
+            img.src = this.defaultTemplateLogo;
+        }
+    }
     tableroId: string;
     procesoId: string | null;
 

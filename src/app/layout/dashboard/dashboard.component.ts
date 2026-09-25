@@ -34,6 +34,19 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   slides: string[] = [];
   readonly activeSlide = signal(0);
   private autoplayId?: ReturnType<typeof setInterval>;
+  readonly defaultCompanyImage = 'assets/images/logo/dark_264x264.png';
+
+  companyImage(): string {
+    const imagen = this.layoutservice.company()?.imagen?.trim();
+    return imagen ? this.layoutservice.company()!.imagen : this.defaultCompanyImage;
+  }
+
+  onCompanyImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img && !img.src.endsWith('dark_264x264.png')) {
+      img.src = this.defaultCompanyImage;
+    }
+  }
 
   tempTemplateOpen;
   tempIdOpen;

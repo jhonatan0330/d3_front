@@ -62,6 +62,18 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
         this.sidenavOpened.update((value) => !value);
     }
 
+    hasUserImage(): boolean {
+        return !!this.layoutService.user()?.imagen?.trim();
+    }
+
+    userInitial(): string {
+        return this.layoutService.user()?.nombre?.charAt(0)?.toUpperCase() ?? '';
+    }
+
+    onUserImageError(event: Event): void {
+        (event.target as HTMLImageElement).style.display = 'none';
+    }
+
     closeNavOnSmall(): void {
         if (this.isScreenSmall()) {
             this.sidenavOpened.set(false);
