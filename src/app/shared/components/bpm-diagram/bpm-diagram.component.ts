@@ -1,8 +1,13 @@
-import { Component, OnChanges, SimpleChanges, OnInit, HostListener, ChangeDetectionStrategy, inject, input, output } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, OnInit, HostListener, ChangeDetectionStrategy, inject, input, output, signal } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
+import { ProcesoDTO } from 'app/document/document.types';
+import { ProcessService } from 'app/configuration/configuracion.api';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { BpmLeafDiagramComponent } from '../bpm-leaf-diagram/bpm-leaf-diagram.component';
+import { BpmCanvasComponent } from '../bpm-canvas/bpm-canvas.component';
+import { BpmCanvasNode } from '../bpm-canvas/bpm-canvas.types';
 
 export interface Proceso {
   id: string;
@@ -27,7 +32,7 @@ interface NodeRender {
 
 @Component({
     selector: 'bpm-diagram',
-    imports: [],
+    imports: [BpmCanvasComponent],
     templateUrl: './bpm-diagram.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./bpm-diagram.component.scss']
@@ -35,7 +40,14 @@ interface NodeRender {
 export class BpmDiagramComponent implements OnChanges, OnInit {
   private notification = inject(NotificationCenterService);
   private dialog = inject(MatDialog);
-  private data = inject(MAT_DIALOG_DATA, { optional: true });
+  readonly data = inject(MAT_DIALOG_DATA, { optional: true });
+  private processService = inject(ProcessService);
+  private dialogRef = inject<MatDialogRef<BpmDiagramComponent>>(MatDialogRef);
+
+  readonly canvasNodes = signal<BpmCanvasNode[]>([]);
+  readonly isLoading = signal(true);
+  readonly hasError = signal(false);
+  private procesoId: string | null = null;
 
   readonly proceso = input<Proceso | null>(null);
   readonly width = input(600);
@@ -43,14 +55,7 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   readonly nodeRadius = input(48);
 
   constructor() {
-    const data = this.data;
-
-    // If opened via MatDialog with data, accept proceso/width/height from it
-    if (data) {
-      if (data.proceso) this.proceso = data.proceso;
-      if (data.width) this.width = data.width;
-      if (data.height) this.height = data.height;
-    }
+    this.procesoId = this.data?.procesoId || null;
   }
 
   // Tracks expanded nodes by id
@@ -86,8 +91,68 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   }
 
   ngOnInit(): void {
-    // ensure initial render when used as a dialog or standalone
     this.render();
+    this.loadProcessGraph();
+  }
+
+  loadProcessGraph(): void {
+    if (!this.procesoId) {
+      this.isLoading.set(false);
+      this.hasError.set(true);
+      return;
+    }
+    this.isLoading.set(true);
+    this.hasError.set(false);
+    this.processService.getProcessForGraph(this.procesoId).subscribe({
+      next: process => {
+        this.canvasNodes.set(this.normalizeProcess(process));
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  onNodeActivated(node: BpmCanvasNode): void {
+    const process = node.source as ProcesoDTO | undefined;
+    if (!process || (process.hijos || []).length > 0) return;
+    this.dialog.open(BpmLeafDiagramComponent, {
+      data: { procesoId: process.llaveTabla },
+      width: '920px',
+      maxWidth: '98vw',
+    });
+  }
+
+  close(): void {
+    this.dialogRef.close();
+  }
+
+  private normalizeProcess(root: ProcesoDTO): BpmCanvasNode[] {
+    const nodes: BpmCanvasNode[] = [];
+    const visited = new Set<string>();
+    const visit = (process: ProcesoDTO | null | undefined, parentId: string | null): void => {
+      if (!process?.llaveTabla || visited.has(process.llaveTabla)) return;
+      visited.add(process.llaveTabla);
+      const processId = process.llaveTabla;
+      const metadata = [
+        process.tipo ? { label: 'Tipo', value: process.tipo } : null,
+        process.codigo ? { label: 'Código', value: process.codigo } : null,
+        process.plantillas?.length ? { label: 'Plantillas', value: String(process.plantillas.length) } : null,
+      ].filter((item): item is { label: string; value: string } => item !== null);
+      nodes.push({
+        id: processId,
+        title: process.nombre || process.codigo || processId,
+        subtitle: process.objetivo || undefined,
+        parentId,
+        metadata,
+        source: process,
+      });
+      for (const child of process.hijos || []) visit(child, processId);
+    };
+    visit(root, null);
+    return nodes;
   }
 
   toggle(node: Proceso) {

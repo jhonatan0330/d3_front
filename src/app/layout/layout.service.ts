@@ -31,32 +31,7 @@ export class LayoutService {
   readonly isAdmin = signal<boolean>(false);
   readonly isReader = signal<boolean>(false);
 
-  loadCurrentOrganization(
-    onOrganizationLoaded?: (organization: OrganizacionDTO) => void
-  ): void {
-    this.authenticationService.getOrganization().subscribe({
-      next: (organization) => {
-        if (!organization) {
-          return;
-        }
 
-        this.carouselService.loadFromOrganization(organization);
-
-        if (organization.propiedades) {
-          this.templateService.setModules(
-            PlantillaHelper.buscarValorMultiple(
-              organization.propiedades,
-              PlantillaHelper.APP_MODULES
-            ) ?? []
-          );
-        }
-
-        onOrganizationLoaded?.(organization);
-      },
-      error: () => {
-      }
-    });
-  }
 
   public setUser(userId: string | null) {
     if (userId == null) {
@@ -84,28 +59,48 @@ export class LayoutService {
   }
 
   getOrganization() {
-    this.loadCurrentOrganization( (organization) => {
-      if (!organization) {
-        return;
+
+    this.authenticationService.getOrganization().subscribe({
+      next: (organization) => {
+        if (!organization) {
+          return;
+        }
+
+        this.company.set(organization);
+
+        if (organization.propiedades) {
+          this.isAdmin.set(!PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_ADMIN));
+          this.isReader.set(!PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_READER));
+        }
+
+        if (this.company() && this.company().llaveTabla === organization?.llaveTabla) {
+          this.company().propiedades = organization.propiedades;
+          return;
+        }
+
+
+
+        this.carouselService.loadFromOrganization(organization);
+
+        if (organization.propiedades) {
+          this.templateService.setModules(
+            PlantillaHelper.buscarValorMultiple(
+              organization.propiedades,
+              PlantillaHelper.APP_MODULES
+            ) ?? []
+          );
+        }
+
+
+      },
+      error: () => {
       }
-
-      if (organization.propiedades) {
-        this.isAdmin.set(!PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_ADMIN));
-        this.isReader.set(!PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_READER));
-      }
-
-      if (this.company() && this.company().llaveTabla === organization?.llaveTabla) {
-        this.company().propiedades = organization.propiedades;
-        return;
-      }
-
-      this.company.set(organization);
-
     });
+
   }
 
 
-  validateAccessModule( moduleKey: string): boolean {
+  validateAccessModule(moduleKey: string): boolean {
     if (!this.company()) {
       return false;
     }

@@ -16,7 +16,8 @@ import { RouterModule, ExtraOptions, UrlSerializer } from '@angular/router';
 import { appRoutes } from 'app/app.routing';
 import { FuseConfigModule } from 'app/layout/core/config/fuse-config.module';
 import { appConfig } from 'app/layout/core/config/app.config';
-import { resolveTenantFromUrl, resolveTenantSlug, TenantResolveResult } from 'app/multitenancy/business/tenant-url.strategy';
+import { isDefaultTenant, resolveTenantFromUrl, resolveTenantSlug, TenantResolveResult } from 'app/multitenancy/business/tenant-url.strategy';
+import { applyTenantManifest } from 'app/multitenancy/business/pwa-manifest';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { TenantUrlSerializer } from 'app/multitenancy/business/tenant-url.serializer';
 import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
@@ -141,6 +142,11 @@ async function bootstrap(): Promise<void> {
     const prefix = tenantResolution?.prefix ?? tenantResolution?.tenantId ?? '';
 
     tenantUrl.setPrefix(prefix);
+
+    const manifestCurrent = TenantRuntime.getCurrent();
+    const manifestTenant = tenantResolution?.tenantId
+        ?? (isDefaultTenant(manifestCurrent) ? 'default' : manifestCurrent?.key ?? 'default');
+    applyTenantManifest(base, manifestTenant);
 
     await bootstrapApplication(AppComponent, {
         providers: [

@@ -21,7 +21,7 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/document/form/controls/base/base.component';
 import { getComponent } from 'app/document/form/form-helper';
 import { MatDatepickerInputEvent, MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
-import { BpmDiagramComponent, Proceso } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
+import { BpmDiagramComponent } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
@@ -138,7 +138,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.ordenCampo.set('');
             this.ascendente.set(false);
             this.procesoId = null;
-            //const serverUrl = this.templateService.getUrl4Id(params.server_id);
             if (propType === 'list') {
                 this.plantilla.set(this.templateService.getTemplate(params.id)!);
                 if (!this.plantilla()) {
@@ -149,14 +148,12 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 this.procesoId = params.id;
                 if (this.procesoId) {
                     this.plantilla.set(this.templateService.getProceso(this.procesoId)!);
-                    if(this.plantilla() && this.plantilla()!.proceso){
+                    if (this.plantilla() && this.plantilla()!.proceso) {
                         this.templatesFromProcess.set(this.templateService.getTemplateOfProcess(this.procesoId)!
-                        .filter((item) => item.propiedades &&
-                            PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)
-                            && PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PLANTILLA_INICIA_PROCESO)
-                        ));
+                            .filter(item => item.propiedades &&
+                                PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR) &&
+                                PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PLANTILLA_INICIA_PROCESO)));
                     }
-                    
                 } else {
                     this.router.navigate(['/main']);
                     return;
@@ -169,22 +166,15 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 this.router.navigate(['/main']);
                 return;
             }
-            // Obtener Variables
             this.solicitarFechas = !PlantillaHelper.isEmpty(
                 this.plantilla()!.propiedades,
-                PlantillaHelper.FORM_SOLICITAR_FECHAS
-            );
+                PlantillaHelper.FORM_SOLICITAR_FECHAS);
             this.reportForms.set(PlantillaHelper.buscarValorMultiple(
                 this.plantilla()!.propiedades,
-                PlantillaHelper.REPORT_MODULE_REFERENCE
-            ) ?? []);
+                PlantillaHelper.REPORT_MODULE_REFERENCE) ?? []);
             if (!this.solicitarFechas && this.templatesFromProcess()) {
-                for (let i = 0; i < this.templatesFromProcess().length; i++) {
-                    const iTemplateFromService = this.templatesFromProcess()[i];
-                    if (!PlantillaHelper.isEmpty(
-                        iTemplateFromService.propiedades,
-                        PlantillaHelper.FORM_SOLICITAR_FECHAS
-                    )) {
+                for (const template of this.templatesFromProcess()) {
+                    if (!PlantillaHelper.isEmpty(template.propiedades, PlantillaHelper.FORM_SOLICITAR_FECHAS)) {
                         this.solicitarFechas = true;
                         break;
                     }
@@ -192,13 +182,13 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             }
             if (this.solicitarFechas) {
                 this.fCDateStart.setValue(new Date());
-                const endDate = new Date(new Date());
+                const endDate = new Date();
                 endDate.setDate(endDate.getDate() + 1);
                 this.fCDateEnd.setValue(endDate);
                 this.fCTimeStart.enable();
                 this.fCTimeEnd.enable();
                 this.fCTimeStart.setValue('00:00');
-                this.fCTimeEnd.setValue('23:59')
+                this.fCTimeEnd.setValue('23:59');
             } else {
                 this.fCDateStart.setValue(null);
                 this.fCDateEnd.setValue(null);
@@ -207,8 +197,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 this.fCTimeStart.disable();
                 this.fCTimeEnd.disable();
             }
-
-            //FechaRegistro
             this.fRegistroDateStart.setValue(null);
             this.fRegistroDateEnd.setValue(null);
             this.fRegistroTimeStart.disable();
@@ -219,31 +207,30 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 PlantillaHelper.PERMISO_PLANTILLA_CREAR
             ));
             if (this.plantilla()!.estados) {
-                const _controlEstado = [];
-                for (let i = 0; i < this.plantilla()!.estados.length; i++) {
-                    const element = this.plantilla()!.estados[i];
-                    if (!element.llaveTabla) {
-                        element.llaveTabla = element.estadoDocumento;
-                    }
-                    _controlEstado[element.llaveTabla] = new FormControl(
-                        element.estadoDocumento === StatesEnum.ACTIVE
+                const stateControls = [];
+                for (const state of this.plantilla()!.estados) {
+                    if (!state.llaveTabla) state.llaveTabla = state.estadoDocumento;
+                    stateControls[state.llaveTabla] = new FormControl(
+                        state.estadoDocumento === StatesEnum.ACTIVE
                     );
                 }
-                this.form = this.formBuilder.group(_controlEstado);
+                this.form = this.formBuilder.group(stateControls);
             }
             this.displayedColumns.set([]);
-            if (this.plantilla()!.reportes && this.plantilla()!.reportes.length !== 0) { this.displayedColumns.update(cols => [...cols, 'select']); }
+            if (this.plantilla()!.reportes?.length) this.displayedColumns.update(cols => [...cols, 'select']);
             this.displayedColumns.update(cols => [...cols, 'nombre']);
-            if (!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.FORM_DESCRIPCION)) { this.displayedColumns.update(cols => [...cols, 'descripcion']); }
-            this.displayedColumns.update(cols => [...cols, 'estadoExpediente']);
-            this.displayedColumns.update(cols => [...cols, 'fecha']);
-            if (!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.FORM_TOTAL)) { this.displayedColumns.update(cols => [...cols, 'valor']); }
+            if (!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.FORM_DESCRIPCION)) {
+                this.displayedColumns.update(cols => [...cols, 'descripcion']);
+            }
+            this.displayedColumns.update(cols => [...cols, 'estadoExpediente', 'fecha']);
+            if (!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.FORM_TOTAL)) {
+                this.displayedColumns.update(cols => [...cols, 'valor']);
+            }
             this.displayedColumns.update(cols => [...cols, 'detalles']);
-            if (this.plantilla()!.reportes && this.plantilla()!.reportes.length !== 0) { this.displayedColumns.update(cols => [...cols, 'acciones']); }
+            if (this.plantilla()!.reportes?.length) this.displayedColumns.update(cols => [...cols, 'acciones']);
             this.showFields();
         });
 
-        // Subscribe to media changes
         this.drawerMode.set(this._mediaQuery.matches ? 'side' : 'over');
         this.drawerOpened.set(this._mediaQuery.matches);
         this._mediaQuery.addEventListener('change', this._mediaHandler);
@@ -695,77 +682,14 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
       }
 
       openDiagram() {
-              // Example proceso data for demo; replace with real data as needed
-              const demo: Proceso = {
-                  id: 'root',
-                  nombre: 'Proceso Raiz',
-                  roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png',
-                  children: [
-                      { id: 'c1', nombre: 'Hijo 1',  roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png',
-                  children: [ { id: 'c1-1', nombre: 'Nieto 1' , roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png'}, { id: 'c1-2', nombre: 'Nieto 2' , roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png'} ] },
-                      { id: 'c2', nombre: 'Hijo 2' , roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png'},
-                      { id: 'c3', nombre: 'Hijo 3',  roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png',children: [ { id: 'c3-1', nombre: 'Nieto A',  roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png' }, { id: 'c3-2', nombre: 'Nieto B' ,  roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png'}, 
-                          { id: 'c3-3', nombre: 'Nieto C',  roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png',children: [{ id: 'c3-3-1', nombre: 'BisNieto A',  roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png' }, { id: 'c3-3-2', nombre: 'BisNieto B' , roles: 5,
-                  plantillas: 3,
-                  apis: 2,
-                  reportes: 4,
-                  imagen: 'https://fs.softwareparati.com/modulo.png'}] } 
-                      ] }
-                  ]
-              };
-      
-              const w = Math.min(window.innerWidth * 0.8, 1400);
-              const h = Math.min(window.innerHeight * 0.8, 900);
-      
-              this.dialog.open(BpmDiagramComponent, {
-                  width: '80vw',
-                  height: '80vh',
-                  panelClass: 'bpm-dialog',
-                  data: {
-                      proceso: demo,
-                      width: w,
-                      height: h
-                  }
-              });
-          }
+          const processId = this.procesoId || this.plantilla()?.proceso;
+          if (!processId) return;
+          this.dialog.open(BpmDiagramComponent, {
+              width: '92vw',
+              height: '84vh',
+              maxWidth: '98vw',
+              panelClass: 'bpm-dialog',
+              data: { procesoId: processId },
+          });
+      }
 }

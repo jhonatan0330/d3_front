@@ -1,0 +1,226 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.bpm-canvas {
+  display: flex;
+  flex-direction: column;
+  min-height: 360px;
+  height: min(68vh, 720px);
+  color: #172b3a;
+  background: #f3f7f7;
+  border: 1px solid #d7e2e1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.canvas-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 5px 10px;
+  border-bottom: 1px solid #d7e2e1;
+  background: #fff;
+}
+
+.canvas-toolbar button {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: #244558;
+  background: transparent;
+  cursor: pointer;
+}
+
+.canvas-toolbar button:hover,
+.canvas-toolbar button:focus-visible {
+  border-color: #b7d2d0;
+  background: #edf6f4;
+  outline: none;
+}
+
+.canvas-toolbar .reset-button {
+  font-size: 12px;
+}
+
+.zoom-value {
+  min-width: 42px;
+  color: #526a78;
+  font-size: 11px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: #d7e2e1;
+}
+
+.canvas-viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background-color: #f3f7f7;
+  background-image: radial-gradient(#d8e4e2 0.8px, transparent 0.8px);
+  background-size: 20px 20px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.canvas-viewport.is-panning {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.diagram-svg {
+  display: block;
+  max-width: none;
+  overflow: visible;
+}
+
+.edge-path {
+  fill: none;
+  stroke: #87a3a8;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.edge-arrow {
+  fill: #6d8e94;
+}
+
+.edge-label rect {
+  fill: #fff;
+  stroke: #cfdddc;
+  stroke-width: 1;
+}
+
+.edge-label text {
+  fill: #49616a;
+  font-size: 10px;
+}
+
+.node-card {
+  fill: #fff;
+  stroke: #cbd9d8;
+  stroke-width: 1.3;
+  filter: drop-shadow(0 3px 7px rgb(31 62 68 / 8%));
+  cursor: pointer;
+  transition: stroke 140ms ease, filter 140ms ease;
+}
+
+.diagram-node:hover .node-card,
+.diagram-node.is-selected .node-card,
+.node-card:focus-visible {
+  stroke: #147d78;
+  stroke-width: 2;
+  filter: drop-shadow(0 5px 12px rgb(20 125 120 / 16%));
+  outline: none;
+}
+
+.node-accent {
+  fill: #218b83;
+  pointer-events: none;
+}
+
+.is-parent .node-accent {
+  fill: #3977a1;
+}
+
+.node-title {
+  fill: #163347;
+  font-size: 13px;
+  font-weight: 650;
+  pointer-events: none;
+}
+
+.node-subtitle {
+  fill: #58727c;
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.node-metadata {
+  fill: #526a73;
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.metadata-label {
+  fill: #82969b;
+  font-weight: 600;
+}
+
+.node-action rect {
+  fill: #edf6f4;
+  stroke: #cee3df;
+  stroke-width: 1;
+}
+
+.node-action text {
+  fill: #176b66;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.node-action,
+.expand-control {
+  cursor: pointer;
+  outline: none;
+}
+
+.node-action:hover rect,
+.node-action:focus-visible rect {
+  fill: #dcefeb;
+  stroke: #77b8ad;
+}
+
+.node-action:focus-visible,
+.expand-control:focus-visible {
+  filter: drop-shadow(0 0 2px #147d78);
+}
+
+.more-actions {
+  fill: #6c8388;
+  font-size: 9px;
+}
+
+.expand-control circle {
+  fill: #eaf2f5;
+  stroke: #c4d6dc;
+}
+
+.expand-control text {
+  fill: #315d70;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.empty-canvas {
+  display: grid;
+  min-height: 220px;
+  place-items: center;
+  color: #647980;
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .bpm-canvas {
+    height: 62vh;
+    min-height: 320px;
+  }
+
+  .canvas-toolbar {
+    min-height: 38px;
+  }
+}

@@ -1,0 +1,119 @@
+<section class="bpm-canvas" aria-label="Diagrama de proceso">
+  <div class="canvas-toolbar" role="toolbar" aria-label="Controles del diagrama">
+    <button type="button" data-canvas-control title="Alejar" aria-label="Alejar" (click)="zoomOut()">-</button>
+    <span class="zoom-value" aria-live="polite">{{ zoomPercent() }}%</span>
+    <button type="button" data-canvas-control title="Acercar" aria-label="Acercar" (click)="zoomIn()">+</button>
+    <span class="toolbar-divider" aria-hidden="true"></span>
+    <button type="button" data-canvas-control class="reset-button" (click)="resetView()">Restablecer vista</button>
+  </div>
+
+  <div
+    class="canvas-viewport"
+    [class.is-panning]="isPanning()"
+    (pointerdown)="startPan($event)"
+    (pointermove)="movePan($event)"
+    (pointerup)="endPan($event)"
+    (pointercancel)="endPan($event)"
+    (wheel)="onWheel($event)"
+  >
+    @if (scene().nodes.length) {
+      <svg
+        class="diagram-svg"
+        [attr.width]="scene().width"
+        [attr.height]="scene().height"
+        [attr.viewBox]="'0 0 ' + scene().width + ' ' + scene().height"
+        role="group"
+        [attr.aria-label]="mode() === 'tree' ? 'Árbol de procesos' : 'Estados y transiciones del proceso'"
+      >
+        <defs>
+          <marker [attr.id]="markerId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" class="edge-arrow"></path>
+          </marker>
+        </defs>
+        <g [attr.transform]="'translate(' + panX() + ',' + panY() + ') scale(' + scale() + ')'">
+          @for (edge of scene().edges; track edge.id) {
+            <g class="diagram-edge" [attr.data-edge-from]="edge.from" [attr.data-edge-to]="edge.to">
+              <path [attr.d]="edge.path" [attr.marker-end]="'url(#' + markerId + ')'" class="edge-path"></path>
+              @if (edge.label) {
+                <g class="edge-label" [attr.transform]="'translate(' + edge.labelX + ',' + edge.labelY + ')'">
+                  <rect x="-52" y="-11" width="104" height="22" rx="6"></rect>
+                  <text text-anchor="middle" y="4">{{ edgeLabel(edge.label) }}</text>
+                </g>
+              }
+            </g>
+          }
+
+          @for (node of scene().nodes; track node.id) {
+            <g
+              class="diagram-node"
+              [class.is-selected]="selectedNodeId() === node.id"
+              [class.is-parent]="node.childCount > 0"
+              [attr.data-node-id]="node.id"
+              [attr.transform]="'translate(' + node.x + ',' + node.y + ')'"
+              role="group"
+              [attr.aria-label]="node.title"
+            >
+              <rect
+                class="node-card"
+                [attr.width]="node.width"
+                [attr.height]="node.height"
+                rx="9"
+                role="button"
+                tabindex="0"
+                [attr.aria-label]="'Seleccionar ' + node.title"
+                (click)="activateNode(node)"
+                (keydown)="activateNodeFromKeyboard(node, $event)"
+              ></rect>
+              <rect class="node-accent" width="4" [attr.height]="node.height" rx="2"></rect>
+              <text class="node-title" x="16" y="25" pointer-events="none">{{ actionLabel(node.title) }}</text>
+              @if (node.subtitle) {
+                <text class="node-subtitle" x="16" y="45" pointer-events="none">{{ actionLabel(node.subtitle) }}</text>
+              }
+              @for (metadata of (node.metadata || []).slice(0, 2); track metadata.label; let index = $index) {
+                <text class="node-metadata" x="16" [attr.y]="66 + index * 19" pointer-events="none">
+                  <tspan class="metadata-label">{{ metadata.label }} </tspan>{{ actionLabel(metadata.value) }}
+                </text>
+              }
+              @for (action of visibleActions(node); track action.id; let index = $index) {
+                <g
+                  class="node-action"
+                  [attr.transform]="'translate(12,' + (actionY(node) + index * 27) + ')'"
+                  role="button"
+                  tabindex="0"
+                  [attr.data-canvas-control]="true"
+                  [attr.aria-label]="'Abrir acción ' + action.label"
+                  (click)="activateAction(action, $event)"
+                  (keydown)="activateActionFromKeyboard(action, $event)"
+                >
+                  <rect width="226" height="22" rx="5"></rect>
+                  <text x="9" y="15" pointer-events="none">{{ actionLabel(action.label) }}</text>
+                </g>
+              }
+              @if (remainingActionCount(node) > 0) {
+                <text class="more-actions" x="16" [attr.y]="actionY(node) + 3 * 27 + 14">+{{ remainingActionCount(node) }} acciones más</text>
+              }
+              @if (node.childCount > 0) {
+                <g
+                  class="expand-control"
+                  [attr.transform]="'translate(' + (node.width - 30) + ',12)'"
+                  role="button"
+                  tabindex="0"
+                  [attr.data-canvas-control]="true"
+                  [attr.aria-label]="node.expanded ? 'Contraer ' + node.title : 'Expandir ' + node.title"
+                  [attr.aria-expanded]="node.expanded"
+                  (click)="toggleNode(node, $event)"
+                  (keydown)="toggleNodeFromKeyboard(node, $event)"
+                >
+                  <circle r="10"></circle>
+                  <text text-anchor="middle" y="4" pointer-events="none">{{ node.expanded ? '-' : '+' }}</text>
+                </g>
+              }
+            </g>
+          }
+        </g>
+      </svg>
+    } @else {
+      <div class="empty-canvas" role="status">No hay elementos para mostrar.</div>
+    }
+  </div>
+</section>
