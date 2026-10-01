@@ -71,18 +71,6 @@ export class LayoutService {
         if (organization.propiedades) {
           this.isAdmin.set(!PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_ADMIN));
           this.isReader.set(!PlantillaHelper.isEmpty(organization.propiedades, PlantillaHelper.APP_READER));
-        }
-
-        if (this.company() && this.company().llaveTabla === organization?.llaveTabla) {
-          this.company().propiedades = organization.propiedades;
-          return;
-        }
-
-
-
-        this.carouselService.loadFromOrganization(organization);
-
-        if (organization.propiedades) {
           this.templateService.setModules(
             PlantillaHelper.buscarValorMultiple(
               organization.propiedades,
@@ -91,6 +79,11 @@ export class LayoutService {
           );
         }
 
+        if (this.company() && this.company().llaveTabla === organization?.llaveTabla) {
+          this.company().propiedades = organization.propiedades;
+          return;
+        }
+        this.carouselService.loadFromOrganization(organization);
 
       },
       error: () => {

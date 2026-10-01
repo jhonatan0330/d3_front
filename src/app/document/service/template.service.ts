@@ -10,7 +10,7 @@ import {
 import { StatesEnum } from 'app/document/form/form.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
-import { LocalConstants, LocalStoreService } from 'app/shared/local-store.service';
+import { LocalStoreService } from 'app/shared/local-store.service';
 import { NavigationService } from 'app/layout/navigation/navigation.service';
 
 @Injectable({
@@ -176,23 +176,6 @@ export class TemplateService {
     if (!this.propiedadesConRelaciones) return;
     return this.propiedadesConRelaciones.filter(x => (x.propiedad && x.propiedad === propiedad));
   }
-
-  /*
-  getOrFetchRelations(propiedad: string, urlServer: string): Observable<RelacionInternaDTO[]> {
-    const cached = this.getPropertyRelation(propiedad);
-    if (cached && cached.length > 0) {
-      return of(cached);
-    }
-    const filtro: RelacionInternaFilterDTO = new RelacionInternaFilterDTO();
-    filtro.estado = StatesEnum.ACTIVE;
-    filtro.propiedad = propiedad;
-    return this.http.post<RelacionInternaDTO[]>(
-    this.ls.getUrlAccess('/configuration/getPropertyRelations'),
-      filtro
-    ).pipe(
-      tap(relations => this.addRelations(relations))
-    );
-  }*/
 
   getOrFetchRelations(
     propiedad: string,
