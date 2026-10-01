@@ -69,7 +69,7 @@ export class TaskFormComponent {
     // -------------------------------------------------------------------------
 
     readonly titleField =
-        viewChild<ElementRef<HTMLInputElement>>('titleField');
+        viewChild<ElementRef<HTMLTextAreaElement>>('titleField');
 
     // -------------------------------------------------------------------------
     // Form

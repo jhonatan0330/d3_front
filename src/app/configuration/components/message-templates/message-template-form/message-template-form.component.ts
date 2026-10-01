@@ -47,9 +47,8 @@ export class MessageTemplateFormComponent implements OnInit {
                 this.notificationCenter.fire('Éxito', 'Plantilla guardada correctamente', 'success');
                 this.dialogRef.close(result);
             },
-            error: (err) => {
+            error: () => {
                 this.cargando = false;
-                this.notificationCenter.fire('Error', 'No se pudo guardar la plantilla', 'error');
             }
         });
     }

@@ -1,144 +1,194 @@
 <div class="flex flex-col w-full min-w-0 overflow-hidden">
-
-  <!-- Header -->
-  <div
-    class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-2 sm:px-10 border-b bg-card dark:bg-transparent">
-    <div class="flex-1 min-w-0">
-      <!-- Title -->
-      <div class="mt-2">
-        <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
-          {{plantilla()?.nombre}}
-        </h2>
+  <header class="border-b bg-card px-4 py-5 sm:px-8">
+    <div class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4">
+      <div class="min-w-0">
+        <p class="text-sm font-semibold uppercase text-secondary">Carga masiva</p>
+        <h1 class="mt-1 truncate text-2xl font-bold leading-tight sm:text-3xl">
+          {{ plantilla()?.nombre }}
+        </h1>
       </div>
+      <button class="btn-raised shrink-0" [disabled]="isProcessing()" (click)="newMassiveLoad()">
+        <mat-icon>restart_alt</mat-icon>
+        <span class="hidden sm:inline">Nueva carga</span>
+        <span class="sm:hidden">Reiniciar</span>
+      </button>
     </div>
-  </div>
+  </header>
 
-  <!-- Main -->
-  <div class="flex flex-col flex-0 p-2 w-full">
-    <div class="w-full">
-      <button class="btn-flat-accent m-2" [disabled]="isLoading() || isProcessing()"
-        onclick="simpleUploadXML.click();">
-        <mat-icon class="mr-2">cloud_upload</mat-icon> 2. Cargar
-        <input id="simpleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
-          (click)="$event.target.value = ''" (change)="handleFileInput($event.target.files!)" />
-        </button>
-        @if (fieldIdInTemplateSecondary() && documentosGenerados()) {
-          <button class="btn-flat-accent m-2" onclick="multipleUploadXML.click();"
-            [disabled]="isLoading() || isProcessing()">
-            <mat-icon class="mr-2">cloud_upload</mat-icon> Cargar Multiple
-            <input id="multipleUploadXML" style="display: none" type="file" accept=".xml, .xlsx, .csv"
-              (click)="$event.target.value = ''" (change)="handleFileInputMultiple($event.target.files!)" />
+  <main class="mx-auto flex w-full max-w-7xl flex-col gap-5 p-4 sm:gap-6 sm:p-8">
+    <section class="border-b border-gray-200 pb-6 dark:border-gray-700" aria-labelledby="step-one-title">
+      <div class="flex items-start gap-4">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-200 text-sm font-bold text-gray-700 dark:bg-gray-700 dark:text-gray-100">1</span>
+        <div class="min-w-0 flex-1">
+          <h2 id="step-one-title" class="text-lg font-semibold">Descarga una plantilla</h2>
+          <p class="mt-1 text-sm text-secondary">Usa el formato que mejor se adapte a tus datos.</p>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <button class="btn-raised" [disabled]="isLoading() || isProcessing()" (click)="downloadBase('xml')">
+              <mat-icon>download</mat-icon>
+              <span>Plantilla XML</span>
             </button>
-          }
-
-          <button class="btn-flat-accent m-2" [disabled]="isLoading()" (click)="downloadBase('xml')">
-            <mat-icon class="mr-2">cloud_download</mat-icon> base (xml)
-          </button>
-          <button class="btn-flat-accent m-2" [disabled]="isLoading()" (click)="downloadBase('excel')">
-            <mat-icon class="mr-2">cloud_download</mat-icon> base (csv)
-          </button>
-          <span class="m-2"> Tiempo de espera
-            <input class="p-1 w-14 bg-white rounded"  [(ngModel)]="fTiempoEspera" [disabled]="isLoading()" type="number" />
-          </span>
-          <label><input class="m-2" type="checkbox" [(ngModel)]="skipSelected" />No detenerse cuando encuentre errores</label>
+            <button class="btn-raised" [disabled]="isLoading() || isProcessing()" (click)="downloadBase('excel')">
+              <mat-icon>grid_on</mat-icon>
+              <span>Plantilla Excel (.xlsx)</span>
+            </button>
+          </div>
         </div>
+      </div>
+    </section>
 
-        @if (isLoading()) {
-          <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-            <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+    <section class="border-b border-gray-200 pb-6 dark:border-gray-700" aria-labelledby="step-two-title">
+      <div class="flex items-start gap-4">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">2</span>
+        <div class="min-w-0 flex-1">
+          <h2 id="step-two-title" class="text-lg font-semibold">Carga y valida tus archivos</h2>
+          <p class="mt-1 text-sm text-secondary">Selecciona el archivo completado. Se admiten XML, Excel y CSV.</p>
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <button class="btn-flat-accent" [disabled]="isLoading() || isProcessing()" (click)="simpleUploadXML.click()">
+              <mat-icon>upload_file</mat-icon>
+              <span>Seleccionar archivo</span>
+            </button>
+            <input #simpleUploadXML class="hidden" type="file" accept=".xml, .xlsx, .csv"
+              (click)="$event.target.value = ''" (change)="handleFileInput($event.target.files!)" />
+
+            @if (fieldIdInTemplateSecondary()) {
+              <button class="btn-raised" [disabled]="isLoading() || isProcessing()" (click)="multipleUploadXML.click()">
+                <mat-icon>library_add</mat-icon>
+                <span>Cargar plantilla relacionada</span>
+              </button>
+              <input #multipleUploadXML class="hidden" type="file" accept=".xml, .xlsx, .csv"
+                (click)="$event.target.value = ''" (change)="handleFileInputMultiple($event.target.files!)" />
+            }
+
+            <span class="hidden h-8 border-l border-gray-300 sm:inline-block dark:border-gray-600"></span>
+
+            <button class="btn-raised" [disabled]="isProcessing()" (click)="attachmentFolderInput.click()">
+              <mat-icon>folder_open</mat-icon>
+              <span>Seleccionar carpeta de adjuntos</span>
+            </button>
+            <input #attachmentFolderInput class="hidden" type="file" webkitdirectory directory multiple
+              (click)="$event.target.value = ''; $event.stopPropagation();" [disabled]="isProcessing()"
+              (change)="handleFileInputToLoadArchivo($event.target.files!)" />
           </div>
-        }
-        {{ lblCarga() }}
-        {{ lblTipoProceso() }}
-        @if (isLoading()) {
-          <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-            <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
-          </div>
-        }
-        <div class="w-full">
-          <button class="btn-flat-accent m-4" [disabled]="isLoading() || !isValidate() || isProcessing() "
-            (click)="startLoad()">
-            <mat-icon class="mr-2">fast_forward</mat-icon> 3. Procesar
-          </button>
-          <!--button mat-flat-button color="accent" class="m-4" *ngIf="isProcessing"
-          (click)="pause ===!pause" >
-          <mat-icon class="mr-2">pause</mat-icon> 4. Pausar
-        </button-->
-        <span></span>
-        <button class="btn-flat-accent m-4" [disabled]="isProcessing()" (click)="newMassiveLoad()">
-          <mat-icon class="mr-2">autorenew</mat-icon> Nueva carga
-        </button>
 
-        <button class="btn-flat-accent m-4" [disabled]="isProcessing()" >
-          <mat-icon class="mr-2">autorenew</mat-icon> Cargar archivos
-        </button>
-
-        <input [id]="'_file'" type="file" webkitdirectory directory multiple
-          (click)="$event.target.value = '';$event.stopPropagation();" [disabled]="isProcessing()"
-          (change)="handleFileInputToLoadArchivo($event.target.files!)" />
-
-        </div>
-        @if (isProcessing()) {
-          <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-            <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
-          </div>
-        }
-        <span class="w-full">{{ lblProcesar() }}</span>
-        <div class="w-full">
-          @for (iDocument of failedDocuments(); track iDocument) {
-            <div>
-              <app-document [document]="iDocument"></app-document>
+          @if (isLoading()) {
+            <div class="mt-5 h-1.5 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Cargando y validando archivos">
+              <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
             </div>
           }
+          @if (lblCarga() || lblTipoProceso()) {
+            <div class="mt-4 space-y-1 border-l-2 border-accent pl-3 text-sm" aria-live="polite">
+              @if (lblCarga()) {
+                <p class="font-medium">{{ lblCarga() }}</p>
+              }
+              @if (lblTipoProceso()) {
+                <p class="whitespace-pre-line text-secondary">{{ lblTipoProceso() }}</p>
+              }
+            </div>
+          }
+          @if (!isLoading() && !isValidate() && !documentosGenerados().length) {
+            <p class="mt-4 text-sm text-secondary">Aún no hay archivos cargados.</p>
+          }
         </div>
       </div>
+    </section>
 
-      <!-- Table -->
-      @if (dataSource().data) {
-        <div class="overflow-auto" >
-          <table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
-            <ng-container [matColumnDef]="'orderNumber'" >
+    <section class="rounded-lg border border-primary/20 bg-primary/5 p-4 sm:p-6" aria-labelledby="step-three-title">
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-start gap-4">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">3</span>
+          <div>
+            <h2 id="step-three-title" class="text-lg font-semibold">Procesa la carga</h2>
+            <p class="mt-1 text-sm text-secondary">Revisa la validación y luego procesa los registros.</p>
+          </div>
+        </div>
+        <button class="btn-flat-primary w-full sm:w-auto" [disabled]="isLoading() || !isValidate() || isProcessing()"
+          (click)="startLoad()">
+          @if (isProcessing()) {
+            <mat-icon class="animate-spin">autorenew</mat-icon>
+            <span>Procesando...</span>
+          } @else {
+            <mat-icon>play_arrow</mat-icon>
+            <span>Procesar carga</span>
+          }
+        </button>
+      </div>
+
+      <div class="mt-5 flex flex-col gap-4 border-t border-primary/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
+        <label class="flex items-center gap-2 text-sm">
+          <input class="h-4 w-4 accent-primary" type="checkbox" [(ngModel)]="skipSelected" [disabled]="isProcessing()" />
+          <span>Continuar aunque haya errores</span>
+        </label>
+        <label class="flex items-center gap-2 text-sm text-secondary">
+          <span>Espera entre registros</span>
+          <input class="w-20 rounded border border-gray-300 bg-white px-2 py-1 text-center text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+            [(ngModel)]="fTiempoEspera" [disabled]="isLoading() || isProcessing()" type="number" min="0" />
+          <span>seg</span>
+        </label>
+      </div>
+
+      @if (isProcessing()) {
+        <div class="mt-4 h-1.5 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Procesando registros">
+          <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
+        </div>
+      }
+      @if (lblProcesar()) {
+        <p class="mt-4 whitespace-pre-line border-l-2 border-primary pl-3 text-sm" aria-live="polite">{{ lblProcesar() }}</p>
+      }
+    </section>
+
+    @for (iDocument of failedDocuments(); track iDocument) {
+      <app-document [document]="iDocument"></app-document>
+    }
+
+    @if (dataSource().data.length) {
+      <section class="min-w-0 overflow-hidden rounded-lg border border-gray-200 bg-card dark:border-gray-700" aria-label="Resultados de la carga">
+        <div class="border-b border-gray-200 px-4 py-3 dark:border-gray-700">
+          <h2 class="font-semibold">Registros cargados</h2>
+          <p class="mt-1 text-sm text-secondary">Revisa el estado y los mensajes de cada registro.</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table mat-table [dataSource]="dataSource()" class="min-w-full">
+            <ng-container [matColumnDef]="'orderNumber'">
               <th mat-header-cell *matHeaderCellDef>No.</th>
-              <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-500':element.status ==='FAILED'}">
-                <div>{{element.orderNumber}}</div>
+              <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-50 dark:bg-red-950/30': element.status === 'FAILED'}">
+                {{ element.orderNumber }}
               </td>
             </ng-container>
-            <ng-container [matColumnDef]="'updateId'" >
-              <th mat-header-cell *matHeaderCellDef>Update</th>
-              <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-500':element.status ==='FAILED'}">
-                <div>{{element.updateId}}</div>
+            <ng-container [matColumnDef]="'updateId'">
+              <th mat-header-cell *matHeaderCellDef>Actualización</th>
+              <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-50 dark:bg-red-950/30': element.status === 'FAILED'}">
+                {{ element.updateId }}
               </td>
             </ng-container>
-            <ng-container [matColumnDef]="'status'" >
+            <ng-container [matColumnDef]="'status'">
               <th mat-header-cell *matHeaderCellDef>Estado</th>
-              <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-500':element.status ==='FAILED'}">
-                <div>{{element.status}}</div>
+              <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-50 font-medium text-red-800 dark:bg-red-950/30 dark:text-red-200': element.status === 'FAILED'}">
+                {{ element.status }}
               </td>
             </ng-container>
-            <ng-container [matColumnDef]="'messages'" >
+            <ng-container [matColumnDef]="'messages'">
               <th mat-header-cell *matHeaderCellDef>Mensajes</th>
-              <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-500':element.status ==='FAILED'}">
+              <td mat-cell *matCellDef="let element" [ngClass]="{'bg-red-50 dark:bg-red-950/30': element.status === 'FAILED'}">
                 @for (msg of element.messages; track msg) {
-                  <div class="min-w-100" >{{msg.message}}</div>
+                  <div class="min-w-64 py-1">{{ msg.message }}</div>
                 }
                 @if (element.documentName) {
-                  <div>{{element.documentName}}</div>
+                  <div class="py-1">{{ element.documentName }}</div>
                 }
               </td>
             </ng-container>
             @for (column of titleColumns(); track column; let i = $index) {
               <ng-container [matColumnDef]="column">
-                <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+                <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
                 <td mat-cell *matCellDef="let element">
-                  <div>{{element.document.caracteristicas[i].valorText}}</div>
+                  {{ element.document.caracteristicas[i].valorText }}
                 </td>
               </ng-container>
             }
             <tr mat-header-row *matHeaderRowDef="displayedColumns(); sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns();"  ></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
           </table>
         </div>
-      }
-
-
-    </div>
+      </section>
+    }
+  </main>

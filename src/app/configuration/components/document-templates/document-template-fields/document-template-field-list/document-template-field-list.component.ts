@@ -80,7 +80,7 @@ export class DocumentTemplateFieldListComponent implements OnInit {
 
     deleteField(field: DocumentoPlantillaCaracteristicaDTO): void {
         this.notificationCenter.fire({ title: '¿Eliminar campo?', text: 'Esta acción no se puede deshacer.', icon: 'warning', showCancelButton: true, confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { this.service.inactivateField(field).subscribe({ next: () => { this.notificationCenter.fire('Eliminado', 'Campo eliminado correctamente', 'success'); this.loadFields(); }, error: () => this.notificationCenter.fire('Error', 'No se pudo eliminar el campo', 'error') }); }});
+            .then((result) => { if (result.isConfirmed) { this.service.inactivateField(field).subscribe({ next: () => { this.notificationCenter.fire('Eliminado', 'Campo eliminado correctamente', 'success'); this.loadFields(); } }); }});
     }
 
     getFormatoIcon(formato: string): string {

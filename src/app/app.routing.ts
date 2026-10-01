@@ -39,6 +39,7 @@ export const appRoutes: Route[] = [
       { path: 'massive/:template/:server', loadComponent: () => import('app/massiveload/components/massiveload-view/massive.component').then(m => m.MassiveComponent) },
       { path: 'account', loadComponent: () => import('app/accounting/components/accounting-view/accounting.component').then(m => m.AccountComponent) },
       { path: 'persons', loadComponent: () => import('app/users/components/users-view/users.component').then(m => m.PersonsComponent) },
+      { path: 'tenants', loadComponent: () => import('app/tenants/tenants-view/tenants-view.component').then(m => m.TenantsViewComponent) },
 
       // CONFIGURACIÓN - Tabbed layout
       {

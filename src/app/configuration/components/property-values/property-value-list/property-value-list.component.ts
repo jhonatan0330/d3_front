@@ -115,8 +115,8 @@ export class PropertyValueListComponent implements OnInit, AfterViewInit, OnDest
                 if (result.isConfirmed) {
                     const updated = { ...item, estado: newEstado };
                     this.service.inactivatePropertyValue(updated).subscribe({
-                        next: () => { this.notificationCenter.fire('Éxito', `Valor ${action}do correctamente`, 'success'); this.reload(); },
-                        error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el valor`, 'error')
+                        next: () => { this.notificationCenter.fire('Éxito', `Valor ${action}do correctamente`, 'success'); this.reload(); }
+                        
                     });
                 }
             });

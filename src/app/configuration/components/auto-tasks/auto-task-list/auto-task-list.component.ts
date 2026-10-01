@@ -107,8 +107,7 @@ export class AutoTaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         }).then((result) => {
             if (result.isConfirmed) {
                 this.service.executeAutoTask(task.llaveTabla).subscribe({
-                    next: (res) => { this.notificationCenter.fire('Ejecutado', 'Tarea ejecutada correctamente', 'success'); this.reload(); },
-                    error: () => this.notificationCenter.fire('Error', 'No se pudo ejecutar la tarea', 'error')
+                    next: (res) => { this.notificationCenter.fire('Ejecutado', 'Tarea ejecutada correctamente', 'success'); this.reload(); }
                 });
             }
         });
@@ -118,6 +117,6 @@ export class AutoTaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
         this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} tarea?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateAutoTask(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Tarea ${action}da correctamente`, 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} la tarea`, 'error') }); }});
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateAutoTask(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Tarea ${action}da correctamente`, 'success'); this.reload(); } }); }});
     }
 }

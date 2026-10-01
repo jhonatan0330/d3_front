@@ -1,0 +1,39 @@
+<div class="w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+  <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+    <h2 class="text-xl font-bold">Transferir usage a {{ data.tenantName }}</h2>
+    <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+  </div>
+
+  <div class="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center gap-2">
+    <mat-icon class="text-primary">data_usage</mat-icon>
+    <span class="text-sm text-gray-500 dark:text-gray-400">Saldo actual del destino:</span>
+    <span class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ saldoDestino() !== null ? (saldoDestino()?.saldo + ' MB') : '—' }}</span>
+  </div>
+
+  <form #form="ngForm" (ngSubmit)="onSubmit()">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Cantidad *</label>
+        <input type="number" [(ngModel)]="cantidad" name="cantidad" required min="0.000001" step="any" placeholder="0" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Unidad</label>
+        <app-dropdown>
+          <button type="button" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 flex items-center justify-between" trigger><span>{{ unidad }}</span><mat-icon>expand_more</mat-icon></button>
+          <app-dropdown-item (clicked)="elegirUnidad('MB')">MB</app-dropdown-item>
+          <app-dropdown-item (clicked)="elegirUnidad('GB')">GB</app-dropdown-item>
+        </app-dropdown>
+      </div>
+      <div class="sm:col-span-2">
+        <label class="block text-sm font-semibold mb-1">Referencia (opcional)</label>
+        <input type="text" [(ngModel)]="referencia" name="referencia" maxlength="32" placeholder="Se genera TRF-XXXXXXXX si se omite" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+    </div>
+    <p class="text-xs text-gray-500 dark:text-gray-400 pt-2">La transferencia descuenta tu saldo (movimiento T) y acredita el subtenant (movimiento E) con la misma referencia. No se permite dejar tu saldo en negativo.</p>
+
+    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
+      <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Transfiriendo...' : 'Transferir' }}</button>
+    </div>
+  </form>
+</div>

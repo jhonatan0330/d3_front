@@ -130,8 +130,7 @@ export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestro
                     next: () => {
                         this.notificationCenter.fire('Éxito', `Consecutivo ${action}do correctamente`, 'success');
                         this.reload();
-                    },
-                    error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el consecutivo`, 'error')
+                    }
                 });
             }
         });
@@ -142,8 +141,7 @@ export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestro
             next: (res) => {
                 this.notificationCenter.fire('Asignado', `Consecutivo asignado: ${res.consecutivoActual}`, 'success');
                 this.reload();
-            },
-            error: () => this.notificationCenter.fire('Error', 'No se pudo asignar el consecutivo', 'error')
+            }
         });
     }
 }

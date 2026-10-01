@@ -69,9 +69,8 @@ export class ProcessFormComponent implements OnInit {
                 this.notificationCenter.fire('Éxito', 'Proceso guardado correctamente', 'success');
                 this.dialogRef.close(result);
             },
-            error: (err) => {
+            error: () => {
                 this.cargando = false;
-                this.notificationCenter.fire('Error', 'No se pudo guardar el proceso', 'error');
             }
         });
     }

@@ -86,7 +86,6 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
             },
             error: (err) => {
                 this.cargando = false;
-                this.notificationCenter.fire('Error', 'No se pudo guardar el campo', 'error');
             }
         });
     }

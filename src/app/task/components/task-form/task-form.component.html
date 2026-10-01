@@ -1,43 +1,49 @@
 <form
-    class="flex max-h-[calc(100vh-32px)] min-h-96 flex-col overflow-y-auto p-6 sm:p-8"
+    class="flex max-h-[calc(100vh-32px)] min-h-[min(640px,calc(100vh-32px))] flex-col gap-5 overflow-y-auto bg-card p-4 sm:gap-6 sm:p-7"
     [formGroup]="taskForm">
-
-    <div class="flex items-center justify-between">
-
-        <mat-form-field class="w-full pr-4">
-            <mat-label>Título</mat-label>
-
-            <input
-                #titleField
-                matInput
-                formControlName="title"
-                [spellcheck]="false"
-                (blur)="onTitleEmpty()">
-        </mat-form-field>
+    <header class="flex items-start gap-4">
+        <div class="min-w-0 flex-auto">
+            <p class="text-xs font-semibold uppercase text-secondary">Nota personal</p>
+            <mat-form-field class="mt-2 w-full" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Título</mat-label>
+                <textarea
+                    #titleField
+                    matInput
+                    rows="2"
+                    class="resize-none"
+                    formControlName="title"
+                    [spellcheck]="false"
+                    (blur)="onTitleEmpty()"></textarea>
+            </mat-form-field>
+        </div>
 
         <button
             type="button"
-            class="btn-icon"
-            aria-label="Cerrar editor"
+            class="btn-icon-primary mt-5 shrink-0"
+            aria-label="Listo y cerrar editor"
+            matTooltip="Listo"
             (click)="closeDrawer()">
-
-            <mat-icon
-                [svgIcon]="'heroicons_outline:x-mark'">
-            </mat-icon>
-
+            <mat-icon [svgIcon]="'heroicons_outline:check'"></mat-icon>
         </button>
+    </header>
 
-    </div>
-
-    <ngx-editor-menu
-        [editor]="editor"
-        class="py-8"
-        [toolbar]="toolbar">
-    </ngx-editor-menu>
-
-    <ngx-editor
-        [editor]="editor"
-        formControlName="notes">
-    </ngx-editor>
-
+    <section class="flex min-h-0 flex-auto flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700" aria-label="Contenido de la nota">
+        <div class="border-b border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-secondary dark:border-gray-700 dark:bg-gray-800">
+            Contenido
+        </div>
+        <div class="overflow-x-auto border-b border-gray-200 bg-white px-2 dark:border-gray-700 dark:bg-gray-900">
+            <ngx-editor-menu
+                [editor]="editor"
+                class="block py-2"
+                [toolbar]="toolbar">
+            </ngx-editor-menu>
+        </div>
+        <div class="min-h-[320px] flex-auto bg-white p-4 dark:bg-gray-900 sm:p-5">
+            <ngx-editor
+            class="block h-full min-h-[320px]"
+                [editor]="editor"
+                formControlName="notes">
+            </ngx-editor>
+        </div>
+    </section>
 </form>

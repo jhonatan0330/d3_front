@@ -11,8 +11,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
     selector: 'app-property-relations',
     standalone: true,
     imports: [CommonModule, MatIconModule, MatDialogModule],
-    templateUrl: './property-relations.component.html',
-    styleUrl: './property-relations.component.scss'
+    templateUrl: './property-relations.component.html'
 })
 export class PropertyRelationsComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
@@ -83,7 +82,7 @@ export class PropertyRelationsComponent implements OnInit {
                         this.loadRelations();
                     },
                     error: () => {
-                        this.notificationCenter.fire('Error', 'No se pudo eliminar la relación', 'error');
+                        
                     }
                 });
             }

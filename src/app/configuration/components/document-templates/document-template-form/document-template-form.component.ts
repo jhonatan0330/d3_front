@@ -73,7 +73,6 @@ export class DocumentTemplateFormComponent implements OnInit {
             },
             error: () => {
                 this.cargando = false;
-                this.notificationCenter.fire('Error', 'No se pudo consultar la plantilla de documento', 'error');
             }
         });
     }
@@ -117,9 +116,8 @@ export class DocumentTemplateFormComponent implements OnInit {
                 this.notificationCenter.fire('Éxito', 'Plantilla de documento guardada correctamente', 'success');
                 this.dialogRef.close(result);
             },
-            error: (err) => {
+            error: () => {
                 this.cargando = false;
-                this.notificationCenter.fire('Error', 'No se pudo guardar la plantilla de documento', 'error');
             }
         });
     }

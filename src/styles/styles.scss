@@ -140,6 +140,15 @@
     overflow: hidden;
 }
 
+.task-form-dialog .NgxEditor {
+  height: 100%;
+  min-height: 320px;
+}
+
+.task-form-dialog .NgxEditor__Content {
+  min-height: 280px;
+}
+
 .mat-mdc-form-field-subscript-wrapper {
     height: 6px;
 }

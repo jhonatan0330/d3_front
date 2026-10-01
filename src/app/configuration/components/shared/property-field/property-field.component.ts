@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { PropiedadDTO, PropiedadCampoDTO } from 'app/shared/shared.domain';
+import { PropertyLookupService } from 'app/configuration/property-lookup.service';
 import { PropertyModalComponent } from '../property-modal/property-modal.component';
 
 @Component({
@@ -14,6 +15,7 @@ import { PropertyModalComponent } from '../property-modal/property-modal.compone
 })
 export class PropertyFieldComponent {
     private dialog = inject(MatDialog);
+    private lookupService = inject(PropertyLookupService);
 
     @Input() propiedades: PropiedadDTO[] = [];
     @Input() tipoOrigen: string = 'C';
@@ -23,6 +25,7 @@ export class PropertyFieldComponent {
     @Output() propiedadesChange = new EventEmitter<PropiedadDTO[]>();
 
     openModal(propiedad?: PropiedadDTO): void {
+        this.lookupService.preload(this.tipoOrigen, this.origenCategoria);
         const dialogRef = this.dialog.open(PropertyModalComponent, {
             width: '600px',
             maxWidth: '90vw',

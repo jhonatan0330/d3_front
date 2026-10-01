@@ -136,8 +136,7 @@ export class MessageListComponent implements OnInit, AfterViewInit, OnDestroy {
         }).then((result) => {
             if (result.isConfirmed) {
                 this.messageService.resendMessage(msg.llaveTabla).subscribe({
-                    next: () => { this.notificationCenter.fire('Éxito', 'Mensaje reenviado correctamente', 'success'); this.reload(); },
-                    error: () => this.notificationCenter.fire('Error', 'No se pudo reenviar el mensaje', 'error')
+                    next: () => { this.notificationCenter.fire('Éxito', 'Mensaje reenviado correctamente', 'success'); this.reload(); }
                 });
             }
         });

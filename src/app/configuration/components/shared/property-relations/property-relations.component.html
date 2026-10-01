@@ -1,53 +1,53 @@
 
-    <div class="space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="text-lg font-bold">{{ titulo }}</h3>
-        <button type="button"
-          class="btn-flat-primary text-sm"
-          (click)="openRelationModal()">
-          <mat-icon class="text-sm">add</mat-icon>
-          Agregar
-        </button>
-      </div>
+<section class="space-y-4">
+  <header class="flex flex-wrap items-center justify-between gap-3">
+    <div class="min-w-0">
+      <h3 class="font-semibold">{{ titulo }}</h3>
+      <p class="mt-1 text-sm text-secondary">{{ relaciones.length }} relaciones configuradas</p>
+    </div>
+    <button type="button" class="btn-raised shrink-0" (click)="openRelationModal()">
+      <mat-icon>add</mat-icon>
+      <span>Agregar relación</span>
+    </button>
+  </header>
 
-      @if (cargando) {
-        <div class="text-center py-4 text-gray-500 dark:text-gray-400">
-          Cargando relaciones...
-        </div>
-      } @else if (relaciones.length === 0) {
-        <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-4 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
-          Sin relaciones configuradas
-        </div>
-      } @else {
-        <div class="space-y-2 max-h-60 overflow-y-auto">
-          @for (rel of relaciones; track rel.llaveTabla) {
-            <div class="group border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-800 hover:shadow-md transition relative">
-              <div class="flex items-start justify-between">
-                <div class="flex-1 min-w-0">
-                  @if (rel.fechaInicio) {
-                    <span class="text-xs text-gray-500 dark:text-gray-400 font-mono block mb-1">{{ rel.fechaInicio }}</span>
-                  }
-                  <h4 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ rel.campoNombre }}</h4>
-                  <p class="text-sm text-gray-600 dark:text-gray-300">{{ rel.plantillaNombre }}</p>
-                </div>
-                <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <button type="button"
-                    class="bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600"
-                    (click)="openRelationModal(rel)"
-                    title="Editar relación">
-                    <mat-icon class="text-sm">edit</mat-icon>
-                  </button>
-                  <button type="button"
-                    class="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
-                    (click)="deleteRelation(rel)"
-                    title="Eliminar relación">
-                    <mat-icon class="text-sm">delete</mat-icon>
-                  </button>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
+  @if (cargando) {
+    <div class="h-1 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Cargando relaciones">
+      <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
+    </div>
+  } @else if (relaciones.length === 0) {
+    <div class="flex min-h-28 flex-col items-center justify-center rounded-md border border-dashed border-gray-300 px-4 py-5 text-center dark:border-gray-600">
+      <p class="text-sm font-medium">Sin relaciones configuradas</p>
+      <p class="mt-1 text-sm text-secondary">Las relaciones que agregues aparecerán aquí.</p>
+    </div>
+  } @else {
+    <div class="max-h-60 divide-y divide-gray-200 overflow-y-auto border-y border-gray-200 dark:divide-gray-700 dark:border-gray-700">
+      @for (rel of relaciones; track rel.llaveTabla) {
+        <article class="flex items-start gap-3 py-3">
+          <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <mat-icon class="icon-size-5">account_tree</mat-icon>
+          </span>
+          <div class="min-w-0 flex-1">
+            @if (rel.fechaInicio) {
+              <p class="mb-1 text-xs text-secondary">Desde {{ rel.fechaInicio | date:'mediumDate' }}</p>
+            }
+            <h4 class="truncate font-medium">{{ rel.campoNombre }}</h4>
+            <p class="mt-0.5 truncate text-sm text-secondary">{{ rel.plantillaNombre }}</p>
+            @if (rel.auxiliar) {
+              <p class="mt-1 truncate text-xs text-secondary">Auxiliar: {{ rel.auxiliar }}</p>
+            }
+          </div>
+          <div class="flex shrink-0 items-center gap-1">
+            <button type="button" class="btn-icon-primary" (click)="openRelationModal(rel)" title="Editar relación" aria-label="Editar relación">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button type="button" class="btn-icon text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30" (click)="deleteRelation(rel)" title="Eliminar relación" aria-label="Eliminar relación">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </article>
       }
     </div>
+  }
+</section>
   

@@ -58,9 +58,9 @@ export class ServerFormComponent implements OnInit {
                 this.notificationCenter.fire('Éxito', 'Servidor guardado correctamente', 'success');
                 this.dialogRef.close(result);
             },
-            error: (err) => {
+            error: () => {
                 this.cargando = false;
-                this.notificationCenter.fire('Error', 'No se pudo guardar el servidor', 'error');
+                
             }
         });
     }

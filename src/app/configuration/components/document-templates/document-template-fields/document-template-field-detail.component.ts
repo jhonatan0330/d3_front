@@ -72,10 +72,8 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
                 this.isLoading = false;
 
             },
-            error: (err) => {
-                console.error('Error al cargar campo:', err);
+            error: () => {
                 this.isLoading = false;
-                this.notificationCenter.fire('Error', 'No se pudo cargar la información del campo.', 'error');
             }
         });
     }
@@ -91,7 +89,6 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
             },
             error: () => {
                 this.propiedadesCampo = [];
-                this.notificationCenter.fire('Error', 'No se pudieron cargar las propiedades del campo.', 'error');
             }
         });
     }
@@ -188,10 +185,6 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
                     next: () => {
                         this.notificationCenter.fire('Eliminado', 'La propiedad fue eliminada correctamente.', 'success');
                         this.cargarCampo();
-                    },
-                    error: (err) => {
-                        console.error('Error al eliminar la propiedad de campo:', err);
-                        this.notificationCenter.fire('Error', 'No se pudo eliminar la propiedad.', 'error');
                     }
                 });
             }

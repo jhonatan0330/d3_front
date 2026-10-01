@@ -1,15 +1,14 @@
-<div class="flex flex-row-reverse w-full h-full min-h-0 overflow-hidden">
+<div class="flex h-full min-h-0 w-full flex-row-reverse overflow-hidden bg-gray-50 dark:bg-gray-950">
   <!-- Backdrop (solo en modo 'over' cuando está abierto) -->
 
-  <aside class="w-80 flex-shrink-0 bg-white dark:bg-gray-900 shadow-lg 
-    transition-transform duration-300 ease-in-out  overflow-y-auto" [class.hidden]="!drawerOpened()">
+  <aside class="z-30 w-80 shrink-0 overflow-y-auto border-l border-gray-200 bg-card shadow-lg transition-transform duration-300 ease-in-out dark:border-gray-700" [class.hidden]="!drawerOpened()" aria-label="Filtros y acciones">
     <!-- sidebar -->
-    <div class="flex flex-col flex-auto w-full">
+    <div class="flex min-h-full w-full flex-auto flex-col p-4">
       <!-- Title -->
-      <div class="p-2">
+      <div class="space-y-5">
         <!-- Botones de accion en la lista -->
         @if (!isLoading()) {
-        <div class="w-full">
+        <div class="flex w-full flex-wrap items-center gap-1 border-b border-gray-200 pb-4 dark:border-gray-700">
           <button matTooltip="Listar" (click)="listar(1)" class="m-1 btn-icon-primary">
             <mat-icon>refresh</mat-icon>
           </button>
@@ -25,7 +24,7 @@
           }
           @if (plantilla()?.reportes ) {
           @if (viewMode !== 'grid-view') {
-          <div class="py-1">
+          <div class="w-full pt-1">
             <app-dropdown>
               <button class="btn-flat-accent w-full" trigger> <mat-icon
                   svgIcon="heroicons_outline:printer"></mat-icon>Imprimir </button>
@@ -40,7 +39,7 @@
           }
           }
           @if (reportForms() && reportForms().length!==0) {
-          <div class="py-1">
+          <div class="w-full pt-1">
             <app-dropdown>
               <button class="btn-flat-accent w-full" trigger>
                 <mat-icon svgIcon="heroicons_outline:printer"></mat-icon>Informes
@@ -55,13 +54,13 @@
           </div>
           }
           @if (drawerOpened() && drawerMode() === 'over') {
-          <button (click)="drawerOpened.set(false)" class="btn-icon">
+          <button type="button" (click)="drawerOpened.set(false)" class="btn-icon ml-auto" aria-label="Cerrar filtros">
              <mat-icon> close </mat-icon>
           </button>
           }
         </div>
         }
-        <div>
+        <div class="space-y-2 border-b border-gray-200 pb-4 dark:border-gray-700">
           @if (hasCreatePermission()) {
           <button class="btn-flat-primary w-full" (click)="openDialogFromTemplateModule()">
             <mat-icon>add</mat-icon>
@@ -81,31 +80,35 @@
           }
         </div>
         <!-- Buscador de texto -->
-        <div class="text-primary text-xs uppercase font-bold py-2">Filtrar</div>
-        <label><input id="chkCodeFull" class="mx-2" type="checkbox" [formControl]="fControlCheck" />Filtrar
-          por codigo Exacto</label>
-        <div>
-          <mat-form-field>
+        <section class="space-y-2 border-b border-gray-200 pb-4 dark:border-gray-700" aria-label="Filtros de búsqueda">
+        <div class="text-xs font-semibold uppercase text-secondary">Buscar</div>
+        <label class="flex items-center gap-2 text-sm">
+          <input id="chkCodeFull" class="h-4 w-4 accent-primary" type="checkbox" [formControl]="fControlCheck" />
+          <span>Código exacto</span>
+        </label>
+        <div class="space-y-2">
+          <mat-form-field class="w-full" subscriptSizing="dynamic">
             <input matInput type="text" placeholder="Coloca un texto y presiona enter" [formControl]="fControlSearch"
               autocomplete="off" (keyup.enter)="listar(1)" />
-            <button matSuffix class="btn-icon" (click)="fControlSearch.setValue('')">
+            <button type="button" matSuffix class="btn-icon" (click)="fControlSearch.setValue('')" aria-label="Limpiar búsqueda">
               <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
             </button>
           </mat-form-field>
-          <button class="btn-flat-accent w-full" (click)="listar(1)">
+          <button class="btn-flat-primary w-full" (click)="listar(1)">
             <mat-icon>refresh</mat-icon>
             <span>Listar</span>
           </button>
         </div>
-        <div class="py-2">
-          <div class="text-primary text-xs uppercase font-bold py-1">Ordenar por</div>
-          <div class="flex items-center">
-            <label class="text-sm px-2">
-              <input class="mx-2 py-1" type="checkbox" [checked]="ascendente()"
-                (change)="ascendente.set($event.target.checked)" />Ascendente
+        <div class="space-y-2 pt-3">
+          <div class="text-xs font-semibold uppercase text-secondary">Ordenar resultados</div>
+          <div class="flex items-center justify-between gap-2">
+            <label class="flex items-center gap-2 text-sm">
+              <input class="h-4 w-4 accent-primary" type="checkbox" [checked]="ascendente()"
+                (change)="ascendente.set($event.target.checked)" />
+              <span>Ascendente</span>
             </label>
             <app-dropdown>
-              <button class="btn-raised w-full flex items-center justify-between" trigger>
+              <button class="btn-raised flex min-w-32 items-center justify-between" trigger>
                 <span>{{ ordenCampo() === 'N' ? 'Nombre' : (ordenCampo() === 'D' ? 'Descripcion' : 'Fecha') }}</span>
                 <mat-icon>chevron_down</mat-icon>
               </button>
@@ -122,12 +125,13 @@
           </div>
         </div>
         @if (fControlCheck && !fControlCheck.value) {
-        <div>
+        <div class="space-y-4 pt-4">
           <!-- Buscador de fecha -->
-          <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fechas </div>
-          <div>
-            <div class="flex">
-              <mat-form-field class="pr-2">
+          <section class="space-y-2">
+          <div class="text-xs font-semibold uppercase text-secondary">Fecha del documento</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="contents">
+              <mat-form-field class="min-w-0" subscriptSizing="dynamic">
                 <mat-label>Fecha Inicial</mat-label>
                 <input matInput [matDatepicker]="pickerFrom" [formControl]="fCDateStart"
                   (dateChange)="cambioFecha('start', '', $event)" autocomplete="off" />
@@ -135,14 +139,14 @@
                 <mat-datepicker #pickerFrom></mat-datepicker>
               </mat-form-field>
               @if (fCDateStart.value) {
-              <mat-form-field class="w-52">
+              <mat-form-field class="min-w-0" subscriptSizing="dynamic">
                 <mat-label>Hora Inicial</mat-label>
                 <input matInput type="time" [formControl]="fCTimeStart" />
               </mat-form-field>
               }
             </div>
-            <div class="flex">
-              <mat-form-field class="pr-2">
+            <div class="contents">
+              <mat-form-field class="min-w-0" subscriptSizing="dynamic">
                 <mat-label>Fecha Final</mat-label>
                 <input matInput [matDatepicker]="pickerTo" [formControl]="fCDateEnd"
                   (dateChange)="cambioFecha('end', '', $event)" autocomplete="off" />
@@ -150,37 +154,38 @@
                 <mat-datepicker #pickerTo></mat-datepicker>
               </mat-form-field>
               @if (fCDateEnd.value) {
-              <mat-form-field class="w-52">
+              <mat-form-field class="min-w-0" subscriptSizing="dynamic">
                 <mat-label>Hora Final</mat-label>
                 <input matInput type="time" [formControl]="fCTimeEnd" />
               </mat-form-field>
               }
             </div>
           </div>
+          </section>
           <!-- Campos dinamicos -->
           @if (this.dynamicControls() && this.dynamicControls().length !==0) {
-          <div class="text-primary text-xs uppercase font-bold py-2"> Filtros por campos </div>
+          <div class="text-xs font-semibold uppercase text-secondary">Filtros por campos</div>
           }
           <div class="pt-2">
             <ng-template #dynamycFormElement></ng-template>
           </div>
           <!-- Filtro por Estados  -->
-          <div class="py-2">
-            <label class="text-primary text-xs uppercase font-bold px-2">
-              <input class="mx-2 py-1" type="checkbox" [(ngModel)]="masterSelected" (change)="toggleAll()" />Filtrar
-              por estados
+          <div class="border-t border-gray-200 pt-4 dark:border-gray-700">
+            <label class="flex items-center gap-2 text-xs font-semibold uppercase text-secondary">
+              <input class="h-4 w-4 accent-primary" type="checkbox" [(ngModel)]="masterSelected" (change)="toggleAll()" />
+              <span>Filtrar por estados</span>
             </label>
           </div>
           <form [formGroup]="form">
             @if (plantilla()?.estados ) {
             <div>
               @for (_estado of plantilla()!.estados; track _estado.llaveTabla) {
-              <div class="p-0.5 w-full flex">
-                <label class="text-sm w-full px-2">
-                  <input class="mx-2 py-1" type="checkbox" [formControlName]="_estado.llaveTabla" />
-                  {{ _estado.nombre }}
+              <div class="flex w-full items-center justify-between rounded px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <label class="flex w-full items-center gap-2 text-sm">
+                  <input class="h-4 w-4 accent-primary" type="checkbox" [formControlName]="_estado.llaveTabla" />
+                  <span>{{ _estado.nombre }}</span>
                 </label>
-                <div class="icon-size-4 border rounded" [style.backgroundColor]="getColor(_estado.llaveTabla)"
+                <div class="h-4 w-4 shrink-0 rounded-full border border-white shadow-sm dark:border-gray-700" [style.backgroundColor]="getColor(_estado.llaveTabla)"
                   [style.color]="getColorFont(_estado.llaveTabla)">
                 </div>
               </div>
@@ -189,61 +194,64 @@
             }
           </form>
           <!-- Buscador de fecha registro -->
-          <div class="text-primary text-xs uppercase font-bold py-2"> Filtrar por fecha registro </div>
-          <div>
-            <div class="flex">
-              <mat-form-field class="pr-2">
+          <section class="space-y-2 border-t border-gray-200 pt-4 dark:border-gray-700">
+          <div class="text-xs font-semibold uppercase text-secondary">Fecha de registro</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="contents">
+              <mat-form-field class="min-w-0" subscriptSizing="dynamic">
                 <mat-label>Fecha Inicial</mat-label>
                 <input matInput [matDatepicker]="pickerFromR" [formControl]="fRegistroDateStart"
                   (dateChange)="cambioFecha('start', 'registro', $event)" autocomplete="off" />
                 <mat-datepicker-toggle matSuffix [for]="pickerFromR" [tabIndex]="-1"></mat-datepicker-toggle>
                 <mat-datepicker #pickerFromR></mat-datepicker>
               </mat-form-field>
-              <mat-form-field class="w-52">
+              <mat-form-field class="min-w-0" subscriptSizing="dynamic">
                 <mat-label>Hora Inicial</mat-label>
                 <input matInput type="time" [formControl]="fRegistroTimeStart" />
               </mat-form-field>
             </div>
-            <div class="flex">
-              <mat-form-field class="pr-2">
+            <div class="contents">
+              <mat-form-field class="min-w-0" subscriptSizing="dynamic">
                 <mat-label>Fecha Final</mat-label>
                 <input matInput [matDatepicker]="pickerToR" [formControl]="fRegistroDateEnd"
                   (dateChange)="cambioFecha('end', 'registro', $event)" autocomplete="off" />
                 <mat-datepicker-toggle matSuffix [for]="pickerToR" [tabIndex]="-1"></mat-datepicker-toggle>
                 <mat-datepicker #pickerToR></mat-datepicker>
               </mat-form-field>
-              <mat-form-field class="w-52">
+              <mat-form-field class="min-w-0" subscriptSizing="dynamic">
                 <mat-label>Hora Final</mat-label>
                 <input matInput type="time" [formControl]="fRegistroTimeEnd" />
               </mat-form-field>
             </div>
           </div>
+          </section>
 
         </div>
         }
+        </section>
       </div>
     </div>
   </aside>
   @if (drawerOpened() && drawerMode() === 'over') {
   <div class="w-full inset-0 bg-black/50 z-40 transition-opacity" (click)="drawerOpened.set(false)"></div>
   }
-  <main class="flex-1 min-w-0 min-h-0 h-full transition-all duration-300">
-    <div class="flex flex-col flex-auto min-w-0">
+  <main class="flex h-full min-h-0 min-w-0 flex-1 flex-col transition-all duration-300">
+    <div class="flex min-h-0 min-w-0 flex-auto flex-col">
       <!-- Header -->
       <div
-        class="flex flex-row flex-0 sm:items-center sm:justify-between p-3 sm:py-4 sm:px-5 border-b bg-card dark:bg-transparent">
+        class="flex shrink-0 items-center gap-3 border-b border-gray-200 bg-card px-4 py-3 dark:border-gray-700 sm:px-6">
         @if (hasPlantillaImage()) {
-        <img class="icon-size-12" src="{{ plantilla()?.imagen | imageFormat }}" (click)="openDiagram()" (error)="onPlantillaImageError($event)" alt="" />
+        <button type="button" class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-white dark:border-gray-700" (click)="openDiagram()" aria-label="Ver diagrama de plantilla">
+          <img class="h-full w-full object-contain" src="{{ plantilla()?.imagen | imageFormat }}" (error)="onPlantillaImageError($event)" alt="" />
+        </button>
         } @else {
-        <img class="icon-size-12" [src]="defaultTemplateLogo" (click)="openDiagram()" alt="Logo por defecto" />
+        <button type="button" class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-white dark:border-gray-700" (click)="openDiagram()" aria-label="Ver diagrama de plantilla">
+          <img class="h-full w-full object-contain" [src]="defaultTemplateLogo" alt="" />
+        </button>
         }
-        <div class="flex-1 min-w-0">
-          <!-- Title -->
-          <div class="mt-2">
-            <h2 class="text-xl md:text-2xl font-extrabold tracking-tight leading-7 sm:leading-10 truncate">
-              {{ plantilla()?.nombre }}
-            </h2>
-          </div>
+        <div class="min-w-0 flex-1">
+          <p class="text-xs font-semibold uppercase text-secondary">{{ viewMode === 'grid-view' ? 'Vista de tarjetas' : 'Vista de lista' }}</p>
+          <h1 class="truncate text-lg font-semibold leading-tight sm:text-xl">{{ plantilla()?.nombre }}</h1>
         </div>
         @if (!drawerOpened()) {
         <button matTooltip="Listar" (click)="listar(1)" class="m-1 btn-icon">
@@ -261,25 +269,23 @@
       </div>
       <!-- Vista modo grilla -->
       @if (viewMode === 'grid-view') {
-      <div class="flex flex-wrap p-1 w-full">
+      <div class="grid w-full grid-cols-1 gap-3 overflow-y-auto p-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         @for (iDocument of dataProvider(); track iDocument) {
-        <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
-          <div class="p-0 rounded shadow-sm h-full border-b bg-card dark:bg-transparent">
+        <article class="flex min-w-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-card shadow-sm transition-shadow hover:shadow-md dark:border-gray-700">
             <!-- Title-->
-            <div class="p-1 rounded-t" [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
-              [style.color]="getColorFont(iDocument.estadoExpediente)">
-              <div class="flex items-center ">
-                <div class="w-16 p-1">
-                  <a (click)="openDocument(iDocument)"><img src="{{ iDocument.imagen | imageFormat }}" /></a>
-                </div>
-                <div class="w-full p-1 rounded leading-tight font-semibold">
+            <div class="relative border-b border-gray-200 p-3 dark:border-gray-700">
+              <span class="absolute inset-y-3 left-0 w-1 rounded-r" [style.backgroundColor]="getColor(iDocument.estadoExpediente)"></span>
+              <div class="flex min-w-0 items-start gap-3">
+                <button type="button" class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800" (click)="openDocument(iDocument)" aria-label="Abrir documento">
+                  <img class="h-full w-full object-cover" src="{{ iDocument.imagen | imageFormat }}" alt="" />
+                </button>
+                <div class="min-w-0 flex-1 leading-tight">
                   <a (click)="openDocument(iDocument)">
-                    <div class="text-md">{{ iDocument.nombre }}</div>
+                    <div class="truncate font-semibold">{{ iDocument.nombre }}</div>
                   </a>
                   @if (iDocument.descripcion) {
                   <a (click)="openDocument(iDocument)">
-                    <div class="text-sm line-clamp-4">{{iDocument.descripcion }}
-                    </div>
+                    <div class="mt-1 line-clamp-2 text-sm text-secondary">{{ iDocument.descripcion }}</div>
                   </a>
                   }
                 </div>
@@ -304,29 +310,28 @@
                 }
               </div>
               <!-- <mat-divider></mat-divider> -->
-              <div class="flex flex-row">
-                <div class="text-xs">{{ iDocument.fecha | date }}</div>
-                <div class="text-xs font-semibold mx-1">{{ iDocument.estadoNombre }}</div>
+              <div class="mt-3 flex flex-wrap items-center gap-2">
+                <span class="text-xs text-secondary">{{ iDocument.fecha | date }}</span>
+                <span class="rounded-full px-2 py-1 text-xs font-semibold" [style.backgroundColor]="getColor(iDocument.estadoExpediente)" [style.color]="getColorFont(iDocument.estadoExpediente)">{{ iDocument.estadoNombre }}</span>
               </div>
               @if (iDocument.dinero) {
-              <div class="flex justify-between">
-                <div class="text-sm line-clamp-1">{{ iDocument.dinero.valorCampo | currency }}
-                </div>
-                <div>{{ iDocument.dinero.valorTotal | currency }}</div>
+              <div class="mt-3 flex items-center justify-between gap-3 border-t border-gray-200 pt-3 text-sm dark:border-gray-700">
+                <span class="truncate text-secondary">{{ iDocument.dinero.valorCampo | currency }}</span>
+                <span class="shrink-0 font-semibold">{{ iDocument.dinero.valorTotal | currency }}</span>
               </div>
               }
             </div>
             <!-- Content-->
             @if (iDocument.caracteristicas && iDocument.caracteristicas.length !== 0) {
-            <div class="p-1">
+            <div class="space-y-1 px-3 py-2">
               @for (f of iDocument.caracteristicas; track f) {
-              <div class="flex items-center">
+              <div class="grid min-w-0 grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] items-center gap-2 border-b border-gray-100 py-1.5 last:border-0 dark:border-gray-800">
                 <small [id]="'css' + plantilla()?.codigo+  f.campoDTO.codigo + '-0'"
-                  class="whitespace-nowrap font-extralight mr-2">{{ f.campoDTO.nombre
+                  class="truncate text-xs text-secondary">{{ f.campoDTO.nombre
                   }}</small>
                 @if (f.valorText) {
                 <div [id]="'css' + plantilla()?.codigo + f.campoDTO.codigo +'-1'"
-                  class="text-right w-full truncate text-md">
+                  class="w-full truncate text-right text-sm">
                   @if (!f.valorText.startsWith('http')) {
                   <div class="line-clamp-1" [class.font-bold]="f.estado === 'C'">
                     {{f.valorText}}</div>
@@ -340,14 +345,14 @@
               }
             </div>
             }
-          </div>
-        </div>
+        </article>
         }
       </div>
       }
       <!-- Vista modo tabla -->
       @if (viewMode !== 'grid-view') {
-      <table mat-table [dataSource]="dataProvider()" class="mat-elevation-z8 full-width">
+      <div class="min-h-0 min-w-0 flex-1 overflow-auto bg-card">
+      <table mat-table [dataSource]="dataProvider()" class="w-full min-w-[760px] bg-card">
         <ng-container matColumnDef="select">
           <th mat-header-cell *matHeaderCellDef>
             <input type="checkbox" (change)="$event ? masterToggle() : null"
@@ -435,96 +440,103 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns()" (click)="multipleSelect($event, row)"></tr>
       </table>
+      </div>
       }
 
       <!-- Star View-->
       @if (!isLoading() && !isEnd() && dataProvider().length === 0) {
-      <div class="my-48 flex flex-col flex-auto overflow-y-auto lg:overflow-hidden dark:bg-default">
+      <div class="flex min-h-0 flex-1 items-center justify-center overflow-auto p-6 dark:bg-default">
         <div
-          class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
+          class="w-full max-w-lg overflow-hidden rounded-lg border border-gray-200 bg-card shadow-sm dark:border-gray-700">
+          <div class="flex items-center gap-4 border-b border-gray-200 p-5 dark:border-gray-700 sm:p-6">
           @if (hasPlantillaImage()) {
-          <img class="icon-size-12" src="{{ plantilla()?.imagen | imageFormat }}" (error)="onPlantillaImageError($event)" alt="" />
+          <img class="h-14 w-14 shrink-0 rounded-md object-contain" src="{{ plantilla()?.imagen | imageFormat }}" (error)="onPlantillaImageError($event)" alt="" />
           } @else {
-          <img class="icon-size-12" [src]="defaultTemplateLogo" alt="Logo por defecto" />
+          <img class="h-14 w-14 shrink-0 rounded-md object-contain" [src]="defaultTemplateLogo" alt="Logo por defecto" />
           }
-          <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{
-            plantilla()?.nombre }}</h5>
-          <p>{{ plantilla()?.objetivo }}</p>
-          <br>
-          <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Para encontrar lo que
-            necesitas, simplemente utiliza los filtros.
-            <button class="icon-size-4 btn-icon" (click)="toggleDrawer()">
-              <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-            </button>
-          </p>
-          <button class="btn-flat-primary w-full" tabindex="-1" (click)="listar(pagina())">
-            Buscar
+          <div class="min-w-0">
+            <p class="text-xs font-semibold uppercase text-secondary">Consulta de registros</p>
+            <h2 class="mt-1 truncate text-lg font-semibold">{{ plantilla()?.nombre }}</h2>
+          </div>
+          </div>
+          <div class="p-5 sm:p-6">
+          <p class="mb-4 text-sm text-secondary">Ajusta los filtros y ejecuta la búsqueda para consultar registros.</p>
+          <button type="button" class="btn-raised w-full justify-center" (click)="toggleDrawer()">
+            <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+            <span>Mostrar filtros</span>
           </button>
+          <button type="button" class="btn-flat-primary mt-3 w-full" (click)="listar(pagina())">
+            <mat-icon>search</mat-icon>
+            <span>Abrir filtros y buscar</span>
+          </button>
+          </div>
         </div>
       </div>
       }
 
       @if (isEnd() && dataProvider().length === 0) {
-      <div class="m-auto my-48 flex flex-col items-center justify-center">
+      <div class="flex min-h-0 flex-1 items-center justify-center overflow-auto p-6">
         <div
-          class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mx-auto">
+          class="w-full max-w-lg overflow-hidden rounded-lg border border-gray-200 bg-card shadow-sm dark:border-gray-700">
+          <div class="flex items-center gap-4 border-b border-gray-200 p-5 dark:border-gray-700 sm:p-6">
           <!-- <mat-icon class="icon-size-24 m-auto" [svgIcon]="'description'"></mat-icon> -->
-          <img class="icon-size-24" [src]="'assets/images/noData.png'">
-          <p>No se han encontrado resultados</p>
-          <br>
-          <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">Lo sentimos. no encontramos
-            ningun resultado para su búsqueda,
-            puedes usar los filtros para mejorar tu busqueda.
-            <button class="icon-size-4 btn-icon" (click)="toggleDrawer()">
-              <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
-            </button>
-          </p>
-          <button class="btn-flat-primary w-full" tabindex="-1" (click)="listar(pagina())">
-            Buscar
+          <img class="h-14 w-14 shrink-0 object-contain" [src]="'assets/images/noData.png'" alt="" />
+          <div class="min-w-0">
+            <p class="text-xs font-semibold uppercase text-secondary">Búsqueda finalizada</p>
+            <h2 class="mt-1 text-lg font-semibold">No encontramos registros</h2>
+          </div>
+          </div>
+          <div class="p-5 sm:p-6">
+          <p class="mb-4 text-sm text-secondary">Prueba otros filtros para ampliar o ajustar los resultados.</p>
+          <button type="button" class="btn-raised w-full justify-center" (click)="toggleDrawer()">
+            <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+            <span>Mostrar filtros</span>
           </button>
+          <button type="button" class="btn-flat-primary mt-3 w-full" (click)="listar(pagina())">
+            <mat-icon>search</mat-icon>
+            <span>Buscar de nuevo</span>
+          </button>
+          </div>
         </div>
       </div>
       }
 
-      <div class="w-full px-4 py-3 bg-card border-t border-gray-200 shadow-md sm:px-6">
+      <div class="z-10 w-full shrink-0 border-t border-gray-200 bg-card px-4 py-3 shadow-sm dark:border-gray-700 sm:px-6">
         <!-- Paginador -->
         @if (isLoading()) {
-        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+        <div class="h-1 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Cargando registros">
+          <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
         </div>
         }
         @if (!isLoading()) {
-        <div class="flex justify-between w-full items-center">
-          <div class=" flex items-center flex-col">
+        <div class="flex w-full flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-4">
             @if (viewMode !== 'grid-view') {
-            <div>Seleccionados : {{ this.selection.selected.length }}
+            <div class="text-sm text-secondary">Seleccionados <span class="font-semibold text-primary">{{ this.selection.selected.length }}</span>
             </div>
             }
-            <div class="flex items-center">
-              <button class="btn-icon" (click)="toggleDrawer()">
+            <div class="flex items-center gap-2 text-sm">
+              <button type="button" class="btn-icon" (click)="toggleDrawer()" aria-label="Mostrar u ocultar filtros">
                 <mat-icon [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
               </button>
-              <span class="font-medium dark:text-white">Total :</span> {{
+              <span class="font-medium">Total</span> {{
               dataProvider().length }}
             </div>
           </div>
-          <form class="w-20">
+          <form class="w-24">
             <select [formControl]="pageControl" required
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100">
               <option value="30">30</option>
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
           </form>
           @if (!isLoading() && !isEnd()) {
-          <button tabindex="-1" (click)="listar(pagina())" class="btn-raised relative"
+          <button type="button" (click)="listar(pagina())" class="btn-raised relative"
             data-id="pagination-next">Presiona
-            aquí para buscar mas resultados<svg stroke="currentColor" fill="currentColor" stroke-width="0"
-              viewBox="0 0 20 20" class="w-5 h-5" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"></path>
-            </svg></button>
+            aquí para buscar más resultados
+            <mat-icon>chevron_right</mat-icon>
+          </button>
           }
         </div>
         }

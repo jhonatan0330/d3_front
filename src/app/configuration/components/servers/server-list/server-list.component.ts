@@ -93,6 +93,6 @@ export class ServerListComponent implements OnInit, AfterViewInit, OnDestroy {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
         this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} servidor?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateServidor(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Servidor ${action}do correctamente`, 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} el servidor`, 'error') }); }});
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateServidor(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Servidor ${action}do correctamente`, 'success'); this.reload(); } }); }});
     }
 }

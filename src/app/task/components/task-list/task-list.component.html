@@ -1,179 +1,128 @@
-<section class="overflow-hidden rounded-lg border bg-card shadow-sm">
-
-    <header class="flex items-center justify-between border-b px-5 py-4">
-
-        <div>
-            <h2 class="text-lg font-semibold">
-                Notas
-            </h2>
-
-            <p class="text-sm text-secondary">
-                {{ taskCount().incomplete }} pendientes
+<section class="overflow-hidden rounded-lg border border-gray-200 bg-card shadow-sm dark:border-gray-700">
+    <header class="flex items-center justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-gray-700 sm:px-6">
+        <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h2 class="text-lg font-semibold">Notas</h2>
+                <span class="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                    {{ taskCount().incomplete }} {{ taskCount().incomplete === 1 ? 'pendiente' : 'pendientes' }}
+                </span>
+            </div>
+            <p class="mt-1 text-sm text-secondary">
+                {{ taskCount().completed }} completadas de {{ taskCount().total }}
             </p>
         </div>
 
         <button
             type="button"
-            class="btn-flat-primary"
-            matTooltip="Crear tarea"
+            class="btn-icon-primary shrink-0"
+            matTooltip="Crear nota"
+            aria-label="Crear nota"
             (click)="createTask()">
-
-            <mat-icon
-                [svgIcon]="'heroicons_outline:plus'">
-            </mat-icon>
-
+            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
         </button>
-
     </header>
 
-
     @if (tasks().length > 0) {
-
         <div
             cdkDropList
             [cdkDropListData]="tasks()"
             (cdkDropListDropped)="dropped($event)"
-            class="divide-y">
-
-            @for (
-                task of tasks();
-                track task.key;
-                let first = $first
-            ) {
-
+            class="divide-y divide-gray-100 dark:divide-gray-700">
+            @for (task of tasks(); track task.key) {
                 <div
                     [id]="task.key"
-                    class="group h-16 w-full select-none hover:bg-gray-100 dark:hover:bg-hover"
+                    class="group relative min-h-16 w-full select-none transition-colors hover:bg-gray-50 dark:hover:bg-hover"
                     [ngClass]="{
+                        'bg-primary-50/70 dark:bg-hover': selectedTask()?.key === task.key,
                         'text-hint': task.completed
                     }"
-                    [class.border-t]="first"
                     cdkDrag
                     cdkDragLockAxis="y">
+                    @if (selectedTask()?.key === task.key) {
+                        <div class="absolute inset-y-0 left-0 z-10 w-1 bg-primary"></div>
+                    }
 
-                    <div
-                        class="relative flex h-full items-center pl-5">
+                    <div class="flex min-h-16 items-center gap-2 pl-3 pr-2 sm:gap-3 sm:pl-4 sm:pr-3">
+                        <button
+                            type="button"
+                            class="flex h-9 w-7 shrink-0 cursor-grab items-center justify-center rounded text-hint hover:bg-gray-200/70 active:cursor-grabbing dark:hover:bg-gray-700"
+                            cdkDragHandle
+                            aria-label="Reordenar nota"
+                            matTooltip="Arrastra para reordenar">
+                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:bars-3'"></mat-icon>
+                        </button>
 
-                        @if (selectedTask()?.key === task.key) {
-
-                            <div
-                                class="absolute -bottom-px -top-px right-0 z-10 w-1 bg-primary">
-                            </div>
-
-                        }
-
-                        <div
-                            class="absolute inset-y-0 left-0 flex w-8 cursor-move items-center justify-center md:hidden"
-                            cdkDragHandle>
-
-                            <mat-icon
-                                class="icon-size-5 text-hint"
-                                [svgIcon]="'heroicons_outline:check-circle'">
-                            </mat-icon>
-
-                        </div>
-
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
+                            [ngClass]="task.completed ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-300'"
+                            aria-hidden="true">
+                            <mat-icon class="icon-size-5" [svgIcon]="task.completed ? 'heroicons_outline:check-circle' : 'heroicons_outline:document-text'"></mat-icon>
+                        </span>
 
                         <button
                             type="button"
-                            class="flex h-full min-w-0 flex-auto items-center pr-3 text-left"
+                            class="flex min-h-16 min-w-0 flex-auto items-center gap-3 py-2 text-left"
                             (click)="selectTask(task)">
-
-                            <span
-                                class="mr-2 flex-auto truncate px-5"
-                                [class.text-red-500]="
-                                    !task.title ||
-                                    !task.title.trim()
-                                ">
-
-                                {{
-                                    task.title.trim()
-                                        ? task.title
-                                        : 'Escribe el título'
-                                }}
-
+                            <span class="min-w-0 flex-auto">
+                                <span class="block truncate font-medium"
+                                    [class.text-red-600]="!task.title || !task.title.trim()"
+                                    [class.line-through]="task.completed">
+                                    {{ task.title.trim() ? task.title : 'Escribe el título' }}
+                                </span>
+                                <span class="mt-1 flex items-center gap-2 text-xs text-secondary">
+                                    @if (task.dueDate) {
+                                        <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:clock'"></mat-icon>
+                                        <span>{{ task.dueDate | date:'LLL dd' }}</span>
+                                    } @else {
+                                        <span>Sin fecha</span>
+                                    }
+                                    @if (task.completed) {
+                                        <span class="text-green-700 dark:text-green-300">Completada</span>
+                                    }
+                                </span>
                             </span>
 
-
-                            <span class="mr-3 w-4">
-
-                                @if (task.priority === 0) {
-
-                                    <mat-icon
-                                        class="icon-size-4 text-green-600"
-                                        [svgIcon]="'heroicons_outline:arrow-narrow-down'">
-                                    </mat-icon>
-
-                                }
-
-                                @if (task.priority === 2) {
-
-                                    <mat-icon
-                                        class="icon-size-4 text-red-600"
-                                        [svgIcon]="'heroicons_outline:arrow-narrow-up'">
-                                    </mat-icon>
-
-                                }
-
-                            </span>
-
-
-                            <span
-                                class="whitespace-nowrap text-sm text-secondary">
-
-                                {{ task.dueDate | date:'LLL dd' }}
-
-                            </span>
-
+                            @if (task.priority === 0) {
+                                <span class="flex shrink-0 items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-300" aria-label="Prioridad baja">
+                                    <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:arrow-narrow-down'"></mat-icon>
+                                    <span class="hidden sm:inline">Baja</span>
+                                </span>
+                            }
+                            @if (task.priority === 2) {
+                                <span class="flex shrink-0 items-center gap-1 rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-300" aria-label="Prioridad alta">
+                                    <mat-icon class="icon-size-4" [svgIcon]="'heroicons_outline:arrow-narrow-up'"></mat-icon>
+                                    <span class="hidden sm:inline">Alta</span>
+                                </span>
+                            }
                         </button>
 
-
                         <app-dropdown>
-
                             <button
                                 type="button"
-                                class="btn-icon"
+                                class="btn-icon shrink-0"
                                 trigger
-                                aria-label="Acciones de tarea">
-
-                                <mat-icon
-                                    [svgIcon]="'heroicons_outline:ellipsis-vertical'">
-                                </mat-icon>
-
+                                aria-label="Acciones de nota">
+                                <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
                             </button>
-
-                            <app-dropdown-item
-                                (clicked)="deleteTask(task)">
-
-                                <mat-icon
-                                    [svgIcon]="'heroicons_outline:trash'">
-                                </mat-icon>
-
-                                <span>
-                                    Eliminar
-                                </span>
-
+                            <app-dropdown-item (clicked)="deleteTask(task)">
+                                <mat-icon [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                <span>Eliminar</span>
                             </app-dropdown-item>
-
                         </app-dropdown>
-
                     </div>
-
                 </div>
-
             }
-
         </div>
-
     } @else {
-
-        <div
-            class="flex min-h-32 items-center justify-center px-6 text-center text-secondary">
-
-            Agrega una tarea para empezar a planear.
-
+        <div class="flex min-h-44 flex-col items-center justify-center px-6 py-8 text-center">
+            <span class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <mat-icon [svgIcon]="'heroicons_outline:document-text'"></mat-icon>
+            </span>
+            <p class="mt-3 font-medium">Tu espacio está listo</p>
+            <p class="mt-1 max-w-xs text-sm text-secondary">Crea una nota para organizar tus pendientes.</p>
+            <button type="button" class="btn-flat-primary mt-4" (click)="createTask()">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span>Crear nota</span>
+            </button>
         </div>
-
     }
-
 </section>

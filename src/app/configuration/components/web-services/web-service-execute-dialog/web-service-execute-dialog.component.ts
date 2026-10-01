@@ -56,9 +56,8 @@ export class WebServiceExecuteDialogComponent implements OnInit {
                     showConfirmButton: false
                 });
             },
-            error: (err) => {
+            error: () => {
                 this.cargando = false;
-                this.notificationCenter.fire('Error', 'No se pudo ejecutar el web service', 'error');
             }
         });
     }

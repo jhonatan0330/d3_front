@@ -1,48 +1,87 @@
 
-    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
-      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
-        <h2 class="text-xl font-bold">Propiedades de {{ data.titulo }}</h2>
-        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar"><mat-icon>close</mat-icon></button>
-      </div>
+<div class="flex max-h-[90vh] w-full min-w-0 flex-col overflow-hidden bg-card">
+  <header class="flex shrink-0 items-start justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-gray-700 sm:px-6">
+    <div class="min-w-0">
+      <p class="text-xs font-semibold uppercase text-secondary">Administración</p>
+      <h2 class="mt-1 truncate text-xl font-semibold">Propiedades de {{ data.titulo }}</h2>
+      <p class="mt-1 text-sm text-secondary">{{ propiedades().length }} propiedades activas</p>
+    </div>
+    <div class="flex shrink-0 items-center gap-2">
+      <button type="button" class="btn-flat-primary" (click)="openModal()">
+        <mat-icon>add</mat-icon>
+        <span class="hidden sm:inline">Nueva propiedad</span>
+        <span class="sm:hidden">Nueva</span>
+      </button>
+      <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </header>
 
-      <div class="flex justify-end">
-        <button type="button" class="btn-flat-primary" (click)="openModal()">
-          <mat-icon class="text-base">add</mat-icon>
-          Nueva Propiedad
-        </button>
-      </div>
-
-      @if (loading()) {
-        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
-        </div>
-      } @else if (propiedades().length === 0) {
-        <div class="text-center text-sm text-gray-500 dark:text-gray-400 py-6 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
-          Sin propiedades configuradas
-        </div>
-      } @else {
-        <div class="space-y-2 max-h-96 overflow-y-auto">
-          @for (prop of propiedades(); track prop.llaveTabla) {
-            <div class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2">
-                  <p class="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">{{ prop.nombre }}</p>
-                  <span class="text-xs font-mono text-gray-500 dark:text-gray-400 shrink-0">{{ prop.key }}</span>
-                </div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ prop.texto || prop.valor }}</p>
-                <p class="text-xs text-gray-400 dark:text-gray-500 truncate">{{ prop.motivo }}</p>
-              </div>
-              <div class="flex items-center gap-1">
-                <button type="button" class="btn-icon btn-flat-primary" (click)="openModal(prop)" title="Editar propiedad" aria-label="Editar propiedad">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button type="button" class="btn-icon btn-flat-accent" (click)="inactivar(prop)" title="Anular propiedad" aria-label="Anular propiedad">
-                  <mat-icon>block</mat-icon>
-                </button>
-              </div>
+  @if (loading()) {
+    <div class="h-1 w-full shrink-0 overflow-hidden bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Cargando propiedades">
+      <div class="h-full w-2/5 animate-pulse bg-primary"></div>
+    </div>
+  } @else if (propiedades().length === 0) {
+    <div class="flex min-h-56 flex-col items-center justify-center px-6 py-8 text-center">
+      <span class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <mat-icon>tune</mat-icon>
+      </span>
+      <p class="mt-3 font-medium">Aún no hay propiedades</p>
+      <p class="mt-1 text-sm text-secondary">Agrega una propiedad para comenzar la configuración.</p>
+      <button type="button" class="btn-flat-primary mt-4" (click)="openModal()">
+        <mat-icon>add</mat-icon>
+        <span>Nueva propiedad</span>
+      </button>
+    </div>
+  } @else {
+    <div class="min-h-0 flex-1 divide-y divide-gray-200 overflow-y-auto dark:divide-gray-700">
+      @for (prop of propiedades(); track prop.llaveTabla) {
+        <article class="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/60 sm:px-6">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-secondary dark:bg-gray-800">
+            <mat-icon>tune</mat-icon>
+          </span>
+          <div class="min-w-0 flex-1">
+            <div class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+              <h3 class="truncate font-medium">{{ prop.nombre }}</h3>
+              @if (prop.key) {
+                <span class="rounded bg-gray-100 px-2 py-0.5 font-mono text-xs text-secondary dark:bg-gray-800">{{ prop.key }}</span>
+              }
             </div>
-          }
-        </div>
+            @if (prop.texto || prop.valor) {
+              <p class="mt-1 truncate text-sm text-secondary">{{ prop.texto || prop.valor }}</p>
+            }
+            @if (prop.motivo) {
+              <p class="mt-1 truncate text-xs text-secondary">{{ prop.motivo }}</p>
+            }
+            @if (prop.usuario || prop.usuarioExcluyente || prop.rol || prop.rolExcluyente) {
+              <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-secondary">
+                @if (prop.usuarioNombre || prop.usuario) {
+                  <span><span class="font-medium">Usuario:</span> {{ prop.usuarioNombre || prop.usuario }}</span>
+                }
+                @if (prop.usuarioExcluyenteNombre || prop.usuarioExcluyente) {
+                  <span><span class="font-medium">Usuario excluyente:</span> {{ prop.usuarioExcluyenteNombre || prop.usuarioExcluyente }}</span>
+                }
+                @if (prop.rolNombre || prop.rol) {
+                  <span><span class="font-medium">Rol:</span> {{ prop.rolNombre || prop.rol }}</span>
+                }
+                @if (prop.rolExcluyenteNombre || prop.rolExcluyente) {
+                  <span><span class="font-medium">Rol excluyente:</span> {{ prop.rolExcluyenteNombre || prop.rolExcluyente }}</span>
+                }
+              </div>
+            }
+          </div>
+          <div class="flex shrink-0 items-center gap-1">
+            <button type="button" class="btn-icon-primary" (click)="openModal(prop)" title="Editar propiedad" aria-label="Editar propiedad">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button type="button" class="btn-icon text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30" (click)="inactivar(prop)" title="Anular propiedad" aria-label="Anular propiedad">
+              <mat-icon>block</mat-icon>
+            </button>
+          </div>
+        </article>
       }
     </div>
+  }
+</div>
   

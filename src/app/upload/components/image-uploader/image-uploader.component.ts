@@ -135,7 +135,6 @@ export class ImageUploaderComponent {
                 },
                 error: () => {
                     this.subiendo.set(false);
-                    this.notificationCenter.fire('Error', 'No se pudo subir la imagen', 'error');
                 }
             });
     }

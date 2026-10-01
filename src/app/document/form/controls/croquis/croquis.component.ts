@@ -126,13 +126,13 @@ export class CroquisComponent extends BaseComponent
 
     const canvas = document.getElementById('croquisCanvas') as HTMLCanvasElement | null;
     if (!canvas) {
-      this.notificationCenter.fire('Error', 'No se encontró el canvas del croquis', 'error');
+      this.notificationCenter.error('No se encontró el canvas del croquis', 'error');
       return;
     }
 
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-      this.notificationCenter.fire('Error', 'No se pudo inicializar el canvas', 'error');
+      this.notificationCenter.error('No se pudo inicializar el canvas', 'error');
       return;
     }
 
@@ -377,9 +377,7 @@ export class CroquisComponent extends BaseComponent
           return;
         }
 
-        console.error('Error cargando imagen', error, url);
         this.baseLoaded = false;
-        this.notificationCenter.fire('Error', 'No se pudo cargar el plano', 'error');
         this.draw();
       };
 

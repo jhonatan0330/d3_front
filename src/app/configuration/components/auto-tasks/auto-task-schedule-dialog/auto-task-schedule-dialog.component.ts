@@ -99,7 +99,6 @@ export class AutoTaskScheduleDialogComponent implements OnInit {
             },
             error: () => {
                 this.cargando = false;
-                this.notificationCenter.fire('Error', 'No se pudo programar la tarea', 'error');
             }
         });
     }

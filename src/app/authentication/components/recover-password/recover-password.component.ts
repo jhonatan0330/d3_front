@@ -51,7 +51,6 @@ export class RecoverPasswordComponent {
         },
         error: (err) => {
           this.errorMsg.set(err?.error?.message || err?.message || 'No pudimos enviar las instrucciones. Verifica los datos e intenta de nuevo.');
-          this.notificationCenter.error('No se pudo enviar', this.errorMsg());
         }
       });
   }

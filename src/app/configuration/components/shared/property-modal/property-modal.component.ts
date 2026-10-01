@@ -8,10 +8,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { PropiedadCampoDTO, PropiedadDTO, PropiedadValorDefinidoDTO, RelacionInternaDTO, RelacionInternaFilterDTO } from 'app/shared/shared.domain';
-import { PropertyService, PropertyValueService } from 'app/configuration/configuracion.api';
+import { PropertyService } from 'app/configuration/configuracion.api';
+import { PropertyLookupService } from 'app/configuration/property-lookup.service';
 import { PropertyRelationsComponent } from '../property-relations/property-relations.component';
+import { UserSelectorComponent } from '../user-selector/user-selector.component';
 import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO';
-import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
 
 interface ModalData {
     propiedad?: PropiedadCampoDTO;
@@ -33,14 +34,14 @@ interface ModalData {
         MatFormFieldModule,
         MatInputModule,
         MatAutocompleteModule,
-        PropertyRelationsComponent
+        PropertyRelationsComponent,
+        UserSelectorComponent
     ],
     templateUrl: './property-modal.component.html',
-    styleUrl: './property-modal.component.scss'
 })
 export class PropertyModalComponent implements OnInit {
     private propertyService = inject(PropertyService);
-    private propertyValueService = inject(PropertyValueService);
+    private lookupService = inject(PropertyLookupService);
     public dialogRef = inject<MatDialogRef<PropertyModalComponent>>(MatDialogRef);
     public data = inject<ModalData>(MAT_DIALOG_DATA);
 
@@ -48,8 +49,10 @@ export class PropertyModalComponent implements OnInit {
     propiedadValores: PropiedadValorDefinidoDTO[] = [];
     propiedadValoresFiltrados: PropiedadValorDefinidoDTO[] = [];
     propiedadValorTexto: string = '';
-    roles: RolAccesoFilterDTO[] = [];
+    roles = signal<RolAccesoFilterDTO[]>([]);
     def: PropiedadValorDefinidoDTO | null = null;
+    mostrarCamposUsuario = false;
+    mostrarCamposRol = false;
     cargando = signal(false);
     inicializando = signal(false);
     esEdicion = false;
@@ -76,9 +79,11 @@ export class PropertyModalComponent implements OnInit {
             this.loadPropiedad(propiedadId);
         } else {
             this.propiedadCargada = true;
+            this.inicializando.set(false);
         }
 
         this.loadPropertyValues();
+        this.loadRoles();
     }
 
     loadPropiedad(id: string): void {
@@ -86,15 +91,19 @@ export class PropertyModalComponent implements OnInit {
             next: (prop) => {
                 this.applyServerPropiedad(prop);
                 this.propiedadCargada = true;
-                this.inicializando.set(false);
+                this.actualizarEstadoInicial();
                 this.aplicarSeleccion();
             },
             error: () => {
                 this.propiedadCargada = true;
-                this.inicializando.set(false);
+                this.actualizarEstadoInicial();
                 this.aplicarSeleccion();
             }
         });
+    }
+
+    private actualizarEstadoInicial(): void {
+        this.inicializando.set(!(this.propiedadCargada && this.valoresCargados));
     }
 
     private applyServerPropiedad(prop: PropiedadDTO): void {
@@ -119,6 +128,8 @@ export class PropertyModalComponent implements OnInit {
         pc.usuarioNombre = prop.usuarioNombre || '';
         pc.usuarioExcluyente = prop.usuarioExcluyente || '';
         pc.usuarioExcluyenteNombre = prop.usuarioExcluyenteNombre || '';
+        this.mostrarCamposUsuario = !!(pc.usuario || pc.usuarioExcluyente);
+        this.mostrarCamposRol = !!(pc.rol || pc.rolExcluyente);
         pc.fechaInicial = prop.fechaInicial || '';
         pc.fechaFinal = prop.fechaFinal || '';
         pc.bloqueo = prop.bloqueo || '';
@@ -128,15 +139,17 @@ export class PropertyModalComponent implements OnInit {
     }
 
     loadPropertyValues(): void {
-        this.propertyValueService.getByOrigen(this.propiedad.tipo, this.data.origenCategoria).subscribe({
+        this.lookupService.getByOrigen(this.propiedad.tipo, this.data.origenCategoria).subscribe({
             next: (vals) => {
                 this.propiedadValores = vals;
                 this.propiedadValoresFiltrados = [...vals];
                 this.valoresCargados = true;
+                this.actualizarEstadoInicial();
                 this.aplicarSeleccion();
             },
             error: () => {
                 this.valoresCargados = true;
+                this.actualizarEstadoInicial();
                 this.aplicarSeleccion();
             }
         });
@@ -187,26 +200,22 @@ export class PropertyModalComponent implements OnInit {
 
     onPropiedadValorChange(llave: string): void {
         this.def = this.propiedadValores.find(p => p.llaveTabla === llave) || null;
-        if (this.def?.pideRol) {
-            this.loadRoles();
-        }
     }
 
     loadRoles(): void {
-        this.propertyService.getRoles().subscribe({
-            next: (roles) => this.roles = roles,
+        this.lookupService.getRoles().subscribe({
+            next: (roles) => this.roles.set(roles),
             error: () => {}
         });
     }
 
-    onUsuarioSelected(usuario: UsuarioDTO | Event): void {
-        if (usuario instanceof Event) return;
-        this.propiedad.usuario = usuario.llaveTabla;
+    habilitarCamposUsuario(): void {
+        this.mostrarCamposUsuario = true;
     }
 
-    onUsuarioExcluyenteSelected(usuario: UsuarioDTO | Event): void {
-        if (usuario instanceof Event) return;
-        this.propiedad.usuarioExcluyente = usuario.llaveTabla;
+    habilitarCamposRol(): void {
+        this.mostrarCamposRol = true;
+        this.loadRoles();
     }
 
     onSubmit(): void {
@@ -221,9 +230,8 @@ export class PropertyModalComponent implements OnInit {
                 this.cargando.set(false);
                 this.dialogRef.close(this.propiedad);
             },
-            error: (err) => {
+            error: () => {
                 this.cargando.set(false);
-                //this.notificationCenter.fire('Error', 'No se pudo guardar la propiedad', 'error');
             }
         });
     }

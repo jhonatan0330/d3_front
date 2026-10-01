@@ -1,0 +1,51 @@
+<div class="w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+  <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+    <h2 class="text-xl font-bold">Detalle de gasto — {{ data.tenantName }}</h2>
+    <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+  </div>
+
+  <div class="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center gap-2">
+    <mat-icon class="text-primary">data_usage</mat-icon>
+    <span class="text-sm text-gray-500 dark:text-gray-400">Saldo actual:</span>
+    <span class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ saldo() !== null ? (saldo()?.saldo + ' MB') : '—' }}</span>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <mat-form-field appearance="outline" class="w-full"><mat-label>Tipo</mat-label><mat-select [(ngModel)]="filtroTipo" (ngModelChange)="recargar()"><mat-option value="">Todos</mat-option><mat-option value="C">Consumo</mat-option><mat-option value="I">Inicial</mat-option><mat-option value="D">Diario</mat-option><mat-option value="P">Compra</mat-option><mat-option value="T">Transferencia enviada</mat-option><mat-option value="E">Transferencia recibida</mat-option></mat-select></mat-form-field>
+  </div>
+
+  @if (cargando()) { <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> } @else {
+    <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 dark:bg-gray-800">
+          <tr>
+            <th class="text-left px-3 py-2 font-semibold">Fecha</th>
+            <th class="text-left px-3 py-2 font-semibold">Tipo</th>
+            <th class="text-right px-3 py-2 font-semibold">Cantidad (MB)</th>
+            <th class="text-right px-3 py-2 font-semibold">Saldo inicial</th>
+            <th class="text-right px-3 py-2 font-semibold">Saldo final</th>
+            <th class="text-left px-3 py-2 font-semibold">Referencia</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          @for (m of movimientos(); track m.llaveTabla) {
+            <tr>
+              <td class="px-3 py-2 whitespace-nowrap">{{ m.fechaEvento }}</td>
+              <td class="px-3 py-2 whitespace-nowrap">{{ tipoTexto(m.tipo) }}</td>
+              <td class="px-3 py-2 text-right font-mono">{{ m.cantidad }}</td>
+              <td class="px-3 py-2 text-right font-mono">{{ m.saldoInicial }}</td>
+              <td class="px-3 py-2 text-right font-mono">{{ m.saldoFinal }}</td>
+              <td class="px-3 py-2 font-mono text-xs">{{ m.referencia }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="text-center py-8 text-gray-500 dark:text-gray-400">Sin movimientos</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+    <button type="button" class="btn-flat" (click)="dialogRef.close()">Cerrar</button>
+  </div>
+</div>

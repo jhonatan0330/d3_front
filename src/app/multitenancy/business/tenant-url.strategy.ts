@@ -74,8 +74,10 @@ export function resolveTenantSlug(tenants: TenantSlugSource[], path: string): Te
 }
 
 /**
- * Quita el primer segmento del path si es el slug de un tenant conocido o el
- * prefijo actual. Conserva query/hash.
+ * Quita el prefijo de tenant de la URL: primero intenta el prefijo actual
+ * completo (puede ser multi-nivel, ej: "/a/b"); si no coincide, quita el
+ * primer segmento si es el slug de un tenant conocido o el primer segmento
+ * del prefijo actual. Conserva query/hash.
  */
 export function stripTenantPrefix(url: string, tenants: TenantSlugSource[], currentPrefix: string): string {
     if (!url) {
@@ -87,6 +89,12 @@ export function stripTenantPrefix(url: string, tenants: TenantSlugSource[], curr
     const segments = path.split('/').filter(Boolean);
     if (!segments.length) {
         return url;
+    }
+    const prefixSegments = (currentPrefix || '').split('/').filter(Boolean);
+    if (prefixSegments.length > 0
+        && segments.length >= prefixSegments.length
+        && prefixSegments.every((segment, index) => segments[index].toLowerCase() === segment.toLowerCase())) {
+        return '/' + segments.slice(prefixSegments.length).join('/') + suffix;
     }
     const first = segments[0].toLowerCase();
     const isSlug = !!first && tenants.some(tenant =>

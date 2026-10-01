@@ -1,164 +1,180 @@
 
-    <div class=" w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-4">
-      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
-        <h2 class="text-xl font-bold">{{ esEdicion ? 'Editar Propiedad' : 'Nueva Propiedad' }}</h2>
-        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
-      </div>
+<div class="flex max-h-[90vh] w-full min-w-0 flex-col overflow-hidden bg-card">
+  <header class="flex shrink-0 items-start justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-gray-700 sm:px-6">
+    <div class="min-w-0">
+      <p class="text-xs font-semibold uppercase text-secondary">Configuración</p>
+      <h2 class="mt-1 text-xl font-semibold leading-tight">
+        {{ esEdicion ? 'Editar propiedad' : 'Nueva propiedad' }}
+      </h2>
+      <p class="mt-1 text-sm text-secondary">Define el valor y las condiciones de esta propiedad.</p>
+    </div>
+    <button type="button" class="btn-icon shrink-0" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
 
-      @if (inicializando()) {
-        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
-        </div>
-      }
+  @if (inicializando()) {
+    <div class="h-1 w-full shrink-0 overflow-hidden bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Cargando propiedad">
+      <div class="h-full w-2/5 animate-pulse bg-primary"></div>
+    </div>
+  }
 
-      <form #form="ngForm" (ngSubmit)="onSubmit()">
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-semibold mb-1">Propiedad Valor</label>
-            <mat-form-field appearance="outline" class="w-full">
-              <input type="text" matInput
-                placeholder="Buscar por código o nombre"
-                [ngModel]="propiedadValorTexto"
-                name="propiedadValorTexto"
-                (ngModelChange)="onPropiedadValorTextoChange($event)"
-                [matAutocomplete]="auto"
-                required />
-              <mat-autocomplete #auto="matAutocomplete"
-                [displayWith]="displayPropiedadValor"
-                (optionSelected)="onPropiedadValorOption($event)">
-                @for (pv of propiedadValoresFiltrados; track pv.llaveTabla) {
-                  <mat-option [value]="pv">{{ pv.codigo }} - {{ pv.nombre }}</mat-option>
-                }
-              </mat-autocomplete>
-            </mat-form-field>
-          </div>
-
-          @if (def) {
-            @if (def.pideRol) {
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Rol</label>
-                  <mat-form-field appearance="outline" class="w-full">
-                    <mat-select [(ngModel)]="propiedad.rol" name="rol">
-                      @for (r of roles; track r.llaveTabla) {
-                        <mat-option [value]="r.llaveTabla">{{ r.nombre }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Rol Excluyente</label>
-                  <mat-form-field appearance="outline" class="w-full">
-                    <mat-select [(ngModel)]="propiedad.rolExcluyente" name="rolExcluyente">
-                      @for (r of roles; track r.llaveTabla) {
-                        <mat-option [value]="r.llaveTabla">{{ r.nombre }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-              </div>
+  <form #form="ngForm" class="flex min-h-0 flex-1 flex-col" (ngSubmit)="onSubmit()">
+    <div class="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+      <section>
+        <label class="mb-1.5 block text-sm font-medium" for="property-value">Propiedad valor</label>
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <input id="property-value" type="text" matInput
+            placeholder="Buscar por código o nombre"
+            [ngModel]="propiedadValorTexto"
+            name="propiedadValorTexto"
+            (ngModelChange)="onPropiedadValorTextoChange($event)"
+            [matAutocomplete]="auto"
+            required />
+          <mat-autocomplete #auto="matAutocomplete"
+            [displayWith]="displayPropiedadValor"
+            (optionSelected)="onPropiedadValorOption($event)">
+            @for (pv of propiedadValoresFiltrados; track pv.llaveTabla) {
+              <mat-option [value]="pv">{{ pv.codigo }} - {{ pv.nombre }}</mat-option>
             }
+          </mat-autocomplete>
+        </mat-form-field>
+      </section>
 
-            @if (def.pideUsuario) {
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <app-user-selector
-                  label="Usuario"
-                  [(ngModel)]="propiedad.usuario"
-                  [ngModelOptions]="{ standalone: true }"
-                  (usuarioSelected)="onUsuarioSelected($event)">
-                </app-user-selector>
-                <app-user-selector
-                  label="Usuario Excluyente"
-                  [(ngModel)]="propiedad.usuarioExcluyente"
-                  [ngModelOptions]="{ standalone: true }"
-                  (usuarioSelected)="onUsuarioExcluyenteSelected($event)">
-                </app-user-selector>
-              </div>
-            }
-
-            @if (def.pideFechas) {
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Fecha inicial</label>
-                  <input type="datetime-local"
-                    [(ngModel)]="propiedad.fechaInicial"
-                    name="fechaInicial"
-                    class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Fecha final</label>
-                  <input type="datetime-local"
-                    [(ngModel)]="propiedad.fechaFinal"
-                    name="fechaFinal"
-                    class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-              </div>
-            }
-
-            @if (def.pideTiempoBloqueo) {
-              <div>
-                <label class="block text-sm font-semibold mb-1">Tiempo de bloqueo (minutos)</label>
-                <input type="number" min="0" step="1"
-                  [(ngModel)]="propiedad.bloqueo"
-                  name="bloqueo"
-                  class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
-            }
-
-            @if (!def.necesitaDesarrollo && !def.propiedadBoolean) {
-              <div>
-                <label class="block text-sm font-semibold mb-1">Valor</label>
-                <textarea rows="3"
-                  [(ngModel)]="propiedad.valor"
-                  name="valor"
-                  class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-              </div>
-            }
-
-            @if (!def.necesitaDesarrollo && !def.propiedadBoolean && !def.textOculto) {
-              <div>
-                <label class="block text-sm font-semibold mb-1">Texto</label>
-                <input type="text"
-                  [(ngModel)]="propiedad.texto"
-                  name="texto"
-                  class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
-            }
-
-            @if (def.usoMotivo) {
-              <div>
-                <label class="block text-sm font-semibold mb-1">{{ def.usoMotivo }}</label>
-                <textarea rows="3"
-                  [(ngModel)]="propiedad.motivo"
-                  name="motivo"
-                  class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-              </div>
-            }
+      @if (def) {
+        <div class="flex flex-wrap gap-2">
+          @if (!mostrarCamposUsuario) {
+            <button type="button" class="btn-raised" (click)="habilitarCamposUsuario()">
+              <mat-icon>person_add</mat-icon>
+              <span>Agregar usuario</span>
+            </button>
+          }
+          @if (!mostrarCamposRol) {
+            <button type="button" class="btn-raised" (click)="habilitarCamposRol()">
+              <mat-icon>admin_panel_settings</mat-icon>
+              <span>Agregar rol</span>
+            </button>
           }
         </div>
 
-        @if (def && def.usoRelaciones && propiedad.llaveTabla) {
-          <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-            <app-property-relations
-              [propiedadKey]="propiedad.llaveTabla"
-              [propiedadEstado]="propiedad.estado"
-              [titulo]="def.usoRelaciones">
-            </app-property-relations>
+        @if (mostrarCamposRol) {
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label class="mb-1.5 block text-sm font-medium" for="property-role">Rol</label>
+              <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-select id="property-role" [(ngModel)]="propiedad.rol" name="rol">
+                  @for (r of roles(); track r.llaveTabla) {
+                    <mat-option [value]="r.llaveTabla">{{ r.nombre }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium" for="property-excluded-role">Rol excluyente</label>
+              <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+                <mat-select id="property-excluded-role" [(ngModel)]="propiedad.rolExcluyente" name="rolExcluyente">
+                  @for (r of roles(); track r.llaveTabla) {
+                    <mat-option [value]="r.llaveTabla">{{ r.nombre }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
           </div>
         }
 
-        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <button type="button"
-            class="btn-flat"
-            (click)="dialogRef.close()">
-            Cancelar
-          </button>
-          <button type="submit"
-            class="btn-flat-primary"
-            [disabled]="cargando() || !form.valid">
-            {{ cargando() ? 'Guardando...' : 'Guardar' }}
-          </button>
-        </div>
-      </form>
+        @if (mostrarCamposUsuario) {
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <app-user-selector
+              label="Usuario"
+              [(value)]="propiedad.usuario">
+            </app-user-selector>
+            <app-user-selector
+              label="Usuario excluyente"
+              [(value)]="propiedad.usuarioExcluyente">
+            </app-user-selector>
+          </div>
+        }
+
+        @if (def.pideFechas) {
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label class="mb-1.5 block text-sm font-medium" for="property-start-date">Fecha inicial</label>
+              <input id="property-start-date" type="datetime-local"
+                [(ngModel)]="propiedad.fechaInicial"
+                name="fechaInicial"
+                class="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100" />
+            </div>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium" for="property-end-date">Fecha final</label>
+              <input id="property-end-date" type="datetime-local"
+                [(ngModel)]="propiedad.fechaFinal"
+                name="fechaFinal"
+                class="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100" />
+            </div>
+          </div>
+        }
+
+        @if (def.pideTiempoBloqueo) {
+          <div>
+            <label class="mb-1.5 block text-sm font-medium" for="property-lock-time">Tiempo de bloqueo (minutos)</label>
+            <input id="property-lock-time" type="number" min="0" step="1"
+              [(ngModel)]="propiedad.bloqueo"
+              name="bloqueo"
+              class="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100" />
+          </div>
+        }
+
+        @if (!def.necesitaDesarrollo && !def.propiedadBoolean) {
+          <div>
+            <label class="mb-1.5 block text-sm font-medium" for="property-value-text">Valor</label>
+            <textarea id="property-value-text" rows="3"
+              [(ngModel)]="propiedad.valor"
+              name="valor"
+              class="w-full resize-y rounded-md border border-gray-300 bg-white px-3 py-2.5 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"></textarea>
+          </div>
+        }
+
+        @if (!def.necesitaDesarrollo && !def.propiedadBoolean && !def.textOculto) {
+          <div>
+            <label class="mb-1.5 block text-sm font-medium" for="property-display-text">Texto</label>
+            <input id="property-display-text" type="text"
+              [(ngModel)]="propiedad.texto"
+              name="texto"
+              class="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100" />
+          </div>
+        }
+
+        @if (def.usoMotivo) {
+          <div>
+            <label class="mb-1.5 block text-sm font-medium" for="property-reason">{{ def.usoMotivo }}</label>
+            <textarea id="property-reason" rows="3"
+              [(ngModel)]="propiedad.motivo"
+              name="motivo"
+              class="w-full resize-y rounded-md border border-gray-300 bg-white px-3 py-2.5 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"></textarea>
+          </div>
+        }
+      }
+
+      @if (def && def.usoRelaciones && propiedad.llaveTabla) {
+        <section class="border-t border-gray-200 pt-5 dark:border-gray-700">
+          <app-property-relations
+            [propiedadKey]="propiedad.llaveTabla"
+            [propiedadEstado]="propiedad.estado"
+            [titulo]="def.usoRelaciones">
+          </app-property-relations>
+        </section>
+      }
     </div>
+
+    <footer class="flex shrink-0 justify-end gap-3 border-t border-gray-200 bg-gray-50 px-5 py-4 dark:border-gray-700 dark:bg-gray-800/60 sm:px-6">
+      <button type="button" class="btn-raised" (click)="dialogRef.close()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-flat-primary" [disabled]="cargando() || !form.valid">
+        <mat-icon>{{ cargando() ? 'hourglass_top' : 'save' }}</mat-icon>
+        <span>{{ cargando() ? 'Guardando...' : 'Guardar' }}</span>
+      </button>
+    </footer>
+  </form>
+</div>
   

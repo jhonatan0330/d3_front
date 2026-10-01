@@ -111,13 +111,13 @@ export class DocumentTemplateListComponent implements OnInit, AfterViewInit, OnD
 
     duplicateTemplate(item: DocumentoPlantillaDTO): void {
         this.notificationCenter.fire({ title: '¿Duplicar plantilla?', text: 'Se creará una copia con los mismos campos y reportes.', icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, duplicar', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { this.service.duplicateTemplate(item.llaveTabla).subscribe({ next: () => { this.notificationCenter.fire('Duplicado', 'Plantilla duplicada correctamente', 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', 'No se pudo duplicar la plantilla', 'error') }); }});
+            .then((result) => { if (result.isConfirmed) { this.service.duplicateTemplate(item.llaveTabla).subscribe({ next: () => { this.notificationCenter.fire('Duplicado', 'Plantilla duplicada correctamente', 'success'); this.reload(); } }); }});
     }
 
     toggleStatus(item: DocumentoPlantillaDTO): void {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
         this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} plantilla?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateTemplate(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Plantilla ${action}da correctamente`, 'success'); this.reload(); }, error: () => this.notificationCenter.fire('Error', `No se pudo ${action} la plantilla`, 'error') }); }});
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateTemplate(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Plantilla ${action}da correctamente`, 'success'); this.reload(); } }); }});
     }
 }

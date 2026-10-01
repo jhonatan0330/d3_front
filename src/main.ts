@@ -50,7 +50,7 @@ if (environment.production) {
 
 const RESERVED_FIRST_SEGMENTS = new Set([
     'main', 'sign-in', 'sessions', 'list', 'tasks', 'massive', 'account',
-    'persons', 'config', 'assets', 'static', 'api', 'document', 'reporte',
+    'persons', 'tenants', 'config', 'assets', 'static', 'api', 'document', 'reporte',
     'error', 'multitenancy'
 ]);
 
@@ -120,7 +120,7 @@ async function resolveInitialTenant(base, localStore: LocalStoreService): Promis
         const current = TenantRuntime.findByKey(backend.tenantId)
             ?? { key: backend.tenantId, name: backend.tenantId, imagen: undefined, token: null };
         TenantRuntime.setCurrent(current);
-        return { tenantId: backend.tenantId, rest: backend.rest ?? '', prefix: '/' + first };
+        return { tenantId: backend.tenantId, rest: backend.rest ?? '', prefix: '/' + backend.tenantId };
     }
     await loadTenants(base, localStore);
     const local = resolveTenantSlug(TenantRuntime.getTenants(), path);

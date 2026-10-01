@@ -1,0 +1,56 @@
+<div class="max-w-3xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
+  <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+    <h2 class="text-xl font-bold">Editar Subtenant</h2>
+    <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+  </div>
+
+  @if (cargando && !tenant.key) { <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> } @else {
+  <form #form="ngForm" (ngSubmit)="onSubmit()">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="sm:col-span-2">
+        <label class="block text-sm font-semibold mb-1">Nombre *</label>
+        <input type="text" [(ngModel)]="tenant.name" name="name" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Código (no modificable)</label>
+        <input type="text" [ngModel]="tenant.codigo" name="codigo" readonly disabled class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-500 font-mono" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Estado</label>
+        <mat-form-field appearance="outline" class="w-full"><mat-select [(ngModel)]="tenant.state" name="state"><mat-option value="A">Activo</mat-option><mat-option value="I">Bloqueado</mat-option></mat-select></mat-form-field>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Fecha de validez</label>
+        <input type="date" [ngModel]="tenant.fechaValidez ? tenant.fechaValidez.slice(0, 10) : null" (ngModelChange)="tenant.fechaValidez = $event" name="fechaValidez" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div class="sm:col-span-2">
+        <label class="block text-sm font-semibold mb-1">Imagen</label>
+        <app-image-uploader [(value)]="tenant.imagen"></app-image-uploader>
+      </div>
+      <div class="sm:col-span-2">
+        <label class="block text-sm font-semibold mb-1">URL (no modificable)</label>
+        <input type="text" [ngModel]="tenant.datasourceUrl" name="datasourceUrl" readonly disabled class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-500 font-mono text-xs" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Usuario BD</label>
+        <div class="flex items-center gap-2">
+          <input [type]="verUsuario() ? 'text' : 'password'" [ngModel]="tenant.datasourceUsername" name="datasourceUsername" readonly disabled class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-500 font-mono" />
+          <button type="button" class="btn-icon" (click)="verUsuario.set(!verUsuario())" [title]="verUsuario() ? 'Ocultar' : 'Ver'" aria-label="Ver usuario"><mat-icon>{{ verUsuario() ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Clave BD</label>
+        <div class="flex items-center gap-2">
+          <input [type]="verClave() ? 'text' : 'password'" [ngModel]="tenant.datasourcePassword" name="datasourcePassword" readonly disabled class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-500 font-mono" />
+          <button type="button" class="btn-icon" (click)="verClave.set(!verClave())" [title]="verClave() ? 'Ocultar' : 'Ver'" aria-label="Ver clave"><mat-icon>{{ verClave() ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
+      <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : 'Actualizar' }}</button>
+    </div>
+  </form>
+  }
+</div>

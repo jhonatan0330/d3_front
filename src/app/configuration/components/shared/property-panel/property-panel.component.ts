@@ -4,6 +4,7 @@ import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angu
 import { MatIconModule } from '@angular/material/icon';
 import { PropiedadDTO, PropiedadCampoDTO } from 'app/shared/shared.domain';
 import { PropertyService } from 'app/configuration/configuracion.api';
+import { PropertyLookupService } from 'app/configuration/property-lookup.service';
 import { PropertyModalComponent } from '../property-modal/property-modal.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
@@ -23,6 +24,7 @@ interface PropertyPanelData {
 export class PropertyPanelComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
     private propertyService = inject(PropertyService);
+    private lookupService = inject(PropertyLookupService);
     private dialog = inject(MatDialog);
     public dialogRef = inject<MatDialogRef<PropertyPanelComponent>>(MatDialogRef);
     public data = inject<PropertyPanelData>(MAT_DIALOG_DATA);
@@ -31,6 +33,7 @@ export class PropertyPanelComponent implements OnInit {
     propiedades = signal<PropiedadDTO[]>([]);
 
     ngOnInit(): void {
+        this.lookupService.preload(this.data.tipoOrigen, this.data.origenCategoria || '');
         this.loadPropiedades();
     }
 
@@ -79,7 +82,7 @@ export class PropertyPanelComponent implements OnInit {
                         this.loadPropiedades();
                     },
                     error: () => {
-                        this.notificationCenter.fire('Error', 'No se pudo anular la propiedad', 'error');
+                        
                     }
                 });
             }

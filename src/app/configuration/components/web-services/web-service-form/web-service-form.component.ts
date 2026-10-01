@@ -56,7 +56,6 @@ export class WebServiceFormComponent implements OnInit {
             },
             error: () => {
                 this.cargando = false;
-                this.notificationCenter.fire('Error', 'No se pudo guardar el web service', 'error');
             },
         });
     }

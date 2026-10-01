@@ -1,0 +1,61 @@
+<div class="p-4 sm:p-6 space-y-4">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Subtenants</h1>
+    <div class="flex items-center gap-2">
+      <button type="button" class="btn-flat" (click)="openUsage()">
+        <mat-icon>data_usage</mat-icon>
+        Mi usage
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <mat-form-field appearance="outline" class="w-full"><mat-label>Nombre o código</mat-label><input matInput [(ngModel)]="filtroNombre" placeholder="Filtrar" /></mat-form-field>
+      <mat-form-field appearance="outline" class="w-full"><mat-label>Estado</mat-label><mat-select [(ngModel)]="filtroEstado"><mat-option value="">Todos</mat-option><mat-option value="A">Activo</mat-option><mat-option value="I">Bloqueado</mat-option></mat-select></mat-form-field>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    @if (loading() && tenants().length === 0) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
+      <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        @for (element of filtrados(); track element.key) {
+          <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 p-4 flex flex-col gap-3">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-3 min-w-0 cursor-pointer rounded-lg p-1 -m-1 transition hover:bg-gray-900/5 dark:hover:bg-white/10" (click)="openForm(element)">
+                @if (element.imagen) { <img [src]="element.imagen" class="w-10 h-10 rounded-lg object-cover shrink-0" alt="" /> } @else { <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><mat-icon class="text-primary">business</mat-icon></div> }
+                <div class="min-w-0">
+                  <p class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ element.codigo }}</p>
+                  <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ element.name }}</h3>
+                </div>
+              </div>
+              <div class="flex items-center gap-1">
+                <app-dropdown>
+                  <button type="button" class="btn-icon" trigger aria-label="Acciones"><mat-icon>more_vert</mat-icon></button>
+                  <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
+                  <app-dropdown-item (clicked)="openUsuarios(element)"><mat-icon class="text-base">group</mat-icon> Usuarios</app-dropdown-item>
+                  <app-dropdown-item (clicked)="openUsage(element)"><mat-icon class="text-base">data_usage</mat-icon> Ver usage</app-dropdown-item>
+                  <app-dropdown-item (clicked)="openTransfer(element)"><mat-icon class="text-base">swap_horiz</mat-icon> Transferir usage</app-dropdown-item>
+                  <app-dropdown-item (clicked)="bloquear(element)"><mat-icon class="text-base">{{ element.state === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.state === 'A' ? 'Bloquear' : 'Desbloquear' }}</app-dropdown-item>
+                </app-dropdown>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 text-sm">
+              <span class="px-2 py-0.5 rounded-full text-xs font-semibold" [ngClass]="element.state === 'A' && !vencido(element) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">{{ element.state === 'A' && !vencido(element) ? 'Activo' : 'Bloqueado' }}</span>
+              @if (element.fechaValidez) { <span class="text-xs text-gray-500 dark:text-gray-400">Validez: {{ element.fechaValidez.slice(0, 10) }}</span> }
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" class="btn-flat flex-1" (click)="openUsage(element)"><mat-icon>data_usage</mat-icon> Usage</button>
+              <button type="button" class="btn-flat-primary flex-1" (click)="openTransfer(element)"><mat-icon>swap_horiz</mat-icon> Transferir</button>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
+        <span class="text-sm text-gray-500 dark:text-gray-400">Mostrando {{ filtrados().length }} registros</span>
+        @if (loading()) { <div class="w-40 h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> }
+      </div>
+    }
+    @if (!loading() && filtrados().length === 0) { <div class="text-center py-12 text-gray-500 dark:text-gray-400">No hay subtenants registrados</div> }
+  </div>
+</div>
