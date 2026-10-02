@@ -67,6 +67,31 @@
   background: transparent;
 }
 
+.simple-nav-scroll {
+  scrollbar-color: rgba(203, 213, 225, 0.48) rgba(255, 255, 255, 0.04);
+  scrollbar-width: thin;
+}
+
+.simple-nav-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.simple-nav-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.simple-nav-scroll::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background: rgba(203, 213, 225, 0.48);
+  background-clip: padding-box;
+}
+
+.simple-nav-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(226, 232, 240, 0.78);
+  background-clip: padding-box;
+}
+
 
 /* ========================================
    Botones globales - Tailwind

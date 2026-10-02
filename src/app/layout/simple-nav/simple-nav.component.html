@@ -11,7 +11,7 @@
         }
     </div>
 </div>
-<nav class="flex flex-1 flex-col min-w-0 overflow-y-auto px-2 pb-4">
+<nav class="simple-nav-scroll flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overscroll-contain px-2 pb-4">
     @for (item of filteredItems(); track trackByFn($index, item)) {
         <simple-nav-item [item]="item" [level]="0" (navigate)="onNavigate()"></simple-nav-item>
     }
