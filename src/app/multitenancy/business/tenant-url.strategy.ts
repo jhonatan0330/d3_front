@@ -35,32 +35,69 @@ export function slugifyTenantName(name: string): string {
 }
 
 /**
- * Prefijo URL para un tenant: slug del nombre, salvo el por defecto que no
- * lleva prefijo. Si el nombre no slugifica, se usa el key como respaldo.
+ * Prefijo URL para un id de tenant composite ("d3apps/malvar" → "/d3apps/malvar").
+ * Preserva los niveles intermedios. Vacío/default → ''.
+ */
+export function prefixForTenantId(tenantId: string | null | undefined): string {
+    const raw = (tenantId || '').trim().replace(/\/+/g, '/').replace(/^\/+|\/+$/g, '');
+    if (!raw || raw.toLowerCase() === 'default') {
+        return '';
+    }
+    return '/' + raw;
+}
+
+/**
+ * Prefijo URL para un tenant: el key composite (multi-nivel, ej: "a/b" →
+ * "/a/b"), salvo el por defecto que no lleva prefijo. Solo para tenants de un
+ * nivel sin "/" en el key se usa el slug del nombre como presentación, con el
+ * key como respaldo.
  */
 export function prefixForTenant(tenant: TenantSlugSource | null | undefined): string {
-    if (isDefaultTenant(tenant)) {
+    if (!tenant || isDefaultTenant(tenant)) {
         return '';
+    }
+    if (tenant.key && tenant.key.includes('/')) {
+        return prefixForTenantId(tenant.key);
     }
     return slugifyTenantName(tenant!.name) || tenant!.key;
 }
 
 /**
- * Resuelve el primer segmento del path contra los slugs de los tenants
- * conocidos, sin llamar al backend. Retorna null si no hay coincidencia.
+ * Resuelve el prefijo de tenant más largo del path contra los tenants
+ * conocidos, sin llamar al backend. Soporta composites multi-nivel
+ * ("d3apps/malvar") comparando por key, y tenants de un nivel por slug del
+ * nombre. Retorna null si no hay coincidencia.
  */
 export function resolveTenantSlug(tenants: TenantSlugSource[], path: string): TenantResolveResult | null {
     const segments = path.split('/').filter(Boolean);
     if (!segments.length) {
         return null;
     }
-    const slug = segments[0].toLowerCase();
+    const lower = segments.map(s => s.toLowerCase());
+    const candidates = (tenants || []).filter(t => !!t && !isDefaultTenant(t));
+    const byDepth = [...candidates].sort((a, b) => {
+        const da = (a.key || '').split('/').filter(Boolean).length;
+        const db = (b.key || '').split('/').filter(Boolean).length;
+        return db - da;
+    });
+    for (const tenant of byDepth) {
+        const keySegments = (tenant.key || '').split('/').filter(Boolean);
+        if (keySegments.length > 1
+            && lower.length >= keySegments.length
+            && keySegments.every((segment, index) => segment.toLowerCase() === lower[index])) {
+            return {
+                tenantId: tenant.key,
+                rest: '/' + segments.slice(keySegments.length).join('/'),
+                prefix: '/' + segments.slice(0, keySegments.length).join('/')
+            };
+        }
+    }
+    const slug = lower[0];
     if (!slug) {
         return null;
     }
-    const match = tenants.find(tenant =>
-        !isDefaultTenant(tenant)
-        && !!slugifyTenantName(tenant.name)
+    const match = candidates.find(tenant =>
+        !!slugifyTenantName(tenant.name)
         && slugifyTenantName(tenant.name) === slug
     );
     if (!match) {

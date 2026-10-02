@@ -132,7 +132,15 @@ export class LoginService {
   changePwd(oldPwd: string, newPwd: string, autorizacion: string | null): Observable<UsuarioAutenticacionDTO> {
 
     if (!this.userAuthentication || !this.userAuthentication.usuario) {
-      return throwError(() => new Error('No authenticated user'));
+      if (!autorizacion) {
+        return throwError(() => new Error('No authenticated user'));
+      }
+
+      const autenticacion: UsuarioAutenticacionDTO = new UsuarioAutenticacionDTO();
+      autenticacion.llaveTabla = autorizacion;
+      autenticacion.claveAnterior = oldPwd;
+      autenticacion.clave = newPwd;
+      return this.authenticationApi.changePassword(autenticacion);
     }
     return this.changePwdOther(this.userAuthentication.usuario, oldPwd, newPwd, autorizacion);
   }

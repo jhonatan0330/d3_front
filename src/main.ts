@@ -16,7 +16,7 @@ import { RouterModule, ExtraOptions, UrlSerializer } from '@angular/router';
 import { appRoutes } from 'app/app.routing';
 import { FuseConfigModule } from 'app/layout/core/config/fuse-config.module';
 import { appConfig } from 'app/layout/core/config/app.config';
-import { isDefaultTenant, resolveTenantFromUrl, resolveTenantSlug, TenantResolveResult } from 'app/multitenancy/business/tenant-url.strategy';
+import { isDefaultTenant, prefixForTenantId, resolveTenantFromUrl, resolveTenantSlug, TenantResolveResult } from 'app/multitenancy/business/tenant-url.strategy';
 import { applyTenantManifest } from 'app/multitenancy/business/pwa-manifest';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { TenantUrlSerializer } from 'app/multitenancy/business/tenant-url.serializer';
@@ -120,7 +120,7 @@ async function resolveInitialTenant(base, localStore: LocalStoreService): Promis
         const current = TenantRuntime.findByKey(backend.tenantId)
             ?? { key: backend.tenantId, name: backend.tenantId, imagen: undefined, token: null };
         TenantRuntime.setCurrent(current);
-        return { tenantId: backend.tenantId, rest: backend.rest ?? '', prefix: '/' + backend.tenantId };
+        return { tenantId: backend.tenantId, rest: backend.rest ?? '', prefix: prefixForTenantId(backend.tenantId) };
     }
     await loadTenants(base, localStore);
     const local = resolveTenantSlug(TenantRuntime.getTenants(), path);

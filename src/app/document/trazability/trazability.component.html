@@ -1,76 +1,73 @@
 <!-- Titulo -->
-@if (plantilla) {
-  <div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle
-    [style]="styleSizePop" class="p-4 shadow dark:shadow-none dark:border-b bg-card dark:bg-transparent flex">
-    <img src="{{ plantilla.imagen | imageFormat }}" alt="" class="pr-1 max-h-12 h-fit" />
-    <!-- Texto del titulo -->
-    <div class="w-full">
-      <small class="w-full font-semibold">{{documentState}}</small>
-      <div>
-        <span class="flex font-semibold">
-          <span>{{ plantilla.nombre }}</span>
-          <span> - {{ documentName }}</span>
-        </span>
-      </div>
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle
+  [style]="styleSizePop"
+  class="flex items-center gap-3 border-b border-slate-200 bg-white/90 p-4 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
+  @if (plantilla?.imagen) {
+    <img [src]="plantilla.imagen | imageFormat" alt="" class="h-12 w-12 rounded-xl object-cover ring-1 ring-slate-200 dark:ring-slate-700" />
+  } @else {
+    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-200">
+      <mat-icon>history</mat-icon>
     </div>
-    <!-- Botones de accion -->
-    <div class="flex">
-      @if (!fullScreen()) {
-        <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen</mat-icon>
-      }
-      @if (fullScreen()) {
-        <mat-icon class="h-6 cursor-pointer" (click)="toogleScreen()">fullscreen_exit</mat-icon>
-      }
-      <!-- Boton Cerrar -->
-      <a class="cursor-pointer px-1" (click)="dialogRef.close(false)">
-        <mat-icon class="h-6">exit_to_app</mat-icon>
-      </a>
+  }
+  <div class="min-w-0 flex-1">
+    <small class="block text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{{ documentState }}</small>
+    <div class="truncate text-base font-semibold text-slate-800 dark:text-slate-100">
+      <span>{{ plantilla?.nombre ?? 'Trazabilidad' }}</span>
+      <span class="text-slate-500 dark:text-slate-400"> · {{ documentName }}</span>
     </div>
   </div>
-}
+  <div class="flex items-center gap-2">
+    @if (!fullScreen()) {
+      <button type="button" class="btn-icon btn-icon-primary" (click)="toogleScreen()" aria-label="Pantalla completa">
+        <mat-icon>fullscreen</mat-icon>
+      </button>
+    }
+    @if (fullScreen()) {
+      <button type="button" class="btn-icon btn-icon-primary" (click)="toogleScreen()" aria-label="Salir de pantalla completa">
+        <mat-icon>fullscreen_exit</mat-icon>
+      </button>
+    }
+    <button type="button" class="btn-icon" (click)="dialogRef.close(false)" aria-label="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
 <!-- Filtros de la trazabilidad -->
-<div class="w-full flex p-2">
+<div class="flex w-full items-center gap-3 p-3">
 
   <button (click)="toggleDropdown()"
-    class="w-full  ring-1 focus:outline-none ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:ring-blue-800"
+    class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-left text-sm font-medium text-slate-700 shadow-sm transition hover:border-sky-300 hover:bg-sky-50 focus:outline-none focus:ring-2 focus:ring-sky-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-sky-600 dark:hover:bg-slate-700"
     type="button">
-    {{textDropDown}}
+    {{ textDropDown || 'Seleccionar tipos' }}
   </button>
-
-
 
   <!-- Dropdown menu -->
   @if (dropdownOpen()) {
     <div id="dropdownBgHover"
-      class="absolute z-10 w-48 -mt-18 bg-white rounded-lg shadow-sm dark:bg-gray-700">
-      <ul class="p-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownBgHoverButton">
+      class="absolute z-20 mt-12 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800">
+      <ul class="max-h-72 overflow-y-auto p-2 text-sm text-slate-700 dark:text-slate-200" aria-labelledby="dropdownBgHoverButton">
         @for (opt of optionsTrace; track opt) {
           <li>
-            <div class="flex items-center p-1 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
+            <label class="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-slate-100 dark:hover:bg-slate-700">
               <input [id]="'checkbox-item-'+opt.value" type="checkbox"
-                class="w-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
                 [value]="opt.value" (change)="onCheckboxChange($event)" [checked]="selectedTrace.value!.includes(opt.value)">
-                <label [for]="'checkbox-item-'+opt.value"
-                  class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">{{ opt.viewValue
-                }}</label>
-              </div>
-            </li>
-          }
-        </ul>
-      </div>
-    }
+              <span class="w-full text-sm font-medium text-slate-700 dark:text-slate-200">{{ opt.viewValue }}</span>
+            </label>
+          </li>
+        }
+      </ul>
+    </div>
+  }
 
-
-
-
-    <button class="px-2 btn-raised" (click)="listar(1)">
-      <mat-icon svgIcon="heroicons_outline:clock"></mat-icon>
-    </button>
-  </div>
+  <button class="btn-flat-primary px-3 py-2.5" (click)="listar(1)" [disabled]="isLoading()">
+    <mat-icon svgIcon="heroicons_outline:clock"></mat-icon>
+  </button>
+</div>
 
   <!-- Lista de la trazabilidad -->
-  <div class="bg-sky-100 dark:bg-transparent flex flex-col max-h-[70vh]">
-    <div class="overflow-x-hidden pr-4 pl-7">
+  <div class="flex max-h-[72vh] flex-col bg-slate-100/80 dark:bg-transparent">
+    <div class="overflow-x-hidden px-4 py-3">
 
       @if (state!=='I') {
         <div>
@@ -96,20 +93,42 @@
         </div>
       }
 
-      <ol>
-        <!-- Activities -->
-        @for (g of dataProvider; track g; let i = $index) {
-          @if (!isSameDay( g.fecha, i)) {
-            <li class="relative flex py-4">
-              <div class="relative rounded-full bg-primary px-8 py-2 text-md font-medium leading-5 text-on-primary">
-                {{ getRelativeFormat(g.fecha) | titlecase}}
-              </div>
-            </li>
-          }
-          <!-- Activity -->
-          <li class="relative flex py-1">
-            <div class="absolute left-5 w-0.5 h-full -ml-px bg-gray-300 dark:bg-gray-600"></div>
-            <div class="relative flex flex-auto">
+      @if (isLoading()) {
+        <div class="mb-4 rounded-2xl border border-sky-100 bg-white px-4 py-3 text-sm text-sky-700 shadow-sm dark:border-sky-900/60 dark:bg-slate-800 dark:text-sky-200">
+          <div class="flex items-center gap-2">
+            <mat-icon>sync</mat-icon>
+            <span>Cargando trazabilidad...</span>
+          </div>
+        </div>
+      }
+
+      @if (!isLoading() && traceError()) {
+        <div class="mb-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200">
+          No se pudo cargar la trazabilidad para este documento.
+        </div>
+      }
+
+      @if (!isLoading() && !traceError() && dataProvider.length === 0) {
+        <div class="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-6 text-center text-sm text-slate-500 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+          No hay registros de trazabilidad para los filtros seleccionados.
+        </div>
+      }
+
+      @if (!isLoading() && dataProvider.length > 0) {
+        <ol>
+          <!-- Activities -->
+          @for (g of dataProvider; track g; let i = $index) {
+            @if (!isSameDay( g.fecha, i)) {
+              <li class="relative flex py-4">
+                <div class="relative rounded-full bg-primary px-8 py-2 text-md font-medium leading-5 text-on-primary">
+                  {{ getRelativeFormat(g.fecha) | titlecase}}
+                </div>
+              </li>
+            }
+            <!-- Activity -->
+            <li class="relative flex py-1">
+              <div class="absolute left-5 w-0.5 h-full -ml-px bg-gray-300 dark:bg-gray-600"></div>
+              <div class="relative flex flex-auto">
               <!-- Image -->
               <ng-container>
                 @if (!g.responsableImagen) {
@@ -371,11 +390,12 @@
                 }
               </div>
             </div>
-          </li>
-        }
-      </ol>
-      @if (!isEnd()) {
-        <button class="btn-flat-primary" (click)="listar(pagina)">
+            </li>
+          }
+        </ol>
+      }
+      @if (!isEnd() && !isLoading() && dataProvider.length > 0) {
+        <button class="btn-flat-primary mt-3" (click)="listar(pagina)">
           <mat-icon svgIcon="heroicons_outline:clock"></mat-icon> Seguir consultando
         </button>
       }

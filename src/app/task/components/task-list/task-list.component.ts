@@ -92,22 +92,8 @@ export class TaskListComponent implements OnInit {
     }
 
     createTask(): void {
-        this.tasksService
-            .createTask('')
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({
-                next: id => {
-                    const task = this.tasks().find(
-                        item => item.key === id
-                    );
-
-                    if (task) {
-                        this.tasksService.selectTask(task);
-                        this.openTaskDialog();
-                    }
-                },
-                error: () => {}
-            });
+        this.tasksService.clearSelectedTask();
+        this.openTaskDialog();
     }
 
     selectTask(task: Task): void {

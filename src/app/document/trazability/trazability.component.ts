@@ -50,7 +50,8 @@ export class TrazabilityComponent implements OnInit {
   isEnd = signal(false);
   fullScreen = signal(false);
   styleSizePop = '';
-  dataProvider: DocumentoRelacionGestorDTO[]; // Conjunto de documentos a visualizar
+  dataProvider: DocumentoRelacionGestorDTO[] = []; // Conjunto de documentos a visualizar
+  traceError = signal(false);
 
   optionsTrace: OptionTrace[] = [
     { value: '1', viewValue: 'Documentos' },
@@ -69,9 +70,9 @@ export class TrazabilityComponent implements OnInit {
   textDropDown = 'Documentos';
   dropdownOpen = signal(false);
 
-  plantilla: DocumentoPlantillaDTO; // Contiene la estructura del formulario
+  plantilla: DocumentoPlantillaDTO | null = null; // Contiene la estructura del formulario
 
-  vouchersTemplate: PropiedadDTO[];
+  vouchersTemplate: PropiedadDTO[] = [];
 
   documentName;
   documentState;
@@ -104,27 +105,30 @@ export class TrazabilityComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.plantilla = this.templateService.getTemplate(
-      this.data.template
-    )!;
-    this.documentName = this.data.documentName;
-    this.documentState = this.data.documentState;
-    this.state = this.data.state;
-    if (
-      !this.plantilla ||
-      !this.data.document
-    ) {
-      this.notificationCenter.warn('No estados', 'Esta plantilla no tiene existe');
+    this.plantilla = this.data?.template
+      ? this.templateService.getTemplate(this.data.template) ?? null
+      : null;
+    this.documentName = this.data?.documentName ?? 'Documento';
+    this.documentState = this.data?.documentState ?? 'Trazabilidad';
+    this.state = this.data?.state;
+    if (!this.data?.document) {
+      this.notificationCenter.warn('Trazabilidad', 'No se encontró información del documento para consultar el historial.');
       this.dialogRef.close(false);
       return;
     }
 
-    this.vouchersTemplate = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.TEMPLATE_VOUCHER)!;
+    if (this.plantilla) {
+      this.vouchersTemplate = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.TEMPLATE_VOUCHER)!;
+    } else {
+      this.vouchersTemplate = [];
+    }
 
 
 
     // Colocar los valores iniciales de la consulta historica
-    const checksHistorial: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_HISTORIAL_ACTIVO)!;
+    const checksHistorial: PropiedadDTO[] = this.plantilla
+      ? PlantillaHelper.buscarValorMultiple(this.plantilla.propiedades, PlantillaHelper.PLANTILLA_HISTORIAL_ACTIVO) ?? []
+      : [];
     if (checksHistorial && checksHistorial.length != 0) {
       const initialOptions = ['1'];
       for (let i = 0; i < checksHistorial.length; i++) {
@@ -165,7 +169,11 @@ export class TrazabilityComponent implements OnInit {
 
   /*******************************  TRACE *********************/
   getDateFormat(oldDate: any) {
-    return oldDate.toDateString() + ' ' + oldDate.toLocaleTimeString();
+    const date = oldDate instanceof Date ? oldDate : new Date(oldDate);
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+    return date.toLocaleString();
   }
 
   listar(_pagina: number) {
@@ -191,8 +199,12 @@ export class TrazabilityComponent implements OnInit {
     if (_pagina === 1) {
       this.dataProvider = [];
       this.isEnd.set(false);
+      this.traceError.set(false);
     }
-    if (entity.estado === '000000000') { return; }
+    if (entity.estado === '000000000') {
+      this.isEnd.set(true);
+      return;
+    }
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;
     this.pagina = _pagina;
@@ -243,6 +255,7 @@ export class TrazabilityComponent implements OnInit {
       },
       error: (err: any) => {
         this.isLoading.set(false);
+        this.traceError.set(true);
       }
     });
   }

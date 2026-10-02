@@ -24,10 +24,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 
 import {
+    EMPTY,
     debounceTime,
+    finalize,
     filter,
     map,
-    switchMap
+    switchMap,
+    tap
 } from 'rxjs';
 
 import {
@@ -83,6 +86,8 @@ export class TaskFormComponent {
         priority: [0],
         order: [0]
     });
+
+    private isCreatingTask = false;
 
     // -------------------------------------------------------------------------
     // Editor
@@ -168,10 +173,6 @@ export class TaskFormComponent {
                 map(value => {
                     const task = this.task();
 
-                    if (!task) {
-                        return null;
-                    }
-
                     return {
                         task,
                         value
@@ -182,12 +183,16 @@ export class TaskFormComponent {
                     (
                         data
                     ): data is {
-                        task: Task;
+                        task: Task | null;
                         value: typeof this.taskForm.value;
-                    } => data !== null
+                    } => !!data.task || !!data.value.title?.trim()
                 ),
 
                 switchMap(({ task, value }) => {
+                    if (!task) {
+                        this.createTask(value.title ?? '');
+                        return EMPTY;
+                    }
 
                     return this.tasksService.updateTask({
                         ...task,
@@ -195,6 +200,49 @@ export class TaskFormComponent {
                     });
                 }),
 
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe({
+                error: () => {}
+            });
+    }
+
+    private createTask(title: string): void {
+        const normalizedTitle = title.trim();
+
+        if (!normalizedTitle || this.isCreatingTask) {
+            return;
+        }
+
+        this.isCreatingTask = true;
+
+        this.tasksService.createTask(normalizedTitle)
+            .pipe(
+                switchMap(id => {
+                    const createdTask = this.tasksService.tasks().find(
+                        task => task.key === id
+                    );
+
+                    if (!createdTask) {
+                        return EMPTY;
+                    }
+
+                    const currentValue = this.taskForm.getRawValue();
+                    const updatedTask: Task = {
+                        ...createdTask,
+                        title: currentValue.title?.trim() || normalizedTitle,
+                        notes: currentValue.notes ?? '',
+                        dueDate: currentValue.dueDate || null,
+                        priority: currentValue.priority ?? createdTask.priority,
+                        order: currentValue.order ?? createdTask.order
+                    };
+
+                    return this.tasksService.updateTask(updatedTask).pipe(
+                        map(() => updatedTask)
+                    );
+                }),
+                tap(task => this.tasksService.selectTask(task)),
+                finalize(() => this.isCreatingTask = false),
                 takeUntilDestroyed(this.destroyRef)
             )
             .subscribe({
