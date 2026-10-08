@@ -217,19 +217,9 @@ export class MassiveComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (response: PlantillaBaseResponse) => {
-            this.api.getImage(formatImageUrl(this.ls, response.url)!)
-              .pipe(takeUntilDestroyed(this.destroyRef))
-              .subscribe({
-              next: (blob: Blob) => {
-                this.fileHandler.descargarArchivo(blob, this.plantilla()!.nombre + '.' + format);
-                this.isLoading.set(false);
-                this.lblCarga.set('');
-              },
-              error: () => {
-                this.isLoading.set(false);
-                this.lblCarga.set('');
-              },
-            });
+            window.open(formatImageUrl(this.ls, response.url), '_blank');
+            this.isLoading.set(false);
+              this.lblCarga.set('');
           },
           error: () => {
             this.isLoading.set(false);

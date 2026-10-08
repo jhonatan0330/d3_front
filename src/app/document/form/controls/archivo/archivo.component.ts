@@ -35,6 +35,7 @@ export class ArchivoComponent extends BaseComponent implements OnInit {
   static SEPARADOR = ';;';
 
   multipleFiles = signal(false);
+  isDraggingFiles = signal(false);
   validateOrientation: string;
   firma = signal(false);
   maximoSize: number;
@@ -161,6 +162,58 @@ resizeCanvas(): void {
       this.deleteFile(this.files()[0]);
     }
     this.sincronizeFiles();
+  }
+
+  onFileDragEnter(event: DragEvent): void {
+    if (!this.containsFiles(event)) {
+      return;
+    }
+    event.preventDefault();
+    if (this.isEnabled && !this.isEnd() && !this.isLoading()) {
+      this.isDraggingFiles.set(true);
+    }
+  }
+
+  onFileDragOver(event: DragEvent): void {
+    if (!this.containsFiles(event)) {
+      return;
+    }
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = this.isEnabled && !this.isEnd() && !this.isLoading() ? 'copy' : 'none';
+    }
+  }
+
+  onFileDragLeave(event: DragEvent): void {
+    if (!this.containsFiles(event)) {
+      return;
+    }
+    const dropTarget = event.currentTarget as HTMLElement;
+    if (event.relatedTarget instanceof Node && dropTarget.contains(event.relatedTarget)) {
+      return;
+    }
+    this.isDraggingFiles.set(false);
+  }
+
+  onFileDrop(event: DragEvent): void {
+    if (!this.containsFiles(event)) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDraggingFiles.set(false);
+
+    if (!this.isEnabled || this.isEnd() || this.isLoading()) {
+      return;
+    }
+    const files = event.dataTransfer?.files;
+    if (files?.length) {
+      this.handleFileInput(files);
+    }
+  }
+
+  private containsFiles(event: DragEvent): boolean {
+    return Array.from(event.dataTransfer?.types ?? []).includes('Files');
   }
 
   validateOrientationHandler(image, item) {

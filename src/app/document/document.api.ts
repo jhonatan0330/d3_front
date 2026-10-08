@@ -155,18 +155,6 @@ export class DocumentApi {
         );
     }
 
-    getImage(imageUrl: string): Observable<Blob> {
-        return this.http.get(imageUrl, { responseType: 'blob' });
-    }
-
-    /*uploadFile(fileToUpload: File): Observable<string> {
-        const endpoint = this.ls.getUrlAccess('/upload/upload');
-        const formData: FormData = new FormData();
-        formData.append('file', fileToUpload, fileToUpload.name);
-        return this.http.post<string>(endpoint, formData);
-    }*/
-
-
     consultarInventario(productoId: string): Observable<ProductoInventarioDTO[]> {
         return this.http.get<ProductoInventarioDTO[]>(
             this.ls.getUrlAccess('/inventory/getInventory/' + productoId)

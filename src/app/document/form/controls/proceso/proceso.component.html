@@ -11,28 +11,39 @@
   <mat-form-field class="w-full"
     [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
     <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-    <input matInput [id]="idField!" [matAutocomplete]="auto" [formControl]="fControl" [required]="required"
-      [readonly]="!isEnabled" (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [attr.inputmode]="inputModeText"
-      translate="no" (focusout)="gestionarKeyUpTextoFocusOut()"
+    <input matInput [id]="idField!" [matAutocomplete]="auto" [matAutocompleteDisabled]="isLoading()" [formControl]="searchControl" [required]="required"
+      [readonly]="!isEnabled || isLoading()" [attr.aria-busy]="isLoading()" (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [attr.inputmode]="inputModeText"
+      translate="no" autocomplete="off"
       [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
       @if (proceso && linkExternal) {
-        <a class="a-hyperlink" (click)="goToLink()">{{linkExternal.valor}}</a>
+        <button type="button" class="a-hyperlink" (click)="goToLink()">{{ linkExternal.valor }}</button>
       }
-      <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay" (optionSelected)="selectProcess($event.option.value)">
+        @for (document of filteredDocuments.slice(0, 8); track document.llaveTabla) {
+          <mat-option [value]="document">
+            @if (document.descripcion) {
+              <span class="font-medium">{{ document.descripcion }}</span>
+            }
+            <span class="ml-2 text-sm text-secondary">{{ document.nombre }}</span>
+          </mat-option>
+        }
+        @if (filteredDocuments.length > 8) {
+          <mat-option disabled>Hay más coincidencias. Escribe más para afinar la búsqueda.</mat-option>
+        }
       </mat-autocomplete>
       <!-- Open window -->
       @if (proceso) {
-        <button class="btn-icon" matPrefix (click)="openDialog(proceso)" tabindex="-1">
-          <mat-icon>open_in_new</mat-icon>
+        <button type="button" class="btn-icon" matPrefix (click)="openDialog(proceso)" [attr.aria-label]="'Abrir ' + proceso.nombre" [title]="'Abrir ' + proceso.nombre">
+          <mat-icon aria-hidden="true">open_in_new</mat-icon>
         </button>
       }
       <!-- Create -->
-      @if (acciones && !errorMessage && !proceso) {
+      @if (acciones && !errorMessage && !proceso && !isLoading()) {
         <app-dropdown matPrefix #createMenu="appDropdown">
-          <button class="btn-icon" trigger
-            [style.display]="!fControl.value ? 'inline-flex' : 'none !important'"
-            (click)="sendCreate(createMenu, $event)" tabindex="-1">
-            <mat-icon>add_circle</mat-icon>
+          <button type="button" class="btn-icon" trigger aria-label="Crear documento"
+            [style.display]="!searchControl.value ? 'inline-flex' : 'none !important'"
+            (click)="sendCreate(createMenu, $event)">
+            <mat-icon aria-hidden="true">add_circle</mat-icon>
           </button>
           @for (item of acciones; track item) {
             <app-dropdown-item (clicked)="createNewDocument(item.valor, item.llaveTabla)">
@@ -41,89 +52,64 @@
           }
         </app-dropdown>
       }
-      <!-- Buscar -->
-      @if (isEnabled && !proceso) {
-        <button class="btn-icon" matSuffix (click)="gestionarKeyUpTexto()" tabindex="-1">
-          <mat-icon>search</mat-icon>
-        </button>
-      }
-      <!-- Limpiar -->
-      @if (proceso && isEnabled) {
-        <button class="btn-icon" matSuffix (click)="fControl.setValue('')" tabindex="-1">
-          <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
-        </button>
-      }
+      <div matSuffix class="flex shrink-0 flex-nowrap items-center gap-1">
+        @if (isEnabled && !proceso) {
+          @if (isLoading()) {
+            <span class="inline-flex items-center text-primary" role="status" aria-label="Buscando documentos">
+              <mat-icon class="animate-spin" aria-hidden="true">autorenew</mat-icon>
+            </span>
+          } @else {
+            <button type="button" class="btn-icon" (click)="gestionarKeyUpTexto()" aria-label="Buscar documentos" title="Buscar documentos">
+              <mat-icon aria-hidden="true">search</mat-icon>
+            </button>
+          }
+        }
+        @if (proceso && isEnabled) {
+          <button type="button" class="btn-icon" (click)="clearSelection()" aria-label="Limpiar selección" title="Limpiar selección">
+            <mat-icon svgIcon="heroicons_outline:x-circle" aria-hidden="true"></mat-icon>
+          </button>
+        } @else if (isEnabled && !isLoading() && (searchControl.value || searchAttempted)) {
+          <button type="button" class="btn-icon" (click)="clearSearch()" aria-label="Limpiar búsqueda" title="Limpiar búsqueda">
+            <mat-icon svgIcon="heroicons_outline:x-circle" aria-hidden="true"></mat-icon>
+          </button>
+        }
+      </div>
       <!-- Boton codigo QR-->
-      @if (isEnabled && readQR && !proceso) {
-        <button class="btn-icon" matPrefix (click)="toogleScanner()" tabindex="-1">
-          <mat-icon>camera_enhance</mat-icon>
+      @if (isEnabled && readQR && !proceso && !isLoading()) {
+        <button type="button" class="btn-icon" matPrefix (click)="toogleScanner()" aria-label="Leer código QR" title="Leer código QR">
+          <mat-icon aria-hidden="true">camera_enhance</mat-icon>
         </button>
-      }
-      @if (scannerEnabled && !proceso) {
-        <div class="w-full">
-          <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
-        </div>
-      }
-      <!-- Opciones de seleccion -->
-      @if (isEnabled && !proceso) {
-        <div class="w-full" style="overflow: auto">
-          <!-- Vista modo tabla -->
-          <table mat-table [dataSource]="filteredDocuments" class="w-full">
-            <ng-container matColumnDef="nombre">
-              <td mat-cell *matCellDef="let element">
-                <span class="pr-1">{{ element.nombre }}</span>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="descripcion">
-              <td mat-cell *matCellDef="let element">
-                <small class="pr-1">{{ element.descripcion }}</small>
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="valor">
-              <td mat-cell *matCellDef="let element">
-                @if (element.dinero) {
-                  <small class="pr-1">{{
-                    element.dinero.valorTotal | number
-                  }}</small>
-                }
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="detalles">
-              <td mat-cell *matCellDef="let element">
-                @if (
-                  element.caracteristicas && element.caracteristicas.length !== 0
-                  ) {
-                  <div class="pr-1 min-w-48">
-                    @for (f of element.caracteristicas; track f) {
-                      <div class="flex justify-between">
-                        <div class="whitespace-nowrap font-extralight pr-2 text-xs hidden sm:block">{{ f.campoDTO.nombre }}</div>
-                        <div class="text-right line-clamp-1 text-xs">{{ f.valorText }}</div>
-                      </div>
-                    }
-                  </div>
-                }
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="estadoExpediente">
-              <td mat-cell *matCellDef="let element" class="text-right"
-                [style.backgroundColor]="getColor(element.estadoExpediente)">
-                <small>{{ element.estadoNombre }}</small>
-              </td>
-            </ng-container>
-      <tr mat-row class="cursor-pointer" *matRowDef="
-          let row;
-          columns: [
-            'nombre',
-            'descripcion',
-            'valor',
-            'detalles',
-            'estadoExpediente'
-          ]
-        " (click)="fControl.setValue(row)"></tr>
-          </table>
-        </div>
       }
     </mat-form-field>
+    @if (isLoading() && !proceso) {
+      <div class="mt-1 flex items-center gap-2 text-sm text-primary" role="status" aria-live="polite" aria-atomic="true">
+        <mat-icon class="animate-spin" aria-hidden="true">autorenew</mat-icon>
+        <span>Buscando “{{ filtroBusqueda }}”… Espera la respuesta para volver a buscar.</span>
+      </div>
+    }
+    @if (scannerEnabled && !proceso) {
+      <div class="w-full">
+        <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+      </div>
+    }
+    @if (searchAttempted && !proceso && !isLoading() && (searchError || filteredDocuments.length === 0)) {
+      <section class="mb-2 rounded border border-gray-200 bg-gray-50 p-3 text-sm dark:border-gray-700 dark:bg-gray-900" role="status" aria-live="polite">
+        @if (searchError) {
+          <p>No fue posible completar la búsqueda. Revisa tu conexión e inténtalo de nuevo.</p>
+        } @else {
+          <p>No encontramos coincidencias para “{{ filtroBusqueda }}”. Puedes cambiar la búsqueda o crear un documento.</p>
+          @if (acciones && acciones.length > 0) {
+            <div class="mt-1 mb-1 flex flex-wrap gap-2">
+              @for (action of acciones; track action.llaveTabla) {
+                <button type="button" class="btn-raised" (click)="createNewDocument(action.valor, action.llaveTabla)">
+                  Crear {{ action.texto | titlecase }}
+                </button>
+              }
+            </div>
+          }
+        }
+      </section>
+    }
   }
   @if (errorMessage) {
     <label
@@ -136,7 +122,7 @@
       @if (!isLoading()) {
         <div>
           <div class="flex justify-between items-center w-full mb-1 gap-1">
-          <button (click)="procesarCampo(transformPVCtoFilter(data))"
+          <button type="button" (click)="procesarCampo(transformPVCtoFilter(data))"
             class="relative w-full btn-flat-accent">
             {{ structure.nombre | titlecase }}
             @if (data.valorText) {
@@ -145,9 +131,9 @@
           </button>
             @if (acciones && formIsEnabled && data.expedientes) {
               <app-dropdown #createMenuExpediente="appDropdown">
-                <button class="btn-flat-accent" trigger
-                  (click)="sendCreate(createMenuExpediente, $event)" tabindex="-1">
-                  <mat-icon>add</mat-icon>
+                <button type="button" class="btn-flat-accent" trigger aria-label="Crear expediente"
+                  (click)="sendCreate(createMenuExpediente, $event)">
+                  <mat-icon aria-hidden="true">add</mat-icon>
                 </button>
                 @for (item of acciones; track item) {
                   <app-dropdown-item (clicked)="createNewDocument(item.valor, item.llaveTabla)">
@@ -164,31 +150,31 @@
         </div>
       }
       <!-- Lista de seleccionados (Expedientes) -->
-      <div class="flex flex-wrap p-1 w-full">
+      <div class="flex flex-wrap w-full">
         @for (d of data.expedientes; track d.llaveTabla) {
           <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
             <div class="card p-0 rounded h-full">
               <div class="p-1 rounded mb-0">
                 <div class="flex items-center">
                   <div class="w-16 p-1">
-                    <a (click)="openDialog(d)"><img src="{{ d.imagen | imageFormat }}" /></a>
+                      <button type="button" class="block w-full border-0 bg-transparent p-0" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
+                        <img [src]="d.imagen | imageFormat" alt="" class="h-12 w-full object-cover" />
+                      </button>
                   </div>
                   <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(d.estadoExpediente)"
                     [style.color]="getColorFont(d.estadoExpediente)">
-                    <a (click)="openDialog(d)">
-                      <div class="text-md">{{ d.nombre }}</div>
-                    </a>
+                      <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline focus-visible:outline-2" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
+                        <span class="text-sm line-clamp-4 leading-none">{{ d.nombre }}</span>
+                      </button>
                     @if (d.descripcion) {
-                      <a (click)="openDialog(d)">
-                        <div class="text-sm line-clamp-4 leading-none">
-                          {{ d.descripcion }}
-                        </div>
-                      </a>
+                      <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline focus-visible:outline-2" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
+                        <span class="text-md">{{ d.descripcion }}</span>
+                      </button>
                     }
                   </div>
                   @if (isEnabled) {
-                    <button class="btn-icon" (click)="retirarProceso(d)">
-                      <mat-icon>cancel</mat-icon>
+                    <button type="button" class="btn-icon" (click)="retirarProceso(d)" [attr.aria-label]="'Retirar ' + d.nombre" [title]="'Retirar ' + d.nombre">
+                      <mat-icon aria-hidden="true">cancel</mat-icon>
                     </button>
                   }
                 </div>
@@ -234,7 +220,7 @@
       <!-- Buscador de expedientes -->
       @if ((data.expedientes || dataProvider) && (isEnabled || herencia)) {
         <div>
-          <div class="grey-200 my-1 w-[72vw] flex flex-wrap justify-center">
+          <div class="my-2 flex w-full flex-wrap items-start justify-start gap-3 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
             <!-- Fechas -->
             @if (fControlCheck && !fControlCheck.value) {
               <div class="pr-1">
@@ -255,15 +241,15 @@
               <mat-form-field>
                 <input matInput type="text" placeholder="Coloca un texto y presiona enter" name="fControlSearch"
                   [formControl]="fControlSearch" autocomplete="off" (keyup.enter)="listar(1)" />
-                  <button matSuffix (click)="fControlSearch.setValue('')">
-                    <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
+                  <button type="button" matSuffix (click)="fControlSearch.setValue('')" aria-label="Limpiar búsqueda" title="Limpiar búsqueda">
+                    <mat-icon svgIcon="heroicons_outline:x-circle" aria-hidden="true"></mat-icon>
                   </button>
                 </mat-form-field>
               </div>
               <div class="pr-1">
                 <!-- Boton filtrar -->
-                <button (click)="listar(1)" class="ml-1 btn-raised">
-                  <mat-icon>refresh</mat-icon>
+                <button type="button" (click)="listar(1)" class="ml-1 btn-raised" aria-label="Buscar expedientes" title="Buscar expedientes">
+                  <mat-icon aria-hidden="true">refresh</mat-icon>
                 </button>
                 <!-- Create copiado de arriba
                 <button class="btn-raised" matSuffix [matMenuTriggerFor]="clickHoverMenuMultiple"
@@ -278,20 +264,19 @@
                 </mat-menu>-->
                 <!-- Boton codigo QR-->
                 @if (isEnabled && readQR) {
-                  <button (click)="toogleScanner()" class="ml-1 btn-raised">
-                    <mat-icon>camera_enhance</mat-icon>
+                  <button type="button" (click)="toogleScanner()" class="ml-1 btn-raised" aria-label="Leer código QR" title="Leer código QR">
+                    <mat-icon aria-hidden="true">camera_enhance</mat-icon>
                   </button>
                 }
                 <!-- Boton Agregar todos-->
                 @if (isEnabled && dataProvider && dataProvider.length && !herencia) {
-                  <button (click)="agregarTodos()" class="ml-1 btn-raised"
-                    >
-                    <mat-icon>file_upload</mat-icon>
+                  <button type="button" (click)="agregarTodos()" class="ml-1 btn-raised" aria-label="Agregar todos los expedientes" title="Agregar todos los expedientes">
+                    <mat-icon aria-hidden="true">file_upload</mat-icon>
                   </button>
                 }
                 <!-- Boton Agregar todos-->
-                <button (click)="showFilterState = !showFilterState" class="ml-1 btn-raised">
-                  <mat-icon>filter_alt</mat-icon>
+                <button type="button" (click)="showFilterState = !showFilterState" class="ml-1 btn-raised" [attr.aria-expanded]="showFilterState" aria-label="Mostrar filtros por estado" title="Mostrar filtros por estado">
+                  <mat-icon aria-hidden="true">filter_alt</mat-icon>
                 </button>
               </div>
             </div>
@@ -320,24 +305,24 @@
                     <div class="p-1 rounded">
                       <div class="flex items-center">
                         <div class="w-16 p-1">
-                          <a (click)="openDialog(iDocument)"><img src="{{ iDocument.imagen | imageFormat }}" /></a>
+                          <button type="button" class="block w-full border-0 bg-transparent p-0" (click)="openDialog(iDocument)" aria-label="Abrir {{ iDocument.nombre }}" title="Abrir {{ iDocument.nombre }}">
+                            <img [src]="iDocument.imagen | imageFormat" alt="" class="h-12 w-full object-cover" />
+                          </button>
                         </div>
                         <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
                           [style.color]="getColorFont(iDocument.estadoExpediente)">
-                          <a (click)="openDialog(iDocument)">
-                            <div class="text-md">{{ iDocument.nombre }}</div>
-                          </a>
+                          <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline focus-visible:outline-2" (click)="openDialog(iDocument)" aria-label="Abrir {{ iDocument.nombre }}" title="Abrir {{ iDocument.nombre }}">
+                            <span class="text-sm line-clamp-4 leading-none">{{ iDocument.nombre }}</span>
+                          </button>
                           @if (iDocument.descripcion) {
-                            <a (click)="openDialog(iDocument)">
-                              <div class="text-sm line-clamp-4 leading-none">
-                                {{ iDocument.descripcion }}
-                              </div>
-                            </a>
+                            <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline focus-visible:outline-2" (click)="openDialog(iDocument)" aria-label="Abrir {{ iDocument.nombre }}" title="Abrir {{ iDocument.nombre }}">
+                              <span class="">{{ iDocument.descripcion }}</span>
+                            </button>
                           }
                         </div>
                         @if (!herencia) {
-                          <button class="btn-icon" (click)="agregarProceso(iDocument)">
-                            <mat-icon>file_upload</mat-icon>
+                          <button type="button" class="btn-icon" (click)="agregarProceso(iDocument)" [attr.aria-label]="'Agregar ' + iDocument.nombre" [title]="'Agregar ' + iDocument.nombre">
+                            <mat-icon aria-hidden="true">file_upload</mat-icon>
                           </button>
                         }
                       </div>
@@ -378,9 +363,8 @@
                 </div>
               }
               @if (!isLoadingList() && !isEndList()) {
-                <button (click)="listar(pagina)" tabindex="-1" class="w-full btn-flat-accent"
-                  >
-                  <mat-icon>refresh</mat-icon> Mas resultados {{ labelSearch }}
+                <button type="button" (click)="listar(pagina)" class="w-full btn-flat-accent">
+                  <mat-icon aria-hidden="true">refresh</mat-icon> Más resultados {{ labelSearch }}
                 </button>
               }
             </div>
@@ -396,7 +380,7 @@
             <!-- Titulo y boton buscar -->
             <div class="text-center">
               @if (!isLoading()) {
-                <button (click)="procesarCampo(transformPVCtoFilter(data))"
+                <button type="button" (click)="procesarCampo(transformPVCtoFilter(data))"
                   class="w-full btn-flat-accent">
                   {{ structure.nombre | titlecase }}
                 </button>

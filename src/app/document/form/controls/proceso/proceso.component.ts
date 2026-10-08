@@ -25,11 +25,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SharedIdResponse } from 'app/shared/api-types';
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatAutocompleteTrigger, MatAutocomplete, MatOption } from '@angular/material/autocomplete';
 import { NgClass, DecimalPipe, TitleCasePipe, DatePipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
-import { MatTable, MatColumnDef, MatCellDef, MatCell, MatRowDef, MatRow } from '@angular/material/table';
 import { MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker } from '@angular/material/datepicker';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
@@ -41,7 +40,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
     templateUrl: './proceso.component.html',
     styleUrls: ['./proceso.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ MatFormField,MatLabel,MatInput,MatAutocompleteTrigger,FormsModule,ReactiveFormsModule,NgClass,MatAutocomplete,MatPrefix,MatIcon,MatSuffix,ZXingScannerModule,MatTable,MatColumnDef,MatCellDef,MatCell,MatRowDef,MatRow,MatDateRangeInput,MatStartDate,MatEndDate,MatDatepickerToggle,MatDateRangePicker,DecimalPipe,TitleCasePipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent]
+    imports: [ MatFormField,MatLabel,MatInput,MatAutocompleteTrigger,FormsModule,ReactiveFormsModule,NgClass,MatAutocomplete,MatOption,MatPrefix,MatIcon,MatSuffix,ZXingScannerModule,MatDateRangeInput,MatStartDate,MatEndDate,MatDatepickerToggle,MatDateRangePicker,DecimalPipe,TitleCasePipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent]
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {
   private templateService = inject(TemplateService);
@@ -51,7 +50,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   private notificationCenter = inject(NotificationCenterService);
 
   fControl = new FormControl<any>(null);
-  filteredDocuments: PedidoVentaDTO[];
+  searchControl = new FormControl<string | PedidoVentaDTO | null>('');
+  filteredDocuments: PedidoVentaDTO[] = [];
+  searchAttempted = false;
+  searchError = false;
+  private pendingSearchQuery: string | null = null;
 
   plantilla: DocumentoPlantillaDTO; // Contiene el id de la fuente de datos de este proceso
   autoload = false; // Indica que la fuente de datos se va a cargar en memoria
@@ -181,7 +184,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         tap((value) => {
           if (value?.llaveTabla) {
             this.proceso = value;
-            this.filteredDocuments = null!;
+            this.searchControl.setValue(value, { emitEvent: false });
+            this.filteredDocuments = [];
             this.showAlertSelectedProcess();
           } else if (value) {
             this.proceso = null!;
@@ -227,6 +231,20 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         }
         this.actualizar();
       });
+    this.searchControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
+      if (typeof value !== 'string') {
+        return;
+      }
+      if (value !== this.filtroBusqueda) {
+        this.searchAttempted = false;
+        this.searchError = false;
+      }
+      if (this.proceso) {
+        this.proceso = null!;
+        this.fControl.setValue(null);
+      }
+      this.filterAvailableDocuments(value);
+    });
     this.iniciar();
   }
 
@@ -605,11 +623,32 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
       next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
+        if (this.pendingSearchQuery !== null) {
+          const queryMatches = this.searchControl.value === this.pendingSearchQuery;
+          this.pendingSearchQuery = null;
+          if (!queryMatches) {
+            this.isLoading.set(false);
+            return;
+          }
+        }
         this.isLoading.set(false);
         this.consultaExitosaDatosBase(_value);
       },
       error: () => {
+        if (this.pendingSearchQuery !== null) {
+          const queryMatches = this.searchControl.value === this.pendingSearchQuery;
+          this.pendingSearchQuery = null;
+          if (!queryMatches) {
+            this.isLoading.set(false);
+            return;
+          }
+        }
         this.isLoading.set(false);
+        if (!this.herencia && !this.multiple) {
+          this.searchAttempted = true;
+          this.searchError = true;
+          this.filteredDocuments = [];
+        }
         if (this.readQR) {
           this.fControl.setValue(null);
         }
@@ -1022,6 +1061,63 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.gestionarKeyUpTexto();
   }
 
+  clearSearch(): void {
+    if (this.proceso || this.isLoading()) {
+      return;
+    }
+    this.searchControl.setValue('', { emitEvent: false });
+    this.filteredDocuments = [];
+    this.disponibles = [];
+    this.filtroBusqueda = '';
+    this.searchAttempted = false;
+    this.searchError = false;
+    this.errorMessage = null!;
+  }
+
+  clearSelection(): void {
+    if (!this.isEnabled) {
+      return;
+    }
+    this.disponibles = [];
+    this.filteredDocuments = [];
+    this.searchControl.setValue('', { emitEvent: false });
+    this.filtroBusqueda = '';
+    this.searchAttempted = false;
+    this.searchError = false;
+    this.errorMessage = null!;
+    this.fControl.setValue(null);
+  }
+
+  selectProcess(document: PedidoVentaDTO): void {
+    this.searchControl.setValue(document, { emitEvent: false });
+    this.filteredDocuments = [];
+    this.searchAttempted = false;
+    this.searchError = false;
+    this.fControl.setValue(document);
+  }
+
+  private filterAvailableDocuments(value: string): void {
+    if (!this.disponibles) {
+      this.filteredDocuments = [];
+      return;
+    }
+
+    let filterValue = value.trim();
+    if (filterValue === '*') { filterValue = ''; }
+    filterValue = filterValue.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    this.filteredDocuments = this.disponibles.filter((document) => {
+      if (document.nombre?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(filterValue)) {
+        return true;
+      }
+      if (document.descripcion?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(filterValue)) {
+        return true;
+      }
+      return document.caracteristicas?.some((field) =>
+        field.valorText?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(filterValue)
+      ) ?? false;
+    });
+  }
+
   gestionarKeyUpTexto() {
     if (this.isLoading() || this.isLoadingList()) { return; }
     if (this.isEnabled) {
@@ -1030,11 +1126,18 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         return;
       }*/
       if (!this.proceso) {
-        let filtroParametro: string = this.fControl.value;
+        const useSearchControl = !this.herencia && !this.multiple;
+        const value = useSearchControl ? this.searchControl.value : this.fControl.value;
+        let filtroParametro = typeof value === 'string' ? value.trim() : '';
         if (filtroParametro) {
           const campoFiltro: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
-          if (filtroParametro.startsWith(" ")) { filtroParametro = filtroParametro.substring(1) }
           campoFiltro.filtroParametro = filtroParametro;
+          if (useSearchControl) {
+            this.filteredDocuments = [];
+            this.searchAttempted = false;
+            this.searchError = false;
+            this.pendingSearchQuery = filtroParametro;
+          }
           this.procesarCampo(campoFiltro);
           this.filtroBusqueda = filtroParametro;
         }
@@ -1201,8 +1304,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
     }
     _doc.plantilla = _plantilla;
+    const createFilter = !this.herencia && !this.multiple && typeof this.searchControl.value === 'string'
+      ? this.searchControl.value
+      : this.fControl.value;
     this.utilsService
-      .modalWithParams(_doc, true, this.fControl.value)
+      .modalWithParams(_doc, true, createFilter)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
         if (res && res.data) {
@@ -1292,23 +1398,30 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       if (this.isEnabled) {
         this.data.valorOpcion = null!; // PAra que me actualice el que acaba de llegar
       }
+      const searchValue = this.searchControl.value;
+      this.searchAttempted = typeof searchValue === 'string' && searchValue.trim().length > 0;
+      this.searchError = false;
       // Si es adicional lo muestro en una lista aparte
       this.actualizarDataProvider(pCampo.campoDTO.documentos);
       // Esto lo hago para que cargue las opciones en caso de dependientes y modificar
       if (!this.proceso) {
         if (!this.disponibles) {
+          this.filteredDocuments = [];
           return;
         }
+        this.filteredDocuments = [...this.disponibles];
         if (this.disponibles.length === 0) {
-          this.sendCreate();
           this.fControl.setValue(null);
         } else {
           if (this.disponibles.length === 1) {
             this.proceso = this.disponibles[0];
+            this.searchAttempted = false;
+            this.searchError = false;
             if (!this.data.documento) {
               this.data.valorOpcion = null!;
             }
-            this.actualizar();
+            this.searchControl.setValue(this.proceso, { emitEvent: false });
+            this.fControl.setValue(this.proceso);
             if (!this.acabadoCrear) {
               // gestionarKeyUp(new KeyboardEvent(KeyboardEvent.KEY_UP,true,false,Keyboard.F9, Keyboard.F9));
             } else {
@@ -1322,6 +1435,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         }
       } else {
+        this.searchAttempted = false;
+        this.searchError = false;
         // Esto lo hago solo para evitar que el campo quede en modificado si ya tiene datos y despues de que recibe el listado
         const procesoEncontrado: PedidoVentaDTO = this.encontrarProcesoBase(
           this.proceso.llaveTabla
@@ -1529,9 +1644,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     audio.src = 'assets/audio/beep.mp3';
     audio.load();
     audio.play();
-    this.fControl.setValue(resultString + this.fControl.value);
     if (!this.multiple) {
-      this.fControl.setValue(resultString);
+      if (!this.herencia) {
+        this.searchControl.setValue(resultString);
+      } else {
+        this.fControl.setValue(resultString);
+      }
       this.gestionarKeyUpTexto()
     } else {
       this.fControlSearch.setValue(resultString);
@@ -1587,7 +1705,14 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   gestionarFocus() {
-    if (this.proceso == null) { (this.filteredDocuments = this.disponibles); }
+    if (this.proceso == null) {
+      if (!this.herencia && !this.multiple) {
+        const query = this.searchControl.value;
+        this.filterAvailableDocuments(typeof query === 'string' ? query : '');
+      } else {
+        this.filteredDocuments = this.disponibles;
+      }
+    }
     // if ( this.readQR && !this.scannerEnabled) { this.toogleScanner(); }
   }
 

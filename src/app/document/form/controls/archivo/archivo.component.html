@@ -1,87 +1,139 @@
 <div [style.display]="(isInvisible || isSectionInvisible) ? 'none' : 'block'" class="mx-0">
-  <div class="py-1 flex">
+  <div>
     @if (isLoadingUrl() && allowUrlTextFromUser()) {
-      <input [id]="structure.llaveTabla" [(ngModel)]="urlText"
-        class="w-full" />
+      <input
+        [id]="structure.llaveTabla"
+        [(ngModel)]="urlText"
+        type="url"
+        class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+        [attr.aria-label]="'URL de ' + structure.nombre"
+        placeholder="https://"
+      />
     }
-    @if (isEnabled && !isEnd() && !isLoading()) {
-      <button [disabled]="isLoading()"
-        (click)="onClickExternal()" class="w-full btn-flat-accent">
-        <mat-icon svgIcon="heroicons_outline:paper-clip"></mat-icon>
-        {{ structure.nombre | titlecase }}
-        @if (required) {
-          <small> *</small>
-        }
-        <!--style="display: none"
-        capture="user" Esto lo retire para box pero creo que falalra para deco-->
-        <input [id]="structure.llaveTabla + '_file'" type="file"
-          style="opacity : 0; position : fixed; z-index: 2; width: 100%; left: 0;"
-          [multiple]="multipleFiles()" [accept]="filtroExtension()"
-          (click)="$event.target.value = '';$event.stopPropagation();" (change)="handleFileInput($event.target.files!)"
+    @if (isEnabled && !isEnd()) {
+      <div class="flex flex-wrap items-center gap-2">
+        @if (!isLoading()) {
+          <button
+            type="button"
+            (click)="onClickExternal()"
+            (dragenter)="onFileDragEnter($event)"
+            (dragover)="onFileDragOver($event)"
+            (dragleave)="onFileDragLeave($event)"
+            (drop)="onFileDrop($event)"
+            [style.outline]="isDraggingFiles() ? '2px dashed currentColor' : null"
+            [style.outlineOffset]="isDraggingFiles() ? '3px' : null"
+            [attr.aria-label]="'Seleccionar o soltar archivo para ' + structure.nombre"
+            class="btn-flat-accent inline-flex min-h-10 min-w-0 flex-1 items-center justify-center gap-2 px-4"
+          >
+            <mat-icon svgIcon="heroicons_outline:paper-clip" aria-hidden="true"></mat-icon>
+            @if (isDraggingFiles()) {
+              <span>Suelta para cargar</span>
+            } @else {
+              <span>{{ structure.nombre | titlecase }}</span>
+            }
+            @if (required) {
+            <span aria-hidden="true">*</span>
+            }
+          </button>
+          <input
+            [id]="structure.llaveTabla + '_file'"
+            type="file"
+            class="sr-only"
+            [multiple]="multipleFiles()"
+            [accept]="filtroExtension()"
+            [attr.aria-label]="'Seleccionar archivo para ' + structure.nombre"
+            (click)="$event.target.value = ''; $event.stopPropagation()"
+            (change)="handleFileInput($event.target.files!)"
           />
-        </button>
-      }
-      @if (isEnabled && !isEnd() && allowUrlTextFromUser()) {
-        <button class="ml-1 btn-flat-accent"
-          (click)="onClickLoadUrl()">
-          @if (!isLoadingUrl()) {
-            <mat-icon svgIcon="heroicons_outline:pencil-square"></mat-icon>
-          }
-          @if (isLoadingUrl()) {
-            <mat-icon svgIcon="heroicons_outline:check"></mat-icon>
-          }
-        </button>
-      }
-    </div>
-    @if (isLoading()) {
-      <div class="full-width h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-        <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+        }
+        @if (allowUrlTextFromUser()) {
+          <button
+            type="button"
+            class="btn-flat-accent inline-flex min-h-10 w-10 items-center justify-center"
+            (click)="onClickLoadUrl()"
+            [attr.aria-label]="isLoadingUrl() ? 'Guardar URL' : 'Agregar una URL'"
+            [title]="isLoadingUrl() ? 'Guardar URL' : 'Agregar una URL'"
+          >
+            @if (!isLoadingUrl()) {
+              <mat-icon svgIcon="heroicons_outline:pencil-square" aria-hidden="true"></mat-icon>
+            } @else {
+              <mat-icon svgIcon="heroicons_outline:check" aria-hidden="true"></mat-icon>
+            }
+          </button>
+        }
       </div>
     }
-    <!-- Firma -->
-    @if (firma() && isEnabled && !isEnd()) {
-      <div class="p-1 text-center">
-        <canvas #signatureCanvas class="w-full h-64 border"></canvas>
-        <button class="btn-raised" (click)="takeSignature()" tabindex="-1">
-          <mat-icon svgIcon="heroicons_outline:camera"></mat-icon>
-        </button>
-        <button class="btn-raised" (click)="clearSignature()" tabindex="-1">
-          <mat-icon>format_clear</mat-icon>
-        </button>
+
+    @if (isLoading() && !isLoadingUrl()) {
+      <div
+        class="h-1 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700"
+        role="progressbar"
+        aria-label="Cargando archivo"
+        aria-valuetext="Carga en curso"
+      >
+        <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
       </div>
+    }
+    @if (firma() && isEnabled && !isEnd()) {
+      <section class="space-y-3 rounded border border-gray-200 p-3 dark:border-gray-700" aria-label="Firma">
+        <canvas #signatureCanvas class="h-48 w-full touch-none rounded border border-gray-300 bg-white dark:border-gray-600"></canvas>
+        <div class="flex justify-end gap-2">
+          <button type="button" class="btn-raised inline-flex min-h-10 items-center gap-2 px-3" (click)="takeSignature()">
+            <mat-icon svgIcon="heroicons_outline:camera" aria-hidden="true"></mat-icon>
+            <span>Usar firma</span>
+          </button>
+          <button type="button" class="btn-raised inline-flex min-h-10 w-10 items-center justify-center" (click)="clearSignature()" aria-label="Limpiar firma" title="Limpiar firma">
+            <mat-icon>format_clear</mat-icon>
+          </button>
+        </div>
+      </section>
     }
     @if (files().length !== 0) {
-      <div class="text-xs">{{ structure.nombre | titlecase }}</div>
-    }
-    <!-- Tabla -->
-    @for (item of files(); track item) {
-      <div class="m-1">
-        <div class="m-4 flex justify-center">
-          @if (item.blob) {
-            <img [src]="item.blob" class="middle-width"
-              (load)="validateOrientationHandler($event.target, item)" [name]="item.url" />
+      <section class="space-y-2" [attr.aria-label]="'Archivos de ' + structure.nombre">
+        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ structure.nombre | titlecase }}</h3>
+        <ul class="space-y-2">
+          @for (item of files(); track item) {
+            <li class="overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+              @if (item.blob || (!item.blob && item.url && isImage(item.url))) {
+                <div class="flex max-h-72 items-center justify-center bg-gray-50 p-3 dark:bg-gray-900">
+                  @if (item.blob) {
+                    <img
+                      [src]="item.blob"
+                      class="max-h-64 max-w-full object-contain"
+                      [alt]="item.url"
+                      (load)="validateOrientationHandler($event.target, item)"
+                    />
+                  } @else {
+                    <img
+                      [src]="item.url | imageFormat"
+                      class="max-h-64 max-w-full object-contain"
+                      [alt]="item.url"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  }
+                </div>
+              }
+              <div class="flex min-w-0 items-center gap-2 border-t border-gray-200 px-3 py-2 dark:border-gray-700">
+                @if (item.isLoading) {
+                  <div class="h-1 min-w-0 flex-1 overflow-hidden rounded bg-gray-200 dark:bg-gray-700" role="progressbar" [attr.aria-label]="'Cargando ' + item.url" aria-valuetext="Carga en curso">
+                    <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
+                  </div>
+                } @else {
+                  <button type="button" class="btn-icon" (click)="openImage(item)" [attr.aria-label]="'Abrir o descargar ' + item.url" [title]="'Abrir o descargar ' + item.url">
+                    <mat-icon aria-hidden="true">file_download</mat-icon>
+                  </button>
+                  @if (isEnabled) {
+                    <button type="button" class="btn-icon text-red-600" (click)="deleteFile(item)" [attr.aria-label]="'Eliminar ' + item.url" [title]="'Eliminar ' + item.url">
+                      <mat-icon aria-hidden="true">delete</mat-icon>
+                    </button>
+                  }
+                }
+                <span class="min-w-0 flex-1 truncate text-sm text-gray-700 dark:text-gray-200" [title]="item.url">{{ item.url }}</span>
+              </div>
+            </li>
           }
-          @if (!item.blob && item.url && isImage(item.url)) {
-            <img src="{{ item.url | imageFormat }}" class="middle-width"
-              [name]="item.url" />
-          }
-        </div>
-        <div class="flex">
-          @if (item.isLoading) {
-            <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-              <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
-            </div>
-          }
-          @if (!item.isLoading) {
-            <mat-icon class="mx-4 cursor-pointer" (click)="openImage(item)">file_download</mat-icon>
-          }
-          @if (isEnabled) {
-            <mat-icon color="warn" (click)="deleteFile(item)" class="mx-1 cursor-pointer">cancel</mat-icon>
-          }
-          <div class="line-clamp-1 mx-2">
-            <a class="mx-0.5 cursor-pointer text-primary" (click)="this.openImage(item)">{{ item.url }}</a>
-          </div>
-        </div>
-      </div>
+        </ul>
+      </section>
     }
   </div>

@@ -12,7 +12,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 @Component({
     selector: 'app-web-service-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, ProcessSelectorComponent],
     templateUrl: './web-service-form.component.html',
 })
 export class WebServiceFormComponent implements OnInit {

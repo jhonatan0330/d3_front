@@ -79,11 +79,13 @@ export class LayoutService {
           );
         }
 
+        this.carouselService.loadFromOrganization(organization);
+        
         if (this.company() && this.company().llaveTabla === organization?.llaveTabla) {
           this.company().propiedades = organization.propiedades;
           return;
         }
-        this.carouselService.loadFromOrganization(organization);
+        
 
       },
       error: () => {

@@ -11,15 +11,11 @@
       <!-- Filtros Web Services -->
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Nombre</mat-label>
-            <input matInput [(ngModel)]="wsFilter.nombre" (ngModelChange)="onWsFilterChange()" placeholder="Filtrar por nombre" />
+          <mat-form-field appearance="outline" class="w-full sm:col-span-2">
+            <mat-label>Nombre o Código</mat-label>
+            <input matInput [(ngModel)]="wsFilter.filtroParametro" (ngModelChange)="onWsFilterInput()" placeholder="Filtrar por nombre o código" />
           </mat-form-field>
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Código</mat-label>
-            <input matInput [(ngModel)]="wsFilter.codigo" (ngModelChange)="onWsFilterChange()" placeholder="Filtrar por código" />
-          </mat-form-field>
-          <div class="w-full"><app-process-selector [(ngModel)]="wsFilter.proceso" [label]="''" placeholder="Filtrar por proceso" (ngModelChange)="onWsFilterChange()"></app-process-selector></div>
+           <div class="w-full"><app-process-selector [(ngModel)]="wsFilter.proceso" [label]="''" placeholder="Filtrar por proceso" (ngModelChange)="onWsFilterChange()"></app-process-selector></div>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Estado</mat-label>
             <mat-select [(ngModel)]="wsFilter.estado" (ngModelChange)="onWsFilterChange()">

@@ -51,6 +51,7 @@ export class WebServiceListComponent implements OnInit, AfterViewInit, OnDestroy
     wsCurrentPage = signal(0);
     wsHasMore = signal(true);
     wsFilter: WebServiceFilterDTO = { estado: 'A', nombre: '', codigo: '', proceso: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25, filtroParametro: '', llaveTabla: '' };
+    private debounceTimer: any;
 
     ngOnInit(): void {
         this.loadWsNext();
@@ -63,6 +64,7 @@ export class WebServiceListComponent implements OnInit, AfterViewInit, OnDestroy
 
     ngOnDestroy(): void {
         this.wsObserver?.disconnect();
+        clearTimeout(this.debounceTimer);
     }
 
     loadWsNext(): void {
@@ -93,6 +95,7 @@ export class WebServiceListComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     onWsFilterChange(): void { this.reload(); }
+    onWsFilterInput(): void { clearTimeout(this.debounceTimer); this.debounceTimer = setTimeout(() => { this.reload(); }, 200); }
 
     openForm(item?: WebServiceDTO): void {
         const dialogRef = this.dialog.open(WebServiceFormComponent, {
