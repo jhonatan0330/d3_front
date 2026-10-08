@@ -50,6 +50,17 @@
             </div>
           </mat-tab>
 
+          <!-- Tab Estados -->
+          <mat-tab label="Estados ({{ process.estados?.length || 0 }})">
+            <div class="p-4 h-full">
+              <app-process-state-list
+                [processKey]="process.llaveTabla"
+                [process]="process"
+                (stateSaved)="onStateSaved($event)">
+              </app-process-state-list>
+            </div>
+          </mat-tab>
+
           <!-- Tab Transiciones -->
           <mat-tab label="Transiciones ({{ process.transiciones?.length || 0 }})">
             <div class="p-4 h-full">

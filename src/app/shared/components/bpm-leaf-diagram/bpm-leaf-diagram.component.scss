@@ -1,11 +1,16 @@
 .bpm-leaf-dialog {
   display: flex;
   flex-direction: column;
+  height: min(84vh, 760px);
   min-height: 400px;
-  max-height: 84vh;
   padding: 18px;
   background: #fff;
   overflow: hidden;
+}
+
+.bpm-leaf-dialog bpm-canvas {
+  flex: 1;
+  min-height: 0;
 }
 
 .dialog-header {

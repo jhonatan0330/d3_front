@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import {
+    BPM_EDGE_COLORS,
     BpmCanvasAction,
     BpmCanvasEdge,
+    BpmCanvasLegendItem,
     BpmCanvasMode,
     BpmCanvasNode,
     BpmCanvasScene,
@@ -13,13 +16,50 @@ const CARD_WIDTH = 250;
 const CARD_GAP_X = 112;
 const CARD_GAP_Y = 28;
 const CANVAS_PADDING = 56;
+const TREE_PAD = 10;
+const TREE_PAD_H = 16;
+const SHAPE_TOP = 2;
+const SHAPE_R = 10;
+const SHAPE_HALF_W = 12;
+const SHAPE_SLOT = 50;
+const SHAPE_HEIGHT = SHAPE_TOP + SHAPE_R * 2 + 42;
+const ICON_SLOT = 90;
+const ICON_TOP = 4;
+const ICON_SIZE = 30;
+const ICON_TITLE_Y = 50;
+const ICON_META_Y = 67;
+const ICON_HEIGHT = 74;
+
+const ICON_PATHS: Record<string, string> = {
+    building: 'M4 2h16v20H4zM10 16h4v6h-4zM7 5h3v3H7zM14 5h3v3h-3zM7 11h3v3H7zM14 11h3v3h-3z',
+    folder: 'M2 4h7l2 3h11v13H2z',
+    process: 'M4 4h16v16H4zM9 9l6 3-6 3z',
+    state: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8z',
+    transition: 'M2 10h13V6l7 6-7 6v-4H2z',
+    document: 'M5 2h9l5 5v15H5zM8 11h9v1.6H8zM8 15h9v1.6H8z',
+    field: 'M3 6h18v12H3zM5 8h14v8H5z',
+    report: 'M4 20V10h4v10zM10 20V4h4v16zM16 20v-7h4v7z',
+    person: 'M12 3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zM3 21c0-5 4-8.5 9-8.5s9 3.5 9 8.5z',
+    api: 'M8 6 2 12l6 6 1.6-1.6L5.2 12 9.6 7.6zM16 6l6 6-6 6-1.6-1.6L18.8 12l-4.4-4.4zM13.8 5l-4 14h2.4l4-14z',
+    message: 'M2 4h20v13H9l-7 4.5z',
+    diamond: 'M12 2 22 12 12 22 2 12zM12 6.5 17.5 12 12 17.5 6.5 12z',
+};
+
+interface TreeFlowLayout {
+    colOf: Map<string, number>;
+    colX: Map<number, number>;
+    rowOf: Map<string, number>;
+    blockW: number;
+    blockH: number;
+    returnCount: number;
+}
 
 let canvasSequence = 0;
 
 @Component({
     selector: 'bpm-canvas',
     standalone: true,
-    imports: [],
+    imports: [NgTemplateOutlet],
     templateUrl: './bpm-canvas.component.html',
     styleUrls: ['./bpm-canvas.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,8 +68,13 @@ export class BpmCanvasComponent {
     readonly mode = input<BpmCanvasMode>('flow');
     readonly nodes = input<BpmCanvasNode[]>([]);
     readonly edges = input<BpmCanvasEdge[]>([]);
+    readonly legend = input<BpmCanvasLegendItem[]>([]);
     readonly nodeActivated = output<BpmCanvasNode>();
     readonly actionActivated = output<BpmCanvasAction>();
+    readonly nodeToggle = output<{ node: BpmCanvasNode; expanded: boolean }>();
+    readonly nodeProperties = output<BpmCanvasNode>();
+    readonly nodeModal = output<BpmCanvasNode>();
+    readonly edgeActivated = output<BpmCanvasEdge>();
 
     readonly expandedNodeIds = signal<Set<string> | null>(null);
     readonly selectedNodeId = signal<string | null>(null);
@@ -38,6 +83,7 @@ export class BpmCanvasComponent {
     readonly panY = signal(0);
     readonly isPanning = signal(false);
     readonly markerId = `bpm-canvas-arrow-${++canvasSequence}`;
+    readonly coloresArista = BPM_EDGE_COLORS;
     readonly scene = computed(() => this.buildScene(
         this.mode(),
         this.nodes(),
@@ -45,10 +91,69 @@ export class BpmCanvasComponent {
         this.expandedNodeIds(),
     ));
 
+    private readonly viewport = viewChild<ElementRef<HTMLDivElement>>('viewport');
+    private pendingCenterId: string | null = null;
+    private pendingCenterNodes: BpmCanvasNode[] | null = null;
+
+    private readonly centerOnExpand = effect(() => {
+        const scene = this.scene();
+        const nodes = this.nodes();
+        const id = this.pendingCenterId;
+        if (!id) return;
+        const node = scene.nodes.find(item => item.id === id);
+        if (!node) {
+            this.pendingCenterId = null;
+            this.pendingCenterNodes = null;
+            return;
+        }
+        if (node.childCount === 0 && nodes === this.pendingCenterNodes) return;
+        this.pendingCenterId = null;
+        this.pendingCenterNodes = null;
+        this.centerNode(node);
+    });
+
     private panOrigin: { pointerId: number; x: number; y: number } | null = null;
 
     zoomPercent(): number {
         return Math.round(this.scale() * 100);
+    }
+
+    iconPath(name?: string): string {
+        return name ? ICON_PATHS[name] ?? '' : '';
+    }
+
+    markerPara(color?: string): string {
+        return color ? `${this.markerId}-${color.replace('#', '')}` : this.markerId;
+    }
+
+    headerRight(node: BpmCanvasSceneNode): number {
+        return Math.min(node.width, CARD_WIDTH);
+    }
+
+    readonly shapeR = SHAPE_R;
+    readonly shapeCy = SHAPE_TOP + SHAPE_R;
+    readonly shapeTitleY = SHAPE_TOP + SHAPE_R * 2 + 18;
+    readonly shapeMetaY = SHAPE_TOP + SHAPE_R * 2 + 35;
+
+    diamondPoints(node: BpmCanvasSceneNode): string {
+        const cx = node.width / 2;
+        const mid = SHAPE_TOP + SHAPE_R;
+        return `${cx},${SHAPE_TOP} ${cx + SHAPE_HALF_W},${mid} ${cx},${SHAPE_TOP + SHAPE_R * 2} ${cx - SHAPE_HALF_W},${mid}`;
+    }
+
+    iconoCentrado(node: BpmCanvasSceneNode): string {
+        const x = node.width / 2 - ICON_SIZE / 2;
+        return `translate(${x}, ${ICON_TOP}) scale(${ICON_SIZE / 24})`;
+    }
+
+    yTitulo(node: BpmCanvasSceneNode): number {
+        if (node.shape === 'icon') return ICON_TITLE_Y;
+        return node.shape ? this.shapeTitleY : 25;
+    }
+
+    yMetadata(node: BpmCanvasSceneNode, index: number): number {
+        if (node.shape === 'icon') return ICON_META_Y;
+        return node.shape ? this.shapeMetaY : 66 + index * 19;
     }
 
     zoomIn(): void {
@@ -63,6 +168,16 @@ export class BpmCanvasComponent {
         this.scale.set(1);
         this.panX.set(0);
         this.panY.set(0);
+    }
+
+    private centerNode(node: BpmCanvasSceneNode): void {
+        const viewport = this.viewport()?.nativeElement;
+        if (!viewport) return;
+        const scale = this.scale();
+        const centerX = node.x + node.width / 2;
+        const centerY = node.y + node.height / 2;
+        this.panX.set(Math.round(viewport.clientWidth / 2 + viewport.scrollLeft - centerX * scale));
+        this.panY.set(Math.round(viewport.clientHeight / 2 + viewport.scrollTop - centerY * scale));
     }
 
     onWheel(event: WheelEvent): void {
@@ -105,6 +220,65 @@ export class BpmCanvasComponent {
         this.activateNode(node);
     }
 
+    activateProperties(node: BpmCanvasSceneNode, event: Event): void {
+        event.stopPropagation();
+        this.selectedNodeId.set(node.id);
+        this.nodeProperties.emit(node);
+    }
+
+    activatePropertiesFromKeyboard(node: BpmCanvasSceneNode, event: KeyboardEvent): void {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        this.activateProperties(node, event);
+    }
+
+    activateModal(node: BpmCanvasSceneNode, event: Event): void {
+        event.stopPropagation();
+        this.selectedNodeId.set(node.id);
+        this.nodeModal.emit(node);
+    }
+
+    activateModalFromKeyboard(node: BpmCanvasSceneNode, event: KeyboardEvent): void {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        this.activateModal(node, event);
+    }
+
+    controlX(node: BpmCanvasSceneNode, control: 'expand' | 'properties' | 'modal'): number {
+        const visible: string[] = [];
+        if (node.childCount > 0 || node.hasChildren) visible.push('expand');
+        if (node.hasProperties) visible.push('properties');
+        if (node.modalAction) visible.push('modal');
+        const index = visible.indexOf(control);
+        return this.headerRight(node) - 30 - (index < 0 ? 0 : index) * 28;
+    }
+
+    modalLabel(node: BpmCanvasSceneNode): string {
+        switch (node.modalAction) {
+            case 'plantilla':
+                return 'plantilla';
+            case 'webservice':
+                return 'web service';
+            case 'mensaje':
+                return 'mensaje';
+            default:
+                return 'acción';
+        }
+    }
+
+    modalGlyph(node: BpmCanvasSceneNode): string {
+        switch (node.modalAction) {
+            case 'plantilla':
+                return '▤';
+            case 'webservice':
+                return '⚙';
+            case 'mensaje':
+                return '✉';
+            default:
+                return '•';
+        }
+    }
+
     activateAction(action: BpmCanvasAction, event: Event): void {
         event.stopPropagation();
         this.actionActivated.emit(action);
@@ -113,15 +287,41 @@ export class BpmCanvasComponent {
     activateActionFromKeyboard(action: BpmCanvasAction, event: KeyboardEvent): void {
         if (event.key !== 'Enter' && event.key !== ' ') return;
         event.preventDefault();
-        this.actionActivated.emit(action);
+        this.activateAction(action, event);
+    }
+
+    hasEdgeAction(edge: BpmCanvasEdge): boolean {
+        return !!(edge.source as { plantilla?: string } | undefined)?.plantilla;
+    }
+
+    edgeTitle(edge: BpmCanvasEdge): string {
+        const plantilla = (edge.source as { plantillaNombre?: string } | undefined)?.plantillaNombre;
+        return plantilla ? `${edge.label ?? ''} — Plantilla: ${plantilla}` : edge.label ?? '';
+    }
+
+    activateEdge(edge: BpmCanvasEdge, event: Event): void {
+        if (!this.hasEdgeAction(edge)) return;
+        event.stopPropagation();
+        this.edgeActivated.emit(edge);
+    }
+
+    activateEdgeFromKeyboard(edge: BpmCanvasEdge, event: KeyboardEvent): void {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        this.activateEdge(edge, event);
     }
 
     toggleNode(node: BpmCanvasSceneNode, event: Event): void {
         event.stopPropagation();
         const next = new Set(this.activeExpandedNodeIds());
-        if (next.has(node.id)) next.delete(node.id);
-        else next.add(node.id);
+        const expanded = !next.has(node.id);
+        if (expanded) {
+            next.add(node.id);
+            this.pendingCenterId = node.id;
+            this.pendingCenterNodes = this.nodes();
+        } else next.delete(node.id);
         this.expandedNodeIds.set(next);
+        this.nodeToggle.emit({ node, expanded });
     }
 
     toggleNodeFromKeyboard(node: BpmCanvasSceneNode, event: KeyboardEvent): void {
@@ -183,67 +383,231 @@ export class BpmCanvasComponent {
         if (!roots.length) roots.push(nodes[0]);
 
         const expanded = expandedOverride || new Set(roots.map(node => node.id));
-        const visible = new Map<string, { node: BpmCanvasNode; depth: number }>();
-        const visit = (node: BpmCanvasNode, depth: number, ancestry: Set<string>): void => {
-            if (visible.has(node.id) || ancestry.has(node.id)) return;
-            visible.set(node.id, { node, depth });
-            if (!expanded.has(node.id)) return;
-            const nextAncestry = new Set(ancestry).add(node.id);
-            for (const child of children.get(node.id) || []) visit(child, depth + 1, nextAncestry);
+        const sceneNodes: BpmCanvasSceneNode[] = [];
+        const placed = new Set<string>();
+        const sizeById = new Map<string, { width: number; height: number }>();
+        const sizing = new Set<string>();
+        const flowLayoutById = new Map<string, TreeFlowLayout>();
+        const flowBlockById = new Map<string, { x: number; y: number; returnBaseY: number }>();
+        const flowParents: BpmCanvasNode[] = [];
+
+        const subtreeSize = (node: BpmCanvasNode): { width: number; height: number } => {
+            const memo = sizeById.get(node.id);
+            if (memo) return memo;
+            if (sizing.has(node.id)) return { width: this.nodeWidth(node), height: this.nodeHeight(node) };
+            sizing.add(node.id);
+            const kids = children.get(node.id) || [];
+            const ownHeight = this.nodeHeight(node);
+            let size = { width: this.nodeWidth(node), height: ownHeight };
+            if (expanded.has(node.id) && kids.length) {
+                if (node.childEdges !== undefined) {
+                    const flow = flowLayoutOf(node, kids);
+                    const extra = flow.returnCount * 22 + 16;
+                    size = {
+                        width: CARD_WIDTH + TREE_PAD_H + flow.blockW + TREE_PAD,
+                        height: Math.max(ownHeight, flow.blockH + extra) + TREE_PAD * 2,
+                    };
+                } else {
+                    const m = medidasHijos(kids);
+                    size = {
+                        width: CARD_WIDTH + TREE_PAD_H + m.width + TREE_PAD,
+                        height: Math.max(ownHeight, m.height) + TREE_PAD * 2,
+                    };
+                }
+            }
+            sizing.delete(node.id);
+            sizeById.set(node.id, size);
+            return size;
         };
-        roots.forEach(root => visit(root, 0, new Set()));
-        for (const node of nodes) {
-            if (!visible.has(node.id)) visit(node, 0, new Set());
+
+        const medidasHijos = (kids: BpmCanvasNode[]): {
+            enFila: BpmCanvasNode[];
+            enColumna: BpmCanvasNode[];
+            filaWidth: number;
+            filaHeight: number;
+            colHeight: number;
+            width: number;
+            height: number;
+            gap: number;
+        } => {
+            const enFila = kids.filter(kid => kid.horizontal);
+            const enColumna = kids.filter(kid => !kid.horizontal);
+            let filaWidth = 0;
+            let filaHeight = 0;
+            for (const kid of enFila) {
+                const kidSize = subtreeSize(kid);
+                filaWidth += kidSize.width + CARD_GAP_X;
+                filaHeight = Math.max(filaHeight, kidSize.height);
+            }
+            filaWidth = Math.max(0, filaWidth - CARD_GAP_X);
+            let colHeight = -CARD_GAP_Y;
+            let colWidth = 0;
+            for (const kid of enColumna) {
+                const kidSize = subtreeSize(kid);
+                colHeight += kidSize.height + CARD_GAP_Y;
+                colWidth = Math.max(colWidth, kidSize.width);
+            }
+            if (!enColumna.length) colHeight = 0;
+            const gap = filaHeight && colHeight ? CARD_GAP_Y : 0;
+            return {
+                enFila,
+                enColumna,
+                filaWidth,
+                filaHeight,
+                colHeight,
+                width: Math.max(filaWidth, colWidth),
+                height: filaHeight + gap + colHeight,
+                gap,
+            };
+        };
+
+        const flowLayoutOf = (node: BpmCanvasNode, kids: BpmCanvasNode[]): TreeFlowLayout => {
+            const memo = flowLayoutById.get(node.id);
+            if (memo) return memo;
+            const kidIds = new Set(kids.map(kid => kid.id));
+            const validEdges = (node.childEdges || []).filter(edge => kidIds.has(edge.from) && kidIds.has(edge.to));
+            const incoming = new Map(kids.map(kid => [kid.id, 0]));
+            const outgoing = new Map<string, string[]>();
+            for (const edge of validEdges) {
+                incoming.set(edge.to, (incoming.get(edge.to) || 0) + 1);
+                const list = outgoing.get(edge.from) || [];
+                list.push(edge.to);
+                outgoing.set(edge.from, list);
+            }
+            const depthOf = new Map<string, number>();
+            let queue = kids.filter(kid => incoming.get(kid.id) === 0).map(kid => kid.id);
+            if (!queue.length) queue = [kids[0].id];
+            for (const rootId of queue) depthOf.set(rootId, 0);
+            for (let index = 0; index < queue.length; index++) {
+                const from = queue[index];
+                const nextDepth = (depthOf.get(from) || 0) + 1;
+                for (const to of outgoing.get(from) || []) {
+                    if (depthOf.has(to)) continue;
+                    depthOf.set(to, nextDepth);
+                    queue.push(to);
+                }
+            }
+            const order = kids
+                .map((kid, kidIndex) => ({ kid, kidIndex }))
+                .sort((a, b) => {
+                    const da = depthOf.get(a.kid.id);
+                    const db = depthOf.get(b.kid.id);
+                    if (da === undefined && db === undefined) return a.kidIndex - b.kidIndex;
+                    if (da === undefined) return 1;
+                    if (db === undefined) return -1;
+                    return da - db || a.kidIndex - b.kidIndex;
+                });
+            const colOf = new Map<string, number>();
+            const rowOf = new Map<string, number>();
+            const colX = new Map<number, number>();
+            let blockW = 0;
+            let blockH = 0;
+            let xCursor = 0;
+            for (const [position, entry] of order.entries()) {
+                colOf.set(entry.kid.id, position);
+                rowOf.set(entry.kid.id, 0);
+                colX.set(position, xCursor);
+                const kidSize = subtreeSize(entry.kid);
+                blockH = Math.max(blockH, kidSize.height);
+                xCursor += kidSize.width + CARD_GAP_X;
+            }
+            blockW = Math.max(0, xCursor - CARD_GAP_X);
+            let returnCount = 0;
+            for (const edge of validEdges) {
+                const fromCol = colOf.get(edge.from) ?? 0;
+                const toCol = colOf.get(edge.to) ?? 0;
+                if (toCol !== fromCol + 1) returnCount++;
+            }
+            const layout: TreeFlowLayout = { colOf, colX, rowOf, blockW, blockH, returnCount };
+            flowLayoutById.set(node.id, layout);
+            return layout;
+        };
+
+        const place = (node: BpmCanvasNode, x: number, y: number, depth: number, ancestry: Set<string>): void => {
+            if (placed.has(node.id) || ancestry.has(node.id)) return;
+            placed.add(node.id);
+            const kids = children.get(node.id) || [];
+            const size = subtreeSize(node);
+            const sceneNode: BpmCanvasSceneNode = {
+                ...node,
+                x,
+                y,
+                width: size.width,
+                height: size.height,
+                depth,
+                childCount: kids.length,
+                expanded: expanded.has(node.id),
+            };
+            sceneNodes.push(sceneNode);
+            if (!expanded.has(node.id) || !kids.length) return;
+            const nextAncestry = new Set(ancestry).add(node.id);
+            if (node.childEdges !== undefined) {
+                const flow = flowLayoutOf(node, kids);
+                const extra = flow.returnCount * 22 + 16;
+                const blockX = x + CARD_WIDTH + TREE_PAD_H;
+                const blockY = y + (size.height - (flow.blockH + extra)) / 2;
+                flowBlockById.set(node.id, { x: blockX, y: blockY, returnBaseY: blockY + flow.blockH + 12 });
+                for (const kid of kids) {
+                    const col = flow.colOf.get(kid.id) ?? 0;
+                    const kidX = blockX + (flow.colX.get(col) ?? 0);
+                    const kidY = blockY + (flow.rowOf.get(kid.id) ?? 0);
+                    place(kid, kidX, kidY, depth + 1 + col, nextAncestry);
+                }
+                flowParents.push(node);
+                return;
+            }
+            const m = medidasHijos(kids);
+            const childX = x + CARD_WIDTH + TREE_PAD_H;
+            let childY = y + (size.height - m.height) / 2;
+            let filaX = childX;
+            for (const kid of m.enFila) {
+                const kidSize = subtreeSize(kid);
+                place(kid, filaX, childY + (m.filaHeight - kidSize.height) / 2, depth + 1, nextAncestry);
+                filaX += kidSize.width + CARD_GAP_X;
+            }
+            if (m.filaHeight) childY += m.filaHeight + m.gap;
+            for (const kid of m.enColumna) {
+                const kidSize = subtreeSize(kid);
+                place(kid, childX, childY, depth + 1, nextAncestry);
+                childY += kidSize.height + CARD_GAP_Y;
+            }
+        };
+
+        let rootX = CANVAS_PADDING;
+        for (const root of roots) {
+            if (placed.has(root.id)) continue;
+            const size = subtreeSize(root);
+            place(root, rootX, CANVAS_PADDING, 0, new Set());
+            rootX += size.width + CARD_GAP_X;
         }
 
-        const columns = new Map<number, Array<{ node: BpmCanvasNode; depth: number }>>();
-        for (const item of visible.values()) {
-            const column = columns.get(item.depth) || [];
-            column.push(item);
-            columns.set(item.depth, column);
-        }
-        const sceneNodes: BpmCanvasSceneNode[] = [];
-        const positionById = new Map<string, BpmCanvasSceneNode>();
-        let maxDepth = 0;
-        let maxBottom = CANVAS_PADDING;
-        for (const [depth, column] of columns) {
-            maxDepth = Math.max(maxDepth, depth);
-            let y = CANVAS_PADDING;
-            for (const { node } of column) {
-                const height = this.nodeHeight(node);
-                const childCount = (children.get(node.id) || []).length;
-                const sceneNode: BpmCanvasSceneNode = {
-                    ...node,
-                    x: CANVAS_PADDING + depth * (CARD_WIDTH + CARD_GAP_X),
-                    y,
-                    width: CARD_WIDTH,
-                    height,
-                    depth,
-                    childCount,
-                    expanded: expanded.has(node.id),
-                };
-                sceneNodes.push(sceneNode);
-                positionById.set(node.id, sceneNode);
-                y += height + CARD_GAP_Y;
-                maxBottom = Math.max(maxBottom, y);
+        const positionById = new Map(sceneNodes.map(node => [node.id, node]));
+        const sceneEdges: BpmCanvasSceneEdge[] = [];
+        for (const parent of flowParents) {
+            const block = flowBlockById.get(parent.id);
+            const flow = flowLayoutById.get(parent.id);
+            if (!block || !flow) continue;
+            let lane = 0;
+            for (const edge of parent.childEdges || []) {
+                const from = positionById.get(edge.from);
+                const to = positionById.get(edge.to);
+                if (!from || !to) continue;
+                const isDirect = (flow.colOf.get(edge.to) ?? 0) === (flow.colOf.get(edge.from) ?? 0) + 1;
+                const returnLane = isDirect ? 0 : ++lane;
+                sceneEdges.push(this.routeEdge(edge, from, to, returnLane, isDirect ? undefined : block.returnBaseY));
             }
         }
 
-        const sceneEdges: BpmCanvasSceneEdge[] = [];
+        let maxRight = CANVAS_PADDING;
+        let maxBottom = CANVAS_PADDING;
         for (const node of sceneNodes) {
-            const parent = node.parentId ? positionById.get(node.parentId) : undefined;
-            if (!parent) continue;
-            sceneEdges.push(this.routeEdge(
-                { id: `tree:${parent.id}:${node.id}`, from: parent.id, to: node.id },
-                parent,
-                node,
-                0,
-            ));
+            maxRight = Math.max(maxRight, node.x + node.width);
+            maxBottom = Math.max(maxBottom, node.y + node.height);
         }
         return {
             nodes: sceneNodes,
             edges: sceneEdges,
-            width: CANVAS_PADDING * 2 + (maxDepth + 1) * CARD_WIDTH + maxDepth * CARD_GAP_X,
+            width: maxRight + CANVAS_PADDING,
             height: Math.max(320, maxBottom + CANVAS_PADDING),
         };
     }
@@ -283,51 +647,50 @@ export class BpmCanvasComponent {
             assignDepths();
         }
 
-        const columns = new Map<number, BpmCanvasNode[]>();
-        for (const node of nodes) {
-            const depth = depthById.get(node.id) || 0;
-            const column = columns.get(depth) || [];
-            column.push(node);
-            columns.set(depth, column);
-        }
+        const order = nodes
+            .map((node, nodeIndex) => ({ node, nodeIndex }))
+            .sort((a, b) => {
+                const da = depthById.get(a.node.id) ?? Number.MAX_SAFE_INTEGER;
+                const db = depthById.get(b.node.id) ?? Number.MAX_SAFE_INTEGER;
+                return da - db || a.nodeIndex - b.nodeIndex;
+            });
         const sceneNodes: BpmCanvasSceneNode[] = [];
         const positionById = new Map<string, BpmCanvasSceneNode>();
-        let maxDepth = 0;
+        const positionOf = new Map<string, number>();
         let maxBottom = CANVAS_PADDING;
-        for (const [depth, column] of columns) {
-            maxDepth = Math.max(maxDepth, depth);
-            let y = CANVAS_PADDING;
-            for (const node of column) {
-                const sceneNode: BpmCanvasSceneNode = {
-                    ...node,
-                    x: CANVAS_PADDING + depth * (CARD_WIDTH + CARD_GAP_X),
-                    y,
-                    width: CARD_WIDTH,
-                    height: this.nodeHeight(node),
-                    depth,
-                    childCount: 0,
-                    expanded: false,
-                };
-                sceneNodes.push(sceneNode);
-                positionById.set(node.id, sceneNode);
-                y += sceneNode.height + CARD_GAP_Y;
-                maxBottom = Math.max(maxBottom, y);
-            }
+        for (const [position, entry] of order.entries()) {
+            positionOf.set(entry.node.id, position);
+            const sceneNode: BpmCanvasSceneNode = {
+                ...entry.node,
+                x: CANVAS_PADDING + position * (CARD_WIDTH + CARD_GAP_X),
+                y: CANVAS_PADDING,
+                width: CARD_WIDTH,
+                height: this.nodeHeight(entry.node),
+                depth: depthById.get(entry.node.id) ?? 0,
+                childCount: 0,
+                expanded: false,
+            };
+            sceneNodes.push(sceneNode);
+            positionById.set(entry.node.id, sceneNode);
+            maxBottom = Math.max(maxBottom, sceneNode.y + sceneNode.height);
         }
 
         let returnLane = 0;
         const sceneEdges = edges.map(edge => {
             const from = positionById.get(edge.from)!;
             const to = positionById.get(edge.to)!;
-            const isReturn = to.depth <= from.depth;
-            const lane = isReturn ? ++returnLane : 0;
-            return this.routeEdge(edge, from, to, lane, isReturn ? maxBottom + 20 : undefined);
+            const direct = (positionOf.get(edge.to) ?? 0) === (positionOf.get(edge.from) ?? 0) + 1;
+            const lane = direct ? 0 : ++returnLane;
+            return this.routeEdge(edge, from, to, lane, direct ? undefined : maxBottom + 20);
         });
         const canvasHeight = Math.max(320, maxBottom + CANVAS_PADDING + returnLane * 22);
+        const canvasWidth = order.length
+            ? CANVAS_PADDING * 2 + order.length * CARD_WIDTH + (order.length - 1) * CARD_GAP_X
+            : CANVAS_PADDING * 2;
         return {
             nodes: sceneNodes,
             edges: sceneEdges,
-            width: CANVAS_PADDING * 2 + (maxDepth + 1) * CARD_WIDTH + maxDepth * CARD_GAP_X,
+            width: canvasWidth,
             height: canvasHeight,
         };
     }
@@ -339,19 +702,47 @@ export class BpmCanvasComponent {
         returnLane: number,
         returnBaseY?: number,
     ): BpmCanvasSceneEdge {
-        const startX = from.x + from.width;
-        const startY = from.y + from.height / 2;
-        const endX = to.x;
-        const endY = to.y + to.height / 2;
+        const startX = this.edgeStartX(from);
+        const startY = this.edgeY(from);
+        const endX = this.edgeEndX(to);
+        const endY = this.edgeY(to);
         if (returnBaseY !== undefined) {
             const routeY = returnBaseY + (returnLane - 1) * 22;
-            return { ...edge, path: `M ${startX} ${startY} V ${routeY} H ${endX} V ${endY}`, labelX: (startX + endX) / 2, labelY: routeY - 5 };
+            const exitX = startX + 16;
+            const approachX = endX - 16;
+            return {
+                ...edge,
+                path: `M ${startX} ${startY} H ${exitX} V ${routeY} H ${approachX} V ${endY} H ${endX}`,
+                labelX: (startX + endX) / 2,
+                labelY: routeY - 5,
+            };
         }
         const midX = (startX + endX) / 2;
         return { ...edge, path: `M ${startX} ${startY} H ${midX} V ${endY} H ${endX}`, labelX: midX, labelY: Math.min(startY, endY) - 9 };
     }
 
+    private nodeWidth(node: BpmCanvasNode): number {
+        if (node.shape === 'icon') return ICON_SLOT;
+        return node.shape ? SHAPE_SLOT : CARD_WIDTH;
+    }
+
+    private edgeStartX(node: BpmCanvasSceneNode): number {
+        if (!node.shape) return node.x + node.width;
+        return node.x + node.width / 2 + (node.shape === 'circle' ? SHAPE_R : SHAPE_HALF_W);
+    }
+
+    private edgeEndX(node: BpmCanvasSceneNode): number {
+        if (!node.shape) return node.x;
+        return node.x + node.width / 2 - (node.shape === 'circle' ? SHAPE_R : SHAPE_HALF_W);
+    }
+
+    private edgeY(node: BpmCanvasSceneNode): number {
+        return node.shape ? node.y + SHAPE_TOP + SHAPE_R : node.y + node.height / 2;
+    }
+
     private nodeHeight(node: BpmCanvasNode): number {
+        if (node.shape === 'icon') return ICON_HEIGHT;
+        if (node.shape) return SHAPE_HEIGHT;
         const metadataCount = Math.min(node.metadata?.length || 0, 2);
         const actionCount = Math.min(node.actions?.length || 0, 3);
         const overflowLabelHeight = (node.actions?.length || 0) > 3 ? 18 : 0;

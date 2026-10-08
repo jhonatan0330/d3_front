@@ -1,8 +1,8 @@
 .bpm-dialog {
   display: flex;
   flex-direction: column;
-  max-width: 94vw;
-  max-height: 88vh;
+  width: 100%;
+  height: 100%;
   padding: 18px;
   background: #fff;
   overflow: hidden;
@@ -50,6 +50,13 @@
 }
 
 .dialog-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.dialog-body bpm-canvas {
   flex: 1;
   min-height: 0;
 }

@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   min-height: 360px;
-  height: min(68vh, 720px);
+  height: 100%;
   color: #172b3a;
   background: #f3f7f7;
   border: 1px solid #d7e2e1;
@@ -64,6 +64,35 @@
   background: #d7e2e1;
 }
 
+.canvas-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  padding: 6px 10px;
+  border-bottom: 1px solid #d7e2e1;
+  background: #fff;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #526a78;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.legend-icon {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.legend-icon path {
+  fill: #64748b;
+}
+
 .canvas-viewport {
   flex: 1;
   min-height: 0;
@@ -110,6 +139,20 @@
   font-size: 10px;
 }
 
+.edge-label.is-link {
+  cursor: pointer;
+}
+
+.edge-label.is-link rect {
+  fill: #f6f2ff;
+  stroke: #7c5cd6;
+}
+
+.edge-label.is-link:hover rect,
+.edge-label.is-link:focus-visible rect {
+  stroke: #5b3fbf;
+}
+
 .node-card {
   fill: #fff;
   stroke: #cbd9d8;
@@ -128,6 +171,32 @@
   outline: none;
 }
 
+.node-hit {
+  fill: transparent;
+  stroke: none;
+  cursor: pointer;
+}
+
+.node-shape {
+  fill: #fff;
+  stroke: #93a8ad;
+  stroke-width: 1.6;
+  transition: stroke 140ms ease;
+}
+
+.diagram-node:hover .node-shape,
+.diagram-node.is-selected .node-shape,
+.diagram-node:focus-within .node-shape {
+  stroke: #147d78;
+  stroke-width: 2.4;
+}
+
+.diagram-node:hover .icon-center path,
+.diagram-node.is-selected .icon-center path,
+.diagram-node:focus-within .icon-center path {
+  fill: #147d78;
+}
+
 .node-accent {
   fill: #218b83;
   pointer-events: none;
@@ -135,6 +204,18 @@
 
 .is-parent .node-accent {
   fill: #3977a1;
+}
+
+.is-person .node-accent {
+  fill: #7c5cd6;
+}
+
+.is-parent .node-card {
+  fill: #fbfefe;
+}
+
+.node-glyph path {
+  fill: #64748b;
 }
 
 .node-title {
@@ -174,7 +255,9 @@
 }
 
 .node-action,
-.expand-control {
+.expand-control,
+.properties-control,
+.modal-control {
   cursor: pointer;
   outline: none;
 }
@@ -186,7 +269,9 @@
 }
 
 .node-action:focus-visible,
-.expand-control:focus-visible {
+.expand-control:focus-visible,
+.properties-control:focus-visible,
+.modal-control:focus-visible {
   filter: drop-shadow(0 0 2px #147d78);
 }
 
@@ -195,12 +280,16 @@
   font-size: 9px;
 }
 
-.expand-control circle {
+.expand-control circle,
+.properties-control circle,
+.modal-control circle {
   fill: #eaf2f5;
   stroke: #c4d6dc;
 }
 
-.expand-control text {
+.expand-control text,
+.properties-control text,
+.modal-control text {
   fill: #315d70;
   font-size: 14px;
   font-weight: 700;
@@ -216,7 +305,6 @@
 
 @media (max-width: 640px) {
   .bpm-canvas {
-    height: 62vh;
     min-height: 320px;
   }
 

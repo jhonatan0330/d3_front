@@ -35,6 +35,7 @@ export class ProcesoEstadoDTO extends BasicParamDTO {
     estadoDocumento: string;
     avance: number;
     nombre: string;
+    codigo: string;
     proceso: string;
     procesoNombre: string;
     transiciones: ProcesoTransicionDTO[];
@@ -252,6 +253,7 @@ export class ProcesoEstadoFilterDTO extends BasicFilterDTO {
     estadoDocumento: string;
     avance: number;
     nombre: string;
+    codigo: string;
     proceso: string;
     procesoNombre: string;
 }

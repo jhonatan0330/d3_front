@@ -4,7 +4,7 @@ import { DocumentApi } from 'app/document/document.api';
 import { DocumentoPlantillaDTO, PedidoVentaDTO, ProcesoEstadoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import { UtilsService } from 'app/document/service/utils.service';
 import { BpmCanvasComponent } from '../bpm-canvas/bpm-canvas.component';
-import { BpmCanvasAction, BpmCanvasEdge, BpmCanvasMetadata, BpmCanvasNode } from '../bpm-canvas/bpm-canvas.types';
+import { BpmCanvasAction, BpmCanvasEdge, BpmCanvasMetadata, BpmCanvasNode, BPM_EDGE_COLORS } from '../bpm-canvas/bpm-canvas.types';
 
 @Component({
     selector: 'bpm-leaf-diagram',
@@ -87,6 +87,7 @@ export class BpmLeafDiagramComponent implements OnInit {
           from,
           to,
           label: transition.nombre || transition.plantillaNombre || undefined,
+          color: BPM_EDGE_COLORS[edges.length % BPM_EDGE_COLORS.length],
         });
       }
     });
@@ -94,7 +95,6 @@ export class BpmLeafDiagramComponent implements OnInit {
     this.nodes.set(states.map(state => {
       const metadata: Array<BpmCanvasMetadata | null> = [
         state.tipo ? { label: 'Tipo', value: state.tipo } : null,
-        Number.isFinite(state.avance) ? { label: 'Avance', value: `${state.avance}%` } : null,
       ];
       return {
         id: state.llaveTabla,

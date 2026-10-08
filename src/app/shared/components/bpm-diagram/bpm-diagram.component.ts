@@ -2,12 +2,39 @@ import { Component, OnChanges, SimpleChanges, OnInit, HostListener, ChangeDetect
 
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ProcesoDTO } from 'app/document/document.types';
-import { ProcessService } from 'app/configuration/configuracion.api';
+import { ProcesoDTO, ProcesoEstadoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
+import { ProcessService, TreeConfigService } from 'app/configuration/configuracion.api';
+import { ArbolConfiguracionFilterDTO } from 'app/configuration/domain/ArbolConfiguracionFilterDTO';
+import { ArbolNodoRequestDTO } from 'app/configuration/domain/ArbolNodoRequestDTO';
+import { TreeNodeDTO } from 'app/configuration/domain/TreeNodeDTO';
+import { CONFIG_LEYENDA, etiquetaTipoConfig, iconoTipoConfig, mapTipoOrigen } from 'app/configuration/domain/config-tipo-labels';
+import { PropertyPanelComponent } from 'app/configuration/components/shared/property-panel/property-panel.component';
+import { DocumentTemplateFormComponent } from 'app/configuration/components/document-templates/document-template-form/document-template-form.component';
+import { ProcessStateFormComponent } from 'app/configuration/components/processes/process-states/process-state-form/process-state-form.component';
+import { WebServiceFormComponent } from 'app/configuration/components/web-services/web-service-form/web-service-form.component';
+import { MessageDetailComponent } from 'app/configuration/components/messages/message-detail/message-detail.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { BpmLeafDiagramComponent } from '../bpm-leaf-diagram/bpm-leaf-diagram.component';
 import { BpmCanvasComponent } from '../bpm-canvas/bpm-canvas.component';
-import { BpmCanvasNode } from '../bpm-canvas/bpm-canvas.types';
+import { BPM_EDGE_COLORS, BpmCanvasEdge, BpmCanvasLegendItem, BpmCanvasNode } from '../bpm-canvas/bpm-canvas.types';
+
+const ESTADO_TIPO_LABELS: Record<string, string> = {
+  E: 'Estado',
+  D: 'Decisión',
+  R: 'Iterador',
+  P: 'API',
+};
+
+const ESTADO_TIPO_ICONS: Record<string, string> = {
+  E: 'state',
+  D: 'diamond',
+  R: 'diamond',
+  P: 'api',
+};
+
+const ESTADO_DOC_INACTIVO = 'I';
+const ESTADO_DOC_FINALIZADO = 'C';
+const ESTADO_INICIO_LLAVE = '__inicio__';
 
 export interface Proceso {
   id: string;
@@ -42,20 +69,33 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   private dialog = inject(MatDialog);
   readonly data = inject(MAT_DIALOG_DATA, { optional: true });
   private processService = inject(ProcessService);
+  private treeConfigService = inject(TreeConfigService);
   private dialogRef = inject<MatDialogRef<BpmDiagramComponent>>(MatDialogRef);
 
   readonly canvasNodes = signal<BpmCanvasNode[]>([]);
   readonly isLoading = signal(true);
   readonly hasError = signal(false);
+  readonly cargandoHijos = signal(false);
+  private hijosCargados = new Set<string>();
+  private procesosCargados = new Map<string, TreeNodeDTO>();
   private procesoId: string | null = null;
 
   readonly proceso = input<Proceso | null>(null);
+  readonly mode = input<'process' | 'config'>('process');
   readonly width = input(600);
   readonly height = input(400);
   readonly nodeRadius = input(48);
 
   constructor() {
     this.procesoId = this.data?.procesoId || null;
+  }
+
+  get modo(): 'process' | 'config' {
+    return this.data?.mode === 'config' ? 'config' : this.mode();
+  }
+
+  get leyenda(): BpmCanvasLegendItem[] {
+    return this.modo === 'config' ? CONFIG_LEYENDA.map(item => ({ ...item })) : [];
   }
 
   // Tracks expanded nodes by id
@@ -92,7 +132,11 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {
     this.render();
-    this.loadProcessGraph();
+    if (this.modo === 'config') {
+      this.loadConfigRoot();
+    } else {
+      this.loadProcessGraph();
+    }
   }
 
   loadProcessGraph(): void {
@@ -115,7 +159,264 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
     });
   }
 
+  loadConfigRoot(): void {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+    const filtro = new ArbolConfiguracionFilterDTO();
+    filtro.profundidad = ArbolConfiguracionFilterDTO.PROFUNDIDAD_SIMPLE;
+    filtro.listarPropiedades = false;
+    this.treeConfigService.getTree(filtro).subscribe({
+      next: raiz => {
+        const ordenGrupo = (tipo?: string): number => {
+          if (tipo === TreeNodeDTO.ROL) return 0;
+          if (tipo === TreeNodeDTO.MENSAJE) return 1;
+          if (tipo === TreeNodeDTO.API) return 2;
+          return 3;
+        };
+        const hijos = [...(raiz.hijos || [])].sort((a, b) => ordenGrupo(a.tipo) - ordenGrupo(b.tipo));
+        const nodos: BpmCanvasNode[] = [];
+        nodos.push(this.mapConfigNode(raiz, null));
+        for (const hijo of hijos) {
+          const nodo = this.mapConfigNode(hijo, raiz.camino);
+          if (ordenGrupo(hijo.tipo) < 3) nodo.horizontal = true;
+          nodos.push(nodo);
+        }
+        this.canvasNodes.set(nodos);
+        this.hijosCargados = new Set([raiz.camino]);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  onNodeToggle(event: { node: BpmCanvasNode; expanded: boolean }): void {
+    if (this.modo !== 'config' || !event.expanded) return;
+    const nodo = event.node.source as TreeNodeDTO | undefined;
+    if (!nodo?.camino || !nodo.tieneHijos) return;
+    if (this.hijosCargados.has(nodo.camino)) return;
+    if (this.canvasNodes().some(n => n.parentId === nodo.camino)) {
+      this.hijosCargados.add(nodo.camino);
+      return;
+    }
+    if (nodo.tipo === TreeNodeDTO.PROCESO) {
+      this.cargarMapaProceso(nodo);
+      return;
+    }
+    this.cargandoHijos.set(true);
+    const request = new ArbolNodoRequestDTO();
+    request.camino = nodo.camino;
+    request.tipo = nodo.tipo;
+    request.llaveTabla = nodo.llaveTabla;
+    request.listarPropiedades = false;
+    this.treeConfigService.getTreeNode(request).subscribe({
+      next: respuesta => {
+        const plantillaEnFila = this.esTipoPlantilla(nodo.tipo) || nodo.tipo === TreeNodeDTO.PROCESO_MACRO;
+        const hijos = (respuesta.hijos || [])
+          .filter(hijo => hijo.tipo !== TreeNodeDTO.CAMPO)
+          .map(hijo => {
+            const hijoNodo = this.mapConfigNode(hijo, nodo.camino);
+            if (plantillaEnFila && this.esTipoPlantilla(hijo.tipo)) hijoNodo.horizontal = true;
+            return hijoNodo;
+          });
+        const vacio = hijos.length === 0;
+        if (vacio) nodo.tieneHijos = false;
+        this.canvasNodes.update(nodos => {
+          const base = vacio
+            ? nodos.map(n => (n.id === nodo.camino ? { ...n, hasChildren: false } : n))
+            : nodos;
+          return [...base, ...hijos];
+        });
+        this.hijosCargados.add(nodo.camino);
+        this.cargandoHijos.set(false);
+      },
+      error: err => {
+        this.cargandoHijos.set(false);
+        this.notification.fire({
+          title: 'Error',
+          html: err?.error?.message ?? 'No se pudieron cargar los hijos del nodo.',
+          confirmButtonText: 'Cerrar',
+        });
+      },
+    });
+  }
+
+  private cargarMapaProceso(nodo: TreeNodeDTO): void {
+    this.cargandoHijos.set(true);
+    this.processService.getProcessForGraph(nodo.llaveTabla).subscribe({
+      next: proceso => {
+        const transiciones = proceso.transiciones || [];
+        const hijos = (proceso.estados || [])
+          .filter(estado => !!estado.llaveTabla)
+          .map(estado => this.mapEstadoNode(estado, nodo.camino));
+        const aristas = this.mapTransiciones(transiciones, nodo.camino);
+        const conInicio = hijos.length > 0 && transiciones.some(t => !t.estadoPartida && !!t.estadoLLegada);
+        if (conInicio) hijos.unshift(this.mapEstadoInicioNode(nodo.camino));
+        const vacio = hijos.length === 0;
+        if (vacio) nodo.tieneHijos = false;
+        this.canvasNodes.update(nodos => {
+          const base = vacio
+            ? nodos.map(n => (n.id === nodo.camino ? { ...n, hasChildren: false } : n))
+            : nodos.map(n => (n.id === nodo.camino ? { ...n, childEdges: aristas } : n));
+          return [...base, ...hijos];
+        });
+        this.hijosCargados.add(nodo.camino);
+        this.procesosCargados.set(nodo.camino, nodo);
+        this.cargandoHijos.set(false);
+      },
+      error: err => {
+        this.cargandoHijos.set(false);
+        this.notification.fire({
+          title: 'Error',
+          html: err?.error?.message ?? 'No se pudo cargar el mapa del proceso.',
+          confirmButtonText: 'Cerrar',
+        });
+      },
+    });
+  }
+
+  private estadoNodeId(camino: string, llave: string): string {
+    return `${camino}/${TreeNodeDTO.ESTADO}:${llave}`;
+  }
+
+  private mapEstadoNode(estado: ProcesoEstadoDTO, camino: string): BpmCanvasNode {
+    const tipo = estado.tipo || 'E';
+    return {
+      id: this.estadoNodeId(camino, estado.llaveTabla),
+      title: estado.nombre || estado.llaveTabla,
+      parentId: camino,
+      metadata: [
+        { label: 'Código', value: estado.codigo || (ESTADO_TIPO_LABELS[tipo] ?? tipo) },
+      ],
+      source: estado,
+      shape: tipo === 'E' ? 'circle' : 'diamond',
+      shapeFill: this.estadoShapeFill(estado),
+      icon: ESTADO_TIPO_ICONS[tipo] ?? 'state',
+    };
+  }
+
+  private estadoShapeFill(estado: ProcesoEstadoDTO): string | undefined {
+    if (estado.estadoDocumento === ESTADO_DOC_INACTIVO) return '#ff0000';
+    if (estado.estadoDocumento === ESTADO_DOC_FINALIZADO) return '#00ff00';
+    return undefined;
+  }
+
+  private estadoInicioId(camino: string): string {
+    return `${camino}/${TreeNodeDTO.ESTADO}:${ESTADO_INICIO_LLAVE}`;
+  }
+
+  private mapEstadoInicioNode(camino: string): BpmCanvasNode {
+    return {
+      id: this.estadoInicioId(camino),
+      title: '',
+      parentId: camino,
+      metadata: [],
+      shape: 'circle',
+      shapeFill: '#000000',
+    };
+  }
+
+  private mapTransiciones(transiciones: ProcesoTransicionDTO[], camino: string): BpmCanvasEdge[] {
+    const aristas: BpmCanvasEdge[] = [];
+    const vistos = new Set<string>();
+    for (const transicion of transiciones) {
+      if (!transicion.estadoLLegada) continue;
+      const origen = transicion.estadoPartida;
+      const id = transicion.llaveTabla || `${origen || ESTADO_INICIO_LLAVE}->${transicion.estadoLLegada}`;
+      if (vistos.has(id)) continue;
+      vistos.add(id);
+      aristas.push({
+        id,
+        from: origen ? this.estadoNodeId(camino, origen) : this.estadoInicioId(camino),
+        to: this.estadoNodeId(camino, transicion.estadoLLegada),
+        label: transicion.nombre || undefined,
+        color: BPM_EDGE_COLORS[aristas.length % BPM_EDGE_COLORS.length],
+        source: transicion,
+      });
+    }
+    return aristas;
+  }
+
+  private esTipoPlantilla(tipo?: string): boolean {
+    return !!tipo && tipo.startsWith('PLANTILLA');
+  }
+
+  private puedeExpandir(nodo: TreeNodeDTO): boolean {
+    if (!nodo.tieneHijos) return false;
+    if (this.esTipoPlantilla(nodo.tipo)) return nodo.totalHijos !== 0;
+    return true;
+  }
+
+  private abrirPlantilla(llave: string): void {
+    this.dialog.open(DocumentTemplateFormComponent, {
+      data: { template: llave },
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+    });
+  }
+
+  onEdgeActivated(edge: BpmCanvasEdge): void {
+    const transicion = edge.source as ProcesoTransicionDTO | undefined;
+    if (!transicion?.plantilla) return;
+    this.abrirPlantilla(transicion.plantilla);
+  }
+
+  private tipoOrigenFuente(source: TreeNodeDTO | ProcesoEstadoDTO): string | null {
+    if ('camino' in source) return mapTipoOrigen(source.tipo ?? '');
+    if ('avance' in source || 'proceso' in source) return 'A';
+    return null;
+  }
+
+  private modalAccionDe(nodo: TreeNodeDTO): 'plantilla' | 'webservice' | 'mensaje' | undefined {
+    const dato = nodo.dato;
+    if (nodo.tipo === TreeNodeDTO.ROL) return dato?.plantilla ? 'plantilla' : undefined;
+    if (nodo.tipo === TreeNodeDTO.API) return dato ? 'webservice' : undefined;
+    if (nodo.tipo === TreeNodeDTO.MENSAJE) return dato ? 'mensaje' : undefined;
+    return undefined;
+  }
+
+  private esTipoIcono(tipo?: string): boolean {
+    return tipo === TreeNodeDTO.ROL || tipo === TreeNodeDTO.MENSAJE || tipo === TreeNodeDTO.API;
+  }
+
+  private mapConfigNode(nodo: TreeNodeDTO, parentId: string | null): BpmCanvasNode {
+    const icono = this.esTipoIcono(nodo.tipo);
+    const metadata = [
+      !icono && nodo.tipo ? { label: 'Tipo', value: etiquetaTipoConfig(nodo.tipo) } : null,
+      nodo.codigo ? { label: 'Código', value: nodo.codigo } : null,
+    ].filter((item): item is { label: string; value: string } => item !== null);
+    return {
+      id: nodo.camino,
+      title: nodo.nombre || nodo.codigo || nodo.camino,
+      subtitle: nodo.codigo || undefined,
+      parentId,
+      metadata,
+      source: nodo,
+      hasChildren: this.puedeExpandir(nodo),
+      hasProperties: !!mapTipoOrigen(nodo.tipo) && !!nodo.llaveTabla,
+      modalAction: this.modalAccionDe(nodo),
+      icon: iconoTipoConfig(nodo.tipo) ?? undefined,
+      shape: icono ? 'icon' : undefined,
+    };
+  }
+
   onNodeActivated(node: BpmCanvasNode): void {
+    if (this.modo === 'config') {
+      if (node.shape === 'circle' || node.shape === 'diamond') {
+        this.abrirFormularioEstado(node);
+        return;
+      }
+      if (node.modalAction) {
+        this.onNodeModal(node);
+        return;
+      }
+      const nodo = node.source as TreeNodeDTO | undefined;
+      if (nodo?.llaveTabla && this.esTipoPlantilla(nodo.tipo)) this.abrirPlantilla(nodo.llaveTabla);
+      return;
+    }
     const process = node.source as ProcesoDTO | undefined;
     if (!process || (process.hijos || []).length > 0) return;
     this.dialog.open(BpmLeafDiagramComponent, {
@@ -123,6 +424,69 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
       width: '920px',
       maxWidth: '98vw',
     });
+  }
+
+  private abrirFormularioEstado(node: BpmCanvasNode): void {
+    const estado = node.source as ProcesoEstadoDTO | undefined;
+    if (!estado?.llaveTabla) return;
+    const proceso = { llaveTabla: estado.proceso, nombre: estado.procesoNombre } as ProcesoDTO;
+    const dialogRef = this.dialog.open(ProcessStateFormComponent, {
+      width: '700px',
+      maxWidth: '90vw',
+      disableClose: true,
+      data: { state: { ...estado }, process: proceso },
+    });
+    dialogRef.afterClosed().subscribe((result: ProcesoEstadoDTO) => {
+      if (!result || !node.parentId) return;
+      const procesoCargado = this.procesosCargados.get(node.parentId);
+      if (procesoCargado) this.refrescarMapaProceso(procesoCargado);
+    });
+  }
+
+  private refrescarMapaProceso(nodo: TreeNodeDTO): void {
+    this.canvasNodes.update(nodos => nodos.filter(n => n.parentId !== nodo.camino));
+    this.hijosCargados.delete(nodo.camino);
+    this.cargarMapaProceso(nodo);
+  }
+
+  onNodeProperties(node: BpmCanvasNode): void {
+    if (this.modo !== 'config') return;
+    const source = node.source as TreeNodeDTO | ProcesoEstadoDTO | undefined;
+    if (!source?.llaveTabla) return;
+    const tipoOrigen = this.tipoOrigenFuente(source);
+    if (!tipoOrigen) return;
+    this.dialog.open(PropertyPanelComponent, {
+      width: '800px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      disableClose: true,
+      data: { campoKey: source.llaveTabla, tipoOrigen, titulo: source.nombre },
+    });
+  }
+
+  onNodeModal(node: BpmCanvasNode): void {
+    const nodo = node.source as TreeNodeDTO | undefined;
+    if (!nodo?.dato) return;
+    if (node.modalAction === 'plantilla') {
+      const plantilla = nodo.dato.plantilla as string | undefined;
+      if (plantilla) this.abrirPlantilla(plantilla);
+    } else if (node.modalAction === 'webservice') {
+      this.dialog.open(WebServiceFormComponent, {
+        disableClose: true,
+        width: '700px',
+        maxWidth: '90vw',
+        data: { ...nodo.dato },
+      });
+    } else if (node.modalAction === 'mensaje') {
+      const dato = nodo.dato;
+      this.dialog.open(MessageDetailComponent, {
+        width: '800px',
+        maxWidth: '90vw',
+        maxHeight: '90vh',
+        disableClose: true,
+        data: { ...dato, titulo: dato.titulo || dato.nombre },
+      });
+    }
   }
 
   close(): void {

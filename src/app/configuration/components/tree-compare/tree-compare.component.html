@@ -1,54 +1,50 @@
 <div class="p-6 max-w-6xl mx-auto">
 
-  <div class="flex items-center justify-between mb-6">
+  <div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
     <div>
-      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Comparar y sincronizar configuración</h2>
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Sincronización de configuración</h2>
       <p class="text-sm text-gray-500 dark:text-gray-400">
-        Compara la configuración de este tenant contra el árbol JSON de otro tenant, decide por rama y sincroniza.
+        Exporta, compara y aplica la configuración nodo a nodo entre tenants.
       </p>
     </div>
-    <button type="button" class="btn-flat" (click)="exportar()" [disabled]="descargando()">
-      <mat-icon class="mr-2">download</mat-icon>
-      Descargar árbol actual
+    <button type="button" class="btn-flat" (click)="explorarArbol()">
+      <mat-icon class="mr-2">account_tree</mat-icon>
+      Explorar árbol
     </button>
   </div>
 
+  <!-- Pasos -->
+  <ol class="flex items-center gap-2 mb-6 flex-wrap">
+    @for (etapa of ['Exportar', 'Cargar', 'Comparar', 'Revisar', 'Resumen']; track etapa; let i = $index) {
+      <li>
+        <button type="button"
+                class="px-3 py-1.5 rounded-full text-xs font-medium border transition-colors"
+                [class.bg-primary]="pasoActual() === i + 1"
+                [class.text-white]="pasoActual() === i + 1"
+                [class.border-primary]="pasoActual() === i + 1"
+                [class.bg-white]="pasoActual() !== i + 1"
+                [class.dark:bg-gray-800]="pasoActual() !== i + 1"
+                [class.text-gray-600]="pasoActual() !== i + 1"
+                [class.dark:text-gray-300]="pasoActual() !== i + 1"
+                [class.border-gray-200]="pasoActual() !== i + 1"
+                [class.dark:border-gray-700]="pasoActual() !== i + 1"
+                [class.opacity-50]="!puedeIr(i + 1)"
+                [disabled]="!puedeIr(i + 1)"
+                (click)="irAPaso(i + 1)">
+          {{ i + 1 }}. {{ etapa }}
+        </button>
+      </li>
+      @if (i < 4) {
+        <li class="text-gray-400">›</li>
+      }
+    }
+  </ol>
+
   @if (cargando()) {
-    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden mb-4">
       <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
     </div>
   }
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-    <div
-      (click)="fileInput.click()"
-      (dragover)="alArrastrar($event)"
-      (drop)="alSoltar($event)"
-      class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors bg-gray-50 dark:bg-gray-800">
-      <input #fileInput type="file" accept=".json,application/json" class="hidden" (change)="leerArchivo($event)" />
-      <mat-icon class="text-4xl text-gray-400 mb-2">cloud_upload</mat-icon>
-      @if (remoto()) {
-        <p class="font-medium text-gray-700 dark:text-gray-200">{{ archivoNombre() }}</p>
-        <p class="text-sm text-gray-500">{{ contadorNodos(remoto()) }} nodos</p>
-      } @else {
-        <p class="font-medium text-gray-700 dark:text-gray-200">Arrastra aquí el JSON del árbol remoto</p>
-        <p class="text-sm text-gray-500">o haz clic para seleccionarlo</p>
-      }
-    </div>
-
-    <div class="flex flex-col justify-center gap-3">
-      <button type="button" class="btn-flat-primary w-full justify-center" [disabled]="!remoto() || comparando()"
-              (click)="comparar()">
-        <mat-icon class="mr-2">compare_arrows</mat-icon>
-        Comparar árboles
-      </button>
-      <button type="button" class="btn-flat w-full justify-center" [disabled]="!tieneDecidido() || sincronizando()"
-              (click)="sincronizar()">
-        <mat-icon class="mr-2">sync</mat-icon>
-        Sincronizar seleccionado
-      </button>
-    </div>
-  </div>
 
   @if (error()) {
     <div class="mb-4 p-3 rounded bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm">
@@ -56,110 +52,379 @@
     </div>
   }
 
-  @if (comparando()) {
-    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
+  <!-- ============ Paso 1: Exportar ============ -->
+  @if (paso() === 1) {
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">Paso 1 — Exportar configuración</h3>
+
+      <div class="flex gap-4 mb-4">
+        <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+          <input type="radio" name="alcance" [checked]="soloCompleto()" (change)="soloCompleto.set(true)" />
+          Configuración completa
+        </label>
+        <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+          <input type="radio" name="alcance" [checked]="!soloCompleto()" (change)="soloCompleto.set(false)" />
+          Solo módulos seleccionados
+        </label>
+      </div>
+
+      @if (!soloCompleto()) {
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4 max-h-64 overflow-y-auto">
+          @for (modulo of modulos(); track modulo.llaveTabla) {
+            <label class="flex items-center gap-2 p-2 rounded border border-gray-200 dark:border-gray-700 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50">
+              <input type="checkbox" [checked]="moduloSeleccionado(modulo.codigo)" (change)="toggleModulo(modulo.codigo)" />
+              <span class="truncate">{{ modulo.nombre }}</span>
+            </label>
+          } @empty {
+            <p class="text-sm text-gray-500 col-span-full">No hay módulos disponibles.</p>
+          }
+        </div>
+      }
+
+      <div class="flex gap-2">
+        <button type="button" class="btn-flat-primary" [disabled]="descargando()" (click)="exportar()">
+          <mat-icon class="mr-2">download</mat-icon>
+          {{ descargando() ? 'Exportando…' : 'Exportar y descargar' }}
+        </button>
+        <button type="button" class="btn-flat" (click)="siguientePaso()">
+          Continuar
+          <mat-icon class="ml-2">arrow_forward</mat-icon>
+        </button>
+      </div>
     </div>
   }
 
-  @if (diferencias().length > 0) {
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-        <div class="flex items-center gap-4 text-sm">
-          <span class="text-gray-600 dark:text-gray-300">{{ diferencias().length }} diferencias</span>
-          <span class="px-2 py-0.5 rounded text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40">
-            Crear: {{ contar('CREAR') }}
-          </span>
-          <span class="px-2 py-0.5 rounded text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40">
-            Actualizar: {{ contar('ACTUALIZAR') }}
-          </span>
-          <span class="px-2 py-0.5 rounded text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">
-            Omitir: {{ contar('OMITIR') }}
-          </span>
+  <!-- ============ Paso 2: Cargar ============ -->
+  @if (paso() === 2) {
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">Paso 2 — Cargar árbol remoto</h3>
+
+      <div (click)="fileInput.click()" (dragover)="alArrastrar($event)" (drop)="alSoltar($event)"
+           class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors bg-gray-50 dark:bg-gray-800 mb-4">
+        <input #fileInput type="file" accept=".json,application/json,.txt" class="hidden" (change)="leerArchivo($event)" />
+        <mat-icon class="text-4xl text-gray-400 mb-2">cloud_upload</mat-icon>
+        @if (remoto()) {
+          <p class="font-medium text-gray-700 dark:text-gray-200">{{ archivoNombre() }}</p>
+          <p class="text-sm text-gray-500">{{ contadorNodos(remoto()) }} nodos</p>
+          @if (tenantOrigen()) {
+            <p class="text-xs text-gray-500 mt-1">Tenant origen: <span class="font-mono">{{ tenantOrigen() }}</span></p>
+          }
+          @if (fechaExport()) {
+            <p class="text-xs text-gray-500">Exportado: {{ fechaExport() }}</p>
+          }
+        } @else {
+          <p class="font-medium text-gray-700 dark:text-gray-200">Arrastra aquí el JSON exportado</p>
+          <p class="text-sm text-gray-500">o haz clic para seleccionarlo</p>
+        }
+      </div>
+
+      <div class="flex gap-2">
+        <button type="button" class="btn-flat" (click)="pasoAnterior()">
+          <mat-icon class="mr-2">arrow_back</mat-icon>
+          Anterior
+        </button>
+        <button type="button" class="btn-flat-primary" [disabled]="!remoto()" (click)="irAPaso(3)">
+          Continuar
+          <mat-icon class="ml-2">arrow_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ============ Paso 3: Comparar ============ -->
+  @if (paso() === 3) {
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">Paso 3 — Comparar contra este tenant</h3>
+
+      @if (comparando()) {
+        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden mb-4">
+          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
         </div>
-        <button type="button" class="btn-flat text-xs" (click)="omitirTodo()">
-          Omitir todo
+      }
+
+      @if (resumen(); as r) {
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div class="p-3 rounded border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 text-center">
+            <p class="text-2xl font-semibold text-emerald-700 dark:text-emerald-300">{{ r.crear }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300">Crear</p>
+          </div>
+          <div class="p-3 rounded border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 text-center">
+            <p class="text-2xl font-semibold text-amber-700 dark:text-amber-300">{{ r.actualizar }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300">Actualizar</p>
+          </div>
+          <div class="p-3 rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/40 text-center">
+            <p class="text-2xl font-semibold text-gray-600 dark:text-gray-300">{{ r.local }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300">Solo local</p>
+          </div>
+          <div class="p-3 rounded border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 text-center">
+            <p class="text-2xl font-semibold text-blue-700 dark:text-blue-300">{{ r.igual }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300">Sin cambios</p>
+          </div>
+        </div>
+      } @else {
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          Compara el árbol cargado contra la configuración actual de este tenant.
+        </p>
+      }
+
+      <div class="flex gap-2">
+        <button type="button" class="btn-flat" (click)="pasoAnterior()">
+          <mat-icon class="mr-2">arrow_back</mat-icon>
+          Anterior
+        </button>
+        <button type="button" class="btn-flat-accent" [disabled]="comparando()" (click)="comparar()">
+          <mat-icon class="mr-2">compare_arrows</mat-icon>
+          {{ resumen() ? 'Volver a comparar' : 'Comparar árboles' }}
+        </button>
+        <button type="button" class="btn-flat-primary" [disabled]="!revision().length" (click)="irAPaso(4)">
+          Revisar nodo a nodo
+          <mat-icon class="ml-2">arrow_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ============ Paso 4: Revisar nodo a nodo ============ -->
+  @if (paso() === 4) {
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-700 flex-wrap gap-2">
+        <div class="text-sm text-gray-600 dark:text-gray-300">
+          Nodo <span class="font-semibold">{{ indice() + 1 }}</span> de {{ revision().length }}
+          <span class="mx-2 text-gray-400">·</span>
+          Resueltos: {{ resueltas() }} / {{ totalGestionables() }}
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-flat text-xs" (click)="irAPaso(3)">
+            <mat-icon class="mr-1">arrow_back</mat-icon>
+            Comparar
+          </button>
+          <button type="button" class="btn-flat-primary text-xs" [disabled]="!puedeFinalizar()" (click)="irAPaso(5)">
+            Finalizar
+            <mat-icon class="ml-1">flag</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      @if (sincronizando()) {
+        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
+        </div>
+      }
+
+      @if (filaActual(); as fila) {
+        <div class="p-5">
+          <div class="flex items-start justify-between gap-3 flex-wrap mb-4">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                @if (fila.tipoDiferencia === 'CREAR') {
+                  <span class="px-2 py-0.5 rounded text-xs font-medium text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40">CREAR</span>
+                } @else if (fila.tipoDiferencia === 'ACTUALIZAR') {
+                  <span class="px-2 py-0.5 rounded text-xs font-medium text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40">ACTUALIZAR</span>
+                } @else {
+                  <span class="px-2 py-0.5 rounded text-xs font-medium text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">SOLO LOCAL</span>
+                }
+                <span class="text-xs text-gray-500">{{ etiquetaTipo(fila.tipo) }}</span>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 truncate">{{ fila.nombre || fila.camino }}</h3>
+              <p class="text-xs text-gray-400 font-mono break-all">{{ fila.camino }}</p>
+            </div>
+            @if (resultadoActual(); as res) {
+              <span class="px-2 py-1 rounded text-xs font-medium shrink-0"
+                    [class.text-emerald-700]="res.estado === 'aplicado'"
+                    [class.bg-emerald-100]="res.estado === 'aplicado'"
+                    [class.dark:text-emerald-300]="res.estado === 'aplicado'"
+                    [class.text-red-700]="res.estado === 'error'"
+                    [class.bg-red-100]="res.estado === 'error'"
+                    [class.dark:text-red-300]="res.estado === 'error'"
+                    [class.text-gray-600]="res.estado === 'omitido'"
+                    [class.bg-gray-100]="res.estado === 'omitido'">
+                {{ res.estado === 'aplicado' ? 'Aplicado' : res.estado === 'error' ? 'Error' : 'Omitido' }}
+              </span>
+            }
+          </div>
+
+          @if (esLocal(fila)) {
+            <div class="p-4 rounded bg-gray-50 dark:bg-gray-700/40 border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 mb-4">
+              Este nodo solo existe en este tenant. Es informativo: no se eliminará ni se sincroniza.
+            </div>
+          }
+
+          @if (fila.tipoDiferencia === 'ACTUALIZAR') {
+            @if (fila.detalles.length) {
+              <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded mb-4">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="bg-gray-50 dark:bg-gray-700/50 text-left text-xs text-gray-500 dark:text-gray-300">
+                      <th class="px-3 py-2">Campo</th>
+                      <th class="px-3 py-2">Actual (local)</th>
+                      <th class="px-3 py-2">Remoto</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                    @for (detalle of fila.detalles; track detalle.campo) {
+                      <tr>
+                        <td class="px-3 py-2 font-mono text-xs">{{ detalle.campo }}</td>
+                        <td class="px-3 py-2 text-gray-700 dark:text-gray-200">{{ textoValor(detalle.valorLocal) }}</td>
+                        <td class="px-3 py-2 text-gray-700 dark:text-gray-200">{{ textoValor(detalle.valorRemoto) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="flex flex-wrap gap-1 mb-4">
+                @for (campo of fila.camposDiferentes; track campo) {
+                  <span class="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">{{ campo }}</span>
+                }
+              </div>
+            }
+          }
+
+          @if (fila.tipoDiferencia === 'CREAR') {
+            <div class="p-4 rounded bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-sm text-gray-700 dark:text-gray-200 mb-4">
+              Se creará este nodo
+              @if (fila.hijosRemotos > 0) {
+                y su rama con <span class="font-semibold">{{ fila.hijosRemotos }}</span> nodo(s) descendiente(s)
+              } @else {
+                en este tenant
+              }.
+            </div>
+          }
+
+          @if (resultadoActual(); as res) {
+            <div class="p-3 rounded text-sm mb-4"
+                 [class.bg-red-50]="res.estado === 'error'"
+                 [class.dark:bg-red-900/20]="res.estado === 'error'"
+                 [class.text-red-700]="res.estado === 'error'"
+                 [class.dark:text-red-300]="res.estado === 'error'"
+                 [class.bg-gray-50]="res.estado !== 'error'"
+                 [class.dark:bg-gray-700/40]="res.estado !== 'error'"
+                 [class.text-gray-600]="res.estado !== 'error'"
+                 [class.dark:text-gray-300]="res.estado !== 'error'">
+              {{ res.mensaje }}
+              @if (res.creados.length) {
+                <p class="mt-1 text-xs">Se crearon además: {{ res.creados.join(', ') }}</p>
+              }
+            </div>
+          }
+
+          @if (avisoCreados().length) {
+            <div class="p-3 rounded mb-4 text-sm bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200">
+              Se crearon también los ancestros faltantes: {{ avisoCreados().join(', ') }}
+            </div>
+          }
+
+          <div class="flex items-center gap-2 flex-wrap">
+            @if (!esLocal(fila)) {
+              @if (!resultadoActual()) {
+                <button type="button" class="btn-flat-primary text-sm" [disabled]="sincronizando()" (click)="aplicar()">
+                  <mat-icon class="mr-1">check</mat-icon>
+                  Aplicar
+                </button>
+                <button type="button" class="btn-flat text-sm" (click)="omitir()">Omitir</button>
+                @if (fila.tipoDiferencia === 'CREAR') {
+                  <button type="button" class="btn-flat text-sm" (click)="omitirRama()">Omitir rama</button>
+                }
+              } @else if (resultadoActual()?.estado === 'error') {
+                <button type="button" class="btn-flat-primary text-sm" [disabled]="sincronizando()" (click)="reintentar()">
+                  <mat-icon class="mr-1">refresh</mat-icon>
+                  Reintentar
+                </button>
+                <button type="button" class="btn-flat text-sm" (click)="omitir()">Omitir</button>
+              }
+            }
+
+            <div class="flex-1"></div>
+
+            <button type="button" class="btn-flat text-sm" [disabled]="indice() === 0" (click)="anteriorNodo()">
+              <mat-icon class="mr-1">arrow_back</mat-icon>
+              Anterior
+            </button>
+            <button type="button" class="btn-flat text-sm"
+                    [disabled]="indice() >= revision().length - 1"
+                    (click)="siguienteNodo()">
+              Siguiente
+              <mat-icon class="ml-1">arrow_forward</mat-icon>
+            </button>
+            <button type="button" class="btn-flat-primary text-sm" [disabled]="!puedeFinalizar()" (click)="irAPaso(5)">
+              Finalizar
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="p-8 text-center text-sm text-gray-500">No hay diferencias para revisar.</div>
+      }
+    </div>
+  }
+
+  <!-- ============ Paso 5: Resumen ============ -->
+  @if (paso() === 5) {
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="flex items-center justify-between px-5 py-3 border-b border-gray-200 dark:border-gray-700 flex-wrap gap-2">
+        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Paso 5 — Resumen de sincronización</h3>
+        <div class="flex gap-2 text-xs">
+          <span class="px-2 py-0.5 rounded text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40">Aplicados: {{ contarEstado('aplicado') }}</span>
+          <span class="px-2 py-0.5 rounded text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">Omitidos: {{ contarEstado('omitido') }}</span>
+          <span class="px-2 py-0.5 rounded text-red-700 bg-red-100 dark:text-red-300 dark:bg-red-900/40">Errores: {{ contarEstado('error') }}</span>
+          <span class="px-2 py-0.5 rounded text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40">Pendientes: {{ revision().length - contarEstado('aplicado') - contarEstado('omitido') - contarEstado('error') }}</span>
+        </div>
+      </div>
+
+      <div class="max-h-96 overflow-auto">
+        <table class="w-full text-sm">
+          <thead class="sticky top-0 bg-gray-50 dark:bg-gray-700/50">
+            <tr class="text-left text-xs text-gray-500 dark:text-gray-300">
+              <th class="px-3 py-2">Nodo</th>
+              <th class="px-3 py-2">Tipo</th>
+              <th class="px-3 py-2">Acción</th>
+              <th class="px-3 py-2">Estado</th>
+              <th class="px-3 py-2">Mensaje</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            @for (item of filasResumen(); track item.fila.camino) {
+              <tr>
+                <td class="px-3 py-2">
+                  <p class="font-medium text-gray-800 dark:text-gray-100 truncate max-w-xs">{{ item.fila.nombre || item.fila.camino }}</p>
+                  <p class="text-[10px] text-gray-400 font-mono break-all">{{ item.fila.camino }}</p>
+                </td>
+                <td class="px-3 py-2 text-xs text-gray-500">{{ etiquetaTipo(item.fila.tipo) }}</td>
+                <td class="px-3 py-2 text-xs">{{ item.resultado?.accion ?? '—' }}</td>
+                <td class="px-3 py-2">
+                  @if (item.resultado?.estado === 'aplicado') {
+                    <span class="px-2 py-0.5 rounded text-xs text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40">Aplicado</span>
+                  } @else if (item.resultado?.estado === 'error') {
+                    <span class="px-2 py-0.5 rounded text-xs text-red-700 bg-red-100 dark:text-red-300 dark:bg-red-900/40">Error</span>
+                  } @else if (item.resultado?.estado === 'omitido') {
+                    <span class="px-2 py-0.5 rounded text-xs text-gray-600 bg-gray-100 dark:text-gray-300 dark:bg-gray-700">Omitido</span>
+                  } @else {
+                    <span class="px-2 py-0.5 rounded text-xs text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40">Pendiente</span>
+                  }
+                </td>
+                <td class="px-3 py-2 text-xs text-gray-500">{{ item.resultado?.mensaje ?? '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-5 border-t border-gray-200 dark:border-gray-700 flex gap-2 flex-wrap">
+        <button type="button" class="btn-flat" (click)="irAPaso(4)">
+          <mat-icon class="mr-2">arrow_back</mat-icon>
+          Volver a revisar
+        </button>
+        <button type="button" class="btn-flat-accent" [disabled]="contarEstado('error') === 0" (click)="reintentarErrores()">
+          <mat-icon class="mr-2">refresh</mat-icon>
+          Reintentar errores
         </button>
       </div>
 
-      <div class="divide-y divide-gray-100 dark:divide-gray-700">
-        @for (fila of diferencias(); track fila.camino) {
-          <div class="flex items-center justify-between px-4 py-2"
-               [style.padding-left.px]="16 + fila.profundidad * 26">
-            <div class="flex items-center gap-3 min-w-0">
-              @if (fila.tipoDiferencia === 'CREAR') {
-                <span class="px-2 py-0.5 rounded text-xs font-medium text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40 whitespace-nowrap">
-                  CREAR
-                </span>
-              } @else {
-                <span class="px-2 py-0.5 rounded text-xs font-medium text-amber-700 bg-amber-100 dark:text-amber-300 dark:bg-amber-900/40 whitespace-nowrap">
-                  ACTUALIZAR
-                </span>
-              }
-              <div class="min-w-0">
-                <p class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
-                  {{ etiquetaTipo(fila.tipo) }} — {{ fila.nombre }}
-                </p>
-                <p class="text-xs text-gray-400 truncate">{{ fila.camino }}</p>
-                @if (fila.camposDiferentes.length > 0) {
-                  <div class="flex flex-wrap gap-1 mt-1">
-                    @for (campo of fila.camposDiferentes; track campo) {
-                      <span class="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                        {{ campo }}
-                      </span>
-                    }
-                  </div>
-                }
-              </div>
-            </div>
-
-            <div class="flex items-center gap-1 shrink-0">
-              @if (fila.tipoDiferencia === 'CREAR') {
-                <button type="button"
-                        class="btn-flat-primary text-xs"
-                        [class.ring-2]="seleccionPrivada(fila.camino) === 'CREAR'"
-                        [class.ring-emerald-400]="seleccionPrivada(fila.camino) === 'CREAR'"
-                        (click)="decidir(fila.camino, 'CREAR')">
-                  Crear rama
-                </button>
-              } @else {
-                <button type="button"
-                        class="btn-flat-accent text-xs"
-                        [class.ring-2]="seleccionPrivada(fila.camino) === 'ACTUALIZAR'"
-                        [class.ring-amber-400]="seleccionPrivada(fila.camino) === 'ACTUALIZAR'"
-                        (click)="decidir(fila.camino, 'ACTUALIZAR')">
-                  Actualizar
-                </button>
-              }
-              <button type="button"
-                      class="btn-flat text-xs"
-                      [class.ring-2]="seleccionPrivada(fila.camino) === 'OMITIR'"
-                      (click)="decidir(fila.camino, 'OMITIR')">
-                Omitir
-              </button>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  }
-
-  @if (sincronizando()) {
-    <div class="mt-4 w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
-    </div>
-  }
-
-  @if (logsUrl()) {
-    <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Logs de sincronización</h3>
-        <a [href]="logsUrl()" target="_blank" rel="noopener" class="btn-flat text-xs">
-          <mat-icon class="mr-1">open_in_new</mat-icon>
-          Abrir archivo
-        </a>
-      </div>
-      <pre class="p-4 text-xs text-gray-600 dark:text-gray-300 whitespace-pre-wrap max-h-96 overflow-auto">{{ logs() }}</pre>
+      @if (logsConsolidados()) {
+        <div class="border-t border-gray-200 dark:border-gray-700">
+          <div class="px-5 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300">Log consolidado</div>
+          <pre class="px-5 pb-5 text-xs text-gray-600 dark:text-gray-300 whitespace-pre-wrap max-h-64 overflow-auto">{{ logsConsolidados() }}</pre>
+        </div>
+      }
     </div>
   }
 

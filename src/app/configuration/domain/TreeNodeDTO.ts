@@ -21,5 +21,7 @@ export class TreeNodeDTO extends BasicParamDTO {
     tipo: string;
     camino: string;
     dato: any;
+    tieneHijos: boolean;
+    totalHijos: number;
     hijos: TreeNodeDTO[];
 }

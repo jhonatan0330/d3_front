@@ -1,7 +1,83 @@
-.mat-column-total, .mat-column-unidad{
-    text-align: right;
+.cart-table {
+  min-width: 680px;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
-.mat-column-cantidad{
-    text-align: center;
+.cart-table .mat-mdc-header-row {
+  height: 48px;
+  background: rgb(249 250 251);
+}
+
+.cart-table .mat-mdc-header-cell {
+  color: rgb(107 114 128);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cart-table .mat-mdc-cell,
+.cart-table .mat-mdc-footer-cell {
+  border-bottom-color: rgb(243 244 246);
+}
+
+.cart-table .mat-mdc-row {
+  transition: background-color 150ms ease;
+}
+
+.cart-table .mat-mdc-row:hover {
+  background: rgb(249 250 251);
+}
+
+.cart-table .mat-mdc-footer-row {
+  height: 56px;
+  background: rgb(249 250 251);
+}
+
+.cart-table .mat-column-total,
+.cart-table .mat-column-unidad {
+  text-align: right;
+}
+
+.cart-table .mat-column-cantidad {
+  text-align: center;
+}
+
+.cart-thumbnail {
+  width: 52px;
+  height: 52px;
+}
+
+.cart-remove-button {
+  color: #ef4444;
+}
+
+.cart-remove-button:hover {
+  background: rgb(254 242 242);
+}
+
+:host-context(.dark) {
+  .cart-table .mat-mdc-header-row,
+  .cart-table .mat-mdc-footer-row {
+    background: rgb(31 41 55);
+  }
+
+  .cart-table .mat-mdc-header-cell {
+    color: rgb(156 163 175);
+  }
+
+  .cart-table .mat-mdc-cell,
+  .cart-table .mat-mdc-footer-cell {
+    border-bottom-color: rgb(55 65 81);
+  }
+
+  .cart-table .mat-mdc-row:hover {
+    background: rgb(31 41 55);
+  }
+
+  .cart-remove-button:hover {
+    background: rgb(127 29 29 / 0.25);
+  }
 }

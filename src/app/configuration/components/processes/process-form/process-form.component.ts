@@ -4,18 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { ProcesoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
+import { ProcesoDTO, ProcesoEstadoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
 import { ProcessTransitionListComponent } from '../process-transitions/process-transition-list/process-transition-list.component';
+import { ProcessStateListComponent } from '../process-states/process-state-list/process-state-list.component';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 
 @Component({
     selector: 'app-process-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatIconModule, ProcessSelectorComponent, ProcessTransitionListComponent, ImageUploaderComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatIconModule, ProcessSelectorComponent, ProcessTransitionListComponent, ProcessStateListComponent, ImageUploaderComponent],
     templateUrl: './process-form.component.html',
 })
 export class ProcessFormComponent implements OnInit {
@@ -38,6 +39,7 @@ export class ProcessFormComponent implements OnInit {
             this.process = new ProcesoDTO();
             this.process.estado = 'A';
             this.process.transiciones = [];
+            this.process.estados = [];
         }
     }
 
@@ -54,6 +56,13 @@ export class ProcessFormComponent implements OnInit {
         const idx = this.process.transiciones.findIndex(t => t.llaveTabla === transition.llaveTabla);
         if (idx >= 0) this.process.transiciones[idx] = transition;
         else this.process.transiciones.push(transition);
+    }
+
+    onStateSaved(state: ProcesoEstadoDTO): void {
+        if (!this.process.estados) this.process.estados = [];
+        const idx = this.process.estados.findIndex(s => s.llaveTabla === state.llaveTabla);
+        if (idx >= 0) this.process.estados[idx] = state;
+        else this.process.estados.push(state);
     }
 
     onSubmit(): void {

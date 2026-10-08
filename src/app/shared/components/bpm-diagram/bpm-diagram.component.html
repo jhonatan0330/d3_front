@@ -1,24 +1,45 @@
-<section class="bpm-dialog" [style.width.px]="data?.width || 1120" [style.height.px]="data?.height || 760">
+<section class="bpm-dialog" [style.width.px]="data?.width" [style.height.px]="data?.height">
   <header class="dialog-header">
     <div>
-      <h2>Mapa del proceso</h2>
-      <p>Explora la estructura y sus procesos asociados</p>
+      <h2>{{ modo === 'config' ? 'Mapa de configuración' : 'Mapa del proceso' }}</h2>
+      <p>
+        @if (modo === 'config') {
+          Explora la estructura de parametrización: los procesos E despliegan su mapa de estados con transiciones y las plantillas se abren con un clic
+        } @else {
+          Explora la estructura y sus procesos asociados
+        }
+      </p>
     </div>
     <button type="button" class="close-button" aria-label="Cerrar diagrama" (click)="close()">×</button>
   </header>
 
   <div class="dialog-body">
     @if (isLoading()) {
-      <div class="loading-state" role="status">Cargando estructura del proceso...</div>
+      <div class="loading-state" role="status">
+        {{ modo === 'config' ? 'Cargando estructura de configuración...' : 'Cargando estructura del proceso...' }}
+      </div>
     } @else if (hasError()) {
       <div class="error-state" role="alert">
-        <span>No se pudo cargar la estructura del proceso.</span>
-        <button type="button" (click)="loadProcessGraph()">Reintentar</button>
+        <span>
+          {{ modo === 'config' ? 'No se pudo cargar la estructura de configuración.' : 'No se pudo cargar la estructura del proceso.' }}
+        </span>
+        <button type="button" (click)="modo === 'config' ? loadConfigRoot() : loadProcessGraph()">Reintentar</button>
       </div>
     } @else if (!canvasNodes().length) {
       <div class="loading-state" role="status">Este proceso no tiene elementos para mostrar.</div>
     } @else {
-      <bpm-canvas mode="tree" [nodes]="canvasNodes()" (nodeActivated)="onNodeActivated($event)"></bpm-canvas>
+      @if (cargandoHijos()) {
+        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden mb-2">
+          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
+        </div>
+      }
+      <bpm-canvas mode="tree" [nodes]="canvasNodes()"
+                  [legend]="leyenda"
+                  (nodeActivated)="onNodeActivated($event)"
+                  (nodeProperties)="onNodeProperties($event)"
+                  (nodeModal)="onNodeModal($event)"
+                  (edgeActivated)="onEdgeActivated($event)"
+                  (nodeToggle)="onNodeToggle($event)"></bpm-canvas>
     }
   </div>
 </section>

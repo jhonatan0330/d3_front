@@ -12,17 +12,21 @@ import {
     ServidorDTO, ServidorFilterDTO,
     OrganizacionDTO, OrganizacionFilterDTO,
     ProcesoDTO, ProcesoFilterDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO,
+    ProcesoEstadoDTO, ProcesoEstadoFilterDTO,
 } from 'app/document/document.types';
 import {
     PropiedadDTO, PropiedadCampoDTO, PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO,
     RelacionInternaDTO, RelacionInternaFilterDTO,
 } from 'app/shared/shared.domain';
 import { ArbolConfiguracionFilterDTO } from './domain/ArbolConfiguracionFilterDTO';
+import { ArbolNodoRequestDTO } from './domain/ArbolNodoRequestDTO';
 import { CompararArbolRequest } from './domain/CompararArbolRequest';
 import { DiferenciaDTO } from './domain/DiferenciaDTO';
 import { DocumentoPlantillaFilterDTO } from './domain/DocumentoPlantillaFilterDTO';
 import { IndicatorDTO } from './domain/IndicatorDTO';
 import { IndicatorFilterDTO } from './domain/IndicatorFilterDTO';
+import { SincronizacionNodoDTO } from './domain/SincronizacionNodoDTO';
+import { SincronizacionNodoResultDTO } from './domain/SincronizacionNodoResultDTO';
 import { SincronizacionSeleccionadaDTO } from './domain/SincronizacionSeleccionadaDTO';
 import { TreeNodeDTO } from './domain/TreeNodeDTO';
 import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO';
@@ -575,6 +579,37 @@ export class ProcessService {
             this.ls.getUrlAccess(`${this.baseUrl}/transitions/${transition.llaveTabla}/inactivate`), transition
         );
     }
+
+    getStates(processKey: string, filter?: ProcesoEstadoFilterDTO): Observable<ProcesoEstadoDTO[]> {
+        const payload = { estado: 'A', proceso: processKey, ...(filter || {}) };
+        return this.http.post<ProcesoEstadoDTO[]>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${processKey}/states`), payload
+        );
+    }
+
+    getStateById(key: string): Observable<ProcesoEstadoDTO> {
+        return this.http.post<ProcesoEstadoDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/states/${key}`), {}
+        );
+    }
+
+    createState(state: ProcesoEstadoDTO): Observable<ProcesoEstadoDTO> {
+        return this.http.post<ProcesoEstadoDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/states`), state
+        );
+    }
+
+    updateState(state: ProcesoEstadoDTO): Observable<ProcesoEstadoDTO> {
+        return this.http.post<ProcesoEstadoDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/states/${state.llaveTabla}/update`), state
+        );
+    }
+
+    inactivateState(state: ProcesoEstadoDTO): Observable<ProcesoEstadoDTO> {
+        return this.http.post<ProcesoEstadoDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/states/${state.llaveTabla}/inactivate`), state
+        );
+    }
 }
 
 @Injectable({ providedIn: 'root' })
@@ -729,6 +764,30 @@ export class TreeConfigService {
     syncTree(request: SincronizacionSeleccionadaDTO): Observable<{ url: string }> {
         return this.http.post<{ url: string }>(
             this.ls.getUrlAccess(`${this.baseUrl}/sync`), request
+        );
+    }
+
+    getTreeNode(request: ArbolNodoRequestDTO): Observable<TreeNodeDTO> {
+        return this.http.post<TreeNodeDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/node`), request
+        );
+    }
+
+    treeFromHierarchy(payload: unknown): Observable<TreeNodeDTO> {
+        return this.http.post<TreeNodeDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/from-hierarchy`), payload
+        );
+    }
+
+    exportModules(modulos: string[]): Observable<{ url: string }> {
+        return this.http.post<{ url: string }>(
+            this.ls.getUrlAccess('/configuration/module'), { modulesCode: modulos }
+        );
+    }
+
+    syncNode(request: SincronizacionNodoDTO): Observable<SincronizacionNodoResultDTO> {
+        return this.http.post<SincronizacionNodoResultDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/sync-node`), request
         );
     }
 }

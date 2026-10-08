@@ -7,8 +7,22 @@
     <button type="button" data-canvas-control class="reset-button" (click)="resetView()">Restablecer vista</button>
   </div>
 
+  @if (legend().length) {
+    <div class="canvas-legend" role="note" aria-label="Leyenda de iconos">
+      @for (item of legend(); track item.icon) {
+        <span class="legend-item">
+          <svg class="legend-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path [attr.d]="iconPath(item.icon)" fill-rule="evenodd"></path>
+          </svg>
+          {{ item.label }}
+        </span>
+      }
+    </div>
+  }
+
   <div
     class="canvas-viewport"
+    #viewport
     [class.is-panning]="isPanning()"
     (pointerdown)="startPan($event)"
     (pointermove)="movePan($event)"
@@ -29,18 +43,39 @@
           <marker [attr.id]="markerId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" class="edge-arrow"></path>
           </marker>
+          @for (color of coloresArista; track color) {
+            <marker [attr.id]="markerPara(color)" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" [attr.fill]="color"></path>
+            </marker>
+          }
         </defs>
-        <g [attr.transform]="'translate(' + panX() + ',' + panY() + ') scale(' + scale() + ')'">
+        <ng-template #edgeList>
           @for (edge of scene().edges; track edge.id) {
             <g class="diagram-edge" [attr.data-edge-from]="edge.from" [attr.data-edge-to]="edge.to">
-              <path [attr.d]="edge.path" [attr.marker-end]="'url(#' + markerId + ')'" class="edge-path"></path>
+              <path [attr.d]="edge.path" [attr.marker-end]="'url(#' + markerPara(edge.color) + ')'" class="edge-path" [style.stroke]="edge.color || null"></path>
               @if (edge.label) {
-                <g class="edge-label" [attr.transform]="'translate(' + edge.labelX + ',' + edge.labelY + ')'">
+                <g
+                  class="edge-label"
+                  [class.is-link]="hasEdgeAction(edge)"
+                  [attr.transform]="'translate(' + edge.labelX + ',' + edge.labelY + ')'"
+                  [attr.role]="hasEdgeAction(edge) ? 'button' : null"
+                  [attr.tabindex]="hasEdgeAction(edge) ? 0 : null"
+                  [attr.aria-label]="edge.label"
+                  (click)="activateEdge(edge, $event)"
+                  (keydown)="activateEdgeFromKeyboard(edge, $event)"
+                >
+                  <title>{{ edgeTitle(edge) }}</title>
                   <rect x="-52" y="-11" width="104" height="22" rx="6"></rect>
                   <text text-anchor="middle" y="4">{{ edgeLabel(edge.label) }}</text>
                 </g>
               }
             </g>
+          }
+        </ng-template>
+
+        <g [attr.transform]="'translate(' + panX() + ',' + panY() + ') scale(' + scale() + ')'">
+          @if (mode() === 'flow') {
+            <ng-container [ngTemplateOutlet]="edgeList"></ng-container>
           }
 
           @for (node of scene().nodes; track node.id) {
@@ -48,13 +83,14 @@
               class="diagram-node"
               [class.is-selected]="selectedNodeId() === node.id"
               [class.is-parent]="node.childCount > 0"
+              [class.is-person]="node.icon === 'person'"
               [attr.data-node-id]="node.id"
               [attr.transform]="'translate(' + node.x + ',' + node.y + ')'"
               role="group"
               [attr.aria-label]="node.title"
             >
               <rect
-                class="node-card"
+                [attr.class]="node.shape ? 'node-hit' : 'node-card'"
                 [attr.width]="node.width"
                 [attr.height]="node.height"
                 rx="9"
@@ -64,14 +100,35 @@
                 (click)="activateNode(node)"
                 (keydown)="activateNodeFromKeyboard(node, $event)"
               ></rect>
-              <rect class="node-accent" width="4" [attr.height]="node.height" rx="2"></rect>
-              <text class="node-title" x="16" y="25" pointer-events="none">{{ actionLabel(node.title) }}</text>
-              @if (node.subtitle) {
-                <text class="node-subtitle" x="16" y="45" pointer-events="none">{{ actionLabel(node.subtitle) }}</text>
+              @if (node.shape) {
+                <g class="node-shape-group" pointer-events="none">
+                  @if (node.shape === 'circle') {
+                    <circle class="node-shape" [attr.cx]="node.width / 2" [attr.cy]="shapeCy" [attr.r]="shapeR" [style.fill]="node.shapeFill || null"></circle>
+                  } @else if (node.shape === 'diamond') {
+                    <polygon class="node-shape" [attr.points]="diamondPoints(node)" [style.fill]="node.shapeFill || null"></polygon>
+                  } @else {
+                    <g class="node-glyph icon-center" [attr.transform]="iconoCentrado(node)">
+                      <path [attr.d]="iconPath(node.icon)" fill-rule="evenodd"></path>
+                    </g>
+                  }
+                </g>
+              } @else {
+                <rect class="node-accent" width="4" [attr.height]="node.height" rx="2"></rect>
+                @if (node.icon) {
+                  <g class="node-glyph" transform="translate(14,10)" pointer-events="none">
+                    <path [attr.d]="iconPath(node.icon)" fill-rule="evenodd"></path>
+                  </g>
+                }
               }
-              @for (metadata of (node.metadata || []).slice(0, 2); track metadata.label; let index = $index) {
-                <text class="node-metadata" x="16" [attr.y]="66 + index * 19" pointer-events="none">
-                  <tspan class="metadata-label">{{ metadata.label }} </tspan>{{ actionLabel(metadata.value) }}
+              <text class="node-title" [attr.x]="node.shape ? node.width / 2 : (node.icon ? 48 : 16)" [attr.y]="yTitulo(node)" [attr.text-anchor]="node.shape ? 'middle' : null" pointer-events="none">{{ actionLabel(node.title) }}</text>
+              @if (node.subtitle && !node.shape) {
+                <text class="node-subtitle" [attr.x]="node.icon ? 48 : 16" y="45" pointer-events="none">{{ actionLabel(node.subtitle) }}</text>
+              }
+              @for (metadata of (node.metadata || []).slice(0, node.shape ? 1 : 2); track metadata.label; let index = $index) {
+                <text class="node-metadata" [attr.x]="node.shape ? node.width / 2 : (node.icon ? 48 : 16)" [attr.y]="yMetadata(node, index)" [attr.text-anchor]="node.shape ? 'middle' : null" pointer-events="none">
+                  @if (!node.shape) {
+                    <tspan class="metadata-label">{{ metadata.label }} </tspan>
+                  }{{ actionLabel(metadata.value) }}
                 </text>
               }
               @for (action of visibleActions(node); track action.id; let index = $index) {
@@ -92,10 +149,40 @@
               @if (remainingActionCount(node) > 0) {
                 <text class="more-actions" x="16" [attr.y]="actionY(node) + 3 * 27 + 14">+{{ remainingActionCount(node) }} acciones más</text>
               }
-              @if (node.childCount > 0) {
+              @if (node.hasProperties && !node.shape) {
+                <g
+                  class="properties-control"
+                  [attr.transform]="'translate(' + controlX(node, 'properties') + ',12)'"
+                  role="button"
+                  tabindex="0"
+                  [attr.data-canvas-control]="true"
+                  [attr.aria-label]="'Ver propiedades de ' + node.title"
+                  (click)="activateProperties(node, $event)"
+                  (keydown)="activatePropertiesFromKeyboard(node, $event)"
+                >
+                  <circle r="10"></circle>
+                  <text text-anchor="middle" y="4" pointer-events="none">≡</text>
+                </g>
+              }
+              @if (node.modalAction && !node.shape) {
+                <g
+                  class="modal-control"
+                  [attr.transform]="'translate(' + controlX(node, 'modal') + ',12)'"
+                  role="button"
+                  tabindex="0"
+                  [attr.data-canvas-control]="true"
+                  [attr.aria-label]="'Abrir ' + modalLabel(node) + ' de ' + node.title"
+                  (click)="activateModal(node, $event)"
+                  (keydown)="activateModalFromKeyboard(node, $event)"
+                >
+                  <circle r="10"></circle>
+                  <text text-anchor="middle" y="4" pointer-events="none">{{ modalGlyph(node) }}</text>
+                </g>
+              }
+              @if (node.childCount > 0 || node.hasChildren) {
                 <g
                   class="expand-control"
-                  [attr.transform]="'translate(' + (node.width - 30) + ',12)'"
+                  [attr.transform]="'translate(' + controlX(node, 'expand') + ',12)'"
                   role="button"
                   tabindex="0"
                   [attr.data-canvas-control]="true"
@@ -109,6 +196,9 @@
                 </g>
               }
             </g>
+          }
+          @if (mode() === 'tree') {
+            <ng-container [ngTemplateOutlet]="edgeList"></ng-container>
           }
         </g>
       </svg>
