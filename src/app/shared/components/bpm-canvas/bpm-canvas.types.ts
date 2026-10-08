@@ -34,6 +34,7 @@ export interface BpmCanvasNode {
     source?: unknown;
     hasChildren?: boolean;
     hasProperties?: boolean;
+    propertiesAction?: 'propiedades' | 'formulario';
     modalAction?: 'plantilla' | 'webservice' | 'mensaje';
     shape?: 'circle' | 'diamond' | 'icon';
     shapeFill?: string;

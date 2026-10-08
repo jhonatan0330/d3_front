@@ -158,7 +158,7 @@
   stroke: #cbd9d8;
   stroke-width: 1.3;
   filter: drop-shadow(0 3px 7px rgb(31 62 68 / 8%));
-  cursor: pointer;
+  cursor: grab;
   transition: stroke 140ms ease, filter 140ms ease;
 }
 
@@ -174,7 +174,12 @@
 .node-hit {
   fill: transparent;
   stroke: none;
-  cursor: pointer;
+  cursor: grab;
+}
+
+.canvas-viewport.is-panning .node-card,
+.canvas-viewport.is-panning .node-hit {
+  cursor: grabbing;
 }
 
 .node-shape {

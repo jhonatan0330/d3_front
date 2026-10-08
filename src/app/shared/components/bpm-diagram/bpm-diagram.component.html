@@ -33,7 +33,7 @@
           <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
         </div>
       }
-      <bpm-canvas mode="tree" [nodes]="canvasNodes()"
+      <bpm-canvas #diagramCanvas mode="tree" [nodes]="canvasNodes()"
                   [legend]="leyenda"
                   (nodeActivated)="onNodeActivated($event)"
                   (nodeProperties)="onNodeProperties($event)"

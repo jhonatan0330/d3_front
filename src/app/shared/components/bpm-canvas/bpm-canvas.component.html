@@ -97,7 +97,7 @@
                 role="button"
                 tabindex="0"
                 [attr.aria-label]="'Seleccionar ' + node.title"
-                (click)="activateNode(node)"
+                (click)="activateNode(node, $event)"
                 (keydown)="activateNodeFromKeyboard(node, $event)"
               ></rect>
               @if (node.shape) {
@@ -156,7 +156,7 @@
                   role="button"
                   tabindex="0"
                   [attr.data-canvas-control]="true"
-                  [attr.aria-label]="'Ver propiedades de ' + node.title"
+                  [attr.aria-label]="propertiesLabel(node)"
                   (click)="activateProperties(node, $event)"
                   (keydown)="activatePropertiesFromKeyboard(node, $event)"
                 >
