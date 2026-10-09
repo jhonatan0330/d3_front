@@ -51,6 +51,9 @@
                         <app-dropdown-item (clicked)="openForm(element)"><mat-icon class="text-base">edit</mat-icon> Editar</app-dropdown-item>
                         <app-dropdown-item (clicked)="openProperties(element)"><mat-icon class="text-base">tune</mat-icon> Propiedades</app-dropdown-item>
                         <app-dropdown-item (clicked)="openExecuteDialog(element)"><mat-icon class="text-base">play_arrow</mat-icon> Ejecutar</app-dropdown-item>
+                        @if (element.estado === 'A') {
+                          <app-dropdown-item (clicked)="copyWebService(element)"><mat-icon class="text-base">content_copy</mat-icon> Copiar</app-dropdown-item>
+                        }
                         <app-dropdown-item (clicked)="toggleStatus(element)"><mat-icon class="text-base">{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon> {{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}</app-dropdown-item>
                       </app-dropdown>
                     </div>

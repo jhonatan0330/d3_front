@@ -6,7 +6,7 @@
       <h2 class="mt-1 text-xl font-semibold leading-tight">
         {{ data.relacion?.llaveTabla ? 'Editar relación' : 'Nueva relación' }}
       </h2>
-      <p class="mt-1 text-sm text-secondary">Vincula un campo con una plantilla.</p>
+      <p class="mt-1 text-sm text-secondary">Busca la plantilla y luego escoge el campo a vincular.</p>
     </div>
     <button type="button" class="btn-icon shrink-0" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar">
       <mat-icon>close</mat-icon>
@@ -15,26 +15,54 @@
 
   <div class="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
     <div>
-      <label class="mb-1.5 block text-sm font-medium" for="relation-field">Campo</label>
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-select id="relation-field" [(ngModel)]="relacion.campo" name="campo" required>
-          @for (c of camposDisponibles; track c.llaveTabla) {
-            <mat-option [value]="c.llaveTabla">{{ c.nombre }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-
-    <div>
       <label class="mb-1.5 block text-sm font-medium" for="relation-template">Plantilla</label>
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-select id="relation-template" [(ngModel)]="relacion.plantilla" name="plantilla" required>
-          @for (p of plantillasDisponibles; track p.llaveTabla) {
-            <mat-option [value]="p.llaveTabla">{{ p.nombre }}</mat-option>
+        <input id="relation-template" type="text" matInput
+          placeholder="Buscar por código o nombre"
+          [ngModel]="plantillaTexto()"
+          name="plantilla"
+          (ngModelChange)="onPlantillaTextoChange($event)"
+          [matAutocomplete]="autoPlantilla"
+          required />
+        <mat-autocomplete #autoPlantilla="matAutocomplete"
+          [displayWith]="displayPlantilla"
+          [autoActiveFirstOption]="true"
+          (optionSelected)="onPlantillaOption($event)">
+          @for (p of plantillasFiltradas(); track p.llaveTabla) {
+            <mat-option [value]="p">{{ p.codigo ? p.codigo + ' - ' + p.nombre : p.nombre }}</mat-option>
           }
-        </mat-select>
+        </mat-autocomplete>
       </mat-form-field>
+      @if (plantillaTexto().trim() && !relacion.plantilla && plantillas().length > 0 && plantillasFiltradas().length === 0) {
+        <p class="mt-1.5 text-sm text-secondary">No se encontraron plantillas que coincidan con "{{ plantillaTexto().trim() }}".</p>
+      }
     </div>
+
+    @if (relacion.plantilla) {
+      <div>
+        <label class="mb-1.5 block text-sm font-medium" for="relation-field">Campo</label>
+        @if (camposCargando()) {
+          <div class="h-1 mb-2 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Cargando campos">
+            <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
+          </div>
+        }
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-select id="relation-field" [(ngModel)]="relacion.campo" name="campo"
+            [disabled]="camposCargando()" required>
+            @for (c of camposDisponibles(); track c.llaveTabla) {
+              <mat-option [value]="c.llaveTabla">{{ c.codigo ? c.codigo + ' - ' + c.nombre : c.nombre }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        @if (!camposCargando()) {
+          @if (camposError()) {
+            <p class="mt-1.5 text-sm text-secondary">No se pudieron cargar los campos de la plantilla. Verifique la notificación de error.</p>
+          } @else if (camposDisponibles().length === 0) {
+            <p class="mt-1.5 text-sm text-secondary">La plantilla seleccionada no tiene campos disponibles.</p>
+          }
+        }
+      </div>
+    }
 
     <div>
       <label class="mb-1.5 block text-sm font-medium" for="relation-auxiliary">Auxiliar</label>
@@ -55,10 +83,9 @@
 
   <footer class="flex shrink-0 justify-end gap-3 border-t border-gray-200 bg-gray-50 px-5 py-4 dark:border-gray-700 dark:bg-gray-800/60 sm:px-6">
     <button type="button" class="btn-raised" (click)="dialogRef.close()">Cancelar</button>
-    <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">
-      <mat-icon>{{ cargando ? 'hourglass_top' : 'save' }}</mat-icon>
-      <span>{{ cargando ? 'Guardando...' : 'Guardar' }}</span>
+    <button type="submit" class="btn-flat-primary" [disabled]="cargando() || !form.valid || !relacion.plantilla || !relacion.campo">
+      <mat-icon>{{ cargando() ? 'hourglass_top' : 'save' }}</mat-icon>
+      <span>{{ cargando() ? 'Guardando...' : 'Guardar' }}</span>
     </button>
   </footer>
 </form>
-  

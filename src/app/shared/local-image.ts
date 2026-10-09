@@ -10,7 +10,7 @@ export function formatImageUrl(ls: LocalStoreService, url: string | undefined) {
   if (!url.startsWith('http')) {
     url = (ls.getUrlConf() || '') + '/upload' + url;
   }
-  return url;
+  return url.replace(/\\/g, '/');
 }
 
 /* resolvedUrl = computed(() => {

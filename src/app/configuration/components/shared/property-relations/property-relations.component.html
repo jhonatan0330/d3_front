@@ -2,8 +2,8 @@
 <section class="space-y-4">
   <header class="flex flex-wrap items-center justify-between gap-3">
     <div class="min-w-0">
-      <h3 class="font-semibold">{{ titulo }}</h3>
-      <p class="mt-1 text-sm text-secondary">{{ relaciones.length }} relaciones configuradas</p>
+      <h3 class="font-semibold">{{ titulo() }}</h3>
+      <p class="mt-1 text-sm text-secondary">{{ relaciones().length }} relaciones configuradas</p>
     </div>
     <button type="button" class="btn-raised shrink-0" (click)="openRelationModal()">
       <mat-icon>add</mat-icon>
@@ -11,18 +11,18 @@
     </button>
   </header>
 
-  @if (cargando) {
+  @if (cargando()) {
     <div class="h-1 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Cargando relaciones">
       <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
     </div>
-  } @else if (relaciones.length === 0) {
+  } @else if (relaciones().length === 0) {
     <div class="flex min-h-28 flex-col items-center justify-center rounded-md border border-dashed border-gray-300 px-4 py-5 text-center dark:border-gray-600">
       <p class="text-sm font-medium">Sin relaciones configuradas</p>
       <p class="mt-1 text-sm text-secondary">Las relaciones que agregues aparecerán aquí.</p>
     </div>
   } @else {
     <div class="max-h-60 divide-y divide-gray-200 overflow-y-auto border-y border-gray-200 dark:divide-gray-700 dark:border-gray-700">
-      @for (rel of relaciones; track rel.llaveTabla) {
+      @for (rel of relaciones(); track rel.llaveTabla) {
         <article class="flex items-start gap-3 py-3">
           <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
             <mat-icon class="icon-size-5">account_tree</mat-icon>
@@ -50,4 +50,3 @@
     </div>
   }
 </section>
-  

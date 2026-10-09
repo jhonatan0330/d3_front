@@ -19,6 +19,7 @@ import {
     RelacionInternaDTO, RelacionInternaFilterDTO,
 } from 'app/shared/shared.domain';
 import { ArbolConfiguracionFilterDTO } from './domain/ArbolConfiguracionFilterDTO';
+import { SharedIdResponse } from 'app/shared/api-types';
 import { ArbolNodoRequestDTO } from './domain/ArbolNodoRequestDTO';
 import { CompararArbolRequest } from './domain/CompararArbolRequest';
 import { DiferenciaDTO } from './domain/DiferenciaDTO';
@@ -401,6 +402,12 @@ export class WebServiceConfigService {
         );
     }
 
+    copyWebService(key: string): Observable<SharedIdResponse> {
+        return this.http.post<SharedIdResponse>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}/copy`), {}
+        );
+    }
+
     executeWebService(key: string, parametros: string): Observable<WebServiceEjecucionDTO> {
         return this.http.post<WebServiceEjecucionDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${key}/execute`), { parametros }
@@ -663,19 +670,19 @@ export class PropertyService {
 
     createRelation(relation: RelacionInternaDTO): Observable<RelacionInternaDTO> {
         return this.http.post<RelacionInternaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/create`), relation
+            this.ls.getUrlAccess(`${this.baseUrl}/relations/create`), relation
         );
     }
 
     updateRelation(relation: RelacionInternaDTO): Observable<RelacionInternaDTO> {
         return this.http.post<RelacionInternaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/update`), relation
+            this.ls.getUrlAccess(`${this.baseUrl}/relations/update`), relation
         );
     }
 
     inactivateRelation(relation: RelacionInternaDTO): Observable<RelacionInternaDTO> {
         return this.http.post<RelacionInternaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${relation.propiedad}/relations/inactivate`), relation
+            this.ls.getUrlAccess(`${this.baseUrl}/relations/inactivate`), relation
         );
     }
 }

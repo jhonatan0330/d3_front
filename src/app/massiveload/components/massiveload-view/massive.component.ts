@@ -219,7 +219,7 @@ export class MassiveComponent implements OnInit {
           next: (response: PlantillaBaseResponse) => {
             window.open(formatImageUrl(this.ls, response.url), '_blank');
             this.isLoading.set(false);
-              this.lblCarga.set('');
+            this.lblCarga.set('');
           },
           error: () => {
             this.isLoading.set(false);

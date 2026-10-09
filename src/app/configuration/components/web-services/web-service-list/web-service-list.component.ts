@@ -127,4 +127,14 @@ export class WebServiceListComponent implements OnInit, AfterViewInit, OnDestroy
         this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} web service?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
             .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateWebService(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Web Service ${action}do correctamente`, 'success'); this.reload(); } }); }});
     }
+
+    copyWebService(item: WebServiceDTO): void {
+        this.notificationCenter.fire({ title: '¿Copiar web service?', text: `Se creará una copia de "${item.nombre}"`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
+            .then((result) => {
+                if (!result.isConfirmed) return;
+                this.service.copyWebService(item.llaveTabla).subscribe({
+                    next: () => { this.notificationCenter.fire('Éxito', 'Web Service copiado correctamente', 'success'); this.reload(); }
+                });
+            });
+    }
 }
