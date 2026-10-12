@@ -174,9 +174,7 @@ export class SignInSplitScreenReversedComponent {
                         .pipe(
                             tap(result => {
                                 if (!result) {
-                                    console.warn(
-                                        'Autenticación cancelada o código incorrecto'
-                                    );
+                                   
                                 }
                             }),
                             switchMap(result => {

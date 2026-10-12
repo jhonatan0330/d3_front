@@ -62,7 +62,6 @@ export class UsersService {
                 }
             }),
             catchError(error => {
-                console.error('Error en la búsqueda de contactos:', error);
                 return of([]); // Devuelve un array vacío en caso de error
             })
         );

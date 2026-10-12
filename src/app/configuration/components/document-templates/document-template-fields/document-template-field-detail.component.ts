@@ -41,7 +41,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
     close(): void {
         try{
             this.dialogRef.close();
-        }catch(e){ console.warn('Error closing dialog', e); }
+        }catch(e){  }
     }
 
     ngOnInit(): void {

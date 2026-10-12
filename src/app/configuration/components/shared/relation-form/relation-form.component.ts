@@ -3,13 +3,13 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RelacionInternaDTO } from 'app/document/document.types';
 import { PropertyService, DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/DocumentoPlantillaFilterDTO';
-import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 interface ModalData {
     relacion?: RelacionInternaDTO;
@@ -25,14 +25,13 @@ interface CatalogoItem {
 @Component({
     selector: 'app-relation-form',
     standalone: true,
-    imports: [FormsModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatAutocompleteModule],
+    imports: [FormsModule, MatDialogModule, MatIconModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatAutocompleteModule],
     templateUrl: './relation-form.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RelationFormComponent implements OnInit {
     private propertyService = inject(PropertyService);
     private documentTemplateService = inject(DocumentTemplateService);
-    private notificationCenter = inject(NotificationCenterService);
     private destroyRef = inject(DestroyRef);
     public dialogRef = inject<MatDialogRef<RelationFormComponent>>(MatDialogRef);
     public data = inject<ModalData>(MAT_DIALOG_DATA);
@@ -168,15 +167,11 @@ export class RelationFormComponent implements OnInit {
                 this.camposDisponibles.set(opciones);
                 this.camposCargando.set(false);
             },
-            error: (err) => {
+            error: () => {
                 if (request !== this.camposRequest) return;
                 this.camposDisponibles.set([]);
                 this.camposCargando.set(false);
                 this.camposError.set(true);
-                this.notificationCenter.error(
-                    'No se pudieron cargar los campos',
-                    err?.error?.message || 'No fue posible consultar los campos de la plantilla'
-                );
             }
         });
     }
@@ -200,12 +195,8 @@ export class RelationFormComponent implements OnInit {
                 this.cargando.set(false);
                 this.dialogRef.close(this.relacion);
             },
-            error: (err) => {
+            error: () => {
                 this.cargando.set(false);
-                this.notificationCenter.error(
-                    'No se pudo guardar',
-                    err?.error?.message || 'Ocurrió un error al guardar la relación'
-                );
             }
         });
     }

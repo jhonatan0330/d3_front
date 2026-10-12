@@ -355,7 +355,9 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
     for (const transicion of transiciones) {
       if (!transicion.estadoLLegada) continue;
       const origen = transicion.estadoPartida;
-      const id = transicion.llaveTabla || `${origen || ESTADO_INICIO_LLAVE}->${transicion.estadoLLegada}`;
+      const id =
+        transicion.llaveTabla ||
+        `${origen || ESTADO_INICIO_LLAVE}->${transicion.estadoLLegada}#${aristas.length}`;
       if (vistos.has(id)) continue;
       vistos.add(id);
       aristas.push({
