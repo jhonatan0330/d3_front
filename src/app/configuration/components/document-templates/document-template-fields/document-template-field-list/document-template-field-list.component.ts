@@ -65,8 +65,13 @@ export class DocumentTemplateFieldListComponent implements OnInit {
         updatedFields.forEach((f, i) => { f.orden = i + 1; });
         this.fields.set([...updatedFields]);
 
-        const movedField = updatedFields[event.currentIndex];
-        this.service.updateField(movedField).subscribe();
+        const movedField = { ...updatedFields[event.currentIndex] };
+        if (!movedField.plantilla) {
+            movedField.plantilla = this.templateKey;
+        }
+        this.service.updateField(movedField).subscribe({
+            error: () => this.loadFields()
+        });
     }
 
     toggleFormat(field: DocumentoPlantillaCaracteristicaDTO): void {

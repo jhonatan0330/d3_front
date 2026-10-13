@@ -4,9 +4,9 @@
     <div class="min-w-0">
       <p class="text-xs font-semibold uppercase text-secondary">Configuración</p>
       <h2 class="mt-1 text-xl font-semibold leading-tight">
-        {{ esEdicion ? 'Editar propiedad' : 'Nueva propiedad' }}
+        {{ soloLectura ? 'Propiedad' : (esEdicion ? 'Editar propiedad' : 'Nueva propiedad') }}
       </h2>
-      <p class="mt-1 text-sm text-secondary">Define el valor y las condiciones de esta propiedad.</p>
+      <p class="mt-1 text-sm text-secondary">{{ soloLectura ? 'Detalle de la propiedad (solo lectura).' : 'Define el valor y las condiciones de esta propiedad.' }}</p>
     </div>
     <button type="button" class="btn-icon shrink-0" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar">
       <mat-icon>close</mat-icon>
@@ -20,6 +20,7 @@
   }
 
   <form #form="ngForm" class="flex min-h-0 flex-1 flex-col" (ngSubmit)="onSubmit()">
+    <fieldset [disabled]="soloLectura" class="contents">
     <div class="min-h-0 flex-1 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
       <section>
         <label class="mb-1.5 block text-sm font-medium" for="property-value">Propiedad valor</label>
@@ -165,15 +166,22 @@
         </section>
       }
     </div>
+    </fieldset>
 
     <footer class="flex shrink-0 justify-end gap-3 border-t border-gray-200 bg-gray-50 px-5 py-4 dark:border-gray-700 dark:bg-gray-800/60 sm:px-6">
-      <button type="button" class="btn-raised" (click)="dialogRef.close()">
-        Cancelar
-      </button>
-      <button type="submit" class="btn-flat-primary" [disabled]="cargando() || !form.valid">
-        <mat-icon>{{ cargando() ? 'hourglass_top' : 'save' }}</mat-icon>
-        <span>{{ cargando() ? 'Guardando...' : 'Guardar' }}</span>
-      </button>
+      @if (soloLectura) {
+        <button type="button" class="btn-raised" (click)="dialogRef.close()">
+          Cerrar
+        </button>
+      } @else {
+        <button type="button" class="btn-raised" (click)="dialogRef.close()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-flat-primary" [disabled]="cargando() || !form.valid">
+          <mat-icon>{{ cargando() ? 'hourglass_top' : 'save' }}</mat-icon>
+          <span>{{ cargando() ? 'Guardando...' : 'Guardar' }}</span>
+        </button>
+      }
     </footer>
   </form>
 </div>

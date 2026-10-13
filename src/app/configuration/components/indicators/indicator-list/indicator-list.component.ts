@@ -89,6 +89,6 @@ export class IndicatorListComponent implements OnInit, AfterViewInit, OnDestroy 
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
         this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} indicador?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateIndicador(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Indicador ${action}do correctamente`, 'success'); this.reload(); } }); }});
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; const request$ = newEstado === 'A' ? this.service.activateIndicador(updated) : this.service.inactivateIndicador(updated); request$.subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Indicador ${action}do correctamente`, 'success'); this.reload(); } }); }});
     }
 }

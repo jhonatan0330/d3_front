@@ -118,6 +118,19 @@ export class DocumentTemplateListComponent implements OnInit, AfterViewInit, OnD
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
         this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} plantilla?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; this.service.inactivateTemplate(updated).subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Plantilla ${action}da correctamente`, 'success'); this.reload(); } }); }});
+            .then((result) => { 
+                if (result.isConfirmed) { 
+                    const updated = { ...item, estado: newEstado };
+                    const request$ = newEstado === 'A'
+                        ? this.service.activateTemplate(updated)
+                        : this.service.inactivateTemplate(updated);
+                    request$.subscribe({
+                        next: () => { 
+                            this.notificationCenter.fire('Éxito', `Plantilla ${action}da correctamente`, 'success'); 
+                            this.reload(); 
+                        } 
+                    });        
+                }
+            });
     }
 }

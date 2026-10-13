@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
-import { TenantsService } from 'app/tenants/tenants.service';
-import { TenantUsuarioDTO } from 'app/tenants/tenants.types';
+import { TenantsService } from 'app/multitenancy/business/tenants.service';
+import { TenantUsuarioDTO } from 'app/multitenancy/domain/tenants.types';
 
 export interface TenantUsuariosData {
     tenantKey: string;

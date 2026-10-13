@@ -11,12 +11,12 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropd
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
-import { TenantsService } from 'app/tenants/tenants.service';
-import { TenantDTO } from 'app/tenants/tenants.types';
-import { TenantFormComponent } from 'app/tenants/tenant-form/tenant-form.component';
-import { TenantUsuariosComponent } from 'app/tenants/tenant-usuarios/tenant-usuarios.component';
-import { UsageDetailComponent } from 'app/tenants/usage-detail/usage-detail.component';
-import { UsageTransferComponent } from 'app/tenants/usage-transfer/usage-transfer.component';
+import { TenantsService } from 'app/multitenancy/business/tenants.service';
+import { TenantDTO } from 'app/multitenancy/domain/tenants.types';
+import { TenantFormComponent } from 'app/multitenancy/components/tenant-form/tenant-form.component';
+import { TenantUsuariosComponent } from 'app/multitenancy/components/tenant-usuarios/tenant-usuarios.component';
+import { UsageDetailComponent } from 'app/multitenancy/components/usage-detail/usage-detail.component';
+import { UsageTransferComponent } from 'app/multitenancy/components/usage-transfer/usage-transfer.component';
 
 @Component({
     selector: 'tenants-view',

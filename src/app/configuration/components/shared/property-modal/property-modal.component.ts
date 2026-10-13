@@ -20,6 +20,7 @@ interface ModalData {
     tipoOrigen?: string;
     origenCategoria?: string;
     campoKey?: string;
+    soloLectura?: boolean;
 }
 
 @Component({
@@ -56,11 +57,13 @@ export class PropertyModalComponent implements OnInit {
     cargando = signal(false);
     inicializando = signal(false);
     esEdicion = false;
+    soloLectura = false;
 
     private valoresCargados = false;
     private propiedadCargada = false;
 
     ngOnInit(): void {
+        this.soloLectura = !!this.data.soloLectura;
         const contexto = this.data.propiedad
             ? { ...this.data.propiedad }
             : new PropiedadCampoDTO();
@@ -219,6 +222,7 @@ export class PropertyModalComponent implements OnInit {
     }
 
     onSubmit(): void {
+        if (this.soloLectura) return;
         this.cargando.set(true);
 
         const request$ = this.propiedad.llaveTabla

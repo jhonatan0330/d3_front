@@ -17,6 +17,16 @@ export class TenantUsuarioDTO {
     state: string;
 }
 
+export class TenantCrearDTO {
+    nombre: string;
+    codigo: string;
+    imagen?: string;
+    adminNombre: string;
+    adminIdentificacion: string;
+    adminCorreo: string;
+    adminTelefono?: string;
+}
+
 export class SaldoConsumoDTO {
     llaveTabla: string;
     saldo: number;

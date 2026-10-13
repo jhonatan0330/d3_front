@@ -6,8 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { TenantsService } from 'app/tenants/tenants.service';
-import { MovimientoConsumoDTO, SaldoConsumoDTO } from 'app/tenants/tenants.types';
+import { TenantsService } from 'app/multitenancy/business/tenants.service';
+import { MovimientoConsumoDTO, SaldoConsumoDTO } from 'app/multitenancy/domain/tenants.types';
 
 export interface UsageDetailData {
     tenantKey?: string;

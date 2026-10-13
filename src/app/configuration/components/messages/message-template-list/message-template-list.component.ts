@@ -112,7 +112,10 @@ export class MessageTemplateListComponent implements OnInit, AfterViewInit, OnDe
         }).then((result) => {
             if (result.isConfirmed) {
                 const updated = { ...item, estado: newEstado };
-                this.templateService.inactivateTemplate(updated).subscribe({
+                const request$ = newEstado === 'A'
+                    ? this.templateService.activateTemplate(updated)
+                    : this.templateService.inactivateTemplate(updated);
+                request$.subscribe({
                     next: () => { this.notificationCenter.fire('Éxito', `Plantilla ${action}da correctamente`, 'success'); this.reload(); }
                 });
             }

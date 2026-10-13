@@ -6,8 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
-import { TenantsService } from 'app/tenants/tenants.service';
-import { SaldoConsumoDTO } from 'app/tenants/tenants.types';
+import { TenantsService } from 'app/multitenancy/business/tenants.service';
+import { SaldoConsumoDTO } from 'app/multitenancy/domain/tenants.types';
 
 export interface UsageTransferData {
     tenantKey: string;

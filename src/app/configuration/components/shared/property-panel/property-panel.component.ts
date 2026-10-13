@@ -6,6 +6,7 @@ import { PropiedadDTO, PropiedadCampoDTO } from 'app/shared/shared.domain';
 import { PropertyService } from 'app/configuration/configuracion.api';
 import { PropertyLookupService } from 'app/configuration/property-lookup.service';
 import { PropertyModalComponent } from '../property-modal/property-modal.component';
+import { PropertyHistoryComponent } from '../property-history/property-history.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 interface PropertyPanelData {
@@ -64,6 +65,19 @@ export class PropertyPanelComponent implements OnInit {
                 this.loadPropiedades();
             }
         });
+    }
+
+    openHistorial(): void {
+        const dialogRef = this.dialog.open(PropertyHistoryComponent, {
+            width: '700px',
+            maxWidth: '95vw',
+            data: {
+                campoKey: this.data.campoKey,
+                titulo: this.data.titulo,
+                origenCategoria: this.data.origenCategoria || ''
+            }
+        });
+        dialogRef.afterClosed().subscribe(() => this.loadPropiedades());
     }
 
     inactivar(prop: PropiedadDTO): void {

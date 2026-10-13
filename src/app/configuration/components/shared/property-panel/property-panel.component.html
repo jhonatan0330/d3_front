@@ -7,6 +7,10 @@
       <p class="mt-1 text-sm text-secondary">{{ propiedades().length }} propiedades activas</p>
     </div>
     <div class="flex shrink-0 items-center gap-2">
+      <button type="button" class="btn-flat" (click)="openHistorial()" title="Historial de propiedades inactivas" aria-label="Historial de propiedades inactivas">
+        <mat-icon>history</mat-icon>
+        <span class="hidden sm:inline">Historial</span>
+      </button>
       <button type="button" class="btn-flat-primary" (click)="openModal()">
         <mat-icon>add</mat-icon>
         <span class="hidden sm:inline">Nueva propiedad</span>

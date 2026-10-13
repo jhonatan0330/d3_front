@@ -1,0 +1,77 @@
+
+<div class="flex max-h-[90vh] w-full min-w-0 flex-col overflow-hidden bg-card">
+  <header class="flex shrink-0 items-start justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-gray-700 sm:px-6">
+    <div class="min-w-0">
+      <p class="text-xs font-semibold uppercase text-secondary">Administración</p>
+      <h2 class="mt-1 truncate text-xl font-semibold">Historial de propiedades</h2>
+      <p class="mt-1 text-sm text-secondary">{{ propiedades().length }} propiedades inactivas de {{ data.titulo }}</p>
+    </div>
+    <div class="flex shrink-0 items-center gap-2">
+      <button type="button" class="btn-icon" (click)="cerrar()" aria-label="Cerrar" title="Cerrar">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="h-1 w-full shrink-0 overflow-hidden bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Cargando historial">
+      <div class="h-full w-2/5 animate-pulse bg-primary"></div>
+    </div>
+  } @else if (propiedades().length === 0) {
+    <div class="flex min-h-56 flex-col items-center justify-center px-6 py-8 text-center">
+      <span class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <mat-icon>history</mat-icon>
+      </span>
+      <p class="mt-3 font-medium">No hay propiedades inactivas</p>
+      <p class="mt-1 text-sm text-secondary">Todas las propiedades de este objeto están activas.</p>
+    </div>
+  } @else {
+    <div class="min-h-0 flex-1 divide-y divide-gray-200 overflow-y-auto dark:divide-gray-700">
+      @for (prop of propiedades(); track prop.llaveTabla) {
+        <article class="flex items-start gap-3 px-5 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/60 sm:px-6">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400">
+            <mat-icon>block</mat-icon>
+          </span>
+          <div class="min-w-0 flex-1">
+            <div class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+              <h3 class="truncate font-medium">{{ prop.nombre }}</h3>
+              @if (prop.key) {
+                <span class="rounded bg-gray-100 px-2 py-0.5 font-mono text-xs text-secondary dark:bg-gray-800">{{ prop.key }}</span>
+              }
+              <span class="rounded bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700 dark:bg-red-950/40 dark:text-red-400">Inactiva</span>
+            </div>
+            @if (prop.texto || prop.valor) {
+              <p class="mt-1 truncate text-sm text-secondary">{{ prop.texto || prop.valor }}</p>
+            }
+            @if (prop.motivo) {
+              <p class="mt-1 truncate text-xs text-secondary">{{ prop.motivo }}</p>
+            }
+            <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-secondary">
+              @if (prop.fechaEliminacion) {
+                <span><span class="font-medium">Anulada:</span> {{ prop.fechaEliminacion | date: 'dd/MM/yyyy HH:mm' }}</span>
+              }
+              @if (prop.usuarioEliminacion) {
+                <span><span class="font-medium">Por:</span> {{ prop.usuarioEliminacion }}</span>
+              }
+              @if (prop.fechaDefinicion) {
+                <span><span class="font-medium">Definida:</span> {{ prop.fechaDefinicion | date: 'dd/MM/yyyy HH:mm' }}</span>
+              }
+              @if (prop.usuarioCreacion) {
+                <span><span class="font-medium">Creada por:</span> {{ prop.usuarioCreacion }}</span>
+              }
+            </div>
+          </div>
+          <div class="flex shrink-0 items-center gap-1">
+            <button type="button" class="btn-icon-primary" (click)="ver(prop)" title="Ver propiedad" aria-label="Ver propiedad">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button type="button" class="btn-flat-primary" (click)="reactivar(prop)" title="Reactivar propiedad" aria-label="Reactivar propiedad">
+              <mat-icon>restart_alt</mat-icon>
+              <span class="hidden sm:inline">Reactivar</span>
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

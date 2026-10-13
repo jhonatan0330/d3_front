@@ -8,8 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
-import { TenantsService } from 'app/tenants/tenants.service';
-import { TenantDTO } from 'app/tenants/tenants.types';
+import { TenantsService } from 'app/multitenancy/business/tenants.service';
+import { TenantCrearDTO, TenantDTO } from 'app/multitenancy/domain/tenants.types';
 
 @Component({
     selector: 'tenant-form',
@@ -24,9 +24,14 @@ export class TenantFormComponent implements OnInit {
     private service = inject(TenantsService);
 
     tenant: TenantDTO = new TenantDTO();
+    admin = { nombre: '', identificacion: '', correo: '', telefono: '' };
     cargando = false;
     verUsuario = signal(false);
     verClave = signal(false);
+
+    get esNuevo(): boolean {
+        return !this.data?.key;
+    }
 
     ngOnInit(): void {
         if (this.data?.key) {
@@ -39,6 +44,10 @@ export class TenantFormComponent implements OnInit {
     }
 
     onSubmit(): void {
+        if (this.esNuevo) {
+            this.crear();
+            return;
+        }
         if (!this.tenant.key) return;
         this.cargando = true;
         const cambios = {
@@ -51,6 +60,27 @@ export class TenantFormComponent implements OnInit {
             next: (result) => {
                 this.cargando = false;
                 this.notificationCenter.fire('Éxito', 'Subtenant guardado correctamente', 'success');
+                this.dialogRef.close(result);
+            },
+            error: () => { this.cargando = false; }
+        });
+    }
+
+    crear(): void {
+        this.cargando = true;
+        const dto: TenantCrearDTO = {
+            nombre: (this.tenant.name ?? '').trim(),
+            codigo: (this.tenant.codigo ?? '').trim(),
+            imagen: this.tenant.imagen,
+            adminNombre: this.admin.nombre.trim(),
+            adminIdentificacion: this.admin.identificacion.trim(),
+            adminCorreo: this.admin.correo.trim(),
+            adminTelefono: this.admin.telefono.trim() || undefined,
+        };
+        this.service.crearTenant(dto).subscribe({
+            next: (result) => {
+                this.cargando = false;
+                this.notificationCenter.fire('Éxito', 'Tenant creado correctamente', 'success');
                 this.dialogRef.close(result);
             },
             error: () => { this.cargando = false; }

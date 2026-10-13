@@ -371,9 +371,42 @@ export class TreeCompareComponent {
         return fila?.tipoDiferencia === DiferenciaDTO.LOCAL_SIN_REMOTO;
     }
 
+    estadoFila(fila: FilaRevision): 'aplicado' | 'omitido' | 'error' | 'pendiente' {
+        return this.resultados()[fila.camino]?.estado ?? 'pendiente';
+    }
+
+    ejecutable(fila: FilaRevision): boolean {
+        if (this.esLocal(fila) || !fila.nodo) { return false; }
+        const estado = this.estadoFila(fila);
+        return estado === 'pendiente' || estado === 'error';
+    }
+
+    seleccionarIndice(i: number): void {
+        this.indice.set(i);
+        this.avisoCreados.set([]);
+    }
+
+    ejecutarFila(fila: FilaRevision): void {
+        if (this.sincronizando()) { return; }
+        if (this.estadoFila(fila) === 'error') {
+            const copia = { ...this.resultados() };
+            delete copia[fila.camino];
+            this.resultados.set(copia);
+        }
+        const idx = this.revision().findIndex(f => f.camino === fila.camino);
+        if (idx >= 0) { this.indice.set(idx); }
+        this.avisoCreados.set([]);
+        this.aplicarFila(fila, false);
+    }
+
     aplicar(): void {
         const fila = this.filaActual();
-        if (!fila || !fila.nodo || this.esLocal(fila)) { return; }
+        if (!fila) { return; }
+        this.aplicarFila(fila, true);
+    }
+
+    private aplicarFila(fila: FilaRevision, avanzar: boolean): void {
+        if (!fila.nodo || this.esLocal(fila) || this.estadoFila(fila) !== 'pendiente') { return; }
         this.sincronizando.set(true);
         this.error.set('');
         this.avisoCreados.set([]);
@@ -400,7 +433,7 @@ export class TreeCompareComponent {
                     }
                     if (registro.creados.length) this.avisoCreados.set(registro.creados);
                     this.sincronizando.set(false);
-                    this.avanzarTrasAccion();
+                    if (avanzar) { this.avanzarTrasAccion(); }
                 },
                 error: err => {
                     this.registrar(fila.camino, {

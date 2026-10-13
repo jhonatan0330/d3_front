@@ -40,7 +40,7 @@ export class DocumentTemplateReportFormComponent implements OnInit {
             this.report.version = 1;
             this.report.soloExistente = false;
             this.report.publico = false;
-            this.report.variables = '{}';
+            this.report.variables = '';
         }
     }
 

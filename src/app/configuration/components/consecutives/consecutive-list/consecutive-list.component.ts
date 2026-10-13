@@ -126,7 +126,10 @@ export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestro
         }).then((result) => {
             if (result.isConfirmed) {
                 const updated = { ...item, estado: newEstado };
-                this.service.inactivateConsecutivo(updated).subscribe({
+                const request$ = newEstado === 'A'
+                    ? this.service.activateConsecutivo(updated)
+                    : this.service.inactivateConsecutivo(updated);
+                request$.subscribe({
                     next: () => {
                         this.notificationCenter.fire('Éxito', `Consecutivo ${action}do correctamente`, 'success');
                         this.reload();

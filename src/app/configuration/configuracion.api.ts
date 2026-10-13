@@ -69,6 +69,12 @@ export class ConsecutiveService {
         );
     }
 
+    activateConsecutivo(consecutivo: ConsecutivoDTO): Observable<ConsecutivoDTO> {
+        return this.http.post<ConsecutivoDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${consecutivo.llaveTabla}/activate`), consecutivo
+        );
+    }
+
     assignConsecutivo(consecutivo: ConsecutivoDTO): Observable<ConsecutivoDTO> {
         return this.http.post<ConsecutivoDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${consecutivo.llaveTabla}/assign`), consecutivo
@@ -83,8 +89,17 @@ export class MessageService {
     private baseUrl = '/configuration/messages';
 
     getMessages(filter?: MensajeFilterDTO): Observable<MensajeDTO[]> {
+        const body = {
+            estado: filter?.estado,
+            fechaDesde: filter?.fechaMin,
+            fechaHasta: filter?.fechaMax,
+            usuario: filter?.usuario,
+            titulo: filter?.titulo,
+            paginacionRegistroInicial: filter?.paginacionRegistroInicial,
+            paginacionRegistroFinal: filter?.paginacionRegistroFinal,
+        };
         return this.http.post<MensajeDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), body
         );
     }
 
@@ -108,8 +123,19 @@ export class AutoTaskService {
     private baseUrl = '/configuration/auto-tasks';
 
     getAutoTasks(filter?: ProcesoTransicionAutomaticaFilterDTO): Observable<ProcesoTransicionAutomaticaDTO[]> {
+        const body = {
+            estado: filter?.estado,
+            transicion: filter?.transicion,
+            plantilla: filter?.plantilla,
+            plantillaNombre: filter?.plantillaNombre,
+            propiedad: filter?.propiedad,
+            fechaDesde: filter?.fechaMin,
+            fechaHasta: filter?.fechaMax,
+            paginacionRegistroInicial: filter?.paginacionRegistroInicial,
+            paginacionRegistroFinal: filter?.paginacionRegistroFinal,
+        };
         return this.http.post<ProcesoTransicionAutomaticaDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
+            this.ls.getUrlAccess(`${this.baseUrl}/list`), body
         );
     }
 
@@ -134,6 +160,12 @@ export class AutoTaskService {
     inactivateAutoTask(task: ProcesoTransicionAutomaticaDTO): Observable<ProcesoTransicionAutomaticaDTO> {
         return this.http.post<ProcesoTransicionAutomaticaDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${task.llaveTabla}/inactivate`), task
+        );
+    }
+
+    activateAutoTask(task: ProcesoTransicionAutomaticaDTO): Observable<ProcesoTransicionAutomaticaDTO> {
+        return this.http.post<ProcesoTransicionAutomaticaDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${task.llaveTabla}/activate`), task
         );
     }
 
@@ -193,6 +225,12 @@ export class DocumentTemplateService {
         );
     }
 
+    activateTemplate(template: DocumentoPlantillaDTO): Observable<DocumentoPlantillaDTO> {
+        return this.http.post<DocumentoPlantillaDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/activate`), template
+        );
+    }
+
     duplicateTemplate(templateKey: string): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/duplicate`), {}
@@ -237,7 +275,7 @@ export class DocumentTemplateService {
 
     updateField(field: DocumentoPlantillaCaracteristicaDTO): Observable<DocumentoPlantillaCaracteristicaDTO> {
         return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/fields/${field.llaveTabla}`), field
+            this.ls.getUrlAccess(`${this.baseUrl}/fields/${field.llaveTabla}/update`), field
         );
     }
 
@@ -249,7 +287,7 @@ export class DocumentTemplateService {
 
     getTemplateFieldsComplete(template: DocumentoPlantillaDTO): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/fields-complete`), template
+            this.ls.getUrlAccess(`${this.baseUrl}/fields-complete`), template
         );
     }
 
@@ -274,13 +312,19 @@ export class DocumentTemplateService {
 
     updateReport(report: ReporteBaseDTO): Observable<ReporteBaseDTO> {
         return this.http.post<ReporteBaseDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/reports/${report.llaveTabla}`), report
+            this.ls.getUrlAccess(`${this.baseUrl}/reports/${report.llaveTabla}/update`), report
         );
     }
 
     inactivateReport(report: ReporteBaseDTO): Observable<ReporteBaseDTO> {
         return this.http.post<ReporteBaseDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/reports/${report.llaveTabla}/inactivate`), report
+        );
+    }
+
+    activateReport(report: ReporteBaseDTO): Observable<ReporteBaseDTO> {
+        return this.http.post<ReporteBaseDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/reports/${report.llaveTabla}/activate`), report
         );
     }
 }
@@ -318,6 +362,12 @@ export class MessageTemplateService {
     inactivateTemplate(template: MensajePlantillaCorreoDTO): Observable<MensajePlantillaCorreoDTO> {
         return this.http.post<MensajePlantillaCorreoDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/inactivate`), template
+        );
+    }
+
+    activateTemplate(template: MensajePlantillaCorreoDTO): Observable<MensajePlantillaCorreoDTO> {
+        return this.http.post<MensajePlantillaCorreoDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/activate`), template
         );
     }
 }
@@ -364,6 +414,12 @@ export class PropertyValueService {
             this.ls.getUrlAccess(`${this.baseUrl}/${value.llaveTabla}/inactivate`), value
         );
     }
+
+    activatePropertyValue(value: PropiedadValorDefinidoDTO): Observable<PropiedadValorDefinidoDTO> {
+        return this.http.post<PropiedadValorDefinidoDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${value.llaveTabla}/activate`), value
+        );
+    }
 }
 
 @Injectable({ providedIn: 'root' })
@@ -399,6 +455,12 @@ export class WebServiceConfigService {
     inactivateWebService(ws: WebServiceDTO): Observable<WebServiceDTO> {
         return this.http.post<WebServiceDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${ws.llaveTabla}/inactivate`), ws
+        );
+    }
+
+    activateWebService(ws: WebServiceDTO): Observable<WebServiceDTO> {
+        return this.http.post<WebServiceDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${ws.llaveTabla}/activate`), ws
         );
     }
 
@@ -462,6 +524,12 @@ export class ServerService {
             this.ls.getUrlAccess(`${this.baseUrl}/${server.llaveTabla}/inactivate`), server
         );
     }
+
+    activateServidor(server: ServidorDTO): Observable<ServidorDTO> {
+        return this.http.post<ServidorDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${server.llaveTabla}/activate`), server
+        );
+    }
 }
 
 @Injectable({ providedIn: 'root' })
@@ -503,6 +571,12 @@ export class OrganizationService {
     inactivateOrganizacion(org: OrganizacionDTO): Observable<OrganizacionDTO> {
         return this.http.post<OrganizacionDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${org.llaveTabla}/inactivate`), org
+        );
+    }
+
+    activateOrganizacion(org: OrganizacionDTO): Observable<OrganizacionDTO> {
+        return this.http.post<OrganizacionDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${org.llaveTabla}/activate`), org
         );
     }
 }
@@ -556,6 +630,12 @@ export class ProcessService {
         );
     }
 
+    activateProcess(process: ProcesoDTO): Observable<ProcesoDTO> {
+        return this.http.post<ProcesoDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${process.llaveTabla}/activate`), process
+        );
+    }
+
     getTransitions(processKey: string, filter?: ProcesoTransicionFilterDTO): Observable<ProcesoTransicionDTO[]> {
         const payload = { estado: 'A', proceso: processKey, ...(filter || {}) };
         return this.http.post<ProcesoTransicionDTO[]>(
@@ -577,13 +657,19 @@ export class ProcessService {
 
     updateTransition(transition: ProcesoTransicionDTO): Observable<ProcesoTransicionDTO> {
         return this.http.post<ProcesoTransicionDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/transitions/${transition.llaveTabla}`), transition
+            this.ls.getUrlAccess(`${this.baseUrl}/transitions/${transition.llaveTabla}/update`), transition
         );
     }
 
     inactivateTransition(transition: ProcesoTransicionDTO): Observable<ProcesoTransicionDTO> {
         return this.http.post<ProcesoTransicionDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/transitions/${transition.llaveTabla}/inactivate`), transition
+        );
+    }
+
+    activateTransition(transition: ProcesoTransicionDTO): Observable<ProcesoTransicionDTO> {
+        return this.http.post<ProcesoTransicionDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/transitions/${transition.llaveTabla}/activate`), transition
         );
     }
 
@@ -615,6 +701,12 @@ export class ProcessService {
     inactivateState(state: ProcesoEstadoDTO): Observable<ProcesoEstadoDTO> {
         return this.http.post<ProcesoEstadoDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/states/${state.llaveTabla}/inactivate`), state
+        );
+    }
+
+    activateState(state: ProcesoEstadoDTO): Observable<ProcesoEstadoDTO> {
+        return this.http.post<ProcesoEstadoDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/states/${state.llaveTabla}/activate`), state
         );
     }
 }
@@ -659,6 +751,12 @@ export class PropertyService {
     inactivateProperty(property: PropiedadDTO): Observable<PropiedadDTO> {
         return this.http.post<PropiedadDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/inactivate`), property
+        );
+    }
+
+    reactivateProperty(property: PropiedadDTO): Observable<PropiedadDTO> {
+        return this.http.post<PropiedadDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/reactivate`), property
         );
     }
 
@@ -738,7 +836,13 @@ export class IndicatorConfigService {
 
     inactivateIndicador(indicador: IndicatorDTO): Observable<IndicatorDTO> {
         return this.http.post<IndicatorDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${indicador.llaveTabla}/inactivate`), indicador
+            this.ls.getUrlAccess(`${this.baseUrl}/inactivate`), indicador
+        );
+    }
+
+    activateIndicador(indicador: IndicatorDTO): Observable<IndicatorDTO> {
+        return this.http.post<IndicatorDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/activate`), indicador
         );
     }
 }

@@ -2,6 +2,10 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Subtenants</h1>
     <div class="flex items-center gap-2">
+      <button type="button" class="btn-flat-primary" (click)="openForm()">
+        <mat-icon>add</mat-icon>
+        Nuevo
+      </button>
       <button type="button" class="btn-flat" (click)="openUsage()">
         <mat-icon>data_usage</mat-icon>
         Mi usage

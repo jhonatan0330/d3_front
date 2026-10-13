@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
-import { MovimientoConsumoDTO, MovimientoConsumoFilterDTO, SaldoConsumoDTO, TenantDTO, TenantUsuarioDTO, TransferenciaConsumoDTO } from 'app/tenants/tenants.types';
+import { MovimientoConsumoDTO, MovimientoConsumoFilterDTO, SaldoConsumoDTO, TenantCrearDTO, TenantDTO, TenantUsuarioDTO, TransferenciaConsumoDTO } from 'app/multitenancy/domain/tenants.types';
+import { TenantPublicDTO } from 'app/multitenancy/domain/TenantPublicDTO';
 
 @Injectable({
     providedIn: 'root',
@@ -13,6 +14,10 @@ export class TenantsService {
 
     misSubtenants(): Observable<TenantDTO[]> {
         return this.http.get<TenantDTO[]>(this.ls.getUrlAccess('/multi-tenancy/mis-subtenants'));
+    }
+
+    crearTenant(dto: TenantCrearDTO): Observable<TenantPublicDTO> {
+        return this.http.post<TenantPublicDTO>(this.ls.getUrlAccess('/multi-tenancy'), dto);
     }
 
     detalleTenant(key: string): Observable<TenantDTO> {
