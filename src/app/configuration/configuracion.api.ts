@@ -26,6 +26,7 @@ import { DiferenciaDTO } from './domain/DiferenciaDTO';
 import { DocumentoPlantillaFilterDTO } from './domain/DocumentoPlantillaFilterDTO';
 import { IndicatorDTO } from './domain/IndicatorDTO';
 import { IndicatorFilterDTO } from './domain/IndicatorFilterDTO';
+import { RegistroArbolDTO } from './domain/RegistroArbolDTO';
 import { SincronizacionNodoDTO } from './domain/SincronizacionNodoDTO';
 import { SincronizacionNodoResultDTO } from './domain/SincronizacionNodoResultDTO';
 import { SincronizacionSeleccionadaDTO } from './domain/SincronizacionSeleccionadaDTO';
@@ -865,8 +866,7 @@ export class TreeConfigService {
         );
     }
 
-    compareTree(arbol: TreeNodeDTO, filter?: ArbolConfiguracionFilterDTO): Observable<DiferenciaDTO[]> {
-        const request: CompararArbolRequest = { arbol, filter: filter ?? new ArbolConfiguracionFilterDTO() };
+    compareTree(request: CompararArbolRequest): Observable<DiferenciaDTO[]> {
         return this.http.post<DiferenciaDTO[]>(
             this.ls.getUrlAccess(`${this.baseUrl}/compare`), request
         );
@@ -890,9 +890,15 @@ export class TreeConfigService {
         );
     }
 
+    registerRemoteTree(payload: unknown): Observable<RegistroArbolDTO> {
+        return this.http.post<RegistroArbolDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/register`), payload
+        );
+    }
+
     exportModules(modulos: string[]): Observable<{ url: string }> {
         return this.http.post<{ url: string }>(
-            this.ls.getUrlAccess('/configuration/module'), { modulesCode: modulos }
+            this.ls.getUrlAccess('/configuration/configuration/module'), { modulesCode: modulos }
         );
     }
 

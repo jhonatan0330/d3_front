@@ -5,4 +5,5 @@ export class ArbolConfiguracionFilterDTO extends BasicFilterDTO {
     static readonly PROFUNDIDAD_SIMPLE = 'SIMPLE';
     profundidad: string;
     listarPropiedades: boolean;
+    ligero: boolean;
 }

@@ -61,6 +61,7 @@ export class TreeCompareComponent {
     descargando = signal(false);
 
     remoto = signal<TreeNodeDTO | null>(null);
+    arbolId = signal('');
     archivoNombre = signal('');
     tenantOrigen = signal('');
     fechaExport = signal('');
@@ -95,9 +96,8 @@ export class TreeCompareComponent {
     }
 
     puedeIr(n: number): boolean {
-        if (n <= 1) return true;
-        if (n === 2) return true;
-        if (n === 3) return !!this.remoto();
+        if (n <= 2) return true;
+        if (n === 3) return !!this.arbolId();
         return this.revision().length > 0;
     }
 
@@ -215,41 +215,26 @@ export class TreeCompareComponent {
             this.error.set('El archivo no tiene el formato de un árbol o exportación de configuración.');
             return;
         }
-        if (objeto['arbol']) {
-            this.asignarRemoto(
-                objeto['arbol'] as TreeNodeDTO,
-                nombreArchivo,
-                (objeto['tenantOrigen'] as string) ?? '',
-                (objeto['fechaExport'] as string) ?? ''
-            );
-            return;
-        }
-        if (objeto['tipo'] && objeto['camino']) {
-            this.asignarRemoto(json as TreeNodeDTO, nombreArchivo, '', '');
-            return;
-        }
-        if (objeto['hierarchy'] || objeto['process'] || objeto['organization'] || objeto['templates']) {
-            this.api.treeFromHierarchy(json)
-                .pipe(takeUntilDestroyed(this.destroyRef))
-                .subscribe({
-                    next: arbol => this.asignarRemoto(
-                        arbol, nombreArchivo,
-                        (objeto['tenantOrigen'] as string) ?? '',
-                        (objeto['fechaExport'] as string) ?? ''
-                    ),
-                    error: err => {
-                        this.cargando.set(false);
-                        this.error.set(err?.error?.message ?? 'No se pudo convertir el archivo a árbol.');
-                    },
-                });
-            return;
-        }
-        this.cargando.set(false);
-        this.error.set('El archivo no tiene el formato de un árbol o exportación de configuración.');
+        this.api.registerRemoteTree(json)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: registro => this.asignarRemoto(
+                    registro.arbol as TreeNodeDTO,
+                    registro.arbolId,
+                    nombreArchivo,
+                    registro.tenantOrigen ?? '',
+                    registro.fechaExport ?? ''
+                ),
+                error: err => {
+                    this.cargando.set(false);
+                    this.error.set(err?.error?.message ?? 'No se pudo registrar el archivo de configuración.');
+                },
+            });
     }
 
-    private asignarRemoto(arbol: TreeNodeDTO, nombre: string, tenant: string, fecha: string): void {
+    private asignarRemoto(arbol: TreeNodeDTO | null, arbolId: string, nombre: string, tenant: string, fecha: string): void {
         this.remoto.set(arbol);
+        this.arbolId.set(arbolId ?? '');
         this.archivoNombre.set(nombre);
         this.tenantOrigen.set(tenant || '');
         this.fechaExport.set(fecha ? new Date(fecha).toLocaleString() : '');
@@ -268,11 +253,10 @@ export class TreeCompareComponent {
     // ==================== Paso 3: Comparar ====================
 
     comparar(): void {
-        const arbol = this.remoto();
-        if (!arbol) { return; }
+        if (!this.arbolId()) { return; }
         this.comparando.set(true);
         this.error.set('');
-        this.api.compareTree(arbol, this.filtroBase())
+        this.api.compareTree({ arbolId: this.arbolId(), filter: this.filtroBase() })
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: difs => {
@@ -411,11 +395,10 @@ export class TreeCompareComponent {
         this.error.set('');
         this.avisoCreados.set([]);
         const request = new SincronizacionNodoDTO();
-        request.nodo = fila.nodo;
+        request.arbolId = this.arbolId();
         request.camino = fila.camino;
         request.accion = fila.tipoDiferencia;
         request.incluirHijos = fila.tipoDiferencia === DiferenciaDTO.CREAR && fila.hijosRemotos > 0;
-        request.crearAncestros = true;
         this.api.syncNode(request)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
@@ -594,7 +577,8 @@ export class TreeCompareComponent {
     private filtroBase(): ArbolConfiguracionFilterDTO {
         const filter = new ArbolConfiguracionFilterDTO();
         filter.profundidad = ArbolConfiguracionFilterDTO.PROFUNDIDAD_COMPLETA;
-        filter.listarPropiedades = false;
+        filter.listarPropiedades = true;
+        filter.ligero = false;
         return filter;
     }
 }

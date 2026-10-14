@@ -66,6 +66,12 @@ export class AssistantService {
         },
     ]);
 
+    private readonly seedMessageIds: ReadonlySet<string> = new Set(this.mensajes().map(m => m.id));
+
+    isSeedMessage(mensaje: AssistantMessage): boolean {
+        return this.seedMessageIds.has(mensaje.id);
+    }
+
     agregarMensaje(mensaje: AssistantMessage): void {
         this.mensajes.update(msgs => [...msgs, mensaje]);
     }

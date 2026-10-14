@@ -10,12 +10,14 @@ import { IndicatorsCardsComponent } from 'app/accounting/components/indicators-c
 import { TaskListComponent } from 'app/task/components/task-list/task-list.component';
 import { LayoutService } from '../layout.service';
 import { CarouselService } from 'app/authentication/business/carousel.service';
+import { RecentDocumentsCardComponent } from './recent-documents-card/recent-documents-card.component';
+import { LastChatCardComponent } from './last-chat-card/last-chat-card.component';
 
 @Component({
     selector: 'dashboard',
     templateUrl: './dashboard.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, IndicatorsCardsComponent, TaskListComponent]
+    imports: [FormsModule, ReactiveFormsModule, IndicatorsCardsComponent, TaskListComponent, RecentDocumentsCardComponent, LastChatCardComponent]
 })
 export class DashboardComponent implements AfterViewInit, OnDestroy {
 

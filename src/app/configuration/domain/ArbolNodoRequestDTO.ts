@@ -3,4 +3,5 @@ export class ArbolNodoRequestDTO {
     tipo: string;
     llaveTabla: string;
     listarPropiedades: boolean;
+    ligero: boolean;
 }

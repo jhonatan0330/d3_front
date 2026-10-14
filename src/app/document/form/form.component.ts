@@ -48,6 +48,7 @@ import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { UsersApi } from 'app/users/users.api';
+import { RecentDocumentsService } from 'app/layout/recent-documents.service';
 
 @Component({
     selector: 'app-form',
@@ -70,6 +71,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     private transitionService = inject(FormTransitionService);
     private tenantUrlService = inject(TenantUrlService);
     private notificationCenter = inject(NotificationCenterService);
+    private recentDocuments = inject(RecentDocumentsService);
 
     readonly userApi = inject(UsersApi);
 
@@ -263,6 +265,14 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     openManager(value: PedidoVentaDTO) {
+        if (value.llaveTabla && !value.messages?.length) {
+            this.recentDocuments.record({
+                llaveTabla: value.llaveTabla,
+                nombre: value.nombre || this.plantilla()?.nombre || '',
+                plantillaNombre: this.plantilla()?.nombre,
+                plantillaIcon: this.plantilla()?.imagen,
+            });
+        }
         const openNewFormCopyData: PropiedadDTO[] | null = PlantillaHelper.buscarValorMultiple(this.plantilla()!.propiedades, PlantillaHelper.PERMISO_PLANTILLA_INICIO_RAPIDO);
         const successFullText = PlantillaHelper.buscarValor(this.plantilla()!.propiedades, PlantillaHelper.PLANTILLA_SUCCESS_INFORMATION);
         if ((!this.identificadorInicial && !this.close2Save && !successFullText) || openNewFormCopyData) {

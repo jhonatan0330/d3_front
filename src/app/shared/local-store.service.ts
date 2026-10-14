@@ -4,8 +4,17 @@ import { TenantPublicDTO } from 'app/multitenancy/domain/TenantPublicDTO';
 
 export const LocalConstants = {
   URL_CONF: 'URL_CONF',
-  TENANTS: 'D3_TENANTS_CACHE'
+  TENANTS: 'D3_TENANTS_CACHE',
+  RECENT_DOCUMENTS: 'D3_RECENT_DOCUMENTS'
 };
+
+export interface RecentDocumentEntry {
+  llaveTabla: string;
+  nombre: string;
+  plantillaNombre?: string;
+  plantillaIcon?: string;
+  fecha: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -57,5 +66,18 @@ export class LocalStoreService {
   public getTenants(): TenantRuntime[] {
     const value = this.getItem(LocalConstants.TENANTS);
     return Array.isArray(value) ? value as TenantRuntime[] : [];
+  }
+
+  public setRecentDocuments(userId: string, documents: RecentDocumentEntry[]) {
+    const all = this.getItem(LocalConstants.RECENT_DOCUMENTS);
+    const map = (all && typeof all === 'object') ? all : {};
+    map[userId] = documents;
+    this.setItem(LocalConstants.RECENT_DOCUMENTS, map);
+  }
+
+  public getRecentDocuments(userId: string): RecentDocumentEntry[] {
+    const all = this.getItem(LocalConstants.RECENT_DOCUMENTS);
+    const value = all && typeof all === 'object' ? all[userId] : null;
+    return Array.isArray(value) ? value as RecentDocumentEntry[] : [];
   }
 }

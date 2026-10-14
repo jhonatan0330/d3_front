@@ -2,8 +2,15 @@ import { Component, OnChanges, SimpleChanges, OnInit, HostListener, ChangeDetect
 
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ProcesoDTO, ProcesoEstadoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
-import { ProcessService, TreeConfigService } from 'app/configuration/configuracion.api';
+import {
+  MessageService,
+  ProcessService,
+  TreeConfigService,
+  WebServiceConfigService,
+} from 'app/configuration/configuracion.api';
 import { ArbolConfiguracionFilterDTO } from 'app/configuration/domain/ArbolConfiguracionFilterDTO';
 import { ArbolNodoRequestDTO } from 'app/configuration/domain/ArbolNodoRequestDTO';
 import { TreeNodeDTO } from 'app/configuration/domain/TreeNodeDTO';
@@ -12,6 +19,7 @@ import { PropertyPanelComponent } from 'app/configuration/components/shared/prop
 import { DocumentTemplateFormComponent } from 'app/configuration/components/document-templates/document-template-form/document-template-form.component';
 import { ProcessStateFormComponent } from 'app/configuration/components/processes/process-states/process-state-form/process-state-form.component';
 import { ProcessFormComponent } from 'app/configuration/components/processes/process-form/process-form.component';
+import { ProcessTransitionFormComponent } from 'app/configuration/components/processes/process-transitions/process-transition-form/process-transition-form.component';
 import { WebServiceFormComponent } from 'app/configuration/components/web-services/web-service-form/web-service-form.component';
 import { MessageDetailComponent } from 'app/configuration/components/messages/message-detail/message-detail.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
@@ -71,6 +79,8 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   readonly data = inject(MAT_DIALOG_DATA, { optional: true });
   private processService = inject(ProcessService);
   private treeConfigService = inject(TreeConfigService);
+  private webServiceConfigService = inject(WebServiceConfigService);
+  private messageService = inject(MessageService);
   private dialogRef = inject<MatDialogRef<BpmDiagramComponent>>(MatDialogRef);
 
   readonly canvasNodes = signal<BpmCanvasNode[]>([]);
@@ -167,6 +177,7 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
     const filtro = new ArbolConfiguracionFilterDTO();
     filtro.profundidad = ArbolConfiguracionFilterDTO.PROFUNDIDAD_SIMPLE;
     filtro.listarPropiedades = false;
+    filtro.ligero = true;
     this.treeConfigService.getTree(filtro).subscribe({
       next: raiz => {
         const ordenGrupo = (tipo?: string): number => {
@@ -214,6 +225,7 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
     request.tipo = nodo.tipo;
     request.llaveTabla = nodo.llaveTabla;
     request.listarPropiedades = false;
+    request.ligero = true;
     this.treeConfigService.getTreeNode(request).subscribe({
       next: respuesta => {
         const plantillaEnFila = this.esTipoPlantilla(nodo.tipo) || nodo.tipo === TreeNodeDTO.PROCESO_MACRO;
@@ -287,6 +299,7 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
     request.tipo = nodo.tipo;
     request.llaveTabla = nodo.llaveTabla;
     request.listarPropiedades = false;
+    request.ligero = true;
     this.treeConfigService.getTreeNode(request).subscribe({
       next: respuesta => {
         const iconos = (respuesta.hijos || [])
@@ -393,8 +406,30 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
 
   onEdgeActivated(edge: BpmCanvasEdge): void {
     const transicion = edge.source as ProcesoTransicionDTO | undefined;
-    if (!transicion?.plantilla) return;
-    this.abrirPlantilla(transicion.plantilla);
+    if (!transicion) return;
+    const dialogRef = this.dialog.open(ProcessTransitionFormComponent, {
+      width: '700px',
+      maxWidth: '90vw',
+      disableClose: true,
+      data: {
+        transition: { ...transicion },
+        process: { llaveTabla: transicion.proceso } as ProcesoDTO,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result: ProcesoTransicionDTO) => {
+      if (!result) return;
+      this.canvasNodes.update(nodos =>
+        nodos.map(n => {
+          if (!n.childEdges?.some(e => e.id === edge.id)) return n;
+          return {
+            ...n,
+            childEdges: n.childEdges.map(e =>
+              e.id === edge.id ? { ...e, source: result, label: result.nombre || undefined } : e,
+            ),
+          };
+        }),
+      );
+    });
   }
 
   private tipoOrigenFuente(source: TreeNodeDTO | ProcesoEstadoDTO): string | null {
@@ -404,10 +439,12 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   }
 
   private modalAccionDe(nodo: TreeNodeDTO): 'plantilla' | 'webservice' | 'mensaje' | undefined {
-    const dato = nodo.dato;
-    if (nodo.tipo === TreeNodeDTO.ROL) return dato?.plantilla ? 'plantilla' : undefined;
-    if (nodo.tipo === TreeNodeDTO.API) return dato ? 'webservice' : undefined;
-    if (nodo.tipo === TreeNodeDTO.MENSAJE) return dato ? 'mensaje' : undefined;
+    if (nodo.tipo === TreeNodeDTO.API) return 'webservice';
+    if (nodo.tipo === TreeNodeDTO.MENSAJE) return 'mensaje';
+    if (nodo.tipo === TreeNodeDTO.ROL) {
+      if (nodo.dato) return nodo.dato.plantilla ? 'plantilla' : undefined;
+      return undefined;
+    }
     return undefined;
   }
 
@@ -508,15 +545,35 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   }
 
   private abrirFormularioProceso(node: BpmCanvasNode, source: TreeNodeDTO): void {
-    const dato = (source.dato as ProcesoDTO | undefined)?.llaveTabla
-      ? { ...(source.dato as ProcesoDTO) }
-      : { llaveTabla: source.llaveTabla, nombre: source.nombre };
+    if (source.dato) {
+      this.abrirDialogoProceso(node, source, source.dato as ProcesoDTO);
+      return;
+    }
+    this.cargarDatoNodo(source).subscribe({
+      next: dato => {
+        if (!dato) return;
+        this.canvasNodes.update(nodos =>
+          nodos.map(n => (n.id === source.camino ? { ...n, source: { ...source, dato } } : n))
+        );
+        this.abrirDialogoProceso(node, source, dato as unknown as ProcesoDTO);
+      },
+      error: err => {
+        this.notification.fire({
+          title: 'Error',
+          html: err?.error?.message ?? 'No se pudo cargar el proceso.',
+          confirmButtonText: 'Cerrar',
+        });
+      },
+    });
+  }
+
+  private abrirDialogoProceso(node: BpmCanvasNode, source: TreeNodeDTO, dato: ProcesoDTO): void {
     const dialogRef = this.dialog.open(ProcessFormComponent, {
       width: '900px',
       maxWidth: '95vw',
       maxHeight: '95vh',
       disableClose: true,
-      data: dato,
+      data: dato?.llaveTabla ? { ...dato } : { llaveTabla: source.llaveTabla, nombre: source.nombre },
     });
     dialogRef.afterClosed().subscribe((result: ProcesoDTO) => {
       if (!result?.llaveTabla) return;
@@ -537,27 +594,75 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
 
   onNodeModal(node: BpmCanvasNode): void {
     const nodo = node.source as TreeNodeDTO | undefined;
-    if (!nodo?.dato) return;
-    if (node.modalAction === 'plantilla') {
-      const plantilla = nodo.dato.plantilla as string | undefined;
-      if (plantilla) this.abrirPlantilla(plantilla);
-    } else if (node.modalAction === 'webservice') {
+    if (!nodo?.llaveTabla) return;
+    if (nodo.dato) {
+      this.abrirModalDato(node, nodo, nodo.dato);
+      return;
+    }
+    this.cargarDatoNodo(nodo).subscribe({
+      next: dato => {
+        if (!dato) return;
+        this.canvasNodes.update(nodos =>
+          nodos.map(n => (n.id === nodo.camino ? { ...n, source: { ...nodo, dato } } : n))
+        );
+        this.abrirModalDato(node, nodo, dato);
+      },
+      error: err => {
+        this.notification.fire({
+          title: 'Error',
+          html: err?.error?.message ?? 'No se pudo cargar el detalle del nodo.',
+          confirmButtonText: 'Cerrar',
+        });
+      },
+    });
+  }
+
+  private abrirModalDato(node: BpmCanvasNode, nodo: TreeNodeDTO, dato: Record<string, unknown>): void {
+    if (node.modalAction === 'plantilla' || (nodo.tipo === TreeNodeDTO.ROL && !node.modalAction)) {
+      const plantilla = dato['plantilla'] as string | undefined;
+      if (plantilla) {
+        this.abrirPlantilla(plantilla);
+        return;
+      }
+      if (nodo.tipo !== TreeNodeDTO.ROL) return;
+    }
+    if (node.modalAction === 'webservice' || nodo.tipo === TreeNodeDTO.API) {
       this.dialog.open(WebServiceFormComponent, {
         disableClose: true,
         width: '700px',
         maxWidth: '90vw',
-        data: { ...nodo.dato },
+        data: { ...dato },
       });
-    } else if (node.modalAction === 'mensaje') {
-      const dato = nodo.dato;
+      return;
+    }
+    if (node.modalAction === 'mensaje' || nodo.tipo === TreeNodeDTO.MENSAJE) {
       this.dialog.open(MessageDetailComponent, {
         width: '800px',
         maxWidth: '90vw',
         maxHeight: '90vh',
         disableClose: true,
-        data: { ...dato, titulo: dato.titulo || dato.nombre },
+        data: { ...dato, titulo: dato['titulo'] || dato['nombre'] },
       });
     }
+  }
+
+  private cargarDatoNodo(nodo: TreeNodeDTO): Observable<Record<string, unknown> | null> {
+    if (nodo.tipo === TreeNodeDTO.PROCESO || nodo.tipo === TreeNodeDTO.PROCESO_MACRO) {
+      return this.processService.getProcessById(nodo.llaveTabla).pipe(
+        map(dato => (dato ? (dato as unknown as Record<string, unknown>) : null))
+      );
+    }
+    if (nodo.tipo === TreeNodeDTO.API) {
+      return this.webServiceConfigService.getWebServiceById(nodo.llaveTabla).pipe(
+        map(dato => (dato ? (dato as unknown as Record<string, unknown>) : null))
+      );
+    }
+    if (nodo.tipo === TreeNodeDTO.MENSAJE) {
+      return this.messageService.getMessageById(nodo.llaveTabla).pipe(
+        map(dato => (dato ? (dato as unknown as Record<string, unknown>) : null))
+      );
+    }
+    return of(null);
   }
 
   close(): void {
