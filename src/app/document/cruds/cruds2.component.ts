@@ -21,7 +21,6 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/document/form/controls/base/base.component';
 import { getComponent } from 'app/document/form/form-helper';
 import { MatDatepickerInputEvent, MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
-import { BpmDiagramComponent } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
@@ -684,12 +683,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
       openDiagram() {
           const processId = this.procesoId || this.plantilla()?.proceso;
           if (!processId) return;
-          this.dialog.open(BpmDiagramComponent, {
-              width: '92vw',
-              height: '84vh',
-              maxWidth: '98vw',
-              panelClass: 'bpm-dialog',
-              data: { procesoId: processId },
-          });
+          this.utilsService.modalProcessGraph(processId);
       }
 }

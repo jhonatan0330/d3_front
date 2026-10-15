@@ -13,7 +13,7 @@ import {
 } from './bpm-canvas.types';
 
 const CARD_WIDTH = 250;
-const CARD_GAP_X = 112;
+const CARD_GAP_X = 224;
 const CARD_GAP_Y = 28;
 const CANVAS_PADDING = 56;
 const TREE_PAD = 10;
@@ -323,7 +323,7 @@ export class BpmCanvasComponent {
     }
 
     hasEdgeAction(edge: BpmCanvasEdge): boolean {
-        return !!(edge.source as { plantilla?: string } | undefined)?.plantilla;
+        return !!edge.source;
     }
 
     edgeTitle(edge: BpmCanvasEdge): string {
@@ -360,6 +360,13 @@ export class BpmCanvasComponent {
     toggleNodeFromKeyboard(node: BpmCanvasSceneNode, event: KeyboardEvent): void {
         if (event.key !== 'Enter' && event.key !== ' ') return;
         event.preventDefault();
+        this.toggleNode(node, event);
+    }
+
+    toggleNodeFromDoubleClick(node: BpmCanvasSceneNode, event: Event): void {
+        if (this.panEngaged) return;
+        if (!(node.childCount > 0 || node.hasChildren)) return;
+        this.selectedNodeId.set(node.id);
         this.toggleNode(node, event);
     }
 
@@ -543,8 +550,13 @@ export class BpmCanvasComponent {
             const order = flowKids
                 .map((kid, kidIndex) => ({ kid, kidIndex }))
                 .sort((a, b) => {
+                    const oa = a.kid.order;
+                    const ob = b.kid.order;
                     const da = depthOf.get(a.kid.id);
                     const db = depthOf.get(b.kid.id);
+                    if (oa !== undefined && ob !== undefined && oa !== ob) return oa - ob;
+                    if (oa !== undefined && ob === undefined) return -1;
+                    if (oa === undefined && ob !== undefined) return 1;
                     if (da === undefined && db === undefined) return a.kidIndex - b.kidIndex;
                     if (da === undefined) return 1;
                     if (db === undefined) return -1;
@@ -592,7 +604,7 @@ export class BpmCanvasComponent {
                 const toCol = colOf.get(edge.to) ?? 0;
                 const esParalela = (pairTotals.get(`${edge.from}|${edge.to}`) || 1) > 1;
                 if (toCol === fromCol + 1 && !esParalela) continue;
-                if (toCol >= fromCol || esParalela) aboveCount++;
+                if (toCol >= fromCol) aboveCount++;
                 else returnCount++;
             }
             const layout: TreeFlowLayout = {
@@ -720,17 +732,19 @@ export class BpmCanvasComponent {
                 const key = `${edge.from}|${edge.to}`;
                 const indice = pairIndex.get(key) ?? 0;
                 pairIndex.set(key, indice + 1);
-                const esParalela = (pairTotals.get(key) || 1) > 1;
+                const total = pairTotals.get(key) || 1;
+                const esParalela = total > 1;
+                const lane = total - 1 - indice;
                 if (toCol === fromCol + 1 && !esParalela) {
                     sceneEdges.push(this.routeEdge(edge, from, to));
-                } else if (toCol >= fromCol || esParalela) {
+                } else if (toCol >= fromCol) {
                     sceneEdges.push(
-                        this.routeEdge(edge, from, to, block.forwardBaseY - aboveLane * 22, indice),
+                        this.routeEdge(edge, from, to, block.forwardBaseY - aboveLane * 22, lane),
                     );
                     aboveLane++;
                 } else {
                     sceneEdges.push(
-                        this.routeEdge(edge, from, to, block.returnBaseY + belowLane * 22, indice),
+                        this.routeEdge(edge, from, to, block.returnBaseY + belowLane * 22, lane),
                     );
                     belowLane++;
                 }
@@ -789,8 +803,13 @@ export class BpmCanvasComponent {
         const order = nodes
             .map((node, nodeIndex) => ({ node, nodeIndex }))
             .sort((a, b) => {
+                const oa = a.node.order;
+                const ob = b.node.order;
                 const da = depthById.get(a.node.id) ?? Number.MAX_SAFE_INTEGER;
                 const db = depthById.get(b.node.id) ?? Number.MAX_SAFE_INTEGER;
+                if (oa !== undefined && ob !== undefined && oa !== ob) return oa - ob;
+                if (oa !== undefined && ob === undefined) return -1;
+                if (oa === undefined && ob !== undefined) return 1;
                 return da - db || a.nodeIndex - b.nodeIndex;
             });
         const sceneNodes: BpmCanvasSceneNode[] = [];
@@ -800,6 +819,12 @@ export class BpmCanvasComponent {
         let aboveCount = 0;
         let belowCount = 0;
         let selfLoopCount = 0;
+        const flowPairTotals = new Map<string, number>();
+        for (const edge of edges) {
+            if (edge.from === edge.to) continue;
+            const key = `${edge.from}|${edge.to}`;
+            flowPairTotals.set(key, (flowPairTotals.get(key) || 0) + 1);
+        }
         for (const edge of edges) {
             if (edge.from === edge.to) {
                 selfLoopCount++;
@@ -807,8 +832,9 @@ export class BpmCanvasComponent {
             }
             const fromPos = positionOf.get(edge.from) ?? 0;
             const toPos = positionOf.get(edge.to) ?? 0;
-            if (toPos === fromPos + 1) continue;
-            if (toPos > fromPos + 1) aboveCount++;
+            const esParalela = (flowPairTotals.get(`${edge.from}|${edge.to}`) || 1) > 1;
+            if (toPos === fromPos + 1 && !esParalela) continue;
+            if (toPos >= fromPos) aboveCount++;
             else belowCount++;
         }
         const loopReserve = this.selfLoopReserve(selfLoopCount);
@@ -835,6 +861,7 @@ export class BpmCanvasComponent {
         let aboveLane = 0;
         let belowLane = 0;
         const selfLoopIndexById = new Map<string, number>();
+        const flowPairIndex = new Map<string, number>();
         const sceneEdges = edges.map(edge => {
             const from = positionById.get(edge.from)!;
             const to = positionById.get(edge.to)!;
@@ -845,15 +872,21 @@ export class BpmCanvasComponent {
             }
             const fromPos = positionOf.get(edge.from) ?? 0;
             const toPos = positionOf.get(edge.to) ?? 0;
-            if (toPos === fromPos + 1) return this.routeEdge(edge, from, to);
-            if (toPos > fromPos + 1) {
+            const key = `${edge.from}|${edge.to}`;
+            const indice = flowPairIndex.get(key) ?? 0;
+            flowPairIndex.set(key, indice + 1);
+            const total = flowPairTotals.get(key) || 1;
+            const esParalela = total > 1;
+            const lane = total - 1 - indice;
+            if (toPos === fromPos + 1 && !esParalela) return this.routeEdge(edge, from, to);
+            if (toPos >= fromPos) {
                 const routeY = aboveBaseY - aboveLane * 22;
                 aboveLane++;
-                return this.routeEdge(edge, from, to, routeY);
+                return this.routeEdge(edge, from, to, routeY, lane);
             }
             const routeY = maxBottom + 20 + loopReserve + belowLane * 22;
             belowLane++;
-            return this.routeEdge(edge, from, to, routeY);
+            return this.routeEdge(edge, from, to, routeY, lane);
         });
         const canvasHeight = Math.max(320, maxBottom + CANVAS_PADDING + belowCount * 22 + loopReserve);
         const canvasWidth = order.length
@@ -882,6 +915,24 @@ export class BpmCanvasComponent {
             const offset = Math.min(lane, 6) * 8;
             const exitX = startX + 16 + offset;
             const approachX = endX - 16 - offset;
+            if (routeY > endY && (from.shape || to.shape)) {
+                const fromX = from.shape ? from.x + from.width / 2 : exitX;
+                const fromY = from.shape ? from.y + from.height : startY;
+                const startSegment = from.shape
+                    ? `M ${fromX} ${fromY} V ${routeY}`
+                    : `M ${startX} ${startY} H ${exitX} V ${routeY}`;
+                const toX = to.shape ? to.x + to.width / 2 : approachX;
+                const toY = to.shape ? to.y + to.height : endY;
+                const endSegment = to.shape ? `H ${toX} V ${toY}` : `H ${approachX} V ${endY} H ${endX}`;
+                const labelStartX = from.shape ? fromX : (startX + exitX) / 2;
+                const labelEndX = to.shape ? toX : endX;
+                return {
+                    ...edge,
+                    path: `${startSegment} ${endSegment}`,
+                    labelX: (labelStartX + labelEndX) / 2,
+                    labelY: routeY - 5,
+                };
+            }
             return {
                 ...edge,
                 path: `M ${startX} ${startY} H ${exitX} V ${routeY} H ${approachX} V ${endY} H ${endX}`,

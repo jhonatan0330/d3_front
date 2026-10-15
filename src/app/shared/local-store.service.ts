@@ -11,6 +11,7 @@ export const LocalConstants = {
 export interface RecentDocumentEntry {
   llaveTabla: string;
   nombre: string;
+  plantillaKey?: string;
   plantillaNombre?: string;
   plantillaIcon?: string;
   fecha: string;

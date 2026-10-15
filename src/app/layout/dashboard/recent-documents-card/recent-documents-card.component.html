@@ -1,37 +1,43 @@
 <section class="flex flex-col overflow-hidden rounded-2xl border border-neutral-100 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-  <header class="flex items-center gap-3 border-b border-neutral-100 px-5 py-4 dark:border-neutral-800">
-    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
-      <mat-icon class="!text-[20px]">description</mat-icon>
+  <header class="flex items-center gap-3 border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
+    <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+      <mat-icon class="!text-[18px]">description</mat-icon>
     </span>
-    <h2 class="truncate text-base font-semibold">Mis documentos recientes</h2>
+    <h2 class="truncate text-sm font-semibold">Mis documentos recientes</h2>
   </header>
 
-  <div class="max-h-96 overflow-y-auto">
+  <div class="max-h-72 overflow-y-auto">
     @for (doc of documents(); track doc.llaveTabla) {
-      <div class="flex items-center gap-3 border-b border-neutral-50 px-5 py-3 transition last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800/60 dark:hover:bg-neutral-800/60">
+      <div class="flex items-center gap-2.5 border-b border-neutral-50 px-4 py-1.5 transition last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800/60 dark:hover:bg-neutral-800/60">
         @if (doc.plantillaIcon && !iconFailed(doc.llaveTabla)) {
-          <img class="h-10 w-10 shrink-0 rounded-lg object-contain"
+          <img class="h-7 w-7 shrink-0 rounded object-contain"
             [src]="doc.plantillaIcon | imageFormat"
             [alt]="doc.plantillaNombre || 'Plantilla'"
             (error)="onIconError(doc)">
         } @else {
-          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <mat-icon class="!text-[20px]">description</mat-icon>
+          <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded bg-primary/10 text-primary">
+            <mat-icon class="!text-[16px]">description</mat-icon>
           </span>
         }
         <div class="min-w-0 flex-1">
-          <div class="truncate text-sm font-medium">{{ doc.nombre }}</div>
-          <div class="truncate text-xs text-secondary">
+          <div class="truncate text-sm font-medium leading-tight">{{ doc.nombre }}</div>
+          <div class="truncate text-xs leading-tight text-secondary">
             {{ doc.plantillaNombre }}
             @if (doc.fecha) {
               <span> · {{ relativeTime(doc.fecha) }}</span>
             }
           </div>
         </div>
+        @if (doc.plantillaKey) {
+          <button type="button" class="btn-icon !h-8 !w-8 shrink-0" matTooltip="Abrir documento"
+            [attr.aria-label]="'Abrir documento ' + doc.nombre" (click)="openDocument(doc)">
+            <mat-icon class="!text-[18px]">open_in_new</mat-icon>
+          </button>
+        }
       </div>
     } @empty {
-      <div class="flex flex-col items-center gap-2 px-5 py-10 text-center">
-        <mat-icon class="text-3xl text-neutral-300 dark:text-neutral-600">folder_open</mat-icon>
+      <div class="flex flex-col items-center gap-1.5 px-4 py-8 text-center">
+        <mat-icon class="text-2xl text-neutral-300 dark:text-neutral-600">folder_open</mat-icon>
         <p class="text-sm text-secondary">Todavía no has guardado documentos. Crea uno y aparecerá aquí.</p>
       </div>
     }

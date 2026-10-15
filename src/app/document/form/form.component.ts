@@ -269,6 +269,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             this.recentDocuments.record({
                 llaveTabla: value.llaveTabla,
                 nombre: value.nombre || this.plantilla()?.nombre || '',
+                plantillaKey: this.plantilla()?.llaveTabla,
                 plantillaNombre: this.plantilla()?.nombre,
                 plantillaIcon: this.plantilla()?.imagen,
             });
@@ -1101,6 +1102,12 @@ export class FormComponent implements OnInit, AfterViewInit {
                 .pipe(takeUntilDestroyed(this._destroyRef))
                 .subscribe({ error: () => {} });
         }, error: () => {} });
+    }
+
+    openDiagram(): void {
+        const procesoId = this.plantilla()?.proceso;
+        if (!procesoId) return;
+        this.utilsService.modalProcessGraph(procesoId);
     }
 
     /*flex() {

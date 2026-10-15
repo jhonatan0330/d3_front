@@ -15,6 +15,7 @@ import { DocumentTemplateFieldFormComponent } from 'app/configuration/components
 import { DocumentTemplateFieldDetailComponent } from 'app/configuration/components/document-templates/document-template-fields/document-template-field-detail.component';
 import { PropertyModalComponent } from 'app/configuration/components/shared/property-modal/property-modal.component';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
+import { BpmDiagramComponent } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,22 @@ export class UtilsService {
   // Keep references to open right-side dialogs to ensure only one instance of each type is open
   private _fieldDialogRef: MatDialogRef<any> | null = null;
   private _flexDialogRef: MatDialogRef<any> | null = null;
+  private _graphDialogRef: MatDialogRef<any> | null = null;
+
+  modalProcessGraph(pProcesoId: string) {
+    try{ if (this._graphDialogRef) { this._graphDialogRef.close(); } }catch(e){ }
+
+    this._graphDialogRef = this.dialog.open(BpmDiagramComponent, {
+      width: '92vw',
+      height: '84vh',
+      maxWidth: '98vw',
+      panelClass: 'bpm-dialog',
+      data: { procesoId: pProcesoId },
+    });
+
+    this._graphDialogRef.afterClosed().subscribe(() => { this._graphDialogRef = null; });
+    return this._graphDialogRef.afterClosed();
+  }
 
   modalWithParams(pDataModal: PedidoVentaDTO, pClose2Save = false, pIdentificador = null, pSaveInField = false, openQuickTransitionAfterSave = null) {
 

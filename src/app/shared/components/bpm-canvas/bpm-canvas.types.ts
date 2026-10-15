@@ -39,6 +39,7 @@ export interface BpmCanvasNode {
     shape?: 'circle' | 'diamond' | 'icon';
     shapeFill?: string;
     horizontal?: boolean;
+    order?: number;
     icon?: string;
     childEdges?: BpmCanvasEdge[];
 }

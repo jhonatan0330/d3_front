@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges, OnInit, HostListener, ChangeDetectionStrategy, inject, input, output, signal, ViewChild } from '@angular/core';
+import { Component, OnChanges, SimpleChanges, OnInit, HostListener, ChangeDetectionStrategy, inject, input, output, signal } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -90,7 +90,6 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
   private hijosCargados = new Set<string>();
   private procesosCargados = new Map<string, TreeNodeDTO>();
   private procesoId: string | null = null;
-  @ViewChild(BpmCanvasComponent) private diagramCanvas?: BpmCanvasComponent;
 
   readonly proceso = input<Proceso | null>(null);
   readonly mode = input<'process' | 'config'>('process');
@@ -338,6 +337,7 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
       shape: tipo === 'E' ? 'circle' : 'diamond',
       shapeFill: this.estadoShapeFill(estado),
       icon: ESTADO_TIPO_ICONS[tipo] ?? 'state',
+      order: typeof estado.avance === 'number' ? estado.avance : undefined,
     };
   }
 
@@ -359,6 +359,7 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
       metadata: [],
       shape: 'circle',
       shapeFill: '#000000',
+      order: -1,
     };
   }
 
@@ -487,7 +488,6 @@ export class BpmDiagramComponent implements OnChanges, OnInit {
       }
       const nodo = node.source as TreeNodeDTO | undefined;
       if (this.esNodoProceso(nodo?.tipo)) {
-        if (node.hasChildren) this.diagramCanvas?.toggleNode(node);
         return;
       }
       if (nodo?.llaveTabla && this.esTipoPlantilla(nodo.tipo)) this.abrirPlantilla(nodo.llaveTabla);

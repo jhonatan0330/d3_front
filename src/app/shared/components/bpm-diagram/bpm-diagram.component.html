@@ -4,9 +4,9 @@
       <h2>{{ modo === 'config' ? 'Mapa de configuración' : 'Mapa del proceso' }}</h2>
       <p>
         @if (modo === 'config') {
-          Explora la estructura de parametrización: los procesos E despliegan su mapa de estados con transiciones y las plantillas se abren con un clic
+          Explora la estructura de parametrización: los procesos E despliegan su mapa de estados con transiciones, las plantillas se abren con un clic y los nodos se expanden con doble clic
         } @else {
-          Explora la estructura y sus procesos asociados
+          Explora la estructura y sus procesos asociados — doble clic sobre un nodo para expandirlo o contraerlo
         }
       </p>
     </div>
@@ -33,7 +33,7 @@
           <div class="h-full bg-primary rounded animate-pulse" style="width: 40%"></div>
         </div>
       }
-      <bpm-canvas #diagramCanvas mode="tree" [nodes]="canvasNodes()"
+      <bpm-canvas mode="tree" [nodes]="canvasNodes()"
                   [legend]="leyenda"
                   (nodeActivated)="onNodeActivated($event)"
                   (nodeProperties)="onNodeProperties($event)"

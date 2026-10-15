@@ -26,6 +26,7 @@ export class RecentDocumentsService {
     const newEntry: RecentDocumentEntry = {
       llaveTabla: entry.llaveTabla,
       nombre: entry.nombre,
+      plantillaKey: entry.plantillaKey,
       plantillaNombre: entry.plantillaNombre,
       plantillaIcon: entry.plantillaIcon,
       fecha: entry.fecha ?? new Date().toISOString(),

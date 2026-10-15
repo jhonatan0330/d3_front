@@ -1,18 +1,22 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { RecentDocumentEntry } from 'app/shared/local-store.service';
 import { RecentDocumentsService } from '../../recent-documents.service';
+import { UtilsService } from 'app/document/service/utils.service';
+import { PedidoVentaDTO } from 'app/document/document.types';
 
 @Component({
   selector: 'recent-documents-card',
   templateUrl: './recent-documents-card.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIcon, ImageFormatPipe]
+  imports: [MatIcon, MatTooltip, ImageFormatPipe]
 })
 export class RecentDocumentsCardComponent {
 
   private readonly recentDocumentsService = inject(RecentDocumentsService);
+  private readonly utilsService = inject(UtilsService);
 
   readonly documents = this.recentDocumentsService.documents;
 
@@ -24,6 +28,14 @@ export class RecentDocumentsCardComponent {
 
   onIconError(doc: RecentDocumentEntry): void {
     this.failedIcons.add(doc.llaveTabla);
+  }
+
+  openDocument(doc: RecentDocumentEntry): void {
+    if (!doc.plantillaKey) { return; }
+    const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
+    pedidoVenta.plantilla = doc.plantillaKey;
+    pedidoVenta.llaveTabla = doc.llaveTabla;
+    this.utilsService.modalWithParams(pedidoVenta, true);
   }
 
   relativeTime(date: string): string {

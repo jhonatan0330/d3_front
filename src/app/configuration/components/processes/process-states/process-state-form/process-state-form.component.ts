@@ -53,7 +53,7 @@ export class ProcessStateFormComponent implements OnInit {
         if (!this.state.llaveTabla) return;
         this.dialog.open(PropertyPanelComponent, {
             width: '800px', maxWidth: '95vw', maxHeight: '90vh', disableClose: true,
-            data: { campoKey: this.state.llaveTabla, tipoOrigen: 'A', titulo: this.state.nombre }
+            data: { campoKey: this.state.llaveTabla, tipoOrigen: 'A',  origenCategoria: this.state.tipo, titulo: this.state.nombre }
         });
     }
 

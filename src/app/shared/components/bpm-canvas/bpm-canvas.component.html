@@ -98,6 +98,7 @@
                 tabindex="0"
                 [attr.aria-label]="'Seleccionar ' + node.title"
                 (click)="activateNode(node, $event)"
+                (dblclick)="toggleNodeFromDoubleClick(node, $event)"
                 (keydown)="activateNodeFromKeyboard(node, $event)"
               ></rect>
               @if (node.shape) {

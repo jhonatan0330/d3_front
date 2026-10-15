@@ -99,6 +99,7 @@ export class BpmLeafDiagramComponent implements OnInit {
         subtitle: state.estadoDocumento || undefined,
         actions: actionsByState.get(state.llaveTabla) || [],
         source: state,
+        order: typeof state.avance === 'number' ? state.avance : undefined,
       };
     }));
     this.edges.set(edges);
