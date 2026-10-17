@@ -14,7 +14,6 @@ export class TreeNodeDTO extends BasicParamDTO {
     static readonly REPORTE = 'REPORTE';
     static readonly ROL = 'ROL';
     static readonly API = 'API';
-    static readonly MENSAJE = 'MENSAJE';
     nombre: string;
     codigo: string;
     imagen: string;

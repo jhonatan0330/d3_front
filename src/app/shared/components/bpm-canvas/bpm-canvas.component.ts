@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { BpmCanvasView, iconPath } from './bpm-canvas.helper';
 import {
     BPM_EDGE_COLORS,
-    BpmCanvasAction,
     BpmCanvasEdge,
     BpmCanvasLegendItem,
-    BpmCanvasMode,
     BpmCanvasNode,
     BpmCanvasScene,
     BpmCanvasSceneEdge,
@@ -18,7 +17,6 @@ const CARD_GAP_Y = 28;
 const CANVAS_PADDING = 56;
 const TREE_PAD = 10;
 const TREE_PAD_H = 16;
-const PAN_ENGAGE_PX = 4;
 const SHAPE_TOP = 2;
 const SHAPE_R = 10;
 const SHAPE_HALF_W = 12;
@@ -30,24 +28,12 @@ const ICON_SIZE = 30;
 const ICON_TITLE_Y = 50;
 const ICON_META_Y = 67;
 const ICON_HEIGHT = 74;
+const API_CARD_HEIGHT = 98;
+const API_TITLE_Y = 27;
+const API_META_Y = 48;
 const SELF_LOOP_SPREAD = 56;
 const SELF_LOOP_DROP = 60;
 const SELF_LOOP_STRIDE = 30;
-
-const ICON_PATHS: Record<string, string> = {
-    building: 'M4 2h16v20H4zM10 16h4v6h-4zM7 5h3v3H7zM14 5h3v3h-3zM7 11h3v3H7zM14 11h3v3h-3z',
-    folder: 'M2 4h7l2 3h11v13H2z',
-    process: 'M4 4h16v16H4zM9 9l6 3-6 3z',
-    state: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8z',
-    transition: 'M2 10h13V6l7 6-7 6v-4H2z',
-    document: 'M5 2h9l5 5v15H5zM8 11h9v1.6H8zM8 15h9v1.6H8z',
-    field: 'M3 6h18v12H3zM5 8h14v8H5z',
-    report: 'M4 20V10h4v10zM10 20V4h4v16zM16 20v-7h4v7z',
-    person: 'M12 3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zM3 21c0-5 4-8.5 9-8.5s9 3.5 9 8.5z',
-    api: 'M8 6 2 12l6 6 1.6-1.6L5.2 12 9.6 7.6zM16 6l6 6-6 6-1.6-1.6L18.8 12l-4.4-4.4zM13.8 5l-4 14h2.4l4-14z',
-    message: 'M2 4h20v13H9l-7 4.5z',
-    diamond: 'M12 2 22 12 12 22 2 12zM12 6.5 17.5 12 12 17.5 6.5 12z',
-};
 
 interface TreeFlowLayout {
     colOf: Map<string, number>;
@@ -74,64 +60,24 @@ let canvasSequence = 0;
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BpmCanvasComponent {
-    readonly mode = input<BpmCanvasMode>('flow');
     readonly nodes = input<BpmCanvasNode[]>([]);
-    readonly edges = input<BpmCanvasEdge[]>([]);
     readonly legend = input<BpmCanvasLegendItem[]>([]);
     readonly nodeActivated = output<BpmCanvasNode>();
-    readonly actionActivated = output<BpmCanvasAction>();
     readonly nodeToggle = output<{ node: BpmCanvasNode; expanded: boolean }>();
     readonly nodeProperties = output<BpmCanvasNode>();
     readonly nodeModal = output<BpmCanvasNode>();
     readonly edgeActivated = output<BpmCanvasEdge>();
 
+    readonly view = new BpmCanvasView();
+    readonly iconPath = iconPath;
     readonly expandedNodeIds = signal<Set<string> | null>(null);
     readonly selectedNodeId = signal<string | null>(null);
-    readonly scale = signal(1);
-    readonly panX = signal(0);
-    readonly panY = signal(0);
-    readonly isPanning = signal(false);
     readonly markerId = `bpm-canvas-arrow-${++canvasSequence}`;
     readonly coloresArista = BPM_EDGE_COLORS;
     readonly scene = computed(() => this.buildScene(
-        this.mode(),
         this.nodes(),
-        this.edges(),
         this.expandedNodeIds(),
     ));
-
-    private readonly viewport = viewChild<ElementRef<HTMLDivElement>>('viewport');
-    private pendingCenterId: string | null = null;
-    private pendingCenterNodes: BpmCanvasNode[] | null = null;
-
-    private readonly centerOnExpand = effect(() => {
-        const scene = this.scene();
-        const nodes = this.nodes();
-        const id = this.pendingCenterId;
-        if (!id) return;
-        const node = scene.nodes.find(item => item.id === id);
-        if (!node) {
-            this.pendingCenterId = null;
-            this.pendingCenterNodes = null;
-            return;
-        }
-        if (node.childCount === 0 && nodes === this.pendingCenterNodes) return;
-        this.pendingCenterId = null;
-        this.pendingCenterNodes = null;
-        this.centerNode(node);
-    });
-
-    private panOrigin: { pointerId: number; x: number; y: number } | null = null;
-    private pendingPan: { pointerId: number; x: number; y: number } | null = null;
-    private panEngaged = false;
-
-    zoomPercent(): number {
-        return Math.round(this.scale() * 100);
-    }
-
-    iconPath(name?: string): string {
-        return name ? ICON_PATHS[name] ?? '' : '';
-    }
 
     markerPara(color?: string): string {
         return color ? `${this.markerId}-${color.replace('#', '')}` : this.markerId;
@@ -153,89 +99,41 @@ export class BpmCanvasComponent {
     }
 
     iconoCentrado(node: BpmCanvasSceneNode): string {
-        const x = node.width / 2 - ICON_SIZE / 2;
-        return `translate(${x}, ${ICON_TOP}) scale(${ICON_SIZE / 24})`;
+        const x = node.icon === 'api' ? 14 : node.width / 2 - ICON_SIZE / 2;
+        const y = node.icon === 'api' ? ICON_TOP + 8 : ICON_TOP;
+        return `translate(${x}, ${y}) scale(${ICON_SIZE / 24})`;
     }
 
     yTitulo(node: BpmCanvasSceneNode): number {
-        if (node.shape === 'icon') return ICON_TITLE_Y;
+        if (node.shape === 'icon') return node.icon === 'api' ? API_TITLE_Y : ICON_TITLE_Y;
         return node.shape ? this.shapeTitleY : 25;
     }
 
     yMetadata(node: BpmCanvasSceneNode, index: number): number {
-        if (node.shape === 'icon') return ICON_META_Y;
+        if (node.shape === 'icon') return node.icon === 'api' ? API_META_Y : ICON_META_Y;
         return node.shape ? this.shapeMetaY : 66 + index * 19;
     }
 
-    zoomIn(): void {
-        this.scale.update(value => Math.min(2.4, Number((value + 0.15).toFixed(2))));
+    typeChipWidth(value: string): number {
+        return Math.min(132, Math.max(48, value.length * 5.2 + 14));
     }
 
-    zoomOut(): void {
-        this.scale.update(value => Math.max(0.55, Number((value - 0.15).toFixed(2))));
+    statusLabel(status?: string): string {
+        if (status === 'A') return 'Activo';
+        if (status === 'I') return 'Inactivo';
+        return status || '';
     }
 
-    resetView(): void {
-        this.scale.set(1);
-        this.panX.set(0);
-        this.panY.set(0);
+    statusChipWidth(status?: string): number {
+        return this.statusLabel(status).length * 5.2 + 14;
     }
 
-    private centerNode(node: BpmCanvasSceneNode): void {
-        const viewport = this.viewport()?.nativeElement;
-        if (!viewport) return;
-        const scale = this.scale();
-        const centerX = node.x + node.width / 2;
-        const centerY = node.y + node.height / 2;
-        this.panX.set(Math.round(viewport.clientWidth / 2 + viewport.scrollLeft - centerX * scale));
-        this.panY.set(Math.round(viewport.clientHeight / 2 + viewport.scrollTop - centerY * scale));
-    }
-
-    onWheel(event: WheelEvent): void {
-        event.preventDefault();
-        const delta = event.deltaY < 0 ? 0.08 : -0.08;
-        this.scale.update(value => Math.max(0.55, Math.min(2.4, Number((value + delta).toFixed(2)))));
-    }
-
-    startPan(event: PointerEvent): void {
-        this.panEngaged = false;
-        this.pendingPan = null;
-        if (event.button !== 0 || (event.target as Element).closest('[data-canvas-control]')) return;
-        this.pendingPan = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
-    }
-
-    movePan(event: PointerEvent): void {
-        if (this.pendingPan && this.pendingPan.pointerId === event.pointerId) {
-            const dx = event.clientX - this.pendingPan.x;
-            const dy = event.clientY - this.pendingPan.y;
-            if (Math.abs(dx) + Math.abs(dy) < PAN_ENGAGE_PX) return;
-            this.panOrigin = this.pendingPan;
-            this.pendingPan = null;
-            this.isPanning.set(true);
-            this.panEngaged = true;
-            (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
-        }
-        if (!this.panOrigin || this.panOrigin.pointerId !== event.pointerId) return;
-        const deltaX = event.clientX - this.panOrigin.x;
-        const deltaY = event.clientY - this.panOrigin.y;
-        this.panX.update(value => value + deltaX / this.scale());
-        this.panY.update(value => value + deltaY / this.scale());
-        this.panOrigin.x = event.clientX;
-        this.panOrigin.y = event.clientY;
-    }
-
-    endPan(event: PointerEvent): void {
-        if (this.pendingPan && this.pendingPan.pointerId === event.pointerId) {
-            this.pendingPan = null;
-            return;
-        }
-        if (!this.panOrigin || this.panOrigin.pointerId !== event.pointerId) return;
-        this.panOrigin = null;
-        this.isPanning.set(false);
+    tagsY(node: BpmCanvasSceneNode): number {
+        return node.shape === 'icon' && node.icon === 'api' ? 72 : node.height - 24;
     }
 
     activateNode(node: BpmCanvasSceneNode, event?: Event): void {
-        if (event instanceof MouseEvent && this.panEngaged) return;
+        if (event instanceof MouseEvent && this.view.engaged) return;
         this.selectedNodeId.set(node.id);
         this.nodeActivated.emit(node);
     }
@@ -285,8 +183,6 @@ export class BpmCanvasComponent {
                 return 'plantilla';
             case 'webservice':
                 return 'web service';
-            case 'mensaje':
-                return 'mensaje';
             default:
                 return 'acción';
         }
@@ -304,22 +200,9 @@ export class BpmCanvasComponent {
                 return '▤';
             case 'webservice':
                 return '⚙';
-            case 'mensaje':
-                return '✉';
             default:
                 return '•';
         }
-    }
-
-    activateAction(action: BpmCanvasAction, event: Event): void {
-        event.stopPropagation();
-        this.actionActivated.emit(action);
-    }
-
-    activateActionFromKeyboard(action: BpmCanvasAction, event: KeyboardEvent): void {
-        if (event.key !== 'Enter' && event.key !== ' ') return;
-        event.preventDefault();
-        this.activateAction(action, event);
     }
 
     hasEdgeAction(edge: BpmCanvasEdge): boolean {
@@ -332,7 +215,7 @@ export class BpmCanvasComponent {
     }
 
     activateEdge(edge: BpmCanvasEdge, event: Event): void {
-        if (event instanceof MouseEvent && this.panEngaged) return;
+        if (event instanceof MouseEvent && this.view.engaged) return;
         if (!this.hasEdgeAction(edge)) return;
         event.stopPropagation();
         this.edgeActivated.emit(edge);
@@ -350,8 +233,6 @@ export class BpmCanvasComponent {
         const expanded = !next.has(node.id);
         if (expanded) {
             next.add(node.id);
-            this.pendingCenterId = node.id;
-            this.pendingCenterNodes = this.nodes();
         } else next.delete(node.id);
         this.expandedNodeIds.set(next);
         this.nodeToggle.emit({ node, expanded });
@@ -364,35 +245,17 @@ export class BpmCanvasComponent {
     }
 
     toggleNodeFromDoubleClick(node: BpmCanvasSceneNode, event: Event): void {
-        if (this.panEngaged) return;
+        if (this.view.engaged) return;
         if (!(node.childCount > 0 || node.hasChildren)) return;
         this.selectedNodeId.set(node.id);
         this.toggleNode(node, event);
-    }
-
-    visibleActions(node: BpmCanvasNode): BpmCanvasAction[] {
-        return (node.actions || []).slice(0, 3);
-    }
-
-    remainingActionCount(node: BpmCanvasNode): number {
-        return Math.max(0, (node.actions?.length || 0) - 3);
-    }
-
-    actionY(node: BpmCanvasNode): number {
-        return this.cardActionsStart(node);
-    }
-
-    private cardActionsStart(node: BpmCanvasNode): number {
-        const metadataCount = Math.min(node.metadata?.length || 0, 2);
-        if (metadataCount) return 77 + metadataCount * 19;
-        return (node.subtitle ? 56 : 40) + 6;
     }
 
     private cardTextEnd(node: BpmCanvasNode): number {
         return node.subtitle ? 56 : 40;
     }
 
-    actionLabel(value: string): string {
+    truncateLabel(value: string): string {
         const maxLength = 25;
         return value.length > maxLength ? `${value.slice(0, maxLength - 1)}...` : value;
     }
@@ -403,16 +266,12 @@ export class BpmCanvasComponent {
     }
 
     private buildScene(
-        mode: BpmCanvasMode,
         inputNodes: BpmCanvasNode[],
-        inputEdges: BpmCanvasEdge[],
         expandedOverride: Set<string> | null,
     ): BpmCanvasScene {
         const nodes = [...new Map(inputNodes.filter(node => !!node.id).map(node => [node.id, node])).values()];
         if (!nodes.length) return { nodes: [], edges: [], width: 640, height: 320 };
-        return mode === 'tree'
-            ? this.buildTreeScene(nodes, expandedOverride)
-            : this.buildFlowScene(nodes, inputEdges);
+        return this.buildTreeScene(nodes, expandedOverride);
     }
 
     private buildTreeScene(nodes: BpmCanvasNode[], expandedOverride: Set<string> | null): BpmCanvasScene {
@@ -765,141 +624,6 @@ export class BpmCanvasComponent {
         };
     }
 
-    private buildFlowScene(nodes: BpmCanvasNode[], inputEdges: BpmCanvasEdge[]): BpmCanvasScene {
-        const byId = new Map(nodes.map(node => [node.id, node]));
-        const edges = inputEdges.filter(edge => byId.has(edge.from) && byId.has(edge.to));
-        const incomingCount = new Map(nodes.map(node => [node.id, 0]));
-        const outgoing = new Map<string, BpmCanvasEdge[]>();
-        for (const edge of edges) {
-            incomingCount.set(edge.to, (incomingCount.get(edge.to) || 0) + 1);
-            const adjacent = outgoing.get(edge.from) || [];
-            adjacent.push(edge);
-            outgoing.set(edge.from, adjacent);
-        }
-
-        const depthById = new Map<string, number>();
-        const queue = nodes.filter(node => incomingCount.get(node.id) === 0).map(node => node.id);
-        if (!queue.length) queue.push(nodes[0].id);
-        const assignDepths = (): void => {
-            for (let index = 0; index < queue.length; index++) {
-                const from = queue[index];
-                const nextDepth = (depthById.get(from) || 0) + 1;
-                for (const edge of outgoing.get(from) || []) {
-                    if (depthById.has(edge.to)) continue;
-                    depthById.set(edge.to, nextDepth);
-                    queue.push(edge.to);
-                }
-            }
-        };
-        depthById.set(queue[0], 0);
-        assignDepths();
-        for (const node of nodes) {
-            if (depthById.has(node.id)) continue;
-            depthById.set(node.id, 0);
-            queue.push(node.id);
-            assignDepths();
-        }
-
-        const order = nodes
-            .map((node, nodeIndex) => ({ node, nodeIndex }))
-            .sort((a, b) => {
-                const oa = a.node.order;
-                const ob = b.node.order;
-                const da = depthById.get(a.node.id) ?? Number.MAX_SAFE_INTEGER;
-                const db = depthById.get(b.node.id) ?? Number.MAX_SAFE_INTEGER;
-                if (oa !== undefined && ob !== undefined && oa !== ob) return oa - ob;
-                if (oa !== undefined && ob === undefined) return -1;
-                if (oa === undefined && ob !== undefined) return 1;
-                return da - db || a.nodeIndex - b.nodeIndex;
-            });
-        const sceneNodes: BpmCanvasSceneNode[] = [];
-        const positionById = new Map<string, BpmCanvasSceneNode>();
-        const positionOf = new Map<string, number>();
-        for (const [position, entry] of order.entries()) positionOf.set(entry.node.id, position);
-        let aboveCount = 0;
-        let belowCount = 0;
-        let selfLoopCount = 0;
-        const flowPairTotals = new Map<string, number>();
-        for (const edge of edges) {
-            if (edge.from === edge.to) continue;
-            const key = `${edge.from}|${edge.to}`;
-            flowPairTotals.set(key, (flowPairTotals.get(key) || 0) + 1);
-        }
-        for (const edge of edges) {
-            if (edge.from === edge.to) {
-                selfLoopCount++;
-                continue;
-            }
-            const fromPos = positionOf.get(edge.from) ?? 0;
-            const toPos = positionOf.get(edge.to) ?? 0;
-            const esParalela = (flowPairTotals.get(`${edge.from}|${edge.to}`) || 1) > 1;
-            if (toPos === fromPos + 1 && !esParalela) continue;
-            if (toPos >= fromPos) aboveCount++;
-            else belowCount++;
-        }
-        const loopReserve = this.selfLoopReserve(selfLoopCount);
-        const extraAbove = aboveCount * 22 + 8;
-        const aboveBaseY = CANVAS_PADDING + extraAbove - 12;
-        const rowY = CANVAS_PADDING + extraAbove;
-        let maxBottom = CANVAS_PADDING;
-        for (const [position, entry] of order.entries()) {
-            const sceneNode: BpmCanvasSceneNode = {
-                ...entry.node,
-                x: CANVAS_PADDING + position * (CARD_WIDTH + CARD_GAP_X),
-                y: rowY,
-                width: CARD_WIDTH,
-                height: this.nodeHeight(entry.node),
-                depth: depthById.get(entry.node.id) ?? 0,
-                childCount: 0,
-                expanded: false,
-            };
-            sceneNodes.push(sceneNode);
-            positionById.set(entry.node.id, sceneNode);
-            maxBottom = Math.max(maxBottom, sceneNode.y + sceneNode.height);
-        }
-
-        let aboveLane = 0;
-        let belowLane = 0;
-        const selfLoopIndexById = new Map<string, number>();
-        const flowPairIndex = new Map<string, number>();
-        const sceneEdges = edges.map(edge => {
-            const from = positionById.get(edge.from)!;
-            const to = positionById.get(edge.to)!;
-            if (edge.from === edge.to) {
-                const index = selfLoopIndexById.get(edge.from) ?? 0;
-                selfLoopIndexById.set(edge.from, index + 1);
-                return this.routeSelfLoop(edge, from, index);
-            }
-            const fromPos = positionOf.get(edge.from) ?? 0;
-            const toPos = positionOf.get(edge.to) ?? 0;
-            const key = `${edge.from}|${edge.to}`;
-            const indice = flowPairIndex.get(key) ?? 0;
-            flowPairIndex.set(key, indice + 1);
-            const total = flowPairTotals.get(key) || 1;
-            const esParalela = total > 1;
-            const lane = total - 1 - indice;
-            if (toPos === fromPos + 1 && !esParalela) return this.routeEdge(edge, from, to);
-            if (toPos >= fromPos) {
-                const routeY = aboveBaseY - aboveLane * 22;
-                aboveLane++;
-                return this.routeEdge(edge, from, to, routeY, lane);
-            }
-            const routeY = maxBottom + 20 + loopReserve + belowLane * 22;
-            belowLane++;
-            return this.routeEdge(edge, from, to, routeY, lane);
-        });
-        const canvasHeight = Math.max(320, maxBottom + CANVAS_PADDING + belowCount * 22 + loopReserve);
-        const canvasWidth = order.length
-            ? CANVAS_PADDING * 2 + order.length * CARD_WIDTH + (order.length - 1) * CARD_GAP_X
-            : CANVAS_PADDING * 2;
-        return {
-            nodes: sceneNodes,
-            edges: sceneEdges,
-            width: canvasWidth,
-            height: canvasHeight,
-        };
-    }
-
     private routeEdge(
         edge: BpmCanvasEdge,
         from: BpmCanvasSceneNode,
@@ -965,34 +689,34 @@ export class BpmCanvasComponent {
     }
 
     private nodeWidth(node: BpmCanvasNode): number {
-        if (node.shape === 'icon') return ICON_SLOT;
+        if (node.shape === 'icon') return node.icon === 'api' ? CARD_WIDTH : ICON_SLOT;
         return node.shape ? SHAPE_SLOT : CARD_WIDTH;
     }
 
     private edgeStartX(node: BpmCanvasSceneNode): number {
+        if (node.shape === 'icon' && node.icon === 'api') return node.x + node.width;
         if (!node.shape) return node.x + node.width;
         return node.x + node.width / 2 + (node.shape === 'circle' ? SHAPE_R : SHAPE_HALF_W);
     }
 
     private edgeEndX(node: BpmCanvasSceneNode): number {
+        if (node.shape === 'icon' && node.icon === 'api') return node.x;
         if (!node.shape) return node.x;
         return node.x + node.width / 2 - (node.shape === 'circle' ? SHAPE_R : SHAPE_HALF_W);
     }
 
     private edgeY(node: BpmCanvasSceneNode): number {
+        if (node.shape === 'icon' && node.icon === 'api') return node.y + node.height / 2;
         return node.shape ? node.y + SHAPE_TOP + SHAPE_R : node.y + node.height / 2;
     }
 
     private nodeHeight(node: BpmCanvasNode): number {
-        if (node.shape === 'icon') return ICON_HEIGHT;
+        if (node.shape === 'icon') return node.icon === 'api' ? API_CARD_HEIGHT : ICON_HEIGHT;
         if (node.shape) return SHAPE_HEIGHT;
         const metadataCount = Math.min(node.metadata?.length || 0, 2);
-        const actionCount = Math.min(node.actions?.length || 0, 3);
-        const overflowLabelHeight = (node.actions?.length || 0) > 3 ? 18 : 0;
         const metadataEnd = metadataCount ? 66 + (metadataCount - 1) * 19 + 14 : 0;
-        const contentEnd = Math.max(this.cardTextEnd(node), metadataEnd);
-        if (!actionCount) return contentEnd;
-        return this.cardActionsStart(node) + actionCount * 27 + overflowLabelHeight;
+        const tagsEnd = node.typeLabel || node.status ? 94 : 0;
+        return Math.max(this.cardTextEnd(node), metadataEnd, tagsEnd);
     }
 
     private activeExpandedNodeIds(): Set<string> {

@@ -223,6 +223,68 @@
   fill: #64748b;
 }
 
+.is-api .node-accent {
+  fill: #3977a1;
+}
+
+.node-type-chip rect {
+  fill: #edf3f7;
+  stroke: #ccdae3;
+  stroke-width: 1;
+}
+
+.node-type-chip text {
+  fill: #3c6073;
+  font-size: 9px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.is-template .node-type-chip rect {
+  fill: #edf6f4;
+  stroke: #cee3df;
+}
+
+.is-template .node-type-chip text {
+  fill: #176b66;
+}
+
+.node-status-chip rect {
+  fill: #f0f2f3;
+  stroke: #d7dfe1;
+  stroke-width: 1;
+}
+
+.node-status-chip text {
+  fill: #64747a;
+  font-size: 9px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.node-status-chip.is-active rect {
+  fill: #edf6ee;
+  stroke: #c8e1cc;
+}
+
+.node-status-chip.is-active text {
+  fill: #307147;
+}
+
+.node-status-chip.is-inactive rect {
+  fill: #f0f2f3;
+  stroke: #d7dfe1;
+}
+
+.node-status-chip.is-unknown rect {
+  fill: #fff6e8;
+  stroke: #eedbb3;
+}
+
+.node-status-chip.is-unknown text {
+  fill: #8a6426;
+}
+
 .node-title {
   fill: #163347;
   font-size: 13px;
@@ -247,19 +309,6 @@
   font-weight: 600;
 }
 
-.node-action rect {
-  fill: #edf6f4;
-  stroke: #cee3df;
-  stroke-width: 1;
-}
-
-.node-action text {
-  fill: #176b66;
-  font-size: 10px;
-  font-weight: 600;
-}
-
-.node-action,
 .expand-control,
 .properties-control,
 .modal-control {
@@ -267,22 +316,10 @@
   outline: none;
 }
 
-.node-action:hover rect,
-.node-action:focus-visible rect {
-  fill: #dcefeb;
-  stroke: #77b8ad;
-}
-
-.node-action:focus-visible,
 .expand-control:focus-visible,
 .properties-control:focus-visible,
 .modal-control:focus-visible {
   filter: drop-shadow(0 0 2px #147d78);
-}
-
-.more-actions {
-  fill: #6c8388;
-  font-size: 9px;
 }
 
 .expand-control circle,

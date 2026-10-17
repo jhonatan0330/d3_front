@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { FlatTreeControl } from '@angular/cdk/tree';
+import { NestedTreeControl } from '@angular/cdk/tree';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
@@ -62,10 +62,7 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Tree
     treeLoading = signal(false);
-    treeControl = new FlatTreeControl<TreeNode>(
-        node => node.level,
-        node => node.expanded
-    );
+    treeControl = new NestedTreeControl<TreeNode>(node => node.children);
     treeData = signal<TreeNode[]>([]);
 
     ngOnInit(): void {
@@ -110,64 +107,66 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     loadTree(): void {
+        if (this.treeLoading()) return;
         this.treeLoading.set(true);
-        this.service.getProcessTree().subscribe({
+        const f: ProcesoFilterDTO = {
+            ...this.filter,
+            paginacionRegistroInicial: null as unknown as number,
+            paginacionRegistroFinal: null as unknown as number
+        };
+        this.service.getProcesses(f).subscribe({
             next: (processes) => {
-                const roots = processes.filter(p => !p.macroproceso || p.macroproceso === p.llaveTabla);
-                this.treeData.set(this.buildTree(roots, processes));
+                const roots = this.buildTreeFromList(processes);
+                roots.forEach(r => this.treeControl.expand(r));
+                this.treeData.set(roots);
                 this.treeLoading.set(false);
             },
             error: () => this.treeLoading.set(false)
         });
     }
 
-    buildTree(roots: ProcesoDTO[], all: ProcesoDTO[]): TreeNode[] {
+    private buildTreeFromList(processes: ProcesoDTO[]): TreeNode[] {
+        const byKey = new Map<string, ProcesoDTO>();
+        processes.forEach(p => byKey.set(p.llaveTabla, p));
         const childrenMap = new Map<string, ProcesoDTO[]>();
-        all.forEach(p => {
-            const parentKey = p.macroproceso || p.llaveTabla;
-            if (!childrenMap.has(parentKey)) childrenMap.set(parentKey, []);
-            childrenMap.get(parentKey)!.push(p);
+        processes.forEach(p => {
+            if (!p.macroproceso || p.macroproceso === p.llaveTabla) return;
+            if (!childrenMap.has(p.macroproceso)) childrenMap.set(p.macroproceso, []);
+            childrenMap.get(p.macroproceso)!.push(p);
         });
-
-        const buildNode = (proceso: ProcesoDTO, level: number): TreeNode => {
-            const children = childrenMap.get(proceso.llaveTabla) || [];
-            return {
-                proceso,
-                children: children.map(c => buildNode(c, level + 1)),
-                level,
-                expanded: level === 0,
-                isLoading: false
-            };
+        const buildNode = (proceso: ProcesoDTO, level: number, visited: Set<string>): TreeNode => {
+            visited.add(proceso.llaveTabla);
+            const children = (childrenMap.get(proceso.llaveTabla) || [])
+                .filter(c => !visited.has(c.llaveTabla))
+                .map(c => buildNode(c, level + 1, visited));
+            return { proceso, children, level, expanded: level === 0, isLoading: false };
         };
-
-        return roots.map(r => buildNode(r, 0));
+        const roots = processes.filter(p => !p.macroproceso || p.macroproceso === p.llaveTabla || !byKey.has(p.macroproceso));
+        return roots.map(r => buildNode(r, 0, new Set()));
     }
 
-    hasChild = (_: number, node: TreeNode) => node.children.length > 0;
-    hasNoChild = (_: number, node: TreeNode) => node.children.length === 0;
-
-    toggleNode(node: TreeNode): void {
-        node.expanded = !node.expanded;
-        if (node.expanded && node.children.length === 0 && !node.isLoading) {
-            node.isLoading = true;
-            this.service.getTransitions(node.proceso.llaveTabla).subscribe({
-                next: (transitions) => {
-                    const children = transitions.map(t => ({
-                        proceso: { ...t, nombre: `${t.nombre} (${t.estadoPartidaNombre} → ${t.estadoLlegadaNombre})` } as unknown as ProcesoDTO,
-                        children: [],
-                        level: node.level + 1,
-                        expanded: false,
-                        isLoading: false
-                    }));
-                    node.children = children;
-                    node.isLoading = false;
-                    this.treeData.set([...this.treeData()]);
-                }
-            });
+    onTabChange(index: number): void {
+        this.activeTab.set(index);
+        if (index === 1 && !this.treeLoading()) {
+            this.loadTree();
         }
     }
 
-    onFilterChange(): void { this.reload(); }
+    toggleNode(node: TreeNode): void {
+        if (this.treeControl.isExpanded(node)) {
+            this.treeControl.collapse(node);
+            node.expanded = false;
+        } else {
+            this.treeControl.expand(node);
+            node.expanded = true;
+        }
+        this.treeData.update(nodes => [...nodes]);
+    }
+
+    onFilterChange(): void {
+        this.reload();
+        if (this.activeTab() === 1) this.loadTree();
+    }
 
     openForm(item?: ProcesoDTO): void {
         const dialogRef = this.dialog.open(ProcessFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', disableClose: true, data: item ? { ...item } : null });

@@ -59,15 +59,4 @@ export function iconoTipoConfig(tipo: string): string | null {
     return CONFIG_TIPO_ICONOS[tipo] ?? null;
 }
 
-export const CONFIG_LEYENDA: ReadonlyArray<{ icon: string; label: string }> = [
-    { icon: 'building', label: 'Organización' },
-    { icon: 'folder', label: 'Macroproceso' },
-    { icon: 'process', label: 'Proceso' },
-    { icon: 'state', label: 'Estado' },
-    { icon: 'diamond', label: 'Decisión / Iterador' },
-    { icon: 'transition', label: 'Transición' },
-    { icon: 'document', label: 'Plantilla' },
-    { icon: 'report', label: 'Reporte' },
-    { icon: 'person', label: 'Rol' },
-    { icon: 'api', label: 'API' },
-];
+

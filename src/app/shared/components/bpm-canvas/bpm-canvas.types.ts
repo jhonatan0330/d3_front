@@ -1,5 +1,3 @@
-export type BpmCanvasMode = 'tree' | 'flow';
-
 export const BPM_EDGE_COLORS = [
     '#0f766e',
     '#7c3aed',
@@ -16,21 +14,14 @@ export interface BpmCanvasMetadata {
     value: string;
 }
 
-export interface BpmCanvasAction {
-    id: string;
-    label: string;
-    targetId?: string;
-    templateId?: string;
-    source?: unknown;
-}
-
 export interface BpmCanvasNode {
     id: string;
     title: string;
     subtitle?: string;
+    typeLabel?: string;
+    status?: string;
     parentId?: string | null;
     metadata?: BpmCanvasMetadata[];
-    actions?: BpmCanvasAction[];
     source?: unknown;
     hasChildren?: boolean;
     hasProperties?: boolean;
