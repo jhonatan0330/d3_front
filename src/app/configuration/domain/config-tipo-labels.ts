@@ -67,9 +67,7 @@ export const CONFIG_LEYENDA: ReadonlyArray<{ icon: string; label: string }> = [
     { icon: 'diamond', label: 'Decisión / Iterador' },
     { icon: 'transition', label: 'Transición' },
     { icon: 'document', label: 'Plantilla' },
-    { icon: 'field', label: 'Campo' },
     { icon: 'report', label: 'Reporte' },
     { icon: 'person', label: 'Rol' },
     { icon: 'api', label: 'API' },
-    { icon: 'message', label: 'Mensaje' },
 ];

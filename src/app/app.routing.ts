@@ -60,9 +60,6 @@ export const appRoutes: Route[] = [
           { path: 'messages', children: [
             { path: '', loadComponent: () => import('app/configuration/components/messages/message-list/message-list.component').then(m => m.MessageListComponent) },
           ]},
-          { path: 'message-templates', children: [
-            { path: '', loadComponent: () => import('app/configuration/components/messages/message-template-list/message-template-list.component').then(m => m.MessageTemplateListComponent) },
-          ]},
           { path: 'document-templates', children: [
             { path: '', loadComponent: () => import('app/configuration/components/document-templates/document-template-list/document-template-list.component').then(m => m.DocumentTemplateListComponent) },
             { path: 'new', loadComponent: () => import('app/configuration/components/document-templates/document-template-form/document-template-form.component').then(m => m.DocumentTemplateFormComponent) },

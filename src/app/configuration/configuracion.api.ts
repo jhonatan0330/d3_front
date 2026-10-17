@@ -7,7 +7,7 @@ import {
     MensajeDTO, MensajeFilterDTO,
     ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO,
     DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO, ReporteBaseFilterDTO,
-    MensajePlantillaCorreoDTO, MensajePlantillaCorreoFilterDTO,
+    
     WebServiceDTO, WebServiceFilterDTO, WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO,
     ServidorDTO, ServidorFilterDTO,
     OrganizacionDTO, OrganizacionFilterDTO,
@@ -326,49 +326,6 @@ export class DocumentTemplateService {
     activateReport(report: ReporteBaseDTO): Observable<ReporteBaseDTO> {
         return this.http.post<ReporteBaseDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/reports/${report.llaveTabla}/activate`), report
-        );
-    }
-}
-
-@Injectable({ providedIn: 'root' })
-export class MessageTemplateService {
-    private http = inject(HttpClient);
-    private ls = inject(LocalStoreService);
-    private baseUrl = '/configuration/message-templates';
-
-    getTemplates(filter?: MensajePlantillaCorreoFilterDTO): Observable<MensajePlantillaCorreoDTO[]> {
-        return this.http.post<MensajePlantillaCorreoDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/list`), filter
-        );
-    }
-
-    getTemplateById(key: string): Observable<MensajePlantillaCorreoDTO> {
-        return this.http.post<MensajePlantillaCorreoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}`), {}
-        );
-    }
-
-    createTemplate(template: MensajePlantillaCorreoDTO): Observable<MensajePlantillaCorreoDTO> {
-        return this.http.post<MensajePlantillaCorreoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/create`), template
-        );
-    }
-
-    updateTemplate(template: MensajePlantillaCorreoDTO): Observable<MensajePlantillaCorreoDTO> {
-        return this.http.post<MensajePlantillaCorreoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/update`), template
-        );
-    }
-
-    inactivateTemplate(template: MensajePlantillaCorreoDTO): Observable<MensajePlantillaCorreoDTO> {
-        return this.http.post<MensajePlantillaCorreoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/inactivate`), template
-        );
-    }
-
-    activateTemplate(template: MensajePlantillaCorreoDTO): Observable<MensajePlantillaCorreoDTO> {
-        return this.http.post<MensajePlantillaCorreoDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${template.llaveTabla}/activate`), template
         );
     }
 }

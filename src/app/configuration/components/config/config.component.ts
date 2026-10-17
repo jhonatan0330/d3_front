@@ -17,7 +17,6 @@ export class ConfigComponent {
     { label: 'Web Services',        route: '/config/web-services' },
     { label: 'Ejecuciones WS',      route: '/config/web-service-executions' },
     { label: 'Mensajes',            route: '/config/messages' },
-    { label: 'Plantillas Msg',      route: '/config/message-templates' },
     { label: 'Plantillas Doc',      route: '/config/document-templates' },
     { label: 'Tareas Auto',         route: '/config/auto-tasks' },
     { label: 'Procesos',            route: '/config/processes' },

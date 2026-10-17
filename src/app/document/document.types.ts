@@ -452,18 +452,6 @@ export class WebServiceEjecucionFilterDTO extends BasicFilterDTO {
     sincrona: string;
 }
 
-export class MensajePlantillaCorreoDTO extends BasicDTO {
-    nombre: string;
-    titulo: string;
-    texto: string;
-    servidor: string;
-}
-
-export class MensajePlantillaCorreoFilterDTO extends BasicFilterDTO {
-    nombre: string;
-    servidor: string;
-}
-
 export class MensajeDTO extends BasicDTO {
     fecha: Date;
     titulo: string;
