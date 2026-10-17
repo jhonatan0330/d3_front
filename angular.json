@@ -41,11 +41,10 @@
                             ]
                         },
                         "styles": [
-                            "src/styles/fuse/tailwind.scss",
+                            "src/styles/tailwind.css",
                             "src/styles/fuse/themes.scss",
                             "src/styles/fuse/main.scss",
-                            "src/styles/styles.scss",
-                            "src/styles/tailwind.scss"
+                            "src/styles/styles.scss"
                         ],
                         "scripts": [
 

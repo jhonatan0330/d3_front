@@ -46,7 +46,7 @@
       }
       <!-- Notifications -->
       @for (notification of notifications; track trackByFn($index, notification)) {
-        <div class="group hover:bg-gray-50 dark:hover:bg-black dark:hover:bg-opacity-5 m-2"
+        <div class="group hover:bg-gray-50 dark:hover:bg-black/5 m-2"
           [ngClass]="{'unread': !notification.fechaLeido}">
           <!-- Header -->
           <div class="flex rounded"

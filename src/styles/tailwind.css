@@ -1,0 +1,438 @@
+/* =========================================================================================
+   Tailwind CSS v4 — main entry
+   Replaces the former `src/styles/fuse/tailwind.scss` + `src/styles/tailwind.scss`.
+   Processed by @tailwindcss/postcss (see .postcssrc.json).
+   ========================================================================================= */
+
+@import "tailwindcss" source(none);
+
+/* Generated theming (scripts/generate-themes.cjs) */
+@import "./fuse/generated/theme-vars.css";
+@import "./fuse/generated/theme-colors.css";
+
+/* Minimal JS config — only `important: true` (no CSS-first equivalent in v4) */
+@config "../../tailwind/fuse.config.cjs";
+
+@plugin "@tailwindcss/typography";
+
+/* Content sources: scan src/app for class usage (formerly the v3 content glob) */
+@source "../app";
+
+/* Class-based dark mode (former `darkMode: 'class'`) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =========================================================================================
+   Static theme tokens (former tailwind.config.js `theme`)
+   ========================================================================================= */
+@theme {
+    --font-sans: "Inter var", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --breakpoint-sm: 600px;
+    --breakpoint-md: 960px;
+    --breakpoint-lg: 1280px;
+    --breakpoint-xl: 1440px;
+
+    --text-xxxs: 0.300rem;
+    --text-xxs: 0.500rem;
+    --text-xs: 0.625rem;
+    --text-xs--line-height: normal;
+    --text-sm: 0.750rem;
+    --text-sm--line-height: normal;
+    --text-md: 0.8125rem;
+    --text-base: 0.875rem;
+    --text-base--line-height: normal;
+    --text-lg: 1rem;
+    --text-lg--line-height: normal;
+    --text-xl: 1.125rem;
+    --text-xl--line-height: normal;
+    --text-2xl: 1.25rem;
+    --text-2xl--line-height: normal;
+    --text-3xl: 1.5rem;
+    --text-3xl--line-height: normal;
+    --text-4xl: 2rem;
+    --text-4xl--line-height: normal;
+    --text-5xl: 2.25rem;
+    --text-5xl--line-height: normal;
+    --text-6xl: 2.5rem;
+    --text-6xl--line-height: normal;
+    --text-7xl: 3rem;
+    --text-7xl--line-height: normal;
+    --text-8xl: 4rem;
+    --text-8xl--line-height: normal;
+    --text-9xl: 6rem;
+    --text-9xl--line-height: normal;
+    --text-10xl: 8rem;
+
+    --animate-spin-slow: spin 3s linear infinite;
+    --ease-drawer: cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    /* `gray` was mapped to the `slate` palette in v3 */
+    --color-gray-50: #f8fafc;
+    --color-gray-100: #f1f5f9;
+    --color-gray-200: #e2e8f0;
+    --color-gray-300: #cbd5e1;
+    --color-gray-400: #94a3b8;
+    --color-gray-500: #64748b;
+    --color-gray-600: #475569;
+    --color-gray-700: #334155;
+    --color-gray-800: #1e293b;
+    --color-gray-900: #0f172a;
+    --color-gray-950: #020617;
+
+    /* icon-size plugin values (former tailwind/plugins/icon-size.js) */
+    --icon-size-3: 0.75rem;
+    --icon-size-3-5: 0.875rem;
+    --icon-size-4: 1rem;
+    --icon-size-4-5: 1.125rem;
+    --icon-size-5: 1.25rem;
+    --icon-size-6: 1.5rem;
+    --icon-size-7: 1.75rem;
+    --icon-size-8: 2rem;
+    --icon-size-10: 2.5rem;
+    --icon-size-12: 3rem;
+    --icon-size-14: 3.5rem;
+    --icon-size-16: 4rem;
+    --icon-size-18: 4.5rem;
+    --icon-size-20: 5rem;
+    --icon-size-22: 5.5rem;
+    --icon-size-24: 6rem;
+}
+
+/* =========================================================================================
+   Custom utilities (former tailwind/plugins/utilities.js + icon-size.js)
+   ========================================================================================= */
+@utility mat-icon {
+    color: rgb(var(--fuse-mat-icon-rgb));
+}
+
+@utility text-default {
+    color: rgb(var(--fuse-text-default-rgb));
+}
+
+@utility text-secondary {
+    color: rgb(var(--fuse-text-secondary-rgb));
+}
+
+@utility text-hint {
+    color: rgb(var(--fuse-text-hint-rgb));
+}
+
+@utility text-disabled {
+    color: rgb(var(--fuse-text-disabled-rgb));
+}
+
+@utility divider {
+    color: var(--fuse-divider);
+}
+
+@utility bg-card {
+    background-color: rgb(var(--fuse-bg-card-rgb));
+}
+
+@utility bg-default {
+    background-color: rgb(var(--fuse-bg-default-rgb));
+}
+
+@utility bg-dialog {
+    background-color: rgb(var(--fuse-bg-dialog-rgb));
+}
+
+@utility bg-hover {
+    background-color: var(--fuse-bg-hover);
+}
+
+@utility ring-bg-default {
+    --tw-ring-color: rgb(var(--fuse-bg-default-rgb));
+}
+
+@utility ring-bg-card {
+    --tw-ring-color: rgb(var(--fuse-bg-card-rgb));
+}
+
+@utility icon-size-* {
+    width: --value(--icon-size-*);
+    height: --value(--icon-size-*);
+    min-width: --value(--icon-size-*);
+    min-height: --value(--icon-size-*);
+    font-size: --value(--icon-size-*);
+    line-height: --value(--icon-size-*);
+
+    & svg {
+        width: --value(--icon-size-*);
+        height: --value(--icon-size-*);
+    }
+}
+
+/* Former `flex: { '0': '0 0 auto' }` */
+@utility flex-0 {
+    flex: 0 0 auto;
+}
+
+/* =========================================================================================
+   Global component utilities (former Tailwind classes in src/styles/styles.scss)
+   Defined here so `@apply` of the base class works (v4 requires `@utility` for that).
+   ========================================================================================= */
+@utility btn-icon {
+    @apply inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium transition-colors cursor-pointer bg-transparent hover:bg-black/5 dark:hover:bg-white/10;
+}
+
+@utility btn-icon-primary {
+    @apply btn-icon text-primary hover:bg-primary/10 dark:hover:bg-primary/20;
+}
+
+@utility btn-icon-accent {
+    @apply btn-icon text-accent hover:bg-accent/10 dark:hover:bg-accent/20;
+}
+
+@utility btn-flat {
+    @apply inline-flex items-center justify-center gap-2 px-5 h-10 rounded-lg font-medium text-white transition-colors cursor-pointer;
+}
+
+@utility btn-flat-primary {
+    @apply btn-flat bg-primary hover:bg-primary/90 dark:hover:bg-primary/80;
+}
+
+@utility btn-flat-accent {
+    @apply btn-flat bg-accent hover:bg-accent/90 dark:hover:bg-accent/80;
+}
+
+@utility btn-raised {
+    @apply inline-flex items-center gap-2 px-4 h-10 rounded-md font-medium text-gray-700 bg-white border border-gray-300 shadow-sm hover:bg-gray-50 transition-colors cursor-pointer dark:text-gray-200 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700;
+}
+
+@utility card {
+    @apply bg-white rounded-lg shadow dark:bg-gray-800;
+}
+
+@utility badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+}
+
+@utility badge-success {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+@utility badge-secondary {
+    @apply bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400;
+}
+
+@utility badge-info {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+@utility badge-warning {
+    @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400;
+}
+
+@utility badge-error {
+    @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+}
+
+@utility badge-metodo-get {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+@utility badge-metodo-post {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+@utility badge-metodo-put {
+    @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400;
+}
+
+@utility badge-metodo-delete {
+    @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+}
+
+@utility badge-exec-success {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+@utility badge-exec-error {
+    @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400;
+}
+
+@utility badge-exec-pending {
+    @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400;
+}
+
+@utility badge-tipo-db {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+@utility badge-tipo-app {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+@utility badge-tipo-web {
+    @apply bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400;
+}
+
+@utility badge-tipo-mail {
+    @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400;
+}
+
+@utility badge-tipo-email {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
+}
+
+@utility badge-tipo-sms {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400;
+}
+
+@utility badge-tipo-push {
+    @apply bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400;
+}
+
+@utility badge-origen-c {
+    @apply bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400;
+}
+
+@utility badge-origen-l {
+    @apply bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400;
+}
+
+@utility badge-origen-p {
+    @apply bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400;
+}
+
+@utility badge-origen-d {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400;
+}
+
+@utility cdk-drag-preview {
+    @apply shadow-lg;
+}
+
+@utility cdk-drag-animating {
+    @apply transition-transform ease-out;
+    transition-duration: 250ms;
+}
+
+@utility cdk-drag-placeholder {
+    @apply opacity-50 bg-gray-200 border-2 border-dashed border-gray-400 dark:bg-gray-700 dark:border-gray-500;
+}
+
+/* =========================================================================================
+   Base layer (former src/styles/fuse/tailwind.scss)
+   ========================================================================================= */
+@layer base {
+
+    * {
+        text-rendering: optimizeLegibility;
+        -o-text-rendering: optimizeLegibility;
+        -ms-text-rendering: optimizeLegibility;
+        -moz-text-rendering: optimizeLegibility;
+        -webkit-text-rendering: optimizeLegibility;
+        -webkit-tap-highlight-color: transparent;
+
+        &:focus {
+            outline: none !important;
+        }
+    }
+
+    html,
+    body {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        width: 100%;
+        min-height: 100%;
+        -webkit-font-smoothing: auto;
+        -moz-osx-font-smoothing: auto;
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-size: 0.875rem;
+        font-feature-settings: 'salt';
+    }
+
+    hr {
+        margin: 32px 0;
+        border-bottom-width: 1px;
+    }
+
+    img {
+        vertical-align: top;
+    }
+
+    input[disabled] {
+        opacity: 1;
+        -webkit-text-fill-color: currentColor;
+    }
+
+    body, .dark, .light {
+        @apply text-default! bg-default!;
+    }
+
+    *,
+    ::before,
+    ::after {
+        border-color: rgb(var(--fuse-border-rgb) / 1);
+    }
+
+    .dark *,
+    .dark ::before,
+    .dark ::after {
+        border-color: rgb(var(--fuse-border-rgb) / 0.12);
+    }
+
+    [disabled] * {
+        @apply text-disabled!;
+    }
+
+    @media only screen and (min-width: 960px) {
+
+        body:not(.os-mac) {
+
+            ::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+                background-color: rgba(0, 0, 0, 0);
+            }
+
+            ::-webkit-scrollbar:hover {
+                width: 8px;
+                height: 8px;
+                background-color: rgba(0, 0, 0, 0.06);
+            }
+
+            ::-webkit-scrollbar-thumb {
+                border: 2px solid transparent;
+                border-radius: 20px;
+                box-shadow: inset 0 0 0 20px rgba(0, 0, 0, 0.24);
+            }
+
+            ::-webkit-scrollbar-thumb:active {
+                border-radius: 20px;
+                box-shadow: inset 0 0 0 20px rgba(0, 0, 0, 0.37);
+            }
+
+            &.dark {
+                ::-webkit-scrollbar-thumb {
+                    box-shadow: inset 0 0 0 20px rgba(255, 255, 255, 0.24);
+                }
+
+                ::-webkit-scrollbar-thumb:active {
+                    box-shadow: inset 0 0 0 20px rgba(255, 255, 255, 0.37);
+                }
+            }
+        }
+    }
+
+    @media print {
+
+        html {
+            font-size: 12px !important;
+        }
+
+        body, .dark, .light {
+            background: none !important;
+        }
+    }
+}

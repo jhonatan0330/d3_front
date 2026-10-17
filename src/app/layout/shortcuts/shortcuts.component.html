@@ -39,7 +39,7 @@
         <div class="grid grid-cols-2 grid-flow-row">
           <!-- Shortcut -->
           @for (shortcut of shortcutsFiltered; track trackByFn($index, shortcut)) {
-            <div class="relative group flex flex-col overflow-hidden bg-card border-r border-b even:border-r-0 hover:bg-gray-50 dark:hover:bg-black dark:hover:bg-opacity-5">
+            <div class="relative group flex flex-col overflow-hidden bg-card border-r border-b even:border-r-0 hover:bg-gray-50 dark:hover:bg-black/5">
               <!-- Normal links -->
               <a
                 class="flex flex-col items-center justify-center w-full h-full py-6 no-underline"
