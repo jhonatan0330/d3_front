@@ -15,7 +15,6 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 @Component({
     selector: 'app-texto',
     templateUrl: './texto.component.html',
-    styleUrls: ['./texto.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, ZXingScannerModule, DireccionesComponent, TitleCasePipe]
 })

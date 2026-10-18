@@ -130,3 +130,15 @@
 .mat-mdc-form-field-subscript-wrapper {
     height: 6px;
 }
+
+/* zxing-scanner (used by document form controls texto & proceso) */
+zxing-scanner {
+    max-width: 100%;
+    border-style: solid;
+    border-color: #5d78ff;
+}
+
+zxing-scanner video {
+    max-height: 50vh;
+    object-fit: contain;
+}
