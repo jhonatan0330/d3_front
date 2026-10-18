@@ -6,7 +6,7 @@ Guidance for AI agents and developers working in this repository.
 
 - **Name**: d3Front (Frontend SPA for D3 ecosystem)
 - **Type**: Angular SPA (admin/business app) built on the **FuseAdmin** template
-- **Current stack**: Angular **22.1.0**, TypeScript 6.0.3, Tailwind CSS 3.4.7, RxJS 7.8.2, SCSS
+- **Current stack**: Angular **22.1.0**, TypeScript 6.0.3, Tailwind CSS 4, RxJS 7.8.2, SCSS
 - **Target**: Angular **22** (already at 22.1.0; see `PlanMejoras.md` for the post-migration improvement plan — the source of truth for ongoing work).
 - **Build system**: Standalone components, bootstrap via `bootstrapApplication` in `src/main.ts` (**zoneless**, `provideZonelessChangeDetection()`; zone.js eliminado en Fase 5.4).
 
@@ -24,12 +24,13 @@ Any implementation must match the SDD specs. Deviations are defects.
 ## Commands
 
 ```bash
-npm start            # ng serve
-npm run build        # ng build --build-optimizer (production)
+npm start            # ng serve (pre-hook: npm run theme:build)
+npm run build        # ng build --configuration production (pre-hook: npm run theme:build)
+npm run theme:build  # regenera theming v4 (scripts/generate-themes.cjs) -> theme-vars.css, theme-colors.css, user-themes.scss
 npm run build:stats  # ng build --stats-json (bundle analysis)
-npm run watch        # ng build --watch --configuration development
+npm run watch        # ng build --watch --configuration development (pre-hook: npm run theme:build)
 npm run analyze      # webpack-bundle-analyzer on dist/fuse/stats.json
-npm run lint         # ng lint (ESLint, works; currently 165 warnings / 0 errors, mostly `any` and `no-console` in `warn` level)
+npm run lint         # ng lint (ESLint; ~7 errores preexistentes / ~180 warnings: `any`, `no-console`, forwardRef, prefer-const)
 ```
 
 Type-check without emitting: `npx tsc -p tsconfig.app.json --noEmit`
@@ -62,7 +63,7 @@ For each new feature (or bug changing contract):
 ### Module layout
 - `src/main.ts` — entry, `bootstrapApplication` con `provideZonelessChangeDetection()` (zoneless).
 - `src/app/app.routing.ts` — all routes. Admin section guarded by `AuthGuard`; lazy-loaded modules: `authorization` (Profile), `cruds`, `tasks`, `massive`, `accounting`, `recover-password`, `new-password`. (`persons` currently eager — see PlanMejoras.md limpieza).
-- `src/@fuse/` — FuseAdmin template (keep as-is during migration). Contains `FuseModule`, servicios (config, loading, media-watcher, platform), y los style entry points (`tailwind.scss`, `themes.scss`, `main.scss`). La navegación de Fuse fue reemplazada: **todos los layouts usan `mat-sidenav` + `simple-nav`** (`src/app/layout/common/simple-nav/`); de `@fuse/components/navigation` solo queda `navigation.types.ts` (tipo `FuseNavigationItem`).
+- `src/app/layout/core/config/` — restos de la plantilla FuseAdmin (`FuseConfigModule`, `FuseConfigService`, `FUSE_APP_CONFIG`). Los style entry points están en `src/styles/`: `tailwind.css` (entrada Tailwind v4), `fuse/themes.scss` y `fuse/main.scss`. La navegación de Fuse fue reemplazada: **todos los layouts usan `mat-sidenav` + `simple-nav`** (`src/app/layout/common/simple-nav/`); de `@fuse/components/navigation` solo queda `navigation.types.ts` (tipo `FuseNavigationItem`).
 - `src/app/configuration/` — **Formularios de Administración** migrados de Flex a `/configuration/` (ver `PLAN_MIGRACION_CONFIGURACION.md`). 12 módulos bajo `configuration-forms/` (web-services, messages, document-templates, auto-tasks, processes, organizations, consecutives, servers, property-values, properties) + base compartida en `shared/`. Accedidos vía ruta lazy `/config` cuyo contenedor es `ConfigComponent` (`configuration-forms/config.component.ts`, selector `app-config`) con navegación por pestañas.
 - `src/app/document/` — **critical, complex** dynamic-forms engine (18 dynamic control types under `form/controls/`: archivo, base, binario, configuracion, croquis, detalle, disponibilidad, fecha, gps, gps-map, informative, numero, proceso, product, producto-lista, seccion, texto, vinculo). Treat as high-risk; migrate last and with care.
 - Other domains: `accounting`, `authentication`, `authorization`, `configuration-forms`, `cruds`, `document-transition`, `layout`, `massive`, `notification`, `persons`, `shared`, `tasks`.
@@ -172,10 +173,11 @@ Components are being migrated from Material to Tailwind CSS. The strategy is to 
 ### Replacement Patterns
 
 #### Buttons → Tailwind (completed)
-- `mat-icon-button` → `.btn-icon` / `.btn-icon-primary` / `.btn-icon-accent`
-- `mat-flat-button` → `.btn-flat` / `.btn-flat-primary` / `.btn-flat-accent`
+- `mat-icon-button` → `.btn-icon` / `.btn-icon-primary` / `.btn-icon-accent` (`.btn-icon-sm` for small)
+- `mat-flat-button` (filled) → `.btn-flat-primary` / `.btn-flat-accent`
+- `mat-button` / `mat-stroked-button` (outline / "Cancelar", "Cerrar") → `.btn-flat` (outline) / `.btn-flat-secondary` (small outline)
 - `mat-raise-button` → `.btn-raised`
-- Global classes defined in `src/styles/styles.scss`
+- Global classes defined as `@utility` in `src/styles/tailwind.css` (Tailwind v4)
 - `<mat-icon>` kept as thin wrapper for SVG sprite rendering
 
 #### Drawer → Tailwind (completed)
@@ -205,16 +207,20 @@ Components are being migrated from Material to Tailwind CSS. The strategy is to 
 - `MatTable` — structured table with selection (evaluate later)
 
 ### Global Tailwind Button Classes
-Defined in `src/styles/styles.scss`:
-```scss
-.btn-icon          /* circular icon button */
-.btn-icon-primary  /* circular with primary color */
-.btn-icon-accent   /* circular with accent color */
-.btn-flat          /* flat filled button */
-.btn-flat-primary  /* flat with primary bg */
-.btn-flat-accent   /* flat with accent bg */
-.btn-raised        /* elevated button with border */
+Defined as `@utility` in `src/styles/tailwind.css` (Tailwind v4):
+```css
+.btn-icon           /* circular icon button (40px) */
+.btn-icon-sm        /* small circular icon button (28px) */
+.btn-icon-primary   /* circular with primary color */
+.btn-icon-accent    /* circular with accent color */
+.btn-flat           /* OUTLINE button (white bg, border, default text) */
+.btn-flat-primary   /* filled with primary bg */
+.btn-flat-accent    /* filled with accent bg */
+.btn-flat-secondary /* small outline button (28px height) */
+.btn-raised         /* elevated button with border */
 ```
+
+> `.btn-flat` is an **outline/secondary** button (white bg, border, default text) — NOT filled. Use `.btn-flat-primary` / `.btn-flat-accent` for filled buttons. `important: true` is enabled via `tailwind/fuse.config.cjs` so utilities win over Angular Material's unlayered styles.
 
 ## Architecture Rules (Configuration Forms Migration)
 
@@ -235,7 +241,7 @@ Defined in `src/styles/styles.scss`:
 | `mat-spinner` / `MatProgressSpinnerModule` | Custom Tailwind loading: `@if (isLoading()) { <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> }` |
 | `mat-menu` / `MatMenuModule` | `<app-dropdown>` + `<app-dropdown-item>` |
 | `mat-paginator` / `MatPaginatorModule` | Custom pagination (or keep temporarily) |
-| `mat-icon-button` / `mat-flat-button` / `mat-raised-button` | Tailwind `.btn-icon`, `.btn-flat`, `.btn-raised` classes |
+| `mat-icon-button` / `mat-flat-button` / `mat-raised-button` | Tailwind `.btn-icon`, `.btn-flat-primary`/`.btn-flat-accent` (filled), `.btn-flat` (outline), `.btn-raised` |
 
 > **Desviación conocida (configuration-forms)**: Los módulos de `src/app/configuration/` (FASES 0-3 del `PLAN_MIGRACION_CONFIGURACION.md`) **NO aplicaron** esta regla de minimización. Usan `MatTableModule`, `MatPaginatorModule`, `MatSelectModule`, `MatDatepickerModule`, `MatFormFieldModule`, `MatDialogModule` y `MatTooltipModule` como patrón estándar (tablas con paginación, filtros con `mat-select`, formularios con `mat-form-field`). `app-dropdown` se usa en el resto de la app, pero no en esos módulos. La sustitución de `mat-select`→`app-dropdown` y `mat-paginator`→paginación propia queda **pendiente** para los componentes de `configuration-forms`.
 
