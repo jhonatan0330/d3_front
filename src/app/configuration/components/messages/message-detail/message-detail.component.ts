@@ -9,8 +9,7 @@ import { AttachmentViewerComponent } from '../../shared/attachment-viewer/attach
     selector: 'app-message-detail',
     standalone: true,
     imports: [CommonModule, MatDialogModule, MatIconModule, AttachmentViewerComponent],
-    templateUrl: './message-detail.component.html',
-    styleUrl: './message-detail.component.scss'
+    templateUrl: './message-detail.component.html'
 })
 export class MessageDetailComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<MessageDetailComponent>>(MatDialogRef);

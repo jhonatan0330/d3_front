@@ -10,8 +10,7 @@ import { PropertyModalComponent } from '../property-modal/property-modal.compone
     selector: 'app-property-field',
     standalone: true,
     imports: [CommonModule, MatDialogModule, MatIconModule],
-    templateUrl: './property-field.component.html',
-    styleUrl: './property-field.component.scss'
+    templateUrl: './property-field.component.html'
 })
 export class PropertyFieldComponent {
     private dialog = inject(MatDialog);

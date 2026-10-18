@@ -16,8 +16,7 @@ interface Attachment {
     selector: 'app-attachment-viewer',
     standalone: true,
     imports: [CommonModule, MatIconModule, MatDialogModule],
-    templateUrl: './attachment-viewer.component.html',
-    styleUrl: './attachment-viewer.component.scss'
+    templateUrl: './attachment-viewer.component.html'
 })
 export class AttachmentViewerComponent {
     private sanitizer = inject(DomSanitizer);

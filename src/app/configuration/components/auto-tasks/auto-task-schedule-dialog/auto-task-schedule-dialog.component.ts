@@ -20,8 +20,7 @@ interface ScheduleDialogData {
     selector: 'app-auto-task-schedule-dialog',
     standalone: true,
     imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatIconModule],
-    templateUrl: './auto-task-schedule-dialog.component.html',
-    styleUrl: './auto-task-schedule-dialog.component.scss'
+    templateUrl: './auto-task-schedule-dialog.component.html'
 })
 export class AutoTaskScheduleDialogComponent implements OnInit {
     private service = inject(AutoTaskService);

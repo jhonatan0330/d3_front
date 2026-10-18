@@ -15,8 +15,7 @@ interface ExecuteDialogData {
     selector: 'app-web-service-execute-dialog',
     standalone: true,
     imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
-    templateUrl: './web-service-execute-dialog.component.html',
-    styleUrl: './web-service-execute-dialog.component.scss'
+    templateUrl: './web-service-execute-dialog.component.html'
 })
 export class WebServiceExecuteDialogComponent implements OnInit {
     private service = inject(WebServiceConfigService);

@@ -18,6 +18,10 @@
 /* Content sources: scan src/app for class usage (formerly the v3 content glob) */
 @source "../app";
 
+/* Classes applied dynamically by Angular CDK drag-drop (absent from templates).
+   In v3 these were plain rules in styles.scss and always emitted; force generation. */
+@source inline("cdk-drag-preview cdk-drag-animating cdk-drag-placeholder");
+
 /* Class-based dark mode (former `darkMode: 'class'`) */
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -186,15 +190,23 @@
 }
 
 @utility btn-flat {
-    @apply inline-flex items-center justify-center gap-2 px-5 h-10 rounded-lg font-medium text-white transition-colors cursor-pointer;
+    @apply inline-flex items-center justify-center gap-2 px-5 h-10 rounded-lg font-medium transition-colors cursor-pointer bg-white border border-gray-300 text-default hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700;
 }
 
 @utility btn-flat-primary {
-    @apply btn-flat bg-primary hover:bg-primary/90 dark:hover:bg-primary/80;
+    @apply btn-flat bg-primary border-primary text-white hover:bg-primary/90 dark:hover:bg-primary/80;
 }
 
 @utility btn-flat-accent {
-    @apply btn-flat bg-accent hover:bg-accent/90 dark:hover:bg-accent/80;
+    @apply btn-flat bg-accent border-accent text-white hover:bg-accent/90 dark:hover:bg-accent/80;
+}
+
+@utility btn-flat-secondary {
+    @apply inline-flex items-center justify-center gap-1.5 px-2 h-8 rounded-md font-medium text-xs transition-colors cursor-pointer bg-white border border-gray-300 text-default hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700;
+}
+
+@utility btn-icon-sm {
+    @apply inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-medium transition-colors cursor-pointer bg-transparent hover:bg-black/5 dark:hover:bg-white/10;
 }
 
 @utility btn-raised {

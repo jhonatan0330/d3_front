@@ -16,8 +16,7 @@ import { DocumentTemplateFieldFormComponent } from '../document-template-field-f
     selector: 'app-document-template-field-list',
     standalone: true,
     imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, MatTableModule, DragDropModule],
-    templateUrl: './document-template-field-list.component.html',
-    styleUrl: './document-template-field-list.component.scss'
+    templateUrl: './document-template-field-list.component.html'
 })
 export class DocumentTemplateFieldListComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
