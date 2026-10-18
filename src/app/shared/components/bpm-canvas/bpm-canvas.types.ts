@@ -29,7 +29,7 @@ export interface BpmCanvasNode {
     modalAction?: 'plantilla' | 'webservice' | 'mensaje';
     shape?: 'circle' | 'diamond' | 'icon';
     shapeFill?: string;
-    horizontal?: boolean;
+    // horizontal?: boolean;
     order?: number;
     icon?: string;
     childEdges?: BpmCanvasEdge[];

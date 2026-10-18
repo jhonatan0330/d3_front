@@ -44,6 +44,7 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
     currentPage = signal(0);
     hasMore = signal(true);
     private readonly pageSize = 25;
+    private debounceTimer: any;
 
     filter: ProcesoFilterDTO = {
         estado: 'A',
@@ -163,10 +164,8 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.treeData.update(nodes => [...nodes]);
     }
 
-    onFilterChange(): void {
-        this.reload();
-        if (this.activeTab() === 1) this.loadTree();
-    }
+    onFilterChange(): void { this.reload(); if (this.activeTab() === 1) this.loadTree();}
+    onFilterInput(): void { clearTimeout(this.debounceTimer); this.debounceTimer = setTimeout(() => { this.reload(); }, 200); }
 
     openForm(item?: ProcesoDTO): void {
         const dialogRef = this.dialog.open(ProcessFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', disableClose: true, data: item ? { ...item } : null });

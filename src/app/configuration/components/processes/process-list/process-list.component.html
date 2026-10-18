@@ -7,8 +7,7 @@
 
       <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Nombre</mat-label><input matInput [(ngModel)]="filter.nombre" (ngModelChange)="onFilterChange()" placeholder="Filtrar por nombre" /></mat-form-field>
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Código</mat-label><input matInput [(ngModel)]="filter.codigo" (ngModelChange)="onFilterChange()" placeholder="Filtrar por código" /></mat-form-field>
+          <mat-form-field appearance="outline" class="w-full sm:col-span-2"><mat-label>Nombre o código</mat-label><input matInput [(ngModel)]="filter.filtroParametro" (ngModelChange)="onFilterChange()" placeholder="Filtrar por nombre o código" /></mat-form-field>
           <mat-form-field appearance="outline" class="w-full"><mat-label>Tipo</mat-label><mat-select [(ngModel)]="filter.tipo" (ngModelChange)="onFilterChange()"><mat-option value="">Todos</mat-option><mat-option value="A">Agrupador</mat-option><mat-option value="E">Ejecutor</mat-option></mat-select></mat-form-field>
           <mat-form-field appearance="outline" class="w-full"><mat-label>Estado</mat-label><mat-select [(ngModel)]="filter.estado" (ngModelChange)="onFilterChange()"><mat-option value="A">Activo</mat-option><mat-option value="I">Inactivo</mat-option><mat-option value="">Todos</mat-option></mat-select></mat-form-field>
         </div>

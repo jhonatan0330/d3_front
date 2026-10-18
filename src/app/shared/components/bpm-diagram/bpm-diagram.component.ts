@@ -123,7 +123,7 @@ export class BpmDiagramComponent implements OnInit {
         nodos.push(this.mapConfigNode(raiz, null));
         for (const hijo of hijos) {
           const nodo = this.mapConfigNode(hijo, raiz.camino);
-          if (ordenGrupo(hijo.tipo) < 3) nodo.horizontal = true;
+          //if (ordenGrupo(hijo.tipo) < 3) nodo.horizontal = true;
           nodos.push(nodo);
         }
         this.canvasNodes.set(nodos);
@@ -165,7 +165,7 @@ export class BpmDiagramComponent implements OnInit {
           .filter(hijo => hijo.tipo !== TreeNodeDTO.CAMPO)
           .map(hijo => {
             const hijoNodo = this.mapConfigNode(hijo, nodo.camino);
-            if (plantillaEnFila && this.esTipoPlantilla(hijo.tipo)) hijoNodo.horizontal = true;
+            //if (plantillaEnFila && this.esTipoPlantilla(hijo.tipo)) hijoNodo.horizontal = true;
             return hijoNodo;
           });
         const vacio = hijos.length === 0;
@@ -321,6 +321,7 @@ export class BpmDiagramComponent implements OnInit {
 
   private esTipoPlantilla(tipo?: string): boolean {
     return !!tipo && tipo.startsWith('PLANTILLA');
+    //||tipo.startsWith('ROL')
   }
 
   private puedeExpandir(nodo: TreeNodeDTO): boolean {
@@ -426,7 +427,7 @@ export class BpmDiagramComponent implements OnInit {
       if (this.esNodoProceso(nodo?.tipo)) {
         return;
       }
-      if (nodo?.llaveTabla && this.esTipoPlantilla(nodo.tipo)) this.abrirPlantilla(nodo.llaveTabla);
+      if (nodo?.llaveTabla && (!!nodo.tipo && (nodo.tipo.startsWith('ROL') || this.esTipoPlantilla(nodo.tipo)))) this.abrirPlantilla(nodo.llaveTabla);
       return;
     }
   }

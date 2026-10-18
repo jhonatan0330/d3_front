@@ -339,32 +339,32 @@ export class BpmCanvasComponent {
             height: number;
             gap: number;
         } => {
-            const enFila = kids.filter(kid => kid.horizontal);
-            const enColumna = kids.filter(kid => !kid.horizontal);
-            let filaWidth = 0;
+            //const enFila = kids.filter(kid => kid.horizontal);
+           // const enColumna = kids.filter(kid => !kid.horizontal);
+            //let filaWidth = 0;
             let filaHeight = 0;
-            for (const kid of enFila) {
+            /*for (const kid of enFila) {
                 const kidSize = subtreeSize(kid);
                 filaWidth += kidSize.width + CARD_GAP_X;
                 filaHeight = Math.max(filaHeight, kidSize.height);
-            }
-            filaWidth = Math.max(0, filaWidth - CARD_GAP_X);
+            }*/
+            //filaWidth = Math.max(0, filaWidth - CARD_GAP_X);
             let colHeight = -CARD_GAP_Y;
             let colWidth = 0;
-            for (const kid of enColumna) {
+            for (const kid of kids) {
                 const kidSize = subtreeSize(kid);
                 colHeight += kidSize.height + CARD_GAP_Y;
                 colWidth = Math.max(colWidth, kidSize.width);
             }
-            if (!enColumna.length) colHeight = 0;
+            //if (!enColumna.length) colHeight = 0;
             const gap = filaHeight && colHeight ? CARD_GAP_Y : 0;
             return {
-                enFila,
-                enColumna,
-                filaWidth,
-                filaHeight,
-                colHeight,
-                width: Math.max(filaWidth, colWidth),
+                enFila: [],
+                enColumna: kids,
+                filaWidth: 0,
+                filaHeight: filaHeight,
+                colHeight: colHeight,
+                width: Math.max(0, colWidth),
                 height: filaHeight + gap + colHeight,
                 gap,
             };
