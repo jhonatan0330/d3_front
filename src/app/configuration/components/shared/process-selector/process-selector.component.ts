@@ -12,8 +12,7 @@ import { ProcessService } from 'app/configuration/configuracion.api';
     providers: [
         { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => ProcessSelectorComponent), multi: true }
     ],
-    templateUrl: './process-selector.component.html',
-    styleUrl: './process-selector.component.scss'
+    templateUrl: './process-selector.component.html'
 })
 export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
     private processService = inject(ProcessService);

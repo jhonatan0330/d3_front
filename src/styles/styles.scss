@@ -142,3 +142,16 @@ zxing-scanner video {
     max-height: 50vh;
     object-fit: contain;
 }
+
+/* Host display for selector / compare custom elements (former per-component :host) */
+app-template-selector,
+app-state-selector,
+app-user-selector,
+app-process-selector,
+app-tree-compare {
+    display: block;
+}
+
+app-tree-compare {
+    height: 100%;
+}

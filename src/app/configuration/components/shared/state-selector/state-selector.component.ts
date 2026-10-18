@@ -12,8 +12,7 @@ import { ProcessService } from 'app/configuration/configuracion.api';
     providers: [
         { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => StateSelectorComponent), multi: true }
     ],
-    templateUrl: './state-selector.component.html',
-    styleUrl: './state-selector.component.scss'
+    templateUrl: './state-selector.component.html'
 })
 export class StateSelectorComponent implements ControlValueAccessor, OnInit, OnChanges {
     private processService = inject(ProcessService);

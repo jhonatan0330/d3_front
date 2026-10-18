@@ -13,8 +13,7 @@ import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/DocumentoP
     providers: [
         { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => TemplateSelectorComponent), multi: true }
     ],
-    templateUrl: './template-selector.component.html',
-    styleUrl: './template-selector.component.scss'
+    templateUrl: './template-selector.component.html'
 })
 export class TemplateSelectorComponent implements ControlValueAccessor, OnInit {
     private templateService = inject(DocumentTemplateService);

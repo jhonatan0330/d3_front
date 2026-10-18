@@ -9,8 +9,7 @@ import { ConfigUserService } from 'app/configuration/configuracion.api';
     selector: 'app-user-selector',
     standalone: true,
     imports: [CommonModule, FormsModule, MatIconModule],
-    templateUrl: './user-selector.component.html',
-    styleUrl: './user-selector.component.scss'
+    templateUrl: './user-selector.component.html'
 })
 export class UserSelectorComponent implements OnInit {
     private configUserService = inject(ConfigUserService);

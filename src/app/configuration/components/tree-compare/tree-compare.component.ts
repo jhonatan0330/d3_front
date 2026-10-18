@@ -44,7 +44,6 @@ interface ResumenComparacion {
     standalone: true,
     imports: [MatIconModule],
     templateUrl: './tree-compare.component.html',
-    styleUrl: './tree-compare.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TreeCompareComponent {
