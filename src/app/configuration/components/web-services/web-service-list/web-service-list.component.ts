@@ -100,7 +100,7 @@ export class WebServiceListComponent implements OnInit, AfterViewInit, OnDestroy
     openForm(item?: WebServiceDTO): void {
         const dialogRef = this.dialog.open(WebServiceFormComponent, {
             disableClose: true,
-            width: '700px', maxWidth: '90vw', data: item ? { ...item } : null
+            width: '700px', maxWidth: '90vw', data: item ? { id: item.llaveTabla } : null
         });
         dialogRef.afterClosed().subscribe((result: WebServiceDTO) => { if (result) this.reload(); });
     }

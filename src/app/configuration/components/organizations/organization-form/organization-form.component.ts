@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { MatIconModule } from '@angular/material/icon';
+import { IdDialogData } from '../../shared/dialog-data';
 
 @Component({
     selector: 'app-organization-form',
@@ -18,21 +19,43 @@ import { MatIconModule } from '@angular/material/icon';
 export class OrganizationFormComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<OrganizationFormComponent>>(MatDialogRef);
-    public data = inject<OrganizacionDTO | null>(MAT_DIALOG_DATA);
+    public data = inject<IdDialogData | null>(MAT_DIALOG_DATA);
 
     private service = inject(OrganizationService);
     private dialog = inject(MatDialog);
+    private cdr = inject(ChangeDetectorRef);
 
     organizacion: OrganizacionDTO = new OrganizacionDTO();
     cargando = false;
 
     ngOnInit(): void {
-        if (this.data) {
-            this.organizacion = { ...this.data };
-        } else {
-            this.organizacion = new OrganizacionDTO();
-            this.organizacion.estado = 'A';
+        if (this.data?.id) {
+            this.loadOrganizacion(this.data.id);
+            return;
         }
+        this.organizacion = new OrganizacionDTO();
+        this.organizacion.estado = 'A';
+    }
+
+    private loadOrganizacion(id: string): void {
+        this.cargando = true;
+        this.service.getOrganizacionById(id).subscribe({
+            next: (result) => {
+                this.cargando = false;
+                if (!result) {
+                    this.notificationCenter.error('Organización no encontrada', 'No existe una organización con la clave solicitada.');
+                    this.dialogRef.close();
+                    return;
+                }
+                this.organizacion = { ...result };
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.cargando = false;
+                this.notificationCenter.error('Error', 'No se pudo cargar la organización.');
+                this.dialogRef.close();
+            }
+        });
     }
 
     openPropiedades(): void {

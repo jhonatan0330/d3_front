@@ -221,6 +221,17 @@
       @if ((data.expedientes || dataProvider) && (isEnabled || herencia)) {
         <div>
           <div class="my-2 flex w-full flex-wrap items-start justify-start gap-3 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
+            <!-- Cantidad de registros -->
+            <div class="pr-1">
+              <span class="block px-1 pb-1 text-sm">Registros por página</span>
+              <select [formControl]="fControlCantidadPagina" aria-label="Cantidad de registros por página"
+                title="Cantidad de registros por página"
+                class="block w-24 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100">
+                @for (opcion of cantidadPaginaOpciones; track opcion) {
+                  <option [ngValue]="opcion">{{ opcion }}</option>
+                }
+              </select>
+            </div>
             <!-- Fechas -->
             @if (fControlCheck && !fControlCheck.value) {
               <div class="pr-1">

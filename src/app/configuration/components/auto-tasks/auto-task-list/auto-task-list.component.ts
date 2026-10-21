@@ -86,7 +86,7 @@ export class AutoTaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     onFilterChange(): void { this.reload(); }
 
     openForm(item?: ProcesoTransicionAutomaticaDTO): void {
-        const dialogRef = this.dialog.open(AutoTaskFormComponent, { width: '700px', maxWidth: '90vw', disableClose: true, data: item ? { ...item } : null });
+        const dialogRef = this.dialog.open(AutoTaskFormComponent, { width: '700px', maxWidth: '90vw', disableClose: true, data: item ? { id: item.llaveTabla } : null });
         dialogRef.afterClosed().subscribe((result: ProcesoTransicionAutomaticaDTO) => { if (result) this.reload(); });
     }
 

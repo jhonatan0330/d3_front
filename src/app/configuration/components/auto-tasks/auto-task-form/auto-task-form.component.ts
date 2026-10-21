@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ProcesoTransicionAutomaticaDTO } from 'app/document/document.types';
 import { AutoTaskService } from 'app/configuration/configuracion.api';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { IdDialogData } from '../../shared/dialog-data';
 
 @Component({
     selector: 'app-auto-task-form',
@@ -15,20 +16,42 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 })
 export class AutoTaskFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<AutoTaskFormComponent>>(MatDialogRef);
-    public data = inject<ProcesoTransicionAutomaticaDTO | null>(MAT_DIALOG_DATA);
+    public data = inject<IdDialogData | null>(MAT_DIALOG_DATA);
     private notificationCenter = inject(NotificationCenterService);
     private service = inject(AutoTaskService);
+    private cdr = inject(ChangeDetectorRef);
 
     task: ProcesoTransicionAutomaticaDTO = new ProcesoTransicionAutomaticaDTO();
     cargando = false;
 
     ngOnInit(): void {
-        if (this.data) {
-            this.task = { ...this.data };
-        } else {
-            this.task = new ProcesoTransicionAutomaticaDTO();
-            this.task.estado = 'A';
+        if (this.data?.id) {
+            this.loadTask(this.data.id);
+            return;
         }
+        this.task = new ProcesoTransicionAutomaticaDTO();
+        this.task.estado = 'A';
+    }
+
+    private loadTask(id: string): void {
+        this.cargando = true;
+        this.service.getAutoTaskById(id).subscribe({
+            next: (result) => {
+                this.cargando = false;
+                if (!result) {
+                    this.notificationCenter.error('Tarea no encontrada', 'No existe una tarea automática con la clave solicitada.');
+                    this.dialogRef.close();
+                    return;
+                }
+                this.task = { ...result };
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.cargando = false;
+                this.notificationCenter.error('Error', 'No se pudo cargar la tarea automática.');
+                this.dialogRef.close();
+            }
+        });
     }
 
     onSubmit(): void {

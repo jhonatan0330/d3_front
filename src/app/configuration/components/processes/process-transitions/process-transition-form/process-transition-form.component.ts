@@ -1,9 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { ProcesoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
+import { ProcesoTransicionDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { PropertyPanelComponent } from '../../../shared/property-panel/property-panel.component';
 import { ProcessSelectorComponent } from '../../../shared/process-selector/process-selector.component';
@@ -11,11 +11,7 @@ import { StateSelectorComponent } from '../../../shared/state-selector/state-sel
 import { TemplateSelectorComponent } from '../../../shared/template-selector/template-selector.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { DocumentTemplateFormComponent } from '../../../document-templates/document-template-form/document-template-form.component';
-
-interface TransitionFormData {
-    transition?: ProcesoTransicionDTO;
-    process?: ProcesoDTO;
-}
+import { ProcessChildDialogData } from '../../../shared/dialog-data';
 
 @Component({
     selector: 'app-process-transition-form',
@@ -29,10 +25,11 @@ interface TransitionFormData {
 export class ProcessTransitionFormComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<ProcessTransitionFormComponent>>(MatDialogRef);
-    public data = inject<TransitionFormData>(MAT_DIALOG_DATA);
+    public data = inject<ProcessChildDialogData>(MAT_DIALOG_DATA);
 
     private service = inject(ProcessService);
     private dialog = inject(MatDialog);
+    private cdr = inject(ChangeDetectorRef);
 
     transition: ProcesoTransicionDTO = new ProcesoTransicionDTO();
     cargando = false;
@@ -45,19 +42,41 @@ export class ProcessTransitionFormComponent implements OnInit {
     ];
 
     ngOnInit(): void {
-        if (this.data.transition?.llaveTabla) {
-            this.transition = { ...this.data.transition };
-            this.esEdicion = true;
-        } else {
-            this.transition = new ProcesoTransicionDTO();
-            this.transition.estado = 'A';
-            this.transition.documentador = false;
-            this.transition.rapida = false;
-            this.transition.estadoPartidaOrden = 0;
-            this.transition.estadoLlegadaOrden = 0;
+        if (this.data?.id) {
+            this.loadTransition(this.data.id);
+            return;
         }
-        this.transition.proceso = this.data.process?.llaveTabla || this.transition.proceso || '';
+        this.transition = new ProcesoTransicionDTO();
+        this.transition.estado = 'A';
+        this.transition.documentador = false;
+        this.transition.rapida = false;
+        this.transition.estadoPartidaOrden = 0;
+        this.transition.estadoLlegadaOrden = 0;
+        this.transition.proceso = this.data.processId;
         this.processKey = this.transition.proceso;
+    }
+
+    private loadTransition(id: string): void {
+        this.cargando = true;
+        this.service.getTransitionById(id).subscribe({
+            next: (result) => {
+                this.cargando = false;
+                if (!result) {
+                    this.notificationCenter.error('Transición no encontrada', 'No existe una transición con la clave solicitada.');
+                    this.dialogRef.close();
+                    return;
+                }
+                this.transition = { ...result };
+                this.processKey = this.transition.proceso;
+                this.esEdicion = true;
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.cargando = false;
+                this.notificationCenter.error('Error', 'No se pudo cargar la transición.');
+                this.dialogRef.close();
+            }
+        });
     }
 
     onProcessChange(llave: string): void {
@@ -76,7 +95,7 @@ export class ProcessTransitionFormComponent implements OnInit {
     abrirPlantilla(): void {
         if (!this.transition.plantilla) return;
         this.dialog.open(DocumentTemplateFormComponent, {
-            data: { template: this.transition.plantilla },
+            data: { id: this.transition.plantilla },
             width: '900px',
             maxWidth: '95vw',
             maxHeight: '95vh',

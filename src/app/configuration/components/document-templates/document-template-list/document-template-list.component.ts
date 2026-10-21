@@ -94,7 +94,7 @@ export class DocumentTemplateListComponent implements OnInit, AfterViewInit, OnD
     onFilterInput(): void { clearTimeout(this.debounceTimer); this.debounceTimer = setTimeout(() => { this.reload(); }, 200); }
 
     openForm(item?: DocumentoPlantillaDTO): void {
-        const dialogRef = this.dialog.open(DocumentTemplateFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', disableClose: true, data: item ? { ...item } : null });
+        const dialogRef = this.dialog.open(DocumentTemplateFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', disableClose: true, data: item ? { id: item.llaveTabla } : null });
         dialogRef.afterClosed().subscribe((result: DocumentoPlantillaDTO) => { if (result) this.reload(); });
     }
 

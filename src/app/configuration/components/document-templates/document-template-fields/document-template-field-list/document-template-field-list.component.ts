@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO } from 'app/document/document.types';
+import { DocumentoPlantillaCaracteristicaDTO } from 'app/document/document.types';
 import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { DocumentTemplateFieldFormComponent } from '../document-template-field-form/document-template-field-form.component';
@@ -24,7 +24,6 @@ export class DocumentTemplateFieldListComponent implements OnInit {
     private dialog = inject(MatDialog);
 
     @Input() templateKey!: string;
-    @Input() template!: DocumentoPlantillaDTO;
     @Output() fieldSaved = new EventEmitter<DocumentoPlantillaCaracteristicaDTO>();
 
     fields = signal<DocumentoPlantillaCaracteristicaDTO[]>([]);
@@ -48,7 +47,7 @@ export class DocumentTemplateFieldListComponent implements OnInit {
     openFieldForm(field?: DocumentoPlantillaCaracteristicaDTO): void {
         const dialogRef = this.dialog.open(DocumentTemplateFieldFormComponent, {
             width: '600px', maxWidth: '90vw', disableClose: true,
-            data: { field: field ? { ...field } : null, template: this.template }
+            data: { id: field?.llaveTabla, templateId: this.templateKey }
         });
         dialogRef.afterClosed().subscribe((result: DocumentoPlantillaCaracteristicaDTO) => {
             if (result) {

@@ -74,7 +74,7 @@ export class UtilsService {
       hasBackdrop: false,
       disableClose: false,
       panelClass: 'flex-right-panel',
-      data: { template: pTemplate},
+      data: { id: pTemplate },
     });
 
     this._flexDialogRef.afterClosed().subscribe(() => { this._flexDialogRef = null; });
@@ -110,7 +110,7 @@ export class UtilsService {
   fieldEditModalFlex(pField?:DocumentoPlantillaCaracteristicaDTO){
     const dialogRef: MatDialogRef<any> = this.dialog.open(DocumentTemplateFieldFormComponent, {
       maxHeight: '90vh',
-      data: { field: pField, template: { llaveTabla: pField?.plantilla } },
+      data: { id: pField?.llaveTabla, templateId: pField?.plantilla ?? '' },
     });
     return dialogRef.afterClosed();
   }
@@ -118,7 +118,7 @@ export class UtilsService {
   fieldAddModalFlex(ptemplate: string, pCampo?:DocumentoPlantillaCaracteristicaDTO){
     const dialogRef: MatDialogRef<any> = this.dialog.open(DocumentTemplateFieldFormComponent, {
       maxHeight: '90vh',
-      data: { template: ptemplate , campo: pCampo },
+      data: { templateId: ptemplate },
     });
     return dialogRef.afterClosed();
   }

@@ -81,7 +81,7 @@ export class IndicatorListComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     openForm(item?: IndicatorDTO): void {
-        const dialogRef = this.dialog.open(IndicatorFormComponent, { disableClose: true, width: '700px', maxWidth: '90vw', data: item ? { ...item } : null });
+        const dialogRef = this.dialog.open(IndicatorFormComponent, { disableClose: true, width: '700px', maxWidth: '90vw', data: item ? { id: item.llaveTabla } : null });
         dialogRef.afterClosed().subscribe((result: IndicatorDTO) => { if (result) this.reload(); });
     }
 

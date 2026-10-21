@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -9,6 +9,7 @@ import { ServerService } from 'app/configuration/configuracion.api';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
 import { MatIconModule } from '@angular/material/icon';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { IdDialogData } from '../../shared/dialog-data';
 
 @Component({
     selector: 'app-server-form',
@@ -18,10 +19,11 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 })
 export class ServerFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<ServerFormComponent>>(MatDialogRef);
-    public data = inject<ServidorDTO | null>(MAT_DIALOG_DATA);
+    public data = inject<IdDialogData | null>(MAT_DIALOG_DATA);
 
     private service = inject(ServerService);
     private dialog = inject(MatDialog);
+    private cdr = inject(ChangeDetectorRef);
 
     servidor: ServidorDTO = new ServidorDTO();
     cargando = false;
@@ -29,11 +31,33 @@ export class ServerFormComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
 
     ngOnInit(): void {
-        if (this.data) { this.servidor = { ...this.data }; }
-        else {
-            this.servidor = new ServidorDTO();
-            this.servidor.estado = 'A';
+        if (this.data?.id) {
+            this.loadServidor(this.data.id);
+            return;
         }
+        this.servidor = new ServidorDTO();
+        this.servidor.estado = 'A';
+    }
+
+    private loadServidor(id: string): void {
+        this.cargando = true;
+        this.service.getServidorById(id).subscribe({
+            next: (result) => {
+                this.cargando = false;
+                if (!result) {
+                    this.notificationCenter.error('Servidor no encontrado', 'No existe un servidor con la clave solicitada.');
+                    this.dialogRef.close();
+                    return;
+                }
+                this.servidor = { ...result };
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.cargando = false;
+                this.notificationCenter.error('Error', 'No se pudo cargar el servidor.');
+                this.dialogRef.close();
+            }
+        });
     }
 
     openPropiedades(): void {

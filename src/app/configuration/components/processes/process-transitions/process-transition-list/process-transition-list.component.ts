@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ProcesoDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO } from 'app/document/document.types';
+import { ProcesoTransicionDTO, ProcesoTransicionFilterDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { ProcessTransitionFormComponent } from '../process-transition-form/process-transition-form.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
@@ -23,7 +23,6 @@ export class ProcessTransitionListComponent implements OnInit {
     private dialog = inject(MatDialog);
 
     @Input() processKey!: string;
-    @Input() process!: ProcesoDTO;
     @Output() transitionSaved = new EventEmitter<ProcesoTransicionDTO>();
 
     transitions = signal<ProcesoTransicionDTO[]>([]);
@@ -48,7 +47,7 @@ export class ProcessTransitionListComponent implements OnInit {
     openTransitionForm(transition?: ProcesoTransicionDTO): void {
         const dialogRef = this.dialog.open(ProcessTransitionFormComponent, {
             width: '700px', maxWidth: '90vw', disableClose: true,
-            data: { transition: transition ? { ...transition } : null, process: this.process }
+            data: { id: transition?.llaveTabla, processId: this.processKey }
         });
         dialogRef.afterClosed().subscribe((result: ProcesoTransicionDTO) => {
             if (result) {

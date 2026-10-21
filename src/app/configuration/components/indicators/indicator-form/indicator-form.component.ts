@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import { IndicatorConfigService } from 'app/configuration/configuracion.api';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
+import { IdDialogData } from '../../shared/dialog-data';
 
 @Component({
   selector: 'app-indicator-form',
@@ -19,21 +20,43 @@ import { PropertyPanelComponent } from '../../shared/property-panel/property-pan
 export class IndicatorFormComponent implements OnInit {
   private notificationCenter = inject(NotificationCenterService);
   public dialogRef = inject<MatDialogRef<IndicatorFormComponent>>(MatDialogRef);
-  public data = inject<IndicatorDTO | null>(MAT_DIALOG_DATA);
+  public data = inject<IdDialogData | null>(MAT_DIALOG_DATA);
   private dialog = inject(MatDialog);
   private service = inject(IndicatorConfigService);
+  private cdr = inject(ChangeDetectorRef);
 
   indicador: IndicatorDTO = new IndicatorDTO();
   cargando = false;
 
   ngOnInit(): void {
-    if (this.data) {
-      this.indicador = { ...this.data, propiedades: this.data.propiedades || [] };
-    } else {
-      this.indicador = new IndicatorDTO();
-      this.indicador.estado = 'A';
-      this.indicador.propiedades = [];
+    if (this.data?.id) {
+      this.loadIndicador(this.data.id);
+      return;
     }
+    this.indicador = new IndicatorDTO();
+    this.indicador.estado = 'A';
+    this.indicador.propiedades = [];
+  }
+
+  private loadIndicador(id: string): void {
+    this.cargando = true;
+    this.service.getIndicadorById(id).subscribe({
+      next: (result) => {
+        this.cargando = false;
+        if (!result) {
+          this.notificationCenter.error('Indicador no encontrado', 'No existe un indicador con la clave solicitada.');
+          this.dialogRef.close();
+          return;
+        }
+        this.indicador = { ...result, propiedades: result.propiedades || [] };
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.cargando = false;
+        this.notificationCenter.error('Error', 'No se pudo cargar el indicador.');
+        this.dialogRef.close();
+      }
+    });
   }
 
   openPropiedades(): void {

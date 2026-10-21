@@ -52,7 +52,6 @@
               @if (template.llaveTabla) {
                 <app-document-template-field-list
                   [templateKey]="template.llaveTabla"
-                  [template]="template"
                   (fieldSaved)="onFieldSaved($event)">
                 </app-document-template-field-list>
               }

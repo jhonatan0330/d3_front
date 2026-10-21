@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import {
     ConsecutivoDTO, ConsecutivoFilterDTO,
@@ -721,6 +721,15 @@ export class PropertyService {
     getRelations(filter: RelacionInternaFilterDTO): Observable<RelacionInternaDTO[]> {
         return this.http.post<RelacionInternaDTO[]>(
             this.ls.getUrlAccess(`${this.baseUrl}/${filter.propiedad}/relations`), filter
+        );
+    }
+
+    getRelationById(propiedadId: string, id: string): Observable<RelacionInternaDTO | undefined> {
+        const filter = new RelacionInternaFilterDTO();
+        filter.propiedad = propiedadId;
+        filter.estado = 'A';
+        return this.getRelations(filter).pipe(
+            map((relations) => relations.find((relation) => relation.llaveTabla === id))
         );
     }
 

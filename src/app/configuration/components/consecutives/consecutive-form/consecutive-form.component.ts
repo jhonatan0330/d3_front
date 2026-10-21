@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ConsecutivoDTO } from 'app/document/document.types';
 import { ConsecutiveService } from 'app/configuration/configuracion.api';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { IdDialogData } from '../../shared/dialog-data';
 
 @Component({
     selector: 'app-consecutive-form',
@@ -15,26 +16,48 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 })
 export class ConsecutiveFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<ConsecutiveFormComponent>>(MatDialogRef);
-    public data = inject<ConsecutivoDTO | null>(MAT_DIALOG_DATA);
+    public data = inject<IdDialogData | null>(MAT_DIALOG_DATA);
 
     private service = inject(ConsecutiveService);
     private notificationCenter = inject(NotificationCenterService);
+    private cdr = inject(ChangeDetectorRef);
     consecutivo: ConsecutivoDTO = new ConsecutivoDTO();
     cargando = false;
 
     ngOnInit(): void {
-        if (this.data) {
-            this.consecutivo = { ...this.data };
-        } else {
-            this.consecutivo = new ConsecutivoDTO();
-            this.consecutivo.estado = 'A';
-            this.consecutivo.manual = false;
-            this.consecutivo.numeroInicial = 0;
-            this.consecutivo.numeroFinal = 0;
-            this.consecutivo.numeroActual = 0;
-            this.consecutivo.padding = 0;
-            this.consecutivo.consecutivoActual = '';
+        if (this.data?.id) {
+            this.loadConsecutivo(this.data.id);
+            return;
         }
+        this.consecutivo = new ConsecutivoDTO();
+        this.consecutivo.estado = 'A';
+        this.consecutivo.manual = false;
+        this.consecutivo.numeroInicial = 0;
+        this.consecutivo.numeroFinal = 0;
+        this.consecutivo.numeroActual = 0;
+        this.consecutivo.padding = 0;
+        this.consecutivo.consecutivoActual = '';
+    }
+
+    private loadConsecutivo(id: string): void {
+        this.cargando = true;
+        this.service.getConsecutivoById(id).subscribe({
+            next: (result) => {
+                this.cargando = false;
+                if (!result) {
+                    this.notificationCenter.error('Consecutivo no encontrado', 'No existe un consecutivo con la clave solicitada.');
+                    this.dialogRef.close();
+                    return;
+                }
+                this.consecutivo = { ...result };
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.cargando = false;
+                this.notificationCenter.error('Error', 'No se pudo cargar el consecutivo.');
+                this.dialogRef.close();
+            }
+        });
     }
 
     onSubmit(): void {

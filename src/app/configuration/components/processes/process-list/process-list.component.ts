@@ -7,8 +7,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { NestedTreeControl } from '@angular/cdk/tree';
-import { CdkTreeModule } from '@angular/cdk/tree';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/document.types';
@@ -22,13 +20,12 @@ interface TreeNode {
     children: TreeNode[];
     level: number;
     expanded: boolean;
-    isLoading: boolean;
 }
 
 @Component({
     selector: 'app-process-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatTabsModule, CdkTreeModule, DropdownComponent, DropdownItemComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatTabsModule, DropdownComponent, DropdownItemComponent],
     templateUrl: './process-list.component.html',
 })
 export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -63,8 +60,8 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Tree
     treeLoading = signal(false);
-    treeControl = new NestedTreeControl<TreeNode>(node => node.children);
-    treeData = signal<TreeNode[]>([]);
+    treeNodes = signal<TreeNode[]>([]);
+    private treeRoots: TreeNode[] = [];
 
     ngOnInit(): void {
         this.loadNext();
@@ -117,9 +114,9 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
         };
         this.service.getProcesses(f).subscribe({
             next: (processes) => {
-                const roots = this.buildTreeFromList(processes);
-                roots.forEach(r => this.treeControl.expand(r));
-                this.treeData.set(roots);
+                this.treeRoots = this.buildTreeFromList(processes);
+                this.treeRoots.forEach(r => { r.expanded = true; });
+                this.refreshTreeNodes();
                 this.treeLoading.set(false);
             },
             error: () => this.treeLoading.set(false)
@@ -140,10 +137,20 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
             const children = (childrenMap.get(proceso.llaveTabla) || [])
                 .filter(c => !visited.has(c.llaveTabla))
                 .map(c => buildNode(c, level + 1, visited));
-            return { proceso, children, level, expanded: level === 0, isLoading: false };
+            return { proceso, children, level, expanded: false };
         };
         const roots = processes.filter(p => !p.macroproceso || p.macroproceso === p.llaveTabla || !byKey.has(p.macroproceso));
         return roots.map(r => buildNode(r, 0, new Set()));
+    }
+
+    private refreshTreeNodes(): void {
+        const result: TreeNode[] = [];
+        const visit = (node: TreeNode): void => {
+            result.push(node);
+            if (node.expanded) node.children.forEach(visit);
+        };
+        this.treeRoots.forEach(visit);
+        this.treeNodes.set(result);
     }
 
     onTabChange(index: number): void {
@@ -154,21 +161,15 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     toggleNode(node: TreeNode): void {
-        if (this.treeControl.isExpanded(node)) {
-            this.treeControl.collapse(node);
-            node.expanded = false;
-        } else {
-            this.treeControl.expand(node);
-            node.expanded = true;
-        }
-        this.treeData.update(nodes => [...nodes]);
+        node.expanded = !node.expanded;
+        this.refreshTreeNodes();
     }
 
     onFilterChange(): void { this.reload(); if (this.activeTab() === 1) this.loadTree();}
     onFilterInput(): void { clearTimeout(this.debounceTimer); this.debounceTimer = setTimeout(() => { this.reload(); }, 200); }
 
     openForm(item?: ProcesoDTO): void {
-        const dialogRef = this.dialog.open(ProcessFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', disableClose: true, data: item ? { ...item } : null });
+        const dialogRef = this.dialog.open(ProcessFormComponent, { width: '900px', maxWidth: '95vw', maxHeight: '95vh', disableClose: true, data: item ? { id: item.llaveTabla } : null });
         dialogRef.afterClosed().subscribe((result: ProcesoDTO) => { if (result) { this.reload(); if (this.activeTab() === 1) this.loadTree(); } });
     }
 

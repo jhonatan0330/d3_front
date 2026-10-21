@@ -89,6 +89,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   fControlCheck: FormControl; // Check que indica si se debe realizar una busqueda por codigo exacto
   pagina = 1; // Indica que pagina estamos buscando
   cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
+  readonly cantidadPaginaOpciones = [30, 50, 100];
+  fControlCantidadPagina = new FormControl(this.cantidadPagina); // Cantidad de registros por pagina
   isLoadingList = signal(false);
   isEndList = signal(true);
   dataProvider: PedidoVentaDTO[]; // Conjunto de documentos a visualizar
@@ -244,6 +246,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.fControl.setValue(null);
       }
       this.filterAvailableDocuments(value);
+    });
+    this.fControlCantidadPagina.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((cantidad) => {
+      if (!cantidad || cantidad === this.cantidadPagina) { return; }
+      this.cantidadPagina = cantidad;
+      this.pagina = 1;
+      this.isEndList.set(false);
+      this.listar(1);
     });
     this.iniciar();
   }
@@ -1566,6 +1575,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (_pagina === 1) {
       this.dataProvider = [];
       this.isEndList.set(false);
+      this.pagina = 1;
     }
     entity.paginacionRegistroInicial = this.cantidadPagina * (_pagina - 1);
     entity.paginacionRegistroFinal = this.cantidadPagina;

@@ -1,19 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO } from 'app/document/document.types';
+import { DocumentoPlantillaCaracteristicaDTO } from 'app/document/document.types';
 import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { PropertyPanelComponent } from '../../../shared/property-panel/property-panel.component';
-
-interface FieldFormData {
-    field?: DocumentoPlantillaCaracteristicaDTO;
-    template: DocumentoPlantillaDTO;
-}
+import { TemplateChildDialogData } from '../../../shared/dialog-data';
 
 @Component({
     selector: 'app-document-template-field-form',
@@ -24,26 +20,68 @@ interface FieldFormData {
 export class DocumentTemplateFieldFormComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<DocumentTemplateFieldFormComponent>>(MatDialogRef);
-    public data = inject<FieldFormData>(MAT_DIALOG_DATA);
+    public data = inject<TemplateChildDialogData>(MAT_DIALOG_DATA);
 
     private dialog = inject(MatDialog);
     private service = inject(DocumentTemplateService);
+    private cdr = inject(ChangeDetectorRef);
 
     field: DocumentoPlantillaCaracteristicaDTO = new DocumentoPlantillaCaracteristicaDTO();
     cargando = false;
     formatos = Object.keys(FormatoCampoSimboloEnum) as (keyof typeof FormatoCampoSimboloEnum)[];
 
     ngOnInit(): void {
-        if (this.data.field) {
-            this.field = { ...this.data.field };
-            this.field.propiedades = this.field.propiedades || [];
-        } else {
-            this.field = new DocumentoPlantillaCaracteristicaDTO();
-            this.field.estado = 'A';
-            this.field.formato = 'T';
-            this.field.plantilla = this.data.template.llaveTabla;
-            this.field.orden = (this.data.template.caracteristicas?.length || 0) + 1;
+        if (this.data?.id) {
+            this.loadField(this.data.id);
+            return;
         }
+        this.field = new DocumentoPlantillaCaracteristicaDTO();
+        this.field.estado = 'A';
+        this.field.formato = 'T';
+        this.field.plantilla = this.data.templateId;
+        this.loadFieldOrder(this.data.templateId);
+    }
+
+    private loadField(id: string): void {
+        this.cargando = true;
+        this.service.getFieldById(id).subscribe({
+            next: (result) => {
+                this.cargando = false;
+                if (!result) {
+                    this.notificationCenter.error('Campo no encontrado', 'No existe un campo con la clave solicitada.');
+                    this.dialogRef.close();
+                    return;
+                }
+                this.field = { ...result };
+                this.field.propiedades = this.field.propiedades || [];
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.cargando = false;
+                this.notificationCenter.error('Error', 'No se pudo cargar el campo.');
+                this.dialogRef.close();
+            }
+        });
+    }
+
+    private loadFieldOrder(templateId: string): void {
+        if (!templateId) {
+            this.field.orden = 1;
+            return;
+        }
+        this.cargando = true;
+        this.service.getTemplateFields(templateId).subscribe({
+            next: (fields) => {
+                this.field.orden = (fields?.length || 0) + 1;
+                this.cargando = false;
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.field.orden = 1;
+                this.cargando = false;
+                this.cdr.markForCheck();
+            }
+        });
     }
 
     openPropiedades(): void {

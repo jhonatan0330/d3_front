@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ProcesoDTO, ProcesoEstadoDTO } from 'app/document/document.types';
+import { ProcesoEstadoDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { ProcessStateFormComponent } from '../process-state-form/process-state-form.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
@@ -36,7 +36,6 @@ export class ProcessStateListComponent implements OnInit {
     private dialog = inject(MatDialog);
 
     @Input() processKey!: string;
-    @Input() process!: ProcesoDTO;
     @Output() stateSaved = new EventEmitter<ProcesoEstadoDTO>();
 
     states = signal<ProcesoEstadoDTO[]>([]);
@@ -69,7 +68,7 @@ export class ProcessStateListComponent implements OnInit {
     openStateForm(state?: ProcesoEstadoDTO): void {
         const dialogRef = this.dialog.open(ProcessStateFormComponent, {
             width: '700px', maxWidth: '90vw', disableClose: true,
-            data: { state: state ? { ...state } : null, process: this.process }
+            data: { id: state?.llaveTabla, processId: this.processKey }
         });
         dialogRef.afterClosed().subscribe((result: ProcesoEstadoDTO) => {
             if (result) {

@@ -64,7 +64,7 @@ export class BpmCanvasComponent {
     readonly legend = input<BpmCanvasLegendItem[]>([]);
     readonly nodeActivated = output<BpmCanvasNode>();
     readonly nodeToggle = output<{ node: BpmCanvasNode; expanded: boolean }>();
-    readonly nodeProperties = output<BpmCanvasNode>();
+    
     readonly nodeModal = output<BpmCanvasNode>();
     readonly edgeActivated = output<BpmCanvasEdge>();
 
@@ -114,20 +114,6 @@ export class BpmCanvasComponent {
         return node.shape ? this.shapeMetaY : 66 + index * 19;
     }
 
-    typeChipWidth(value: string): number {
-        return Math.min(132, Math.max(48, value.length * 5.2 + 14));
-    }
-
-    statusLabel(status?: string): string {
-        if (status === 'A') return 'Activo';
-        if (status === 'I') return 'Inactivo';
-        return status || '';
-    }
-
-    statusChipWidth(status?: string): number {
-        return this.statusLabel(status).length * 5.2 + 14;
-    }
-
     tagsY(node: BpmCanvasSceneNode): number {
         return node.shape === 'icon' && node.icon === 'api' ? 72 : node.height - 24;
     }
@@ -144,17 +130,6 @@ export class BpmCanvasComponent {
         this.activateNode(node);
     }
 
-    activateProperties(node: BpmCanvasSceneNode, event: Event): void {
-        event.stopPropagation();
-        this.selectedNodeId.set(node.id);
-        this.nodeProperties.emit(node);
-    }
-
-    activatePropertiesFromKeyboard(node: BpmCanvasSceneNode, event: KeyboardEvent): void {
-        if (event.key !== 'Enter' && event.key !== ' ') return;
-        event.preventDefault();
-        this.activateProperties(node, event);
-    }
 
     activateModal(node: BpmCanvasSceneNode, event: Event): void {
         event.stopPropagation();
@@ -171,28 +146,11 @@ export class BpmCanvasComponent {
     controlX(node: BpmCanvasSceneNode, control: 'expand' | 'properties' | 'modal'): number {
         const visible: string[] = [];
         if (node.childCount > 0 || node.hasChildren) visible.push('expand');
-        if (node.hasProperties) visible.push('properties');
         if (node.modalAction) visible.push('modal');
         const index = visible.indexOf(control);
         return this.headerRight(node) - 30 - (index < 0 ? 0 : index) * 28;
     }
 
-    modalLabel(node: BpmCanvasSceneNode): string {
-        switch (node.modalAction) {
-            case 'plantilla':
-                return 'plantilla';
-            case 'webservice':
-                return 'web service';
-            default:
-                return 'acción';
-        }
-    }
-
-    propertiesLabel(node: BpmCanvasSceneNode): string {
-        return node.propertiesAction === 'formulario'
-            ? 'Abrir formulario de ' + node.title
-            : 'Ver propiedades de ' + node.title;
-    }
 
     modalGlyph(node: BpmCanvasSceneNode): string {
         switch (node.modalAction) {
@@ -244,12 +202,7 @@ export class BpmCanvasComponent {
         this.toggleNode(node, event);
     }
 
-    toggleNodeFromDoubleClick(node: BpmCanvasSceneNode, event: Event): void {
-        if (this.view.engaged) return;
-        if (!(node.childCount > 0 || node.hasChildren)) return;
-        this.selectedNodeId.set(node.id);
-        this.toggleNode(node, event);
-    }
+
 
     private cardTextEnd(node: BpmCanvasNode): number {
         return node.subtitle ? 56 : 40;
@@ -715,8 +668,7 @@ export class BpmCanvasComponent {
         if (node.shape) return SHAPE_HEIGHT;
         const metadataCount = Math.min(node.metadata?.length || 0, 2);
         const metadataEnd = metadataCount ? 66 + (metadataCount - 1) * 19 + 14 : 0;
-        const tagsEnd = node.typeLabel || node.status ? 94 : 0;
-        return Math.max(this.cardTextEnd(node), metadataEnd, tagsEnd);
+        return Math.max(this.cardTextEnd(node), metadataEnd);
     }
 
     private activeExpandedNodeIds(): Set<string> {

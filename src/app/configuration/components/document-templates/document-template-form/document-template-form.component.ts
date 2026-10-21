@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +14,7 @@ import { ImageUploaderComponent } from 'app/upload/components/image-uploader/ima
 import { DocumentTemplateFieldListComponent } from '../document-template-fields/document-template-field-list/document-template-field-list.component';
 import { DocumentTemplateReportListComponent } from '../document-template-reports/document-template-report-list/document-template-report-list.component';
 import { forkJoin } from 'rxjs';
+import { IdDialogData } from '../../shared/dialog-data';
 
 @Component({
     selector: 'app-document-template-form',
@@ -24,10 +25,11 @@ import { forkJoin } from 'rxjs';
 export class DocumentTemplateFormComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<DocumentTemplateFormComponent>>(MatDialogRef);
-    public data = inject<DocumentoPlantillaDTO | { template: string } | null>(MAT_DIALOG_DATA);
+    public data = inject<IdDialogData | null>(MAT_DIALOG_DATA);
 
     private service = inject(DocumentTemplateService);
     private dialog = inject(MatDialog);
+    private cdr = inject(ChangeDetectorRef);
 
     template: DocumentoPlantillaDTO = new DocumentoPlantillaDTO();
     cargando = false;
@@ -39,23 +41,9 @@ export class DocumentTemplateFormComponent implements OnInit {
         this.template.caracteristicas = [];
         this.template.reportes = [];
 
-        const templateId = this.getTemplateId();
-        if (templateId) {
-            this.loadTemplateFromServer(templateId);
-            return;
+        if (this.data?.id) {
+            this.loadTemplateFromServer(this.data.id);
         }
-        if (this.data) {
-            this.template = { ...(this.data as DocumentoPlantillaDTO) };
-            if (!this.template.caracteristicas) this.template.caracteristicas = [];
-            if (!this.template.reportes) this.template.reportes = [];
-        }
-    }
-
-    private getTemplateId(): string {
-        if (this.data && typeof (this.data as { template?: unknown }).template === 'string') {
-            return (this.data as { template: string }).template;
-        }
-        return '';
     }
 
     private loadTemplateFromServer(templateId: string): void {
@@ -66,13 +54,25 @@ export class DocumentTemplateFormComponent implements OnInit {
             reportes: this.service.getTemplateReports(templateId),
         }).subscribe({
             next: ({ plantilla, caracteristicas, reportes }) => {
+                this.cargando = false;
+                if (!plantilla) {
+                    this.notificationCenter.fire({
+                        title: 'Plantilla no encontrada',
+                        html: 'No existe una plantilla con la clave solicitada.',
+                        confirmButtonText: 'Cerrar',
+                    });
+                    this.dialogRef.close();
+                    return;
+                }
                 this.template = plantilla;
                 this.template.caracteristicas = caracteristicas || [];
                 this.template.reportes = reportes || [];
-                this.cargando = false;
+                this.cdr.markForCheck();
             },
             error: () => {
                 this.cargando = false;
+                this.notificationCenter.error('Error', 'No se pudo cargar la plantilla.');
+                this.dialogRef.close();
             }
         });
     }

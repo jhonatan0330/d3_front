@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -12,6 +12,7 @@ import { ProcessSelectorComponent } from '../../shared/process-selector/process-
 import { ProcessTransitionListComponent } from '../process-transitions/process-transition-list/process-transition-list.component';
 import { ProcessStateListComponent } from '../process-states/process-state-list/process-state-list.component';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
+import { IdDialogData } from '../../shared/dialog-data';
 
 @Component({
     selector: 'app-process-form',
@@ -22,25 +23,50 @@ import { ImageUploaderComponent } from 'app/upload/components/image-uploader/ima
 export class ProcessFormComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
     public dialogRef = inject<MatDialogRef<ProcessFormComponent>>(MatDialogRef);
-    public data = inject<ProcesoDTO | null>(MAT_DIALOG_DATA);
+    public data = inject<IdDialogData | null>(MAT_DIALOG_DATA);
 
     private service = inject(ProcessService);
     private dialog = inject(MatDialog);
+    private cdr = inject(ChangeDetectorRef);
 
     process: ProcesoDTO = new ProcesoDTO();
     cargando = false;
     activeTab = signal(0);
 
     ngOnInit(): void {
-        if (this.data) {
-            this.process = { ...this.data };
-            if (!this.process.transiciones) this.process.transiciones = [];
-        } else {
-            this.process = new ProcesoDTO();
-            this.process.estado = 'A';
-            this.process.transiciones = [];
-            this.process.estados = [];
+        if (this.data?.id) {
+            this.loadProcess(this.data.id);
+            return;
         }
+        this.process = new ProcesoDTO();
+        this.process.estado = 'A';
+        this.process.transiciones = [];
+        this.process.estados = [];
+    }
+
+    private loadProcess(id: string): void {
+        this.cargando = true;
+        this.service.getProcessById(id).subscribe({
+            next: (result) => {
+                this.cargando = false;
+                if (!result) {
+                    this.notificationCenter.error('Proceso no encontrado', 'No existe un proceso con la clave solicitada.');
+                    this.dialogRef.close();
+                    return;
+                }
+                this.process = {
+                    ...result,
+                    transiciones: result.transiciones || [],
+                    estados: result.estados || [],
+                };
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.cargando = false;
+                this.notificationCenter.error('Error', 'No se pudo cargar el proceso.');
+                this.dialogRef.close();
+            }
+        });
     }
 
     openPropiedades(): void {

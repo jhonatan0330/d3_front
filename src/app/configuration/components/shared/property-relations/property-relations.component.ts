@@ -67,8 +67,8 @@ export class PropertyRelationsComponent {
             maxWidth: '90vw',
             disableClose: true,
             data: {
-                relacion: relacion ? { ...relacion } : null,
-                propiedadKey: this.propiedadKey()
+                id: relacion?.llaveTabla,
+                propiedadId: this.propiedadKey()
             }
         });
 

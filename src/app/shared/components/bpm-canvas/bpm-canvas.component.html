@@ -95,7 +95,6 @@
                 tabindex="0"
                 [attr.aria-label]="'Seleccionar ' + node.title"
                 (click)="activateNode(node, $event)"
-                (dblclick)="toggleNodeFromDoubleClick(node, $event)"
                 (keydown)="activateNodeFromKeyboard(node, $event)"
               ></rect>
               @if (node.shape) {
@@ -135,37 +134,6 @@
                   }{{ truncateLabel(metadata.value) }}
                 </text>
               }
-              @if (node.typeLabel || node.status) {
-                <g class="node-tags" [attr.transform]="'translate(14,' + tagsY(node) + ')'">
-                  @if (node.typeLabel) {
-                    <g class="node-type-chip">
-                      <rect [attr.width]="typeChipWidth(node.typeLabel)" height="18" rx="5"></rect>
-                      <text x="7" y="12">{{ truncateLabel(node.typeLabel) }}</text>
-                    </g>
-                  }
-                  @if (node.status) {
-                    <g class="node-status-chip" [class.is-active]="node.status === 'A'" [class.is-inactive]="node.status === 'I'" [class.is-unknown]="node.status !== 'A' && node.status !== 'I'" [attr.transform]="'translate(' + (node.typeLabel ? typeChipWidth(node.typeLabel) + 6 : 0) + ',0)'">
-                      <rect [attr.width]="statusChipWidth(node.status)" height="18" rx="5"></rect>
-                      <text x="7" y="12">{{ statusLabel(node.status) }}</text>
-                    </g>
-                  }
-                </g>
-              }
-              @if (node.hasProperties && !node.shape) {
-                <g
-                  class="properties-control"
-                  [attr.transform]="'translate(' + controlX(node, 'properties') + ',12)'"
-                  role="button"
-                  tabindex="0"
-                  [attr.data-canvas-control]="true"
-                  [attr.aria-label]="propertiesLabel(node)"
-                  (click)="activateProperties(node, $event)"
-                  (keydown)="activatePropertiesFromKeyboard(node, $event)"
-                >
-                  <circle r="10"></circle>
-                  <text text-anchor="middle" y="4" pointer-events="none">≡</text>
-                </g>
-              }
               @if (node.modalAction && !node.shape) {
                 <g
                   class="modal-control"
@@ -173,7 +141,6 @@
                   role="button"
                   tabindex="0"
                   [attr.data-canvas-control]="true"
-                  [attr.aria-label]="'Abrir ' + modalLabel(node) + ' de ' + node.title"
                   (click)="activateModal(node, $event)"
                   (keydown)="activateModalFromKeyboard(node, $event)"
                 >

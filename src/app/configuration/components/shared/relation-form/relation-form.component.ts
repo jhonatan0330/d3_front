@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -10,11 +10,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RelacionInternaDTO } from 'app/document/document.types';
 import { PropertyService, DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/DocumentoPlantillaFilterDTO';
-
-interface ModalData {
-    relacion?: RelacionInternaDTO;
-    propiedadKey: string;
-}
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { RelationDialogData } from '../dialog-data';
 
 interface CatalogoItem {
     llaveTabla: string;
@@ -32,9 +29,11 @@ interface CatalogoItem {
 export class RelationFormComponent implements OnInit {
     private propertyService = inject(PropertyService);
     private documentTemplateService = inject(DocumentTemplateService);
+    private notificationCenter = inject(NotificationCenterService);
     private destroyRef = inject(DestroyRef);
+    private cdr = inject(ChangeDetectorRef);
     public dialogRef = inject<MatDialogRef<RelationFormComponent>>(MatDialogRef);
-    public data = inject<ModalData>(MAT_DIALOG_DATA);
+    public data = inject<RelationDialogData>(MAT_DIALOG_DATA);
 
     relacion: RelacionInternaDTO = new RelacionInternaDTO();
 
@@ -49,18 +48,41 @@ export class RelationFormComponent implements OnInit {
     private camposRequest = 0;
 
     ngOnInit(): void {
-        if (this.data.relacion) {
-            this.relacion = { ...this.data.relacion };
-            this.plantillaTexto.set(this.relacion.plantillaNombre || '');
-        } else {
-            this.relacion = new RelacionInternaDTO();
-            this.relacion.propiedad = this.data.propiedadKey;
-            this.relacion.estado = 'A';
-        }
         this.loadPlantillas();
-        if (this.relacion.plantilla) {
-            this.loadCampos(this.relacion.plantilla);
+        if (this.data?.id) {
+            this.loadRelation(this.data.id);
+            return;
         }
+        this.relacion = new RelacionInternaDTO();
+        this.relacion.propiedad = this.data.propiedadId;
+        this.relacion.estado = 'A';
+    }
+
+    private loadRelation(id: string): void {
+        this.cargando.set(true);
+        this.propertyService.getRelationById(this.data.propiedadId, id).pipe(
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
+            next: (result) => {
+                this.cargando.set(false);
+                if (!result) {
+                    this.notificationCenter.error('Relación no encontrada', 'No existe una relación con la clave solicitada.');
+                    this.dialogRef.close();
+                    return;
+                }
+                this.relacion = { ...result };
+                this.plantillaTexto.set(this.relacion.plantillaNombre || '');
+                if (this.relacion.plantilla) {
+                    this.loadCampos(this.relacion.plantilla);
+                }
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.cargando.set(false);
+                this.notificationCenter.error('Error', 'No se pudo cargar la relación.');
+                this.dialogRef.close();
+            }
+        });
     }
 
     private loadPlantillas(): void {

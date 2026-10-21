@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { WebServiceConfigService } from 'app/configuration/configuracion.api';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { IdDialogData } from '../../shared/dialog-data';
 
 @Component({
     selector: 'app-web-service-form',
@@ -17,21 +18,43 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 })
 export class WebServiceFormComponent implements OnInit {
     public dialogRef = inject<MatDialogRef<WebServiceFormComponent>>(MatDialogRef);
-    public data = inject<WebServiceDTO | null>(MAT_DIALOG_DATA);
+    public data = inject<IdDialogData | null>(MAT_DIALOG_DATA);
     private service = inject(WebServiceConfigService);
     private dialog = inject(MatDialog);
     private notificationCenter = inject(NotificationCenterService);
+    private cdr = inject(ChangeDetectorRef);
 
     ws: WebServiceDTO = new WebServiceDTO();
     cargando = false;
 
     ngOnInit(): void {
-        if (this.data) {
-            this.ws = { ...this.data };
-        } else {
-            this.ws = new WebServiceDTO();
-            this.ws.estado = 'A';
+        if (this.data?.id) {
+            this.loadWebService(this.data.id);
+            return;
         }
+        this.ws = new WebServiceDTO();
+        this.ws.estado = 'A';
+    }
+
+    private loadWebService(id: string): void {
+        this.cargando = true;
+        this.service.getWebServiceById(id).subscribe({
+            next: (result) => {
+                this.cargando = false;
+                if (!result) {
+                    this.notificationCenter.error('Web Service no encontrado', 'No existe un Web Service con la clave solicitada.');
+                    this.dialogRef.close();
+                    return;
+                }
+                this.ws = { ...result };
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.cargando = false;
+                this.notificationCenter.error('Error', 'No se pudo cargar el Web Service.');
+                this.dialogRef.close();
+            }
+        });
     }
 
     openPropiedades(): void {

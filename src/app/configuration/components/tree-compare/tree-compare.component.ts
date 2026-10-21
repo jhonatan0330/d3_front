@@ -8,7 +8,6 @@ import { ArbolConfiguracionFilterDTO } from 'app/configuration/domain/ArbolConfi
 import { DiferenciaDTO } from 'app/configuration/domain/DiferenciaDTO';
 import { SincronizacionNodoDTO } from 'app/configuration/domain/SincronizacionNodoDTO';
 import { TreeNodeDTO } from 'app/configuration/domain/TreeNodeDTO';
-import { etiquetaTipoConfig } from 'app/configuration/domain/config-tipo-labels';
 import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/document.types';
 import { BpmDiagramComponent } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
 
@@ -559,9 +558,6 @@ export class TreeCompareComponent {
 
     // ==================== Utilidades ====================
 
-    etiquetaTipo(tipo: string): string {
-        return etiquetaTipoConfig(tipo);
-    }
 
     textoValor(valor: unknown): string {
         if (valor === null || valor === undefined || valor === '') return '—';

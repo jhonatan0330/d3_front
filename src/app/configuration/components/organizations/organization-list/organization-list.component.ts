@@ -76,7 +76,7 @@ export class OrganizationListComponent implements OnInit, AfterViewInit, OnDestr
     onFilterChange(): void { this.reload(); }
 
     openForm(item?: OrganizacionDTO): void {
-        const dialogRef = this.dialog.open(OrganizationFormComponent, { disableClose: true, width: '700px', maxWidth: '90vw', data: item ? { ...item } : null });
+        const dialogRef = this.dialog.open(OrganizationFormComponent, { disableClose: true, width: '700px', maxWidth: '90vw', data: item ? { id: item.llaveTabla } : null });
         dialogRef.afterClosed().subscribe((result: OrganizacionDTO) => { if (result) this.reload(); });
     }
 

@@ -103,7 +103,7 @@ export class ConsecutiveListComponent implements OnInit, AfterViewInit, OnDestro
             disableClose: true,
             width: '600px',
             maxWidth: '90vw',
-            data: consecutivo ? { ...consecutivo } : null
+            data: consecutivo ? { id: consecutivo.llaveTabla } : null
         });
 
         dialogRef.afterClosed().subscribe((result: ConsecutivoDTO) => {

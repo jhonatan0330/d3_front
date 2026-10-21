@@ -102,7 +102,7 @@ export class PropertyValueListComponent implements OnInit, AfterViewInit, OnDest
 
     openForm(item?: PropiedadValorDefinidoDTO): void {
         const dialogRef = this.dialog.open(PropertyValueFormComponent, {
-            width: '600px', maxWidth: '90vw', disableClose: true, data: item ? { ...item } : null
+            width: '600px', maxWidth: '90vw', disableClose: true, data: item ? { id: item.llaveTabla } : null
         });
         dialogRef.afterClosed().subscribe((result: PropiedadValorDefinidoDTO) => { if (result) this.reload(); });
     }
