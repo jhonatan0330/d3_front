@@ -2,7 +2,7 @@ import { Component, Input, forwardRef, inject, OnInit, ChangeDetectorRef } from 
 import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { ProcesoDTO } from 'app/document/document.types';
+import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 
 @Component({
@@ -36,20 +36,11 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
     }
 
     private loadProcesses(): void {
-        this.processService.getProcesses({
-            estado: 'A',
-            nombre: '',
-            codigo: '',
-            tipo: '',
-            imagen: '',
-            prioridad: 0,
-            macroproceso: '',
-            macroNombre: '',
-            paginacionRegistroInicial: 0,
-            paginacionRegistroFinal: 1000,
-            filtroParametro: '',
-            llaveTabla: ''
-        }).subscribe({
+        const filter = new ProcesoFilterDTO();
+        filter.estado = 'A';
+        filter.paginacionRegistroInicial = 0;
+        filter.paginacionRegistroFinal = 1000;
+        this.processService.getProcesses(filter).subscribe({
             next: (res) => {
                 this.procesos = res;
                 this.applyFilter();

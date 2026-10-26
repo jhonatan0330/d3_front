@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -30,7 +30,7 @@ export const PROCESO_ESTADO_DOCUMENTO_LABELS: Record<string, string> = {
     imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule],
     templateUrl: './process-state-list.component.html',
 })
-export class ProcessStateListComponent implements OnInit {
+export class ProcessStateListComponent implements OnInit, OnChanges {
     private notificationCenter = inject(NotificationCenterService);
     private service = inject(ProcessService);
     private dialog = inject(MatDialog);
@@ -49,11 +49,22 @@ export class ProcessStateListComponent implements OnInit {
         }
     }
 
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['processKey'] && !changes['processKey'].firstChange) {
+            this.loadStates();
+        }
+    }
+
     loadStates(): void {
+        if (!this.processKey) {
+            this.states.set([]);
+            this.loading.set(false);
+            return;
+        }
         this.loading.set(true);
         this.service.getStates(this.processKey).subscribe({
             next: (res) => { this.states.set(res); this.loading.set(false); },
-            error: () => this.loading.set(false)
+            error: () => { this.states.set([]); this.loading.set(false); }
         });
     }
 

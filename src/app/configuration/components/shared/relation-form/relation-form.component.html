@@ -28,8 +28,14 @@
           }
         </mat-autocomplete>
       </mat-form-field>
-      @if (plantillaTexto().trim() && !relacion.plantilla && plantillas().length > 0 && plantillasFiltradas().length ===
-      0) {
+      @if (plantillasCargando()) {
+      <div class="mt-2 h-1 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700" role="progressbar"
+        aria-label="Buscando plantillas">
+        <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
+      </div>
+      }
+      @if (plantillaTexto().trim() && !relacion.plantilla && plantillasConsultadas() && !plantillasCargando() &&
+      plantillasFiltradas().length === 0) {
       <p class="mt-1.5 text-sm text-secondary">No se encontraron plantillas que coincidan con "{{
         plantillaTexto().trim() }}".</p>
       }

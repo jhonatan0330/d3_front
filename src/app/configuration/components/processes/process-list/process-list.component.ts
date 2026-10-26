@@ -79,14 +79,25 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
     loadNext(): void {
         if (this.loading() || !this.hasMore()) return;
         this.loading.set(true);
-        const f = this.filter;
-        f.paginacionRegistroInicial = this.currentPage() * this.pageSize;
-        f.paginacionRegistroFinal = this.pageSize;
+        const f = this.buildFilter(this.currentPage());
 
         this.service.getProcesses(f).subscribe({
             next: (res) => { this.data.update(items => [...items, ...res]); this.currentPage.update(p => p + 1); if (res.length < this.pageSize) this.hasMore.set(false); this.loading.set(false); this.checkMore(); },
             error: () => this.loading.set(false)
         });
+    }
+
+    private buildFilter(page?: number): ProcesoFilterDTO {
+        const f = new ProcesoFilterDTO();
+        if (page !== undefined) {
+            f.paginacionRegistroInicial = page * this.pageSize;
+            f.paginacionRegistroFinal = this.pageSize;
+        }
+        if (this.filter.estado) f.estado = this.filter.estado;
+        if (this.filter.tipo) f.tipo = this.filter.tipo;
+        const termino = this.filter.filtroParametro?.trim();
+        if (termino) f.filtroParametro = termino;
+        return f;
     }
 
     private checkMore(): void {
@@ -107,12 +118,7 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
     loadTree(): void {
         if (this.treeLoading()) return;
         this.treeLoading.set(true);
-        const f: ProcesoFilterDTO = {
-            ...this.filter,
-            paginacionRegistroInicial: null as unknown as number,
-            paginacionRegistroFinal: null as unknown as number
-        };
-        this.service.getProcesses(f).subscribe({
+        this.service.getProcesses(this.buildFilter()).subscribe({
             next: (processes) => {
                 this.treeRoots = this.buildTreeFromList(processes);
                 this.treeRoots.forEach(r => { r.expanded = true; });

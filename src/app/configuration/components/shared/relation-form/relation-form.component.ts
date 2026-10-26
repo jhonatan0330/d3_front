@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY, Subject, catchError, debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { RelacionInternaDTO } from 'app/document/document.types';
 import { PropertyService, DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { DocumentoPlantillaFilterDTO } from 'app/configuration/domain/DocumentoPlantillaFilterDTO';
@@ -39,16 +40,58 @@ export class RelationFormComponent implements OnInit {
 
     plantillas = signal<CatalogoItem[]>([]);
     plantillasFiltradas = signal<CatalogoItem[]>([]);
+    plantillasCargando = signal(false);
+    plantillasConsultadas = signal(false);
     plantillaTexto = signal('');
     camposDisponibles = signal<CatalogoItem[]>([]);
     camposCargando = signal(false);
     camposError = signal(false);
     cargando = signal(false);
 
+    private plantillaSearch$ = new Subject<string>();
     private camposRequest = 0;
 
+    constructor() {
+        this.plantillaSearch$.pipe(
+            debounceTime(250),
+            distinctUntilChanged(),
+            switchMap((texto) => {
+                const termino = texto.trim();
+                if (!termino) {
+                    this.plantillas.set([]);
+                    this.plantillasFiltradas.set([]);
+                    this.plantillasCargando.set(false);
+                    this.plantillasConsultadas.set(false);
+                    return EMPTY;
+                }
+
+                this.plantillasCargando.set(true);
+                this.plantillasConsultadas.set(false);
+
+                const filter = new DocumentoPlantillaFilterDTO();
+                filter.estado = 'A';
+                filter.filtroParametro = termino;
+
+                return this.documentTemplateService.getTemplates(filter).pipe(
+                    map((templates) => templates.map((t) => ({
+                        llaveTabla: t.llaveTabla,
+                        nombre: t.nombre || '',
+                        codigo: t.codigo || ''
+                    }))),
+                    catchError(() => of([] as CatalogoItem[]))
+                );
+            }),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe((opciones) => {
+            this.plantillas.set(opciones);
+            this.plantillasFiltradas.set(opciones);
+            this.plantillasCargando.set(false);
+            this.plantillasConsultadas.set(true);
+            this.cdr.markForCheck();
+        });
+    }
+
     ngOnInit(): void {
-        this.loadPlantillas();
         if (this.data?.id) {
             this.loadRelation(this.data.id);
             return;
@@ -85,43 +128,16 @@ export class RelationFormComponent implements OnInit {
         });
     }
 
-    private loadPlantillas(): void {
-        const filter = new DocumentoPlantillaFilterDTO();
-        filter.estado = 'A';
-        this.documentTemplateService.getTemplates(filter).pipe(
-            takeUntilDestroyed(this.destroyRef)
-        ).subscribe({
-            next: (templates) => {
-                const opciones: CatalogoItem[] = templates.map(t => ({
-                    llaveTabla: t.llaveTabla,
-                    nombre: t.nombre || '',
-                    codigo: t.codigo || ''
-                }));
-                this.plantillas.set(opciones);
-                const seleccionada = opciones.find(o => o.llaveTabla === this.relacion.plantilla);
-                if (seleccionada) {
-                    this.plantillaTexto.set(this.formatearPlantilla(seleccionada));
-                }
-                this.filtrarPlantillas(this.relacion.plantilla ? '' : this.plantillaTexto());
-            },
-            error: () => {}
-        });
-    }
-
     onPlantillaTextoChange(value: string | CatalogoItem): void {
         if (typeof value !== 'string') return;
+        const teniaSeleccion = !!this.relacion.plantilla;
+        const textoAnterior = this.plantillaTexto();
         this.plantillaTexto.set(value);
-        this.filtrarPlantillas(value);
-        if (this.plantillas().length === 0 || !this.relacion.plantilla) return;
-        const texto = value.trim();
-        const seleccionada = this.plantillas().find(p => p.llaveTabla === this.relacion.plantilla);
-        const coincide = !!seleccionada &&
-            (seleccionada.nombre === texto ||
-                seleccionada.codigo === texto ||
-                this.formatearPlantilla(seleccionada) === texto);
-        if (!coincide) {
+        this.plantillasConsultadas.set(false);
+        if (teniaSeleccion && value !== textoAnterior) {
             this.limpiarPlantilla();
         }
+        this.plantillaSearch$.next(value);
     }
 
     onPlantillaOption(event: MatAutocompleteSelectedEvent): void {
@@ -130,7 +146,10 @@ export class RelationFormComponent implements OnInit {
         this.relacion.plantilla = opcion.llaveTabla;
         this.relacion.campo = '';
         this.plantillaTexto.set(this.formatearPlantilla(opcion));
-        this.filtrarPlantillas('');
+        this.plantillas.set([opcion]);
+        this.plantillasFiltradas.set([opcion]);
+        this.plantillasCargando.set(false);
+        this.plantillasConsultadas.set(false);
         this.camposDisponibles.set([]);
         this.camposError.set(false);
         this.loadCampos(opcion.llaveTabla);
@@ -144,17 +163,6 @@ export class RelationFormComponent implements OnInit {
         if (value === this.relacion.plantilla && this.relacion.plantillaNombre) return this.relacion.plantillaNombre;
         return value;
     };
-
-    private filtrarPlantillas(texto: string): void {
-        const q = (texto || '').trim().toLowerCase();
-        if (!q) {
-            this.plantillasFiltradas.set([]);
-            return;
-        }
-        const todas = this.plantillas();
-        this.plantillasFiltradas.set(
-            todas.filter(p => p.nombre.toLowerCase().includes(q) || p.codigo.toLowerCase().includes(q)));
-    }
 
     private limpiarPlantilla(): void {
         this.relacion.plantilla = '';
