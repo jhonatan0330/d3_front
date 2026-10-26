@@ -326,12 +326,13 @@ export class FormComponent implements OnInit, AfterViewInit {
             this.utilsService.modalSuccess(successFullText);
         }
 
+        
         if(this.plantilla() && this.plantilla()!.estados && this.plantilla()!.estados.length > 0 ){
             for (let i = 0; i < this.plantilla()!.estados.length; i++) {
                 if(this.plantilla()!.estados[i].llaveTabla === value.estadoExpediente && this.plantilla()!.estados[i].transiciones && this.plantilla()!.estados[i].transiciones.length > 0){
                     for (let j = 0; j < this.plantilla()!.estados[i].transiciones.length; j++) {
                         const _transition = this.plantilla()!.estados[i].transiciones[j];
-                        if (_transition.rapida) {
+                        if (PlantillaHelper.isEmpty(_transition.propiedades, PlantillaHelper.TRANSICION_RAPIDA)) {
                             this.reloadScreen(_transition.plantilla);
                             //this.formIsModified = false;
                             //this.crearPlantilla(_transition.plantilla, value);
@@ -1110,9 +1111,6 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.utilsService.modalProcessGraph(procesoId);
     }
 
-    /*flex() {
-        this.utilsService.modalFlex(this.plantilla()!.llaveTabla);
-    }*/
 
     duplicate() {
 

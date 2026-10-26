@@ -1,13 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { DocumentoPlantillaDTO, ProcesoDTO, ProcesoEstadoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
+import {  ProcesoDTO, ProcesoEstadoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import {
   ProcessService,
   TreeConfigService,
-  WebServiceConfigService,
 } from 'app/configuration/configuracion.api';
 import { ArbolConfiguracionFilterDTO } from 'app/configuration/domain/ArbolConfiguracionFilterDTO';
 import { ArbolNodoRequestDTO } from 'app/configuration/domain/ArbolNodoRequestDTO';
@@ -54,7 +51,6 @@ export class BpmDiagramComponent implements OnInit {
   readonly data = inject(MAT_DIALOG_DATA, { optional: true });
   private processService = inject(ProcessService);
   private treeConfigService = inject(TreeConfigService);
-  private webServiceConfigService = inject(WebServiceConfigService);
   private dialogRef = inject<MatDialogRef<BpmDiagramComponent>>(MatDialogRef);
 
   readonly canvasNodes = signal<BpmCanvasNode[]>([]);
@@ -193,7 +189,8 @@ export class BpmDiagramComponent implements OnInit {
     this.cargandoHijos.set(true);
     this.processService.getProcessForGraph(nodo.llaveTabla).subscribe({
       next: proceso => {
-        const transiciones = proceso.transiciones || [];
+        // TODO NOW
+        /*const transiciones = proceso.transiciones || [];
         const hijos = (proceso.estados || [])
           .filter(estado => !!estado.llaveTabla)
           .map(estado => this.mapEstadoNode(estado, nodo.camino));
@@ -208,7 +205,7 @@ export class BpmDiagramComponent implements OnInit {
             ? nodos.map(n => (n.id === nodo.camino ? { ...n, hasChildren: false } : n))
             : nodos.map(n => (n.id === nodo.camino ? { ...n, childEdges: aristas } : n));
           return [...base, ...hijos];
-        });
+        });*/
         this.hijosCargados.add(nodo.camino);
         this.procesosCargados.set(nodo.camino, nodo);
         this.cargandoHijos.set(false);
@@ -498,7 +495,9 @@ export class BpmDiagramComponent implements OnInit {
     const nodes: BpmCanvasNode[] = [];
     const visited = new Set<string>();
     const visit = (process: ProcesoDTO | null | undefined, parentId: string | null): void => {
-      if (!process?.llaveTabla || visited.has(process.llaveTabla)) return;
+
+      // TODO NOW
+      /*if (!process?.llaveTabla || visited.has(process.llaveTabla)) return;
       visited.add(process.llaveTabla);
       const processId = process.llaveTabla;
       const metadata = [
@@ -507,12 +506,13 @@ export class BpmDiagramComponent implements OnInit {
       nodes.push({
         id: processId,
         title: process.nombre || process.codigo || processId,
-        subtitle: process.objetivo || undefined,
+        subtitle: undefined,
         parentId,
         metadata,
         source: process,
       });
       for (const child of process.hijos || []) visit(child, processId);
+      */
     };
     visit(root, null);
     return nodes;

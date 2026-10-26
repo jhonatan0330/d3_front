@@ -36,11 +36,6 @@ export class ProcessTransitionFormComponent implements OnInit {
     esEdicion = false;
     processKey = '';
 
-    afectaSaldoOpciones = [
-        { value: 'R', label: 'RESTANDO' },
-        { value: 'S', label: 'SUMANDO' },
-    ];
-
     ngOnInit(): void {
         if (this.data?.id) {
             this.loadTransition(this.data.id);
@@ -48,8 +43,6 @@ export class ProcessTransitionFormComponent implements OnInit {
         }
         this.transition = new ProcesoTransicionDTO();
         this.transition.estado = 'A';
-        this.transition.documentador = false;
-        this.transition.rapida = false;
         this.transition.estadoPartidaOrden = 0;
         this.transition.estadoLlegadaOrden = 0;
         this.transition.proceso = this.data.processId;

@@ -35,10 +35,6 @@ export class DocumentTemplateReportFormComponent implements OnInit {
         this.report = new ReporteBaseDTO();
         this.report.estado = 'A';
         this.report.plantilla = this.data.templateId;
-        this.report.version = 1;
-        this.report.soloExistente = false;
-        this.report.publico = false;
-        this.report.variables = '';
     }
 
     private loadReport(id: string): void {

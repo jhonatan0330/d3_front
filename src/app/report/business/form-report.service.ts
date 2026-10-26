@@ -9,16 +9,17 @@ export class FormReportService {
   private ls = inject(LocalStoreService);
 
   buildReportUrl(reporte: ReporteBaseDTO, pKey: string): string {
-    const serverUrl = (reporte.servidorUrl || this.ls.getUrlConf() || '').replace(/\/+$/, '');
+    const serverUrl = (this.ls.getUrlConf() || '').replace(/\/+$/, '');
     const reportPath = '/report/generate';
     let url = serverUrl + reportPath + '?nombre=' + reporte.llaveTabla + '&P_KEY=' + pKey ;
     if (TenantRuntime.getCurrent()) {
       if(TenantRuntime.getCurrent()?.token){ url = url + '&P_TOKEN=' + TenantRuntime.getCurrent()?.token; }
       if(TenantRuntime.getCurrent()?.key){ url = url + '&P_TENANT_ID=' + TenantRuntime.getCurrent()?.key; }
     }
-    if (reporte.variables) {
+    // TODO NOW
+    /*if (reporte.variables) {
       url = url + '&' + reporte.variables;
-    }
+    }*/
     return url;
   }
 

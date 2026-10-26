@@ -40,8 +40,7 @@ export class ProcessFormComponent implements OnInit {
         }
         this.process = new ProcesoDTO();
         this.process.estado = 'A';
-        this.process.transiciones = [];
-        this.process.estados = [];
+
     }
 
     private loadProcess(id: string): void {
@@ -56,8 +55,6 @@ export class ProcessFormComponent implements OnInit {
                 }
                 this.process = {
                     ...result,
-                    transiciones: result.transiciones || [],
-                    estados: result.estados || [],
                 };
                 this.cdr.markForCheck();
             },
@@ -75,20 +72,6 @@ export class ProcessFormComponent implements OnInit {
             width: '800px', maxWidth: '95vw', maxHeight: '90vh', disableClose: true,
             data: { campoKey: this.process.llaveTabla, tipoOrigen: 'P', titulo: this.process.nombre }
         });
-    }
-
-    onTransitionSaved(transition: ProcesoTransicionDTO): void {
-        if (!this.process.transiciones) this.process.transiciones = [];
-        const idx = this.process.transiciones.findIndex(t => t.llaveTabla === transition.llaveTabla);
-        if (idx >= 0) this.process.transiciones[idx] = transition;
-        else this.process.transiciones.push(transition);
-    }
-
-    onStateSaved(state: ProcesoEstadoDTO): void {
-        if (!this.process.estados) this.process.estados = [];
-        const idx = this.process.estados.findIndex(s => s.llaveTabla === state.llaveTabla);
-        if (idx >= 0) this.process.estados[idx] = state;
-        else this.process.estados.push(state);
     }
 
     onSubmit(): void {

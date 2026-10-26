@@ -28,7 +28,7 @@ export class ProcessTransitionListComponent implements OnInit, OnChanges {
     transitions = signal<ProcesoTransicionDTO[]>([]);
     loading = signal(false);
 
-    displayedColumns = ['nombre', 'estadoPartida', 'estadoLlegada', 'plantilla', 'documentador', 'afectaSaldo', 'rapida', 'estado', 'acciones'];
+    displayedColumns = ['nombre', 'estadoPartida', 'estadoLlegada', 'plantilla', 'estado', 'acciones'];
 
     ngOnInit(): void {
         if (this.processKey) {

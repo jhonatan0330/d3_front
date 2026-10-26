@@ -42,7 +42,6 @@ export class ProcesoEstadoDTO extends BasicParamDTO {
 }
 
 export class DocumentoPlantillaCaracteristicaDTO extends BasicParamDTO {
-    objetivo: string;
     plantilla: string;
     plantillaNombre: string;
     formato: string;
@@ -50,11 +49,9 @@ export class DocumentoPlantillaCaracteristicaDTO extends BasicParamDTO {
     codigo: string;
     orden: number;
     imagen: string;
+
     productos: ProductoDTO[];
     documentos: PedidoVentaDTO[];
-    mostrarSelectorFormato?: boolean;
-    editando?: boolean;
-    _editValue?: string;
 }
 
 export class propiedadCampo extends BasicDTO {
@@ -132,8 +129,6 @@ export class PedidoVentaCaracteristicaDTO extends BasicDTO {
     dependientes: PedidoVentaCaracteristicaDTO[];
     expedientes: PedidoVentaDTO[];
     modificado: boolean;
-    //transaccionRegistro: string;
-    //transaccionInactivo: string;
 }
 export class ProcesoTransicionDTO extends BasicParamDTO {
   procesoNombre: string;
@@ -145,10 +140,8 @@ export class ProcesoTransicionDTO extends BasicParamDTO {
   estadoPartidaNombre: string;
   plantilla: string;
   plantillaNombre: string;
-  documentador: boolean;
-  afectaSaldo: string;
+
   imagen: string;
-  rapida: boolean;
   estadoLLegada: string;
   estadoLlegadaNombre: string;
   estadoLlegadaTipo: string;
@@ -228,14 +221,6 @@ export class ReporteBaseDTO extends BasicParamDTO {
     plantillaNombre: string;
     nombre: string;
     codigo: string;
-    soloExistente: boolean;
-    variables: string;
-    version: number;
-    descripcion: string;
-    servidor: string;
-    multiplesId: string;
-    servidorUrl: string;
-    publico: boolean;
 }
 
 export class ProductoInventarioDTO extends BasicDTO {
@@ -320,10 +305,6 @@ export class ProcesoTransicionFilterDTO extends BasicFilterDTO {
     estadoPartidaNombre: string;
     plantilla: string;
     plantillaNombre: string;
-    documentadorFilter: boolean;
-    afectaSaldo: string;
-    imagen: string;
-    rapidaFilter: boolean;
     estadoLLegada: string;
     estadoLlegadaNombre: string;
     estadoLlegadaTipo: string;
@@ -396,12 +377,6 @@ export class ReporteBaseFilterDTO extends BasicFilterDTO {
     plantillaNombre: string;
     nombre: string;
     codigo: string;
-    soloExistenteFilter: boolean;
-    version: number;
-    servidor: string;
-    multiplesId: string;
-    servidorUrl: string;
-    publicoFilter: boolean;
 }
 
 export class WebServiceDTO extends BasicParamDTO {
@@ -574,17 +549,12 @@ export class ServidorFilterDTO extends BasicFilterDTO {
 
 export class ProcesoDTO extends BasicParamDTO {
     tipo: string;
-    objetivo: string;
     imagen: string;
     prioridad: number;
     macroproceso: string;
     nombre: string;
     codigo: string;
     macroNombre: string;
-    hijos: ProcesoDTO[];
-    estados: ProcesoEstadoDTO[];
-    transiciones?: ProcesoTransicionDTO[];
-    plantillas: DocumentoPlantillaDTO[];
 }
 
 export class ProcesoFilterDTO extends BasicFilterDTO {

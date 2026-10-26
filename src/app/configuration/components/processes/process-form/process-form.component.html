@@ -27,10 +27,6 @@
                   </select>
                 </div>
                 <div class="sm:col-span-2">
-                  <label class="block text-sm font-semibold mb-1">Objetivo</label>
-                  <input type="text" [(ngModel)]="process.objetivo" name="objetivo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div class="sm:col-span-2">
                   <label class="block text-sm font-semibold mb-1">Imagen</label>
                   <app-image-uploader [(value)]="process.imagen"></app-image-uploader>
                 </div>
@@ -51,21 +47,19 @@
           </mat-tab>
 
           <!-- Tab Estados -->
-          <mat-tab label="Estados ({{ process.estados?.length || 0 }})">
+          <mat-tab label="Estados ">
             <div class="p-4 h-full">
               <app-process-state-list
-                [processKey]="process.llaveTabla"
-                (stateSaved)="onStateSaved($event)">
+                [processKey]="process.llaveTabla">
               </app-process-state-list>
             </div>
           </mat-tab>
 
           <!-- Tab Transiciones -->
-          <mat-tab label="Transiciones ({{ process.transiciones?.length || 0 }})">
+          <mat-tab label="Transiciones">
             <div class="p-4 h-full">
               <app-process-transition-list
-                [processKey]="process.llaveTabla"
-                (transitionSaved)="onTransitionSaved($event)">
+                [processKey]="process.llaveTabla">
               </app-process-transition-list>
             </div>
           </mat-tab>

@@ -28,7 +28,7 @@ export class DocumentTemplateReportListComponent implements OnInit {
     reports = signal<ReporteBaseDTO[]>([]);
     loading = signal(false);
 
-    displayedColumns = ['codigo', 'nombre', 'descripcion', 'version', 'servidor', 'publico', 'soloExistente', 'estado', 'acciones'];
+    displayedColumns = ['codigo', 'nombre',  'estado', 'acciones'];
 
     ngOnInit(): void {
         if (this.templateKey) {
