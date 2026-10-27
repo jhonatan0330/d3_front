@@ -1,11 +1,5 @@
-import { BasicFilterDTO } from 'app/shared/shared.domain';
+import { BasicNodoFilter } from 'app/shared/shared.domain';
 
-export class DocumentoPlantillaFilterDTO extends BasicFilterDTO {
-    nombre: string;
-    consecutivo: string;
-    imagen: string;
-    codigo: string;
+export class DocumentoPlantillaFilterDTO extends BasicNodoFilter {
     proceso: string;
-    tipo: string;
-    padre: string;
 }

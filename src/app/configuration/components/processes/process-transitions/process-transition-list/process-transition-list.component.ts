@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ProcesoTransicionDTO, ProcesoTransicionFilterDTO } from 'app/document/document.types';
+import { ProcesoTransicionDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { ProcessTransitionFormComponent } from '../process-transition-form/process-transition-form.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';

@@ -40,5 +40,5 @@ const COMPONENT_MAP: Record<DocumentoPlantillaCaracteristicaEnum, Type<any>> = {
 export function getComponent(
   pCampo: DocumentoPlantillaCaracteristicaDTO
 ): Type<any> {
-  return COMPONENT_MAP[pCampo.formato] ?? TextoComponent;
+  return COMPONENT_MAP[pCampo.tipo] ?? TextoComponent;
 }

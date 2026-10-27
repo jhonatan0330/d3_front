@@ -106,7 +106,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
             this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pdto);
         } else {
             _a.origen = 'C';
-            _a.origenCategoria = this.field.formato;
+            _a.origenCategoria = this.field.tipo;
             this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pdto);
         }
     }
@@ -147,7 +147,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
             }, error: () => {} });
         } else {
             _a.origen = 'C';
-            _a.origenCategoria = this.field.formato;
+            _a.origenCategoria = this.field.tipo;
             this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe({ next: response => {
                 if (response) this.listarPropiedadesCampo();
             }, error: () => {} });

@@ -40,14 +40,14 @@
                 </div>
                 <div>
                   <label class="block text-sm font-semibold mb-1">Padre</label>
-                  <div class="px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm">{{ template.padre || '-' }}</div>
+                  <div class="px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm">{{ template.nodoSuperior || '-' }}</div>
                 </div>
               </div>
             </div>
           </mat-tab>
 
           <!-- Tab Campos -->
-          <mat-tab label="Campos ({{ template.caracteristicas?.length || 0 }})">
+          <mat-tab label="Campos ({{ template.caracteristicas.length || 0 }})">
             <div class="p-4 min-h-0 flex-1 overflow-y-auto">
               @if (template.llaveTabla) {
                 <app-document-template-field-list
@@ -59,7 +59,7 @@
           </mat-tab>
 
           <!-- Tab Reportes -->
-          <mat-tab label="Reportes ({{ template.reportes?.length || 0 }})">
+          <mat-tab label="Reportes ({{ template.reportes.length || 0 }})">
             <div class="p-4 h-full">
               @if (template.llaveTabla) {
                 <app-document-template-report-list

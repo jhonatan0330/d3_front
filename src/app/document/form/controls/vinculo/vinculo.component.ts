@@ -223,7 +223,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
 
   // Solo lo uso en crear plantilla siguiente asi que puedo ver como optimizar despues
   validateIsPossibleField(campo: DocumentoPlantillaCaracteristicaDTO, plantilla: string): string | null {
-    if (!campo || campo.formato !== DocumentoPlantillaCaracteristicaEnum.PROCESO) return null;
+    if (!campo || campo.tipo !== DocumentoPlantillaCaracteristicaEnum.PROCESO) return null;
 
     const propAuxiliarTemplates: PropiedadDTO[] = PlantillaHelper.buscarValorMultiple(campo.propiedades, PlantillaHelper.PLANTILLA_AUXILIAR)!;
     if (!propAuxiliarTemplates || propAuxiliarTemplates.length === 0) {

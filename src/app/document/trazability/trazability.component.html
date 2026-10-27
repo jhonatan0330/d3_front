@@ -1,5 +1,5 @@
 <!-- Titulo -->
-<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle [style]="styleSizePop"
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle 
   class="flex items-center gap-3 border-b border-slate-200 bg-white/90 p-4 shadow-sm backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90">
   @if (plantilla?.imagen) {
   <img [src]="plantilla.imagen | imageFormat" alt=""
@@ -19,17 +19,6 @@
     </div>
   </div>
   <div class="flex items-center gap-2">
-    @if (!fullScreen()) {
-    <button type="button" class="btn-icon btn-icon-primary" (click)="toogleScreen()" aria-label="Pantalla completa">
-      <mat-icon>fullscreen</mat-icon>
-    </button>
-    }
-    @if (fullScreen()) {
-    <button type="button" class="btn-icon btn-icon-primary" (click)="toogleScreen()"
-      aria-label="Salir de pantalla completa">
-      <mat-icon>fullscreen_exit</mat-icon>
-    </button>
-    }
     <button type="button" class="btn-icon" (click)="dialogRef.close(false)" aria-label="Cerrar">
       <mat-icon>close</mat-icon>
     </button>

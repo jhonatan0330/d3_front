@@ -34,7 +34,7 @@ export class DocumentTemplateReportFormComponent implements OnInit {
         }
         this.report = new ReporteBaseDTO();
         this.report.estado = 'A';
-        this.report.plantilla = this.data.templateId;
+        this.report.nodoSuperior = this.data.templateId;
     }
 
     private loadReport(id: string): void {

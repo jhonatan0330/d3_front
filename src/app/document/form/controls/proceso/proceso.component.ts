@@ -362,7 +362,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             for (let i = 0; i < this.data.dependientes.length; i++) {
               if (
                 !this.data.dependientes[i].valorOpcion &&
-                this.data.dependientes[i].campoDTO.formato ===
+                this.data.dependientes[i].campoDTO.tipo ===
                 DocumentoPlantillaCaracteristicaEnum.PROCESO
               ) {
                 return;
@@ -586,8 +586,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         if (!iDepen.valorOpcion) {
           if (iDepen.campoDTO) {
             // Esto es por brandingbox el formulario de averias, no cargaba la bodega
-            if (iDepen.campoDTO.formato !== DocumentoPlantillaCaracteristicaEnum.PRODUCTO) {
-              if (iDepen.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
+            if (iDepen.campoDTO.tipo !== DocumentoPlantillaCaracteristicaEnum.PRODUCTO) {
+              if (iDepen.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PROCESO
                 && !PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades, PlantillaHelper.MULTIPLE)
               ) {
                 if (PlantillaHelper.buscarValor(iDepen.campoDTO.propiedades, PlantillaHelper.DEPENDE)
@@ -937,7 +937,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.actualizarDataProvider(pCampo.campoDTO.documentos);
         // Consulto la plantilla para actualizarla y no tener que volver a consultarla
         const plantillaBase: DocumentoPlantillaDTO = this.templateService.getTemplate(
-          this.structure.plantilla
+          this.structure.nodoSuperior
         )!;
         let flagDetalle = false;
 
@@ -1531,7 +1531,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           // En logimax me di cuenta que no filtraba las guias por el cliente asi que volvi a colocar la linea
           entity.llaveTabla = this.data.documento; // Viaja el id del documento para el query
         }
-        entity.plantilla = this.structure.plantilla; // Para el multiple que no pide palntilla sino que se basa en los estados
+        entity.plantilla = this.structure.nodoSuperior; // Para el multiple que no pide palntilla sino que se basa en los estados
       } else {
         if (this.plantilla) {
           // Por aqui solo trae los de una plantilla
@@ -1554,7 +1554,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           }
         } else {
           // Por aqui trae los que se realcionan con el estado
-          entity.plantilla = this.structure.plantilla;
+          entity.plantilla = this.structure.nodoSuperior;
         }
       }
     } else {
@@ -1733,7 +1733,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     // Valido obligatoriedad
     this.errorMessage = null!;
     if (this.required && !this.multiple && !this.herencia && !this.data.valorOpcion && this.isEnabled && !this.isInvisible) {
-      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre + " es obligatorio registrar el campo " + this._structure.nombre + ")"
+      this.errorMessage = "En la plantilla " + this._structure.nodoSuperiorNombre + " es obligatorio registrar el campo " + this._structure.nombre + ")"
     }
     if (this.errorMessage) {
       const input = document.getElementById(this.idField!) as HTMLInputElement;

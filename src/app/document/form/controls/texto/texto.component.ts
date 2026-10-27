@@ -122,7 +122,7 @@ private notificationCenter = inject(NotificationCenterService);
     
     this.errorMessage = null!;
     if (this.required && !this.data.valorText && !this.isInvisible){
-      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")";
+      this.errorMessage = "En la plantilla " + this._structure.nodoSuperiorNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")";
     }
 
     if (this.errorMessage) {

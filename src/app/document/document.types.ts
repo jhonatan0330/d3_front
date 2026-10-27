@@ -1,4 +1,4 @@
-import { BasicDTO, BasicFilterDTO, BasicParamDTO } from "app/shared/shared.domain";
+import { BasicDTO, BasicFilterDTO, BasicParamDTO, BasicNodoDTO, BasicNodoFilter } from "app/shared/shared.domain";
 
 
 export class UsuarioRolProductoDTO extends BasicDTO {
@@ -30,25 +30,12 @@ export class ProductoDTO extends BasicParamDTO {
     templateFields: string;
 }
 
-export class ProcesoEstadoDTO extends BasicParamDTO {
-    tipo: string;
+export class ProcesoEstadoDTO extends BasicNodoDTO {
     estadoDocumento: string;
-    avance: number;
-    nombre: string;
-    codigo: string;
-    proceso: string;
-    procesoNombre: string;
     transiciones: ProcesoTransicionDTO[];
 }
 
-export class DocumentoPlantillaCaracteristicaDTO extends BasicParamDTO {
-    plantilla: string;
-    plantillaNombre: string;
-    formato: string;
-    nombre: string;
-    codigo: string;
-    orden: number;
-    imagen: string;
+export class DocumentoPlantillaCaracteristicaDTO extends BasicNodoDTO {
 
     productos: ProductoDTO[];
     documentos: PedidoVentaDTO[];
@@ -130,24 +117,22 @@ export class PedidoVentaCaracteristicaDTO extends BasicDTO {
     expedientes: PedidoVentaDTO[];
     modificado: boolean;
 }
-export class ProcesoTransicionDTO extends BasicParamDTO {
-  procesoNombre: string;
-  estadoPartidaOrden: number;
-  estadoLlegadaOrden: number;
-  nombre: string;
-  proceso: string;
+export class ProcesoTransicionDTO extends BasicNodoDTO {
   estadoPartida: string;
   estadoPartidaNombre: string;
+  estadoPartidaOrden: number;
+  
   plantilla: string;
   plantillaNombre: string;
 
-  imagen: string;
   estadoLLegada: string;
   estadoLlegadaNombre: string;
   estadoLlegadaTipo: string;
-  codigo: string;
+  estadoLlegadaOrden: number;
+  
   documentToTransition: PedidoVentaDTO;
 }
+
 export class PedidoVentaAjusteDTO extends BasicDTO {
     documento: string;
     fecha: Date;
@@ -156,16 +141,11 @@ export class PedidoVentaAjusteDTO extends BasicDTO {
     motivo: string;
     responsable: string;
 }
-export class DocumentoPlantillaDTO extends BasicParamDTO {
-    tipo: string;
-    padre: string;
-    nombre: string;
+export class DocumentoPlantillaDTO extends BasicNodoDTO {
     consecutivo: string;
-    imagen: string;
     caracteristicas: DocumentoPlantillaCaracteristicaDTO[];
     estados: ProcesoEstadoDTO[];
     reportes: ReporteBaseDTO[];
-    codigo: string;
     proceso: string;
 }
 
@@ -216,11 +196,7 @@ export class DetallePedidoVentaDTO extends BasicParamDTO {
     detalleId: string;
 }
 
-export class ReporteBaseDTO extends BasicParamDTO {
-    plantilla: string;
-    plantillaNombre: string;
-    nombre: string;
-    codigo: string;
+export class ReporteBaseDTO extends BasicNodoDTO {
 }
 
 export class ProductoInventarioDTO extends BasicDTO {
@@ -233,25 +209,12 @@ export class ProductoInventarioDTO extends BasicDTO {
 }
 
 
-export class ProcesoEstadoFilterDTO extends BasicFilterDTO {
-    tipo: string;
+export class ProcesoEstadoFilterDTO extends BasicNodoFilter {
     estadoDocumento: string;
-    avance: number;
-    nombre: string;
-    codigo: string;
-    proceso: string;
-    procesoNombre: string;
 }
 
 
-export class DocumentoPlantillaCaracteristicaFilterDTO extends BasicFilterDTO {
-    plantilla: string;
-    plantillaNombre: string;
-    formato: string;
-    nombre: string;
-    codigo: string;
-    orden: number;
-    imagen: string;
+export class DocumentoPlantillaCaracteristicaFilterDTO extends BasicNodoFilter {
     documentos: PedidoVentaDTO[];
 }
 
@@ -295,20 +258,11 @@ export class PedidoVentaCaracteristicaFilterDTO extends BasicFilterDTO {
     mensaje: string;
 }
 
-export class ProcesoTransicionFilterDTO extends BasicFilterDTO {
-    procesoNombre: string;
-    estadoPartidaOrden: number;
-    estadoLlegadaOrden: number;
-    nombre: string;
-    proceso: string;
+export class ProcesoTransicionFilterDTO extends BasicNodoFilter {
     estadoPartida: string;
-    estadoPartidaNombre: string;
     plantilla: string;
-    plantillaNombre: string;
     estadoLLegada: string;
-    estadoLlegadaNombre: string;
     estadoLlegadaTipo: string;
-    codigo: string;
 }
 
 export class PedidoVentaAjusteFilterDTO extends BasicFilterDTO {
@@ -372,23 +326,13 @@ export class ProductoFilterDTO extends BasicFilterDTO {
     baseNombre: string;
 }
 
-export class ReporteBaseFilterDTO extends BasicFilterDTO {
-    plantilla: string;
-    plantillaNombre: string;
-    nombre: string;
-    codigo: string;
+export class ReporteBaseFilterDTO extends BasicNodoFilter {
 }
 
-export class WebServiceDTO extends BasicParamDTO {
-    nombre: string;
-    codigo: string;
-    proceso: string;
+export class WebServiceDTO extends BasicNodoDTO {
 }
 
-export class WebServiceFilterDTO extends BasicFilterDTO {
-    nombre: string;
-    codigo: string;
-    proceso: string;
+export class WebServiceFilterDTO extends BasicNodoFilter {
 }
 
 export class WebServiceEjecucionDTO extends BasicDTO {
@@ -480,29 +424,10 @@ export class ProcesoTransicionAutomaticaFilterDTO extends BasicFilterDTO {
     ejecucionMax?: Date;
 }
 
-export class OrganizacionDTO extends BasicParamDTO {
-    nombre: string;
-    principal: string;
-    servidor: string;
-    usuarioSystem: string;
-    imagen: string;
-    slogan: string;
-    mensajeIngreso: string;
-    codigo: string;
-    templates: DocumentoPlantillaDTO[];
-    publicToken: string;
+export class OrganizacionDTO extends BasicNodoDTO {
 }
 
-export class OrganizacionFilterDTO extends BasicFilterDTO {
-    nombre: string;
-    principal: string;
-    servidor: string;
-    usuarioSystem: string;
-    imagen: string;
-    sincronizacionFilter: string;
-    codigo: string;
-    servidorUrl: string;
-    servidorCorreo: string;
+export class OrganizacionFilterDTO extends BasicNodoFilter {
 }
 
 export class ConsecutivoDTO extends BasicDTO {
@@ -547,24 +472,17 @@ export class ServidorFilterDTO extends BasicFilterDTO {
     servidorRespaldo: string;
 }
 
-export class ProcesoDTO extends BasicParamDTO {
-    tipo: string;
-    imagen: string;
-    prioridad: number;
-    macroproceso: string;
-    nombre: string;
-    codigo: string;
-    macroNombre: string;
+export class ProcesoDTO extends BasicNodoDTO {
 }
 
-export class ProcesoFilterDTO extends BasicFilterDTO {
-    tipo: string;
-    imagen: string;
-    prioridad: number;
-    macroproceso: string;
-    nombre: string;
-    codigo: string;
-    macroNombre: string;
+export class ProcesoGraphDTO extends BasicNodoDTO {
+    estados: ProcesoEstadoDTO[];
+    transiciones: ProcesoTransicionDTO[];
+    plantillas: DocumentoPlantillaDTO[];
+    hijos: ProcesoGraphDTO[];
+}
+
+export class ProcesoFilterDTO extends BasicNodoFilter {
 }
 
 export class TarifaDTO extends BasicDTO {

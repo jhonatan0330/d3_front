@@ -26,11 +26,11 @@ interface OptionTrace {
 }
 
 @Component({
-    selector: 'trazability',
-    templateUrl: './trazability.component.html',
-    exportAs: 'trazability',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [CdkDrag,CdkDragHandle,MatIcon,UpperCasePipe,TitleCasePipe,CurrencyPipe,ImageFormatPipe]
+  selector: 'trazability',
+  templateUrl: './trazability.component.html',
+  exportAs: 'trazability',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [CdkDrag, CdkDragHandle, MatIcon, UpperCasePipe, TitleCasePipe, CurrencyPipe, ImageFormatPipe]
 })
 export class TrazabilityComponent implements OnInit {
   data = inject(MAT_DIALOG_DATA);
@@ -48,8 +48,7 @@ export class TrazabilityComponent implements OnInit {
   cantidadPagina = 30; // Indica cuantos registros estamos buscando por pagina
   isLoading = signal(false);
   isEnd = signal(false);
-  fullScreen = signal(false);
-  styleSizePop = '';
+
   dataProvider: DocumentoRelacionGestorDTO[] = []; // Conjunto de documentos a visualizar
   traceError = signal(false);
 
@@ -194,7 +193,7 @@ export class TrazabilityComponent implements OnInit {
     const loc: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[7].value) ? '1' : '0';
     const cct: string = this.selectedTrace.value!.find((item) => item === this.optionsTrace[8].value) ? '1' : '0';
     entity.estado = doc + asg + msj + inv + val + rep + api + loc + cct;
-   // if (this.selectedTrace.value.find((item) => item === this.optionsTrace[0].value)) { entity.estado = '1111111111'; }
+    // if (this.selectedTrace.value.find((item) => item === this.optionsTrace[0].value)) { entity.estado = '1111111111'; }
 
     if (_pagina === 1) {
       this.dataProvider = [];
@@ -209,31 +208,31 @@ export class TrazabilityComponent implements OnInit {
     entity.paginacionRegistroFinal = this.cantidadPagina;
     this.pagina = _pagina;
     this.isLoading.set(true);
-          this._traceService.getTrace(entity).subscribe({
+    this._traceService.getTrace(entity).subscribe({
       next: (dataResult: DocumentoRelacionGestorDTO[]) => {
         if (dataResult) {
           const _fullQuantity = dataResult.length;
-          for (let index = dataResult.length -1; index >=0 ; index--) {
+          for (let index = dataResult.length - 1; index >= 0; index--) {
             const element = dataResult[index];
-            if((element.estadoInicial || element.estadoFinal) && element.estadoInicial !== element.estadoFinal) {
+            if ((element.estadoInicial || element.estadoFinal) && element.estadoInicial !== element.estadoFinal) {
 
-              if(index !== (dataResult.length - 1) 
+              if (index !== (dataResult.length - 1)
                 && dataResult[index + 1].documentoModificador === element.documentoModificador
                 && dataResult[index + 1].estadoFinal === element.estadoInicial) {
-                
+
                 dataResult[index + 1].nombre = element.nombre;
-                
+
                 if (!dataResult[index + 1].estados) {
                   dataResult[index + 1].estados = [];
                   dataResult[index + 1].estados.push(element.estadoInicial);
                 }
                 dataResult[index + 1].estados.push(element.estadoFinal);
-                dataResult.splice(index , 1);
+                dataResult.splice(index, 1);
 
-              } else{
+              } else {
                 if (!element.estados) {
                   element.estados = [];
-                }                
+                }
                 element.estados.push(element.estadoInicial);
                 element.estados.push(element.estadoFinal);
               }
@@ -261,11 +260,11 @@ export class TrazabilityComponent implements OnInit {
   }
 
   showTraceField2Document(_gestor: DocumentoRelacionGestorDTO) {
-          this._traceService.getTraceFields(_gestor.documentoPrincipal, _gestor.transaccion).subscribe({
+    this._traceService.getTraceFields(_gestor.documentoPrincipal, _gestor.transaccion).subscribe({
       next: (_dataResult: PedidoVentaCaracteristicaDTO[]) => {
         _gestor.campos = _dataResult;
       },
-      error: () => {}
+      error: () => { }
     });
   }
 
@@ -288,7 +287,7 @@ export class TrazabilityComponent implements OnInit {
         .subscribe({
           next: (value: SharedIdResponse) => {
             if (value && value.id) {
-              this.utilsService.modalVoucher(value.id, null!).subscribe({ error: () => {} });
+              this.utilsService.modalVoucher(value.id, null!).subscribe({ error: () => { } });
             } else {
               this.notificationCenter.info('Comprobante', 'No se encontro comprobante para este documento');
             }
@@ -336,7 +335,7 @@ export class TrazabilityComponent implements OnInit {
 
   isSameDay(current: string | Date, pIndex: number): boolean {
 
-    if( pIndex === 0 || !this.dataProvider || this.dataProvider.length === 0) {
+    if (pIndex === 0 || !this.dataProvider || this.dataProvider.length === 0) {
       return false;
     }
     const fecha1 = new Date(current);
@@ -371,22 +370,10 @@ export class TrazabilityComponent implements OnInit {
     return item.llaveTabla || index;
   }
 
-    toogleScreen() {
-    this.fullScreen.set(!this.fullScreen());
-    this.getSizePop();
-  }
 
-  getSizePop() {
-    if (this.fullScreen()) {
-      this.styleSizePop = 'width: 98vw;';
-    } else {
-      this.styleSizePop = '';
-    }
-    //if(this.drawerOpened) {this.styleSizePop = this.styleSizePop + 'height:90vh;';}
-  }
 
-    onUsuarioClick(pUsuario): void {
-      this.utilsService.modalUser(pUsuario).subscribe({ error: () => {} });
+  onUsuarioClick(pUsuario): void {
+    this.utilsService.modalUser(pUsuario).subscribe({ error: () => { } });
   }
 
 

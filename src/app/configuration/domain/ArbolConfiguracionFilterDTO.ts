@@ -6,4 +6,5 @@ export class ArbolConfiguracionFilterDTO extends BasicFilterDTO {
     profundidad: string;
     listarPropiedades: boolean;
     ligero: boolean;
+    proceso?: string;
 }

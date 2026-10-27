@@ -57,7 +57,7 @@
         <mat-tab label="Vista Árbol">
           <div class="p-4">
             @if (treeLoading()) { <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div> } @else {
-              <div class="space-y-1 max-h-[600px] overflow-y-auto">
+              <div class="space-y-1 max-h-150 overflow-y-auto">
                 @for (node of treeNodes(); track node.proceso.llaveTabla) {
                   <div class="flex items-center gap-2 py-1 pr-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800" [style.padding-left.px]="8 + node.level * 24">
                     @if (node.children.length > 0) {

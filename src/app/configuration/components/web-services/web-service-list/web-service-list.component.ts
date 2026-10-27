@@ -50,7 +50,7 @@ export class WebServiceListComponent implements OnInit, AfterViewInit, OnDestroy
     wsData = signal<WebServiceDTO[]>([]);
     wsCurrentPage = signal(0);
     wsHasMore = signal(true);
-    wsFilter: WebServiceFilterDTO = { estado: 'A', nombre: '', codigo: '', proceso: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25, filtroParametro: '', llaveTabla: '' };
+    wsFilter: WebServiceFilterDTO = { estado: 'A', nombre: '', codigo: '',  tipo: '', nodoSuperior: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25, filtroParametro: '', llaveTabla: '' };
     private debounceTimer: any;
 
     ngOnInit(): void {

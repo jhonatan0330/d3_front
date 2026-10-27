@@ -60,12 +60,12 @@ export class DocumentTemplateFieldListComponent implements OnInit {
     drop(event: CdkDragDrop<DocumentoPlantillaCaracteristicaDTO[]>): void {
         moveItemInArray(this.fields(), event.previousIndex, event.currentIndex);
         const updatedFields = this.fields();
-        updatedFields.forEach((f, i) => { f.orden = i + 1; });
+        updatedFields.forEach((f, i) => { f.prioridad = i + 1; });
         this.fields.set([...updatedFields]);
 
         const movedField = { ...updatedFields[event.currentIndex] };
-        if (!movedField.plantilla) {
-            movedField.plantilla = this.templateKey;
+        if (!movedField.nodoSuperior) {
+            movedField.nodoSuperior = this.templateKey;
         }
         this.service.updateField(movedField).subscribe({
             error: () => this.loadFields()
@@ -73,9 +73,9 @@ export class DocumentTemplateFieldListComponent implements OnInit {
     }
 
     toggleFormat(field: DocumentoPlantillaCaracteristicaDTO): void {
-        const currentIndex = this.formatos.indexOf(field.formato as keyof typeof FormatoCampoSimboloEnum);
+        const currentIndex = this.formatos.indexOf(field.tipo as keyof typeof FormatoCampoSimboloEnum);
         const nextIndex = (currentIndex + 1) % this.formatos.length;
-        field.formato = this.formatos[nextIndex];
+        field.tipo = this.formatos[nextIndex];
         this.service.updateField(field).subscribe({
             next: () => this.loadFields()
         });
@@ -98,7 +98,7 @@ export class DocumentTemplateFieldListComponent implements OnInit {
     getFieldPreview(field: DocumentoPlantillaCaracteristicaDTO): string {
         const parts: string[] = [];
         if (field.codigo) parts.push(`Código: ${field.codigo}`);
-        if (field.orden) parts.push(`Orden: ${field.orden}`);
+        if (field.prioridad) parts.push(`Orden: ${field.prioridad}`);
         if (field.imagen) parts.push('Con imagen');
         return parts.join(' | ') || 'Sin detalles';
     }

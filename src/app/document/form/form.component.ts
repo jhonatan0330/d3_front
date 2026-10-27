@@ -332,7 +332,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 if(this.plantilla()!.estados[i].llaveTabla === value.estadoExpediente && this.plantilla()!.estados[i].transiciones && this.plantilla()!.estados[i].transiciones.length > 0){
                     for (let j = 0; j < this.plantilla()!.estados[i].transiciones.length; j++) {
                         const _transition = this.plantilla()!.estados[i].transiciones[j];
-                        if (PlantillaHelper.isEmpty(_transition.propiedades, PlantillaHelper.TRANSICION_RAPIDA)) {
+                        if (!PlantillaHelper.isEmpty(_transition.propiedades, PlantillaHelper.TRANSICION_RAPIDA)) {
                             this.reloadScreen(_transition.plantilla);
                             //this.formIsModified = false;
                             //this.crearPlantilla(_transition.plantilla, value);
@@ -802,7 +802,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         if (this.pedido()!.llaveTabla && this.pedido()!.estado === 'A') {
             for (let _f = 0; _f < this.pedido()!.caracteristicas.length; _f++) {
                 const _element = this.pedido()!.caracteristicas[_f];
-                if (_element.campoDTO && _element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.VINCULO) {
+                if (_element.campoDTO && _element.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.VINCULO) {
                     if (_element.expedientes) {
                         this.getTransitionsOfTemplate(
                             this.templateService.getTemplate(_element.expedientes[0].plantilla)!,
@@ -926,7 +926,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     // Solo lo uso en crear plantilla siguiente asi que puedo ver como optimizar despues
     validateIsPossibleField(campo: DocumentoPlantillaCaracteristicaDTO, plantilla: string): string {
-        if (!campo || campo.formato !== DocumentoPlantillaCaracteristicaEnum.PROCESO) return null!;
+        if (!campo || campo.tipo !== DocumentoPlantillaCaracteristicaEnum.PROCESO) return null!;
 
         const propAuxiliarTemplates: PropiedadDTO[] | null = PlantillaHelper.buscarValorMultiple(campo.propiedades, PlantillaHelper.PLANTILLA_AUXILIAR);
         if (!propAuxiliarTemplates || propAuxiliarTemplates.length === 0) {
@@ -1126,17 +1126,17 @@ export class FormComponent implements OnInit, AfterViewInit {
             );
             if (campoDocumento.campoDTO
                 && !block
-                && (campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.FECHA
-                    || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.NUMERO
-                    || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
-                    || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.TEXTO
-                    || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PRODUCTO
-                    || campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.CONFIGURACION
+                && (campoDocumento.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.FECHA
+                    || campoDocumento.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.NUMERO
+                    || campoDocumento.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PROCESO
+                    || campoDocumento.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.TEXTO
+                    || campoDocumento.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PRODUCTO
+                    || campoDocumento.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.CONFIGURACION
                 )
             ) {
                 const campoBase: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
                 campoBase.campo = campoDocumento.campo;
-                if (!campoDocumento.dependientes && !(campoDocumento.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO && !campoDocumento.valorOpcion)) {
+                if (!campoDocumento.dependientes && !(campoDocumento.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PROCESO && !campoDocumento.valorOpcion)) {
                     campoBase.valorText = campoDocumento.valorText;
                     campoBase.valorNumero = campoDocumento.valorNumero;
                     campoBase.valorFecha = campoDocumento.valorFecha;
@@ -1154,7 +1154,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         let sectionIsInvisible = false;
         for (let i = 0; i < this.dynamicControls.length; i++) {
             const element = this.dynamicControls[i];
-            if (element.structure.formato === DocumentoPlantillaCaracteristicaEnum.SECCION) { //verifica que sea seccion   
+            if (element.structure.tipo === DocumentoPlantillaCaracteristicaEnum.SECCION) { //verifica que sea seccion   
                 if (element.isInvisible) {
                     sectionIsInvisible = element.isInvisible;  //si la seccion es inivisible invisibiliza toda la seccion
                 } else {

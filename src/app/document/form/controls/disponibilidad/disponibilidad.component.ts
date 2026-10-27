@@ -65,7 +65,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
       for (let i = 0; i <  this.data.dependientes.length; i++) {
         if (
           !this.data.dependientes[i].valorOpcion
-          && this.data.dependientes[i].campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
+          && this.data.dependientes[i].campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PROCESO
           && !PlantillaHelper.buscarPropiedad(this.data.dependientes[i].campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)
         ) {
           return;

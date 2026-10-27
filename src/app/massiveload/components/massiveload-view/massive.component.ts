@@ -253,7 +253,7 @@ export class MassiveComponent implements OnInit {
       return;
     }
     const template = this.templateService.getTemplate(
-      this.fieldIdInTemplateSecondary()!.plantilla
+      this.fieldIdInTemplateSecondary()!.nodoSuperior
     )!;
     this.validateCamposPlantilla(template);
     for (let i = 0; i < files.length; i++) {
@@ -393,7 +393,7 @@ export class MassiveComponent implements OnInit {
       if (line.status !== 'OK') continue;
       for (const campo of line.document.caracteristicas) {
         if (
-          campo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO &&
+          campo.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PROCESO &&
           !campo.valorOpcion &&
           !PlantillaHelper.buscarValor(campo.campoDTO.propiedades, PlantillaHelper.DEPENDE) &&
           campo.valorText
@@ -580,7 +580,7 @@ export class MassiveComponent implements OnInit {
           valorTexto = iCampo.valorText == null ? '' : iCampo.valorText;
           detalle =
             detalle + '\n      ' + iCampo.campoDTO.nombre + ' : ' + valorTexto;
-            if(iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO){
+            if(iCampo.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.ARCHIVO){
               if(iCampo.valorText && iCampo.valorText ==='SIN CARGAR'){
                 iCampo.valorText = null as unknown as string;
               }
@@ -800,7 +800,7 @@ export class MassiveComponent implements OnInit {
         const pDocumento = this.documentosGenerados()[i].document;
         for (let b = 0; b < pDocumento.caracteristicas.length; b++) {
           const iCampo = pDocumento.caracteristicas[b];
-          if (iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO) {
+          if (iCampo.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.ARCHIVO) {
             if (iCampo.valorOpcion === files[j].name){
               iCampo.valorText = files[j].name;
               break;
@@ -814,7 +814,7 @@ export class MassiveComponent implements OnInit {
       const pDocumento = this.documentosGenerados()[i].document;
       for (let b = 0; b < pDocumento.caracteristicas.length; b++) {
         const iCampo = pDocumento.caracteristicas[b];
-        if (iCampo.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.ARCHIVO) {
+        if (iCampo.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.ARCHIVO) {
           if (iCampo.valorText ===  'SIN CARGAR'){
             this.notificationCenter.fire(
               'Unsupported',

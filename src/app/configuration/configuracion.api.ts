@@ -13,6 +13,7 @@ import {
     OrganizacionDTO, OrganizacionFilterDTO,
     ProcesoDTO, ProcesoFilterDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO,
     ProcesoEstadoDTO, ProcesoEstadoFilterDTO,
+    ProcesoGraphDTO,
 } from 'app/document/document.types';
 import {
     PropiedadDTO, PropiedadCampoDTO, PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO,
@@ -564,8 +565,8 @@ export class ProcessService {
         );
     }
 
-    getProcessForGraph(key: string): Observable<ProcesoDTO> {
-        return this.http.post<ProcesoDTO>(
+    getProcessForGraph(key: string): Observable<ProcesoGraphDTO> {
+        return this.http.post<ProcesoGraphDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/${key}/graph`), {}
         );
     }

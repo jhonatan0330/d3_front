@@ -45,8 +45,8 @@ export class ProcessTransitionFormComponent implements OnInit {
         this.transition.estado = 'A';
         this.transition.estadoPartidaOrden = 0;
         this.transition.estadoLlegadaOrden = 0;
-        this.transition.proceso = this.data.processId;
-        this.processKey = this.transition.proceso;
+        this.transition.nodoSuperior = this.data.processId;
+        this.processKey = this.transition.nodoSuperior;
     }
 
     private loadTransition(id: string): void {
@@ -60,7 +60,7 @@ export class ProcessTransitionFormComponent implements OnInit {
                     return;
                 }
                 this.transition = { ...result };
-                this.processKey = this.transition.proceso;
+                this.processKey = this.transition.nodoSuperior;
                 this.esEdicion = true;
                 this.cdr.markForCheck();
             },
@@ -73,7 +73,7 @@ export class ProcessTransitionFormComponent implements OnInit {
     }
 
     onProcessChange(llave: string): void {
-        this.transition.proceso = llave;
+        this.transition.nodoSuperior = llave;
         this.processKey = llave;
     }
 

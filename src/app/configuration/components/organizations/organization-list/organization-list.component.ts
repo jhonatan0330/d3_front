@@ -33,9 +33,11 @@ export class OrganizationListComponent implements OnInit, AfterViewInit, OnDestr
     hasMore = signal(true);
     private readonly pageSize = 25;
 
-    filter: OrganizacionFilterDTO = { estado: 'A', nombre: '', codigo: '', servidor: '', principal: '', usuarioSystem: '', imagen: '', sincronizacionFilter: '', servidorUrl: '', servidorCorreo: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25,
+    filter: OrganizacionFilterDTO = { estado: 'A', nombre: '', codigo: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25,
         filtroParametro: '',
         llaveTabla: '',
+        nodoSuperior: '',
+        tipo: ''
     };
 
     ngOnInit(): void { this.loadNext(); }

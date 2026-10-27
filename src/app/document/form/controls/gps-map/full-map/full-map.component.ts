@@ -88,7 +88,7 @@ export class FullMapComponent implements OnInit, AfterViewInit {
         if (element.caracteristicas) {
           for (let j = 0; j < element.caracteristicas.length; j++) {
             const field = element.caracteristicas[j];
-            if (field.valorText && field.campoDTO && field.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.GPS) {
+            if (field.valorText && field.campoDTO && field.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.GPS) {
               const coma = field.valorText.indexOf(",");
               if (coma > 0) {
                 const iLat = parseFloat(field.valorText.substring(0, coma));

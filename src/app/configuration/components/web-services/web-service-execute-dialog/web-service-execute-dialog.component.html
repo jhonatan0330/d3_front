@@ -10,7 +10,7 @@
 
       <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
         <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Código:</strong> {{ data.webService.codigo }}</p>
-        <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Proceso:</strong> {{ data.webService.proceso }}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400"><strong>Proceso:</strong> {{ data.webService.nodoSuperior }}</p>
       </div>
 
       <form #form="ngForm" (ngSubmit)="onExecute()">

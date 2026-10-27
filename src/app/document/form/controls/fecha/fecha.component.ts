@@ -276,7 +276,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
             if (!pvc.valorOpcion) {
               if (
                 !pvc.campoDTO ||
-                pvc.campoDTO.formato ===
+                pvc.campoDTO.tipo ===
                 DocumentoPlantillaCaracteristicaEnum.PROCESO
               ) {
                 return;
@@ -344,7 +344,7 @@ export class FechaComponent extends BaseComponent implements OnInit {
 
     if (!this.errorMessage && this.required && !this.isInvisible && !this.data.valorFecha) {
       this.errorMessage =
-        `En la plantilla ${this._structure.plantillaNombre} es obligatorio registrar el campo ${this._structure.nombre})`;
+        `En la plantilla ${this._structure.nodoSuperiorNombre} es obligatorio registrar el campo ${this._structure.nombre})`;
     }
 
     if (this.errorMessage) {

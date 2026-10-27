@@ -110,7 +110,7 @@ export class UtilsService {
   fieldEditModalFlex(pField?:DocumentoPlantillaCaracteristicaDTO){
     const dialogRef: MatDialogRef<any> = this.dialog.open(DocumentTemplateFieldFormComponent, {
       maxHeight: '90vh',
-      data: { id: pField?.llaveTabla, templateId: pField?.plantilla ?? '' },
+      data: { id: pField?.llaveTabla, templateId: pField?.nodoSuperior ?? '' },
     });
     return dialogRef.afterClosed();
   }

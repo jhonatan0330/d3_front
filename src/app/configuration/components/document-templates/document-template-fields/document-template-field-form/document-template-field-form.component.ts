@@ -37,8 +37,8 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
         }
         this.field = new DocumentoPlantillaCaracteristicaDTO();
         this.field.estado = 'A';
-        this.field.formato = 'T';
-        this.field.plantilla = this.data.templateId;
+        this.field.tipo = 'T';
+        this.field.nodoSuperior = this.data.templateId;
         this.loadFieldOrder(this.data.templateId);
     }
 
@@ -66,18 +66,18 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
 
     private loadFieldOrder(templateId: string): void {
         if (!templateId) {
-            this.field.orden = 1;
+            this.field.prioridad = 1;
             return;
         }
         this.cargando = true;
         this.service.getTemplateFields(templateId).subscribe({
             next: (fields) => {
-                this.field.orden = (fields?.length || 0) + 1;
+                this.field.prioridad = (fields?.length || 0) + 1;
                 this.cargando = false;
                 this.cdr.markForCheck();
             },
             error: () => {
-                this.field.orden = 1;
+                this.field.prioridad = 1;
                 this.cargando = false;
                 this.cdr.markForCheck();
             }
@@ -94,7 +94,7 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
         data: {
           campoKey: this.field.llaveTabla,
           tipoOrigen: 'C',
-          origenCategoria: this.field.formato,
+          origenCategoria: this.field.tipo,
           titulo: this.field.nombre
         }
       });

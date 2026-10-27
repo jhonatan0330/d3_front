@@ -172,7 +172,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
             valorNumero = 0;
           }
           const diccionario = new Map();
-          if (iterable.campoDTO && iterable.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PRODUCTO) {
+          if (iterable.campoDTO && iterable.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PRODUCTO) {
             if (iterable.detalles) {
               for (let k = 0; k < iterable.detalles.length; k++) {
                 const iterableDetalle = iterable.detalles[k];
@@ -191,7 +191,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
             }
             //Esta parte la copie de arriba de producto
             //Cree una nueva para poder calcular los tipo proceso
-          } else if (iterable.campoDTO && iterable.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO && PlantillaHelper.buscarPropiedad(iterable.campoDTO.propiedades, PlantillaHelper.MULTIPLE)) {
+          } else if (iterable.campoDTO && iterable.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PROCESO && PlantillaHelper.buscarPropiedad(iterable.campoDTO.propiedades, PlantillaHelper.MULTIPLE)) {
             if (iterable.expedientes) {
               for (let m = 0; m < iterable.expedientes.length; m++) {
                 const iterableExpediente = iterable.expedientes[m];
@@ -255,7 +255,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
             if (!pvc.valorOpcion) {
               if (
                 !pvc.campoDTO ||
-                pvc.campoDTO.formato ===
+                pvc.campoDTO.tipo ===
                 DocumentoPlantillaCaracteristicaEnum.PROCESO
               ) {
                 if(!PlantillaHelper.buscarPropiedad(pvc.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)){
@@ -345,7 +345,7 @@ export class NumeroComponent extends BaseComponent implements OnInit {
 
     this.errorMessage = null!;
     if (this.required && !this.data.valorNumero && !this.isInvisible) {
-      this.errorMessage = "En la plantilla " + this._structure.plantillaNombre + " es obligatorio registrar el campo " + this._structure.nombre + ")"
+      this.errorMessage = "En la plantilla " + this._structure.nodoSuperiorNombre + " es obligatorio registrar el campo " + this._structure.nombre + ")"
     }
 
     if (this.errorMessage) {

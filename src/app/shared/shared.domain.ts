@@ -14,6 +14,25 @@ export class BasicFilterDTO {
   estado: string;
 }
 
+export class BasicNodoDTO extends BasicParamDTO {
+  nodoSuperior: string;
+  nombre: string;
+  codigo: string;
+  imagen: string;
+  prioridad: number;
+  tipo: string;
+  nodoSuperiorNombre: string;
+}
+
+export class BasicNodoFilter extends BasicFilterDTO {
+  nodoSuperior: string;
+  nombre: string;
+  codigo: string;
+  tipo: string;
+}
+
+
+
 
 export class PropiedadDTO extends BasicDTO {
   propiedadValor: string;

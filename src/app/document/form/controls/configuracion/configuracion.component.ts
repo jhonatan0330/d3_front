@@ -123,7 +123,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     this.asignarValorInicial(); // Se hace antes del validar porque no aparecian la primera ve<
     // Consulto la plantilla para actualizarla y no tener que volver a consultarla
     const plantillaBase: DocumentoPlantillaDTO =
-      this.templateService.getTemplate(this.structure.plantilla)!;
+      this.templateService.getTemplate(this.structure.nodoSuperior)!;
 
     for (let i = 0; i < plantillaBase.caracteristicas.length; i++) {
       const iCampo = plantillaBase.caracteristicas[i];
@@ -177,7 +177,7 @@ export class ConfiguracionComponent extends BaseComponent implements OnInit {
     if (this.required	&& !this.data.valorOpcion && !this.data.valorText) {
 			const visibleValueOK = this.obtenerValorMultiple(PlantillaHelper.VISIBLE_VALOR_DEPENDIENTE);
 			if (!visibleValueOK) {
-        this.errorMessage = "En la plantilla " + this._structure.plantillaNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
+        this.errorMessage = "En la plantilla " + this._structure.nodoSuperiorNombre 	+ " es obligatorio registrar el campo " + this._structure.nombre + ")"
       }
     }
 

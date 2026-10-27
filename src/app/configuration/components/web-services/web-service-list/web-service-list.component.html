@@ -15,7 +15,7 @@
             <mat-label>Nombre o Código</mat-label>
             <input matInput [(ngModel)]="wsFilter.filtroParametro" (ngModelChange)="onWsFilterInput()" placeholder="Filtrar por nombre o código" />
           </mat-form-field>
-           <div class="w-full"><app-process-selector [(ngModel)]="wsFilter.proceso" [label]="''" placeholder="Filtrar por proceso" (ngModelChange)="onWsFilterChange()"></app-process-selector></div>
+           <div class="w-full"><app-process-selector [(ngModel)]="wsFilter.nodoSuperior" [label]="''" placeholder="Filtrar por proceso" (ngModelChange)="onWsFilterChange()"></app-process-selector></div>
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Estado</mat-label>
             <mat-select [(ngModel)]="wsFilter.estado" (ngModelChange)="onWsFilterChange()">

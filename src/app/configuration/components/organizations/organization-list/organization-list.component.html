@@ -12,7 +12,6 @@
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <mat-form-field appearance="outline" class="w-full"><mat-label>Nombre</mat-label><input matInput [(ngModel)]="filter.nombre" (ngModelChange)="onFilterChange()" placeholder="Filtrar por nombre" /></mat-form-field>
           <mat-form-field appearance="outline" class="w-full"><mat-label>Código</mat-label><input matInput [(ngModel)]="filter.codigo" (ngModelChange)="onFilterChange()" placeholder="Filtrar por código" /></mat-form-field>
-          <mat-form-field appearance="outline" class="w-full"><mat-label>Servidor</mat-label><input matInput [(ngModel)]="filter.servidor" (ngModelChange)="onFilterChange()" placeholder="Filtrar por servidor" /></mat-form-field>
           <mat-form-field appearance="outline" class="w-full"><mat-label>Estado</mat-label><mat-select [(ngModel)]="filter.estado" (ngModelChange)="onFilterChange()"><mat-option value="A">Activo</mat-option><mat-option value="I">Inactivo</mat-option><mat-option value="">Todos</mat-option></mat-select></mat-form-field>
         </div>
       </div>

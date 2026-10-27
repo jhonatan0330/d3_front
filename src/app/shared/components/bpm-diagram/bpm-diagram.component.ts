@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
-import {  ProcesoDTO, ProcesoEstadoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
+import {  ProcesoDTO, ProcesoEstadoDTO, ProcesoGraphDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import {
   ProcessService,
   TreeConfigService,
@@ -189,8 +189,8 @@ export class BpmDiagramComponent implements OnInit {
     this.cargandoHijos.set(true);
     this.processService.getProcessForGraph(nodo.llaveTabla).subscribe({
       next: proceso => {
-        // TODO NOW
-        /*const transiciones = proceso.transiciones || [];
+        
+        const transiciones = proceso.transiciones || [];
         const hijos = (proceso.estados || [])
           .filter(estado => !!estado.llaveTabla)
           .map(estado => this.mapEstadoNode(estado, nodo.camino));
@@ -205,7 +205,8 @@ export class BpmDiagramComponent implements OnInit {
             ? nodos.map(n => (n.id === nodo.camino ? { ...n, hasChildren: false } : n))
             : nodos.map(n => (n.id === nodo.camino ? { ...n, childEdges: aristas } : n));
           return [...base, ...hijos];
-        });*/
+        });
+
         this.hijosCargados.add(nodo.camino);
         this.procesosCargados.set(nodo.camino, nodo);
         this.cargandoHijos.set(false);
@@ -266,7 +267,7 @@ export class BpmDiagramComponent implements OnInit {
       shape: tipo === 'E' ? 'circle' : 'diamond',
       shapeFill: this.estadoShapeFill(estado),
       icon: ESTADO_TIPO_ICONS[tipo] ?? 'state',
-      order: typeof estado.avance === 'number' ? estado.avance : undefined,
+      order: typeof estado.prioridad === 'number' ? estado.prioridad : undefined,
     };
   }
 
@@ -334,7 +335,7 @@ export class BpmDiagramComponent implements OnInit {
       disableClose: true,
       data: {
         id: transicion.llaveTabla,
-        processId: transicion.proceso,
+        processId: transicion.nodoSuperior,
       },
     });
     dialogRef.afterClosed().subscribe((result: ProcesoTransicionDTO) => {
@@ -416,7 +417,7 @@ export class BpmDiagramComponent implements OnInit {
       width: '700px',
       maxWidth: '90vw',
       disableClose: true,
-      data: { id: estado.llaveTabla, processId: estado.proceso },
+      data: { id: estado.llaveTabla, processId: estado.nodoSuperior },
     });
     dialogRef.afterClosed().subscribe((result: ProcesoEstadoDTO) => {
       if (!result || !node.parentId) return;
@@ -491,13 +492,13 @@ export class BpmDiagramComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  private normalizeProcess(root: ProcesoDTO): BpmCanvasNode[] {
+  private normalizeProcess(root: ProcesoGraphDTO): BpmCanvasNode[] {
     const nodes: BpmCanvasNode[] = [];
     const visited = new Set<string>();
-    const visit = (process: ProcesoDTO | null | undefined, parentId: string | null): void => {
+    const visit = (process: ProcesoGraphDTO | null | undefined, parentId: string | null): void => {
 
-      // TODO NOW
-      /*if (!process?.llaveTabla || visited.has(process.llaveTabla)) return;
+      
+      if (!process?.llaveTabla || visited.has(process.llaveTabla)) return;
       visited.add(process.llaveTabla);
       const processId = process.llaveTabla;
       const metadata = [
@@ -512,7 +513,7 @@ export class BpmDiagramComponent implements OnInit {
         source: process,
       });
       for (const child of process.hijos || []) visit(child, processId);
-      */
+      
     };
     visit(root, null);
     return nodes;

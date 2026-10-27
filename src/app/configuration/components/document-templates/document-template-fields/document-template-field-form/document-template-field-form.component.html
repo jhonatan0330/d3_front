@@ -11,12 +11,12 @@
             <div class="flex-1">
               <label class="block text-sm font-semibold mb-1">Formato</label>
               <div class="relative">
-                <select [(ngModel)]="field.formato" name="formato" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none pr-10">
+                <select [(ngModel)]="field.tipo" name="formato" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none pr-10">
                   @for (f of formatos; track f) {
                     <option [value]="f">{{ getFormatoLabel(f) }} ({{ getFormatoIcon(f) }})</option>
                   }
                 </select>
-                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl pointer-events-none">{{ getFormatoIcon(field.formato) }}</div>
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl pointer-events-none">{{ getFormatoIcon(field.tipo) }}</div>
               </div>
             </div>
           </div>
@@ -34,7 +34,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-semibold mb-1">Orden</label>
-              <input type="number" [(ngModel)]="field.orden" name="orden" min="1" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <input type="number" [(ngModel)]="field.prioridad" name="orden" min="1" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
               <label class="block text-sm font-semibold mb-1">Imagen</label>

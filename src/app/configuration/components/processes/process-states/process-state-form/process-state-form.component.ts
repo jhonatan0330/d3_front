@@ -42,8 +42,8 @@ export class ProcessStateFormComponent implements OnInit {
         this.state.estado = 'A';
         this.state.tipo = 'E';
         this.state.estadoDocumento = 'A';
-        this.state.avance = 0;
-        this.state.proceso = this.data.processId;
+        this.state.prioridad = 0;
+        this.state.nodoSuperior = this.data.processId;
     }
 
     private loadState(id: string): void {

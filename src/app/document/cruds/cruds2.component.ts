@@ -530,7 +530,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         }
         const filterDocument = new PedidoVentaDTO;
         this.plantilla()!.caracteristicas.forEach((_campo) => {
-            if (_campo.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO
+            if (_campo.tipo === DocumentoPlantillaCaracteristicaEnum.PROCESO
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.MULTIPLE)
                 && PlantillaHelper.isEmpty(_campo.propiedades, PlantillaHelper.PERMISO_CAMPO_BLOQUEAR)) {
                 const componentDynamic: Type<any> = getComponent(_campo);

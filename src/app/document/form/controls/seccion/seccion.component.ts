@@ -47,7 +47,7 @@ export class SeccionComponent extends BaseComponent implements OnInit {
               this.data.dependientes[index];
             if (!pvc.valorOpcion) {
               if (!pvc.campoDTO ||
-                pvc.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO) {
+                pvc.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PROCESO) {
                 return;
               }
             }

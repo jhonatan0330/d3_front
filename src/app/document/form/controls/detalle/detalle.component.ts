@@ -189,7 +189,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     if (this.relatedFields || !this.autoload) {
       for (let i = 0; i < this.data.dependientes.length; i++) {
         const element: PedidoVentaCaracteristicaDTO = this.data.dependientes[i];
-        if (!element.valorOpcion && element.campoDTO.formato === DocumentoPlantillaCaracteristicaEnum.PROCESO && !PlantillaHelper.buscarPropiedad(element.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
+        if (!element.valorOpcion && element.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PROCESO && !PlantillaHelper.buscarPropiedad(element.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
           this.errorToFilter = 'Por favor coloca un valor en el campo ' + element.campoDTO.nombre;
           return;
         }
@@ -247,7 +247,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   private loadInfo(_value: PedidoVentaCaracteristicaFilterDTO) {
     // Copia toda la informacion a las variables del campo
     this.productosDisponibles = Object.assign([], _value.campoDTO.productos);
-    const plantillaBase = this.templateService.getTemplate(this.structure.plantilla);
+    const plantillaBase = this.templateService.getTemplate(this.structure.nodoSuperior);
     for (let i = 0; i < plantillaBase!.caracteristicas.length; i++) {
       const iCampo = plantillaBase!.caracteristicas[i];
       if (iCampo.llaveTabla === this.structure.llaveTabla) {

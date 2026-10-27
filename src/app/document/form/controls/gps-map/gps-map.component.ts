@@ -75,7 +75,7 @@ export class GpsMapComponent extends BaseComponent implements OnInit {
       pv.caracteristicas = [];
       const pvc = new PedidoVentaCaracteristicaDTO();
       pvc.campoDTO = new DocumentoPlantillaCaracteristicaDTO();
-      pvc.campoDTO.formato = 'P';
+      pvc.campoDTO.tipo = 'P';
       pvc.valorText = '4.674282890459253,-74.0929901288652';
       pv.caracteristicas.push(pvc);
       _value = new PedidoVentaCaracteristicaFilterDTO();

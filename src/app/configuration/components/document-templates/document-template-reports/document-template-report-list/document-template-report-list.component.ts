@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ReporteBaseDTO, ReporteBaseFilterDTO } from 'app/document/document.types';
+import { ReporteBaseDTO } from 'app/document/document.types';
 import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { DocumentTemplateReportFormComponent } from '../document-template-report-form/document-template-report-form.component';
 

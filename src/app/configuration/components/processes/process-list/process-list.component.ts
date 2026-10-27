@@ -48,10 +48,7 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
         nombre: '',
         codigo: '',
         tipo: '',
-        macroproceso: '',
-        macroNombre: '',
-        imagen: '',
-        prioridad: 0,
+        nodoSuperior: '',
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
         filtroParametro: '',
@@ -134,9 +131,9 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
         processes.forEach(p => byKey.set(p.llaveTabla, p));
         const childrenMap = new Map<string, ProcesoDTO[]>();
         processes.forEach(p => {
-            if (!p.macroproceso || p.macroproceso === p.llaveTabla) return;
-            if (!childrenMap.has(p.macroproceso)) childrenMap.set(p.macroproceso, []);
-            childrenMap.get(p.macroproceso)!.push(p);
+            if (!p.nodoSuperior || p.nodoSuperior === p.llaveTabla) return;
+            if (!childrenMap.has(p.nodoSuperior)) childrenMap.set(p.nodoSuperior, []);
+            childrenMap.get(p.nodoSuperior)!.push(p);
         });
         const buildNode = (proceso: ProcesoDTO, level: number, visited: Set<string>): TreeNode => {
             visited.add(proceso.llaveTabla);
@@ -145,7 +142,7 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
                 .map(c => buildNode(c, level + 1, visited));
             return { proceso, children, level, expanded: false };
         };
-        const roots = processes.filter(p => !p.macroproceso || p.macroproceso === p.llaveTabla || !byKey.has(p.macroproceso));
+        const roots = processes.filter(p => !p.nodoSuperior || p.nodoSuperior === p.llaveTabla || !byKey.has(p.nodoSuperior));
         return roots.map(r => buildNode(r, 0, new Set()));
     }
 

@@ -41,12 +41,10 @@ export class DocumentTemplateListComponent implements OnInit, AfterViewInit, OnD
     filter: DocumentoPlantillaFilterDTO = {
         estado: 'A',
         nombre: '',
-        consecutivo: '',
-        imagen: '',
         codigo: '',
         proceso: '',
         tipo: '',
-        padre: '',
+        nodoSuperior: '',
         paginacionRegistroInicial: 0,
         paginacionRegistroFinal: 25,
         filtroParametro: '',

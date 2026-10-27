@@ -193,7 +193,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < this.dynamicControls.length; i++) {
       const formItemRecurso = this.dynamicControls[i];
       if (
-        formItemRecurso.structure.formato ===
+        formItemRecurso.structure.tipo ===
         DocumentoPlantillaCaracteristicaEnum.NUMERO
       ) {
         const idTarifa: string = PlantillaHelper.buscarValor(

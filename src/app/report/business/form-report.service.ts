@@ -16,10 +16,6 @@ export class FormReportService {
       if(TenantRuntime.getCurrent()?.token){ url = url + '&P_TOKEN=' + TenantRuntime.getCurrent()?.token; }
       if(TenantRuntime.getCurrent()?.key){ url = url + '&P_TENANT_ID=' + TenantRuntime.getCurrent()?.key; }
     }
-    // TODO NOW
-    /*if (reporte.variables) {
-      url = url + '&' + reporte.variables;
-    }*/
     return url;
   }
 
