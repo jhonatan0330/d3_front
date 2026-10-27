@@ -691,7 +691,7 @@ export class PropertyService {
 
     getPropertyById(key: string): Observable<PropiedadDTO> {
         return this.http.post<PropiedadDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/by-id`), { campo: key, estado: 'A' }
+            this.ls.getUrlAccess(`${this.baseUrl}/by-id/${key}`), { campo: key, estado: 'A' }
         );
     }
 
