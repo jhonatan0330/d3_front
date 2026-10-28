@@ -7,14 +7,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { DocumentoPlantillaCaracteristicaDTO } from 'app/document/document.types';
 import { FormatoCampoSimboloEnum, DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { DocumentTemplateService } from 'app/configuration/configuracion.api';
-import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { PropertyPanelComponent } from '../../../shared/property-panel/property-panel.component';
 import { TemplateChildDialogData } from '../../../shared/dialog-data';
 
 @Component({
     selector: 'app-document-template-field-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, ImageUploaderComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
     templateUrl: './document-template-field-form.component.html',
 })
 export class DocumentTemplateFieldFormComponent implements OnInit {
@@ -39,7 +38,6 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
         this.field.estado = 'A';
         this.field.tipo = 'T';
         this.field.nodoSuperior = this.data.templateId;
-        this.loadFieldOrder(this.data.templateId);
     }
 
     private loadField(id: string): void {
@@ -60,26 +58,6 @@ export class DocumentTemplateFieldFormComponent implements OnInit {
                 this.cargando = false;
                 this.notificationCenter.error('Error', 'No se pudo cargar el campo.');
                 this.dialogRef.close();
-            }
-        });
-    }
-
-    private loadFieldOrder(templateId: string): void {
-        if (!templateId) {
-            this.field.prioridad = 1;
-            return;
-        }
-        this.cargando = true;
-        this.service.getTemplateFields(templateId).subscribe({
-            next: (fields) => {
-                this.field.prioridad = (fields?.length || 0) + 1;
-                this.cargando = false;
-                this.cdr.markForCheck();
-            },
-            error: () => {
-                this.field.prioridad = 1;
-                this.cargando = false;
-                this.cdr.markForCheck();
             }
         });
     }

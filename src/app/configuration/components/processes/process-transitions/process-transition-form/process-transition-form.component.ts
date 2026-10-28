@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { finalize } from 'rxjs';
 import { ProcesoTransicionDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { PropertyPanelComponent } from '../../../shared/property-panel/property-panel.component';
@@ -29,10 +30,9 @@ export class ProcessTransitionFormComponent implements OnInit {
 
     private service = inject(ProcessService);
     private dialog = inject(MatDialog);
-    private cdr = inject(ChangeDetectorRef);
 
     transition: ProcesoTransicionDTO = new ProcesoTransicionDTO();
-    cargando = false;
+    cargando = signal(false);
     esEdicion = false;
     processKey = '';
 
@@ -50,10 +50,9 @@ export class ProcessTransitionFormComponent implements OnInit {
     }
 
     private loadTransition(id: string): void {
-        this.cargando = true;
-        this.service.getTransitionById(id).subscribe({
+        this.cargando.set(true);
+        this.service.getTransitionById(id).pipe(finalize(() => this.cargando.set(false))).subscribe({
             next: (result) => {
-                this.cargando = false;
                 if (!result) {
                     this.notificationCenter.error('Transición no encontrada', 'No existe una transición con la clave solicitada.');
                     this.dialogRef.close();
@@ -62,10 +61,8 @@ export class ProcessTransitionFormComponent implements OnInit {
                 this.transition = { ...result };
                 this.processKey = this.transition.nodoSuperior;
                 this.esEdicion = true;
-                this.cdr.markForCheck();
             },
             error: () => {
-                this.cargando = false;
                 this.notificationCenter.error('Error', 'No se pudo cargar la transición.');
                 this.dialogRef.close();
             }
@@ -73,6 +70,12 @@ export class ProcessTransitionFormComponent implements OnInit {
     }
 
     onProcessChange(llave: string): void {
+        if (this.transition.nodoSuperior !== llave) {
+            this.transition.estadoPartida = null!;
+            this.transition.estadoPartidaNombre = null!;
+            this.transition.estadoLLegada = null!;
+            this.transition.estadoLlegadaNombre = null!;
+        }
         this.transition.nodoSuperior = llave;
         this.processKey = llave;
     }
@@ -96,21 +99,18 @@ export class ProcessTransitionFormComponent implements OnInit {
     }
 
     onSubmit(): void {
-        this.cargando = true;
+        this.cargando.set(true);
 
         const request$ = this.transition.llaveTabla
             ? this.service.updateTransition(this.transition)
             : this.service.createTransition(this.transition);
 
-        request$.subscribe({
+        request$.pipe(finalize(() => this.cargando.set(false))).subscribe({
             next: (result) => {
-                this.cargando = false;
                 this.notificationCenter.fire('Éxito', 'Transición guardada correctamente', 'success');
                 this.dialogRef.close(result);
             },
-            error: () => {
-                this.cargando = false;
-            }
+            error: () => { }
         });
     }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject, signal, computed } from '@angular/core';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +28,11 @@ export class DocumentTemplateFieldListComponent implements OnInit {
 
     fields = signal<DocumentoPlantillaCaracteristicaDTO[]>([]);
     loading = signal(false);
-    formatos = Object.keys(FormatoCampoSimboloEnum) as (keyof typeof FormatoCampoSimboloEnum)[];
+    mostrarInactivos = signal(false);
+
+    activos = computed(() => this.fields().filter((f) => f.estado === 'A'));
+    inactivos = computed(() => this.fields().filter((f) => f.estado !== 'A'));
+    totalInactivos = computed(() => this.inactivos().length);
 
     ngOnInit(): void {
         if (this.templateKey) {
@@ -38,10 +42,14 @@ export class DocumentTemplateFieldListComponent implements OnInit {
 
     loadFields(): void {
         this.loading.set(true);
-        this.service.getTemplateFields(this.templateKey).subscribe({
-            next: (res) => { this.fields.set(res); this.loading.set(false); },
+        this.service.getTemplateFields(this.templateKey, null).subscribe({
+            next: (res) => { this.fields.set(res ?? []); this.loading.set(false); },
             error: () => this.loading.set(false)
         });
+    }
+
+    toggleInactivos(): void {
+        this.mostrarInactivos.update((value) => !value);
     }
 
     openFieldForm(field?: DocumentoPlantillaCaracteristicaDTO): void {
@@ -58,12 +66,22 @@ export class DocumentTemplateFieldListComponent implements OnInit {
     }
 
     drop(event: CdkDragDrop<DocumentoPlantillaCaracteristicaDTO[]>): void {
-        moveItemInArray(this.fields(), event.previousIndex, event.currentIndex);
-        const updatedFields = this.fields();
-        updatedFields.forEach((f, i) => { f.prioridad = i + 1; });
-        this.fields.set([...updatedFields]);
+        if (event.previousIndex === event.currentIndex) {
+            return;
+        }
 
-        const movedField = { ...updatedFields[event.currentIndex] };
+        const reordenados = [...this.activos()];
+        moveItemInArray(reordenados, event.previousIndex, event.currentIndex);
+
+        const prioridades = new Map(reordenados.map((f, i) => [f.llaveTabla, i + 1]));
+        this.fields.update((fields) =>
+            fields.map((field) => {
+                const prioridad = prioridades.get(field.llaveTabla);
+                return prioridad ? { ...field, prioridad } : field;
+            })
+        );
+
+        const movedField = { ...reordenados[event.currentIndex], prioridad: event.currentIndex + 1 };
         if (!movedField.nodoSuperior) {
             movedField.nodoSuperior = this.templateKey;
         }
@@ -72,12 +90,23 @@ export class DocumentTemplateFieldListComponent implements OnInit {
         });
     }
 
-    toggleFormat(field: DocumentoPlantillaCaracteristicaDTO): void {
-        const currentIndex = this.formatos.indexOf(field.tipo as keyof typeof FormatoCampoSimboloEnum);
-        const nextIndex = (currentIndex + 1) % this.formatos.length;
-        field.tipo = this.formatos[nextIndex];
-        this.service.updateField(field).subscribe({
-            next: () => this.loadFields()
+    reactivarField(field: DocumentoPlantillaCaracteristicaDTO): void {
+        this.notificationCenter.fire({
+            title: '¿Reactivar campo?',
+            text: `El campo "${field.nombre}" volverá a estar disponible en la plantilla.`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, reactivar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.service.activateField(field).subscribe({
+                    next: () => {
+                        this.notificationCenter.fire('Reactivado', 'Campo reactivado correctamente', 'success');
+                        this.loadFields();
+                    }
+                });
+            }
         });
     }
 
@@ -99,7 +128,6 @@ export class DocumentTemplateFieldListComponent implements OnInit {
         const parts: string[] = [];
         if (field.codigo) parts.push(`Código: ${field.codigo}`);
         if (field.prioridad) parts.push(`Orden: ${field.prioridad}`);
-        if (field.imagen) parts.push('Con imagen');
         return parts.join(' | ') || 'Sin detalles';
     }
 }

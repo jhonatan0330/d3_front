@@ -6,7 +6,7 @@ import {
     ConsecutivoDTO, ConsecutivoFilterDTO,
     MensajeDTO, MensajeFilterDTO,
     ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO,
-    DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO, ReporteBaseFilterDTO,
+    DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO,
     
     WebServiceDTO, WebServiceFilterDTO, WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO,
     ServidorDTO, ServidorFilterDTO,
@@ -239,8 +239,8 @@ export class DocumentTemplateService {
         );
     }
 
-    getTemplateFields(templateKey: string): Observable<DocumentoPlantillaCaracteristicaDTO[]> {
-        const payload = { estado: 'A', plantilla: templateKey };
+    getTemplateFields(templateKey: string, estado: string | null = 'A'): Observable<DocumentoPlantillaCaracteristicaDTO[]> {
+        const payload = { estado, plantilla: templateKey };
         return this.http.post<DocumentoPlantillaCaracteristicaDTO[]>(
             this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/fields`), payload
         );
@@ -287,16 +287,29 @@ export class DocumentTemplateService {
         );
     }
 
+    activateField(field: DocumentoPlantillaCaracteristicaDTO): Observable<DocumentoPlantillaCaracteristicaDTO> {
+        return this.http.post<DocumentoPlantillaCaracteristicaDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/fields/${field.llaveTabla}/activate`), field
+        );
+    }
+
     getTemplateFieldsComplete(template: DocumentoPlantillaDTO): Observable<DocumentoPlantillaDTO> {
         return this.http.post<DocumentoPlantillaDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/fields-complete`), template
         );
     }
 
-    getTemplateReports(templateKey: string, filter?: ReporteBaseFilterDTO): Observable<ReporteBaseDTO[]> {
-        const payload = { estado: 'A', plantilla: templateKey, ...(filter || {}) };
+    getTemplateReports(templateKey: string, estado: string | null = 'A'): Observable<ReporteBaseDTO[]> {
+        const payload = { estado, plantilla: templateKey };
         return this.http.post<ReporteBaseDTO[]>(
             this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/reports`), payload
+        );
+    }
+
+    getTemplateTransitions(templateKey: string, estado: string | null = 'A'): Observable<ProcesoTransicionDTO[]> {
+        const payload = { estado, plantilla: templateKey };
+        return this.http.post<ProcesoTransicionDTO[]>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${templateKey}/transitions`), payload
         );
     }
 

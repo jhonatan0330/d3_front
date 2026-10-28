@@ -42,6 +42,7 @@ export class PropiedadDTO extends BasicDTO {
   campo: string;
   valor: string;
   texto: string;
+  codigo: string;
   motivo: string;
   relaciones: number;
   imagen: string;
@@ -112,6 +113,7 @@ export class PropiedadCampoDTO extends BasicDTO {
     tipo: string;
     valor: string;
     texto?: string;
+    codigo: string;
     relaciones: number;
     bloqueo: string;
     fechaFinal: string;

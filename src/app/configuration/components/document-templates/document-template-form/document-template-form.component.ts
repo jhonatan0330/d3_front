@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO } from 'app/document/document.types';
+import { MatTableModule } from '@angular/material/table';
+import { DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ProcesoTransicionDTO, ReporteBaseDTO } from 'app/document/document.types';
 import { DocumentoPlantillaTipoLabel } from 'app/document/form/form.enum';
 import { DocumentTemplateService } from 'app/configuration/configuracion.api';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
@@ -19,7 +20,7 @@ import { IdDialogData } from '../../shared/dialog-data';
 @Component({
     selector: 'app-document-template-form',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatIconModule, ProcessSelectorComponent, ImageUploaderComponent, DocumentTemplateFieldListComponent, DocumentTemplateReportListComponent],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatTabsModule, MatIconModule, MatTableModule, ProcessSelectorComponent, ImageUploaderComponent, DocumentTemplateFieldListComponent, DocumentTemplateReportListComponent],
     templateUrl: './document-template-form.component.html',
 })
 export class DocumentTemplateFormComponent implements OnInit {
@@ -34,6 +35,9 @@ export class DocumentTemplateFormComponent implements OnInit {
     template: DocumentoPlantillaDTO = new DocumentoPlantillaDTO();
     cargando = false;
     activeTab = signal(0);
+    transiciones = signal<ProcesoTransicionDTO[]>([]);
+    cargandoTransiciones = signal(false);
+    transitionColumns = ['nombre', 'proceso', 'origen', 'destino', 'estado'];
 
     ngOnInit(): void {
         this.template = new DocumentoPlantillaDTO();
@@ -48,6 +52,7 @@ export class DocumentTemplateFormComponent implements OnInit {
 
     private loadTemplateFromServer(templateId: string): void {
         this.cargando = true;
+        this.loadTransiciones(templateId);
         forkJoin({
             plantilla: this.service.getTemplateById(templateId),
             caracteristicas: this.service.getTemplateFields(templateId),
@@ -74,6 +79,14 @@ export class DocumentTemplateFormComponent implements OnInit {
                 this.notificationCenter.error('Error', 'No se pudo cargar la plantilla.');
                 this.dialogRef.close();
             }
+        });
+    }
+
+    private loadTransiciones(templateId: string): void {
+        this.cargandoTransiciones.set(true);
+        this.service.getTemplateTransitions(templateId, null).subscribe({
+            next: (res) => { this.transiciones.set(res ?? []); this.cargandoTransiciones.set(false); },
+            error: () => { this.transiciones.set([]); this.cargandoTransiciones.set(false); }
         });
     }
 

@@ -56,6 +56,7 @@ export class PropertyFieldComponent {
             campo: result.campo,
             valor: String(result.valor),
             texto: result.texto || '',
+            codigo: result.codigo || '',
             motivo: result.motivo || '',
             relaciones: result.relaciones || 0,
             imagen: result.imagen || ''

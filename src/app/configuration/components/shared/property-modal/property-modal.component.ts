@@ -120,6 +120,7 @@ export class PropertyModalComponent implements OnInit {
         pc.key = prop.key || '';
         pc.valor = prop.valor || '';
         pc.texto = prop.texto || '';
+        pc.codigo = prop.codigo || '';
         pc.motivo = prop.motivo || '';
         pc.relaciones = prop.relaciones || 0;
         pc.imagen = prop.imagen || '';
@@ -232,6 +233,7 @@ export class PropertyModalComponent implements OnInit {
         request$.subscribe({
             next: (result) => {
                 this.cargando.set(false);
+                this.propiedad.codigo = result?.codigo ?? this.propiedad.codigo;
                 this.dialogRef.close(this.propiedad);
             },
             error: () => {

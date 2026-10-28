@@ -26,21 +26,12 @@
             <input type="text" [(ngModel)]="field.nombre" name="nombre" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
-          <div>
-            <label class="block text-sm font-semibold mb-1">Código</label>
-            <input type="text" [(ngModel)]="field.codigo" name="codigo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Código único para el campo" />
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          @if (data.id) {
             <div>
-              <label class="block text-sm font-semibold mb-1">Orden</label>
-              <input type="number" [(ngModel)]="field.prioridad" name="orden" min="1" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label class="block text-sm font-semibold mb-1">Código</label>
+              <input type="text" [(ngModel)]="field.codigo" name="codigo" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Código único para el campo" />
             </div>
-            <div>
-              <label class="block text-sm font-semibold mb-1">Imagen</label>
-              <app-image-uploader [(value)]="field.imagen"></app-image-uploader>
-            </div>
-          </div>
+          }
         </div>
 
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">

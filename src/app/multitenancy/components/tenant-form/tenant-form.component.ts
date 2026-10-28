@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,7 +26,7 @@ export class TenantFormComponent implements OnInit {
 
     tenant: TenantDTO = new TenantDTO();
     admin = { nombre: '', identificacion: '', correo: '', telefono: '' };
-    cargando = false;
+    cargando = signal(false);
     verUsuario = signal(false);
     verClave = signal(false);
 
@@ -35,10 +36,10 @@ export class TenantFormComponent implements OnInit {
 
     ngOnInit(): void {
         if (this.data?.key) {
-            this.cargando = true;
-            this.service.detalleTenant(this.data.key).subscribe({
-                next: (res) => { this.tenant = res; this.cargando = false; },
-                error: () => { this.cargando = false; this.dialogRef.close(); }
+            this.cargando.set(true);
+            this.service.detalleTenant(this.data.key).pipe(finalize(() => this.cargando.set(false))).subscribe({
+                next: (res) => { this.tenant = res; },
+                error: () => { this.dialogRef.close(); }
             });
         }
     }
@@ -49,25 +50,24 @@ export class TenantFormComponent implements OnInit {
             return;
         }
         if (!this.tenant.key) return;
-        this.cargando = true;
+        this.cargando.set(true);
         const cambios = {
             name: this.tenant.name,
             imagen: this.tenant.imagen,
             state: this.tenant.state,
             fechaValidez: this.tenant.fechaValidez ? this.tenant.fechaValidez.slice(0, 10) : undefined,
         };
-        this.service.actualizarTenant(this.tenant.key, cambios).subscribe({
+        this.service.actualizarTenant(this.tenant.key, cambios).pipe(finalize(() => this.cargando.set(false))).subscribe({
             next: (result) => {
-                this.cargando = false;
                 this.notificationCenter.fire('Éxito', 'Subtenant guardado correctamente', 'success');
                 this.dialogRef.close(result);
             },
-            error: () => { this.cargando = false; }
+            error: () => { }
         });
     }
 
     crear(): void {
-        this.cargando = true;
+        this.cargando.set(true);
         const dto: TenantCrearDTO = {
             nombre: (this.tenant.name ?? '').trim(),
             codigo: (this.tenant.codigo ?? '').trim(),
@@ -77,13 +77,12 @@ export class TenantFormComponent implements OnInit {
             adminCorreo: this.admin.correo.trim(),
             adminTelefono: this.admin.telefono.trim() || undefined,
         };
-        this.service.crearTenant(dto).subscribe({
+        this.service.crearTenant(dto).pipe(finalize(() => this.cargando.set(false))).subscribe({
             next: (result) => {
-                this.cargando = false;
                 this.notificationCenter.fire('Éxito', 'Tenant creado correctamente', 'success');
                 this.dialogRef.close(result);
             },
-            error: () => { this.cargando = false; }
+            error: () => { }
         });
     }
 }
