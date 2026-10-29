@@ -1,0 +1,31 @@
+<header class="flex flex-col gap-3">
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <h2 class="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
+        Resumen de Operación
+      </h2>
+      <p class="text-xs text-neutral-500 dark:text-neutral-400">
+        Última actualización: Hoy, 12:30 PM
+      </p>
+    </div>
+    <div class="flex gap-1 border border-neutral-200 rounded-lg bg-white p-1 dark:border-neutral-800 dark:bg-neutral-900">
+      @for (r of ranges; track r) {
+        <button
+          type="button"
+          class="px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
+          [class.bg-primary/10]="range() === r"
+          [class.text-primary]="range() === r"
+          [class.dark:bg-primary/20]="range() === r"
+          [class.dark:text-primary]="range() === r"
+          [class.text-neutral-600]="range() !== r"
+          [class.dark:text-neutral-400]="range() !== r"
+          [class.hover:bg-neutral-100]="range() !== r"
+          [class.dark:hover:bg-neutral-800]="range() !== r"
+          (click)="selectRange(r)"
+        >
+          {{ rangeLabels[r] }}
+        </button>
+      }
+    </div>
+  </div>
+</header>

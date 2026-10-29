@@ -6,18 +6,25 @@ import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationApi } from 'app/authentication/authentication.api';
-import { IndicatorsCardsComponent } from 'app/accounting/components/indicators-cards';
 import { TaskListComponent } from 'app/task/components/task-list/task-list.component';
 import { LayoutService } from '../layout.service';
 import { CarouselService } from 'app/authentication/business/carousel.service';
 import { RecentDocumentsCardComponent } from './recent-documents-card/recent-documents-card.component';
 import { LastChatCardComponent } from './last-chat-card/last-chat-card.component';
+import { QuickActionsComponent } from './indicators/quick-actions.component';
 
 @Component({
     selector: 'dashboard',
     templateUrl: './dashboard.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, IndicatorsCardsComponent, TaskListComponent, RecentDocumentsCardComponent, LastChatCardComponent]
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      TaskListComponent,
+      RecentDocumentsCardComponent,
+      LastChatCardComponent,
+      QuickActionsComponent,
+    ]
 })
 export class DashboardComponent implements AfterViewInit, OnDestroy {
 
@@ -164,5 +171,47 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
       });
     }
   }
+
+
+  readonly alertasStock = [
+    {
+      id: 'alerta-1',
+      severidad: 'critica' as const,
+      titulo: 'Pollos Crudos en Marinado',
+      mensaje: 'Quedan 12 unidades. Se agotan en ~1.5 horas.',
+    },
+    {
+      id: 'alerta-2',
+      severidad: 'advertencia' as const,
+      titulo: 'Cajas para Llevar / Empaques',
+      mensaje: 'Stock bajo: 25 cajas biodegradables restantes.',
+    },
+    {
+      id: 'alerta-3',
+      severidad: 'info' as const,
+      titulo: 'Gaseosa Colombiana 1.5L',
+      mensaje: 'Solo 4 botellas frías en exhibidor.',
+    },
+  ];
+
+  readonly canalesAtencion = [
+    { nombre: 'Mesa (Comedor)', valor: 820000, pctTotal: 44, icono: '🍽️', color: '#3B82F6' },
+    { nombre: 'Domicilios Pío', valor: 630000, pctTotal: 34, icono: '🚲', color: '#10B981' },
+    { nombre: 'Llevar / Mostrador', valor: 400000, pctTotal: 22, icono: '🛒', color: '#F59E0B' },
+  ];
+
+  readonly rendimientoPersonal = [
+    { codigo: 'C1', nombre: 'Caja Principal (Luz Marina)', transacciones: 68, ventas: 940000, estado: 'cuadre_ok' as const },
+    { codigo: 'M2', nombre: 'Mesero 2 (Javier P.)', transacciones: 45, ventas: 520000, estado: 'sin_propina' as const },
+    { codigo: 'DOM', nombre: 'Caja Domicilios (WhatsApp/Tel)', transacciones: 29, ventas: 390000, estado: 'alerta' as const },
+  ];
+
+  readonly productosRotacion = [
+    { nombre: 'Pollo Asado Entero + Papa y Arepa', unidades: 54, pct: 42, color: '#F97316' },
+    { nombre: 'Medio Pollo Asado', unidades: 38, pct: 28, color: '#EA580C' },
+    { nombre: 'Consomé de Menudencias / Sopa del día', unidades: 62, pct: 0, color: '#D97706' },
+    { nombre: 'Porción de Papa Criolla / Yuca', unidades: 89, pct: 0, color: '#10B981' },
+    { nombre: 'Gaseosa 1.5L / Postobón - CocaCola', unidades: 45, pct: 0, color: '#2563EB' },
+  ];
 
 }

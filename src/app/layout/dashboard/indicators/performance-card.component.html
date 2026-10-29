@@ -1,0 +1,28 @@
+<article class="flex items-center gap-3 rounded-xl border border-neutral-100 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900">
+  <div class="flex h-8 w-8 items-center justify-center rounded-lg
+  [class.bg-primary/10]:[item().estado==='cuadre_ok'] [class.text-primary]:[item().estado==='cuadre_ok']
+  [class.bg-amber-100]:[item().estado==='sin_propina'] [class.text-amber-600]:[item().estado==='sin_propina']
+  [class.dark:bg-primary/20]:[item().estado==='cuadre_ok'] [class.dark:text-primary]:[item().estado==='cuadre_ok']
+  [class.dark:bg-amber-900/20]:[item().estado==='sin_propina'] [class.dark:text-amber-400]:[item().estado==='sin_propina']
+  [class.bg-red-100]:[item().estado==='alerta'] [class.text-red-600]:[item().estado==='alerta']
+  [class.dark:bg-red-900/20]:[item().estado==='alerta'] [class.dark:text-red-400]:[item().estado==='alerta']">
+    {{ item().codigo }}
+  </div>
+  <div class="min-w-0 flex-1">
+    <div class="text-sm font-medium text-neutral-900 dark:text-white">{{ item().nombre }}</div>
+    <div class="text-xs text-neutral-500 dark:text-neutral-400">
+      {{ item().transacciones }} transacciones
+    </div>
+  </div>
+  <div class="text-right">
+    <div class="text-sm font-bold tabular-nums text-neutral-900 dark:text-white">
+      {{ item().ventas | number }}
+    </div>
+    <div class="text-xs
+    [class.text-emerald-600]:[item().estado==='cuadre_ok'] [class.dark:text-emerald-400]:[item().estado==='cuadre_ok']
+    [class.text-amber-600]:[item().estado==='sin_propina'] [class.dark:text-amber-400]:[item().estado==='sin_propina']
+    [class.text-red-600]:[item().estado==='alerta'] [class.dark:text-red-400]:[item().estado==='alerta']">
+      {{ item().estado === 'cuadre_ok' ? 'Cuadre OK' : item().estado === 'sin_propina' ? 'Sin propina pendiente' : 'Alerta' }}
+    </div>
+  </div>
+</article>

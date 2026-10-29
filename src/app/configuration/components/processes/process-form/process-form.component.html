@@ -10,37 +10,42 @@
           <!-- Tab General -->
           <mat-tab label="General">
             <div class="p-4 h-full overflow-y-auto space-y-4">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="sm:col-span-2">
-                  <label class="block text-sm font-semibold mb-1">Nombre *</label>
-                  <input type="text" [(ngModel)]="process.nombre" name="nombre" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <div class="grid grid-cols-1 gap-6 lg:grid-cols-[160px_minmax(0,1fr)]">
+                <div class="flex flex-col">
+                  <label class="form-label mb-2">Imagen</label>
+                  <div class="w-full max-w-[160px]">
+                    <app-image-uploader [(value)]="process.imagen"></app-image-uploader>
+                  </div>
                 </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Código *</label>
-                  <input type="text" [(ngModel)]="process.codigo" name="codigo" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Tipo *</label>
-                  <select [(ngModel)]="process.tipo" name="tipo" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="A">Agrupador</option>
-                    <option value="E">Ejecutor</option>
-                  </select>
-                </div>
-                <div class="sm:col-span-2">
-                  <label class="block text-sm font-semibold mb-1">Imagen</label>
-                  <app-image-uploader [(value)]="process.imagen"></app-image-uploader>
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Prioridad</label>
-                  <input type="number" [(ngModel)]="process.prioridad" name="prioridad" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold mb-1">Macro Proceso</label>
-                  <app-process-selector [(ngModel)]="process.nodoSuperior" name="nodoSuperior" label=""></app-process-selector>
-                </div>
-                <div class="sm:col-span-2">
-                  <label class="block text-sm font-semibold mb-1">Macro Nombre</label>
-                  <input type="text" [(ngModel)]="process.nodoSuperiorNombre" name="nodoSuperiorNombre" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div class="sm:col-span-2">
+                    <label class="form-label">Nombre *</label>
+                    <input type="text" [(ngModel)]="process.nombre" name="nombre" required class="form-input" />
+                  </div>
+                  <div>
+                    <label class="form-label">Código *</label>
+                    <input type="text" [(ngModel)]="process.codigo" name="codigo" required class="form-input" />
+                  </div>
+                  <div>
+                    <label class="form-label">Tipo *</label>
+                    <select [(ngModel)]="process.tipo" name="tipo" required class="form-select">
+                      <option value="A">Agrupador</option>
+                      <option value="E">Ejecutor</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="form-label">Prioridad</label>
+                    <input type="number" [(ngModel)]="process.prioridad" name="prioridad" class="form-input" />
+                  </div>
+                  <div>
+                    <label class="form-label">Macro Proceso</label>
+                    <app-process-selector [(ngModel)]="process.nodoSuperior" name="nodoSuperior" label=""></app-process-selector>
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label class="form-label">Macro Nombre</label>
+                    <input type="text" [(ngModel)]="process.nodoSuperiorNombre" name="nodoSuperiorNombre" class="form-input" />
+                  </div>
                 </div>
               </div>
             </div>

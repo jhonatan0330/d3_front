@@ -1,0 +1,45 @@
+<section class="relative overflow-hidden rounded-[30px] border border-white/40 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.18),_transparent_30%),linear-gradient(135deg,_rgba(15,23,42,0.96),_rgba(30,41,59,0.94),_rgba(17,24,39,0.98))] p-4 shadow-[0_18px_50px_rgba(15,23,42,0.22)] ring-1 ring-slate-200/40 sm:p-6 dark:ring-slate-700/50">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(14,124,123,0.25),_transparent_35%)]"></div>
+
+  <div class="relative mb-5 flex items-center justify-between gap-3">
+    <div>
+      <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-sky-200/80">
+        Acceso rápido
+      </p>
+      <h2 class="mt-1 text-xl font-semibold text-white">
+        Herramientas de gestión rápida
+      </h2>
+    </div>
+    <span class="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[11px] font-medium text-slate-100 backdrop-blur-sm">
+      {{ acciones().length }} opciones
+    </span>
+  </div>
+
+  <div class="relative grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    @for (accion of acciones(); track accion.id) {
+      <button
+        type="button"
+        class="group flex h-full items-center gap-3 rounded-2xl border border-white/10 bg-white/7 p-3 text-left text-white shadow-[0_10px_20px_rgba(15,23,42,0.18)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-300/40 hover:bg-white/10 dark:border-slate-700/60 dark:bg-slate-900/40"
+        (click)="onAction(accion)"
+      >
+        @if (accion.icono?.startsWith('http') || accion.icono?.startsWith('/') || accion.icono?.startsWith('www')) {
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/15 bg-white/10 shadow-sm">
+            <img
+              class="h-full w-full object-cover"
+              [src]="accion.icono | imageFormat"
+              [alt]="accion.nombre"
+              (error)="$any($event.target).src = 'assets/images/logo/dark_264x264.png'"
+            />
+          </span>
+        } @else {
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 to-cyan-500 text-base font-semibold text-white shadow-sm transition-transform duration-200 group-hover:scale-[1.03]">
+            {{ accion.icono }}
+          </span>
+        }
+        <span class="min-w-0 text-sm font-medium text-slate-100">
+          {{ accion.nombre }}
+        </span>
+      </button>
+    }
+  </div>
+</section>

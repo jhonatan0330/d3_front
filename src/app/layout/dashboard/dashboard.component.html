@@ -53,7 +53,62 @@
 
   </div>
   }
-  <indicators-cards></indicators-cards>
+
+  <!-- Herramientas de gestión rápida -->
+  <div class="mx-auto mt-6 w-full max-w-5xl px-4 lg:px-8">
+    <quick-actions />
+  </div>
+
+  <!-- Indicadores KPI (dentro del contenedor max-w-5xl, alineado con el resto de tarjetas) 
+  <div class="mx-auto mt-6 w-full max-w-5xl px-4 lg:px-8">
+    <indicators-cards></indicators-cards>
+  </div>-->
+
+  <!-- Fila de referencia: rotación, alertas, canales, rendimiento 
+  <div class="mx-auto mt-6 w-full max-w-5xl px-4 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <section class="flex flex-col">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-neutral-500 mb-4 dark:text-neutral-400">
+          Rotación de Productos Más Vendidos
+        </h2>
+        <horizontal-bar [items]="productosRotacion" />
+      </section>
+      <section class="flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            Alertas de Stock Crítico
+          </h2>
+          <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-0.5 text-[10px] font-semibold text-red-600 dark:bg-red-900/20 dark:text-red-400">
+            3 Alertas
+          </span>
+        </div>
+        @for (alerta of alertasStock; track alerta.id) {
+          <alert-card [alerta]="alerta" />
+        }
+      </section>
+      <section class="flex flex-col gap-4">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-neutral-500 mb-4 dark:text-neutral-400">
+          Ventas por Canal de Atención
+        </h2>
+        <div class="grid grid-cols-1 gap-3">
+          @for (canal of canalesAtencion; track canal.nombre) {
+            <channel-card [canal]="canal" />
+          }
+        </div>
+      </section>
+      <section class="flex flex-col gap-4">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-neutral-500 mb-4 dark:text-neutral-400">
+          Rendimiento Personal
+        </h2>
+        <div class="flex flex-col gap-3">
+          @for (item of rendimientoPersonal; track item.codigo) {
+            <performance-card [item]="item" />
+          }
+        </div>
+      </section>
+    </div>
+  </div>-->
+
   <div class="mx-auto mt-6 w-full max-w-5xl px-4 lg:px-8">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <recent-documents-card></recent-documents-card>

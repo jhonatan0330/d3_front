@@ -14,12 +14,12 @@ import {
 import { UtilsService } from 'app/document/service/utils.service';
 import { LoginService } from 'app/authentication/login.service';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
-
+import { PedidoVentaDTO } from 'app/document/document.types';
 
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { NgClass, AsyncPipe, I18nPluralPipe } from '@angular/common';
+import { AsyncPipe, I18nPluralPipe } from '@angular/common';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { UsersService } from 'app/users/business/users.services';
@@ -33,7 +33,7 @@ import { LayoutService } from 'app/layout/layout.service';
     selector: 'UsersComponent',
     templateUrl: 'users.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule, NgClass, AsyncPipe, I18nPluralPipe, DropdownComponent, DropdownItemComponent]
+    imports: [MatFormField, MatIcon, MatPrefix, MatInput, FormsModule, ReactiveFormsModule,  AsyncPipe, I18nPluralPipe, DropdownComponent, DropdownItemComponent]
 })
 export class PersonsComponent implements OnInit {
     private layoutService = inject(LayoutService);
@@ -52,6 +52,8 @@ export class PersonsComponent implements OnInit {
     searchInputControl: FormControl<string | null> = new FormControl<string | null>(null);
     selectedContact: UsuarioDTO;
     tags$: Observable<RolAccesoFilterDTO[]>;
+    selectedRole = signal<RolAccesoFilterDTO | null>(null);
+    roles: RolAccesoFilterDTO[] = [];
 
 
     ngOnInit(): void {
@@ -64,8 +66,9 @@ export class PersonsComponent implements OnInit {
         this._contactsService.clearContacts();
 
         this.tags$ = this._contactsService.searchTags();
-
-
+        this.tags$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((roles) => {
+            this.roles = roles ?? [];
+        });
 
         // Subscribe to search input field value changes
         this.searchInputControl.valueChanges
@@ -89,10 +92,31 @@ export class PersonsComponent implements OnInit {
         return nombre.replace(/^rol\s+/i, '');
     }
 
-    filtrarPorTag(tag) {
+    filtrarPorTag(tag: RolAccesoFilterDTO | null) {
+        if (!tag) {
+            this.selectedRole.set(null);
+            this._contactsService.searchContacts(this.searchInputControl.value ?? '').subscribe({ error: () => { } });
+            return;
+        }
+
+        this.selectedRole.set(tag);
         this._contactsService.getContactByTag(tag.llaveTabla).subscribe({ error: () => { } });
     }
 
+    seleccionarRol(tag: RolAccesoFilterDTO | null) {
+        this.filtrarPorTag(tag);
+    }
+
+    agregarUsuario(): void {
+        const rol = this.selectedRole();
+        if (!rol?.plantilla) {
+            return;
+        }
+
+        const documento = new PedidoVentaDTO();
+        documento.plantilla = rol.plantilla;
+        this.utilService.modalWithParams(documento, true).subscribe({ error: () => { } });
+    }
 
     onUsuarioClick(pUsuario: UsuarioDTO): void {
         this.utilService.modalUser(pUsuario.llaveTabla).subscribe({ error: () => { } });

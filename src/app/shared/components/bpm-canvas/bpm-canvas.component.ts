@@ -99,23 +99,23 @@ export class BpmCanvasComponent {
     }
 
     iconoCentrado(node: BpmCanvasSceneNode): string {
-        const x = node.icon === 'api' ? 14 : node.width / 2 - ICON_SIZE / 2;
-        const y = node.icon === 'api' ? ICON_TOP + 8 : ICON_TOP;
+        const x = 14;//node.icon === 'api' ? 14 : node.width / 2 - ICON_SIZE / 2;
+        const y = ICON_TOP + 8;//node.icon === 'api' ? ICON_TOP + 8 : ICON_TOP;
         return `translate(${x}, ${y}) scale(${ICON_SIZE / 24})`;
     }
 
     yTitulo(node: BpmCanvasSceneNode): number {
-        if (node.shape === 'icon') return node.icon === 'api' ? API_TITLE_Y : ICON_TITLE_Y;
+        if (node.shape === 'icon') return API_TITLE_Y;//node.icon === 'api' ? API_TITLE_Y : ICON_TITLE_Y;
         return node.shape ? this.shapeTitleY : 25;
     }
 
     yMetadata(node: BpmCanvasSceneNode, index: number): number {
-        if (node.shape === 'icon') return node.icon === 'api' ? API_META_Y : ICON_META_Y;
+        if (node.shape === 'icon') return API_META_Y;//node.icon === 'api' ? API_META_Y : ICON_META_Y;
         return node.shape ? this.shapeMetaY : 66 + index * 19;
     }
 
     tagsY(node: BpmCanvasSceneNode): number {
-        return node.shape === 'icon' && node.icon === 'api' ? 72 : node.height - 24;
+        return node.shape === 'icon'  ? 72 : node.height - 24;//&& node.icon === 'api'
     }
 
     activateNode(node: BpmCanvasSceneNode, event?: Event): void {
@@ -283,7 +283,7 @@ export class BpmCanvasComponent {
         };
 
         const medidasHijos = (kids: BpmCanvasNode[]): {
-            enFila: BpmCanvasNode[];
+            //enFila: BpmCanvasNode[];
             enColumna: BpmCanvasNode[];
             filaWidth: number;
             filaHeight: number;
@@ -292,16 +292,8 @@ export class BpmCanvasComponent {
             height: number;
             gap: number;
         } => {
-            //const enFila = kids.filter(kid => kid.horizontal);
-           // const enColumna = kids.filter(kid => !kid.horizontal);
-            //let filaWidth = 0;
             let filaHeight = 0;
-            /*for (const kid of enFila) {
-                const kidSize = subtreeSize(kid);
-                filaWidth += kidSize.width + CARD_GAP_X;
-                filaHeight = Math.max(filaHeight, kidSize.height);
-            }*/
-            //filaWidth = Math.max(0, filaWidth - CARD_GAP_X);
+
             let colHeight = -CARD_GAP_Y;
             let colWidth = 0;
             for (const kid of kids) {
@@ -309,10 +301,8 @@ export class BpmCanvasComponent {
                 colHeight += kidSize.height + CARD_GAP_Y;
                 colWidth = Math.max(colWidth, kidSize.width);
             }
-            //if (!enColumna.length) colHeight = 0;
             const gap = filaHeight && colHeight ? CARD_GAP_Y : 0;
             return {
-                enFila: [],
                 enColumna: kids,
                 filaWidth: 0,
                 filaHeight: filaHeight,
@@ -491,12 +481,6 @@ export class BpmCanvasComponent {
             const m = medidasHijos(kids);
             const childX = x + CARD_WIDTH + TREE_PAD_H;
             let childY = y + (size.height - m.height) / 2;
-            let filaX = childX;
-            for (const kid of m.enFila) {
-                const kidSize = subtreeSize(kid);
-                place(kid, filaX, childY + (m.filaHeight - kidSize.height) / 2, depth + 1, nextAncestry);
-                filaX += kidSize.width + CARD_GAP_X;
-            }
             if (m.filaHeight) childY += m.filaHeight + m.gap;
             for (const kid of m.enColumna) {
                 const kidSize = subtreeSize(kid);
@@ -642,29 +626,32 @@ export class BpmCanvasComponent {
     }
 
     private nodeWidth(node: BpmCanvasNode): number {
-        if (node.shape === 'icon') return node.icon === 'api' ? CARD_WIDTH : ICON_SLOT;
+        if (node.shape === 'icon') return CARD_WIDTH;//node.icon === 'api' ? CARD_WIDTH : ICON_SLOT;
         return node.shape ? SHAPE_SLOT : CARD_WIDTH;
     }
 
     private edgeStartX(node: BpmCanvasSceneNode): number {
-        if (node.shape === 'icon' && node.icon === 'api') return node.x + node.width;
+        if (node.shape === 'icon')// && node.icon === 'api') 
+            return node.x + node.width;
         if (!node.shape) return node.x + node.width;
         return node.x + node.width / 2 + (node.shape === 'circle' ? SHAPE_R : SHAPE_HALF_W);
     }
 
     private edgeEndX(node: BpmCanvasSceneNode): number {
-        if (node.shape === 'icon' && node.icon === 'api') return node.x;
+        if (node.shape === 'icon')// && node.icon === 'api') 
+            return node.x;
         if (!node.shape) return node.x;
         return node.x + node.width / 2 - (node.shape === 'circle' ? SHAPE_R : SHAPE_HALF_W);
     }
 
     private edgeY(node: BpmCanvasSceneNode): number {
-        if (node.shape === 'icon' && node.icon === 'api') return node.y + node.height / 2;
+        if (node.shape === 'icon')// && node.icon === 'api') 
+            return node.y + node.height / 2;
         return node.shape ? node.y + SHAPE_TOP + SHAPE_R : node.y + node.height / 2;
     }
 
     private nodeHeight(node: BpmCanvasNode): number {
-        if (node.shape === 'icon') return node.icon === 'api' ? API_CARD_HEIGHT : ICON_HEIGHT;
+        if (node.shape === 'icon') return API_CARD_HEIGHT;//node.icon === 'api' ? API_CARD_HEIGHT : ICON_HEIGHT;
         if (node.shape) return SHAPE_HEIGHT;
         const metadataCount = Math.min(node.metadata?.length || 0, 2);
         const metadataEnd = metadataCount ? 66 + (metadataCount - 1) * 19 + 14 : 0;

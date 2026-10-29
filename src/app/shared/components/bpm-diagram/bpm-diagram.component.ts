@@ -145,7 +145,7 @@ export class BpmDiagramComponent implements OnInit {
     if (nodo.tipo === TreeNodeDTO.PROCESO && nodo.categoria === 'E') {
       this.cargarMapaProceso(nodo);
       this.cargarIconosProceso(nodo);
-      return;
+      //return;
     }
     this.cargandoHijos.set(true);
     const request = new ArbolNodoRequestDTO();
@@ -374,7 +374,7 @@ export class BpmDiagramComponent implements OnInit {
       hasChildren: this.puedeExpandir(nodo),
       modalAction: this.modalAccionDe(nodo),
       icon: this.iconCard(nodo),
-      shape: nodo.tipo === TreeNodeDTO.API ? 'icon' : undefined,
+      shape: (nodo.tipo === TreeNodeDTO.API || nodo.tipo === TreeNodeDTO.PLANTILLA) ? 'icon' : undefined,
     };
   }
 

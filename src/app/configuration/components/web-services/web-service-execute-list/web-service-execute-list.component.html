@@ -1,12 +1,11 @@
 
-    <div class="p-4 sm:p-6 space-y-4">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Ejecuciones Web Service</h1>
+    <div class="list-page">
+      <div class="list-header">
+        <h1 class="list-title">Ejecuciones Web Service</h1>
       </div>
 
-      <!-- Filtros -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="list-toolbar">
+        <div class="list-filters">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Fecha Desde *</mat-label>
             <input matInput [matDatepicker]="dp1" [(ngModel)]="execFilter.fechaEjecucionMin" (ngModelChange)="onExecFilterChange()" placeholder="DD/MM/YYYY" required />
@@ -30,8 +29,7 @@
         </div>
       </div>
 
-      <!-- Lista -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="list-panel">
         @if (!datesValid()) {
           <div class="p-6 text-center text-amber-600 dark:text-amber-400 text-sm font-medium">
             <mat-icon class="align-middle mr-1">warning</mat-icon>
@@ -75,12 +73,12 @@
                 <tr mat-row *matRowDef="let row; columns: execDisplayedColumns;"></tr>
               </table>
             </div>
-            <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-4">
+            <div class="list-footer">
               <span class="text-sm text-gray-500 dark:text-gray-400">Mostrando {{ execData().length }} registros</span>
               @if (execLoading()) { <div class="w-40 h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div> }
             </div>
           }
-          @if (!execLoading() && execData().length === 0) { <div class="text-center py-12 text-gray-500 dark:text-gray-400">No hay ejecuciones registradas en el rango seleccionado</div> }
+          @if (!execLoading() && execData().length === 0) { <div class="list-empty">No hay ejecuciones registradas en el rango seleccionado</div> }
         }
       </div>
       <div #loadMoreExec></div>

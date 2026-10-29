@@ -1,20 +1,20 @@
 
-    <div class="flex flex-col h-full">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold">Transiciones del Proceso</h3>
+    <div class="list-page">
+      <div class="list-header">
+        <h3 class="list-title text-lg">Transiciones del Proceso</h3>
         <button type="button" class="btn-flat-primary" (click)="openTransitionForm()"><mat-icon>add</mat-icon> Nueva Transición</button>
       </div>
 
       @if (loading()) {
         <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div>
       } @else if (transitions().length === 0) {
-        <div class="flex-1 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
+        <div class="list-empty flex flex-col items-center justify-center h-full">
           <mat-icon class="text-6xl mb-4">swap_horiz</mat-icon>
           <p class="text-lg">No hay transiciones configuradas</p>
           <button type="button" class="btn-flat-primary mt-4" (click)="openTransitionForm()"><mat-icon>add</mat-icon> Crear primera transición</button>
         </div>
       } @else {
-        <div class="flex-1 overflow-y-auto">
+        <div class="list-panel">
           <div class="overflow-x-auto">
             <table mat-table [dataSource]="transitions()" class="w-full">
               <ng-container matColumnDef="nombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-medium">{{ element.nombre }}</td></ng-container>

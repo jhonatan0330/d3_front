@@ -70,22 +70,33 @@ export class DocumentTemplateFieldListComponent implements OnInit {
             return;
         }
 
-        const reordenados = [...this.activos()];
-        moveItemInArray(reordenados, event.previousIndex, event.currentIndex);
+        const activos = [...this.activos()];
+        moveItemInArray(activos, event.previousIndex, event.currentIndex);
 
-        const prioridades = new Map(reordenados.map((f, i) => [f.llaveTabla, i + 1]));
-        this.fields.update((fields) =>
-            fields.map((field) => {
-                const prioridad = prioridades.get(field.llaveTabla);
-                return prioridad ? { ...field, prioridad } : field;
-            })
-        );
+        const siguientes = [...this.fields()];
+        const activosKey = new Set(activos.map((field) => field.llaveTabla));
 
-        const movedField = { ...reordenados[event.currentIndex], prioridad: event.currentIndex + 1 };
+        const reorderedFields = [
+            ...activos,
+            ...siguientes.filter((field) => !activosKey.has(field.llaveTabla))
+        ];
+
+        const prioridades = new Map(activos.map((field, index) => [field.llaveTabla, index + 1]));
+
+        this.fields.set(reorderedFields.map((field) => {
+            const prioridad = prioridades.get(field.llaveTabla);
+            return prioridad && field.estado === 'A' ? { ...field, prioridad } : field;
+        }));
+
+        const movedField = { ...activos[event.currentIndex], prioridad: event.currentIndex + 1 };
         if (!movedField.nodoSuperior) {
             movedField.nodoSuperior = this.templateKey;
         }
+
         this.service.updateField(movedField).subscribe({
+            next: () => {
+                this.loadFields();
+            },
             error: () => this.loadFields()
         });
     }

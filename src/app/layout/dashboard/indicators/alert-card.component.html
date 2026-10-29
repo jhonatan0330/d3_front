@@ -1,0 +1,23 @@
+<article
+  class="flex gap-3 rounded-xl border p-4
+  [class.border-red-100]:[alerta().severidad==='critica'] [class.bg-red-50]:[alerta().severidad==='critica']
+  [class.dark:border-red-900/30]:[alerta().severidad==='critica'] [class.dark:bg-red-900/10]:[alerta().severidad==='critica']
+  [class.border-amber-100]:[alerta().severidad==='advertencia'] [class.bg-amber-50]:[alerta().severidad==='advertencia']
+  [class.dark:border-amber-900/30]:[alerta().severidad==='advertencia'] [class.dark:bg-amber-900/10]:[alerta().severidad==='advertencia']
+  [class.border-blue-100]:[alerta().severidad==='info'] [class.bg-blue-50]:[alerta().severidad==='info']
+  [class.dark:border-blue-900/30]:[alerta().severidad==='info'] [class.dark:bg-blue-900/10]:[alerta().severidad==='info']"
+>
+  <div class="flex h-7 w-7 items-center justify-center rounded-lg
+  [class.bg-red-100]:[alerta().severidad==='critica'] [class.text-red-600]:[alerta().severidad==='critica']
+  [class.dark:bg-red-900/30]:[alerta().severidad==='critica'] [class.dark:text-red-400]:[alerta().severidad==='critica']
+  [class.bg-amber-100]:[alerta().severidad==='advertencia'] [class.text-amber-600]:[alerta().severidad==='advertencia']
+  [class.dark:bg-amber-900/30]:[alerta().severidad==='advertencia'] [class.dark:text-amber-400]:[alerta().severidad==='advertencia']
+  [class.bg-blue-100]:[alerta().severidad==='info'] [class.text-blue-600]:[alerta().severidad==='info']
+  [class.dark:bg-blue-900/30]:[alerta().severidad==='info'] [class.dark:text-blue-400]:[alerta().severidad==='info']">
+    ⚠
+  </div>
+  <div class="min-w-0 flex-1">
+    <div class="text-sm font-semibold text-neutral-900 dark:text-white">{{ alerta().titulo }}</div>
+    <p class="mt-0.5 text-sm text-neutral-600 dark:text-neutral-300">{{ alerta().mensaje }}</p>
+  </div>
+</article>

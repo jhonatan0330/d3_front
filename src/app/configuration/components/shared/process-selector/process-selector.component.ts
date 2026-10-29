@@ -42,12 +42,15 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
         filter.paginacionRegistroFinal = 1000;
         this.processService.getProcesses(filter).subscribe({
             next: (res) => {
-                this.procesos = res;
+                this.procesos = res ?? [];
                 this.applyFilter();
-                if (this.selectedKey) this.setDisplayFromList();
+                this.syncSelectedProcessDisplay();
                 this.cdr.markForCheck();
             },
-            error: () => { this.procesos = []; this.cdr.markForCheck(); }
+            error: () => {
+                this.procesos = [];
+                this.cdr.markForCheck();
+            }
         });
     }
 
@@ -95,15 +98,31 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
         this.onChange('');
     }
 
-    private setDisplayFromList(): void {
+    private syncSelectedProcessDisplay(): void {
+        if (!this.selectedKey) {
+            this.displayValue = '';
+            return;
+        }
+
         const found = this.procesos.find(p => p.llaveTabla === this.selectedKey);
-        this.displayValue = found ? found.nombre : this.selectedKey;
+        if (found) {
+            this.displayValue = found.nombre || found.codigo || this.selectedKey;
+            return;
+        }
+
+        this.loadDisplay(this.selectedKey);
     }
 
     private loadDisplay(key: string): void {
         this.processService.getProcessById(key).subscribe({
-            next: (process) => { this.displayValue = process.nombre; this.cdr.markForCheck(); },
-            error: () => { this.displayValue = key; this.cdr.markForCheck(); }
+            next: (process) => {
+                this.displayValue = process?.nombre || process?.codigo || key;
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.displayValue = key;
+                this.cdr.markForCheck();
+            }
         });
     }
 
@@ -112,8 +131,7 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
         this.displayValue = '';
         this.query = '';
         if (this.selectedKey) {
-            if (this.procesos.length > 0) this.setDisplayFromList();
-            else this.loadDisplay(this.selectedKey);
+            this.syncSelectedProcessDisplay();
         }
     }
 

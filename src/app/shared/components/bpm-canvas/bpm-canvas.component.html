@@ -99,13 +99,9 @@
               ></rect>
               @if (node.shape) {
                 <g class="node-shape-group" pointer-events="none">
-                  @if (node.shape === 'icon' && node.icon === 'api') {
+                  @if (node.shape === 'icon') {
                     <rect class="node-card icon-card" [attr.width]="node.width" [attr.height]="node.height" rx="9"></rect>
                     <rect class="node-accent" width="4" [attr.height]="node.height" rx="2"></rect>
-                    <g class="node-glyph icon-center" [attr.transform]="iconoCentrado(node)">
-                      <path [attr.d]="iconPath(node.icon)" fill-rule="evenodd"></path>
-                    </g>
-                  } @else if (node.shape === 'icon') {
                     <g class="node-glyph icon-center" [attr.transform]="iconoCentrado(node)">
                       <path [attr.d]="iconPath(node.icon)" fill-rule="evenodd"></path>
                     </g>
@@ -123,12 +119,12 @@
                   </g>
                 }
               }
-              <text class="node-title" [attr.x]="node.shape === 'icon' ? (node.icon === 'api' ? 52 : node.width / 2) : (node.shape ? node.width / 2 : (node.icon ? 48 : 16))" [attr.y]="yTitulo(node)" [attr.text-anchor]="node.shape && !(node.shape === 'icon' && node.icon === 'api') ? 'middle' : null" pointer-events="none">{{ truncateLabel(node.title) }}</text>
-              @if (node.subtitle && (!node.shape || (node.shape === 'icon' && node.icon === 'api'))) {
+              <text class="node-title" [attr.x]="node.shape === 'icon' ? 52 : (node.icon ? 48 : 16)" [attr.y]="yTitulo(node)" pointer-events="none">{{ truncateLabel(node.title) }}</text>
+              @if (node.subtitle && (!node.shape || (node.shape === 'icon' ))) {
                 <text class="node-subtitle" [attr.x]="node.shape === 'icon' ? 52 : (node.icon ? 48 : 16)" [attr.y]="node.shape === 'icon' ? 48 : 45" pointer-events="none">{{ truncateLabel(node.subtitle) }}</text>
               }
               @for (metadata of (node.metadata || []).slice(0, node.shape ? 1 : 2); track metadata.label; let index = $index) {
-                <text class="node-metadata" [attr.x]="node.shape ? node.width / 2 : (node.icon ? 48 : 16)" [attr.y]="yMetadata(node, index)" [attr.text-anchor]="node.shape ? 'middle' : null" pointer-events="none">
+                <text class="node-metadata" [attr.x]="node.shape ? node.width / 2 : (node.icon ? 48 : 16)" [attr.y]="yMetadata(node, index)" [attr.text-anchor]="node.shape && (node.shape === 'icon')? 'middle' : null" pointer-events="none">
                   @if (!node.shape) {
                     <tspan class="metadata-label">{{ metadata.label }} </tspan>
                   }{{ truncateLabel(metadata.value) }}

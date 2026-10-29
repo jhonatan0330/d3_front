@@ -9,40 +9,40 @@
         <div class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold mb-1">Fecha *</label>
-              <input type="date" [(ngModel)]="task.fecha" name="fecha" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label class="form-label">Fecha *</label>
+              <input type="date" [(ngModel)]="task.fecha" name="fecha" required class="form-input" />
             </div>
             <div>
-              <label class="block text-sm font-semibold mb-1">Transición</label>
-              <input type="text" [(ngModel)]="task.transicion" name="transicion" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Llave de la transición" />
+              <label class="form-label">Transición</label>
+              <input type="text" [(ngModel)]="task.transicion" name="transicion" class="form-input" placeholder="Llave de la transición" />
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-semibold mb-1">Plantilla</label>
-              <input type="text" [(ngModel)]="task.plantilla" name="plantilla" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Llave de la plantilla" />
+              <input type="text" [(ngModel)]="task.plantilla" name="plantilla" class="form-input" placeholder="Llave de la plantilla" />
             </div>
             <div>
-              <label class="block text-sm font-semibold mb-1">Plantilla Nombre</label>
-              <input type="text" [(ngModel)]="task.plantillaNombre" name="plantillaNombre" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <label class="form-label">Plantilla Nombre</label>
+              <input type="text" [(ngModel)]="task.plantillaNombre" name="plantillaNombre" class="form-input" />
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold mb-1">Propiedad</label>
-              <input type="text" [(ngModel)]="task.propiedad" name="propiedad" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Llave de la propiedad" />
+              <label class="form-label">Propiedad</label>
+              <input type="text" [(ngModel)]="task.propiedad" name="propiedad" class="form-input" placeholder="Llave de la propiedad" />
             </div>
             <div>
-              <label class="block text-sm font-semibold mb-1">Ejecución</label>
-              <input type="text" [(ngModel)]="task.ejecucion" name="ejecucion" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm" />
+              <label class="form-label">Ejecución</label>
+              <input type="text" [(ngModel)]="task.ejecucion" name="ejecucion" class="form-input font-mono" />
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-semibold mb-1">Mensaje</label>
-            <textarea [(ngModel)]="task.mensaje" name="mensaje" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Mensaje de la tarea"></textarea>
+            <label class="form-label">Mensaje</label>
+            <textarea [(ngModel)]="task.mensaje" name="mensaje" rows="3" class="form-textarea" placeholder="Mensaje de la tarea"></textarea>
           </div>
         </div>
 

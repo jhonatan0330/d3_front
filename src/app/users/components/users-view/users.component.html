@@ -1,13 +1,13 @@
 <div>
   <!-- Header -->
   <div
-    class="flex flex-auto flex-col justify-between border-b px-6 py-8 sm:flex-row md:flex-col md:px-8 sticky top-0 z-50 bg-white p-4 shadow">
+    class="sticky top-0 z-50 flex flex-col gap-3 border-b bg-white px-4 py-3 shadow-sm sm:flex-row sm:items-center sm:justify-between md:px-6">
     <!-- Title -->
-    <div>
-      <div class="text-4xl font-extrabold leading-none tracking-tight">
+    <div class="min-w-0">
+      <div class="text-2xl font-bold leading-none tracking-tight text-gray-900 dark:text-gray-100">
         Usuarios
       </div>
-      <div class="text-secondary ml-0.5 font-medium">
+      <div class="mt-1 text-sm text-gray-500 dark:text-gray-400">
         @if (contactsCount() > 0) {
         <span>
           {{ contactsCount() }}
@@ -25,33 +25,69 @@
       </div>
     </div>
     <!-- Main actions -->
-    <div class="mt-4 flex items-center sm:mt-0 md:mt-4">
-      <!-- Search -->
-      <div class="flex-auto">
-        <mat-form-field class="w-full min-w-50" subscriptSizing="dynamic">
-          <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
-          <input matInput [formControl]="searchInputControl" [autocomplete]="'off'" [placeholder]="'Buscar usuarios'" />
-        </mat-form-field>
-      </div>
+    <div class="flex w-full max-w-md items-center sm:ml-auto sm:w-72">
+      <mat-form-field class="w-full" subscriptSizing="dynamic">
+        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_outline:magnifying-glass'"></mat-icon>
+        <input matInput [formControl]="searchInputControl" [autocomplete]="'off'" [placeholder]="'Buscar usuarios'" />
+      </mat-form-field>
     </div>
-    <div class="mt-4 flex items-center sm:mt-0 md:mt-4">
+    <div class="flex w-full items-center gap-2 sm:w-auto sm:min-w-[340px]">
       @if (tags$ | async; as tags) {
-      <div class="overflow-x-auto whitespace-nowrap">
-        <div class="flex pr-[10px] gap-2">
-          @for (tag of tags; track tag) {
-          <div>
-            <button (click)="filtrarPorTag(tag)" class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800 
-               dark:bg-green-500 dark:text-green-50 ng-star-inserted 
-               overflow-hidden w-[200px] flex items-center gap-2">
-              @if (tag.imagen) {
-              <img class="h-[50px] w-[50px] object-cover rounded-full" [src]="tag.imagen" alt="tag.nombre" />
+      <div class="flex flex-1 items-center gap-2">
+        <app-dropdown class="w-full">
+          <button
+            trigger
+            type="button"
+            class="flex w-full items-center justify-between gap-2 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-left text-sm text-gray-700 transition hover:border-primary-300 hover:bg-white dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
+            <span class="flex min-w-0 items-center gap-2">
+              @if (selectedRole() && selectedRole()?.imagen) {
+              <img class="h-5 w-5 rounded-full object-cover" [src]="selectedRole()?.imagen" [alt]="selectedRole()?.nombre" />
+              } @else {
+              <span class="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[10px] font-bold text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                <mat-icon class="!text-base !h-4 !w-4" [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+              </span>
               }
-              {{ limpiarNombre(tag.nombre) }}
-            </button>
-          </div>
+              <span class="truncate">
+                {{ selectedRole() ? limpiarNombre(selectedRole()!.nombre) : 'Todos los roles' }}
+              </span>
+            </span>
+            <mat-icon class="!text-base text-gray-500" [svgIcon]="'heroicons_outline:chevron-down'"></mat-icon>
+          </button>
+
+          <app-dropdown-item (clicked)="seleccionarRol(null)">
+            <span class="flex items-center gap-2">
+              <span class="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[10px] font-bold text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                <mat-icon class="!text-base !h-4 !w-4" [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+              </span>
+              <span>Todos los roles</span>
+            </span>
+          </app-dropdown-item>
+
+          @for (tag of tags; track tag.codigo || tag.nombre) {
+          <app-dropdown-item (clicked)="seleccionarRol(tag)">
+            <span class="flex items-center gap-2">
+              @if (tag.imagen) {
+              <img class="h-5 w-5 rounded-full object-cover" [src]="tag.imagen" [alt]="tag.nombre" />
+              } @else {
+              <span class="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[10px] font-bold text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                {{ limpiarNombre(tag.nombre).charAt(0) || 'R' }}
+              </span>
+              }
+              <span>{{ limpiarNombre(tag.nombre) }}</span>
+            </span>
+          </app-dropdown-item>
           }
-        </div>
+        </app-dropdown>
       </div>
+      }
+      @if (selectedRole() && selectedRole()?.plantilla) {
+      <button
+        type="button"
+        class="inline-flex shrink-0 items-center justify-center gap-1 rounded-md border border-primary-200 bg-primary-50 px-2.5 py-1.5 text-xs font-semibold text-primary-700 transition hover:bg-primary-100 dark:border-primary-700 dark:bg-primary-500/10 dark:text-primary-300 dark:hover:bg-primary-500/20"
+        (click)="agregarUsuario()"
+        aria-label="Agregar usuario para el rol seleccionado">
+        <mat-icon class="!text-base" [svgIcon]="'heroicons_outline:user-plus'"></mat-icon>
+      </button>
       }
     </div>
   </div>
@@ -59,54 +95,56 @@
   <div class="relative">
     @if (contacts(); as contacts) {
     @if (contacts.length > 0) {
-    @for (contact of contacts; track trackByFn(i, contact); let i = $index) {
-    <!-- Group -->
-    @if (i === 0 || contact.nombre.charAt(0) !== contacts[i - 1].nombre.charAt(0)) {
-    <div
-      class="text-secondary sticky top-0 z-10 -mt-px border-b border-t bg-gray-50 px-6 py-1 font-medium uppercase dark:bg-gray-900 md:px-8">
-      {{ contact.nombre.charAt(0) }}
+    <div class="grid gap-4 p-4 md:grid-cols-2 xl:grid-cols-3">
+      @for (contact of contacts; track trackByFn(i, contact); let i = $index) {
+      <article class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-700 dark:bg-gray-900">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="flex h-12 w-12 flex-0 items-center justify-center overflow-hidden rounded-full ring-2 ring-gray-100 dark:ring-gray-700">
+              @if (contact.imagen) {
+              <img class="h-full w-full object-cover" [src]="contact.imagen" alt="Contact imagen" />
+              }
+              @if (!contact.imagen) {
+              <div class="flex h-full w-full items-center justify-center bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                {{ contact.nombre.charAt(0) }}
+              </div>
+              }
+            </div>
+            <div class="min-w-0">
+              <div class="truncate font-semibold text-gray-900 dark:text-gray-100" (click)="onUsuarioClick(contact)">
+                {{ contact.nombre }}
+              </div>
+              <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                {{ contact.identificacion || 'Sin identificación' }}
+              </div>
+            </div>
+          </div>
+          <div class="ml-auto leading-6">
+            <app-dropdown>
+              <button class="btn-icon btn-icon-sm" trigger>
+                <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
+              </button>
+              <app-dropdown-item (clicked)="cambiar_clave(contact)">
+                <mat-icon [svgIcon]="'heroicons_outline:key'"></mat-icon>
+                Cambiar Clave
+              </app-dropdown-item>
+            </app-dropdown>
+          </div>
+        </div>
+
+        <div class="mt-4 space-y-2 border-t border-gray-100 pt-3 dark:border-gray-800">
+          <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+            <mat-icon class="!text-base" [svgIcon]="'heroicons_outline:phone'"></mat-icon>
+            <span class="truncate">{{ contact.telefono || 'Sin teléfono' }}</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+            <mat-icon class="!text-base" [svgIcon]="'heroicons_outline:envelope'"></mat-icon>
+            <span class="truncate">{{ contact.correo || 'Sin correo' }}</span>
+          </div>
+        </div>
+      </article>
+      }
     </div>
-    }
-    <!-- Contact -->
-    <a class="z-20 flex cursor-pointer items-center border-b px-6 py-4 md:px-8" [ngClass]="{'dark:hover:bg-hover hover:bg-gray-100':
-                                            !selectedContact || selectedContact.identificacion !== contact.identificacion,
-                                        'bg-primary-50 dark:bg-hover':
-                                            selectedContact && selectedContact.identificacion === contact.identificacion
-                                    }">
-      <div class="flex h-10 w-10 flex-0 items-center justify-center overflow-hidden rounded-full">
-        @if (contact.imagen) {
-        <img class="h-full w-full object-cover" [src]="contact.imagen" alt="Contact imagen" />
-        }
-        @if (!contact.imagen) {
-        <div
-          class="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-lg uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-          {{ contact.nombre.charAt(0) }}
-        </div>
-        }
-      </div>
-      <div class="ml-4 min-w-0" (click)="onUsuarioClick(contact)">
-        <div class="truncate font-medium leading-5">
-          {{ contact.nombre }}
-        </div>
-        <div class="text-secondary truncate leading-5">
-          {{ contact.telefono }}
-        </div>
-      </div>
-      <!-- Clave -->
-      <div class="ml-auto leading-6">
-        <!-- Botón del menú (los 3 punticos) -->
-        <app-dropdown>
-          <button class="btn-icon" trigger>
-            <mat-icon [svgIcon]="'heroicons_outline:ellipsis-vertical'"></mat-icon>
-          </button>
-          <app-dropdown-item (clicked)="cambiar_clave(contact)">
-            <mat-icon [svgIcon]="'heroicons_outline:key'"></mat-icon>
-            Cambiar Clave
-          </app-dropdown-item>
-        </app-dropdown>
-      </div>
-    </a>
-    }
     } @else {
     <div class="border-t p-8 text-center text-4xl font-semibold tracking-tight sm:p-16">
       No hay!
