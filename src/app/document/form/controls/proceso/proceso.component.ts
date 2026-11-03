@@ -275,11 +275,11 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
           next: (value: RelacionInternaDTO[]) => {
+            this.isLoadingList.set(false);
             if (!value || value.length === 0) {
               this.notificationCenter.fire(this.structure.nombre, 'La propiedad ALERTAR no tiene relaciones para determinar que alertar', 'error');
             } else {
               this.relacionesAlerta = value;
-              this.isLoadingList.set(false);
               this.showAlertSelectedProcess();
             }
           },
@@ -1157,10 +1157,10 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   sendCreate(dropdown?: DropdownComponent, event?: Event) {
     event?.stopPropagation();
     if (this.acciones && this.acciones.length !== 0) {
-      if (this.relatedFields) {
+      if (this.relatedFields && this.data.dependientes) {
         for (let i = 0; i < this.data.dependientes.length; i++) {
           const iCampoPedido = this.data.dependientes[i];
-          if (!iCampoPedido.valorText && !PlantillaHelper.buscarValor(iCampoPedido.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
+          if (!iCampoPedido.valorText && iCampoPedido.campoDTO && !PlantillaHelper.buscarValor(iCampoPedido.campoDTO.propiedades, PlantillaHelper.PERMISO_CAMPO_OPCIONAL)) {
             this.errorMessage = 'Por favor revisa que este seleccionado el campo ' + iCampoPedido.campoDTO.nombre;
             dropdown?.close();
             return;
@@ -1203,6 +1203,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           .subscribe({
           next: (value: RelacionInternaDTO[]) => {
             this.relacionesHerencia = value;
+            this.isLoadingList.set(false);
             this.createNewDocument(_plantilla, _property);
           },
           error: () => {
@@ -1256,7 +1257,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           for (let k = 0; k < relations.length; k++) {
             const iRelation = relations[k];
             if (iRelation.plantilla === _plantilla) {
-              for (let j = 0; j < this.data.dependientes.length; j++) {
+              for (let j = 0; j < (this.data.dependientes?.length ?? 0); j++) {
                 const valueDependent = this.data.dependientes[j];
                 if (valueDependent.campo === dependentIterator.valor) {
                   if (!_doc.caracteristicas) { _doc.caracteristicas = []; }
@@ -1320,6 +1321,9 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       .modalWithParams(_doc, true, createFilter)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
+        // Al cerrar el formulario de creacion se libera cualquier estado de carga pendiente
+        this.isLoading.set(false);
+        this.isLoadingList.set(false);
         if (res && res.data) {
           if (this.tipoTexto) {
             const documentoCreado: PedidoVentaDTO = res.data;
@@ -1329,35 +1333,24 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             nFilter.filtroParametro = documentoCreado.nombre;
             nFilter.valorOpcion = documentoCreado.llaveTabla;
             this.procesarCampo(nFilter);
+          } else if (this.tipoMultiple) {
+            if (!this.dataProvider) { this.dataProvider = []; }
+            if (res.data.llaveTabla && !this.dataProvider.some((doc) => doc.llaveTabla === res.data.llaveTabla)) {
+              this.dataProvider.unshift(res.data);
+            }
+            this.limpiarRepetidos();
+            this.actualizar();
           } else {
-            if (this.tipoMultiple) {
-              /*
-            provider.addEventListener('submitComplete',function (event:ChainEvent):void{
-            //dispatchEvent(new ChainEvent('submitComplete',ChainEvent(event).entityObject));
-            if(provider!=null){
-              if(event.entityObject !=null && event.entityObject is PedidoVentaVO){
-                if(listDisponibles!=null){
-                  if(listDisponibles.dataProvider==null) listDisponibles.dataProvider = new ArrayCollection();
-                  listDisponibles.dataProvider.addItem(event.entityObject);
-                  actualizar();
-                }
-              }
-              provider.ocultarAddItems();
-              provider.listar();
-            }
-          });
-            */
-            } else {
-              if (!this.disponibles) { this.disponibles = []; }
-              if (!this.structure.documentos) { this.structure.documentos = []; }
-              this.structure.documentos.push(res.data);
-              this.disponibles = this.structure.documentos;
-              this.fControl.setValue(res.data);
-            }
+            if (!this.disponibles) { this.disponibles = []; }
+            if (!this.structure.documentos) { this.structure.documentos = []; }
+            this.structure.documentos.push(res.data);
+            this.disponibles = this.structure.documentos;
+            this.fControl.setValue(res.data);
           }
         }
       });
-    this.fControl.setValue(null);
+    // En los campos de lista no se toca el fControl porque no representa la seleccion visible
+    if (!this.tipoMultiple) { this.fControl.setValue(null); }
   }
 
   actualizarTexto(): void {

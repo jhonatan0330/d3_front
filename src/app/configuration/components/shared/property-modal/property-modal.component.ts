@@ -56,6 +56,7 @@ export class PropertyModalComponent implements OnInit {
     mostrarCamposRol = false;
     cargando = signal(false);
     inicializando = signal(false);
+    modificado = signal(false);
     esEdicion = false;
     soloLectura = false;
 
@@ -200,6 +201,12 @@ export class PropertyModalComponent implements OnInit {
         this.propiedad.propiedadValor = pv.llaveTabla;
         this.propiedadValorTexto = this.displayPropiedadValor(pv);
         this.onPropiedadValorChange(pv.llaveTabla);
+        this.modificado.set(true);
+    }
+
+    onUsuarioChange(campo: 'usuario' | 'usuarioExcluyente', valor: string): void {
+        this.propiedad[campo] = valor;
+        this.modificado.set(true);
     }
 
     onPropiedadValorChange(llave: string): void {

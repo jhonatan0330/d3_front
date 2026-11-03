@@ -53,6 +53,7 @@ export class PersonsComponent implements OnInit {
     selectedContact: UsuarioDTO;
     tags$: Observable<RolAccesoFilterDTO[]>;
     selectedRole = signal<RolAccesoFilterDTO | null>(null);
+    showRoleDiagram = signal<boolean>(true);
     roles: RolAccesoFilterDTO[] = [];
 
 
@@ -95,12 +96,21 @@ export class PersonsComponent implements OnInit {
     filtrarPorTag(tag: RolAccesoFilterDTO | null) {
         if (!tag) {
             this.selectedRole.set(null);
+            this.showRoleDiagram.set(false);
             this._contactsService.searchContacts(this.searchInputControl.value ?? '').subscribe({ error: () => { } });
             return;
         }
 
         this.selectedRole.set(tag);
+        this.showRoleDiagram.set(false);
         this._contactsService.getContactByTag(tag.llaveTabla).subscribe({ error: () => { } });
+    }
+
+    mostrarDiagrama(): void {
+        this.showRoleDiagram.set(true);
+        this.selectedRole.set(null);
+        this.searchInputControl.setValue(null, { emitEvent: false });
+        this._contactsService.clearContacts();
     }
 
     seleccionarRol(tag: RolAccesoFilterDTO | null) {

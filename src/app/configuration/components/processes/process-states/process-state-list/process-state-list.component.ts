@@ -1,11 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ProcesoEstadoDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { ProcessStateFormComponent } from '../process-state-form/process-state-form.component';
@@ -24,10 +23,17 @@ export const PROCESO_ESTADO_DOCUMENTO_LABELS: Record<string, string> = {
     I: 'Inactivo',
 };
 
+const PROCESO_ESTADO_TIPO_ICONOS: Record<string, string> = {
+    E: 'radio_button_checked',
+    D: 'call_split',
+    R: 'repeat',
+    P: 'api',
+};
+
 @Component({
     selector: 'app-process-state-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule],
+    imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatTooltipModule, DragDropModule],
     templateUrl: './process-state-list.component.html',
 })
 export class ProcessStateListComponent implements OnInit, OnChanges {
@@ -40,8 +46,11 @@ export class ProcessStateListComponent implements OnInit, OnChanges {
 
     states = signal<ProcesoEstadoDTO[]>([]);
     loading = signal(false);
+    mostrarInactivos = signal(false);
 
-    displayedColumns = ['nombre', 'tipo', 'codigo', 'avance', 'estadoDocumento', 'estado', 'acciones'];
+    activos = computed(() => this.states().filter((s) => s.estado === 'A'));
+    inactivos = computed(() => this.states().filter((s) => s.estado !== 'A'));
+    totalInactivos = computed(() => this.inactivos().length);
 
     ngOnInit(): void {
         if (this.processKey) {
@@ -62,18 +71,33 @@ export class ProcessStateListComponent implements OnInit, OnChanges {
             return;
         }
         this.loading.set(true);
-        this.service.getStates(this.processKey).subscribe({
-            next: (res) => { this.states.set(res); this.loading.set(false); },
+        this.service.getStates(this.processKey, null).subscribe({
+            next: (res) => { this.states.set(res ?? []); this.loading.set(false); },
             error: () => { this.states.set([]); this.loading.set(false); }
         });
+    }
+
+    toggleInactivos(): void {
+        this.mostrarInactivos.update((value) => !value);
     }
 
     tipoLabel(tipo: string): string {
         return PROCESO_ESTADO_TIPO_LABELS[tipo] || tipo || '-';
     }
 
+    tipoIcono(tipo: string): string {
+        return PROCESO_ESTADO_TIPO_ICONOS[tipo] || 'help_outline';
+    }
+
     estadoDocumentoLabel(estadoDocumento: string): string {
         return PROCESO_ESTADO_DOCUMENTO_LABELS[estadoDocumento] || estadoDocumento || '-';
+    }
+
+    getStatePreview(state: ProcesoEstadoDTO): string {
+        const parts: string[] = [];
+        if (state.prioridad) parts.push(`Avance: ${state.prioridad}`);
+        if (state.estadoDocumento) parts.push(`Estado documento: ${this.estadoDocumentoLabel(state.estadoDocumento)}`);
+        return parts.join(' | ') || 'Sin detalles';
     }
 
     openStateForm(state?: ProcesoEstadoDTO): void {
@@ -86,6 +110,42 @@ export class ProcessStateListComponent implements OnInit, OnChanges {
                 this.stateSaved.emit(result);
                 this.loadStates();
             }
+        });
+    }
+
+    drop(event: CdkDragDrop<ProcesoEstadoDTO[]>): void {
+        if (event.previousIndex === event.currentIndex) {
+            return;
+        }
+
+        const activos = [...this.activos()];
+        moveItemInArray(activos, event.previousIndex, event.currentIndex);
+
+        const siguientes = [...this.states()];
+        const activosKey = new Set(activos.map((state) => state.llaveTabla));
+
+        const reorderedStates = [
+            ...activos,
+            ...siguientes.filter((state) => !activosKey.has(state.llaveTabla))
+        ];
+
+        const prioridades = new Map(activos.map((state, index) => [state.llaveTabla, index + 1]));
+
+        this.states.set(reorderedStates.map((state) => {
+            const prioridad = prioridades.get(state.llaveTabla);
+            return prioridad && state.estado === 'A' ? { ...state, prioridad } : state;
+        }));
+
+        const movedState = { ...activos[event.currentIndex], prioridad: event.currentIndex + 1 };
+        if (!movedState.nodoSuperior) {
+            movedState.nodoSuperior = this.processKey;
+        }
+
+        this.service.updateState(movedState).subscribe({
+            next: () => {
+                this.loadStates();
+            },
+            error: () => this.loadStates()
         });
     }
 

@@ -12,7 +12,7 @@ import {
     ServidorDTO, ServidorFilterDTO,
     OrganizacionDTO, OrganizacionFilterDTO,
     ProcesoDTO, ProcesoFilterDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO,
-    ProcesoEstadoDTO, ProcesoEstadoFilterDTO,
+    ProcesoEstadoDTO,
     ProcesoGraphDTO,
 } from 'app/document/document.types';
 import {
@@ -645,8 +645,8 @@ export class ProcessService {
         );
     }
 
-    getStates(processKey: string, filter?: ProcesoEstadoFilterDTO): Observable<ProcesoEstadoDTO[]> {
-        const payload = { estado: 'A', proceso: processKey, ...(filter || {}) };
+    getStates(processKey: string, estado: string | null = 'A'): Observable<ProcesoEstadoDTO[]> {
+        const payload = { estado, proceso: processKey };
         return this.http.post<ProcesoEstadoDTO[]>(
             this.ls.getUrlAccess(`${this.baseUrl}/${processKey}/states`), payload
         );

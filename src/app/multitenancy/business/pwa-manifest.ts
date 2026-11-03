@@ -3,8 +3,16 @@ export function normalizeManifestTenant(tenantId: string | null | undefined): st
     return tenant || 'default';
 }
 
-export function manifestHrefFor(baseUrl: string, tenantId: string | null | undefined): string {
+function secureOrigin(baseUrl: string): string {
     const base = (baseUrl || window.location.origin).replace(/\/+$/, '');
+    if (window.location.protocol === 'https:' && base.startsWith('http://')) {
+        return 'https://' + base.substring('http://'.length);
+    }
+    return base;
+}
+
+export function manifestHrefFor(baseUrl: string, tenantId: string | null | undefined): string {
+    const base = secureOrigin(baseUrl);
     const origin = encodeURIComponent(window.location.origin);
     return `${base}/multi-tenancy/manifest/${normalizeManifestTenant(tenantId)}?origin=${origin}`;
 }
@@ -14,7 +22,7 @@ export function tenantIconHrefFor(
     tenantId: string | null | undefined,
     size: 192 | 512 = 192
 ): string {
-    const base = (baseUrl || window.location.origin).replace(/\/+$/, '');
+    const base = secureOrigin(baseUrl);
     return `${base}/multi-tenancy/icon/${size}/${normalizeManifestTenant(tenantId)}`;
 }
 

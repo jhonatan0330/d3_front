@@ -2,11 +2,23 @@
     <div class="list-page">
       <div class="list-header">
         <h3 class="list-title text-lg">Estados del Proceso</h3>
-        <button type="button" class="btn-flat-primary" (click)="openStateForm()"><mat-icon>add</mat-icon> Nuevo Estado</button>
+        <div class="flex items-center gap-2">
+          @if (totalInactivos() > 0) {
+            <button type="button" class="btn-flat" (click)="toggleInactivos()"
+              [matTooltip]="mostrarInactivos() ? 'Ocultar estados inactivos' : 'Ver estados inactivos'">
+              <mat-icon>{{ mostrarInactivos() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <span class="hidden sm:inline">{{ mostrarInactivos() ? 'Ocultar inactivos' : 'Ver inactivos' }}</span>
+              <span class="badge badge-warning text-xs">{{ totalInactivos() }}</span>
+            </button>
+          }
+          <button type="button" class="btn-flat-primary" (click)="openStateForm()"><mat-icon>add</mat-icon> Nuevo Estado</button>
+        </div>
       </div>
 
       @if (loading()) {
-        <div class="flex justify-center py-12"><div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden"><div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div></div></div>
+        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+        </div>
       } @else if (states().length === 0) {
         <div class="list-empty flex flex-col items-center justify-center h-full">
           <mat-icon class="text-6xl mb-4">rule</mat-icon>
@@ -14,19 +26,79 @@
           <button type="button" class="btn-flat-primary mt-4" (click)="openStateForm()"><mat-icon>add</mat-icon> Crear primer estado</button>
         </div>
       } @else {
-        <div class="list-panel">
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="states()" class="w-full">
-              <ng-container matColumnDef="nombre"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Nombre</th><td mat-cell *matCellDef="let element" class="px-4 py-3 font-medium">{{ element.nombre }}</td></ng-container>
-              <ng-container matColumnDef="tipo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Tipo</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ tipoLabel(element.tipo) }}</td></ng-container>
-              <ng-container matColumnDef="codigo"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Código</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.codigo }}</td></ng-container>
-              <ng-container matColumnDef="avance"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Avance</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ element.avance }}</td></ng-container>
-              <ng-container matColumnDef="estadoDocumento"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado Documento</th><td mat-cell *matCellDef="let element" class="px-4 py-3">{{ estadoDocumentoLabel(element.estadoDocumento) }}</td></ng-container>
-              <ng-container matColumnDef="estado"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Estado</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><span class="badge" [class.badge-success]="element.estado === 'A'" [class.badge-secondary]="element.estado === 'I'">{{ element.estado === 'A' ? 'Activo' : 'Inactivo' }}</span></td></ng-container>
-              <ng-container matColumnDef="acciones"><th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Acciones</th><td mat-cell *matCellDef="let element" class="px-4 py-3"><div class="flex items-center justify-end gap-1"><button type="button" class="btn-icon btn-flat-primary" (click)="openStateForm(element)" aria-label="Editar"><mat-icon>edit</mat-icon></button><button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(element)" aria-label="{{ element.estado === 'A' ? 'Inactivar' : 'Activar' }}"><mat-icon>{{ element.estado === 'A' ? 'block' : 'check_circle' }}</mat-icon></button></div></td></ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr><tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-          </div>
+        <div class="flex-1 overflow-y-auto max-h-[70vh]">
+          @if (activos().length === 0) {
+            <div class="flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 py-8 text-gray-500 dark:border-gray-600 dark:text-gray-400">
+              <mat-icon class="text-5xl mb-3">visibility_off</mat-icon>
+              <p class="text-base">No hay estados activos</p>
+              <button type="button" class="btn-flat mt-4" (click)="toggleInactivos()">
+                <mat-icon>visibility</mat-icon> Ver inactivos ({{ totalInactivos() }})
+              </button>
+            </div>
+          } @else {
+            <div class="space-y-2" cdkDropList (cdkDropListDropped)="drop($event)">
+              @for (state of activos(); track state.llaveTabla) {
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-800 flex items-center gap-3 cdk-drag" cdkDrag [cdkDragData]="state">
+                  <div cdkDragHandle class="cdk-drag-handle cursor-move p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" aria-label="Arrastrar para reordenar">
+                    <mat-icon>drag_indicator</mat-icon>
+                  </div>
+                  <div class="w-12 h-12 flex items-center justify-center bg-blue-100 dark:bg-blue-900 rounded-lg">
+                    <mat-icon class="text-2xl">{{ tipoIcono(state.tipo) }}</mat-icon>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="font-medium text-gray-900 dark:text-gray-100 truncate">{{ state.nombre }}</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400 font-mono">{{ state.codigo }}</span>
+                      <span class="badge badge-info text-xs">{{ tipoLabel(state.tipo) }}</span>
+                      <span class="badge badge-secondary text-xs">{{ estadoDocumentoLabel(state.estadoDocumento) }}</span>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300 truncate">{{ getStatePreview(state) }}</div>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button type="button" class="btn-icon btn-flat-primary" (click)="openStateForm(state)" aria-label="Editar"><mat-icon>edit</mat-icon></button>
+                    <button type="button" class="btn-icon btn-flat-accent" (click)="toggleStatus(state)" aria-label="Inactivar"><mat-icon>block</mat-icon></button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          @if (mostrarInactivos()) {
+            <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-300">Estados inactivos ({{ totalInactivos() }})</h4>
+                <button type="button" class="btn-icon" (click)="toggleInactivos()" aria-label="Ocultar inactivos" title="Ocultar inactivos"><mat-icon>close</mat-icon></button>
+              </div>
+              @if (inactivos().length === 0) {
+                <p class="text-sm text-gray-500 dark:text-gray-400">No hay estados inactivos.</p>
+              } @else {
+                <div class="space-y-2">
+                  @for (state of inactivos(); track state.llaveTabla) {
+                    <div class="border border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-gray-100 dark:bg-gray-800/60 flex items-center gap-3">
+                      <div class="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg grayscale">
+                        <mat-icon class="text-2xl">{{ tipoIcono(state.tipo) }}</mat-icon>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                          <span class="font-medium text-gray-600 dark:text-gray-300 truncate">{{ state.nombre }}</span>
+                          <span class="text-xs text-gray-400 dark:text-gray-500 font-mono">{{ state.codigo }}</span>
+                          <span class="badge badge-error text-xs">Inactivo</span>
+                          <span class="badge badge-secondary text-xs">{{ tipoLabel(state.tipo) }}</span>
+                        </div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ getStatePreview(state) }}</div>
+                      </div>
+                      <div class="flex items-center gap-1">
+                        <button type="button" class="btn-icon" (click)="openStateForm(state)" aria-label="Editar"><mat-icon>edit</mat-icon></button>
+                        <button type="button" class="btn-flat-secondary" (click)="toggleStatus(state)" title="Reactivar estado">
+                          <mat-icon>restore</mat-icon> Reactivar
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
         </div>
       }
     </div>

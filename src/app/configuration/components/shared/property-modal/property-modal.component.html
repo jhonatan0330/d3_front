@@ -88,11 +88,13 @@
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <app-user-selector
               label="Usuario"
-              [(value)]="propiedad.usuario">
+              [value]="propiedad.usuario"
+              (valueChange)="onUsuarioChange('usuario', $event)">
             </app-user-selector>
             <app-user-selector
               label="Usuario excluyente"
-              [(value)]="propiedad.usuarioExcluyente">
+              [value]="propiedad.usuarioExcluyente"
+              (valueChange)="onUsuarioChange('usuarioExcluyente', $event)">
             </app-user-selector>
           </div>
         }
@@ -190,7 +192,7 @@
         <button type="button" class="btn-raised" (click)="dialogRef.close()">
           Cancelar
         </button>
-        <button type="submit" class="btn-flat-primary" [disabled]="cargando() || !form.valid">
+        <button type="submit" class="btn-flat-primary" [disabled]="cargando() || !form.valid || !(form.dirty || modificado())">
           <mat-icon>{{ cargando() ? 'hourglass_top' : 'save' }}</mat-icon>
           <span>{{ cargando() ? 'Guardando...' : 'Guardar' }}</span>
         </button>
