@@ -62,9 +62,22 @@ export class PropiedadDTO extends BasicDTO {
   fechaEliminacion?: Date;
   usuarioCreacion?: string;
   usuarioEliminacion?: string;
+  relacionesInternas?: RelacionInternaDTO[];
 }
 
 export class PropiedadValorDefinidoDTO extends BasicDTO {
+  static readonly PROCESO = 'P';
+  static readonly ESTADO = 'A';
+  static readonly TRANSICION = 'T';
+  static readonly PLANTILLA = 'L';
+  static readonly CAMPO = 'C';
+  static readonly REPORTE = 'E';
+  static readonly ORGANIZACION = 'O';
+  static readonly API_SERVICE = 'W';
+  static readonly CATALOG = 'G';
+  static readonly ACCOUNT = 'K';
+  static readonly INDICATOR = 'I';
+
   origen: string;
   origenCategoria: string;
   codigo: string;

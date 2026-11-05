@@ -1,0 +1,13 @@
+<button type="button" class="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+    (click)="abrirMedidor()" title="Medidor de uso" aria-label="Medidor de uso">
+    <mat-icon svgIcon="heroicons_outline:chart-bar" class="text-primary"></mat-icon>
+    <span class="flex flex-col items-start leading-tight">
+        <span class="text-xs font-semibold text-gray-700 dark:text-gray-200">
+            {{ usage.saldo()?.saldo ?? 0 }} MB
+        </span>
+        <span class="mt-0.5 block h-1 w-16 overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
+            <span class="block h-full rounded bg-primary transition-all"
+                [style.width.%]="usage.porcentajeConsumo()"></span>
+        </span>
+    </span>
+</button>

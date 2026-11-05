@@ -1,31 +1,33 @@
-@if (isLoading()) {
-  <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-    <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
-  </div>
-}
-<!-- Input de productos -->
-@if (isEnabled) {
-  <mat-form-field class="full-width">
-    <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-    <input
-      matInput
-      [formControl]="fControl"
-      [required]="required"
-      (keyup.enter)="listar()"
-      autocomplete="off"
-      />
-      <!-- Buscar -->
-      @if (this.isEnabled) {
-        <button class="btn-icon"
-          matSuffix
-          (click)="listar()"
-          tabindex="-1"
-          >
-          <mat-icon>search</mat-icon>
-        </button>
-      }
-    </mat-form-field>
+<div [attr.data-template-code]="templateCode" [attr.data-field-code]="fieldCode">
+  @if (isLoading()) {
+    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+    </div>
   }
+  <!-- Input de productos -->
+  @if (isEnabled) {
+    <mat-form-field class="full-width">
+      <mat-label>{{ structure.nombre | titlecase }} </mat-label>
+      <input
+        matInput
+        [formControl]="fControl"
+        [required]="required"
+        (keyup.enter)="listar()"
+        autocomplete="off"
+        />
+        <!-- Buscar -->
+        @if (this.isEnabled) {
+          <button class="btn-icon"
+            matSuffix
+            (click)="listar()"
+            tabindex="-1"
+            >
+            <mat-icon>search</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+    }
+</div>
   <!-- Promo form documento -->
   @if (usuarioRol) {
     <div class="card p-4">

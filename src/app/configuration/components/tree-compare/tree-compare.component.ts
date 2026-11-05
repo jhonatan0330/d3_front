@@ -4,10 +4,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ProcessService, TreeConfigService } from 'app/configuration/configuracion.api';
-import { ArbolConfiguracionFilterDTO } from 'app/configuration/domain/ArbolConfiguracionFilterDTO';
 import { DiferenciaDTO } from 'app/configuration/domain/DiferenciaDTO';
 import { SincronizacionNodoDTO } from 'app/configuration/domain/SincronizacionNodoDTO';
-import { TreeNodeDTO } from 'app/configuration/domain/TreeNodeDTO';
+import { NodoArbolDTO } from 'app/configuration/domain/NodoArbolDTO';
+import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/document.types';
 import { BpmDiagramComponent } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
 
@@ -19,7 +19,7 @@ interface FilaRevision {
     profundidad: number;
     camposDiferentes: string[];
     detalles: { campo: string; valorLocal: unknown; valorRemoto: unknown }[];
-    nodo: TreeNodeDTO | null;
+    nodo: NodoArbolDTO | null;
     hijosRemotos: number;
 }
 
@@ -58,7 +58,7 @@ export class TreeCompareComponent {
     soloCompleto = signal(true);
     descargando = signal(false);
 
-    remoto = signal<TreeNodeDTO | null>(null);
+    remoto = signal<NodoArbolDTO | null>(null);
     arbolId = signal('');
     archivoNombre = signal('');
     tenantOrigen = signal('');
@@ -137,7 +137,7 @@ export class TreeCompareComponent {
     }
 
     exportar(): void {
-        const completo = this.soloCompleto();
+        /*const completo = this.soloCompleto();
         const seleccion = this.modulosSeleccionados();
         if (!completo && !seleccion.length) {
             this.error.set('Seleccione al menos un módulo o exporte la configuración completa.');
@@ -160,7 +160,7 @@ export class TreeCompareComponent {
                     this.descargando.set(false);
                     this.error.set(err?.error?.message ?? 'Ocurrió un error al exportar.');
                 },
-            });
+            });*/
     }
 
     // ==================== Paso 2: Cargar ====================
@@ -213,11 +213,11 @@ export class TreeCompareComponent {
             this.error.set('El archivo no tiene el formato de un árbol o exportación de configuración.');
             return;
         }
-        this.api.registerRemoteTree(json)
+       /* this.api.registerRemoteTree(json)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: registro => this.asignarRemoto(
-                    registro.arbol as TreeNodeDTO,
+                    registro.arbol as NodoArbolDTO,
                     registro.arbolId,
                     nombreArchivo,
                     registro.tenantOrigen ?? '',
@@ -227,19 +227,19 @@ export class TreeCompareComponent {
                     this.cargando.set(false);
                     this.error.set(err?.error?.message ?? 'No se pudo registrar el archivo de configuración.');
                 },
-            });
+            });*/
     }
 
-    private asignarRemoto(arbol: TreeNodeDTO | null, arbolId: string, nombre: string, tenant: string, fecha: string): void {
+   /* private asignarRemoto(arbol: NodoArbolDTO | null, arbolId: string, nombre: string, tenant: string, fecha: string): void {
         this.remoto.set(arbol);
         this.arbolId.set(arbolId ?? '');
         this.archivoNombre.set(nombre);
         this.tenantOrigen.set(tenant || '');
         this.fechaExport.set(fecha ? new Date(fecha).toLocaleString() : '');
         this.cargando.set(false);
-    }
+    }*/
 
-    contadorNodos(nodo: TreeNodeDTO | null): number {
+    contadorNodos(nodo: NodoArbolDTO | null): number {
         if (!nodo) { return 0; }
         let total = 1;
         for (const hijo of nodo.hijos || []) {
@@ -254,7 +254,7 @@ export class TreeCompareComponent {
         if (!this.arbolId()) { return; }
         this.comparando.set(true);
         this.error.set('');
-        this.api.compareTree({ arbolId: this.arbolId(), filter: this.filtroBase() })
+       /* this.api.compareTree({ arbolId: this.arbolId(), filter: this.filtroBase() })
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: difs => {
@@ -272,10 +272,10 @@ export class TreeCompareComponent {
                     this.comparando.set(false);
                     this.error.set(err?.error?.message ?? 'Ocurrió un error al comparar los árboles.');
                 },
-            });
+            });*/
     }
 
-    private aplanar(difs: DiferenciaDTO[], profundidad: number, salida: FilaRevision[], resumen: ResumenComparacion): void {
+   /* private aplanar(difs: DiferenciaDTO[], profundidad: number, salida: FilaRevision[], resumen: ResumenComparacion): void {
         for (const dif of difs) {
             if (dif.tipoDiferencia === DiferenciaDTO.SIN_DIFERENCIA) {
                 resumen.igual++;
@@ -293,12 +293,12 @@ export class TreeCompareComponent {
                 this.aplanar(dif.hijos, profundidad + 1, salida, resumen);
             }
         }
-    }
+    }*/
 
-    private aFila(dif: DiferenciaDTO, profundidad: number): FilaRevision {
+   /* private aFila(dif: DiferenciaDTO, profundidad: number): FilaRevision {
         return {
             camino: dif.camino,
-            tipo: dif.nodo?.tipo ?? '',
+            tipo: dif.nodo?.categoria ?? dif.nodo?.tipo ?? '',
             nombre: dif.nodo?.nombre ?? '',
             tipoDiferencia: dif.tipoDiferencia,
             profundidad,
@@ -307,16 +307,16 @@ export class TreeCompareComponent {
             nodo: dif.nodo ?? null,
             hijosRemotos: this.contadorHijosRemotos(dif),
         };
-    }
+    }*/
 
-    private contadorHijosRemotos(dif: DiferenciaDTO): number {
+ /*  private contadorHijosRemotos(dif: DiferenciaDTO): number {
         if (!dif.hijos?.length) return 0;
         let total = 0;
         for (const hijo of dif.hijos) {
             total += 1 + this.contadorHijosRemotos(hijo);
         }
         return total;
-    }
+    }*/
 
     // ==================== Paso 4: Revisar nodo a nodo ====================
 
@@ -397,7 +397,7 @@ export class TreeCompareComponent {
         request.camino = fila.camino;
         request.accion = fila.tipoDiferencia;
         request.incluirHijos = fila.tipoDiferencia === DiferenciaDTO.CREAR && fila.hijosRemotos > 0;
-        this.api.syncNode(request)
+        /* this.api.syncNode(request)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: resultado => {
@@ -426,7 +426,7 @@ export class TreeCompareComponent {
                     });
                     this.sincronizando.set(false);
                 },
-            });
+            });*/
     }
 
     omitir(): void {
@@ -565,15 +565,32 @@ export class TreeCompareComponent {
         return String(valor);
     }
 
+    etiquetaTipo(categoria: string): string {
+        switch (categoria) {
+            case PropiedadValorDefinidoDTO.ORGANIZACION:
+                return 'Organización';
+            case PropiedadValorDefinidoDTO.PROCESO:
+                return 'Proceso';
+            case PropiedadValorDefinidoDTO.ESTADO:
+                return 'Estado';
+            case PropiedadValorDefinidoDTO.TRANSICION:
+                return 'Transición';
+            case PropiedadValorDefinidoDTO.PLANTILLA:
+                return 'Plantilla';
+            case PropiedadValorDefinidoDTO.CAMPO:
+                return 'Campo';
+            case PropiedadValorDefinidoDTO.REPORTE:
+                return 'Reporte';
+            case PropiedadValorDefinidoDTO.API_SERVICE:
+                return 'API';
+            default:
+                return categoria || '—';
+        }
+    }
+
     fechaCarga(): string {
         return this.fechaExport();
     }
 
-    private filtroBase(): ArbolConfiguracionFilterDTO {
-        const filter = new ArbolConfiguracionFilterDTO();
-        filter.profundidad = ArbolConfiguracionFilterDTO.PROFUNDIDAD_COMPLETA;
-        filter.listarPropiedades = true;
-        filter.ligero = false;
-        return filter;
-    }
+   
 }

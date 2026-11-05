@@ -1,37 +1,39 @@
-<mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  @if (errorMessage) {
-    <label class="form-error ml-1">{{errorMessage}}</label>
-  }
-  <mat-label>{{ structure.nombre | titlecase }}</mat-label>
-  <input type="text" matInput [formControl]="fControl" [matAutocomplete]="auto"
-    class="form-input"
-    [id]="idField!"
-    [name]="structure.llaveTabla!"
-    [required]="required"
-    [readonly]="!isEnabled">
-    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-      @for (option of filteredOptions | async; track option) {
-        <mat-option [value]="option">
-          <span>{{option.nombre}}</span>@if (option.descripcion) {
-          <span> - {{option.descripcion}}</span>
-        }
-      </mat-option>
+<div [attr.data-template-code]="templateCode" [attr.data-field-code]="fieldCode">
+  <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+    @if (errorMessage) {
+      <label class="form-error ml-1">{{errorMessage}}</label>
     }
-  </mat-autocomplete>
-  <!-- Limpiar -->
-  @if (isEnabled) {
-    <button class="btn-icon"
-      matSuffix
-      (click)="fControl.setValue('')"
-      tabindex="-1"
-      >
-      <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
-    </button>
-  }
-</mat-form-field>
+    <mat-label>{{ structure.nombre | titlecase }}</mat-label>
+    <input type="text" matInput [formControl]="fControl" [matAutocomplete]="auto"
+      class="form-input"
+      [id]="idField!"
+      [name]="structure.llaveTabla!"
+      [required]="required"
+      [readonly]="!isEnabled">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+        @for (option of filteredOptions | async; track option) {
+          <mat-option [value]="option">
+            <span>{{option.nombre}}</span>@if (option.descripcion) {
+            <span> - {{option.descripcion}}</span>
+          }
+        </mat-option>
+      }
+    </mat-autocomplete>
+    <!-- Limpiar -->
+    @if (isEnabled) {
+      <button class="btn-icon"
+        matSuffix
+        (click)="fControl.setValue('')"
+        tabindex="-1"
+        >
+        <mat-icon svgIcon="heroicons_outline:x-circle"></mat-icon>
+      </button>
+    }
+  </mat-form-field>
 
-@if (isLoading()) {
-  <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-    <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
-  </div>
-}
+  @if (isLoading()) {
+    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+    </div>
+  }
+</div>

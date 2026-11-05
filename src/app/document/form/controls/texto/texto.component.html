@@ -1,29 +1,31 @@
-<mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  @if (errorMessage) {
-    <label class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+<div [attr.data-template-code]="templateCode" [attr.data-field-code]="fieldCode">
+  <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+    @if (errorMessage) {
+      <label class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+    }
+    <mat-label>{{structure.nombre | titlecase }} </mat-label>
+    @if (!textoLargo) {
+      <input matInput
+        [id]="idField!"
+        [formControl]="fControl"
+        [name]="structure.llaveTabla!"
+        [required]="required"
+        [readonly]="!isEnabled || formatText==='D'"
+        autocomplete="off" />
+    }
+    @if (textoLargo) {
+      <textarea matInput class="textarea-form" [formControl]="fControl" [name]="structure.llaveTabla"
+        [required]="required" [readonly]="!isEnabled"
+        oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
+      onclick='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+    }
+  </mat-form-field>
+  @if (scannerEnabled) {
+    <div class="w-full">
+      <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+    </div>
   }
-  <mat-label>{{structure.nombre | titlecase }} </mat-label>
-  @if (!textoLargo) {
-    <input matInput
-      [id]="idField!"
-      [formControl]="fControl"
-      [name]="structure.llaveTabla!"
-      [required]="required"
-      [readonly]="!isEnabled || formatText==='D'"
-      autocomplete="off" />
+  @if (isEnabled && formatText==='D') {
+    <app-direccion-form [direccionInicial]="fControl.value!" (direccionChange)="onDireccionChange($event)"></app-direccion-form>
   }
-  @if (textoLargo) {
-    <textarea matInput class="textarea-form" [formControl]="fControl" [name]="structure.llaveTabla"
-      [required]="required" [readonly]="!isEnabled"
-      oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-    onclick='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
-  }
-</mat-form-field>
-@if (scannerEnabled) {
-  <div class="w-full">
-    <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
-  </div>
-}
-@if (isEnabled && formatText==='D') {
-  <app-direccion-form [direccionInicial]="fControl.value!" (direccionChange)="onDireccionChange($event)"></app-direccion-form>
-}
+</div>

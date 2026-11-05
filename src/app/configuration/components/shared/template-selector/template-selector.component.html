@@ -36,5 +36,14 @@
           }
         </div>
       }
-    </div>
+
+      @if (loading) {
+        <div class="mt-2 h-1 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700" role="progressbar" aria-label="Buscando plantillas">
+          <div class="h-full w-2/5 animate-pulse rounded bg-primary"></div>
+        </div>
+      }
+
+      @if (showDropdown && query.trim().length >= 2 && !loading && noResults) {
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">No se encontraron plantillas que coincidan con "{{ query.trim() }}".</p>
+      }
   

@@ -1,8 +1,7 @@
-import { ArbolConfiguracionFilterDTO } from './ArbolConfiguracionFilterDTO';
-import { TreeNodeDTO } from './TreeNodeDTO';
+
+import { NodoArbolDTO } from './NodoArbolDTO';
 
 export class CompararArbolRequest {
-    arbol?: TreeNodeDTO;
-    filter: ArbolConfiguracionFilterDTO;
+    arbol?: NodoArbolDTO;
     arbolId?: string;
 }

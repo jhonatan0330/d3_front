@@ -7,31 +7,22 @@ import {
     MensajeDTO, MensajeFilterDTO,
     ProcesoTransicionAutomaticaDTO, ProcesoTransicionAutomaticaFilterDTO,
     DocumentoPlantillaDTO, DocumentoPlantillaCaracteristicaDTO, ReporteBaseDTO,
-    
     WebServiceDTO, WebServiceFilterDTO, WebServiceEjecucionDTO, WebServiceEjecucionFilterDTO,
     ServidorDTO, ServidorFilterDTO,
     OrganizacionDTO, OrganizacionFilterDTO,
     ProcesoDTO, ProcesoFilterDTO, ProcesoTransicionDTO, ProcesoTransicionFilterDTO,
     ProcesoEstadoDTO,
-    ProcesoGraphDTO,
 } from 'app/document/document.types';
 import {
     PropiedadDTO, PropiedadCampoDTO, PropiedadValorDefinidoDTO, PropiedadValorDefinidoFilterDTO,
     RelacionInternaDTO, RelacionInternaFilterDTO,
 } from 'app/shared/shared.domain';
-import { ArbolConfiguracionFilterDTO } from './domain/ArbolConfiguracionFilterDTO';
 import { SharedIdResponse } from 'app/shared/api-types';
 import { ArbolNodoRequestDTO } from './domain/ArbolNodoRequestDTO';
-import { CompararArbolRequest } from './domain/CompararArbolRequest';
-import { DiferenciaDTO } from './domain/DiferenciaDTO';
 import { DocumentoPlantillaFilterDTO } from './domain/DocumentoPlantillaFilterDTO';
 import { IndicatorDTO } from './domain/IndicatorDTO';
 import { IndicatorFilterDTO } from './domain/IndicatorFilterDTO';
-import { RegistroArbolDTO } from './domain/RegistroArbolDTO';
-import { SincronizacionNodoDTO } from './domain/SincronizacionNodoDTO';
-import { SincronizacionNodoResultDTO } from './domain/SincronizacionNodoResultDTO';
-import { SincronizacionSeleccionadaDTO } from './domain/SincronizacionSeleccionadaDTO';
-import { TreeNodeDTO } from './domain/TreeNodeDTO';
+import { NodoArbolDTO } from './domain/NodoArbolDTO';
 import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO';
 import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
 
@@ -578,12 +569,6 @@ export class ProcessService {
         );
     }
 
-    getProcessForGraph(key: string): Observable<ProcesoGraphDTO> {
-        return this.http.post<ProcesoGraphDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/${key}/graph`), {}
-        );
-    }
-
     createProcess(process: ProcesoDTO): Observable<ProcesoDTO> {
         return this.http.post<ProcesoDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/create`), process
@@ -834,57 +819,22 @@ export class TreeConfigService {
     private ls = inject(LocalStoreService);
     private baseUrl = '/configuration/tree';
 
-    getTree(filter?: ArbolConfiguracionFilterDTO): Observable<TreeNodeDTO> {
-        return this.http.post<TreeNodeDTO>(
-            this.ls.getUrlAccess(this.baseUrl), filter ?? new ArbolConfiguracionFilterDTO()
+    getTree(): Observable<NodoArbolDTO> {
+        return this.http.post<NodoArbolDTO>(
+            this.ls.getUrlAccess(this.baseUrl), {}
         );
     }
-
-    exportTree(filter?: ArbolConfiguracionFilterDTO): Observable<{ url: string }> {
-        return this.http.post<{ url: string }>(
-            this.ls.getUrlAccess(`${this.baseUrl}/export`), filter ?? new ArbolConfiguracionFilterDTO()
-        );
-    }
-
-    compareTree(request: CompararArbolRequest): Observable<DiferenciaDTO[]> {
-        return this.http.post<DiferenciaDTO[]>(
-            this.ls.getUrlAccess(`${this.baseUrl}/compare`), request
-        );
-    }
-
-    syncTree(request: SincronizacionSeleccionadaDTO): Observable<{ url: string }> {
-        return this.http.post<{ url: string }>(
-            this.ls.getUrlAccess(`${this.baseUrl}/sync`), request
-        );
-    }
-
-    getTreeNode(request: ArbolNodoRequestDTO): Observable<TreeNodeDTO> {
-        return this.http.post<TreeNodeDTO>(
+    
+    getTreeNode(request: ArbolNodoRequestDTO): Observable<NodoArbolDTO> {
+        return this.http.post<NodoArbolDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/node`), request
         );
     }
 
-    treeFromHierarchy(payload: unknown): Observable<TreeNodeDTO> {
-        return this.http.post<TreeNodeDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/from-hierarchy`), payload
+    getProcessForGraph(key: string): Observable<NodoArbolDTO> {
+        return this.http.post<NodoArbolDTO>(
+            this.ls.getUrlAccess(`${this.baseUrl}/${key}/graph`), {}
         );
     }
 
-    registerRemoteTree(payload: unknown): Observable<RegistroArbolDTO> {
-        return this.http.post<RegistroArbolDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/register`), payload
-        );
-    }
-
-    exportModules(modulos: string[]): Observable<{ url: string }> {
-        return this.http.post<{ url: string }>(
-            this.ls.getUrlAccess('/configuration/configuration/module'), { modulesCode: modulos }
-        );
-    }
-
-    syncNode(request: SincronizacionNodoDTO): Observable<SincronizacionNodoResultDTO> {
-        return this.http.post<SincronizacionNodoResultDTO>(
-            this.ls.getUrlAccess(`${this.baseUrl}/sync-node`), request
-        );
-    }
 }

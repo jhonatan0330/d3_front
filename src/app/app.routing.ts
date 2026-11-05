@@ -40,6 +40,7 @@ export const appRoutes: Route[] = [
       { path: 'account', loadComponent: () => import('app/accounting/components/accounting-view/accounting.component').then(m => m.AccountComponent) },
       { path: 'persons', loadComponent: () => import('app/users/components/users-view/users.component').then(m => m.PersonsComponent) },
       { path: 'tenants', loadComponent: () => import('app/multitenancy/components/tenants-view/tenants-view.component').then(m => m.TenantsViewComponent) },
+      { path: 'usage', loadComponent: () => import('app/usage/components/usage-view/usage-view.component').then(m => m.UsageViewComponent) },
 
       // CONFIGURACIÓN - Tabbed layout
       {

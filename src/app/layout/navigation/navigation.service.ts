@@ -1,4 +1,4 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Navigation } from 'app/layout/navigation/navigation.types';
 import { FuseNavigationItem } from 'app/layout/domain/layout.types';
 import { DocumentoPlantillaDTO } from 'app/document/document.types';
@@ -20,7 +20,7 @@ export class NavigationService {
     readonly navigation = this._navigation.asReadonly();
 
 
-    generate(process: DocumentoPlantillaDTO[], modules: PropiedadDTO[], templates: DocumentoPlantillaDTO[]) {
+    generate(process: DocumentoPlantillaDTO[], modules: PropiedadDTO[], templates: DocumentoPlantillaDTO[], showAll: boolean) {
 
 
         const localNavigation: FuseNavigationItem[] = [
@@ -128,7 +128,7 @@ export class NavigationService {
         if (templates && templates.length) {
             templates.forEach((template: DocumentoPlantillaDTO) => {
                 if ((PlantillaHelper.buscarPropiedad(template.propiedades, PlantillaHelper.PERMISO_PLANTILLA_LISTAR_MENU)
-                    && (template.tipo == DocumentoPlantillaTipoEnum.PRINCIPAL || template.tipo == DocumentoPlantillaTipoEnum.ROL))) {
+                    && (template.tipo == DocumentoPlantillaTipoEnum.PRINCIPAL || template.tipo == DocumentoPlantillaTipoEnum.ROL || showAll))) {
                     const newItem: FuseNavigationItem = {
                         id: template.llaveTabla,
                         title: template.nombre,

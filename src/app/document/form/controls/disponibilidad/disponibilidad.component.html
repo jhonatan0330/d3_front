@@ -1,27 +1,28 @@
-<mat-form-field class="full-width">
-  <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-  <input
-    matInput
-    [formControl]="fControl"
-    [name]="structure.llaveTabla"
-    [required]="required"
-    [readonly]="true"
-    />
-    <button class="btn-icon"
-      matSuffix
-      (click)="mostrarPlano()"
-      tabindex="-1"
-      >
-      <mat-icon>assignment</mat-icon>
-    </button>
-  </mat-form-field>
-  @if (estructura && estructura.titulo) {
-    <span
-      class="text-28 font-weight-bold mat-color-primary full-width text-center"
-      >{{ estructura.titulo }}</span
-      >
-  }
-  <div class="full-width" style="overflow: auto;">
-    <canvas #canvas height="0" width="0"></canvas>
-  </div>
-
+<div [attr.data-template-code]="templateCode" [attr.data-field-code]="fieldCode">
+  <mat-form-field class="full-width">
+    <mat-label>{{ structure.nombre | titlecase }} </mat-label>
+    <input
+      matInput
+      [formControl]="fControl"
+      [name]="structure.llaveTabla"
+      [required]="required"
+      [readonly]="true"
+      />
+      <button class="btn-icon"
+        matSuffix
+        (click)="mostrarPlano()"
+        tabindex="-1"
+        >
+        <mat-icon>assignment</mat-icon>
+      </button>
+    </mat-form-field>
+    @if (estructura && estructura.titulo) {
+      <span
+        class="text-28 font-weight-bold mat-color-primary full-width text-center"
+        >{{ estructura.titulo }}</span
+        >
+    }
+    <div class="full-width" style="overflow: auto;">
+      <canvas #canvas height="0" width="0"></canvas>
+    </div>
+</div>

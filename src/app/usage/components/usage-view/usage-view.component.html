@@ -1,0 +1,120 @@
+<div class="p-4 md:p-6 space-y-6">
+
+    <!-- Encabezado -->
+    <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+            <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">Medidor de uso</h1>
+            @if (empresa()) {
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ empresa() }}</p>
+            }
+        </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Saldo actual</p>
+            <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {{ formatearMB(saldo()?.saldo) }} <span class="text-sm font-medium">MB</span>
+            </p>
+        </div>
+        <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Consumo de hoy</p>
+            <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {{ formatearMB(consumoHoy()) }} <span class="text-sm font-medium">MB</span>
+            </p>
+        </div>
+        <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Consumo del mes</p>
+            <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {{ formatearMB(consumoMes()) }} <span class="text-sm font-medium">MB</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Medidor visual -->
+    <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 space-y-2">
+        <div class="flex items-center justify-between text-sm">
+            <span class="font-medium text-gray-700 dark:text-gray-200">Consumo del mes</span>
+            <span class="text-gray-500 dark:text-gray-400">{{ porcentajeConsumo() }}%</span>
+        </div>
+        <div class="h-4 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+            <div class="h-full rounded-full bg-primary transition-all" [style.width.%]="porcentajeConsumo()"></div>
+        </div>
+        <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+            <span>Consumido {{ formatearMB(consumoMes()) }} MB</span>
+            <span>Disponible {{ formatearMB(saldo()?.saldo) }} MB</span>
+        </div>
+    </div>
+
+    <!-- Tendencia de consumo -->
+    <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 space-y-3">
+        <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Tendencia de consumo (MB por día)</h2>
+        @if (tendencia().length) {
+            <div class="flex h-40 items-end gap-1">
+                @for (item of tendencia(); track item.clave) {
+                    <div class="flex h-full flex-1 flex-col items-center justify-end">
+                        <span class="mb-1 text-[10px] text-gray-500 dark:text-gray-400">{{ formatearMB(item.total) }}</span>
+                        <div class="w-full rounded-t bg-primary" [style.height.%]="alturaBarra(item.total)"></div>
+                        <span class="mt-1 text-[10px] text-gray-500 dark:text-gray-400">{{ item.etiqueta }}</span>
+                    </div>
+                }
+            </div>
+        } @else {
+            <p class="py-8 text-center text-sm text-gray-500 dark:text-gray-400">Sin consumo registrado en el período</p>
+        }
+    </div>
+
+    <!-- Filtros -->
+    <div class="flex flex-wrap items-end gap-3">
+        <label class="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-300">
+            Desde
+            <input type="date" class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+                [ngModel]="desde()" (ngModelChange)="desde.set($event)" />
+        </label>
+        <label class="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-300">
+            Hasta
+            <input type="date" class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+                [ngModel]="hasta()" (ngModelChange)="hasta.set($event)" />
+        </label>
+        <button type="button" class="btn-flat-primary" (click)="aplicarFiltro()">Aplicar</button>
+    </div>
+
+    <!-- Tabla de movimientos -->
+    @if (cargando()) {
+        <div class="h-1 w-full overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
+            <div class="h-1/2 w-2/5 animate-pulse rounded bg-primary"></div>
+        </div>
+    } @else {
+        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50 dark:bg-gray-800">
+                    <tr>
+                        <th class="px-3 py-2 text-left font-semibold">Fecha</th>
+                        <th class="px-3 py-2 text-left font-semibold">Tipo</th>
+                        <th class="px-3 py-2 text-right font-semibold">Cantidad (MB)</th>
+                        <th class="px-3 py-2 text-right font-semibold">Saldo inicial</th>
+                        <th class="px-3 py-2 text-right font-semibold">Saldo final</th>
+                        <th class="px-3 py-2 text-left font-semibold">Referencia</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                    @for (m of movimientos(); track m.llaveTabla) {
+                        <tr>
+                            <td class="whitespace-nowrap px-3 py-2">{{ m.fechaEvento | date: 'dd/MM/yyyy HH:mm' }}</td>
+                            <td class="whitespace-nowrap px-3 py-2">{{ tipoTexto(m.tipo) }}</td>
+                            <td class="px-3 py-2 text-right font-mono">{{ formatearMB(m.cantidad) }}</td>
+                            <td class="px-3 py-2 text-right font-mono">{{ formatearMB(m.saldoInicial) }}</td>
+                            <td class="px-3 py-2 text-right font-mono">{{ formatearMB(m.saldoFinal) }}</td>
+                            <td class="px-3 py-2 font-mono text-xs">{{ m.referencia }}</td>
+                        </tr>
+                    } @empty {
+                        <tr>
+                            <td colspan="6" class="py-8 text-center text-gray-500 dark:text-gray-400">Sin movimientos</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

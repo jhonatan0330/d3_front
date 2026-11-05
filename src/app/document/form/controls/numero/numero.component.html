@@ -1,23 +1,18 @@
-@if (isLoading()) {
+<div [attr.data-template-code]="templateCode"
+      [attr.data-field-code]="fieldCode">
+  @if (isLoading()) {
   <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
     <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
   </div>
-}
-<mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-  @if (errorMessage) {
-    <label class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
   }
-  <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-  <input [id]="idField!"
-    matInput
-    class="text-right"
-    [name]="structure.llaveTabla!"
-    [formControl]="fControl"
-    [required]="required"
-    [readonly]="!isEnabled || !formIsEnabled"
-    (focus)="getInitialFocus($event)"
-    (keydown.enter)="onEnter($event)"
-    autocomplete="off"
-    />
+  <mat-form-field [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+    @if (errorMessage) {
+    <label class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+    }
+    <mat-label>{{ structure.nombre | titlecase }} </mat-label>
+    <input [id]="idField!" matInput class="text-right" [name]="structure.llaveTabla!" [formControl]="fControl" [required]="required"
+      [readonly]="!isEnabled || !formIsEnabled" (focus)="getInitialFocus($event)" (keydown.enter)="onEnter($event)"
+      autocomplete="off" />
 
   </mat-form-field>
+</div>

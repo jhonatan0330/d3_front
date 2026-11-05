@@ -684,6 +684,7 @@ export class FormComponent implements OnInit, AfterViewInit {
             const componentRef = this.myForm()!.createComponent<IDynamicControl>(
                 componentDynamic
             );
+            componentRef.instance.templateCode = this.plantilla()!.codigo;
             componentRef.instance.structure = _campo;
             componentRef.instance.parent = this.pedido()!;
             componentRef.instance.form = this;

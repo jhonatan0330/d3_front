@@ -409,7 +409,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
             if (dependentIterato.valor === element.campo) {
               const relations = this.templateService.getPropertyRelation(dependentIterato.llaveTabla);
               if (!relations || relations.length == 0) {
-                this.templateService.getOrFetchRelations(dependentIterato.llaveTabla, this.urlServer)
+                this.templateService.getOrFetchRelations(dependentIterato.llaveTabla)
                   .pipe(takeUntilDestroyed(this.destroyRef))
                   .subscribe({
                   next: (value: RelacionInternaDTO[]) => {

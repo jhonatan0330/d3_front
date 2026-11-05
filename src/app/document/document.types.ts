@@ -475,13 +475,6 @@ export class ServidorFilterDTO extends BasicFilterDTO {
 export class ProcesoDTO extends BasicNodoDTO {
 }
 
-export class ProcesoGraphDTO extends BasicNodoDTO {
-    estados: ProcesoEstadoDTO[];
-    transiciones: ProcesoTransicionDTO[];
-    plantillas: DocumentoPlantillaDTO[];
-    hijos: ProcesoGraphDTO[];
-}
-
 export class ProcesoFilterDTO extends BasicNodoFilter {
 }
 

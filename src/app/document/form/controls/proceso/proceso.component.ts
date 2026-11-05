@@ -271,7 +271,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.showAlertSelectedProcess();
       } else {
         this.isLoadingList.set(true);
-        this.templateService.getOrFetchRelations(this.alertar.llaveTabla, this.urlServer)
+        this.templateService.getOrFetchRelations(this.alertar.llaveTabla)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
           next: (value: RelacionInternaDTO[]) => {
@@ -1198,7 +1198,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       }
       if (!this.relacionesHerencia) {
         this.isLoadingList.set(true);
-        this.templateService.getOrFetchRelations(this.herencia.llaveTabla, this.urlServer)
+        this.templateService.getOrFetchRelations(this.herencia.llaveTabla)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
           next: (value: RelacionInternaDTO[]) => {
@@ -1236,7 +1236,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           const relations = this.templateService.getPropertyRelation(dependentIterato.llaveTabla);
           if (!relations || relations.length == 0) {
             this.isLoadingList.set(true);
-            this.templateService.getOrFetchRelations(dependentIterato.llaveTabla, this.urlServer)
+            this.templateService.getOrFetchRelations(dependentIterato.llaveTabla)
               .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe({
               next: (value: RelacionInternaDTO[]) => {
@@ -1276,7 +1276,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       const relationProperty = this.templateService.getPropertyRelation(_property);
       if (!relationProperty|| relationProperty.length == 0) {
         this.isLoadingList.set(true);
-        this.templateService.getOrFetchRelations(_property, this.urlServer)
+        this.templateService.getOrFetchRelations(_property)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
           next: (value: RelacionInternaDTO[]) => {

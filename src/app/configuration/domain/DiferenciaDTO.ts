@@ -1,5 +1,5 @@
 import { DetalleCampoDTO } from './DetalleCampoDTO';
-import { TreeNodeDTO } from './TreeNodeDTO';
+import { NodoArbolDTO } from './NodoArbolDTO';
 
 export class DiferenciaDTO {
     static readonly CREAR = 'CREAR';
@@ -7,7 +7,7 @@ export class DiferenciaDTO {
     static readonly SIN_DIFERENCIA = 'SIN_DIFERENCIA';
     static readonly LOCAL_SIN_REMOTO = 'LOCAL_SIN_REMOTO';
     tipoDiferencia: string;
-    nodo: TreeNodeDTO;
+    nodo: NodoArbolDTO;
     camino: string;
     camposDiferentes: string[];
     detalles: DetalleCampoDTO[];

@@ -1,183 +1,185 @@
-@if (isLoading()) {
-  <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-    <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
-  </div>
-}
-@if (messageHTML) {
-  <div class="w-full" [innerHTML]="messageHTML"></div>
-}
-<!-- Campos unicos -->
-@if (!herencia && !multiple) {
-  <mat-form-field class="w-full"
-    [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-    <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-    <input matInput [id]="idField!" [matAutocomplete]="auto" [matAutocompleteDisabled]="isLoading()" [formControl]="searchControl" [required]="required"
-      [readonly]="!isEnabled || isLoading()" [attr.aria-busy]="isLoading()" (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [attr.inputmode]="inputModeText"
-      translate="no" autocomplete="off"
-      [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
-      @if (proceso && linkExternal) {
-        <button type="button" class="a-hyperlink" (click)="goToLink()">{{ linkExternal.valor }}</button>
-      }
-      <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay" (optionSelected)="selectProcess($event.option.value)">
-        @for (document of filteredDocuments.slice(0, 8); track document.llaveTabla) {
-          <mat-option [value]="document">
-            @if (document.descripcion) {
-              <span class="font-medium">{{ document.descripcion }}</span>
-            }
-            <span class="ml-2 text-sm text-secondary">{{ document.nombre }}</span>
-          </mat-option>
+<div [attr.data-template-code]="templateCode" [attr.data-field-code]="fieldCode">
+  @if (isLoading()) {
+    <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+    </div>
+  }
+  @if (messageHTML) {
+    <div class="w-full" [innerHTML]="messageHTML"></div>
+  }
+  <!-- Campos unicos -->
+  @if (!herencia && !multiple) {
+    <mat-form-field class="w-full"
+      [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+      <mat-label>{{ structure.nombre | titlecase }} </mat-label>
+      <input matInput [id]="idField!" [matAutocomplete]="auto" [matAutocompleteDisabled]="isLoading()" [formControl]="searchControl" [required]="required"
+        [readonly]="!isEnabled || isLoading()" [attr.aria-busy]="isLoading()"
+        (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [attr.inputmode]="inputModeText"
+        translate="no" autocomplete="off"
+        [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
+        @if (proceso && linkExternal) {
+          <button type="button" class="a-hyperlink" (click)="goToLink()">{{ linkExternal.valor }}</button>
         }
-        @if (filteredDocuments.length > 8) {
-          <mat-option disabled>Hay más coincidencias. Escribe más para afinar la búsqueda.</mat-option>
-        }
-      </mat-autocomplete>
-      <!-- Open window -->
-      @if (proceso) {
-        <button type="button" class="btn-icon" matPrefix (click)="openDialog(proceso)" [attr.aria-label]="'Abrir ' + proceso.nombre" [title]="'Abrir ' + proceso.nombre">
-          <mat-icon aria-hidden="true">open_in_new</mat-icon>
-        </button>
-      }
-      <!-- Create -->
-      @if (acciones && !errorMessage && !proceso && !isLoading()) {
-        <app-dropdown matPrefix #createMenu="appDropdown">
-          <button type="button" class="btn-icon" trigger aria-label="Crear documento"
-            [style.display]="!searchControl.value ? 'inline-flex' : 'none !important'"
-            (click)="sendCreate(createMenu, $event)">
-            <mat-icon aria-hidden="true">add_circle</mat-icon>
-          </button>
-          @for (item of acciones; track item) {
-            <app-dropdown-item (clicked)="createNewDocument(item.valor, item.llaveTabla)">
-              Crear {{ item.texto | titlecase }}
-            </app-dropdown-item>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay" (optionSelected)="selectProcess($event.option.value)">
+          @for (document of filteredDocuments.slice(0, 8); track document.llaveTabla) {
+            <mat-option [value]="document">
+              @if (document.descripcion) {
+                <span class="font-medium">{{ document.descripcion }}</span>
+              }
+              <span class="ml-2 text-sm text-secondary">{{ document.nombre }}</span>
+            </mat-option>
           }
-        </app-dropdown>
-      }
-      <div matSuffix class="flex shrink-0 flex-nowrap items-center gap-1">
-        @if (isEnabled && !proceso) {
-          @if (isLoading()) {
-            <span class="inline-flex items-center text-primary" role="status" aria-label="Buscando documentos">
-              <mat-icon class="animate-spin" aria-hidden="true">autorenew</mat-icon>
-            </span>
-          } @else {
-            <button type="button" class="btn-icon" (click)="gestionarKeyUpTexto()" aria-label="Buscar documentos" title="Buscar documentos">
-              <mat-icon aria-hidden="true">search</mat-icon>
+          @if (filteredDocuments.length > 8) {
+            <mat-option disabled>Hay más coincidencias. Escribe más para afinar la búsqueda.</mat-option>
+          }
+        </mat-autocomplete>
+        <!-- Open window -->
+        @if (proceso) {
+          <button type="button" class="btn-icon" matPrefix (click)="openDialog(proceso)" [attr.aria-label]="'Abrir ' + proceso.nombre" [title]="'Abrir ' + proceso.nombre">
+            <mat-icon aria-hidden="true">open_in_new</mat-icon>
+          </button>
+        }
+        <!-- Create -->
+        @if (acciones && !errorMessage && !proceso && !isLoading()) {
+          <app-dropdown matPrefix #createMenu="appDropdown">
+            <button type="button" class="btn-icon" trigger aria-label="Crear documento"
+              [style.display]="!searchControl.value ? 'inline-flex' : 'none !important'"
+              (click)="sendCreate(createMenu, $event)">
+              <mat-icon aria-hidden="true">add_circle</mat-icon>
+            </button>
+            @for (item of acciones; track item) {
+              <app-dropdown-item (clicked)="createNewDocument(item.valor, item.llaveTabla)">
+                Crear {{ item.texto | titlecase }}
+              </app-dropdown-item>
+            }
+          </app-dropdown>
+        }
+        <div matSuffix class="flex shrink-0 flex-nowrap items-center gap-1">
+          @if (isEnabled && !proceso) {
+            @if (isLoading()) {
+              <span class="inline-flex items-center text-primary" role="status" aria-label="Buscando documentos">
+                <mat-icon class="animate-spin" aria-hidden="true">autorenew</mat-icon>
+              </span>
+            } @else {
+              <button type="button" class="btn-icon" (click)="gestionarKeyUpTexto()" aria-label="Buscar documentos" title="Buscar documentos">
+                <mat-icon aria-hidden="true">search</mat-icon>
+              </button>
+            }
+          }
+          @if (proceso && isEnabled) {
+            <button type="button" class="btn-icon" (click)="clearSelection()" aria-label="Limpiar selección" title="Limpiar selección">
+              <mat-icon svgIcon="heroicons_outline:x-circle" aria-hidden="true"></mat-icon>
+            </button>
+          } @else if (isEnabled && !isLoading() && (searchControl.value || searchAttempted)) {
+            <button type="button" class="btn-icon" (click)="clearSearch()" aria-label="Limpiar búsqueda" title="Limpiar búsqueda">
+              <mat-icon svgIcon="heroicons_outline:x-circle" aria-hidden="true"></mat-icon>
             </button>
           }
-        }
-        @if (proceso && isEnabled) {
-          <button type="button" class="btn-icon" (click)="clearSelection()" aria-label="Limpiar selección" title="Limpiar selección">
-            <mat-icon svgIcon="heroicons_outline:x-circle" aria-hidden="true"></mat-icon>
-          </button>
-        } @else if (isEnabled && !isLoading() && (searchControl.value || searchAttempted)) {
-          <button type="button" class="btn-icon" (click)="clearSearch()" aria-label="Limpiar búsqueda" title="Limpiar búsqueda">
-            <mat-icon svgIcon="heroicons_outline:x-circle" aria-hidden="true"></mat-icon>
+        </div>
+        <!-- Boton codigo QR-->
+        @if (isEnabled && readQR && !proceso && !isLoading()) {
+          <button type="button" class="btn-icon" matPrefix (click)="toogleScanner()" aria-label="Leer código QR" title="Leer código QR">
+            <mat-icon aria-hidden="true">camera_enhance</mat-icon>
           </button>
         }
-      </div>
-      <!-- Boton codigo QR-->
-      @if (isEnabled && readQR && !proceso && !isLoading()) {
-        <button type="button" class="btn-icon" matPrefix (click)="toogleScanner()" aria-label="Leer código QR" title="Leer código QR">
-          <mat-icon aria-hidden="true">camera_enhance</mat-icon>
-        </button>
-      }
-    </mat-form-field>
-    @if (isLoading() && !proceso) {
-      <div class="mt-1 flex items-center gap-2 text-sm text-primary" role="status" aria-live="polite" aria-atomic="true">
-        <mat-icon class="animate-spin" aria-hidden="true">autorenew</mat-icon>
-        <span>Buscando “{{ filtroBusqueda }}”… Espera la respuesta para volver a buscar.</span>
-      </div>
-    }
-    @if (scannerEnabled && !proceso) {
-      <div class="w-full">
-        <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
-      </div>
-    }
-    @if (searchAttempted && !proceso && !isLoading() && (searchError || filteredDocuments.length === 0)) {
-      <section class="mb-2 rounded border border-gray-200 bg-gray-50 p-3 text-sm dark:border-gray-700 dark:bg-gray-900" role="status" aria-live="polite">
-        @if (searchError) {
-          <p>No fue posible completar la búsqueda. Revisa tu conexión e inténtalo de nuevo.</p>
-        } @else {
-          <p>No encontramos coincidencias para “{{ filtroBusqueda }}”. Puedes cambiar la búsqueda o crear un documento.</p>
-          @if (acciones && acciones.length > 0) {
-            <div class="mt-1 mb-1 flex flex-wrap gap-2">
-              @for (action of acciones; track action.llaveTabla) {
-                <button type="button" class="btn-raised" (click)="createNewDocument(action.valor, action.llaveTabla)">
-                  Crear {{ action.texto | titlecase }}
-                </button>
-              }
-            </div>
-          }
-        }
-      </section>
-    }
-  }
-  @if (errorMessage) {
-    <label
-    class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
-  }
-  <!-- Campos multiples -->
-  @if (tipoMultiple) {
-    <div class="pb-1" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
-      <!-- Titulo y boton buscar -->
-      @if (!isLoading()) {
-        <div>
-          <div class="flex justify-between items-center w-full mb-1 gap-1">
-          <button type="button" (click)="procesarCampo(transformPVCtoFilter(data))"
-            class="relative w-full btn-flat-accent">
-            {{ structure.nombre | titlecase }}
-            @if (data.valorText) {
-              <span class="absolute -top-2 -right-2 min-w-5 h-5 px-1.5 rounded-full bg-primary text-on-primary text-xs flex items-center justify-center">{{ data.valorText }}</span>
-            }
-          </button>
-            @if (acciones && formIsEnabled && data.expedientes) {
-              <app-dropdown #createMenuExpediente="appDropdown">
-                <button type="button" class="btn-flat-accent" trigger aria-label="Crear expediente"
-                  (click)="sendCreate(createMenuExpediente, $event)">
-                  <mat-icon aria-hidden="true">add</mat-icon>
-                </button>
-                @for (item of acciones; track item) {
-                  <app-dropdown-item (clicked)="createNewDocument(item.valor, item.llaveTabla)">
-                    Crear {{ item.texto | titlecase }}
-                  </app-dropdown-item>
-                }
-              </app-dropdown>
-            }
-          </div>
-          @if (data.valorNumero && data.valorNumero !== 0) {
-            <span
-            class="text-28 font-weight-bold mat-color-primary w-full text-center">{{ titulo }}</span>
-          }
+      </mat-form-field>
+      @if (isLoading() && !proceso) {
+        <div class="mt-1 flex items-center gap-2 text-sm text-primary" role="status" aria-live="polite" aria-atomic="true">
+          <mat-icon class="animate-spin" aria-hidden="true">autorenew</mat-icon>
+          <span>Buscando “{{ filtroBusqueda }}”… Espera la respuesta para volver a buscar.</span>
         </div>
       }
-      <!-- Lista de seleccionados (Expedientes) -->
-      <div class="flex flex-wrap w-full">
-        @for (d of data.expedientes; track d.llaveTabla) {
-          <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
-            <div class="card p-0 rounded h-full">
-              <div class="p-1 rounded mb-0">
-                <div class="flex items-center">
-                  <div class="w-16 p-1">
-                      <button type="button" class="block w-full border-0 bg-transparent p-0" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
-                        <img [src]="d.imagen | imageFormat" alt="" class="h-12 w-full object-cover" />
-                      </button>
-                  </div>
-                  <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(d.estadoExpediente)"
-                    [style.color]="getColorFont(d.estadoExpediente)">
-                      <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline focus-visible:outline-2" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
-                        <span class="text-sm line-clamp-4 leading-none">{{ d.nombre }}</span>
-                      </button>
-                    @if (d.descripcion) {
-                      <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline focus-visible:outline-2" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
-                        <span class="text-md">{{ d.descripcion }}</span>
+      @if (scannerEnabled && !proceso) {
+        <div class="w-full">
+          <zxing-scanner [formats]="allowedFormats" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+        </div>
+      }
+      @if (searchAttempted && !proceso && !isLoading() && (searchError || filteredDocuments.length === 0)) {
+        <section class="mb-2 rounded border border-gray-200 bg-gray-50 p-3 text-sm dark:border-gray-700 dark:bg-gray-900" role="status" aria-live="polite">
+          @if (searchError) {
+            <p>No fue posible completar la búsqueda. Revisa tu conexión e inténtalo de nuevo.</p>
+          } @else {
+            <p>No encontramos coincidencias para “{{ filtroBusqueda }}”. Puedes cambiar la búsqueda o crear un documento.</p>
+            @if (acciones && acciones.length > 0) {
+              <div class="mt-1 mb-1 flex flex-wrap gap-2">
+                @for (action of acciones; track action.llaveTabla) {
+                  <button type="button" class="btn-raised" (click)="createNewDocument(action.valor, action.llaveTabla)">
+                    Crear {{ action.texto | titlecase }}
+                  </button>
+                }
+              </div>
+            }
+          }
+        </section>
+      }
+    }
+    @if (errorMessage) {
+      <label
+      class="items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">{{errorMessage}}</label>
+    }
+    <!-- Campos multiples -->
+    @if (tipoMultiple) {
+      <div class="pb-1" [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
+        <!-- Titulo y boton buscar -->
+        @if (!isLoading()) {
+          <div>
+            <div class="flex justify-between items-center w-full mb-1 gap-1">
+            <button type="button" (click)="procesarCampo(transformPVCtoFilter(data))"
+              class="relative w-full btn-flat-accent">
+              {{ structure.nombre | titlecase }}
+              @if (data.valorText) {
+                <span class="absolute -top-2 -right-2 min-w-5 h-5 px-1.5 rounded-full bg-primary text-on-primary text-xs flex items-center justify-center">{{ data.valorText }}</span>
+              }
+            </button>
+              @if (acciones && formIsEnabled && data.expedientes) {
+                <app-dropdown #createMenuExpediente="appDropdown">
+                  <button type="button" class="btn-flat-accent" trigger aria-label="Crear expediente"
+                    (click)="sendCreate(createMenuExpediente, $event)">
+                    <mat-icon aria-hidden="true">add</mat-icon>
+                  </button>
+                  @for (item of acciones; track item) {
+                    <app-dropdown-item (clicked)="createNewDocument(item.valor, item.llaveTabla)">
+                      Crear {{ item.texto | titlecase }}
+                    </app-dropdown-item>
+                  }
+                </app-dropdown>
+              }
+            </div>
+            @if (data.valorNumero && data.valorNumero !== 0) {
+              <span
+              class="text-28 font-weight-bold mat-color-primary w-full text-center">{{ titulo }}</span>
+            }
+          </div>
+        }
+        <!-- Lista de seleccionados (Expedientes) -->
+        <div class="flex flex-wrap w-full">
+          @for (d of data.expedientes; track d.llaveTabla) {
+            <div class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-1">
+              <div class="card p-0 rounded h-full">
+                <div class="p-1 rounded mb-0">
+                  <div class="flex items-center">
+                    <div class="w-16 p-1">
+                        <button type="button" class="block w-full border-0 bg-transparent p-0" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
+                          <img [src]="d.imagen | imageFormat" alt="" class="h-12 w-full object-cover" />
+                        </button>
+                    </div>
+                    <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(d.estadoExpediente)"
+                      [style.color]="getColorFont(d.estadoExpediente)">
+                        <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
+                          <span class="text-sm line-clamp-4 leading-none">{{ d.nombre }}</span>
+                        </button>
+                      @if (d.descripcion) {
+                        <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
+                          <span class="text-md">{{ d.descripcion }}</span>
+                        </button>
+                      }
+                    </div>
+                    @if (isEnabled) {
+                      <button type="button" class="btn-icon" (click)="retirarProceso(d)" [attr.aria-label]="'Retirar ' + d.nombre" [title]="'Retirar ' + d.nombre">
+                        <mat-icon aria-hidden="true">cancel</mat-icon>
                       </button>
                     }
                   </div>
-                  @if (isEnabled) {
-                    <button type="button" class="btn-icon" (click)="retirarProceso(d)" [attr.aria-label]="'Retirar ' + d.nombre" [title]="'Retirar ' + d.nombre">
-                      <mat-icon aria-hidden="true">cancel</mat-icon>
-                    </button>
-                  }
-                </div>
                 <!-- <mat-divider></mat-divider> -->
                 <div class="text-sm flex justify-between">
                   <div>{{ d.fecha | date }}</div>
@@ -201,14 +203,12 @@
                 @if (d.caracteristicas && d.caracteristicas.length !== 0) {
                   <div>
                     @for (f of d.caracteristicas; track f.llaveTabla || $index) {
+                      @if (f.valorText) { 
                       <div class="flex justify-between">
                         <small class="font-extralight line-clamp-1">{{ f.campoDTO.nombre }}</small>
-                        @if (f.valorText) {
-                          <div class="text-right text-sm line-clamp-1">
-                            {{ f.valorText }}
-                          </div>
-                        }
+                        <div class="text-right text-sm line-clamp-1">{{ f.valorText }}</div> 
                       </div>
+                      }
                     }
                   </div>
                 }
@@ -322,11 +322,11 @@
                         </div>
                         <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
                           [style.color]="getColorFont(iDocument.estadoExpediente)">
-                          <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline focus-visible:outline-2" (click)="openDialog(iDocument)" aria-label="Abrir {{ iDocument.nombre }}" title="Abrir {{ iDocument.nombre }}">
+                          <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline " (click)="openDialog(iDocument)" aria-label="Abrir {{ iDocument.nombre }}" title="Abrir {{ iDocument.nombre }}">
                             <span class="text-sm line-clamp-4 leading-none">{{ iDocument.nombre }}</span>
                           </button>
                           @if (iDocument.descripcion) {
-                            <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline focus-visible:outline-2" (click)="openDialog(iDocument)" aria-label="Abrir {{ iDocument.nombre }}" title="Abrir {{ iDocument.nombre }}">
+                            <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline" (click)="openDialog(iDocument)" aria-label="Abrir {{ iDocument.nombre }}" title="Abrir {{ iDocument.nombre }}">
                               <span class="">{{ iDocument.descripcion }}</span>
                             </button>
                           }

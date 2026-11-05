@@ -1,7 +1,7 @@
-import { TreeNodeDTO } from './TreeNodeDTO';
+import { NodoArbolDTO } from './NodoArbolDTO';
 import { SeleccionSincronizacionDTO } from './SeleccionSincronizacionDTO';
 
 export class SincronizacionSeleccionadaDTO {
-    arbol: TreeNodeDTO;
+    arbol: NodoArbolDTO;
     selecciones: SeleccionSincronizacionDTO[];
 }

@@ -1,29 +1,31 @@
-<mat-form-field [style.display]="isInvisible ? 'none': 'block'">
-  <mat-label>{{structure.nombre | titlecase }} </mat-label>
-  @if (data.valorText) {
-    <button class="btn-icon"
-      matPrefix
+<div [attr.data-template-code]="templateCode" [attr.data-field-code]="fieldCode">
+  <mat-form-field [style.display]="isInvisible ? 'none': 'block'">
+    <mat-label>{{structure.nombre | titlecase }} </mat-label>
+    @if (data.valorText) {
+      <button class="btn-icon"
+        matPrefix
+        (click)="showMap()"
+        tabindex="-1"
+        >
+        <mat-icon>map</mat-icon>
+      </button>
+    }
+    <input
+      matInput
+      [formControl]="fControl"
+      [name]="structure.llaveTabla"
+      [required]="required"
+      [readonly]="true"
+      autocomplete="off"
+      class="cursor-pointer text-primary underline"
       (click)="showMap()"
-      tabindex="-1"
-      >
-      <mat-icon>map</mat-icon>
-    </button>
-  }
-  <input
-    matInput
-    [formControl]="fControl"
-    [name]="structure.llaveTabla"
-    [required]="required"
-    [readonly]="true"
-    autocomplete="off"
-    class="cursor-pointer text-primary underline"
-    (click)="showMap()"
-    />
-    <button class="btn-icon"
-      matSuffix
-      (click)="getLocation()"
-      tabindex="-1"
-      >
-      <mat-icon>gps_fixed</mat-icon>
-    </button>
-  </mat-form-field>
+      />
+      <button class="btn-icon"
+        matSuffix
+        (click)="getLocation()"
+        tabindex="-1"
+        >
+        <mat-icon>gps_fixed</mat-icon>
+      </button>
+    </mat-form-field>
+</div>

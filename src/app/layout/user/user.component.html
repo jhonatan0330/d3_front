@@ -53,4 +53,8 @@
     <mat-icon [svgIcon]="'heroicons_outline:arrow-right-on-rectangle'"></mat-icon>
     <span>Salir</span>
   </app-dropdown-item>
+
+  @if (layoutService.isAdmin()) {
+    <usage-meter-widget></usage-meter-widget>
+  }
 </app-dropdown>

@@ -51,9 +51,9 @@ export class StateSelectorComponent implements ControlValueAccessor, OnInit, OnC
         }
         this.processService.getStates(this.processKey).subscribe({
             next: (res) => {
-                this.estados = res;
+                this.estados = res ?? [];
                 this.applyFilter();
-                if (this.selectedKey) this.setDisplayFromList();
+                if (this.selectedKey) this.loadStateDisplay(this.selectedKey);
                 this.cdr.markForCheck();
             },
             error: () => { this.estados = []; this.filteredEstados = []; this.cdr.markForCheck(); }
@@ -104,9 +104,23 @@ export class StateSelectorComponent implements ControlValueAccessor, OnInit, OnC
         this.onChange('');
     }
 
-    private setDisplayFromList(): void {
-        const found = this.estados.find(e => e.llaveTabla === this.selectedKey);
-        this.displayValue = found ? found.nombre : this.selectedKey;
+    private loadStateDisplay(key: string): void {
+        if (!key) {
+            this.displayValue = '';
+            return;
+        }
+
+        this.processService.getStateById(key).subscribe({
+            next: (estado) => {
+                this.displayValue = estado?.nombre || estado?.codigo || key;
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                const found = this.estados.find((e) => e.llaveTabla === key);
+                this.displayValue = found ? found.nombre : key;
+                this.cdr.markForCheck();
+            }
+        });
     }
 
     writeValue(value: string): void {
@@ -114,8 +128,7 @@ export class StateSelectorComponent implements ControlValueAccessor, OnInit, OnC
         this.displayValue = '';
         this.query = '';
         if (this.selectedKey) {
-            if (this.estados.length > 0) this.setDisplayFromList();
-            else this.displayValue = this.selectedKey;
+            this.loadStateDisplay(this.selectedKey);
         }
     }
 

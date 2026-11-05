@@ -1,14 +1,14 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, input, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
-import {  ProcesoDTO, ProcesoEstadoDTO, ProcesoGraphDTO, ProcesoTransicionDTO } from 'app/document/document.types';
+import {  ProcesoDTO, ProcesoEstadoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import {
   ProcessService,
   TreeConfigService,
 } from 'app/configuration/configuracion.api';
-import { ArbolConfiguracionFilterDTO } from 'app/configuration/domain/ArbolConfiguracionFilterDTO';
 import { ArbolNodoRequestDTO } from 'app/configuration/domain/ArbolNodoRequestDTO';
-import { TreeNodeDTO } from 'app/configuration/domain/TreeNodeDTO';
+import { NodoArbolDTO } from 'app/configuration/domain/NodoArbolDTO';
+import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 
 import { DocumentTemplateFormComponent } from 'app/configuration/components/document-templates/document-template-form/document-template-form.component';
 import { ProcessStateFormComponent } from 'app/configuration/components/processes/process-states/process-state-form/process-state-form.component';
@@ -49,7 +49,6 @@ export class BpmDiagramComponent implements OnInit {
   private notification = inject(NotificationCenterService);
   private dialog = inject(MatDialog);
   readonly data = inject(MAT_DIALOG_DATA, { optional: true });
-  private processService = inject(ProcessService);
   private treeConfigService = inject(TreeConfigService);
   private dialogRef = inject<MatDialogRef<BpmDiagramComponent>>(MatDialogRef);
 
@@ -58,7 +57,7 @@ export class BpmDiagramComponent implements OnInit {
   readonly hasError = signal(false);
   readonly cargandoHijos = signal(false);
   private hijosCargados = new Set<string>();
-  private procesosCargados = new Map<string, TreeNodeDTO>();
+  private procesosCargados = new Map<string, NodoArbolDTO>();
   private procesoId: string | null = null;
 
   readonly mode = input<'process' | 'config'>('process');
@@ -89,7 +88,7 @@ export class BpmDiagramComponent implements OnInit {
     }
     this.isLoading.set(true);
     this.hasError.set(false);
-    this.processService.getProcessForGraph(this.procesoId).subscribe({
+    this.treeConfigService.getProcessForGraph(this.procesoId).subscribe({
       next: process => {
         this.canvasNodes.set(this.normalizeProcess(process));
         this.isLoading.set(false);
@@ -104,17 +103,15 @@ export class BpmDiagramComponent implements OnInit {
   loadConfigRoot(): void {
     this.isLoading.set(true);
     this.hasError.set(false);
-    const filtro = new ArbolConfiguracionFilterDTO();
-    filtro.profundidad = ArbolConfiguracionFilterDTO.PROFUNDIDAD_SIMPLE;
-    filtro.listarPropiedades = false;
-    filtro.ligero = true;
-    this.treeConfigService.getTree(filtro).subscribe({
+    this.treeConfigService.getTree().subscribe({
       next: raiz => {
-        const ordenGrupo = (tipo?: string): number => {
-          if (tipo === TreeNodeDTO.API) return 2;
+        const ordenGrupo = (categoria?: string): number => {
+          if (categoria === PropiedadValorDefinidoDTO.API_SERVICE) return 2;
           return 3;
         };
-        const hijos = [...(raiz.hijos || [])].sort((a, b) => ordenGrupo(a.tipo) - ordenGrupo(b.tipo));
+        const hijos = [...(raiz.hijos || [])].sort(
+          (a, b) => ordenGrupo(a.categoria) - ordenGrupo(b.categoria),
+        );
         const nodos: BpmCanvasNode[] = [];
         nodos.push(this.mapConfigNode(raiz, null));
         for (const hijo of hijos) {
@@ -135,14 +132,14 @@ export class BpmDiagramComponent implements OnInit {
 
   onNodeToggle(event: { node: BpmCanvasNode; expanded: boolean }): void {
     if (this.modo !== 'config' || !event.expanded) return;
-    const nodo = event.node.source as TreeNodeDTO | undefined;
+    const nodo = event.node.source as NodoArbolDTO | undefined;
     if (!nodo?.camino || !nodo.tieneHijos) return;
     if (this.hijosCargados.has(nodo.camino)) return;
     if (this.canvasNodes().some(n => n.parentId === nodo.camino)) {
       this.hijosCargados.add(nodo.camino);
       return;
     }
-    if (nodo.tipo === TreeNodeDTO.PROCESO && nodo.categoria === 'E') {
+    if (nodo.categoria === PropiedadValorDefinidoDTO.PROCESO && nodo.tipo === 'E') {
       this.cargarMapaProceso(nodo);
       this.cargarIconosProceso(nodo);
       //return;
@@ -150,14 +147,14 @@ export class BpmDiagramComponent implements OnInit {
     this.cargandoHijos.set(true);
     const request = new ArbolNodoRequestDTO();
     request.camino = nodo.camino;
-    request.tipo = nodo.tipo;
+    request.tipo = nodo.categoria;
     request.llaveTabla = nodo.llaveTabla;
     request.listarPropiedades = false;
     request.ligero = true;
     this.treeConfigService.getTreeNode(request).subscribe({
       next: respuesta => {
         const hijos = (respuesta.hijos || [])
-          .filter(hijo => hijo.tipo !== TreeNodeDTO.CAMPO)
+          .filter(hijo => hijo.categoria !== PropiedadValorDefinidoDTO.CAMPO)
           .map(hijo => {
             const hijoNodo = this.mapConfigNode(hijo, nodo.camino);
             //if (plantillaEnFila && this.esTipoPlantilla(hijo.tipo)) hijoNodo.horizontal = true;
@@ -185,17 +182,25 @@ export class BpmDiagramComponent implements OnInit {
     });
   }
 
-  private cargarMapaProceso(nodo: TreeNodeDTO): void {
+  private cargarMapaProceso(nodo: NodoArbolDTO): void {
     this.cargandoHijos.set(true);
-    this.processService.getProcessForGraph(nodo.llaveTabla).subscribe({
-      next: proceso => {
-        
-        const transiciones = proceso.transiciones || [];
-        const hijos = (proceso.estados || [])
-          .filter(estado => !!estado.llaveTabla)
-          .map(estado => this.mapEstadoNode(estado, nodo.camino));
-        const aristas = this.mapTransiciones(transiciones, nodo.camino);
-        const conInicio = hijos.length > 0 && transiciones.some(t => !t.estadoPartida && !!t.estadoLLegada);
+    this.treeConfigService.getProcessForGraph(nodo.llaveTabla).subscribe({
+      next: respuesta => {
+        const proceso = this.buscarProceso(respuesta, nodo.llaveTabla) ?? respuesta;
+        const hijosProceso = proceso.hijos || [];
+        const estados = hijosProceso.filter(
+          hijo => hijo.categoria === PropiedadValorDefinidoDTO.ESTADO && !!hijo.llaveTabla,
+        );
+        const transiciones = hijosProceso.filter(
+          hijo => hijo.categoria === PropiedadValorDefinidoDTO.TRANSICION,
+        );
+        const llavesPorCodigo = new Map<string, string>();
+        for (const estado of estados) {
+          if (estado.codigo) llavesPorCodigo.set(estado.codigo, estado.llaveTabla);
+        }
+        const hijos = estados.map(estado => this.mapEstadoNode(estado, nodo.camino));
+        const aristas = this.mapTransiciones(transiciones, nodo.camino, llavesPorCodigo);
+        const conInicio = hijos.length > 0 && transiciones.some(t => !t.att2 && !!t.att3);
         if (conInicio) hijos.unshift(this.mapEstadoInicioNode(nodo.camino));
         this.canvasNodes.update(nodos => {
           const conOtrosHijos = nodos.some(n => n.parentId === nodo.camino);
@@ -222,17 +227,27 @@ export class BpmDiagramComponent implements OnInit {
     });
   }
 
-  private cargarIconosProceso(nodo: TreeNodeDTO): void {
+  private buscarProceso(nodo: NodoArbolDTO | null | undefined, llave: string): NodoArbolDTO | null {
+    if (!nodo) return null;
+    if (nodo.llaveTabla === llave) return nodo;
+    for (const hijo of nodo.hijos || []) {
+      const encontrado = this.buscarProceso(hijo, llave);
+      if (encontrado) return encontrado;
+    }
+    return null;
+  }
+
+  private cargarIconosProceso(nodo: NodoArbolDTO): void {
     const request = new ArbolNodoRequestDTO();
     request.camino = nodo.camino;
-    request.tipo = nodo.tipo;
+    request.tipo = nodo.categoria;
     request.llaveTabla = nodo.llaveTabla;
     request.listarPropiedades = false;
     request.ligero = true;
     this.treeConfigService.getTreeNode(request).subscribe({
       next: respuesta => {
         const iconos = (respuesta.hijos || [])
-          .filter(hijo => hijo.tipo === TreeNodeDTO.API)
+          .filter(hijo => hijo.categoria === PropiedadValorDefinidoDTO.API_SERVICE)
           .map(hijo => this.mapConfigNode(hijo, nodo.camino));
         if (!iconos.length) return;
         this.canvasNodes.update(nodos => {
@@ -251,10 +266,10 @@ export class BpmDiagramComponent implements OnInit {
   }
 
   private estadoNodeId(camino: string, llave: string): string {
-    return `${camino}/${TreeNodeDTO.ESTADO}:${llave}`;
+    return `${camino}/ESTADO:${llave}`;
   }
 
-  private mapEstadoNode(estado: ProcesoEstadoDTO, camino: string): BpmCanvasNode {
+  private mapEstadoNode(estado: NodoArbolDTO, camino: string): BpmCanvasNode {
     const tipo = estado.tipo || 'E';
     return {
       id: this.estadoNodeId(camino, estado.llaveTabla),
@@ -271,14 +286,14 @@ export class BpmDiagramComponent implements OnInit {
     };
   }
 
-  private estadoShapeFill(estado: ProcesoEstadoDTO): string | undefined {
-    if (estado.estadoDocumento === 'I') return '#ff0000';
-    if (estado.estadoDocumento === 'C') return '#00ff00';
+  private estadoShapeFill(estado: NodoArbolDTO): string | undefined {
+    if (estado.att1 === 'I') return '#ff0000';
+    if (estado.att1 === 'C') return '#00ff00';
     return undefined;
   }
 
   private estadoInicioId(camino: string): string {
-    return `${camino}/${TreeNodeDTO.ESTADO}:${ESTADO_INICIO_LLAVE}`;
+    return `${camino}/ESTADO:${ESTADO_INICIO_LLAVE}`;
   }
 
   private mapEstadoInicioNode(camino: string): BpmCanvasNode {
@@ -293,21 +308,27 @@ export class BpmDiagramComponent implements OnInit {
     };
   }
 
-  private mapTransiciones(transiciones: ProcesoTransicionDTO[], camino: string): BpmCanvasEdge[] {
+  private mapTransiciones(
+    transiciones: NodoArbolDTO[],
+    camino: string,
+    llavesPorCodigo: Map<string, string>,
+  ): BpmCanvasEdge[] {
     const aristas: BpmCanvasEdge[] = [];
     const vistos = new Set<string>();
     for (const transicion of transiciones) {
-      if (!transicion.estadoLLegada) continue;
-      const origen = transicion.estadoPartida;
+      const llegada = transicion.att3 ? llavesPorCodigo.get(transicion.att3) : undefined;
+      if (!llegada) continue;
+      const origen = transicion.att2 ? llavesPorCodigo.get(transicion.att2) : undefined;
+      if (transicion.att2 && !origen) continue;
       const id =
         transicion.llaveTabla ||
-        `${origen || ESTADO_INICIO_LLAVE}->${transicion.estadoLLegada}#${aristas.length}`;
+        `${origen || ESTADO_INICIO_LLAVE}->${llegada}#${aristas.length}`;
       if (vistos.has(id)) continue;
       vistos.add(id);
       aristas.push({
         id,
         from: origen ? this.estadoNodeId(camino, origen) : this.estadoInicioId(camino),
-        to: this.estadoNodeId(camino, transicion.estadoLLegada),
+        to: this.estadoNodeId(camino, llegada),
         label: transicion.nombre || undefined,
         color: BPM_EDGE_COLORS[aristas.length % BPM_EDGE_COLORS.length],
         source: transicion,
@@ -316,18 +337,18 @@ export class BpmDiagramComponent implements OnInit {
     return aristas;
   }
 
-  private esTipoPlantilla(tipo?: string): boolean {
-    return !!tipo && tipo.startsWith('PLANTILLA');
+  private esTipoPlantilla(categoria?: string): boolean {
+    return categoria === PropiedadValorDefinidoDTO.PLANTILLA;
   }
 
-  private puedeExpandir(nodo: TreeNodeDTO): boolean {
+  private puedeExpandir(nodo: NodoArbolDTO): boolean {
     if (!nodo.tieneHijos) return false;
-    if (this.esTipoPlantilla(nodo.tipo)) return nodo.totalHijos !== 0;
+    if (this.esTipoPlantilla(nodo.categoria)) return nodo.totalHijos !== 0;
     return true;
   }
 
   onEdgeActivated(edge: BpmCanvasEdge): void {
-    const transicion = edge.source as ProcesoTransicionDTO | undefined;
+    const transicion = edge.source as NodoArbolDTO | ProcesoTransicionDTO | undefined;
     if (!transicion) return;
     const dialogRef = this.dialog.open(ProcessTransitionFormComponent, {
       width: '700px',
@@ -354,16 +375,16 @@ export class BpmDiagramComponent implements OnInit {
     });
   }
 
-  private modalAccionDe(nodo: TreeNodeDTO): 'plantilla' | 'webservice' | undefined {
-    if (nodo.tipo === TreeNodeDTO.API) return 'webservice';
+  private modalAccionDe(nodo: NodoArbolDTO): 'plantilla' | 'webservice' | undefined {
+    if (nodo.categoria === PropiedadValorDefinidoDTO.API_SERVICE) return 'webservice';
     return undefined;
   }
 
-  private esNodoProceso(tipo?: string): boolean {
-    return tipo === TreeNodeDTO.PROCESO;
+  private esNodoProceso(categoria?: string): boolean {
+    return categoria === PropiedadValorDefinidoDTO.PROCESO;
   }
 
-  private mapConfigNode(nodo: TreeNodeDTO, parentId: string | null): BpmCanvasNode {
+  private mapConfigNode(nodo: NodoArbolDTO, parentId: string | null): BpmCanvasNode {
     return {
       id: nodo.camino,
       title: nodo.nombre || nodo.codigo || nodo.camino,
@@ -374,18 +395,22 @@ export class BpmDiagramComponent implements OnInit {
       hasChildren: this.puedeExpandir(nodo),
       modalAction: this.modalAccionDe(nodo),
       icon: this.iconCard(nodo),
-      shape: (nodo.tipo === TreeNodeDTO.API || nodo.tipo === TreeNodeDTO.PLANTILLA) ? 'icon' : undefined,
+      shape:
+        nodo.categoria === PropiedadValorDefinidoDTO.API_SERVICE ||
+        nodo.categoria === PropiedadValorDefinidoDTO.PLANTILLA
+          ? 'icon'
+          : undefined,
     };
   }
 
-  private iconCard(nodo: TreeNodeDTO): string {
-    if (nodo.tipo === TreeNodeDTO.API) return 'api';
-    if (nodo.tipo === TreeNodeDTO.ORGANIZACION) return 'building';
-    if (nodo.tipo === TreeNodeDTO.PROCESO) return 'process';
-    if (nodo.tipo === TreeNodeDTO.REPORTE) return 'report';
-    if (nodo.tipo === TreeNodeDTO.PLANTILLA) {
-      if (nodo.categoria === DocumentoPlantillaTipoEnum.ROL) return 'person';
-      if (nodo.categoria === DocumentoPlantillaTipoEnum.REPORTE) return 'report';
+  private iconCard(nodo: NodoArbolDTO): string {
+    if (nodo.categoria === PropiedadValorDefinidoDTO.API_SERVICE) return 'api';
+    if (nodo.categoria === PropiedadValorDefinidoDTO.ORGANIZACION) return 'building';
+    if (nodo.categoria === PropiedadValorDefinidoDTO.PROCESO) return 'process';
+    if (nodo.categoria === PropiedadValorDefinidoDTO.REPORTE) return 'report';
+    if (nodo.categoria === PropiedadValorDefinidoDTO.PLANTILLA) {
+      if (nodo.tipo === DocumentoPlantillaTipoEnum.ROL) return 'person';
+      if (nodo.tipo === DocumentoPlantillaTipoEnum.REPORTE) return 'report';
     }
     return 'document';
   }
@@ -400,18 +425,18 @@ export class BpmDiagramComponent implements OnInit {
         this.onNodeModal(node);
         return;
       }
-      const nodo = node.source as TreeNodeDTO | undefined;
-      if (this.esNodoProceso(nodo?.tipo)) {
+      const nodo = node.source as NodoArbolDTO | undefined;
+      if (this.esNodoProceso(nodo?.categoria)) {
         this.onNodeModal(node);
         return;
       }
-      if (nodo?.llaveTabla && this.esTipoPlantilla(nodo.tipo)) this.abrirPlantilla(nodo.llaveTabla);
+      if (nodo?.llaveTabla && this.esTipoPlantilla(nodo.categoria)) this.abrirPlantilla(nodo.llaveTabla);
       return;
     }
   }
 
   private abrirFormularioEstado(node: BpmCanvasNode): void {
-    const estado = node.source as ProcesoEstadoDTO | undefined;
+    const estado = node.source as NodoArbolDTO | undefined;
     if (!estado?.llaveTabla) return;
     const dialogRef = this.dialog.open(ProcessStateFormComponent, {
       width: '700px',
@@ -426,14 +451,14 @@ export class BpmDiagramComponent implements OnInit {
     });
   }
 
-  private refrescarMapaProceso(nodo: TreeNodeDTO): void {
+  private refrescarMapaProceso(nodo: NodoArbolDTO): void {
     this.canvasNodes.update(nodos => nodos.filter(n => n.parentId !== nodo.camino));
     this.hijosCargados.delete(nodo.camino);
     this.cargarMapaProceso(nodo);
   }
 
   onNodeModal(node: BpmCanvasNode): void {
-    const nodo = node.source as TreeNodeDTO | undefined;
+    const nodo = node.source as NodoArbolDTO | undefined;
     if (!nodo?.llaveTabla) return;
     this.abrirModalDato(node, nodo);
   }
@@ -447,12 +472,12 @@ export class BpmDiagramComponent implements OnInit {
       });
     }
 
-  private abrirModalDato(node: BpmCanvasNode, nodo: TreeNodeDTO): void {
+  private abrirModalDato(node: BpmCanvasNode, nodo: NodoArbolDTO): void {
     if (node.modalAction === 'plantilla') {
       this.abrirPlantilla(nodo.llaveTabla);
       return;
     }
-    if (node.modalAction === 'webservice' || nodo.tipo === TreeNodeDTO.API) {
+    if (node.modalAction === 'webservice' || nodo.categoria === PropiedadValorDefinidoDTO.API_SERVICE) {
       this.dialog.open(WebServiceFormComponent, {
         disableClose: true,
         width: '700px',
@@ -462,7 +487,7 @@ export class BpmDiagramComponent implements OnInit {
       return;
     }
 
-    if (nodo.tipo === TreeNodeDTO.PROCESO) {
+    if (nodo.categoria === PropiedadValorDefinidoDTO.PROCESO) {
       const dialogRef = this.dialog.open(ProcessFormComponent, {
       width: '900px',
       maxWidth: '95vw',
@@ -475,7 +500,7 @@ export class BpmDiagramComponent implements OnInit {
       this.canvasNodes.update(nodos =>
         nodos.map(n => {
           if (n.id !== node.id) return n;
-          const nodo = n.source as TreeNodeDTO;
+          const nodo = n.source as NodoArbolDTO;
           return {
             ...n,
             title: result.nombre || n.title,
@@ -492,18 +517,20 @@ export class BpmDiagramComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  private normalizeProcess(root: ProcesoGraphDTO): BpmCanvasNode[] {
+  private normalizeProcess(root: NodoArbolDTO): BpmCanvasNode[] {
     const nodes: BpmCanvasNode[] = [];
     const visited = new Set<string>();
-    const visit = (process: ProcesoGraphDTO | null | undefined, parentId: string | null): void => {
-
-      
+    const visit = (process: NodoArbolDTO | null | undefined, parentId: string | null): void => {
       if (!process?.llaveTabla || visited.has(process.llaveTabla)) return;
+      if (process.categoria && process.categoria !== PropiedadValorDefinidoDTO.PROCESO) return;
       visited.add(process.llaveTabla);
       const processId = process.llaveTabla;
-      const metadata = [
-        process.plantillas?.length ? { label: 'Plantillas', value: String(process.plantillas.length) } : null,
-      ].filter((item): item is { label: string; value: string } => item !== null);
+      const plantillas = (process.hijos || []).filter(
+        hijo => hijo.categoria === PropiedadValorDefinidoDTO.PLANTILLA,
+      ).length;
+      const metadata = plantillas
+        ? [{ label: 'Plantillas', value: String(plantillas) }]
+        : [];
       nodes.push({
         id: processId,
         title: process.nombre || process.codigo || processId,
@@ -512,8 +539,9 @@ export class BpmDiagramComponent implements OnInit {
         metadata,
         source: process,
       });
-      for (const child of process.hijos || []) visit(child, processId);
-      
+      for (const child of process.hijos || []) {
+        if (child.categoria === PropiedadValorDefinidoDTO.PROCESO) visit(child, processId);
+      }
     };
     visit(root, null);
     return nodes;

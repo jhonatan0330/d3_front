@@ -8,11 +8,12 @@ import { MatIcon } from '@angular/material/icon';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { LayoutService } from '../layout.service';
+import { UsageMeterWidgetComponent } from 'app/usage/components/usage-meter-widget/usage-meter-widget.component';
 
 @Component({
     selector: 'user',
     templateUrl: './user.component.html',
-    imports: [MatIcon, DropdownComponent, DropdownItemComponent]
+    imports: [MatIcon, DropdownComponent, DropdownItemComponent, UsageMeterWidgetComponent]
 })
 export class UserComponent {
     readonly jwtAuth = inject(LoginService);
@@ -45,7 +46,7 @@ export class UserComponent {
         this.templateService.setTemplates([]);
         this.apiService.listarPlantillas(pProfile).subscribe({
             next: (value) => {
-                this.templateService.setTemplates(value);
+                this.templateService.setTemplates(value, pProfile === 'ADMIN');
             },
             error: () => {}
         });

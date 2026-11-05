@@ -9,7 +9,6 @@ import {
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { FormComponent } from '../../form.component';
-import { DocumentoPlantillaCaracteristicaEnum } from '../../form.enum';
 
 export interface IDynamicControl {
   structure: DocumentoPlantillaCaracteristicaDTO;
@@ -18,7 +17,8 @@ export interface IDynamicControl {
   parent: PedidoVentaDTO;
   formIsEnabled: boolean; //Muestra si el formulario tiene permisos para modificar
 
-  urlServer: string;
+  templateCode: string;
+  fieldCode: string;
   isInvisible: boolean;
   isSectionInvisible: boolean;
 
@@ -44,7 +44,6 @@ export class BaseComponent implements OnInit, IDynamicControl {
   data: PedidoVentaCaracteristicaDTO;
   parent: PedidoVentaDTO;
   relatedFields: PropiedadDTO[];
-  //relatedFieldsCount: number = 0;
   propVisibleDepende: PropiedadDTO[];
   listeners: IDynamicControl[];
   required = true;
@@ -56,7 +55,10 @@ export class BaseComponent implements OnInit, IDynamicControl {
   isSectionInvisible = false;
   productForm: ProductComponent;
   form: FormComponent;
-  urlServer: string;
+  templateCode: string;
+  get fieldCode(): string {
+    return this.structure?.codigo ?? '';
+  }
   errorMessage: string | null = null;
   formIsModified = signal<boolean | null>(null);
 

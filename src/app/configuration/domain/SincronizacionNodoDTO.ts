@@ -1,10 +1,10 @@
-import { TreeNodeDTO } from './TreeNodeDTO';
+import { NodoArbolDTO } from './NodoArbolDTO';
 
 export class SincronizacionNodoDTO {
     static readonly CREAR = 'CREAR';
     static readonly ACTUALIZAR = 'ACTUALIZAR';
     static readonly OMITIR = 'OMITIR';
-    nodo?: TreeNodeDTO;
+    nodo?: NodoArbolDTO;
     camino: string;
     accion: string;
     incluirHijos: boolean;

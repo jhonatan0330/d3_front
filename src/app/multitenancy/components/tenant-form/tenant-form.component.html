@@ -1,7 +1,7 @@
 <div class="max-w-3xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
   <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
     <h2 class="text-xl font-bold">{{ esNuevo ? 'Nuevo Subtenant' : 'Editar Subtenant' }}</h2>
-    <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+     @if (!cargando()){<button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>}
   </div>
 
   @if (cargando() && !tenant.key) {

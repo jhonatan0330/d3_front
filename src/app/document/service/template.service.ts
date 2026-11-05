@@ -45,7 +45,7 @@ export class TemplateService {
     );
   }
 
-  setTemplates(value: DocumentoPlantillaDTO[]) {
+  setTemplates(value: DocumentoPlantillaDTO[], fullAccess: boolean = false) {
     this._template.set(value);
     this.colores = null;
     this.getColor('');
@@ -57,7 +57,7 @@ export class TemplateService {
         processToMenu.push(element);
       }
     });
-    this._navigationService.generate(processToMenu, this._modules!, value);
+    this._navigationService.generate(processToMenu, this._modules!, value, fullAccess);
   }
 
 
@@ -178,8 +178,7 @@ export class TemplateService {
   }
 
   getOrFetchRelations(
-    propiedad: string,
-    urlServer: string
+    propiedad: string
   ): Observable<RelacionInternaDTO[]> {
 
     const cached = this.getPropertyRelation(propiedad);

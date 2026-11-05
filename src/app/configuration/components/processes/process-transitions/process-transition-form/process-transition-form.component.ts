@@ -1,16 +1,17 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { finalize } from 'rxjs';
-import { ProcesoTransicionDTO } from 'app/document/document.types';
+import { ProcesoEstadoDTO, ProcesoTransicionDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 import { PropertyPanelComponent } from '../../../shared/property-panel/property-panel.component';
 import { ProcessSelectorComponent } from '../../../shared/process-selector/process-selector.component';
 import { StateSelectorComponent } from '../../../shared/state-selector/state-selector.component';
 import { TemplateSelectorComponent } from '../../../shared/template-selector/template-selector.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { ProcessStateFormComponent } from '../../process-states/process-state-form/process-state-form.component';
 import { DocumentTemplateFormComponent } from '../../../document-templates/document-template-form/document-template-form.component';
 import { ProcessChildDialogData } from '../../../shared/dialog-data';
 
@@ -30,6 +31,10 @@ export class ProcessTransitionFormComponent implements OnInit {
 
     private service = inject(ProcessService);
     private dialog = inject(MatDialog);
+
+    @ViewChild('estadoPartidaSelector') estadoPartidaSelector?: StateSelectorComponent;
+    @ViewChild('estadoLlegadaSelector') estadoLlegadaSelector?: StateSelectorComponent;
+    @ViewChild('plantillaSelector') plantillaSelector?: TemplateSelectorComponent;
 
     transition: ProcesoTransicionDTO = new ProcesoTransicionDTO();
     cargando = signal(false);
@@ -95,6 +100,36 @@ export class ProcessTransitionFormComponent implements OnInit {
             width: '900px',
             maxWidth: '95vw',
             maxHeight: '95vh',
+        }).afterClosed().subscribe((result: any) => {
+            if (!result) return;
+            this.transition.plantilla = result.llaveTabla || this.transition.plantilla;
+            this.transition.plantillaNombre = result.nombre || this.transition.plantillaNombre;
+            this.plantillaSelector?.writeValue(this.transition.plantilla);
+        });
+    }
+
+    abrirEstado(field: 'origen' | 'destino'): void {
+        const currentKey = field === 'origen' ? this.transition.estadoPartida : this.transition.estadoLLegada;
+        if (!currentKey) return;
+
+        this.dialog.open(ProcessStateFormComponent, {
+            width: '700px',
+            maxWidth: '90vw',
+            disableClose: true,
+            data: { id: currentKey, processId: this.processKey }
+        }).afterClosed().subscribe((result: ProcesoEstadoDTO) => {
+            if (!result) return;
+
+            if (field === 'origen') {
+                this.transition.estadoPartida = result.llaveTabla;
+                this.transition.estadoPartidaNombre = result.nombre || this.transition.estadoPartidaNombre;
+                this.estadoPartidaSelector?.writeValue(result.llaveTabla);
+                return;
+            }
+
+            this.transition.estadoLLegada = result.llaveTabla;
+            this.transition.estadoLlegadaNombre = result.nombre || this.transition.estadoLlegadaNombre;
+            this.estadoLlegadaSelector?.writeValue(result.llaveTabla);
         });
     }
 
