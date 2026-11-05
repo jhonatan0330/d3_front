@@ -15,7 +15,7 @@ import { DocumentTemplateFieldFormComponent } from 'app/configuration/components
 import { DocumentTemplateFieldDetailComponent } from 'app/configuration/components/document-templates/document-template-fields/document-template-field-detail.component';
 import { PropertyModalComponent } from 'app/configuration/components/shared/property-modal/property-modal.component';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
-import { BpmDiagramComponent } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
+import { BpmDiagramComponent } from 'app/configuration/components/bpm-diagram/bpm-diagram.component';
 
 @Injectable({
   providedIn: 'root',

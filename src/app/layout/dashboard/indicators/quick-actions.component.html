@@ -17,29 +17,41 @@
 
   <div class="relative grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
     @for (accion of acciones(); track accion.id) {
-      <button
-        type="button"
-        class="group flex h-full items-center gap-3 rounded-2xl border border-white/10 bg-white/7 p-3 text-left text-white shadow-[0_10px_20px_rgba(15,23,42,0.18)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-300/40 hover:bg-white/10 dark:border-slate-700/60 dark:bg-slate-900/40"
-        (click)="onAction(accion)"
-      >
-        @if (accion.icono.startsWith('http') || accion.icono.startsWith('/') || accion.icono.startsWith('www')) {
-          <span class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden shadow-sm">
-            <img
-              class="h-full w-full object-cover"
-              [src]="accion.icono | imageFormat"
-              [alt]="accion.nombre"
-              (error)="$any($event.target).src = 'assets/images/logo/dark_264x264.png'"
-            />
+      <div class="group relative flex h-full items-center overflow-hidden rounded-2xl border border-white/10 bg-white/7 text-white shadow-[0_10px_20px_rgba(15,23,42,0.18)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-300/40 hover:bg-white/10 dark:border-slate-700/60 dark:bg-slate-900/40">
+        <button
+          type="button"
+          class="flex flex-1 items-center gap-3 p-3 text-left"
+          (click)="onAction(accion)"
+        >
+          @if (accion.icono.startsWith('http') || accion.icono.startsWith('/') || accion.icono.startsWith('www')) {
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden shadow-sm">
+              <img
+                class="h-full w-full object-cover"
+                [src]="accion.icono | imageFormat"
+                [alt]="accion.nombre"
+                (error)="$any($event.target).src = 'assets/images/logo/dark_264x264.png'"
+              />
+            </span>
+          } @else {
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to from-sky-400 to-cyan-500 text-base font-semibold text-white shadow-sm transition-transform duration-200 group-hover:scale-[1.03]">
+              {{ accion.icono }}
+            </span>
+          }
+          <span class="min-w-0 text-sm font-medium text-slate-100">
+            {{ accion.nombre }}
           </span>
-        } @else {
-          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to from-sky-400 to-cyan-500 text-base font-semibold text-white shadow-sm transition-transform duration-200 group-hover:scale-[1.03]">
-            {{ accion.icono }}
-          </span>
-        }
-        <span class="min-w-0 text-sm font-medium text-slate-100">
-          {{ accion.nombre }}
-        </span>
-      </button>
+        </button>
+
+        <button
+          type="button"
+          class="absolute right-2 top-2 inline-flex h-8 w-8 items-center justify-center rounded-xl border border-sky-200/30 bg-sky-500/20 text-base font-semibold text-sky-100 shadow-[0_8px_16px_rgba(14,116,144,0.25)] transition-all duration-200 hover:scale-105 hover:bg-sky-500/30 hover:text-white"
+          [attr.aria-label]="'Abrir ' + accion.nombre + ' en la lista'"
+          (click)="onOpenList(accion); $event.stopPropagation()"
+          title="Abrir en la lista"
+        >
+          ↗
+        </button>
+      </div>
     }
   </div>
 </section>

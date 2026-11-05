@@ -6,6 +6,7 @@ import {
   output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
@@ -23,6 +24,7 @@ import { QuickAction } from './indicators.types';
 export class QuickActionsComponent {
   private readonly templateService = inject(TemplateService);
   private readonly utilsService = inject(UtilsService);
+  private readonly router = inject(Router);
 
   readonly actionClick = output<QuickAction>();
 
@@ -69,6 +71,10 @@ export class QuickActionsComponent {
     pedidoVenta.plantilla = template.llaveTabla;
     this.utilsService.modalWithParams(pedidoVenta, true);
     this.actionClick.emit(accion);
+  }
+
+  protected onOpenList(accion: QuickAction): void {
+    this.router.navigate(['/list', 'list', accion.id]);
   }
 
   private getQuickActionIcon(index: number): string {

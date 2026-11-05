@@ -31,6 +31,7 @@ export class LayoutService {
   readonly isAdmin = signal<boolean>(false);
   readonly isReader = signal<boolean>(false);
 
+  private styleElement?: HTMLStyleElement;
 
 
   public setUser(userId: string | null) {
@@ -77,15 +78,26 @@ export class LayoutService {
               PlantillaHelper.APP_MODULES
             ) ?? []
           );
+          const _iFooters = PlantillaHelper.buscarValor(organization.propiedades, PlantillaHelper.HEADER_PAGE);
+          if (_iFooters) {
+            if (!this.styleElement) {
+              this.styleElement = document.createElement('style');
+              this.styleElement.id = 'dynamic-styles';
+
+              document.head.appendChild(this.styleElement);
+            }
+
+            this.styleElement.textContent = _iFooters;
+          }
         }
 
         this.carouselService.loadFromOrganization(organization);
-        
+
         if (this.company() && this.company().llaveTabla === organization?.llaveTabla) {
           this.company().propiedades = organization.propiedades;
           return;
         }
-        
+
 
       },
       error: () => {
@@ -94,6 +106,10 @@ export class LayoutService {
 
   }
 
+  removeStyles(): void {
+    this.styleElement?.remove();
+    this.styleElement = undefined;
+  }
 
   validateAccessModule(moduleKey: string): boolean {
     if (!this.company()) {

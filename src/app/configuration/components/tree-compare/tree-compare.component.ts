@@ -9,7 +9,7 @@ import { SincronizacionNodoDTO } from 'app/configuration/domain/SincronizacionNo
 import { NodoArbolDTO } from 'app/configuration/domain/NodoArbolDTO';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/document.types';
-import { BpmDiagramComponent } from 'app/shared/components/bpm-diagram/bpm-diagram.component';
+import { BpmDiagramComponent } from 'app/configuration/components/bpm-diagram/bpm-diagram.component';
 
 interface FilaRevision {
     camino: string;

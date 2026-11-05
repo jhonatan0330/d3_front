@@ -52,7 +52,7 @@ export class CarouselService {
   loadFromOrganization(_company: OrganizacionDTO) {
     const slides: string[] = [];
     const landing: string[] = [];
-    let headerSection: string[] = [];
+    
 
     if (_company.propiedades) {
       const backImages = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.COVERAGE_IMAGE);
@@ -81,17 +81,9 @@ export class CarouselService {
           landing.push(this.sanitizeLayoutHtml(element.valor));
         });
       }
-      const _iFooters = PlantillaHelper.buscarValorMultiple(_company.propiedades, PlantillaHelper.HEADER_PAGE);
-      if (_iFooters && _iFooters.length !== 0) {
-        headerSection = [];
-        _iFooters.forEach((element: PropiedadDTO) => {
-          headerSection.push(this.sanitizeLayoutHtml(element.valor));
-        });
-      }
     }
 
     this.slides.set(slides);
     this.landing.set(landing);
-    this.headerSection.set(headerSection);
   }
 }
