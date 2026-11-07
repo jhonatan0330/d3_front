@@ -149,8 +149,6 @@ export class BpmDiagramComponent implements OnInit {
     request.camino = nodo.camino;
     request.tipo = nodo.categoria;
     request.llaveTabla = nodo.llaveTabla;
-    request.listarPropiedades = false;
-    request.ligero = true;
     this.treeConfigService.getTreeNode(request).subscribe({
       next: respuesta => {
         const hijos = (respuesta.hijos || [])
@@ -242,8 +240,6 @@ export class BpmDiagramComponent implements OnInit {
     request.camino = nodo.camino;
     request.tipo = nodo.categoria;
     request.llaveTabla = nodo.llaveTabla;
-    request.listarPropiedades = false;
-    request.ligero = true;
     this.treeConfigService.getTreeNode(request).subscribe({
       next: respuesta => {
         const iconos = (respuesta.hijos || [])

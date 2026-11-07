@@ -55,7 +55,7 @@ export class TenantFormComponent implements OnInit {
             name: this.tenant.name,
             imagen: this.tenant.imagen,
             state: this.tenant.state,
-            fechaValidez: this.tenant.fechaValidez ? this.tenant.fechaValidez.slice(0, 10) : undefined,
+            fechaBloqueo: this.tenant.fechaBloqueo ? this.tenant.fechaBloqueo.slice(0, 10) : undefined,
         };
         this.service.actualizarTenant(this.tenant.key, cambios).pipe(finalize(() => this.cargando.set(false))).subscribe({
             next: (result) => {

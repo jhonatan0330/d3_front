@@ -126,7 +126,6 @@ export const appRoutes: Route[] = [
             { path: ':id', loadComponent: () => import('app/configuration/components/indicators/indicator-form/indicator-form.component').then(m => m.IndicatorFormComponent) },
           ]},
           { path: 'properties', loadComponent: () => import('app/configuration/components/shared/property-field/property-field.component').then(m => m.PropertyFieldComponent) },
-          { path: 'tree-compare', loadComponent: () => import('app/configuration/components/tree-compare/tree-compare.component').then(m => m.TreeCompareComponent) },
         ]
       },
 

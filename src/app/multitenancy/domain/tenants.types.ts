@@ -7,7 +7,7 @@ export class TenantDTO {
     datasourcePassword: string;
     imagen?: string;
     state: string;
-    fechaValidez?: string;
+    fechaBloqueo?: string;
 }
 
 export class TenantUsuarioDTO {

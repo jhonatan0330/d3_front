@@ -46,7 +46,7 @@
             </div>
             <div class="flex flex-wrap items-center gap-2 text-sm">
               <span class="px-2 py-0.5 rounded-full text-xs font-semibold" [ngClass]="element.state === 'A' && !vencido(element) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">{{ element.state === 'A' && !vencido(element) ? 'Activo' : 'Bloqueado' }}</span>
-              @if (element.fechaValidez) { <span class="text-xs text-gray-500 dark:text-gray-400">Validez: {{ element.fechaValidez.slice(0, 10) }}</span> }
+              @if (element.fechaBloqueo) { <span class="text-xs text-gray-500 dark:text-gray-400">Bloqueo: {{ element.fechaBloqueo.slice(0, 10) }}</span> }
             </div>
             <div class="flex items-center gap-2">
               <button type="button" class="btn-flat flex-1" (click)="openUsage(element)"><mat-icon>data_usage</mat-icon> Usage</button>

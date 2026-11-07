@@ -34,13 +34,16 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropd
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { DocumentActionMenuComponent } from '../shared/document-action-menu/document-action-menu.component';
+import { DocumentActionHelper } from '../shared/document-action.helper';
+import { DocumentCreationHelper } from '../shared/document-creation.helper';
 
 @Component({
-    selector: 'app-proceso',
-    templateUrl: './proceso.component.html',
-    styleUrls: ['./proceso.component.scss'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ MatFormField,MatLabel,MatInput,MatAutocompleteTrigger,FormsModule,ReactiveFormsModule,NgClass,MatAutocomplete,MatOption,MatPrefix,MatIcon,MatSuffix,ZXingScannerModule,MatDateRangeInput,MatStartDate,MatEndDate,MatDatepickerToggle,MatDateRangePicker,DecimalPipe,TitleCasePipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent]
+  selector: 'app-proceso',
+  templateUrl: './proceso.component.html',
+  styleUrls: ['./proceso.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [MatFormField, MatLabel, MatInput, MatAutocompleteTrigger, FormsModule, ReactiveFormsModule, NgClass, MatAutocomplete, MatOption, MatPrefix, MatIcon, MatSuffix, ZXingScannerModule, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker, DecimalPipe, TitleCasePipe, DatePipe, ImageFormatPipe, DropdownComponent, DropdownItemComponent, DocumentActionMenuComponent]
 })
 export class ProcesoComponent extends BaseComponent implements OnInit {
   private templateService = inject(TemplateService);
@@ -67,7 +70,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   readQR = false; // Muestra el boton de leer codigo de barras
   saveToSelect = false; //Cuando se selecciona el valor se guarda el formulario
   procesoValor: string; // Define si se va a tener en cuenta el valor del documento
-  acciones: PropiedadDTO[]; // Contiene propiedades que indican que documentos se pueden crear a partir de el
+  acciones: PropiedadDTO[] | null = null; // Contiene propiedades que indican que documentos se pueden crear a partir de el
   linkExternal: PropiedadDTO; // Permite abrir en otra venta paginas relacionadas
 
   tipoCombo = false; // TEMPORAL me ayuda a saber si cargo el componente como un combo de seleccion
@@ -140,20 +143,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.procesoValor = this.obtenerValor(PlantillaHelper.PROCESO_VALOR);
     if (!this.form) { // Esto es para los filtros
       this.autoload = false;
-      this.acciones = null!;
+      this.acciones = null;
     } else {
-      this.acciones = this.obtenerValorMultiple(PlantillaHelper.PROCESO_ACCIONES);
-      if (this.acciones && this.acciones.length !== 0) {
-        for (let index = this.acciones.length - 1; index >= 0; index--) {
-          const element = this.acciones[index];
-          const prop = this.templateService.getTemplate(element.valor);
-          if (!prop || !PlantillaHelper.buscarPropiedad(prop.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) {
-            this.acciones.splice(index, 1);
-          }
-        }
-        //Para que no se vea el + en el combo
-        if (this.acciones.length === 0) { this.acciones = null!; }
-      }
+      this.acciones = DocumentActionHelper.resolveActions(
+        this.obtenerValorMultiple(PlantillaHelper.PROCESO_ACCIONES),
+        this.templateService
+      );
     }
     this.tipoCombo = !this.multiple && this.autoload;
     this.tipoTexto = !this.multiple && !this.autoload;
@@ -183,50 +178,50 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
     // Al momento de cambiar actualizo el proceso y actualizo todo lo necesario
     this.fControl.valueChanges.pipe(
-        tap((value) => {
-          if (value?.llaveTabla) {
-            this.proceso = value;
-            this.searchControl.setValue(value, { emitEvent: false });
-            this.filteredDocuments = [];
-            this.showAlertSelectedProcess();
-          } else if (value) {
-            this.proceso = null!;
-            let filterValue: string = value.toLowerCase();
-            if (filterValue === '*') { filterValue = ''; }
-            if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length - 1); }
-            filterValue = filterValue.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            if (this.disponibles) {
-              this.filteredDocuments = this.disponibles.filter(
-                (doc) => {
-                  if (doc.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
-                  if (doc.descripcion && doc.descripcion.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
-                  if (doc.caracteristicas) {
-                    for (let filterItemField = 0; filterItemField < doc.caracteristicas.length; filterItemField++) {
-                      const element = doc.caracteristicas[filterItemField];
-                      if (element.valorText != null && element.valorText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
-                    }
+      tap((value) => {
+        if (value?.llaveTabla) {
+          this.proceso = value;
+          this.searchControl.setValue(value, { emitEvent: false });
+          this.filteredDocuments = [];
+          this.showAlertSelectedProcess();
+        } else if (value) {
+          this.proceso = null!;
+          let filterValue: string = value.toLowerCase();
+          if (filterValue === '*') { filterValue = ''; }
+          if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length - 1); }
+          filterValue = filterValue.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          if (this.disponibles) {
+            this.filteredDocuments = this.disponibles.filter(
+              (doc) => {
+                if (doc.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
+                if (doc.descripcion && doc.descripcion.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
+                if (doc.caracteristicas) {
+                  for (let filterItemField = 0; filterItemField < doc.caracteristicas.length; filterItemField++) {
+                    const element = doc.caracteristicas[filterItemField];
+                    if (element.valorText != null && element.valorText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(filterValue) !== -1) return true;
                   }
-                  return false;
                 }
-              );
-            }
-          } else {
-            this.proceso = null!;
-            if (this.fControl.touched) { this.filteredDocuments = this.disponibles; }
+                return false;
+              }
+            );
           }
-        }),
-        switchMap((value) => {
-          if (value?.llaveTabla) {
-            const _pHTML = this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL);
-            if (_pHTML) {
-              return this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla)
-                .pipe(map((res: SharedIdResponse) => ({ found: true as const, res })));
-            }
+        } else {
+          this.proceso = null!;
+          if (this.fControl.touched) { this.filteredDocuments = this.disponibles; }
+        }
+      }),
+      switchMap((value) => {
+        if (value?.llaveTabla) {
+          const _pHTML = this.obtenerPropiedad(PlantillaHelper.HTML_DOCUMENT_SQL);
+          if (_pHTML) {
+            return this.api.getMessageInFiledProccess(this.structure.llaveTabla, value.llaveTabla)
+              .pipe(map((res: SharedIdResponse) => ({ found: true as const, res })));
           }
-          return of({ found: false as const });
-        }),
-        takeUntilDestroyed(this.destroyRef)
-      )
+        }
+        return of({ found: false as const });
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    )
       .subscribe((result) => {
         if (result.found) {
           this.messageHTML = this.sanitizer.bypassSecurityTrustHtml(result.res.comment ?? '');
@@ -274,19 +269,19 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         this.templateService.getOrFetchRelations(this.alertar.llaveTabla)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
-          next: (value: RelacionInternaDTO[]) => {
-            this.isLoadingList.set(false);
-            if (!value || value.length === 0) {
-              this.notificationCenter.fire(this.structure.nombre, 'La propiedad ALERTAR no tiene relaciones para determinar que alertar', 'error');
-            } else {
-              this.relacionesAlerta = value;
-              this.showAlertSelectedProcess();
-            }
-          },
-          error: () => {
-            this.isLoadingList.set(false);
-          },
-        });
+            next: (value: RelacionInternaDTO[]) => {
+              this.isLoadingList.set(false);
+              if (!value || value.length === 0) {
+                this.notificationCenter.fire(this.structure.nombre, 'La propiedad ALERTAR no tiene relaciones para determinar que alertar', 'error');
+              } else {
+                this.relacionesAlerta = value;
+                this.showAlertSelectedProcess();
+              }
+            },
+            error: () => {
+              this.isLoadingList.set(false);
+            },
+          });
       }
       return;
     }
@@ -309,12 +304,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.utilsService.modalWithParams(pedidoVenta, false)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
-      if (res) {
-        if (this.tipoMultiple) {
-          this.procesarCampo(this.transformPVCtoFilter(this.data));
-        } // Por si se modifica un valor que se calcule
-      }
-    });
+        if (res) {
+          if (this.tipoMultiple) {
+            this.procesarCampo(this.transformPVCtoFilter(this.data));
+          } // Por si se modifica un valor que se calcule
+        }
+      });
   }
 
   iniciar() {
@@ -488,7 +483,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     } else {
       if (this.tipoTexto) {
         //Sucede que los combo no se calculaban al cambiar, recibo de pago de trustmetrans refefuente
-        if(this.proceso==null) this.setValorNumero(null!);
+        if (this.proceso == null) this.setValorNumero(null!);
         this.actualizarTexto();
       } else {
         let valorNumero = 0;
@@ -631,38 +626,38 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.api.consultarDatosBase(filtro)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-      next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
-        if (this.pendingSearchQuery !== null) {
-          const queryMatches = this.searchControl.value === this.pendingSearchQuery;
-          this.pendingSearchQuery = null;
-          if (!queryMatches) {
-            this.isLoading.set(false);
-            return;
+        next: (_value: PedidoVentaCaracteristicaFilterDTO) => {
+          if (this.pendingSearchQuery !== null) {
+            const queryMatches = this.searchControl.value === this.pendingSearchQuery;
+            this.pendingSearchQuery = null;
+            if (!queryMatches) {
+              this.isLoading.set(false);
+              return;
+            }
           }
-        }
-        this.isLoading.set(false);
-        this.consultaExitosaDatosBase(_value);
-      },
-      error: () => {
-        if (this.pendingSearchQuery !== null) {
-          const queryMatches = this.searchControl.value === this.pendingSearchQuery;
-          this.pendingSearchQuery = null;
-          if (!queryMatches) {
-            this.isLoading.set(false);
-            return;
+          this.isLoading.set(false);
+          this.consultaExitosaDatosBase(_value);
+        },
+        error: () => {
+          if (this.pendingSearchQuery !== null) {
+            const queryMatches = this.searchControl.value === this.pendingSearchQuery;
+            this.pendingSearchQuery = null;
+            if (!queryMatches) {
+              this.isLoading.set(false);
+              return;
+            }
           }
-        }
-        this.isLoading.set(false);
-        if (!this.herencia && !this.multiple) {
-          this.searchAttempted = true;
-          this.searchError = true;
-          this.filteredDocuments = [];
-        }
-        if (this.readQR) {
-          this.fControl.setValue(null);
-        }
-      },
-    });
+          this.isLoading.set(false);
+          if (!this.herencia && !this.multiple) {
+            this.searchAttempted = true;
+            this.searchError = true;
+            this.filteredDocuments = [];
+          }
+          if (this.readQR) {
+            this.fControl.setValue(null);
+          }
+        },
+      });
   }
 
   consultaExitosaDatosBase(pCampo: PedidoVentaCaracteristicaFilterDTO) {
@@ -1178,155 +1173,26 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   }
 
   createNewDocument(_plantilla: string, _property: string) {
-    const _doc: PedidoVentaDTO = new PedidoVentaDTO();
-    if (this.herencia) {
-      // Cuando se pueden crear multiples tipo de herencia, 
-      //tenia un hz que solo tomaba la primera plantilla
-      // Esto se puede mejorar muchisimo para evitar consultar todos
-      if (this.relacionesHerencia) {
-        let borrarRelaciones = true;
-        for (let i = 0; i < this.relacionesHerencia.length; i++) {
-          const iRelacion = this.relacionesHerencia[i];
-          if (iRelacion.plantilla == _plantilla) {
-            borrarRelaciones = false;
-            break;
-          }
-        }
-        if (borrarRelaciones) {
-          this.relacionesHerencia = undefined!;
-        }
-      }
-      if (!this.relacionesHerencia) {
-        this.isLoadingList.set(true);
-        this.templateService.getOrFetchRelations(this.herencia.llaveTabla)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-          next: (value: RelacionInternaDTO[]) => {
-            this.relacionesHerencia = value;
-            this.isLoadingList.set(false);
-            this.createNewDocument(_plantilla, _property);
-          },
-          error: () => {
-            this.isLoadingList.set(false);
-          },
-        });
-        return;
-      } else {
-        if (this.relacionesHerencia.length === 0) {
-          alert(
-            'No se encontro una relacion del campo de herencia para la plantilla'
-          );
-          return;
-        } else {
-          _doc.caracteristicas = [];
-          const campoHer: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
-          campoHer.valorOpcion = this.data.documento;
-          campoHer.valorText = this.parent.descripcion;
-          campoHer.campo = this.relacionesHerencia[0].campo;
-          _doc.caracteristicas.push(campoHer);
-        }
-      }
-    } else {
-      //Esto es para que lso formularios llenen el campo principal de un crud
-      //ejemplo guia roa cliente - direccion de cliente nuevo
-      if (this.relatedFields) {
-        // Primero valido que pueda obtener todas las relaciones del campo, propiedad depende
-        for (let i = 0; i < this.relatedFields.length; i++) {
-          const dependentIterato = this.relatedFields[i];
-          const relations = this.templateService.getPropertyRelation(dependentIterato.llaveTabla);
-          if (!relations || relations.length == 0) {
-            this.isLoadingList.set(true);
-            this.templateService.getOrFetchRelations(dependentIterato.llaveTabla)
-              .pipe(takeUntilDestroyed(this.destroyRef))
-              .subscribe({
-              next: (value: RelacionInternaDTO[]) => {
-                this.isLoadingList.set(false);
-                this.createNewDocument(_plantilla, _property);
-              },
-              error: () => {
-                this.isLoadingList.set(false);
-              },
-            });
-            return;
-          }
-        }
-
-        for (let i = 0; i < this.relatedFields.length; i++) {
-          const dependentIterator = this.relatedFields[i];
-          const relations = this.templateService.getPropertyRelation(dependentIterator.llaveTabla)!;
-          for (let k = 0; k < relations.length; k++) {
-            const iRelation = relations[k];
-            if (iRelation.plantilla === _plantilla) {
-              for (let j = 0; j < (this.data.dependientes?.length ?? 0); j++) {
-                const valueDependent = this.data.dependientes[j];
-                if (valueDependent.campo === dependentIterator.valor) {
-                  if (!_doc.caracteristicas) { _doc.caracteristicas = []; }
-                  const fieldNewToCreateDependent: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
-                  fieldNewToCreateDependent.valorOpcion = valueDependent.valorOpcion;
-                  fieldNewToCreateDependent.campo = iRelation.campo;
-                  _doc.caracteristicas.push(fieldNewToCreateDependent);
-                  break;
-                }
-              }
-            }
-          }
-        }
-      }
-
-      const relationProperty = this.templateService.getPropertyRelation(_property);
-      if (!relationProperty|| relationProperty.length == 0) {
-        this.isLoadingList.set(true);
-        this.templateService.getOrFetchRelations(_property)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-          next: (value: RelacionInternaDTO[]) => {
-            if (!value || value.length === 0) {
-              //Creo una relacion falsa para que no vuelva a filtrar
-              const ri: RelacionInternaDTO = new RelacionInternaDTO();
-              ri.propiedad = _property;
-              ri.campo = "FALSE";
-              ri.plantilla = "FALSE";
-              ri.auxiliar = "FALSE";
-              value = [];
-              value.push(ri);
-            }
-            this.isLoadingList.set(false);
-            this.createNewDocument(_plantilla, _property);
-          },
-          error: () => {
-            this.isLoadingList.set(false);
-          },
-        });
-        return;
-      } else{
-        for (let k = 0; k < relationProperty.length; k++) {
-            const iRelation = relationProperty[k];
-            if (iRelation.plantilla === _plantilla) {
-                  if (!_doc.caracteristicas) { _doc.caracteristicas = []; }
-                  const fieldNewToCreateDependent: PedidoVentaCaracteristicaDTO = new PedidoVentaCaracteristicaDTO();
-                  fieldNewToCreateDependent.valorOpcion = this.data.documento;
-                  fieldNewToCreateDependent.campo = iRelation.campo;
-                  _doc.caracteristicas.push(fieldNewToCreateDependent);
-                  break;
-            }
-          }
-      }
-
-    }
-    _doc.plantilla = _plantilla;
     const createFilter = !this.herencia && !this.multiple && typeof this.searchControl.value === 'string'
       ? this.searchControl.value
       : this.fControl.value;
-    this.utilsService
-      .modalWithParams(_doc, true, createFilter)
+
+    DocumentCreationHelper.createDocument({
+      templateService: this.templateService,
+      utilsService: this.utilsService,
+      data: this.data,
+      parent: this.parent,
+      herencia: this.herencia,
+      relatedFields: this.relatedFields,
+      createFilter,
+    }, _plantilla, _property)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
-        // Al cerrar el formulario de creacion se libera cualquier estado de carga pendiente
         this.isLoading.set(false);
         this.isLoadingList.set(false);
-        if (res && res.data) {
+        if (res) {
           if (this.tipoTexto) {
-            const documentoCreado: PedidoVentaDTO = res.data;
+            const documentoCreado: PedidoVentaDTO = res;
             const nFilter: PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(
               this.data
             );
@@ -1335,21 +1201,21 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             this.procesarCampo(nFilter);
           } else if (this.tipoMultiple) {
             if (!this.dataProvider) { this.dataProvider = []; }
-            if (res.data.llaveTabla && !this.dataProvider.some((doc) => doc.llaveTabla === res.data.llaveTabla)) {
-              this.dataProvider.unshift(res.data);
+            if (res.llaveTabla && !this.dataProvider.some((doc) => doc.llaveTabla === res.llaveTabla)) {
+              this.dataProvider.unshift(res);
             }
             this.limpiarRepetidos();
             this.actualizar();
           } else {
             if (!this.disponibles) { this.disponibles = []; }
             if (!this.structure.documentos) { this.structure.documentos = []; }
-            this.structure.documentos.push(res.data);
+            this.structure.documentos.push(res);
             this.disponibles = this.structure.documentos;
-            this.fControl.setValue(res.data);
+            this.fControl.setValue(res);
           }
         }
       });
-    // En los campos de lista no se toca el fControl porque no representa la seleccion visible
+
     if (!this.tipoMultiple) { this.fControl.setValue(null); }
   }
 
@@ -1553,12 +1419,12 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     } else {
       // Solo se puede consultar herencia de un documento existente
       if (!this.data.documento) { return; }
-      if(!this.isEmpty(this.obtenerValor(PlantillaHelper.DEPENDE)) && this.data.dependientes && this.data.dependientes.length > 0 && this.data.dependientes[0].valorOpcion){
+      if (!this.isEmpty(this.obtenerValor(PlantillaHelper.DEPENDE)) && this.data.dependientes && this.data.dependientes.length > 0 && this.data.dependientes[0].valorOpcion) {
         entity.textoFiltro = this.data.dependientes[0].valorOpcion;
-      }else{
+      } else {
         entity.textoFiltro = this.data.documento;
       }
-      
+
     }
 
     if (this.plantilla && !this.herencia) {
@@ -1586,49 +1452,49 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.api.listarDocumentos(entity)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-      next: (dataResult: PedidoVentaDTO[]) => {
-        if (this.pagina === 1) {
-          this.dataProvider = dataResult;
-        } else {
-          this.dataProvider = this.dataProvider.concat(dataResult);
-        }
-        if (dataResult.length === this.cantidadPagina) {
-          this.pagina++;
-        } else {
-          this.isEndList.set(true);
-          this.pagina = 1;
-        }
-        this.isLoadingList.set(false);
-        this.limpiarRepetidos();
-        if (this.fControlCheck) {
-          if (this.fControlCheck.value) {
-            if (this.dataProvider.length === 0) {
-              this.notificationCenter.fire('Sin resultados', 'No encontramos resultados que concuerden con tu busqueda ' + this.fControlSearch.value, 'info');
-              this.fControlSearch.setValue(null);
-            } else {
-              if (this.dataProvider.length === 1) {
-                this.agregarProceso(this.dataProvider[0]);
+        next: (dataResult: PedidoVentaDTO[]) => {
+          if (this.pagina === 1) {
+            this.dataProvider = dataResult;
+          } else {
+            this.dataProvider = this.dataProvider.concat(dataResult);
+          }
+          if (dataResult.length === this.cantidadPagina) {
+            this.pagina++;
+          } else {
+            this.isEndList.set(true);
+            this.pagina = 1;
+          }
+          this.isLoadingList.set(false);
+          this.limpiarRepetidos();
+          if (this.fControlCheck) {
+            if (this.fControlCheck.value) {
+              if (this.dataProvider.length === 0) {
+                this.notificationCenter.fire('Sin resultados', 'No encontramos resultados que concuerden con tu busqueda ' + this.fControlSearch.value, 'info');
                 this.fControlSearch.setValue(null);
+              } else {
+                if (this.dataProvider.length === 1) {
+                  this.agregarProceso(this.dataProvider[0]);
+                  this.fControlSearch.setValue(null);
+                }
               }
             }
-          }
-        } else {
-          //aqui ingresan solmanete los de herencia sencillos (no multiples)
-          if (this.dataProvider.length === 0) {
-            this.sendCreate();
           } else {
-            this.openDialog(this.dataProvider[0]);
+            //aqui ingresan solmanete los de herencia sencillos (no multiples)
+            if (this.dataProvider.length === 0) {
+              this.sendCreate();
+            } else {
+              this.openDialog(this.dataProvider[0]);
+            }
           }
-        }
-        this.labelSearch = this.generateLabelToList(this.dataProvider);
-      },
-      error: () => {
-        this.isLoadingList.set(false);
-        if (this.fControlCheck) {
-          this.fControlSearch.setValue(null);
-        }
-      },
-    });
+          this.labelSearch = this.generateLabelToList(this.dataProvider);
+        },
+        error: () => {
+          this.isLoadingList.set(false);
+          if (this.fControlCheck) {
+            this.fControlSearch.setValue(null);
+          }
+        },
+      });
   }
   // Para la interfaz
   getColor(pEstado: string): string {
@@ -1690,20 +1556,20 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       this.api.consultarDocumento(filter)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-        next: (fullDocument: PedidoVentaDTO) => {
-          if (fullDocument && fullDocument.caracteristicas) {
-            for (let index = 0; index < fullDocument.caracteristicas.length; index++) {
-              const element = fullDocument.caracteristicas[index];
-              // Aqui hay algo que los campos llegan con el nombre y el valor por eso se relaciona el atribut campo
-              if (element.campoDTO && element.campoDTO.codigo === this.linkExternal.texto) {
-                window.open(element.valorText, "_blank");
-                break;
+          next: (fullDocument: PedidoVentaDTO) => {
+            if (fullDocument && fullDocument.caracteristicas) {
+              for (let index = 0; index < fullDocument.caracteristicas.length; index++) {
+                const element = fullDocument.caracteristicas[index];
+                // Aqui hay algo que los campos llegan con el nombre y el valor por eso se relaciona el atribut campo
+                if (element.campoDTO && element.campoDTO.codigo === this.linkExternal.texto) {
+                  window.open(element.valorText, "_blank");
+                  break;
+                }
               }
             }
-          }
-        },
-        error: () => { }
-      });
+          },
+          error: () => { }
+        });
     }
   }
 
@@ -1735,6 +1601,5 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     }
     return true;
   }
-
 
 }

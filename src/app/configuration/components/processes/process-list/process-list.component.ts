@@ -14,6 +14,7 @@ import { ProcessService } from 'app/configuration/configuracion.api';
 import { ProcessFormComponent } from '../process-form/process-form.component';
 import { PropertyPanelComponent } from '../../shared/property-panel/property-panel.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { BpmDiagramComponent } from '../../bpm-diagram/bpm-diagram.component';
 
 interface TreeNode {
     proceso: ProcesoDTO;
@@ -168,7 +169,7 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.refreshTreeNodes();
     }
 
-    onFilterChange(): void { this.reload(); if (this.activeTab() === 1) this.loadTree();}
+    onFilterChange(): void { this.reload(); if (this.activeTab() === 1) this.loadTree(); }
     onFilterInput(): void { clearTimeout(this.debounceTimer); this.debounceTimer = setTimeout(() => { this.reload(); }, 200); }
 
     openForm(item?: ProcesoDTO): void {
@@ -191,6 +192,16 @@ export class ProcessListComponent implements OnInit, AfterViewInit, OnDestroy {
         const newEstado = item.estado === 'A' ? 'I' : 'A';
         const action = newEstado === 'A' ? 'activar' : 'inactivar';
         this.notificationCenter.fire({ title: `¿${action.charAt(0).toUpperCase() + action.slice(1)} proceso?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
-            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; const request$ = newEstado === 'A' ? this.service.activateProcess(updated) : this.service.inactivateProcess(updated); request$.subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Proceso ${action}do correctamente`, 'success'); this.reload(); if (this.activeTab() === 1) this.loadTree(); } }); }});
+            .then((result) => { if (result.isConfirmed) { const updated = { ...item, estado: newEstado }; const request$ = newEstado === 'A' ? this.service.activateProcess(updated) : this.service.inactivateProcess(updated); request$.subscribe({ next: () => { this.notificationCenter.fire('Éxito', `Proceso ${action}do correctamente`, 'success'); this.reload(); if (this.activeTab() === 1) this.loadTree(); } }); } });
+    }
+
+    explorarArbol(): void {
+        this.dialog.open(BpmDiagramComponent, {
+            data: { mode: 'config' },
+            width: '96vw',
+            maxWidth: '96vw',
+            height: '90vh',
+            maxHeight: '90vh',
+        });
     }
 }

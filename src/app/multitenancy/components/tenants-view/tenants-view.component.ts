@@ -67,9 +67,9 @@ export class TenantsViewComponent implements OnInit {
 
     vencido(item: TenantDTO): boolean {
         if (item.state === 'I') return true;
-        if (!item.fechaValidez) return false;
+        if (!item.fechaBloqueo) return false;
         const hoy = new Date().toISOString().slice(0, 10);
-        return item.fechaValidez.slice(0, 10) < hoy;
+        return item.fechaBloqueo.slice(0, 10) < hoy;
     }
 
     openForm(item?: TenantDTO): void {
@@ -98,7 +98,7 @@ export class TenantsViewComponent implements OnInit {
         this.notificationCenter.fire({ title: `¿${accion.charAt(0).toUpperCase() + accion.slice(1)} subtenant?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Sí', cancelButtonText: 'Cancelar' })
             .then((result) => {
                 if (result.isConfirmed) {
-                    this.service.actualizarTenant(item.key, { state: item.state === 'A' ? 'I' : 'A' }).subscribe({
+                    this.service.actualizarTenant(item.key, { state: item.state === 'A' ? 'I' : 'A', fechaBloqueo: item.fechaBloqueo }).subscribe({
                         next: () => { this.notificationCenter.fire('Éxito', `Subtenant ${accion}do correctamente`, 'success'); this.reload(); }
                     });
                 }

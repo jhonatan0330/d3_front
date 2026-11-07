@@ -21,7 +21,6 @@ import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/document/form/controls/base/base.component';
 import { getComponent } from 'app/document/form/form-helper';
 import { MatDatepickerInputEvent, MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
-import { MatDialog } from '@angular/material/dialog';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatSuffix, MatLabel } from '@angular/material/form-field';
@@ -53,7 +52,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private formBuilder = inject(FormBuilder);
     private notificationCenter = inject(NotificationCenterService);
     private utilsService = inject(UtilsService);
-    private dialog = inject(MatDialog);
     private reportService = inject(FormReportService);
     private destroyRef = inject(DestroyRef);
 

@@ -57,8 +57,8 @@
           <mat-form-field appearance="outline" class="w-full"><mat-select [(ngModel)]="tenant.state" name="state"><mat-option value="A">Activo</mat-option><mat-option value="I">Bloqueado</mat-option></mat-select></mat-form-field>
         </div>
         <div>
-          <label class="form-label">Fecha de validez</label>
-          <input type="date" [ngModel]="tenant.fechaValidez ? tenant.fechaValidez.slice(0, 10) : null" (ngModelChange)="tenant.fechaValidez = $event" name="fechaValidez" class="form-input" />
+          <label class="form-label">Fecha de bloqueo *</label>
+          <input type="date" required [ngModel]="tenant.fechaBloqueo ? tenant.fechaBloqueo.slice(0, 10) : null" (ngModelChange)="tenant.fechaBloqueo = $event" name="fechaBloqueo" class="form-input" />
         </div>
         <div class="sm:col-span-2">
           <label class="form-label">Imagen</label>

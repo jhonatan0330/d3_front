@@ -1,0 +1,24 @@
+@if (acciones && acciones.length > 0) {
+  <app-dropdown #createMenu="appDropdown">
+    <button
+      type="button"
+      trigger
+      [class]="getTriggerClass()"
+      [disabled]="disabled"
+      [attr.aria-label]="ariaLabel"
+      [title]="ariaLabel"
+    >
+      @if (variant === 'button') {
+        <mat-icon aria-hidden="true">add</mat-icon>
+      } @else {
+        <mat-icon aria-hidden="true">{{ buttonIcon }}</mat-icon>
+      }
+    </button>
+
+    @for (item of visibleActions; track item.llaveTabla || item.key || $index) {
+      <app-dropdown-item (clicked)="onActionSelected(item)">
+        {{ getActionLabel(item) | titlecase }}
+      </app-dropdown-item>
+    }
+  </app-dropdown>
+}

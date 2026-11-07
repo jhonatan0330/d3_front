@@ -41,18 +41,15 @@
         }
         <!-- Create -->
         @if (acciones && !errorMessage && !proceso && !isLoading()) {
-          <app-dropdown matPrefix #createMenu="appDropdown">
-            <button type="button" class="btn-icon" trigger aria-label="Crear documento"
-              [style.display]="!searchControl.value ? 'inline-flex' : 'none !important'"
-              (click)="sendCreate(createMenu, $event)">
-              <mat-icon aria-hidden="true">add_circle</mat-icon>
-            </button>
-            @for (item of acciones; track item) {
-              <app-dropdown-item (clicked)="createNewDocument(item.valor, item.llaveTabla)">
-                Crear {{ item.texto | titlecase }}
-              </app-dropdown-item>
-            }
-          </app-dropdown>
+          <app-document-action-menu
+            matPrefix
+            [acciones]="acciones"
+            [disabled]="!isEnabled || isLoading()"
+            [buttonIcon]="'add_circle'"
+            [ariaLabel]="'Crear documento'"
+            [buttonClass]="'btn-icon'"
+            (actionSelected)="createNewDocument($event.valor, $event.llaveTabla)">
+          </app-document-action-menu>
         }
         <div matSuffix class="flex shrink-0 flex-nowrap items-center gap-1">
           @if (isEnabled && !proceso) {
@@ -158,11 +155,13 @@
               <div class="card p-0 rounded h-full">
                 <div class="p-1 rounded mb-0">
                   <div class="flex items-center">
-                    <div class="w-16 p-1">
+                    @if (d.imagen && !!d.imagen.trim()) {
+                      <div class="w-16 p-1">
                         <button type="button" class="block w-full border-0 bg-transparent p-0" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
                           <img [src]="d.imagen | imageFormat" alt="" class="h-12 w-full object-cover" />
                         </button>
-                    </div>
+                      </div>
+                    }
                     <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(d.estadoExpediente)"
                       [style.color]="getColorFont(d.estadoExpediente)">
                         <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline" (click)="openDialog(d)" aria-label="Abrir {{ d.nombre }}" title="Abrir {{ d.nombre }}">
@@ -315,11 +314,13 @@
                   <div class="card p-0 rounded h-full">
                     <div class="p-1 rounded">
                       <div class="flex items-center">
+                        @if (iDocument.imagen && !!iDocument.imagen.trim()) {
                         <div class="w-16 p-1">
                           <button type="button" class="block w-full border-0 bg-transparent p-0" (click)="openDialog(iDocument)" aria-label="Abrir {{ iDocument.nombre }}" title="Abrir {{ iDocument.nombre }}">
                             <img [src]="iDocument.imagen | imageFormat" alt="" class="h-12 w-full object-cover" />
                           </button>
                         </div>
+                      }
                         <div class="w-full p-1 rounded" [style.backgroundColor]="getColor(iDocument.estadoExpediente)"
                           [style.color]="getColorFont(iDocument.estadoExpediente)">
                           <button type="button" class="block w-full border-0 bg-transparent p-0 text-left text-current focus-visible:outline " (click)="openDialog(iDocument)" aria-label="Abrir {{ iDocument.nombre }}" title="Abrir {{ iDocument.nombre }}">

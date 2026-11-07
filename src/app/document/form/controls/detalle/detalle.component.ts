@@ -25,6 +25,9 @@ import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, Ma
 import { DecimalPipe, TitleCasePipe } from '@angular/common';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { DocumentActionHelper } from '../shared/document-action.helper';
+import { PropiedadDTO } from 'app/shared/shared.domain';
+import { DocumentCreationHelper } from '../shared/document-creation.helper';
 
 
 @Component({
@@ -52,6 +55,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   busquedaSinTexto = false;
   errorToFilter: string | null = null;
   renderVisible = false;
+  acciones: PropiedadDTO[] | null = null;
 
   productosDisponibles: ProductoDTO[];
   productosFiltrados: ProductoDTO[];
@@ -73,6 +77,10 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     this.autoload = !this.isEmpty(this.obtenerValor(PlantillaHelper.AUTOLOAD));
     this.renderVisible = !this.isEmpty(this.obtenerValor(PlantillaHelper.PERMISO_CAMPO_RENDER));
     this.busquedaSinTexto = !this.isEmpty(this.obtenerValor(PlantillaHelper.BUSQUEDA_SIN_TEXTO));
+    this.acciones = DocumentActionHelper.resolveActions(
+      this.obtenerValorMultiple(PlantillaHelper.PROCESO_ACCIONES),
+      this.templateService
+    );
     if (!this.isEnabled) {
       const index = this.displayedColumns.indexOf('retirar', 0);
       if (index > -1) {
@@ -181,6 +189,25 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
       this.isShowProducts = true;
     }
     this.isShowCategories = false;
+  }
+
+  createNewDocument(_plantilla: string, _property: string) {
+    DocumentCreationHelper.createDocument({
+      templateService: this.templateService,
+      utilsService: this.utilsService,
+      data: this.data,
+      parent: this.parent,
+      relatedFields: this.relatedFields,
+      createFilter: this.fControl.value as any,
+    }, _plantilla, _property)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.isLoading.set(false);
+        /*if (res) {
+          this.productosDisponibles = [...(this.productosDisponibles ?? []), res as any];
+          this.filterProducts();
+        }*/
+      });
   }
 
   searchQuicly() {

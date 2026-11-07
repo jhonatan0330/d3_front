@@ -25,6 +25,5 @@ export class ConfigComponent {
     { label: 'Servidores',          route: '/config/servers' },
     { label: 'Valores',             route: '/config/property-values' },
     { label: 'Indicadores',         route: '/config/indicators' },
-    { label: 'Sync Árbol',          route: '/config/tree-compare' },
   ];
 }
