@@ -12,7 +12,14 @@ import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { QuickAction } from './indicators.types';
+
+
+export interface QuickAction {
+  id: string;
+  nombre: string;
+  icono: string;
+  color: string;
+}
 
 @Component({
   selector: 'quick-actions',

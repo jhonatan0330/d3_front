@@ -11,8 +11,8 @@
     "prebuild": "npm run theme:build",
     "build": "ng build --configuration production",
     "prebuild:stats": "npm run theme:build",
-    "build:stats": "ng build --stats-json",
-    "analyze": "webpack-bundle-analyzer dist/fuse/stats.json",
+    "build:stats": "ng build --configuration production --stats-json",
+    "analyze": "webpack-bundle-analyzer dist/fuse/browser-stats.json",
     "prewatch": "npm run theme:build",
     "watch": "ng build --watch --configuration development",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",
@@ -67,8 +67,7 @@
     "sass": "^1.59.3",
     "tailwindcss": "^4.3.3",
     "typescript": "6.0.3",
-    "typescript-eslint": "^7.3.1",
-    "webpack-bundle-analyzer": "^5.3.1"
+    "typescript-eslint": "^7.3.1"
   },
   "allowScripts": {
     "msgpackr-extract@3.0.4": true,

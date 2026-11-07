@@ -51,15 +51,5 @@ export class IndicadoresService {
     return this.accountingService.getTablaIndicador(llaveTabla);
   }
 
-  private toIndicadorKPI(dto: IndicadorDTO): IndicadorKPI {
-    return {
-      ...dto,
-      acciones: [],
-      periodo: { id: 0, nivel: 'full', fechaInicial: '', fechaFinal: '' },
-      delta: undefined,
-      badge: undefined,
-      subtitulo: undefined,
-      icono: dto.imagen,
-    };
-  }
+ 
 }
