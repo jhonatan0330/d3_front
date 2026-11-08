@@ -1,8 +1,4 @@
-import { BasicParamDTO } from 'app/shared/shared.domain';
+import { NodoArbolDTO } from './NodoArbolDTO';
 
-export class IndicatorDTO extends BasicParamDTO {
-    nombre: string;
-    codigo: string;
-    proceso: string;
-    imagen: string;
+export class IndicatorDTO extends NodoArbolDTO {
 }

@@ -3,66 +3,72 @@
   <div class="flex flex-auto flex-col">
     <!-- Header -->
     <div class="flex flex-col shadow">
-      <!-- Cover image -->
-      @if (slides.length) {
-      <div class="relative w-full">
-        <div #carouselViewport class="flex h-40 w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth lg:h-50"
-          role="region" aria-label="Imágenes de portada" tabindex="0" (scroll)="onCarouselScroll($event)"
-          (keydown)="onCarouselKeydown($event)" (mouseenter)="stopAutoplay()" (mouseleave)="startAutoplay()"
-          (focusin)="stopAutoplay()" (focusout)="startAutoplay()">
-          @for (slide of slides; track slide) {
-          <div class="h-40 min-w-full shrink-0 snap-start lg:h-50">
-            <img class="h-full w-full object-cover" [src]="slide" [alt]="'Imagen de portada ' + ($index + 1)">
-          </div>
-          }
-        </div>
-        @if (slides.length > 1) {
-        <button type="button" class="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-2xl text-white transition hover:bg-black/65 focus:outline-none focus:ring-2 focus:ring-white"
-          aria-label="Imagen anterior" (click)="previousSlide()">
-          <span aria-hidden="true">&#8249;</span>
-        </button>
-        <button type="button" class="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-2xl text-white transition hover:bg-black/65 focus:outline-none focus:ring-2 focus:ring-white"
-          aria-label="Imagen siguiente" (click)="nextSlide()">
-          <span aria-hidden="true">&#8250;</span>
-        </button>
-        <div class="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2" aria-label="Seleccionar imagen">
-          @for (slide of slides; track slide; let index = $index) {
-          <button type="button" class="h-2.5 w-2.5 rounded-full border border-white/80 transition focus:outline-none focus:ring-2 focus:ring-white"
-            [class.bg-white]="activeSlide() === index" [class.bg-white\/40]="activeSlide() !== index"
-            [attr.aria-label]="'Ir a la imagen ' + (index + 1)" [attr.aria-current]="activeSlide() === index ? 'true' : null"
-            (click)="goToSlide(index)"></button>
-          }
-        </div>
+      <div class="relative min-h-70 overflow-hidden bg-slate-900 shadow-[0_20px_60px_rgba(15,23,42,0.18)] sm:min-h-80 lg:min-h-90">
+        @if (slides.length) {
+          <div class="absolute inset-0 bg-linear-to-r from-slate-950/80 via-slate-900/70 to-primary/60"></div>
+          <img class="absolute inset-0 h-full w-full object-cover opacity-40" [src]="slides[activeSlide()]" [alt]="'Imagen de portada destacada'" />
+        } @else {
+          <div class="absolute inset-0 bg-linear-to-r from-primary via-primary/90 to-slate-900"></div>
         }
-      </div>
-      }
-      <!-- User info -->
-      <div class="flex flex-row flex-0 items-center max-w-5xl w-full mx-auto px-8 lg:h-18">
-        <!-- Avatar -->
-        <div class=" max-w-32 z-0">
-          <img class="w-full h-full rounded-full ring-4 ring-bg-card bg-white" [src]="companyImage()"
-            (error)="onCompanyImageError($event)" alt="User avatar">
+
+        @if (slides.length > 1) {
+          <button type="button" class="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-slate-950/45 text-2xl text-white shadow-lg shadow-slate-950/20 backdrop-blur-sm transition hover:bg-slate-950/65 focus:outline-none focus:ring-2 focus:ring-white"
+            aria-label="Imagen anterior" (click)="previousSlide()">
+            <span aria-hidden="true">&#8249;</span>
+          </button>
+          <button type="button" class="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-slate-950/45 text-2xl text-white shadow-lg shadow-slate-950/20 backdrop-blur-sm transition hover:bg-slate-950/65 focus:outline-none focus:ring-2 focus:ring-white"
+            aria-label="Imagen siguiente" (click)="nextSlide()">
+            <span aria-hidden="true">&#8250;</span>
+          </button>
+        }
+
+        <div class="relative z-10 mx-auto flex min-h-70 max-w-5xl flex-col justify-end gap-6 px-4 py-6 sm:min-h-80 sm:px-6 lg:min-h-90 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:py-8">
+          <div class="flex items-center gap-4">
+            <div class="flex h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-4 border-white/70 bg-white/10 shadow-lg shadow-slate-900/20 backdrop-blur-sm sm:h-24 sm:w-24">
+              <img class="h-full w-full object-cover" [src]="companyImage()" (error)="onCompanyImageError($event)" alt="Logo de la empresa">
+            </div>
+
+            <div class="flex flex-col">
+              <span class="mb-2 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80 backdrop-blur-sm">
+                <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                Empresa activa
+              </span>
+              <div class="text-2xl font-black tracking-tight text-white sm:text-3xl">
+                {{ layoutservice.company()!.nombre }}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 self-start lg:self-end">
+            <div class="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/90 backdrop-blur-sm">
+              Perfil corporativo
+            </div>
+            <div class="rounded-full border border-primary/40 bg-primary/20 px-3 py-1.5 text-xs font-medium text-primary-50">
+              Dashboard principal
+            </div>
+          </div>
         </div>
-        <!-- Details -->
-        <div class="flex flex-col items-center lg:items-start mt-4 mb-4 lg:mt-0 lg:mb-0">
-          <div class="text-lg font-bold leading-none">{{ layoutservice.company()!.nombre }}</div>
-          <div class="text-secondary p-1">{{ layoutservice.company()!.slogan }}</div>
-        </div>
+
+        @if (slides.length > 1) {
+          <div class="absolute inset-x-0 bottom-4 z-20 flex justify-center gap-2" aria-label="Seleccionar imagen">
+            @for (slide of slides; track slide; let index = $index) {
+              <button type="button" class="h-2.5 w-2.5 rounded-full border border-white/80 transition focus:outline-none focus:ring-2 focus:ring-white"
+                [class.bg-white]="activeSlide() === index" [class.bg-white\/40]="activeSlide() !== index"
+                [attr.aria-label]="'Ir a la imagen ' + (index + 1)" [attr.aria-current]="activeSlide() === index ? 'true' : null"
+                (click)="goToSlide(index)"></button>
+            }
+          </div>
+        }
       </div>
     </div>
 
   </div>
   }
 
-  <!-- Herramientas de gestión rápida -->
-  <div class="mx-auto mt-6 w-full max-w-5xl px-4 lg:px-8">
-    <quick-actions />
-  </div>
+  <quick-actions />
 
-  < Indicadores KPI (dentro del contenedor max-w-5xl, alineado con el resto de tarjetas) 
-  <div class="mx-auto mt-6 w-full max-w-5xl px-4 lg:px-8">
-    <indicators-cards></indicators-cards>
-  </div>
+  <!--Indicadores KPI (dentro del contenedor max-w-5xl, alineado con el resto de tarjetas) -->
+  <indicators-cards></indicators-cards>
 
 
   <div class="mx-auto mt-6 w-full max-w-5xl px-4 lg:px-8">

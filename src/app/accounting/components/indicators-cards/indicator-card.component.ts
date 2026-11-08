@@ -1,65 +1,69 @@
-import { DecimalPipe } from '@angular/common';
 import {
   Component,
   DestroyRef,
+  computed,
   inject,
   input,
-  OnInit,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
-import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
-import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
-import {
-  Accion,
-  Indicador,
-  IndicadorResultadoDTO,
-  PeriodoDTO,
-} from 'app/accounting/domain/accounting.types';
+import { Router } from '@angular/router';
+import { Indicador, IndicadorResultadoDTO, MetricasDTO } from 'app/accounting/domain/IndicadorDTO';
 import { IndicadoresService } from 'app/accounting/business/indicadores.service';
-import { UtilsService } from 'app/document/service/utils.service';
 import { TemplateService } from 'app/document/service/template.service';
+import { UtilsService } from 'app/document/service/utils.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
-import { PeriodFilterComponent } from './period-filter.component';
+import { DocumentoPlantillaDTO } from 'app/document/document.types';
+import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { IndicatorTableComponent } from './indicator-table.component';
 import { ImageFormatPipe } from 'app/shared/local-image';
-
-const ACCENT_PALETTE = ['#1B2A4A', '#0E7C7B', '#3C4B8C', '#C2760C', '#5B6472'];
-
-function accentFor(key: string): string {
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) {
-    hash = (hash << 5) - hash + key.charCodeAt(i);
-    hash |= 0;
-  }
-  return ACCENT_PALETTE[Math.abs(hash) % ACCENT_PALETTE.length];
-}
+import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
+import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 
 @Component({
   selector: 'indicator-card',
-  imports: [
-    DecimalPipe,
-    DropdownComponent,
-    DropdownItemComponent,
-    PeriodFilterComponent,
-    ImageFormatPipe,
-  ],
+  imports: [ImageFormatPipe, DropdownComponent, DropdownItemComponent],
   templateUrl: './indicator-card.component.html',
 })
-export class IndicatorCardComponent implements OnInit {
+export class IndicatorCardComponent {
   readonly indicador = input.required<Indicador>();
 
-  private destroyRef = inject(DestroyRef);
   private dialog = inject(MatDialog);
+  private destroyRef = inject(DestroyRef);
   private indicadoresService = inject(IndicadoresService);
-  private utilsService = inject(UtilsService);
   private templateService = inject(TemplateService);
+  private utilsService = inject(UtilsService);
+  private router = inject(Router);
 
-  protected selectedPeriod = signal<PeriodoDTO | undefined>(undefined);
+  protected selectedPeriod = signal<any>(undefined);
   protected resultado = signal<IndicadorResultadoDTO | undefined>(undefined);
   protected loading = signal(false);
   protected error = signal(false);
+  protected hoveredRange = signal<MetricasDTO | null>(null);
+  protected lastUpdated = signal<string>('');
+
+  protected readonly activeMetric = computed(() => this.resolveMetric());
+  protected readonly activeMetricColor = computed(() => this.activeMetric()?.color ?? '#64748b');
+  protected readonly dateLabel = computed(() => this.formatPeriodDate(this.indicador().periodo?.startDate ?? this.selectedPeriod()?.startDate));
+  protected readonly valueSuffix = computed(() => this.resolveValueSuffix());
+  protected readonly templateActions = computed<DocumentoPlantillaDTO[]>(() => {
+    const propertyValues = PlantillaHelper.buscarValorMultiple(
+      (this.indicador().propiedades ?? []) as any,
+      PlantillaHelper.ACTIONS
+    ) ?? [];
+
+    const ids = propertyValues
+      .map((item) => item.valor)
+      .flatMap((value) => this.parseTemplateValues(value))
+      .filter((value): value is string => !!value);
+
+    const templates = ids
+      .map((id) => this.templateService.getTemplate(id))
+      .filter((template): template is DocumentoPlantillaDTO => !!template);
+
+    return templates;
+  });
 
   ngOnInit(): void {
     this.selectedPeriod.set(this.indicador().periodo);
@@ -67,37 +71,170 @@ export class IndicatorCardComponent implements OnInit {
   }
 
   protected accent(): string {
-    return accentFor(this.indicador().llaveTabla);
+    const keys = this.indicador().llaveTabla || 'pedidos';
+    let hash = 0;
+    for (let i = 0; i < keys.length; i++) {
+      hash = (hash << 5) - hash + keys.charCodeAt(i);
+      hash |= 0;
+    }
+    const palette = ['#1B2A4A', '#0E7C7B', '#3C4B8C', '#C2760C', '#5B6472'];
+    return palette[Math.abs(hash) % palette.length];
   }
 
-  protected selectedPeriodLabel(): string {
-    const period = this.selectedPeriod();
-    if (!period || !period.fechaInicial || period.nivel === 'full') {
-      return 'Todo';
-    }
-    return period.fechaInicial + ' — ' + period.fechaFinal;
+  protected formatNumber(value: number | null | undefined): string {
+    const safeValue = Number(value ?? 0);
+    return new Intl.NumberFormat('es-ES').format(safeValue);
   }
 
-  protected delta(r: IndicadorResultadoDTO): number | null {
-    if (!r.valor_antes) {
-      return null;
+  protected formatPeriodDate(value: string | undefined): string {
+    if (!value) {
+      return '07 nov. 2026';
     }
-    return ((r.valor_despues - r.valor_antes) / r.valor_antes) * 100;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return '07 nov. 2026';
+    }
+    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+  }
+
+  protected resolveMetric(): MetricasDTO | undefined {
+    const metrics = this.indicador().metricas ?? [];
+    if (!metrics.length) {
+      return undefined;
+    }
+
+    const currentValue = Number(this.resultado()?.valor ?? 0);
+    const match = metrics.find((metric) => {
+      const lower = typeof metric.valorInferior === 'number' ? metric.valorInferior : Number.NEGATIVE_INFINITY;
+      const upper = typeof metric.valorSuperior === 'number' ? metric.valorSuperior : Number.POSITIVE_INFINITY;
+      return currentValue >= lower && currentValue <= upper;
+    });
+
+    return match ?? metrics[metrics.length - 1];
+  }
+
+  protected rangeText(): string {
+    const metric = this.resolveMetric();
+    if (!metric) {
+      return 'Rango sin datos';
+    }
+    const lower = typeof metric.valorInferior === 'number' ? metric.valorInferior : null;
+    const upper = typeof metric.valorSuperior === 'number' ? metric.valorSuperior : null;
+
+    if (lower !== null && upper !== null) {
+      return `${this.formatNumber(lower)} – ${this.formatNumber(upper)}`;
+    }
+    if (lower !== null) {
+      return `≥ ${this.formatNumber(lower)}`;
+    }
+    if (upper !== null) {
+      return `≤ ${this.formatNumber(upper)}`;
+    }
+    return 'Rango libre';
+  }
+
+  protected rangeValueLabel(metric: MetricasDTO | null | undefined): string {
+    if (!metric) {
+      return 'Sin rango';
+    }
+
+    const lower = typeof metric.valorInferior === 'number' ? this.formatNumber(metric.valorInferior) : null;
+    const upper = typeof metric.valorSuperior === 'number' ? this.formatNumber(metric.valorSuperior) : null;
+
+    if (lower !== null && upper !== null) {
+      return `${lower} - ${upper}`;
+    }
+    if (lower !== null) {
+      return `≥ ${lower}`;
+    }
+    if (upper !== null) {
+      return `≤ ${upper}`;
+    }
+    return 'Rango libre';
+  }
+
+  protected rangeSegments(): Array<{ metric: MetricasDTO; name: string; color: string; flex: number }> {
+    const metrics = this.indicador().metricas ?? [];
+    if (!metrics.length) {
+      return [{
+        metric: { nombre: 'Sin rango', valorInferior: null, valorSuperior: null, color: '#cbd5e1' },
+        name: 'Sin rango',
+        color: '#cbd5e1',
+        flex: 1,
+      }];
+    }
+    return metrics.map((metric, index) => ({
+      metric,
+      name: metric.nombre,
+      color: metric.color,
+      flex: index === metrics.length - 1 ? 2 : 1,
+    }));
+  }
+
+  protected markerPosition(): string {
+    const metrics = this.indicador().metricas ?? [];
+    if (!metrics.length) {
+      return '';
+    }
+
+    const hasRange = metrics.some((metric) => metric.valorInferior !== null || metric.valorSuperior !== null);
+    if (!hasRange) {
+      return '';
+    }
+
+    const activeIndex = metrics.findIndex((metric) => metric.nombre === this.activeMetric()?.nombre);
+    const safeIndex = activeIndex >= 0 ? activeIndex : metrics.length - 1;
+    return `${((safeIndex + 0.5) / metrics.length) * 100}%`;
+  }
+
+  protected progressWidth(): string {
+    const metric = this.resolveMetric();
+    const value = Number(this.resultado()?.valor ?? 0);
+    const lower = typeof metric?.valorInferior === 'number' ? metric.valorInferior : null;
+    const upper = typeof metric?.valorSuperior === 'number' ? metric.valorSuperior : null;
+
+    if (lower === null || upper === null) {
+      return metric ? '72%' : '0%';
+    }
+
+    if (upper <= lower) {
+      return metric ? '72%' : '0%';
+    }
+
+    const ratio = ((value - lower) / (upper - lower)) * 100;
+    return `${Math.min(Math.max(ratio, 10), 100)}%`;
+  }
+
+  protected resolveValueSuffix(): string {
+    const property = this.indicador().propiedades?.find((item) => item.key === 'valorDespues');
+    if (!property || property.valor === null || property.valor === undefined) {
+      return '';
+    }
+    const rawValue = typeof property.valor === 'string' ? property.valor : String(property.valor);
+    try {
+      const parsedValue = JSON.parse(rawValue);
+      if (Array.isArray(parsedValue) && parsedValue.length) {
+        return String(parsedValue[0]);
+      }
+      if (typeof parsedValue === 'string') {
+        return parsedValue;
+      }
+      return String(parsedValue ?? '');
+    } catch {
+      return String(property.valor);
+    }
   }
 
   protected loadResultado(): void {
-    const period = this.selectedPeriod();
-    if (!period) {
-      return;
-    }
     this.loading.set(true);
     this.error.set(false);
     this.indicadoresService
-      .getResultadoIndicador(this.indicador().llaveTabla, period)
+      .getResultadoIndicador(this.indicador().llaveTabla, this.selectedPeriod() ?? this.indicador().periodo)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resultado) => {
           this.resultado.set(resultado);
+          this.lastUpdated.set(this.formatLastUpdated());
           this.loading.set(false);
         },
         error: () => {
@@ -108,9 +245,21 @@ export class IndicatorCardComponent implements OnInit {
       });
   }
 
-  protected applyPeriod(period: PeriodoDTO): void {
-    this.selectedPeriod.set(period);
+  protected refreshData(): void {
     this.loadResultado();
+  }
+
+  protected formatLastUpdated(): string {
+    return new Intl.DateTimeFormat('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date());
+  }
+
+  protected openTemplate(template: DocumentoPlantillaDTO): void {
+    const pedidoVenta = new PedidoVentaDTO();
+    pedidoVenta.plantilla = template.llaveTabla;
+    this.utilsService.modalWithParams(pedidoVenta, true);
   }
 
   protected openTable(): void {
@@ -122,11 +271,23 @@ export class IndicatorCardComponent implements OnInit {
     });
   }
 
-  protected onAction(accion: Accion): void {
-    const template = this.templateService.getTemplate(accion.plantilla);
-    const pedidoVenta = new PedidoVentaDTO();
-    pedidoVenta.plantilla = accion.plantilla;
-    this.utilsService.modalWithParams(pedidoVenta, true);
+  protected parseTemplateValues(value: string | number | boolean | null | undefined): string[] {
+    if (value === null || value === undefined || value === '') {
+      return [];
+    }
+
+    const raw = typeof value === 'string' ? value : String(value);
+
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((item): item is string => typeof item === 'string' && !!item);
+      }
+    } catch {
+      // no-op
+    }
+
+    return [raw];
   }
 
   protected onImageError(event: Event): void {

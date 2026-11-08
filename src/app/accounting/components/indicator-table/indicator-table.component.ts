@@ -11,7 +11,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
   DatoTablaDTO,
   Indicador,
-} from 'app/accounting/domain/accounting.types';
+} from 'app/accounting/domain/IndicadorDTO';
 import { IndicadoresService } from 'app/accounting/business/indicadores.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 

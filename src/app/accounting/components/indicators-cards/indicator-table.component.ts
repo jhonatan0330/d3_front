@@ -1,16 +1,14 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component,  inject, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
   DatoTablaDTO,
-  Indicador,
-} from 'app/accounting/domain/accounting.types';
-import { IndicadoresService } from 'app/accounting/business/indicadores.service';
+  IndicadorDTO,
+} from 'app/accounting/domain/IndicadorDTO';
 import { ImageFormatPipe } from 'app/shared/local-image';
 
 interface IndicatorTableData {
-  indicador: Indicador;
+  indicador: IndicadorDTO;
 }
 
 @Component({
@@ -20,8 +18,7 @@ interface IndicatorTableData {
 })
 export class IndicatorTableComponent {
   private dialogRef = inject<MatDialogRef<IndicatorTableComponent>>(MatDialogRef);
-  private destroyRef = inject(DestroyRef);
-  private indicadoresService = inject(IndicadoresService);
+ // private indicadoresService = inject(IndicadoresService);
   data = inject<IndicatorTableData>(MAT_DIALOG_DATA);
 
   protected indicador = this.data.indicador;
@@ -30,7 +27,7 @@ export class IndicatorTableComponent {
 
   constructor() {
     this.loading.set(true);
-    this.indicadoresService
+   /* this.indicadoresService
       .getTablaIndicador(this.indicador.llaveTabla)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -39,7 +36,7 @@ export class IndicatorTableComponent {
           this.loading.set(false);
         },
         error: () => this.loading.set(false),
-      });
+      });*/
   }
 
   protected close(): void {

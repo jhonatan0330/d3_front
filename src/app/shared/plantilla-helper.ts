@@ -117,6 +117,7 @@ export class PlantillaHelper {
 
   static PROCESO_POP = 'PROCESO_POP';
   static PROCESO_ACCIONES = 'PROCESO_ACCIONES';
+  static ACTIONS = 'ACTIONS';
   static PROCESO_VALOR = 'PROCESO_VALOR';
   static BODEGA_MOVIMIENTO = 'BODEGA_MOVIMIENTO';
 

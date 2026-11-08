@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
-import { PeriodoDTO } from 'app/accounting/domain/accounting.types';
+import { PeriodoDTO } from 'app/accounting/domain/PeriodoDTO';
 
 type Nivel = 'full' | 'año' | 'mes' | 'dia';
 type Step = 'nivel' | 'year' | 'month' | 'day';
