@@ -46,7 +46,7 @@
             (click)="onLevel($event, level, dd)"
           >
             <span>{{ levelLabel(level) }}</span>
-            @if (period()?.nivel === level) {
+            @if (isActiveLevel(level)) {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400"

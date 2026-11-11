@@ -1,0 +1,105 @@
+<div class="list-page">
+  <div class="list-header">
+    <h1 class="list-title">Targets del Indicador</h1>
+    <button type="button" class="btn-flat-primary" (click)="openTargetForm()">
+      <mat-icon>add</mat-icon> Nuevo Target
+    </button>
+  </div>
+
+  <div class="list-toolbar">
+    <div class="list-filters">
+      <div class="w-full">
+        @if (activos().length === 0) {
+          <div class="list-empty">No hay targets activos</div>
+        } @else {
+          <div class="space-y-2 p-4" cdkDropList (cdkDropListDropped)="drop($event)">
+            @for (target of activos(); track target.key) {
+              <div class="cdk-drag flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3 transition-colors hover:border-primary/30 dark:border-gray-600 dark:bg-gray-700/50" cdkDrag>
+                <div class="flex items-center gap-3 min-w-0">
+                    <div cdkDragHandle class="cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" aria-label="Arrastrar para reordenar">
+                      <mat-icon>drag_indicator</mat-icon>
+                    </div>
+                    <div class="w-10 h-10 shrink-0 rounded-lg flex items-center justify-center font-semibold" [class]="getTargetColorClass(target.color || '#64748b')">
+                      {{ target.nombre.charAt(0).toUpperCase() }}
+                    </div>
+                    <div class="min-w-0">
+                      <h3 class="font-semibold text-gray-900 dark:text-gray-100 truncate">{{ target.nombre }}</h3>
+                      <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                        Valor: {{ target.valorInferior }} - {{ target.valorSuperior }}
+                      </p>
+                    </div>
+                </div>
+                <div class="flex shrink-0 items-center gap-1">
+                    <button type="button" class="btn-icon-sm" (click)="openTargetForm(target)" title="Editar" aria-label="Editar">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button type="button" class="btn-icon-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950" (click)="eliminarTarget(target)" title="Eliminar" aria-label="Eliminar">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+              </div>
+            }
+          </div>
+          <div class="mt-4">
+            @if (activos().length > 1) {
+              <div class="text-sm text-gray-500 dark:text-gray-400">
+                Arrastra para reordenar
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="list-panel">
+    @if (loading()) {
+      <div class="flex justify-center py-12">
+        <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+          <div class="h-full bg-primary rounded animate-pulse" style="width: 40%;"></div>
+        </div>
+      </div>
+    } @else {
+      @if (inactivos().length > 0) {
+        <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-300">Targets inactivos ({{ inactivos().length }})</h4>
+            <button type="button" class="btn-icon" (click)="toggleInactivos()" aria-label="Ocultar inactivos" title="Ocultar inactivos">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            @for (target of inactivos(); track target.key) {
+              <div class="border border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-gray-100 dark:bg-gray-800/60 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-gray-400 font-semibold">
+                  {{ target.nombre.charAt(0).toUpperCase() }}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="font-medium text-gray-600 dark:text-gray-300 truncate">{{ target.nombre }}</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500 font-mono">{{ target.key }}</span>
+                    <span class="badge badge-error text-xs">Inactivo</span>
+                  </div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400 truncate">
+                    Valor: {{ target.valorInferior }} - {{ target.valorSuperior }}
+                  </div>
+                </div>
+                <div class="flex items-center gap-1">
+                  <button type="button" class="btn-icon" (click)="openTargetForm(target)" aria-label="Editar" title="Editar">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="btn-flat-secondary" (click)="reactivarTarget(target)" title="Reactivar target">
+                    <mat-icon>restore</mat-icon> Reactivar
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+  <div #loadMore></div>
+</div>

@@ -9,8 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
-import { IndicatorDTO } from 'app/configuration/domain/IndicatorDTO';
-import { IndicatorFilterDTO } from 'app/configuration/domain/IndicatorFilterDTO';
+import { IndicatorDTO } from 'app/accounting/domain/IndicatorDTO';
+import { IndicatorFilterDTO } from 'app/accounting/domain/IndicatorFilterDTO';
 import { IndicatorConfigService } from 'app/configuration/configuracion.api';
 import { IndicatorFormComponent } from '../indicator-form/indicator-form.component';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
@@ -35,9 +35,15 @@ export class IndicatorListComponent implements OnInit, AfterViewInit, OnDestroy 
     hasMore = signal(true);
     private readonly pageSize = 25;
 
-    filter: IndicatorFilterDTO = { estado: 'A', nombre: '', codigo: '', proceso: '', paginacionRegistroInicial: 0, paginacionRegistroFinal: 25,
-        filtroParametro: '',
-        llaveTabla: '',
+    filter: IndicatorFilterDTO = {
+        key: '',
+        startRow: 0,
+        endRow: 25,
+        filter: '',
+        state: 'A',
+        nombre: '',
+        codigo: '',
+        proceso: '',
     };
     ngOnInit(): void { this.loadNext(); }
 
@@ -54,8 +60,8 @@ export class IndicatorListComponent implements OnInit, AfterViewInit, OnDestroy 
         if (this.loading() || !this.hasMore()) return;
         this.loading.set(true);
         const f = this.filter;
-        f.paginacionRegistroInicial = this.currentPage() * this.pageSize;
-        f.paginacionRegistroFinal = this.pageSize;
+        f.startRow = this.currentPage() * this.pageSize;
+        f.endRow = f.startRow + this.pageSize;
         this.service.getIndicadores(f).subscribe({ next: (res) => { this.data.update(items => [...items, ...res]); this.currentPage.update(p => p + 1); if (res.length < this.pageSize) this.hasMore.set(false); this.loading.set(false); this.checkMore(); }, error: () => this.loading.set(false) });
     }
 

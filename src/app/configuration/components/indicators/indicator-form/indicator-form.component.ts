@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { IndicatorDTO } from 'app/configuration/domain/IndicatorDTO';
+import { IndicatorTargetListComponent } from '../indicator-target-list/indicator-target-list.component';
+import { IndicatorDTO } from 'app/accounting/domain/IndicatorDTO';
 import { IndicatorConfigService } from 'app/configuration/configuracion.api';
 import { ImageUploaderComponent } from 'app/upload/components/image-uploader/image-uploader.component';
 import { ProcessSelectorComponent } from '../../shared/process-selector/process-selector.component';
@@ -14,7 +15,7 @@ import { IdDialogData } from '../../shared/dialog-data';
 @Component({
   selector: 'app-indicator-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, ImageUploaderComponent, ProcessSelectorComponent],
+  imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, ImageUploaderComponent, ProcessSelectorComponent, IndicatorTargetListComponent],
   templateUrl: './indicator-form.component.html',
 })
 export class IndicatorFormComponent implements OnInit {
@@ -69,9 +70,10 @@ export class IndicatorFormComponent implements OnInit {
 
   onSubmit(): void {
     this.cargando = true;
-    const request = this.indicador.llaveTabla
-      ? this.service.updateIndicador(this.indicador)
-      : this.service.createIndicador(this.indicador);
+    const { targets: _targets, ...indicator } = this.indicador;
+    const request = indicator.llaveTabla
+      ? this.service.updateIndicador(indicator)
+      : this.service.createIndicador(indicator);
     request.subscribe({
       next: (res) => {
         this.cargando = false;

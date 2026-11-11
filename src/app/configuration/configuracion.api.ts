@@ -20,11 +20,13 @@ import {
 import { SharedIdResponse } from 'app/shared/api-types';
 import { ArbolNodoRequestDTO } from './domain/ArbolNodoRequestDTO';
 import { DocumentoPlantillaFilterDTO } from './domain/DocumentoPlantillaFilterDTO';
-import { IndicatorDTO } from './domain/IndicatorDTO';
-import { IndicatorFilterDTO } from './domain/IndicatorFilterDTO';
+import { IndicatorDTO } from 'app/accounting/domain/IndicatorDTO';
+import { IndicatorFilterDTO } from '../accounting/domain/IndicatorFilterDTO';
 import { NodoArbolDTO } from './domain/NodoArbolDTO';
 import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO';
 import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
+import { IndicatorTargetDTO } from 'app/accounting/domain/IndicatorTargetDTO';
+import { IndicatorTargetFilterDTO } from 'app/accounting/domain/IndicatorTargetFilterDTO';
 
 @Injectable({ providedIn: 'root' })
 export class ConsecutiveService {
@@ -809,6 +811,42 @@ export class IndicatorConfigService {
     activateIndicador(indicador: IndicatorDTO): Observable<IndicatorDTO> {
         return this.http.post<IndicatorDTO>(
             this.ls.getUrlAccess(`${this.baseUrl}/activate`), indicador
+        );
+    }
+
+    getTargets(filter?: IndicatorTargetFilterDTO): Observable<IndicatorTargetDTO[]> {
+        return this.http.post<IndicatorTargetDTO[]>(
+            this.ls.getUrlAccess(`/configuration/target/list`), filter
+        );
+    }
+
+    getTargetById(key: string): Observable<IndicatorTargetDTO> {
+        return this.http.post<IndicatorTargetDTO>(
+            this.ls.getUrlAccess(`/configuration/target/${key}`), {}
+        );
+    }
+
+    createTarget(indicador: IndicatorTargetDTO): Observable<IndicatorTargetDTO> {
+        return this.http.post<IndicatorTargetDTO>(
+            this.ls.getUrlAccess(`/configuration/target/create`), indicador
+        );
+    }
+
+    updateTarget(indicador: IndicatorTargetDTO): Observable<IndicatorTargetDTO> {
+        return this.http.post<IndicatorTargetDTO>(
+            this.ls.getUrlAccess(`/configuration/target/update`), indicador
+        );
+    }
+
+    inactivateTarget(indicador: IndicatorTargetDTO): Observable<IndicatorTargetDTO> {
+        return this.http.post<IndicatorTargetDTO>(
+            this.ls.getUrlAccess(`/configuration/target/inactivate`), indicador
+        );
+    }
+
+    activateTarget(indicador: IndicatorTargetDTO): Observable<IndicatorTargetDTO> {
+        return this.http.post<IndicatorTargetDTO>(
+            this.ls.getUrlAccess(`/configuration/target/activate`), indicador
         );
     }
 }

@@ -6,7 +6,7 @@ import {
   signal,
 } from '@angular/core';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
-import { PeriodoDTO } from 'app/accounting/domain/PeriodoDTO';
+import { TimeFrame } from 'app/accounting/domain/TimeFrame';
 
 type Nivel = 'full' | 'año' | 'mes' | 'dia';
 type Step = 'nivel' | 'year' | 'month' | 'day';
@@ -35,8 +35,8 @@ const LEVELS: Nivel[] = ['full', 'año', 'mes', 'dia'];
   templateUrl: './period-filter.component.html',
 })
 export class PeriodFilterComponent {
-  readonly period = input<PeriodoDTO>();
-  readonly periodChange = output<PeriodoDTO>();
+  readonly period = input<TimeFrame>();
+  readonly periodChange = output<TimeFrame>();
 
   protected LEVELS = LEVELS;
   protected MONTHS = MONTHS;
@@ -48,14 +48,14 @@ export class PeriodFilterComponent {
   private selectedMonth = signal(new Date().getMonth());
 
   private baseYear = computed(() => {
-    const fecha = this.period()?.fechaInicial;
-    const year = fecha ? Number(fecha.slice(0, 4)) : NaN;
+    const fecha = this.period()?.startDate;
+    const year = fecha ? new Date(fecha).getFullYear() : NaN;
     return Number.isFinite(year) ? year : new Date().getFullYear();
   });
 
   private baseMonth = computed(() => {
-    const fecha = this.period()?.fechaInicial;
-    const month = fecha ? Number(fecha.slice(5, 7)) : NaN;
+    const fecha = this.period()?.startDate;
+    const month = fecha ? new Date(fecha).getMonth() + 1 : NaN;
     return Number.isFinite(month) ? month : new Date().getMonth() + 1;
   });
 
@@ -110,7 +110,7 @@ export class PeriodFilterComponent {
     if (level === 'full') {
       this.step.set('nivel');
       this.level.set('full');
-      this.emitPeriod('', '');
+      this.emitPeriod(null, null);
       dd.close();
       return;
     }
@@ -135,7 +135,7 @@ export class PeriodFilterComponent {
     this.selectedYear.set(Number(year));
     if (this.level() === 'año') {
       this.step.set('nivel');
-      this.emitPeriod(`${year}-01-01`, `${year}-12-31`);
+      this.emitPeriod(new Date(`${year}-01-01`), new Date(`${year}-12-31`));
       dd.close();
       return;
     }
@@ -151,8 +151,8 @@ export class PeriodFilterComponent {
       const monthIndex = MONTHS.indexOf(month) + 1;
       const lastDay = new Date(year, monthIndex, 0).getDate();
       this.emitPeriod(
-        `${year}-${String(monthIndex).padStart(2, '0')}-01`,
-        `${year}-${String(monthIndex).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
+        new Date(`${year}-${String(monthIndex).padStart(2, '0')}-01`),
+        new Date(`${year}-${String(monthIndex).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`)
       );
       dd.close();
       return;
@@ -166,7 +166,7 @@ export class PeriodFilterComponent {
     const month = this.selectedMonth() + 1;
     const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     this.step.set('nivel');
-    this.emitPeriod(date, date);
+    this.emitPeriod(new Date(date), new Date(date));
     dd.close();
   }
 
@@ -190,14 +190,42 @@ export class PeriodFilterComponent {
     }
   }
 
-  private emitPeriod(fechaInicial: string, fechaFinal: string): void {
+  protected isActiveLevel(level: Nivel): boolean {
+    return this.periodLevel() === level;
+  }
+
+  private periodLevel = computed<Nivel>(() => {
+    switch (this.period()?.level) {
+      case 1: return 'año';
+      case 2: return 'mes';
+      case 3: return 'dia';
+      default: return 'full';
+    }
+  });
+
+  private levelNumber(level: Nivel): number {
+    switch (level) {
+      case 'año': return 1;
+      case 'mes': return 2;
+      case 'dia': return 3;
+      default: return 0;
+    }
+  }
+
+  private emitPeriod(startDate: Date | null, endDate: Date | null): void {
     const base = this.period();
-    const period: PeriodoDTO = {
-      id: base?.id ?? 0,
-      nivel: this.level(),
-      fechaInicial,
-      fechaFinal,
-    };
+    const period = new TimeFrame();
+    period.key = base?.key ?? '';
+    period.state = base?.state ?? '';
+    period.level = this.levelNumber(this.level());
+    period.code = base?.code ?? '';
+    period.startDate = startDate ?? base?.startDate ?? new Date();
+    period.endDate = endDate ?? base?.endDate ?? period.startDate;
+    period.year = period.startDate.getFullYear();
+    period.month = period.startDate.getMonth() + 1;
+    period.day = period.startDate.getDate();
+    period.hour = period.startDate.getHours();
+    period.minute = period.startDate.getMinutes();
     this.periodChange.emit(period);
   }
 }

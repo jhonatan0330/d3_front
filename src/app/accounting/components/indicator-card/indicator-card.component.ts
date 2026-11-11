@@ -8,15 +8,17 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { Indicador, IndicadorResultadoDTO, MetricasDTO } from 'app/accounting/domain/IndicadorDTO';
+import { IndicatorDTO } from 'app/accounting/domain/IndicatorDTO';
+import { ResultMapDTO } from 'app/accounting/domain/ResultMapDTO';
+import { TimeFrame } from 'app/accounting/domain/TimeFrame';
+import { IndicatorTargetDTO } from 'app/accounting/domain/IndicatorTargetDTO';
 import { IndicadoresService } from 'app/accounting/business/indicadores.service';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { DocumentoPlantillaDTO } from 'app/document/document.types';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { IndicatorTableComponent } from './indicator-table.component';
+import { IndicatorTableComponent } from 'app/accounting/components/indicator-table/indicator-table.component';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
@@ -27,20 +29,19 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
   templateUrl: './indicator-card.component.html',
 })
 export class IndicatorCardComponent {
-  readonly indicador = input.required<Indicador>();
+  readonly indicador = input.required<IndicatorDTO>();
 
   private dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
   private indicadoresService = inject(IndicadoresService);
   private templateService = inject(TemplateService);
   private utilsService = inject(UtilsService);
-  private router = inject(Router);
 
-  protected selectedPeriod = signal<any>(undefined);
-  protected resultado = signal<IndicadorResultadoDTO | undefined>(undefined);
+  protected selectedPeriod = signal<TimeFrame | undefined>(undefined);
+  protected resultado = signal<ResultMapDTO | undefined>(undefined);
   protected loading = signal(false);
   protected error = signal(false);
-  protected hoveredRange = signal<MetricasDTO | null>(null);
+  protected hoveredRange = signal<IndicatorTargetDTO | null>(null);
   protected lastUpdated = signal<string>('');
 
   protected readonly activeMetric = computed(() => this.resolveMetric());
@@ -86,24 +87,24 @@ export class IndicatorCardComponent {
     return new Intl.NumberFormat('es-ES').format(safeValue);
   }
 
-  protected formatPeriodDate(value: string | undefined): string {
+  protected formatPeriodDate(value: string | Date | undefined): string {
     if (!value) {
-      return '07 nov. 2026';
+      return 'Sin período';
     }
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) {
-      return '07 nov. 2026';
+      return 'Sin período';
     }
     return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
   }
 
-  protected resolveMetric(): MetricasDTO | undefined {
-    const metrics = this.indicador().metricas ?? [];
+  protected resolveMetric(): IndicatorTargetDTO | undefined {
+    const metrics = this.indicador().targets ?? [];
     if (!metrics.length) {
       return undefined;
     }
 
-    const currentValue = Number(this.resultado()?.valor ?? 0);
+    const currentValue = Number(this.resultado()?.value ?? 0);
     const match = metrics.find((metric) => {
       const lower = typeof metric.valorInferior === 'number' ? metric.valorInferior : Number.NEGATIVE_INFINITY;
       const upper = typeof metric.valorSuperior === 'number' ? metric.valorSuperior : Number.POSITIVE_INFINITY;
@@ -133,7 +134,7 @@ export class IndicatorCardComponent {
     return 'Rango libre';
   }
 
-  protected rangeValueLabel(metric: MetricasDTO | null | undefined): string {
+  protected rangeValueLabel(metric: IndicatorTargetDTO | null | undefined): string {
     if (!metric) {
       return 'Sin rango';
     }
@@ -153,8 +154,8 @@ export class IndicatorCardComponent {
     return 'Rango libre';
   }
 
-  protected rangeSegments(): Array<{ metric: MetricasDTO; name: string; color: string; flex: number }> {
-    const metrics = this.indicador().metricas ?? [];
+  protected rangeSegments(): Array<{ metric: IndicatorTargetDTO; name: string; color: string; flex: number }> {
+    const metrics = this.indicador().targets ?? [];
     if (!metrics.length) {
       return [{
         metric: { nombre: 'Sin rango', valorInferior: null, valorSuperior: null, color: '#cbd5e1' },
@@ -172,7 +173,7 @@ export class IndicatorCardComponent {
   }
 
   protected markerPosition(): string {
-    const metrics = this.indicador().metricas ?? [];
+    const metrics = this.indicador().targets ?? [];
     if (!metrics.length) {
       return '';
     }
@@ -189,7 +190,7 @@ export class IndicatorCardComponent {
 
   protected progressWidth(): string {
     const metric = this.resolveMetric();
-    const value = Number(this.resultado()?.valor ?? 0);
+    const value = Number(this.resultado()?.value ?? 0);
     const lower = typeof metric?.valorInferior === 'number' ? metric.valorInferior : null;
     const upper = typeof metric?.valorSuperior === 'number' ? metric.valorSuperior : null;
 
@@ -226,10 +227,16 @@ export class IndicatorCardComponent {
   }
 
   protected loadResultado(): void {
+    const period = this.selectedPeriod() ?? this.indicador().periodo;
+    if (!period) {
+      this.resultado.set(undefined);
+      this.loading.set(false);
+      return;
+    }
     this.loading.set(true);
     this.error.set(false);
     this.indicadoresService
-      .getResultadoIndicador(this.indicador().llaveTabla, this.selectedPeriod() ?? this.indicador().periodo)
+      .getResultadoIndicador(this.indicador().llaveTabla, period)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resultado) => {

@@ -8,15 +8,13 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {
-  DatoTablaDTO,
-  Indicador,
-} from 'app/accounting/domain/IndicadorDTO';
+import { IndicatorDTO } from 'app/accounting/domain/IndicatorDTO';
+import { ResultMapDTO } from 'app/accounting/domain/ResultMapDTO';
 import { IndicadoresService } from 'app/accounting/business/indicadores.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 
 interface IndicatorTableData {
-  indicador: Indicador;
+  indicador: IndicatorDTO;
 }
 
 @Component({
@@ -33,7 +31,7 @@ export class IndicatorTableComponent {
   data = inject<IndicatorTableData>(MAT_DIALOG_DATA);
 
   protected indicador = this.data.indicador;
-  protected tabla = signal<DatoTablaDTO[]>([]);
+  protected tabla = signal<ResultMapDTO[]>([]);
   protected loading = signal(false);
 
   constructor() {

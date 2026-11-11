@@ -1,55 +1,28 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { AccountingService } from 'app/accounting/accounting.api';
-import {
-  DatoTablaDTO,
-  Indicador,
-  IndicadorDTO,
-  IndicadorResultadoDTO,
-} from 'app/accounting/domain/IndicadorDTO';
-import { PeriodoDTO } from 'app/accounting/domain/PeriodoDTO';
+import { IndicatorDTO } from 'app/accounting/domain/IndicatorDTO';
+import { TimeFrame } from 'app/accounting/domain/TimeFrame';
+import { ResultMapDTO } from 'app/accounting/domain/ResultMapDTO';
 
 @Injectable({ providedIn: 'root' })
 export class IndicadoresService {
   private accountingService = inject(AccountingService);
 
-  getIndicadores(): Observable<IndicadorDTO[]> {
-    return this.accountingService.getIndicadoresMock();
+  getIndicadores(): Observable<IndicatorDTO[]> {
+    return this.accountingService.getIndicadores();
   }
 
-  getResultadoIndicador(llaveTabla: string, period: PeriodoDTO): Observable<IndicadorResultadoDTO> {
-    return this.accountingService.getIndicadorMock(llaveTabla).pipe(
-      map((indicador) => {
-        const dato = indicador.datos?.find((item) => item.account === llaveTabla || item.catalog === llaveTabla) ?? indicador.datos?.[0];
-        const valor = Number(dato?.value ?? 0);
-        return {
-          valor,
-          valor_antes: 0,
-          valor_despues: valor,
-          fecha: period?.startDate ?? indicador.periodo?.startDate,
-          key: llaveTabla,
-        };
-      })
+  getResultadoIndicador(llaveTabla: string, period: TimeFrame): Observable<ResultMapDTO> {
+    return this.accountingService.getResultadoIndicador(llaveTabla, period).pipe(
+      map((resultado) => ({
+        ...resultado,
+        key: llaveTabla,
+      }))
     );
   }
 
-  getTablaIndicador(llaveTabla: string): Observable<DatoTablaDTO[]> {
-    return this.accountingService.getIndicadorMock(llaveTabla).pipe(
-      map((indicador) => {
-        if (indicador.llaveTabla === llaveTabla) {
-          return indicador.datos ?? [];
-        }
-        return [];
-      })
-    );
-  }
-
-  toIndicador(dto: IndicadorDTO): Indicador {
-    return {
-      ...dto,
-      propiedades: dto.propiedades ?? [],
-      metricas: dto.metricas ?? [],
-      datos: dto.datos ?? [],
-    };
+  getTablaIndicador(llaveTabla: string): Observable<ResultMapDTO[]> {
+    return this.accountingService.getTablaIndicador(llaveTabla);
   }
 }

@@ -1,39 +1,46 @@
+<div class="max-w-3xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
+  <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+    <h2 class="text-xl font-bold">{{ data?.id ? 'Editar Indicador' : 'Nuevo Indicador' }}</h2>
+    <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
-    <div class="max-w-3xl w-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
-        <h2 class="text-xl font-bold">{{ data?.id ? 'Editar Indicador' : 'Nuevo Indicador' }}</h2>
-        <button type="button" class="btn-icon" (click)="dialogRef.close()" aria-label="Cerrar" title="Cerrar"><mat-icon>close</mat-icon></button>
+  <form #form="ngForm" (ngSubmit)="onSubmit()">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[160px_minmax(0,1fr)]">
+      <div class="flex flex-col">
+        <label class="form-label mb-2">Imagen / Icono</label>
+        <div class="w-full max-w-40">
+          <app-image-uploader [(value)]="indicador.imagen"></app-image-uploader>
+        </div>
       </div>
 
-      <form #form="ngForm" (ngSubmit)="onSubmit()">
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-[160px_minmax(0,1fr)]">
-          <div class="flex flex-col">
-            <label class="form-label mb-2">Imagen / Icono</label>
-            <div class="w-full max-w-[160px]">
-              <app-image-uploader [(value)]="indicador.imagen"></app-image-uploader>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div class="sm:col-span-2">
-              <app-process-selector [(ngModel)]="indicador.nodoSuperior" name="nodoSuperior"></app-process-selector>
-            </div>
-            <div>
-              <label class="form-label">Código *</label>
-              <input type="text" [(ngModel)]="indicador.codigo" name="codigo" required class="form-input" placeholder="ej. ventas_totales" />
-            </div>
-            <div>
-              <label class="form-label">Nombre *</label>
-              <input type="text" [(ngModel)]="indicador.nombre" name="nombre" required class="form-input" />
-            </div>
-          </div>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <app-process-selector [(ngModel)]="indicador.nodoSuperior" name="nodoSuperior"></app-process-selector>
         </div>
-
-        <div class="flex justify-end gap-3 pt-4">
-          <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!indicador.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
-          <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
-          <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data?.id ? 'Actualizar' : 'Crear') }}</button>
+        <div>
+          <label class="form-label">Código *</label>
+          <input type="text" [(ngModel)]="indicador.codigo" name="codigo" required class="form-input" placeholder="ej. ventas_totales" />
         </div>
-      </form>
+        <div>
+          <label class="form-label">Nombre *</label>
+          <input type="text" [(ngModel)]="indicador.nombre" name="nombre" required class="form-input" />
+        </div>
+      </div>
     </div>
-  
+
+    @if (indicador.llaveTabla) {
+    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+      <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Propiedades del Indicador</h3>
+      <app-indicator-target-list [indicatorKey]="indicador.llaveTabla"></app-indicator-target-list>
+    </div>
+    }
+
+    <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <button type="button" class="btn-flat" (click)="openPropiedades()" [disabled]="!indicador.llaveTabla"><mat-icon>tune</mat-icon> Propiedades</button>
+      <button type="button" class="btn-flat" (click)="dialogRef.close()">Cancelar</button>
+      <button type="submit" class="btn-flat-primary" [disabled]="cargando || !form.valid">{{ cargando ? 'Guardando...' : (data?.id ? 'Actualizar' : 'Crear') }}</button>
+    </div>
+  </form>
+</div>

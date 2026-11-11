@@ -12,7 +12,7 @@ import { CarouselService } from 'app/authentication/business/carousel.service';
 import { RecentDocumentsCardComponent } from './recent-documents-card/recent-documents-card.component';
 import { LastChatCardComponent } from './last-chat-card/last-chat-card.component';
 import { QuickActionsComponent } from './quick-actions/quick-actions.component';
-import { IndicatorsCardsComponent } from 'app/accounting/components/indicators-cards';
+import { IndicatorsCardsComponent } from 'app/accounting/components/indicators-cards/indicators-cards.component';
 
 @Component({
     selector: 'dashboard',
