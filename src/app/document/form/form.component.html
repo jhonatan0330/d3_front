@@ -123,6 +123,12 @@
           <span>Administrar plantilla</span>
         </app-dropdown-item>
       }-->
+      @if (canRelations()) {
+        <app-dropdown-item (clicked)="showRelations()">
+          <mat-icon>hub</mat-icon>
+          <span>Relaciones</span>
+        </app-dropdown-item>
+      }
       <app-dropdown-item (clicked)="openDiagram()">
         <mat-icon>account_tree</mat-icon>
         <span>Mapa del proceso</span>
@@ -147,6 +153,12 @@
     </div>
   }
   <div class="px-4 overflow-x-hidden">
+    <!-- Relaciones -->
+    @if (isRelations() && plantilla() && pedido()) {
+      <div class="card p-2">
+        <app-relations [plantilla]="plantilla()!" [documento]="pedido()!" (closed)="isRelations.set(false)" />
+      </div>
+    }
     <!-- Cambiar estado del documento -->
     @if (isChangeState()) {
       <div class="card p-2">

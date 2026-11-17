@@ -37,7 +37,6 @@ export class IndicatorCardComponent {
   private templateService = inject(TemplateService);
   private utilsService = inject(UtilsService);
 
-  protected selectedPeriod = signal<TimeFrame | undefined>(undefined);
   protected resultado = signal<ResultMapDTO | undefined>(undefined);
   protected loading = signal(false);
   protected error = signal(false);
@@ -46,7 +45,9 @@ export class IndicatorCardComponent {
 
   protected readonly activeMetric = computed(() => this.resolveMetric());
   protected readonly activeMetricColor = computed(() => this.activeMetric()?.color ?? '#64748b');
-  protected readonly dateLabel = computed(() => this.formatPeriodDate(this.indicador().periodo?.startDate ?? this.selectedPeriod()?.startDate));
+  protected readonly dateLabel = computed(
+    () => this.resultado()?.timeFrameName || this.indicador().datos?.[0]?.timeFrameName || 'Sin período'
+  );
   protected readonly valueSuffix = computed(() => this.resolveValueSuffix());
   protected readonly templateActions = computed<DocumentoPlantillaDTO[]>(() => {
     const propertyValues = PlantillaHelper.buscarValorMultiple(
@@ -67,7 +68,7 @@ export class IndicatorCardComponent {
   });
 
   ngOnInit(): void {
-    this.selectedPeriod.set(this.indicador().periodo);
+    this.resultado.set(this.indicador().datos?.[0]);
     this.loadResultado();
   }
 
@@ -85,17 +86,6 @@ export class IndicatorCardComponent {
   protected formatNumber(value: number | null | undefined): string {
     const safeValue = Number(value ?? 0);
     return new Intl.NumberFormat('es-ES').format(safeValue);
-  }
-
-  protected formatPeriodDate(value: string | Date | undefined): string {
-    if (!value) {
-      return 'Sin período';
-    }
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-      return 'Sin período';
-    }
-    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
   }
 
   protected resolveMetric(): IndicatorTargetDTO | undefined {
@@ -227,12 +217,13 @@ export class IndicatorCardComponent {
   }
 
   protected loadResultado(): void {
-    const period = this.selectedPeriod() ?? this.indicador().periodo;
-    if (!period) {
-      this.resultado.set(undefined);
+    const timeFrame = this.indicador().datos?.[0]?.timeFrame;
+    if (!timeFrame) {
       this.loading.set(false);
       return;
     }
+    const period = new TimeFrame();
+    period.key = timeFrame;
     this.loading.set(true);
     this.error.set(false);
     this.indicadoresService

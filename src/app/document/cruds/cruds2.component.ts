@@ -14,9 +14,7 @@ import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { FormReportService } from 'app/report/business/form-report.service';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/document/form/form.enum';
-import { SelectionModel } from '@angular/cdk/collections';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { IDynamicControl } from 'app/document/form/controls/base/base.component';
 import { getComponent } from 'app/document/form/form-helper';
@@ -25,24 +23,19 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatSuffix, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ImageFormatPipe } from 'app/shared/local-image';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
+import { DocumentListComponent } from 'app/document/cruds/document-list.component';
 
 @Component({
     selector: 'app-cruds',
     templateUrl: './cruds2.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatTooltip, MatIcon, FormsModule, ReactiveFormsModule, 
+    imports: [MatIcon, FormsModule, ReactiveFormsModule, 
         MatFormField, MatInput, MatSuffix, MatLabel, 
         MatDatepickerInput, MatDatepickerToggle, MatDatepicker,
-         MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, 
-         MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, 
-         MatRowDef, MatRow, CurrencyPipe, DatePipe, 
-        ImageFormatPipe, DropdownComponent, DropdownItemComponent]
+        DropdownComponent, DropdownItemComponent, DocumentListComponent]
 })
 export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private route = inject(ActivatedRoute);
@@ -52,28 +45,15 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private formBuilder = inject(FormBuilder);
     private notificationCenter = inject(NotificationCenterService);
     private utilsService = inject(UtilsService);
-    private reportService = inject(FormReportService);
     private destroyRef = inject(DestroyRef);
 
     plantilla = signal<DocumentoPlantillaDTO | null>(null); // Estructura base de la lista
     templatesFromProcess = signal<DocumentoPlantillaDTO[]>([]);
-    readonly defaultTemplateLogo = 'assets/images/logo/dark_264x264.png';
-
-    hasPlantillaImage(): boolean {
-        return !!this.plantilla()?.imagen?.trim();
-    }
-
-    onPlantillaImageError(event: Event): void {
-        const img = event.target as HTMLImageElement;
-        if (img && !img.src.endsWith('dark_264x264.png')) {
-            img.src = this.defaultTemplateLogo;
-        }
-    }
     tableroId: string;
     procesoId: string | null;
 
     // Variables para sincronizar con la vista
-    dataProvider = signal<PedidoVentaDTO[]>([]); // Conjunto de documentos a visualizar
+    queryFilter = signal<PedidoVentaFilterDTO | null>(null);
     fControlSearch: FormControl = new FormControl(); // Texto que digita el usuario para filtrar
     fCDateStart: FormControl = new FormControl();
     fCDateEnd: FormControl = new FormControl();
@@ -86,11 +66,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     fControlCheck: FormControl = new FormControl(false); // Check que indica si se debe realizar una busqueda por codigo exacto
     ordenCampo = signal(''); // Campo por el cual ordenar: ''=fecha, 'N'=nombre, 'D'=descripcion
     ascendente = signal(false); // Por defecto descendente; si se marca, ascendente
-    pagina = signal(1); // Indica que pagina estamos buscando
-    pageControl: FormControl = new FormControl('30');
     isLoading = signal(false);
-    isEnd = signal(false);
-    viewMode = 'grid-view';
+    viewMode: 'grid-view' | 'list-view' = 'grid-view';
     form: FormGroup = new FormGroup({});
     hasCreatePermission = signal(false);
     reportForms = signal<PropiedadDTO[]>([]);
@@ -100,9 +77,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
     solicitarFechas = true;
 
-    displayedColumns = signal<string[]>([]);
-    selection = new SelectionModel<PedidoVentaDTO>(true, []);
-    lastSelectedSegmentRow: PedidoVentaDTO; // this is the variable which holds the last selected row index
     masterSelected: boolean = false;
 
 
@@ -116,6 +90,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
     //VAriables del filtro
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
+    readonly documentList = viewChild(DocumentListComponent);
     formIsModified = false;
     dynamicControls = signal<IDynamicControl[]>([]);
 
@@ -128,8 +103,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 this.router.navigate(['/main']);
                 return;
             }
-            this.isEnd.set(false);
-            this.dataProvider.set([]);
+            this.queryFilter.set(null);
             this.templatesFromProcess.set([]);
             this.fControlSearch.setValue('');
             this.ordenCampo.set('');
@@ -213,18 +187,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
                 }
                 this.form = this.formBuilder.group(stateControls);
             }
-            this.displayedColumns.set([]);
-            if (this.plantilla()!.reportes?.length) this.displayedColumns.update(cols => [...cols, 'select']);
-            this.displayedColumns.update(cols => [...cols, 'nombre']);
-            if (!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.FORM_DESCRIPCION)) {
-                this.displayedColumns.update(cols => [...cols, 'descripcion']);
-            }
-            this.displayedColumns.update(cols => [...cols, 'estadoExpediente', 'fecha']);
-            if (!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.FORM_TOTAL)) {
-                this.displayedColumns.update(cols => [...cols, 'valor']);
-            }
-            this.displayedColumns.update(cols => [...cols, 'detalles']);
-            if (this.plantilla()!.reportes?.length) this.displayedColumns.update(cols => [...cols, 'acciones']);
             this.showFields();
         });
 
@@ -249,13 +211,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     toggleDrawer(): void {
         this.drawerOpened.update(v => !v);
     }
-
-    /*removeColumn(pColumn: string) {
-      const index = this.displayedColumns.indexOf(pColumn, 0);
-      if (index > -1) {
-        this.displayedColumns.splice(index, 1);
-      }
-    }*/
 
     openDialogFromTemplateModule() {
         if (!this.plantilla()) { return; }
@@ -358,15 +313,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             }
         }
 
-        this.isLoading.set(true);
-        if (_pagina === 1) {
-            this.dataProvider.set([]);
-            this.isEnd.set(false);
-            this.selection.clear();
-            this.pagina.set(1);
-        }
-        entity.paginacionRegistroInicial = this.pageControl.value * (_pagina - 1);
-        entity.paginacionRegistroFinal = this.pageControl.value;
         entity.ordenNombre = this.ordenCampo() || null!;
         entity.ascendente = this.ascendente() ? 'A' : null!;
         if (this.dynamicControls()) {
@@ -381,76 +327,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             });
         }
 
-        if(this.plantilla()){
-            this.api.listarDocumentos(entity)
-                .pipe(takeUntilDestroyed(this.destroyRef))
-                .subscribe({
-            next: (dataResult: PedidoVentaDTO[]) => {
-                if (!dataResult) {
-                    dataResult = [];
-                }
-                if (this.pagina() === 1) {
-                    this.dataProvider.set(dataResult);
-                } else {
-                    this.dataProvider.update(prev => prev.concat(dataResult));
-                }
-                if (dataResult.length >= this.pageControl.value) {
-                    this.pagina.update(p => p + 1);
-                } else {
-                    this.isEnd.set(true);
-                    this.pagina.set(1);
-                }
-                this.isLoading.set(false);
-            },
-            error: () => {
-                this.isLoading.set(false);
-            },
-        });
-        }
-        
-    }
-
-    /** Whether the number of selected elements matches the total number of rows. */
-    isAllSelected() {
-        const numSelected = this.selection.selected.length;
-        const numRows = this.dataProvider().length;
-        return numSelected === numRows;
-    }
-
-    /** Selects all rows if they are not all selected; otherwise clear selection. */
-    masterToggle() {
-        this.isAllSelected()
-            ? this.selection.clear()
-            : this.dataProvider().forEach((row) => this.selection.select(row));
-    }
-
-    multipleSelect(event, row) {
-        if (event.shiftKey) {
-            let start = 0;
-            if (this.lastSelectedSegmentRow) {
-                start = this.dataProvider().findIndex((element) => element.llaveTabla === this.lastSelectedSegmentRow.llaveTabla);
-            }
-            let end = this.dataProvider().findIndex((element) => element.llaveTabla === row.llaveTabla);
-
-            if (start > end) {
-                end = start;
-                start = this.dataProvider().findIndex((element) => element.llaveTabla === row.llaveTabla);
-            }
-
-            const obj: PedidoVentaDTO[] = Object.assign([], this.dataProvider().slice(start, end));
-
-            obj.forEach(e => this.selection.select(e))
-        }
-        this.lastSelectedSegmentRow = row;
-    }
-
-    /** The label for the checkbox on the passed row */
-    checkboxLabel(row?: PedidoVentaDTO): string {
-        if (!row) {
-            return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
-        }
-        return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.nombre
-            }`;
+        this.queryFilter.set(entity);
     }
 
     openDocument(pDocument: PedidoVentaDTO) {
@@ -460,47 +337,8 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         this.utilsService.modalWithParams(pedidoVenta, false);
     }
 
-    /************** ESTO ES COPIADO DE ACTIONS **************/
-
-    showReport(reporte: ReporteBaseDTO, pDocument: PedidoVentaDTO) {
-        if (!reporte) { return; }
-        const pKey = pDocument ? pDocument.llaveTabla : '';
-        const baseUrl = this.reportService.buildReportUrl(reporte, pKey);
-
-        if (this.selection && this.selection.selected.length >= 1) {
-            let msj = 'Vas a imprimir ' + (this.selection.selected.length).toString() + ' documentos .';
-            if(this.selection.selected.length> 50) { msj = msj + 'Lo haremos abriendo ' + Math.ceil(this.selection.selected.length/50).toString() + ' pestañas en tu explorador, ¿estas deacuerdo?';}
-            this.notificationCenter.fire({
-                title: 'Impresion de varios documentos',
-                text: msj,
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si, quiero continuar!',
-                cancelButtonText: 'No, Paremos',
-              }).then((result) => {
-                if (result.isConfirmed) {
-                    let plantillaIdMultiple = '';
-                    for (let i = 1; i <= this.selection.selected.length; i++) {
-                        const pdPrint = this.selection.selected[i-1];
-                        plantillaIdMultiple = plantillaIdMultiple + pdPrint.llaveTabla + ';';
-                        if((i%50)===0){
-                            window.open(baseUrl + '&P_MULTIPLE=' + plantillaIdMultiple, '_blank');
-                            plantillaIdMultiple = '';
-                        }
-                    }
-                    //En caso que sean exactamente 50 no se imprime 2 veces
-                    if(plantillaIdMultiple === '') return;
-                    window.open(baseUrl + '&P_MULTIPLE=' + plantillaIdMultiple, '_blank');
-                } 
-              });
-              
-            
-        } else{
-            window.open(baseUrl, '_blank');
-        }
-        
+    showAllReport(reporte: ReporteBaseDTO): void {
+        this.documentList()?.showReport(reporte, null);
     }
 
     ///////////////////////////////////////////////////////
