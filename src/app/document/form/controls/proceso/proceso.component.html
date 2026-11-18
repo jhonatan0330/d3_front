@@ -12,30 +12,27 @@
     <mat-form-field class="w-full"
       [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
       <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-      <input matInput [id]="idField!" [matAutocomplete]="auto"
-        [matAutocompleteDisabled]="isLoading() || !hasSearchQuery"
-        [formControl]="searchControl" [required]="required"
+      <input matInput [id]="idField!" [matAutocomplete]="auto" [matAutocompleteDisabled]="isLoading()" [formControl]="searchControl" [required]="required"
         [readonly]="!isEnabled || isLoading()" [attr.aria-busy]="isLoading()"
         (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [attr.inputmode]="inputModeText"
         translate="no" autocomplete="off"
         [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
-      <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay"
-        (optionSelected)="selectProcess($event.option.value)">
-        @for (document of filteredDocuments.slice(0, 8); track document.llaveTabla) {
-          <mat-option [value]="document">
-            @if (document.descripcion) {
-              <span class="font-medium">{{ document.descripcion }}</span>
-            }
-            <span class="ml-2 text-sm text-secondary">{{ document.nombre }}</span>
-          </mat-option>
-        }
-        @if (filteredDocuments.length > 8) {
-          <mat-option disabled>Hay más coincidencias. Escribe más para afinar la búsqueda.</mat-option>
-        }
-      </mat-autocomplete>
         @if (proceso && linkExternal) {
           <button type="button" class="a-hyperlink" (click)="goToLink()">{{ linkExternal.valor }}</button>
         }
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay" (optionSelected)="selectProcess($event.option.value)">
+          @for (document of filteredDocuments.slice(0, 8); track document.llaveTabla) {
+            <mat-option [value]="document">
+              @if (document.descripcion) {
+                <span class="font-medium">{{ document.descripcion }}</span>
+              }
+              <span class="ml-2 text-sm text-secondary">{{ document.nombre }}</span>
+            </mat-option>
+          }
+          @if (filteredDocuments.length > 8) {
+            <mat-option disabled>Hay más coincidencias. Escribe más para afinar la búsqueda.</mat-option>
+          }
+        </mat-autocomplete>
         <!-- Open window -->
         @if (proceso) {
           <button type="button" class="btn-icon" matPrefix (click)="openDialog(proceso)" [attr.aria-label]="'Abrir ' + proceso.nombre" [title]="'Abrir ' + proceso.nombre">
@@ -83,39 +80,6 @@
           </button>
         }
       </mat-form-field>
-      @if (filteredDocuments.length > 0 && showProcessOptionCards) {
-        <div class="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3" role="group" [attr.aria-label]="'Opciones de ' + structure.nombre">
-          @for (document of filteredDocuments.slice(0, 8); track document.llaveTabla) {
-            <button type="button"
-              class="flex min-h-20 w-full flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-center transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
-              [class.border-slate-900]="proceso.llaveTabla === document.llaveTabla"
-              [class.bg-slate-900]="proceso.llaveTabla === document.llaveTabla"
-              [class.text-white]="proceso.llaveTabla === document.llaveTabla"
-              [class.border-slate-200]="proceso.llaveTabla !== document.llaveTabla"
-              [class.bg-white]="proceso.llaveTabla !== document.llaveTabla"
-              [class.text-slate-900]="proceso.llaveTabla !== document.llaveTabla"
-              [class.hover:border-primary]="proceso.llaveTabla !== document.llaveTabla"
-              [class.dark:border-slate-700]="proceso.llaveTabla !== document.llaveTabla"
-              [class.dark:bg-slate-900]="proceso.llaveTabla !== document.llaveTabla"
-              [class.dark:text-slate-100]="proceso.llaveTabla !== document.llaveTabla"
-              [attr.aria-pressed]="proceso.llaveTabla === document.llaveTabla"
-              [disabled]="!isEnabled || isLoading()"
-              (click)="selectProcess(document)">
-              @if (document.imagen) {
-                <img class="h-5 w-5 object-contain" [src]="document.imagen | imageFormat" alt="" />
-              } @else {
-                <mat-icon class="h-5 w-5 text-[20px]" aria-hidden="true">description</mat-icon>
-              }
-              <span class="line-clamp-2 text-xs font-semibold leading-tight">
-                {{ document.descripcion || document.nombre }}
-              </span>
-            </button>
-          }
-        </div>
-        @if (filteredDocuments.length > 8) {
-          <p class="mb-2 text-xs text-secondary">Hay más coincidencias. Escribe más para afinar la búsqueda.</p>
-        }
-      }
       @if (isLoading() && !proceso) {
         <div class="mt-1 flex items-center gap-2 text-sm text-primary" role="status" aria-live="polite" aria-atomic="true">
           <mat-icon class="animate-spin" aria-hidden="true">autorenew</mat-icon>

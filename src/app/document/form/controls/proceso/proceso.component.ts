@@ -115,20 +115,15 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   errorMessage: string = null!;
   messageHTML: SafeHtml;
 
-  get hasSearchQuery(): boolean {
-    const value = this.searchControl.value;
-    return typeof value === 'string' && value.trim().length > 0;
-  }
-
-  get showProcessOptionCards(): boolean {
-    return !this.hasSearchQuery;
-  }
-
-  autoCompleteDisplay(item: PedidoVentaDTO | string | null): string {
-    if (typeof item === 'string') {
-      return item;
+  autoCompleteDisplay(item: PedidoVentaDTO): string {
+    if (!item) {
+      return '';
     }
-    return item?.descripcion || item?.nombre || '';
+    if (item.descripcion) {
+      return item.descripcion;
+    } else {
+      return item.nombre;
+    }
   }
 
   ngOnInit() {
@@ -187,6 +182,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
         if (value?.llaveTabla) {
           this.proceso = value;
           this.searchControl.setValue(value, { emitEvent: false });
+          this.filteredDocuments = [];
           this.showAlertSelectedProcess();
         } else if (value) {
           this.proceso = null!;
@@ -1098,6 +1094,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
   selectProcess(document: PedidoVentaDTO): void {
     this.searchControl.setValue(document, { emitEvent: false });
+    this.filteredDocuments = [];
     this.searchAttempted = false;
     this.searchError = false;
     this.fControl.setValue(document);
@@ -1456,12 +1453,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (dataResult: PedidoVentaDTO[]) => {
+          if (!dataResult ) {dataResult = []; }
           if (this.pagina === 1) {
             this.dataProvider = dataResult;
           } else {
             this.dataProvider = this.dataProvider.concat(dataResult);
           }
-          if (dataResult.length === this.cantidadPagina) {
+          if (dataResult && dataResult.length === this.cantidadPagina) {
             this.pagina++;
           } else {
             this.isEndList.set(true);
