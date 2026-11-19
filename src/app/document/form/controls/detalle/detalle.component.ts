@@ -47,9 +47,11 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
   unicoProducto = false;
   fControl = new FormControl(''); // Texto que digita el usuario para filtrar
-  categories: DocumentoPlantillaDTO[];
+  categories?: DocumentoPlantillaDTO[];
   isShowCategories = false;
   isShowProducts = false;
+  selectedCategoryId: string | null = null;
+  categorySelectionMade = false;
   autoload = false; // Indica que la fuente de datos se va a cargar en memoria
   titleCantity = 'Cantidad';
   busquedaSinTexto = false;
@@ -121,7 +123,9 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   showCategories() {
-    if (!this.isEnabled) { return; }
+    return;
+    // Quite las categorias mientras pienso como integrarlas no como plantillas sino como datos
+    /*if (!this.isEnabled) { return; }
     if (!this.productosDisponibles) { return; }
     if (!this.categories) {
       this.categories = [];
@@ -134,61 +138,80 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         }
       }
     }
-    if (this.autoload && this.categories) {
-      this.isShowCategories = true;
+    this.isShowCategories = this.categories.length > 0;
+    this.updateFilteredProducts();
+    if (this.autoload && !this.categorySelectionMade && !this.fControl.value) {
       this.isShowProducts = false;
     } else {
       this.showProducts();
-    }
+    }*/
   }
 
-  selectCategory(pCategory: DocumentoPlantillaDTO) {
-    if (pCategory) {
-      this.productosFiltrados = this.productosDisponibles.filter(
-        (doc) =>
-          doc.categoria === pCategory.llaveTabla
-      );
-    } else {
-      this.productosFiltrados = this.productosDisponibles;
-    }
+  selectCategory(pCategory: DocumentoPlantillaDTO | null) {
+    this.selectedCategoryId = pCategory?.llaveTabla ?? null;
+    this.categorySelectionMade = true;
+    this.updateFilteredProducts();
     this.showProducts();
   }
 
   filterProducts() {
     if (this.relatedFields) { return; }
-    let valorFiltro: string = this.fControl.value!;
+    const valorFiltro = (this.fControl.value ?? '').toUpperCase();
     if (valorFiltro) {
-      valorFiltro = valorFiltro.toUpperCase();
       if (this.unicoProducto && this.data.detalles && this.data.detalles.length === 1) {
         if (valorFiltro !== (this.data.detalles[0].productoCodigo + ' - ' + this.data.detalles[0].nombre)) {
           this.data.detalles = [];
         }
       }
-      if (this.productosDisponibles && this.productosDisponibles.length !== 0) {
-        this.productosFiltrados = this.productosDisponibles.filter(
-          (item) =>
-          (item && ((item.codigo && item.codigo.indexOf(valorFiltro) !== -1)
-            || (item.nombre && item.nombre.indexOf(valorFiltro) !== -1)
-            || (item.filtros && item.filtros.indexOf(valorFiltro) !== -1)))
-        );
-      } else {
-        this.productosFiltrados = [];
-      }
-
+      this.updateFilteredProducts();
       this.showProducts();
     } else {
-      this.showCategories();
+      this.updateFilteredProducts();
+      if (this.categorySelectionMade || !this.autoload) {
+        this.showProducts();
+      } else {
+        this.showCategories();
+      }
     }
   }
 
   showProducts() {
     if (!this.isEnabled) { return; }
+    this.isShowCategories = !!this.categories?.length;
     if (this.unicoProducto && this.data.detalles && this.data.detalles.length !== 0) {
       this.isShowProducts = false;
     } else {
       this.isShowProducts = true;
     }
-    this.isShowCategories = false;
+  }
+
+  private updateFilteredProducts() {
+    const valorFiltro = (this.fControl.value ?? '').toUpperCase();
+    this.productosFiltrados = (this.productosDisponibles ?? []).filter((item) => {
+      if (!item || (this.selectedCategoryId && item.categoria !== this.selectedCategoryId)) {
+        return false;
+      }
+      if (!valorFiltro) {
+        return true;
+      }
+      return !!(
+        (item.codigo && item.codigo.indexOf(valorFiltro) !== -1)
+        || (item.nombre && item.nombre.indexOf(valorFiltro) !== -1)
+        || (item.filtros && item.filtros.indexOf(valorFiltro) !== -1)
+      );
+    });
+  }
+
+  clearProductFilters() {
+    this.selectedCategoryId = null;
+    this.categorySelectionMade = false;
+    this.fControl.setValue('', { emitEvent: false });
+    if (this.relatedFields || !this.autoload) {
+      this.searchQuicly();
+      return;
+    }
+    this.updateFilteredProducts();
+    this.showCategories();
   }
 
   createNewDocument(_plantilla: string, _property: string) {
@@ -252,13 +275,19 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
           this.loadInfo(_value);
         } else {
           this.productosDisponibles = Object.assign([], _value.campoDTO.productos);
+          this.categories = undefined;
+          this.selectedCategoryId = null;
+          this.categorySelectionMade = false;
+          this.showCategories();
           if (this.productosDisponibles.length === 0) {
+            this.productosFiltrados = [];
+            this.isShowProducts = false;
             this.notificationCenter.fire('Sin resultados', 'No encontramos resultados por el filtro' + this.fControl.value, 'info');
           } else {
             if (this.productosDisponibles.length === 1) {
               this.addProduct(this.productosDisponibles[0]);
             } else {
-              this.productosFiltrados = Object.assign([], _value.campoDTO.productos);
+              this.updateFilteredProducts();
               this.showProducts();
             }
           }

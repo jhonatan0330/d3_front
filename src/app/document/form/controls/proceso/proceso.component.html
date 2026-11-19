@@ -32,6 +32,15 @@
                   Valor total: {{ document.dinero.valorTotal | number }} · Saldo: {{ document.dinero.saldo | number }}
                 </span>
               }
+              @if (document.caracteristicas && document.caracteristicas.length !== 0) {
+                @for (f of document.caracteristicas; track f.llaveTabla) {
+                  @if (f.valorText) {
+                  <span class="block text-sm text-secondary">
+                    {{ f.campoDTO.nombre }}: {{ f.valorText }}
+                  </span>
+                  }
+                }        
+              }
             </mat-option>
           }
           @if (filteredDocuments.length > 8) {
