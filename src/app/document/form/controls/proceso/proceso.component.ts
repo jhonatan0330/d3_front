@@ -186,7 +186,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
           this.showAlertSelectedProcess();
         } else if (value) {
           this.proceso = null!;
-          let filterValue: string = value.toLowerCase();
+          let filterValue: string = (value ?? '').toLowerCase();
           if (filterValue === '*') { filterValue = ''; }
           if (filterValue.endsWith(' ')) { filterValue = filterValue.substring(0, filterValue.length - 1); }
           filterValue = filterValue.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
