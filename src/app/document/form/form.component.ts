@@ -1108,8 +1108,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     handleKeyboardEvent(event: KeyboardEvent) {
         if (event.key === 'Escape') {
             this.dialogRef.close(false);
-        } else if (event.key === 'F9') {
-            this.submit();
         }
     }
 

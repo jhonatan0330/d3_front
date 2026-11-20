@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, inject, viewChild, DestroyRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, Type, ViewContainerRef, ChangeDetectionStrategy, afterNextRender, ElementRef, inject, Injector, viewChild, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
@@ -25,6 +25,7 @@ import { DecimalPipe } from '@angular/common';
 export class ProductComponent implements OnInit, AfterViewInit {
   data = inject(MAT_DIALOG_DATA);
   dialogRef = inject<MatDialogRef<ProductComponent>>(MatDialogRef);
+  private injector = inject(Injector);
   private api = inject(DocumentApi);
   private destroyRef = inject(DestroyRef);
 
@@ -44,6 +45,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   dynamicControls: IDynamicControl[] = [];
   readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
+  readonly acceptButton = viewChild<ElementRef<HTMLButtonElement>>('acceptButton');
 
   ngOnInit(): void {
     this.detallePedidoVenta = this.data.data;
@@ -91,6 +93,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.showFields();
+      afterNextRender(
+        { write: () => this.acceptButton()?.nativeElement.focus() },
+        { injector: this.injector }
+      );
     });
   }
 

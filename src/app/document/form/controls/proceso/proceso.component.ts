@@ -1290,17 +1290,13 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
             }
             this.searchControl.setValue(this.proceso, { emitEvent: false });
             this.fControl.setValue(this.proceso);
-            if (!this.acabadoCrear) {
-              // gestionarKeyUp(new KeyboardEvent(KeyboardEvent.KEY_UP,true,false,Keyboard.F9, Keyboard.F9));
-            } else {
+            if (this.acabadoCrear) {
               this.acabadoCrear = false;
             }
             if (this.readQR) {
               this.submit();
             }
-          } else {
-            // this.mostrarDisponiblesPop();
-          }
+          } 
         }
       } else {
         this.searchAttempted = false;

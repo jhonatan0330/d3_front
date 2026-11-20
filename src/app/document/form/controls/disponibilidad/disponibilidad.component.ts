@@ -121,6 +121,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
             width: '720px',
             maxHeight: '90vh',
             disableClose: true,
+            autoFocus: false,
             data: { data: formDetailLocation, allowEdit: this.isEnabled},
           });
           dialogRef.afterClosed()

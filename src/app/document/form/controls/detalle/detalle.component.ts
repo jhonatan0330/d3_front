@@ -533,6 +533,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         width: '720px',
         maxHeight: '90vh',
         disableClose: true,
+        autoFocus: false,
         data: { data: item, allowEdit: this.isEnabled },
       });
       dialogRef.afterClosed()

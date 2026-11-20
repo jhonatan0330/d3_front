@@ -1,14 +1,15 @@
-import { Component, Input, forwardRef, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, forwardRef, inject, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { ProcesoDTO, ProcesoFilterDTO } from 'app/document/document.types';
 import { ProcessService } from 'app/configuration/configuracion.api';
 
 @Component({
     selector: 'app-process-selector',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatIconModule],
+    imports: [CommonModule, FormsModule, MatIconModule, OverlayModule],
     providers: [
         { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => ProcessSelectorComponent), multi: true }
     ],
@@ -21,12 +22,18 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
     @Input() label = 'Proceso';
     @Input() placeholder = 'Buscar proceso...';
 
-    procesos: ProcesoDTO[] = [];
-    filteredProcesos: ProcesoDTO[] = [];
-    displayValue = '';
-    query = '';
-    showDropdown = false;
-    disabled = false;
+    readonly showDropdown = signal(false);
+    readonly query = signal('');
+    readonly displayValue = signal('');
+    readonly filteredProcesos = signal<ProcesoDTO[]>([]);
+    readonly disabled = signal(false);
+
+    readonly overlayPositions: ConnectedPosition[] = [
+        { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
+        { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
+    ];
+
+    private procesos: ProcesoDTO[] = [];
     private selectedKey = '';
     private onChange: (value: string) => void = () => {};
     private onTouched: () => void = () => {};
@@ -49,64 +56,70 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
             },
             error: () => {
                 this.procesos = [];
+                this.filteredProcesos.set([]);
                 this.cdr.markForCheck();
             }
         });
     }
 
     onInput(event: Event): void {
-        this.query = (event.target as HTMLInputElement).value;
+        this.query.set((event.target as HTMLInputElement).value);
         this.applyFilter();
     }
 
     onFocus(): void {
         this.onTouched();
-        this.showDropdown = true;
+        this.applyFilter();
+        this.showDropdown.set(true);
     }
 
     onBlur(): void {
-        setTimeout(() => { this.showDropdown = false; }, 200);
+        setTimeout(() => this.showDropdown.set(false), 200);
+    }
+
+    closeDropdown(): void {
+        this.showDropdown.set(false);
     }
 
     private applyFilter(): void {
-        const q = this.query.trim().toLowerCase();
+        const q = this.query().trim().toLowerCase();
         if (!q) {
-            this.filteredProcesos = this.procesos;
+            this.filteredProcesos.set(this.procesos);
         } else {
-            this.filteredProcesos = this.procesos.filter(p =>
+            this.filteredProcesos.set(this.procesos.filter(p =>
                 (p.nombre || '').toLowerCase().includes(q) ||
                 (p.codigo || '').toLowerCase().includes(q)
-            );
+            ));
         }
     }
 
     selectProcess(process: ProcesoDTO): void {
         this.onTouched();
         this.selectedKey = process.llaveTabla;
-        this.displayValue = process.nombre;
-        this.query = '';
-        this.showDropdown = false;
+        this.displayValue.set(process.nombre);
+        this.query.set('');
+        this.showDropdown.set(false);
         this.onChange(this.selectedKey);
     }
 
     clear(event: Event): void {
         event.stopPropagation();
         this.selectedKey = '';
-        this.displayValue = '';
-        this.query = '';
-        this.showDropdown = false;
+        this.displayValue.set('');
+        this.query.set('');
+        this.showDropdown.set(false);
         this.onChange('');
     }
 
     private syncSelectedProcessDisplay(): void {
         if (!this.selectedKey) {
-            this.displayValue = '';
+            this.displayValue.set('');
             return;
         }
 
         const found = this.procesos.find(p => p.llaveTabla === this.selectedKey);
         if (found) {
-            this.displayValue = found.nombre || found.codigo || this.selectedKey;
+            this.displayValue.set(found.nombre || found.codigo || this.selectedKey);
             return;
         }
 
@@ -116,11 +129,11 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
     private loadDisplay(key: string): void {
         this.processService.getProcessById(key).subscribe({
             next: (process) => {
-                this.displayValue = process?.nombre || process?.codigo || key;
+                this.displayValue.set(process?.nombre || process?.codigo || key);
                 this.cdr.markForCheck();
             },
             error: () => {
-                this.displayValue = key;
+                this.displayValue.set(key);
                 this.cdr.markForCheck();
             }
         });
@@ -128,8 +141,8 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
 
     writeValue(value: string): void {
         this.selectedKey = value || '';
-        this.displayValue = '';
-        this.query = '';
+        this.displayValue.set('');
+        this.query.set('');
         if (this.selectedKey) {
             this.syncSelectedProcessDisplay();
         }
@@ -144,6 +157,6 @@ export class ProcessSelectorComponent implements ControlValueAccessor, OnInit {
     }
 
     setDisabledState?(isDisabled: boolean): void {
-        this.disabled = isDisabled;
+        this.disabled.set(isDisabled);
     }
 }

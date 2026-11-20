@@ -18,7 +18,7 @@
         translate="no" autocomplete="off"
         [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
         @if (proceso && linkExternal) {
-          <button type="button" class="a-hyperlink" (click)="goToLink()">{{ linkExternal.valor }}</button>
+          <button type="button" class="a-hyperlink" (click)="goToLink()" tabindex="-1">{{ linkExternal.valor }}</button>
         }
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay" (optionSelected)="selectProcess($event.option.value)">
           @for (document of filteredDocuments; track document.llaveTabla) {
@@ -46,7 +46,7 @@
         </mat-autocomplete>
         <!-- Open window -->
         @if (proceso) {
-          <button type="button" class="btn-icon" matPrefix (click)="openDialog(proceso)" [attr.aria-label]="'Abrir ' + proceso.nombre" [title]="'Abrir ' + proceso.nombre">
+          <button type="button" class="btn-icon" matPrefix (click)="openDialog(proceso)" [attr.aria-label]="'Abrir ' + proceso.nombre" [title]="'Abrir ' + proceso.nombre" tabindex="-1">
             <mat-icon aria-hidden="true">open_in_new</mat-icon>
           </button>
         }
@@ -69,24 +69,24 @@
                 <mat-icon class="animate-spin" aria-hidden="true">autorenew</mat-icon>
               </span>
             } @else {
-              <button type="button" class="btn-icon" (click)="gestionarKeyUpTexto()" aria-label="Buscar documentos" title="Buscar documentos">
+              <button type="button" class="btn-icon" (click)="gestionarKeyUpTexto()" aria-label="Buscar documentos" title="Buscar documentos" tabindex="-1">
                 <mat-icon aria-hidden="true">search</mat-icon>
               </button>
             }
           }
           @if (proceso && isEnabled) {
-            <button type="button" class="btn-icon" (click)="clearSelection()" aria-label="Limpiar selección" title="Limpiar selección">
+            <button type="button" class="btn-icon" (click)="clearSelection()" aria-label="Limpiar selección" title="Limpiar selección" tabindex="-1">
               <mat-icon svgIcon="heroicons_outline:x-circle" aria-hidden="true"></mat-icon>
             </button>
           } @else if (isEnabled && !isLoading() && (searchControl.value || searchAttempted)) {
-            <button type="button" class="btn-icon" (click)="clearSearch()" aria-label="Limpiar búsqueda" title="Limpiar búsqueda">
+            <button type="button" class="btn-icon" (click)="clearSearch()" aria-label="Limpiar búsqueda" title="Limpiar búsqueda" tabindex="-1">
               <mat-icon svgIcon="heroicons_outline:x-circle" aria-hidden="true"></mat-icon>
             </button>
           }
         </div>
         <!-- Boton codigo QR-->
         @if (isEnabled && readQR && !proceso && !isLoading()) {
-          <button type="button" class="btn-icon" matPrefix (click)="toogleScanner()" aria-label="Leer código QR" title="Leer código QR">
+          <button type="button" class="btn-icon" matPrefix (click)="toogleScanner()" aria-label="Leer código QR" title="Leer código QR" tabindex="-1">
             <mat-icon aria-hidden="true">camera_enhance</mat-icon>
           </button>
         }
@@ -111,7 +111,7 @@
             @if (acciones && acciones.length > 0) {
               <div class="mt-1 mb-1 flex flex-wrap gap-2">
                 @for (action of acciones; track action.llaveTabla) {
-                  <button type="button" class="btn-raised" (click)="createNewDocument(action.valor, action.llaveTabla)">
+                  <button type="button" class="btn-raised" (click)="createNewDocument(action.valor, action.llaveTabla)" tabindex="-1">
                     Crear {{ action.texto | titlecase }}
                   </button>
                 }

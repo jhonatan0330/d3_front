@@ -27,11 +27,11 @@
                     <label class="form-label">Nombre *</label>
                     <input type="text" [(ngModel)]="template.nombre" name="nombre" required class="form-input" />
                   </div>
-                  <div>
-                    <label class="form-label">Código *</label>
-                    <input type="text" [(ngModel)]="template.codigo" name="codigo" required class="form-input" />
-                  </div>
                   @if (template.llaveTabla) {
+                    <div>
+                      <label class="form-label">Código *</label>
+                      <input type="text" [(ngModel)]="template.codigo" name="codigo" required class="form-input" />
+                    </div>
                     <div>
                       <label class="form-label">Consecutivo</label>
                       <input type="text" [(ngModel)]="template.consecutivo" name="consecutivo" class="form-input" />

@@ -3,8 +3,8 @@
     <div class="w-full font-semibold">
       <span>{{ detallePedidoVenta.nombre }}</span>
     </div>
-    <mat-icon class="h-6" (click)="consultarInventarios()">find_in_page</mat-icon>
-    <mat-icon class="h-6" (click)="dialogRef.close(true)">exit_to_app</mat-icon>
+    <mat-icon class="h-6" (click)="consultarInventarios()" tabindex="-1">find_in_page</mat-icon>
+    <mat-icon class="h-6" (click)="dialogRef.close(true)" tabindex="-1">exit_to_app</mat-icon>
   </div>
   @if (isLoading) {
     <div class="w-full h-1 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
@@ -42,10 +42,10 @@
 
   @if (this.allowEdit) {
     <div class="p-4 w-full flex justify-between">
-      <button class="btn-flat-primary" (click)="dialogRef.close(false)">
+      <button class="btn-raised" (click)="dialogRef.close(false)" tabindex="-1">
         <mat-icon>clear</mat-icon> Borrar registro
       </button>
-      <button class="btn-flat-primary" (click)="closeWithValidation()">
+      <button #acceptButton class="btn-flat-primary" (click)="closeWithValidation()">
         <mat-icon>save</mat-icon> Aceptar
       </button>
     </div>
