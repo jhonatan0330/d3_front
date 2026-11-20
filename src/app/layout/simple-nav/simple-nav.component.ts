@@ -45,13 +45,17 @@ export class SimpleNavComponent {
         for (const item of items) {
             const match = (item.title?.toLowerCase().includes(query) ?? false);
             if (item.children?.length) {
-                const filteredChildren = this._filterItems(item.children, query);
+                const filteredChildren = item.id === 'apps'
+                    ? item.children
+                    : this._filterItems(item.children, query);
                 if (filteredChildren.length) {
                     result.push({ ...item, children: filteredChildren });
                 } else if (match) {
                     result.push(item);
+                } else if (item.type === 'group') {
+                    result.push({ ...item, children: [] });
                 }
-            } else if (match) {
+            } else if (match || item.type === 'group') {
                 result.push(item);
             }
         }

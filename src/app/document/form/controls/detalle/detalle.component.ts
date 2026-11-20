@@ -186,7 +186,13 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   }
 
   private updateFilteredProducts() {
-    const valorFiltro = (this.fControl.value ?? '').toUpperCase();
+    const valorFiltro = this.normalizeProductFilter(this.fControl.value);
+    if (valorFiltro === '*') {
+      this.productosFiltrados = (this.productosDisponibles ?? []).filter((item) => {
+        return !!item && (!this.selectedCategoryId || item.categoria === this.selectedCategoryId);
+      });
+      return;
+    }
     this.productosFiltrados = (this.productosDisponibles ?? []).filter((item) => {
       if (!item || (this.selectedCategoryId && item.categoria !== this.selectedCategoryId)) {
         return false;
@@ -200,6 +206,17 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
         || (item.filtros && item.filtros.indexOf(valorFiltro) !== -1)
       );
     });
+  }
+
+  private normalizeProductFilter(value: string | null): string {
+    const filtro = (value ?? '').trim();
+    if (!filtro) {
+      return '';
+    }
+    if (/^\*+$/.test(filtro)) {
+      return '*';
+    }
+    return filtro.toUpperCase();
   }
 
   clearProductFilters() {
@@ -252,7 +269,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
     if (this.isLoading()) { return; }
     this.errorToFilter = null;
     if (this.relatedFields || !this.autoload) {
-      if (this.fControl.value !== undefined && this.fControl.value!.length === 0) {
+      if (!this.normalizeProductFilter(this.fControl.value)) {
         this.errorToFilter = 'Por favor coloca un valor en el campo de busqueda';
         return;
       }
@@ -263,7 +280,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   listarProductosAsincronos() {
     // Consulta los productos disponibles para el campo
     const nFilter: PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
-    nFilter.filtroParametro = this.fControl.value!;
+    nFilter.filtroParametro = this.normalizeProductFilter(this.fControl.value);
     this.isLoading.set(true);
     this.api.consultarDatosBase(nFilter)
       .pipe(takeUntilDestroyed(this.destroyRef))

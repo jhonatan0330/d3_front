@@ -1,6 +1,8 @@
 <div [class]="avatar()
         ? 'relative w-32 h-32 rounded-full overflow-hidden border-4 border-bg-card bg-gray-100 dark:bg-gray-800'
-        : 'relative w-32 h-32 rounded-xl overflow-hidden border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800'">
+        : fill()
+          ? 'relative w-full h-full rounded-xl overflow-hidden border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800'
+          : 'relative w-32 h-32 rounded-xl overflow-hidden border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800'">
 
     @if (value()) {
         <img src="{{value() | imageFormat}}" alt="Imagen" class="absolute inset-0 w-full h-full object-cover" />
@@ -27,7 +29,7 @@
         #fileInput
         (change)="onArchivoSeleccionado($any($event.target).files)"
         class="hidden"
-        id="imageUploaderFile"
+        [id]="fileId"
     />
 
     @if (!subiendo()) {
@@ -48,7 +50,7 @@
             </div>
         } @else {
             <div class="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 hover:bg-black/50 transition z-10">
-                <label for="imageUploaderFile" class="btn-icon cursor-pointer" type="button">
+                <label [for]="fileId" class="btn-icon cursor-pointer" type="button">
                     <mat-icon class="text-white" svgIcon="heroicons_outline:paper-clip"></mat-icon>
                 </label>
                 <button (click)="abrirCamara()" class="btn-icon" type="button">

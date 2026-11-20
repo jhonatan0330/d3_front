@@ -11,13 +11,21 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
     selector: 'app-image-uploader',
     templateUrl: './image-uploader.component.html',
     imports: [CommonModule, MatIcon, ImageFormatPipe],
+    host: {
+        '[class.h-full]': 'fill()',
+        '[class.w-full]': 'fill()',
+    },
     styles: [`
         :host { display: block; }
     `]
 })
 export class ImageUploaderComponent {
+    private static instanceCount = 0;
+
     value = model<string | null>(null);
     avatar = input(false);
+    fill = input(false);
+    readonly fileId = `imageUploaderFile-${++ImageUploaderComponent.instanceCount}`;
 
     private uploadService = inject(UploadService);
     private ls = inject(LocalStoreService);

@@ -72,13 +72,14 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
   }
 
   listar():void{
-    if (this.fControl.value && this.fControl.value.length === 0) {
+    const filtro = this.normalizeProductFilter(this.fControl.value);
+    if (!filtro) {
       this.notificationCenter.fire('', 'Selecciona un valor a buscar', 'info')
       return;
     }
     this.isLoading.set(true);
     const nFilter:PedidoVentaCaracteristicaFilterDTO = this.transformPVCtoFilter(this.data);
-    nFilter.filtroParametro = this.fControl.value!;
+    nFilter.filtroParametro = filtro;
     this.fControl.setValue('');
     this.api.consultarDatosBase(nFilter)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -96,6 +97,17 @@ export class ProductoListaComponent extends BaseComponent implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
+
+  private normalizeProductFilter(value: string | null): string {
+    const filtro = (value ?? '').trim();
+    if (!filtro) {
+      return '';
+    }
+    if (/^\*+$/.test(filtro)) {
+      return '*';
+    }
+    return filtro;
   }
 
   mostrarFormularioAgregar(producto:ProductoDTO):void{

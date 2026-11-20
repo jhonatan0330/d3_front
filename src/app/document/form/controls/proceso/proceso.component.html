@@ -21,7 +21,7 @@
           <button type="button" class="a-hyperlink" (click)="goToLink()">{{ linkExternal.valor }}</button>
         }
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="autoCompleteDisplay" (optionSelected)="selectProcess($event.option.value)">
-          @for (document of filteredDocuments.slice(0, 8); track document.llaveTabla) {
+          @for (document of filteredDocuments; track document.llaveTabla) {
             <mat-option [value]="document">
               @if (document.descripcion) {
                 <span class="font-medium">{{ document.descripcion }}</span>
@@ -42,9 +42,6 @@
                 }        
               }
             </mat-option>
-          }
-          @if (filteredDocuments.length > 8) {
-            <mat-option disabled>Hay más coincidencias. Escribe más para afinar la búsqueda.</mat-option>
           }
         </mat-autocomplete>
         <!-- Open window -->

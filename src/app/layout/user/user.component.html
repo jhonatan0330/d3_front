@@ -34,6 +34,10 @@
       <mat-icon [svgIcon]="'heroicons_outline:shield-check'"></mat-icon>
       <span>Administrador</span>
     </app-dropdown-item>
+    <app-dropdown-item (clicked)="openOrganizationHomeForm()">
+      <mat-icon [svgIcon]="'heroicons_outline:sparkles'"></mat-icon>
+      <span>Personalizar inicio</span>
+    </app-dropdown-item>
   }
   @if (layoutService.isReader()) {
     <app-dropdown-item (clicked)="getRefreshTemplates('READER')">

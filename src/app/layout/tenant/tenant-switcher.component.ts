@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 import { Observable, catchError, from, map, switchMap } from 'rxjs';
 import { TenantPublicDTO } from 'app/multitenancy/domain/TenantPublicDTO';
 import { TenantRuntime } from 'app/multitenancy/business/tenant-runtime';
-import { isDefaultTenant, prefixForTenantId, stripTenantPrefix } from 'app/multitenancy/business/tenant-url.strategy';
+import { isDefaultTenant, prefixForTenant, stripTenantPrefix } from 'app/multitenancy/business/tenant-url.strategy';
 import { applyTenantManifest } from 'app/multitenancy/business/pwa-manifest';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { MultitenancyApi } from 'app/multitenancy/multitenancy.api';
@@ -102,6 +102,7 @@ export class TenantSwitcherComponent {
 
     switchTenant(tenant: TenantPublicDTO): Observable<boolean> {
         const previous = TenantRuntime.getCurrent();
+        const returnTo = this.resolveReturnUrl();
         let target = TenantRuntime.findByKey(tenant.key);
         if (!target) {
             target = { ...tenant, token: null };
@@ -110,14 +111,13 @@ export class TenantSwitcherComponent {
 
         TenantRuntime.setCurrent(target);
         this.currentTenant.set(target);
-        this.tenantUrl.setPrefix(prefixForTenantId(target.key));
+        this.tenantUrl.setPrefix(prefixForTenant(target));
         this.ls.setTenants(TenantRuntime.getTenants());
         applyTenantManifest(
             this.ls.getUrlConf() ?? window.location.origin,
             isDefaultTenant(target) ? 'default' : target.key
         );
 
-        const returnTo = this.resolveReturnUrl();
         const loginQueryParams = {
             pendingSwitch: '1',
             tenant: target.key,
