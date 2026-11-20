@@ -27,11 +27,19 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropd
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { DocumentListComponent } from 'app/document/cruds/document-list.component';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { DocumentFilterService } from 'app/document/document-filter.service';
+
+export interface Cruds2DialogData {
+    plantilla: DocumentoPlantillaDTO;
+    filtro?: PedidoVentaFilterDTO;
+}
 
 @Component({
     selector: 'app-cruds',
     templateUrl: './cruds2.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'block h-full w-full' },
     imports: [MatIcon, FormsModule, ReactiveFormsModule, 
         MatFormField, MatInput, MatSuffix, MatLabel, 
         MatDatepickerInput, MatDatepickerToggle, MatDatepicker,
@@ -46,6 +54,11 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private notificationCenter = inject(NotificationCenterService);
     private utilsService = inject(UtilsService);
     private destroyRef = inject(DestroyRef);
+    private readonly documentFilter = inject(DocumentFilterService);
+    private readonly dialogData = inject<Cruds2DialogData | null>(MAT_DIALOG_DATA, { optional: true });
+    private readonly dialogRef = inject<MatDialogRef<Cruds2Component> | null>(MatDialogRef, { optional: true });
+    readonly dialogMode = !!this.dialogData?.plantilla;
+    private readonly initialFilter = signal(this.dialogData?.filtro ?? null);
 
     plantilla = signal<DocumentoPlantillaDTO | null>(null); // Estructura base de la lista
     templatesFromProcess = signal<DocumentoPlantillaDTO[]>([]);
@@ -91,104 +104,56 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     //VAriables del filtro
     readonly myForm = viewChild('dynamycFormElement', { read: ViewContainerRef });
     readonly documentList = viewChild(DocumentListComponent);
-    formIsModified = false;
     dynamicControls = signal<IDynamicControl[]>([]);
 
     ngOnInit(): void {
-        this.route.params
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((params: Params) => {
-            const propType = params.type;
-            if (!propType) {
-                this.router.navigate(['/main']);
-                return;
-            }
-            this.queryFilter.set(null);
-            this.templatesFromProcess.set([]);
-            this.fControlSearch.setValue('');
-            this.ordenCampo.set('');
-            this.ascendente.set(false);
+        if (this.dialogData?.plantilla) {
+            this.plantilla.set(this.dialogData.plantilla);
             this.procesoId = null;
-            if (propType === 'list') {
-                this.plantilla.set(this.templateService.getTemplate(params.id)!);
-                if (!this.plantilla()) {
-                    this.router.navigate(['/main']);
-                    return;
-                }
-            } else if (propType === 'process_crud') {
-                this.procesoId = params.id;
-                if (this.procesoId) {
-                    this.plantilla.set(this.templateService.getProceso(this.procesoId)!);
-                    if (this.plantilla() && this.plantilla()!.proceso) {
-                        this.templatesFromProcess.set(this.templateService.getTemplateOfProcess(this.procesoId)!
-                            .filter(item => item.propiedades &&
-                                PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR) &&
-                                PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PLANTILLA_INICIA_PROCESO)));
+            this.initializeTemplate();
+            if (this.dialogData.filtro) {
+                this.queryFilter.set(this.dialogData.filtro);
+            }
+        } else {
+            this.route.params
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((params: Params) => {
+                    const propType = params.type;
+                    if (!propType) {
+                        this.router.navigate(['/main']);
+                        return;
                     }
-                } else {
-                    this.router.navigate(['/main']);
-                    return;
-                }
-            } else {
-                this.router.navigate(['/main']);
-                return;
-            }
-            if (!this.plantilla()) {
-                this.router.navigate(['/main']);
-                return;
-            }
-            this.solicitarFechas = !PlantillaHelper.isEmpty(
-                this.plantilla()!.propiedades,
-                PlantillaHelper.FORM_SOLICITAR_FECHAS);
-            this.reportForms.set(PlantillaHelper.buscarValorMultiple(
-                this.plantilla()!.propiedades,
-                PlantillaHelper.REPORT_MODULE_REFERENCE) ?? []);
-            if (!this.solicitarFechas && this.templatesFromProcess()) {
-                for (const template of this.templatesFromProcess()) {
-                    if (!PlantillaHelper.isEmpty(template.propiedades, PlantillaHelper.FORM_SOLICITAR_FECHAS)) {
-                        this.solicitarFechas = true;
-                        break;
-                    }
-                }
-            }
-            if (this.solicitarFechas) {
-                this.fCDateStart.setValue(new Date());
-                const endDate = new Date();
-                endDate.setDate(endDate.getDate() + 1);
-                this.fCDateEnd.setValue(endDate);
-                this.fCTimeStart.enable();
-                this.fCTimeEnd.enable();
-                this.fCTimeStart.setValue('00:00');
-                this.fCTimeEnd.setValue('23:59');
-            } else {
-                this.fCDateStart.setValue(null);
-                this.fCDateEnd.setValue(null);
-                this.fCTimeStart.reset();
-                this.fCTimeEnd.reset();
-                this.fCTimeStart.disable();
-                this.fCTimeEnd.disable();
-            }
-            this.fRegistroDateStart.setValue(null);
-            this.fRegistroDateEnd.setValue(null);
-            this.fRegistroTimeStart.disable();
-            this.fRegistroTimeEnd.disable();
 
-            this.hasCreatePermission.set(!PlantillaHelper.isEmpty(
-                this.plantilla()!.propiedades,
-                PlantillaHelper.PERMISO_PLANTILLA_CREAR
-            ));
-            if (this.plantilla()!.estados) {
-                const stateControls = [];
-                for (const state of this.plantilla()!.estados) {
-                    if (!state.llaveTabla) state.llaveTabla = state.estadoDocumento;
-                    stateControls[state.llaveTabla] = new FormControl(
-                        state.estadoDocumento === StatesEnum.ACTIVE
-                    );
-                }
-                this.form = this.formBuilder.group(stateControls);
-            }
-            this.showFields();
-        });
+                    this.queryFilter.set(null);
+                    this.templatesFromProcess.set([]);
+                    this.fControlSearch.setValue('');
+                    this.ordenCampo.set('');
+                    this.ascendente.set(false);
+                    this.procesoId = null;
+
+                    if (propType === 'list') {
+                        this.plantilla.set(this.templateService.getTemplate(params.id)!);
+                    } else if (propType === 'process_crud') {
+                        this.procesoId = params.id;
+                        if (this.procesoId) {
+                            this.plantilla.set(this.templateService.getProceso(this.procesoId)!);
+                            this.templatesFromProcess.set(this.templateService.getTemplateOfProcess(this.procesoId)!
+                                .filter(item => item.propiedades &&
+                                    PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR) &&
+                                    PlantillaHelper.buscarPropiedad(item.propiedades, PlantillaHelper.PLANTILLA_INICIA_PROCESO)));
+                        }
+                    } else {
+                        this.router.navigate(['/main']);
+                        return;
+                    }
+
+                    if (!this.plantilla()) {
+                        this.router.navigate(['/main']);
+                        return;
+                    }
+                    this.initializeTemplate();
+                });
+        }
 
         this.drawerMode.set(this._mediaQuery.matches ? 'side' : 'over');
         this.drawerOpened.set(this._mediaQuery.matches);
@@ -199,6 +164,61 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         setTimeout(() => {
             this.showFields();
         });
+    }
+
+    private initializeTemplate(): void {
+        const plantilla = this.plantilla();
+        if (!plantilla) {
+            return;
+        }
+
+        this.solicitarFechas = !PlantillaHelper.isEmpty(
+            plantilla.propiedades,
+            PlantillaHelper.FORM_SOLICITAR_FECHAS);
+        this.reportForms.set(PlantillaHelper.buscarValorMultiple(
+            plantilla.propiedades,
+            PlantillaHelper.REPORT_MODULE_REFERENCE) ?? []);
+        if (!this.solicitarFechas && this.templatesFromProcess()) {
+            this.solicitarFechas = this.templatesFromProcess().some(template =>
+                !PlantillaHelper.isEmpty(template.propiedades, PlantillaHelper.FORM_SOLICITAR_FECHAS));
+        }
+        if (this.solicitarFechas) {
+            this.fCDateStart.setValue(new Date());
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 1);
+            this.fCDateEnd.setValue(endDate);
+            this.fCTimeStart.enable();
+            this.fCTimeEnd.enable();
+            this.fCTimeStart.setValue('00:00');
+            this.fCTimeEnd.setValue('23:59');
+        } else {
+            this.fCDateStart.setValue(null);
+            this.fCDateEnd.setValue(null);
+            this.fCTimeStart.reset();
+            this.fCTimeEnd.reset();
+            this.fCTimeStart.disable();
+            this.fCTimeEnd.disable();
+        }
+        this.fRegistroDateStart.setValue(null);
+        this.fRegistroDateEnd.setValue(null);
+        this.fRegistroTimeStart.disable();
+        this.fRegistroTimeEnd.disable();
+
+        this.hasCreatePermission.set(!PlantillaHelper.isEmpty(
+            plantilla.propiedades,
+            PlantillaHelper.PERMISO_PLANTILLA_CREAR
+        ));
+        if (plantilla.estados) {
+            const stateControls = [];
+            for (const state of plantilla.estados) {
+                if (!state.llaveTabla) state.llaveTabla = state.estadoDocumento;
+                stateControls[state.llaveTabla] = new FormControl(
+                    state.estadoDocumento === StatesEnum.ACTIVE
+                );
+            }
+            this.form = this.formBuilder.group(stateControls);
+        }
+        this.showFields();
     }
 
     ngOnDestroy(): void {
@@ -233,101 +253,58 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         return this.templateService.getColorFont(pEstado);
     }
 
-    listar(_pagina: number) {
+    applyFilter(): void {
         if (this.isLoading()) {
             return;
         }
-        const entity: PedidoVentaFilterDTO = new PedidoVentaFilterDTO();
-        if (this.plantilla()) {
-            entity.plantilla = this.plantilla()!.llaveTabla;
-        }
-        if (this.tableroId) {
-            entity.campoPropiedad = this.tableroId;
-        }
-        entity.proceso = this.procesoId!;
-        if (this.fControlCheck.value) {
-            if (!this.fControlSearch.value) {
-                this.notificationCenter.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Seleccionaste la opcion codigo exacto, ayudanos colocando el codigo del documento. Gracias'
-                });
-                return;
-            }
-            entity.nombre = this.fControlSearch.value;
-            entity.filtroParametro = null!;
-        } else {
-            entity.nombre = null!;
-            entity.filtroParametro = this.fControlSearch.value;
-            if (this.solicitarFechas && (!this.fCDateStart.value || !this.fCDateEnd.value)) {
-                this.notificationCenter.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Por favor coloca una fecha de inicio y una fecha de fin, esto nos ayudara a mejorar el resultado de tu busqueda'
-                });
-                return;
-            }
+        const dynamicFields = this.dynamicControls().map(fieldFilter => {
+            const field = new PedidoVentaCaracteristicaFilterDTO();
+            field.campo = fieldFilter.data.campo;
+            field.valorOpcion = fieldFilter.data.valorOpcion;
+            field.valorAuxiliar = fieldFilter.data.valorAuxiliar;
+            field.valorText = fieldFilter.data.valorText;
+            return field;
+        });
+        const selectedStates = Object.keys(this.form.controls)
+            .filter(stateId => this.form.controls[stateId].value);
 
-            if (this.fCDateStart.value)
-                entity.fechaMin = this.FormatoFecha(this.fCDateStart, this.fCTimeStart);
-            if (this.fCDateEnd.value)
-                entity.fechaMax = this.FormatoFecha(this.fCDateEnd, this.fCTimeEnd);
-            if( !this.ValidarFecha(entity.fechaMin, entity.fechaMax)) { return; }
-            if (this.fRegistroDateStart.value)
-                entity.fechaRegistroMin = this.FormatoFecha(this.fRegistroDateStart, this.fRegistroTimeStart);
-            if (this.fRegistroDateEnd.value)
-                entity.fechaRegistroMax = this.FormatoFecha(this.fRegistroDateEnd, this.fRegistroTimeEnd);
-            if(!this.ValidarFecha(entity.fechaRegistroMin, entity.fechaRegistroMax)){ return; }
+        const result = this.documentFilter.build({
+            plantillaId: this.plantilla()?.llaveTabla ?? null,
+            processId: this.procesoId,
+            boardFieldId: this.tableroId ?? null,
+            exactCode: !!this.fControlCheck.value,
+            searchText: this.fControlSearch.value,
+            documentDateStart: this.fCDateStart.value,
+            documentDateEnd: this.fCDateEnd.value,
+            documentTimeStart: this.fCTimeStart.value,
+            documentTimeEnd: this.fCTimeEnd.value,
+            registrationDateStart: this.fRegistroDateStart.value,
+            registrationDateEnd: this.fRegistroDateEnd.value,
+            registrationTimeStart: this.fRegistroTimeStart.value,
+            registrationTimeEnd: this.fRegistroTimeEnd.value,
+            requestDocumentDates: this.solicitarFechas,
+            statesEnabled: !!this.plantilla()?.estados?.length,
+            selectedStates,
+            orderField: this.ordenCampo() || null,
+            ascending: this.ascendente(),
+            dynamicFields,
+            initialFilter: this.initialFilter(),
+        });
 
-        }
-
-        if (this.plantilla()?.estados && !this.fControlCheck.value) {
-            entity.estadoExpediente = '';
-
-            for (let i = 0; i < Object.keys(this.form.controls).length; i++) {
-                const element = Object.keys(this.form.controls)[i];
-                if (this.form.controls[element].value) {
-                    entity.estadoExpediente = entity.estadoExpediente + ';' + element;
-                }
-            }
-            if (!entity.estadoExpediente) {
-                this.notificationCenter.fire('Filtros', 'Estas enviando una consulta y no tienes seleccionado ningun estado del filtro, te agradecemos selecciones minimo uno y vuelvas a enviar la consulta. Otra opción es consultar por el nombre exacto', 'info');
-                return;
-            } else {
-                if (entity.estadoExpediente === ';A') {
-                    entity.estado = StatesEnum.ACTIVE;
-                    entity.estadoExpediente = null!;
-                } else {
-                    if (entity.estadoExpediente === ';I') {
-                        entity.estado = StatesEnum.INACTIVE;
-                        entity.estadoExpediente = null!;
-                    } else {
-                        if (entity.estadoExpediente === ';A;I') {
-                            entity.estado = null!;
-                            entity.estadoExpediente = null!;
-                        } else {
-                            entity.estado = null!;
-                        }
-                    }
-                }
-            }
-        }
-
-        entity.ordenNombre = this.ordenCampo() || null!;
-        entity.ascendente = this.ascendente() ? 'A' : null!;
-        if (this.dynamicControls()) {
-            entity.filtersByFields = [];
-            this.dynamicControls().forEach(fieldFilter => {
-                const fieldEntity: PedidoVentaCaracteristicaFilterDTO = new PedidoVentaCaracteristicaFilterDTO();
-                fieldEntity.campo = fieldFilter.data.campo;
-                fieldEntity.valorOpcion = fieldFilter.data.valorOpcion;
-                fieldEntity.valorAuxiliar = fieldFilter.data.valorAuxiliar;
-                fieldEntity.valorText = fieldFilter.data.valorText;
-                entity.filtersByFields.push(fieldEntity);
+        if (result.error) {
+            this.notificationCenter.fire({
+                icon: 'warning',
+                title: 'Filtros',
+                text: result.error,
             });
+            return;
         }
 
-        this.queryFilter.set(entity);
+        this.queryFilter.set(result.filter);
+    }
+
+    closeDialog(): void {
+        this.dialogRef?.close();
     }
 
     openDocument(pDocument: PedidoVentaDTO) {
@@ -463,30 +440,6 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             console.error('No se encuentra cargada la plantilla en memoria');
             return;
         }
-    }
-
-    private FormatoFecha(fecha: FormControl, fechaTime: FormControl): Date {
-        const startDate = new Date(fecha.value);
-        if (fechaTime.value) {
-            startDate.setHours(fechaTime.value.substring(0, 2), fechaTime.value.substring(3, 5), 0, 0);
-        } else {
-            startDate.setHours(0, 0, 0, 0);
-        }
-        return startDate;
-    }
-
-    private ValidarFecha(fechaMin: Date, fechaMax: Date): boolean {
-        if (fechaMin && fechaMax) {
-            if ((fechaMax.getTime() - fechaMin.getTime()) <= 0) {
-                this.notificationCenter.fire({
-                    icon: 'warning',
-                    title: 'Oops...',
-                    text: 'Estas seguro que la fecha maxima es menor que la fecha minima??'
-                });
-                return false;
-            }
-        }
-        return true;
     }
 
     cambioFecha(type: string, fechaName: string, event: MatDatepickerInputEvent<Date>) {

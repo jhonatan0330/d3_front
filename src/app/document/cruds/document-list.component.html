@@ -48,6 +48,11 @@
           <mat-icon>close</mat-icon>
         </button>
         }
+        @if (dialogMode()) {
+        <button type="button" class="btn-icon-sm shrink-0" title="Cerrar" (click)="closeRequested.emit()">
+          <mat-icon>close</mat-icon>
+        </button>
+        }
       </div>
       <!-- Vista modo grilla -->
       @if (viewMode() === 'grid-view') {

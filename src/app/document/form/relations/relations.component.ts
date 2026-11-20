@@ -1,16 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   computed,
   inject,
   input,
   output,
-  signal,
-  viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
 import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaFilterDTO,
@@ -19,11 +16,10 @@ import {
 } from 'app/document/document.types';
 import { StatesEnum } from 'app/document/form/form.enum';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { ImageFormatPipe } from 'app/shared/local-image';
-import { DocumentListComponent } from 'app/document/cruds/document-list.component';
+import type { Cruds2DialogData } from 'app/document/cruds/cruds2.component';
 
 export interface RelatedTemplate {
   key: string;
@@ -37,74 +33,48 @@ export interface RelatedTemplate {
   selector: 'app-relations',
   templateUrl: './relations.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIcon, ImageFormatPipe, DocumentListComponent],
+  imports: [MatIcon, ImageFormatPipe],
 })
 export class RelationsComponent {
   private readonly templateService = inject(TemplateService);
-  private readonly utilsService = inject(UtilsService);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly dialog = inject(MatDialog);
 
   readonly plantilla = input<DocumentoPlantillaDTO | null>(null);
   readonly documento = input<PedidoVentaDTO | null>(null);
   readonly closed = output<void>();
 
   readonly related = computed(() => this.resolveRelatedTemplates());
-  readonly selected = signal<RelatedTemplate | null>(null);
-  readonly selectedTemplate = computed(() => {
-    const selected = this.selected();
-    if (!selected) {
-      return null;
-    }
-    const template = this.templateService.getTemplate(selected.templateId);
-    if (template) {
-      return template;
-    }
-    const fallback = new DocumentoPlantillaDTO();
-    fallback.llaveTabla = selected.templateId;
-    fallback.nombre = selected.templateName;
-    return fallback;
-  });
-  readonly selectedFilter = computed(() => {
-    const selected = this.selected();
+
+  async selectTemplate(entry: RelatedTemplate): Promise<void> {
     const document = this.documento();
-    if (!selected || !document?.llaveTabla) {
-      return null;
-    }
-
-    const fieldFilter = new PedidoVentaCaracteristicaFilterDTO();
-    fieldFilter.campo = selected.property.llaveTabla;
-    fieldFilter.valorOpcion = document.llaveTabla;
-
-    const filter = new PedidoVentaFilterDTO();
-    filter.plantilla = selected.templateId;
-    filter.filtersByFields = [fieldFilter];
-    filter.estado = `${StatesEnum.ACTIVE};${StatesEnum.INACTIVE};${StatesEnum.FINALIZADO}`;
-    return filter;
-  });
-  readonly documentList = viewChild(DocumentListComponent);
-
-  selectTemplate(entry: RelatedTemplate): void {
-    this.selected.set(entry);
-  }
-
-  backToTemplates(): void {
-    this.selected.set(null);
-  }
-
-  openDocument(document: PedidoVentaDTO): void {
     if (!document?.llaveTabla) {
       return;
     }
-    const target = new PedidoVentaDTO();
-    target.plantilla = document.plantilla;
-    target.llaveTabla = document.llaveTabla;
-    this.utilsService.modalWithParams(target, false)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((result) => {
-        if (result) {
-          this.documentList()?.refresh();
-        }
-      });
+
+    const template = this.templateService.getTemplate(entry.templateId);
+    const dialogTemplate = template ?? new DocumentoPlantillaDTO();
+    dialogTemplate.llaveTabla = dialogTemplate.llaveTabla || entry.templateId;
+    dialogTemplate.nombre = dialogTemplate.nombre || entry.templateName;
+
+    const fieldFilter = new PedidoVentaCaracteristicaFilterDTO();
+    fieldFilter.campo = entry.property.llaveTabla;
+    fieldFilter.valorOpcion = document.llaveTabla;
+
+    const filter = new PedidoVentaFilterDTO();
+    filter.plantilla = entry.templateId;
+    filter.filtersByFields = [fieldFilter];
+    filter.estado = `${StatesEnum.ACTIVE};${StatesEnum.INACTIVE};${StatesEnum.FINALIZADO}`;
+
+    const data: Cruds2DialogData = { plantilla: dialogTemplate, filtro: filter };
+    const { Cruds2Component } = await import('app/document/cruds/cruds2.component');
+    this.dialog.open(Cruds2Component, {
+      data,
+      width: '96vw',
+      height: '90vh',
+      maxWidth: '98vw',
+      maxHeight: '96vh',
+      autoFocus: false,
+    });
   }
 
   private resolveRelatedTemplates(): RelatedTemplate[] {

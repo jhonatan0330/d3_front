@@ -21,7 +21,7 @@ import {
   PedidoVentaFilterDTO,
   ReporteBaseDTO,
 } from 'app/document/document.types';
-import { DocumentApi } from 'app/document/document.api';
+import { DocumentListService } from 'app/document/document-list.service';
 import { FormReportService } from 'app/report/business/form-report.service';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { TemplateService } from 'app/document/service/template.service';
@@ -71,7 +71,7 @@ import { MatTooltip } from '@angular/material/tooltip';
   ],
 })
 export class DocumentListComponent {
-  private readonly api = inject(DocumentApi);
+  private readonly documentListService = inject(DocumentListService);
   private readonly reportService = inject(FormReportService);
   private readonly notificationCenter = inject(NotificationCenterService);
   private readonly templateService = inject(TemplateService);
@@ -83,6 +83,7 @@ export class DocumentListComponent {
   readonly hasCreatePermission = input(false);
   readonly drawerOpened = input(true);
   readonly embedded = input(false);
+  readonly dialogMode = input(false);
   readonly subtitle = input<string | null>(null);
 
   readonly refreshRequested = output<void>();
@@ -201,14 +202,10 @@ export class DocumentListComponent {
 
     const requestId = ++this.requestId;
     const pageSize = Number(this.pageControl.value);
-    const request = Object.assign(new PedidoVentaFilterDTO(), filtro);
-    const templateId = request.plantilla || plantilla.llaveTabla;
+    const templateId = filtro.plantilla || plantilla.llaveTabla;
     if (!templateId) {
       return;
     }
-    request.plantilla = templateId;
-    request.paginacionRegistroInicial = pageSize * (page - 1);
-    request.paginacionRegistroFinal = pageSize;
 
     if (page === 1) {
       this.dataProvider.set([]);
@@ -221,7 +218,7 @@ export class DocumentListComponent {
     this.isLoading.set(true);
     this.loadingChange.emit(true);
 
-    this.api.listarDocumentos(request)
+    this.documentListService.loadPage(filtro, templateId, page, pageSize)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (rows) => {
