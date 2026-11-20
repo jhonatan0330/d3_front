@@ -155,6 +155,13 @@ export class DocumentListComponent {
     }
   }
 
+  onDocumentImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    if (img && !img.src.endsWith('dark_264x264.png')) {
+      img.src = this.defaultTemplateLogo;
+    }
+  }
+
   getColor(estado: string): string | null {
     return this.templateService.getColor(estado);
   }

@@ -59,7 +59,11 @@
               <span class="absolute inset-y-3 left-0 w-1 rounded-r" [style.backgroundColor]="getColor(iDocument.estadoExpediente)"></span>
               <div class="flex min-w-0 items-start gap-3">
                 <button type="button" class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800" (click)="documentSelected.emit(iDocument)" aria-label="Abrir documento">
-                  <img class="h-full w-full object-cover" src="{{ iDocument.imagen | imageFormat }}" alt="" />
+                  @if (iDocument.imagen?.trim()) {
+                  <img class="h-full w-full object-cover" [src]="iDocument.imagen | imageFormat" (error)="onDocumentImageError($event)" alt="" />
+                  } @else {
+                  <img class="h-full w-full object-cover" [src]="defaultTemplateLogo" alt="Logo por defecto" />
+                  }
                 </button>
                 <div class="min-w-0 flex-1 leading-tight">
                   <a (click)="documentSelected.emit(iDocument)">
