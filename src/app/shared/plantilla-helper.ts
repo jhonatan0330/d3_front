@@ -155,9 +155,8 @@ export class PlantillaHelper {
   static VINCULO_DATA = 'VINCULO_DATA';
   static TRANSICION_VISIBLE_VINCULO = 'TRANSICION_VISIBLE_VINCULO';
   static TRANSICION_RAPIDA = 'TRANSICION_RAPIDA';
-  
-  
-  
+  static TRANSICION_OCULTA = 'TRANSICION_OCULTA';
+
   // Estos dos los quite porque genrarban muchos cilso infirnitos
   //PlantillaHelper.RELACIONAR_DOCUMENTOS, PlantillaHelper.RETIRAR_DOCUMENTOS,
   static DEPENDENT_PROPERTIES = [

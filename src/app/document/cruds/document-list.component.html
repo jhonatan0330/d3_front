@@ -56,15 +56,15 @@
       </div>
       <!-- Vista modo grilla -->
       @if (viewMode() === 'grid-view') {
-      <div class="grid w-full grid-cols-1 gap-3 overflow-y-auto p-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div class="grid min-h-0 w-full flex-1 auto-rows-max grid-cols-1 items-start gap-3 overflow-y-auto p-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         @for (iDocument of dataProvider(); track iDocument) {
-        <article class="flex min-w-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-card shadow-sm transition-shadow hover:shadow-md dark:border-gray-700">
+        <article class="flex h-fit min-w-0 flex-col self-start overflow-hidden rounded-lg border border-gray-200 bg-card shadow-sm transition-shadow hover:shadow-md dark:border-gray-700">
             <!-- Title-->
             <div class="relative border-b border-gray-200 p-3 dark:border-gray-700">
               <span class="absolute inset-y-3 left-0 w-1 rounded-r" [style.backgroundColor]="getColor(iDocument.estadoExpediente)"></span>
               <div class="flex min-w-0 items-start gap-3">
                 <button type="button" class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800" (click)="documentSelected.emit(iDocument)" aria-label="Abrir documento">
-                  @if (iDocument.imagen?.trim()) {
+                  @if (iDocument.imagen) {
                   <img class="h-full w-full object-cover" [src]="iDocument.imagen | imageFormat" (error)="onDocumentImageError($event)" alt="" />
                   } @else {
                   <img class="h-full w-full object-cover" [src]="defaultTemplateLogo" alt="Logo por defecto" />

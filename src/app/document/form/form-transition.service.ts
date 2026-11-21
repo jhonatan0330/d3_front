@@ -24,6 +24,7 @@ export class FormTransitionService {
         if (!_transition.plantilla) continue;
         const _templateTransition = this.templateService.getTemplate(_transition.plantilla);
         if (!_templateTransition || PlantillaHelper.isEmpty(_templateTransition.propiedades, PlantillaHelper.PERMISO_PLANTILLA_CREAR)) continue;
+        if (!_transition || !PlantillaHelper.isEmpty(_transition.propiedades, PlantillaHelper.TRANSICION_OCULTA)) continue;
         if (pIsVinculo && PlantillaHelper.isEmpty(_transition.propiedades, PlantillaHelper.TRANSICION_VISIBLE_VINCULO)) continue;
 
         const t: ProcesoTransicionDTO = new ProcesoTransicionDTO();
