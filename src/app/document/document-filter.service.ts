@@ -99,7 +99,12 @@ export class DocumentFilterService {
       }
     }
 
-    if (!state.exactCode && state.statesEnabled) {
+    const hasInitialState = !!(
+      initialFilter?.estado ||
+      initialFilter?.estadoExpediente
+    );
+
+    if (!state.exactCode && state.statesEnabled && !hasInitialState) {
       filter.estadoExpediente = '';
       state.selectedStates.forEach(stateId => {
         if (stateId) {
@@ -137,16 +142,42 @@ export class DocumentFilterService {
 
     filter.ordenNombre = state.orderField || null!;
     filter.ascendente = state.ascending ? 'A' : null!;
-    filter.filtersByFields = [...state.dynamicFields];
-
-    if (initialFilter?.filtersByFields?.length) {
-      filter.filtersByFields = [
-        ...initialFilter.filtersByFields,
-        ...(filter.filtersByFields ?? []),
-      ];
-    }
+    filter.filtersByFields = this.mergeDynamicFields(
+      initialFilter?.filtersByFields ?? [],
+      state.dynamicFields,
+    );
 
     return { filter, error: null };
+  }
+
+  private mergeDynamicFields(
+    initialFields: PedidoVentaCaracteristicaFilterDTO[],
+    dynamicFields: PedidoVentaCaracteristicaFilterDTO[],
+  ): PedidoVentaCaracteristicaFilterDTO[] {
+    const merged = new Map<string, PedidoVentaCaracteristicaFilterDTO>();
+
+    for (const field of [...initialFields, ...dynamicFields]) {
+      if (!field?.campo || !this.hasFieldValue(field)) {
+        continue;
+      }
+      if (!merged.has(field.campo)) {
+        merged.set(field.campo, field);
+      }
+    }
+
+    return [...merged.values()];
+  }
+
+  private hasFieldValue(field: PedidoVentaCaracteristicaFilterDTO): boolean {
+    return !!(
+      field.valorOpcion ||
+      field.valorAuxiliar ||
+      field.valorText ||
+      field.valorFechaMin ||
+      field.valorFechaMax ||
+      field.valorNumeroMin ||
+      field.valorNumeroMax
+    );
   }
 
   private combineDateAndTime(date: Date, time: string | null, start: boolean): Date {

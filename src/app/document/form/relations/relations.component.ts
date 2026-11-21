@@ -26,6 +26,7 @@ export interface RelatedTemplate {
   templateId: string;
   templateName: string;
   templateImage: string;
+  fieldId: string;
   property: PropiedadDTO;
 }
 
@@ -57,13 +58,12 @@ export class RelationsComponent {
     dialogTemplate.nombre = dialogTemplate.nombre || entry.templateName;
 
     const fieldFilter = new PedidoVentaCaracteristicaFilterDTO();
-    fieldFilter.campo = entry.property.llaveTabla;
+    fieldFilter.campo = entry.fieldId;
     fieldFilter.valorOpcion = document.llaveTabla;
 
     const filter = new PedidoVentaFilterDTO();
     filter.plantilla = entry.templateId;
     filter.filtersByFields = [fieldFilter];
-    filter.estado = `${StatesEnum.ACTIVE};${StatesEnum.INACTIVE};${StatesEnum.FINALIZADO}`;
 
     const data: Cruds2DialogData = { plantilla: dialogTemplate, filtro: filter };
     const { Cruds2Component } = await import('app/document/cruds/cruds2.component');
@@ -109,6 +109,7 @@ export class RelationsComponent {
         templateId,
         templateName: template?.nombre ?? property.codigo,
         templateImage: template?.imagen ?? '',
+        fieldId,
         property,
       });
     }

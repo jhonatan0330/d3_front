@@ -112,7 +112,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
             this.procesoId = null;
             this.initializeTemplate();
             if (this.dialogData.filtro) {
-                this.queryFilter.set(this.dialogData.filtro);
+                this.queryFilter.set(this.withDialogDefaults(this.dialogData.filtro));
             }
         } else {
             this.route.params
@@ -210,10 +210,20 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         ));
         if (plantilla.estados) {
             const stateControls = [];
+            const initialFilter = this.initialFilter();
+            const initialStateIds = [
+                initialFilter?.estado,
+                initialFilter?.estadoExpediente,
+            ].filter((value): value is string => !!value)
+                .flatMap(value => value.split(';'))
+                .filter(value => !!value);
+
             for (const state of plantilla.estados) {
                 if (!state.llaveTabla) state.llaveTabla = state.estadoDocumento;
                 stateControls[state.llaveTabla] = new FormControl(
-                    state.estadoDocumento === StatesEnum.ACTIVE
+                    initialStateIds.length
+                        ? initialStateIds.includes(state.llaveTabla) || initialStateIds.includes(state.estadoDocumento)
+                        : state.estadoDocumento === StatesEnum.ACTIVE
                 );
             }
             this.form = this.formBuilder.group(stateControls);
@@ -223,6 +233,14 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnDestroy(): void {
         this._mediaQuery.removeEventListener('change', this._mediaHandler);
+    }
+
+    private withDialogDefaults(initialFilter: PedidoVentaFilterDTO): PedidoVentaFilterDTO {
+        const filter = Object.assign(new PedidoVentaFilterDTO(), initialFilter);
+        if (!filter.estado && !filter.estadoExpediente) {
+            filter.estado = StatesEnum.ACTIVE;
+        }
+        return filter;
     }
 
     /**
