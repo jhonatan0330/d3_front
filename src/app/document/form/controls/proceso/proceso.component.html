@@ -12,9 +12,9 @@
     <mat-form-field class="w-full"
       [style.display]="(isInvisible || isSectionInvisible) ? 'none': 'block'">
       <mat-label>{{ structure.nombre | titlecase }} </mat-label>
-      <input matInput [id]="idField!" [matAutocomplete]="auto" [matAutocompleteDisabled]="isLoading()" [formControl]="searchControl" [required]="required"
+      <input matInput [id]="idField!" [matAutocomplete]="auto" [matAutocompleteDisabled]="isLoading() || puedeUsarTarjetasProceso" [formControl]="searchControl" [required]="required"
         [readonly]="!isEnabled || isLoading()" [attr.aria-busy]="isLoading()"
-        (focus)="gestionarFocus()" (keyup.enter)="gestionarKeyUpTexto()" [attr.inputmode]="inputModeText"
+        (focus)="gestionarFocusProcesoOpciones()" (keyup.enter)="gestionarEnterProceso()" [attr.inputmode]="inputModeText"
         translate="no" autocomplete="off"
         [ngClass]="{'line-through':proceso && proceso.estado === 'I'}" />
         @if (proceso && linkExternal) {
@@ -63,6 +63,11 @@
           </app-document-action-menu>
         }
         <div matSuffix class="flex shrink-0 flex-nowrap items-center gap-1">
+          @if (puedeMostrarProcesoPopover) {
+            <button type="button" class="btn-icon" (click)="abrirProcesoOptions()" aria-label="Ver opciones disponibles" title="Ver opciones disponibles" tabindex="-1">
+              <mat-icon aria-hidden="true">grid_view</mat-icon>
+            </button>
+          }
           @if (isEnabled && !proceso) {
             @if (isLoading()) {
               <span class="inline-flex items-center text-primary" role="status" aria-label="Buscando documentos">
@@ -91,6 +96,31 @@
           </button>
         }
       </mat-form-field>
+      @if (puedeMostrarProcesoCards) {
+        <section class="mt-2" aria-label="Opciones disponibles">
+          <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
+            @for (document of disponibles; track document.llaveTabla) {
+              <button type="button"
+                class="flex min-h-24 flex-col items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-white p-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-primary hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:border-gray-700 dark:bg-gray-800"
+                (click)="selectProcess(document)">
+                @if (document.imagen) {
+                  <img class="mb-2 h-12 w-12 object-contain" [src]="document.imagen | imageFormat" alt="" />
+                } @else {
+                  <mat-icon class="mb-2 text-primary" aria-hidden="true">description</mat-icon>
+                }
+                <span class="line-clamp-2 text-sm font-semibold text-gray-800 dark:text-gray-100">
+                  {{ document.descripcion || document.nombre }}
+                </span>
+                @if (document.descripcion && document.nombre !== document.descripcion) {
+                  <span class="mt-1 line-clamp-1 text-xs text-secondary">
+                    {{ document.nombre }}
+                  </span>
+                }
+              </button>
+            }
+          </div>
+        </section>
+      }
       @if (isLoading() && !proceso) {
         <div class="mt-1 flex items-center gap-2 text-sm text-primary" role="status" aria-live="polite" aria-atomic="true">
           <mat-icon class="animate-spin" aria-hidden="true">autorenew</mat-icon>

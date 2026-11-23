@@ -37,6 +37,8 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
 import { DocumentActionMenuComponent } from '../shared/document-action-menu/document-action-menu.component';
 import { DocumentActionHelper } from '../shared/document-action.helper';
 import { DocumentCreationHelper } from '../shared/document-creation.helper';
+import { MatDialog } from '@angular/material/dialog';
+import { ProcesoOptionsDialogComponent } from './proceso-options-dialog/proceso-options-dialog.component';
 
 @Component({
   selector: 'app-proceso',
@@ -51,6 +53,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   private utilsService = inject(UtilsService);
   private sanitizer = inject(DomSanitizer);
   private notificationCenter = inject(NotificationCenterService);
+  private readonly dialog = inject(MatDialog);
 
   fControl = new FormControl<any>(null);
   searchControl = new FormControl<string | PedidoVentaDTO | null>('');
@@ -58,6 +61,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
   searchAttempted = false;
   searchError = false;
   private pendingSearchQuery: string | null = null;
+  private processOptionsDialogOpen = false;
 
   plantilla: DocumentoPlantillaDTO; // Contiene el id de la fuente de datos de este proceso
   autoload = false; // Indica que la fuente de datos se va a cargar en memoria
@@ -1082,8 +1086,10 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     if (!this.isEnabled) {
       return;
     }
-    this.disponibles = [];
-    this.filteredDocuments = [];
+    if (!this.autoload) {
+      this.disponibles = [];
+      this.filteredDocuments = [];
+    }
     this.searchControl.setValue('', { emitEvent: false });
     this.filtroBusqueda = '';
     this.searchAttempted = false;
@@ -1098,6 +1104,82 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     this.searchAttempted = false;
     this.searchError = false;
     this.fControl.setValue(document);
+  }
+
+  get puedeMostrarProcesoCards(): boolean {
+    if (!this.autoload
+      || !this.isEnabled
+      || this.isLoading()
+      || !!this.proceso
+      || !this.isEmpty(this.obtenerValor(PlantillaHelper.DEPENDE))
+      || this.searchAttempted
+      || typeof this.searchControl.value === 'string' && !!this.searchControl.value.trim()) {
+      return false;
+    }
+
+    return !!this.disponibles
+      && this.disponibles.length > 0
+      && this.disponibles.length <= 4;
+  }
+
+  get puedeMostrarProcesoPopover(): boolean {
+    if (!this.autoload
+      || !this.isEnabled
+      || this.isLoading()
+      || !!this.proceso
+      || !this.isEmpty(this.obtenerValor(PlantillaHelper.DEPENDE))) {
+      return false;
+    }
+
+    return !!this.disponibles && this.disponibles.length > 4;
+  }
+
+  get puedeUsarTarjetasProceso(): boolean {
+    return this.autoload
+      && this.isEnabled
+      && !this.isLoading()
+      && !this.proceso
+      && this.isEmpty(this.obtenerValor(PlantillaHelper.DEPENDE));
+  }
+
+  gestionarFocusProcesoOpciones(): void {
+    this.gestionarFocus();
+    if (this.puedeMostrarProcesoPopover && !this.processOptionsDialogOpen) {
+      this.abrirProcesoOptions();
+    }
+  }
+
+  gestionarEnterProceso(): void {
+    if (!this.puedeUsarTarjetasProceso) {
+      this.gestionarKeyUpTexto();
+    }
+  }
+
+  abrirProcesoOptions(): void {
+    if (!this.puedeMostrarProcesoPopover || !this.disponibles || this.processOptionsDialogOpen) {
+      return;
+    }
+
+    this.processOptionsDialogOpen = true;
+    const dialogRef = this.dialog.open(ProcesoOptionsDialogComponent, {
+      width: 'min(720px, calc(100vw - 32px))',
+      maxWidth: '100vw',
+      maxHeight: 'calc(100vh - 32px)',
+      autoFocus: false,
+      data: {
+        title: this.structure.nombre,
+        options: this.disponibles
+      }
+    });
+
+    dialogRef.afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((document: PedidoVentaDTO | undefined) => {
+        this.processOptionsDialogOpen = false;
+        if (document) {
+          this.selectProcess(document);
+        }
+      });
   }
 
   private filterAvailableDocuments(value: string): void {
