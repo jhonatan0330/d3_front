@@ -148,7 +148,7 @@ export class IndicatorCardComponent {
     const metrics = this.indicador().targets ?? [];
     if (!metrics.length) {
       return [{
-        metric: { nombre: 'Sin rango', valorInferior: null, valorSuperior: null, color: '#cbd5e1' },
+        metric: { llaveTabla: '', estado: 'A', nombre: 'Sin rango', valorInferior: null, valorSuperior: null, color: '#cbd5e1' },
         name: 'Sin rango',
         color: '#cbd5e1',
         flex: 1,

@@ -29,8 +29,8 @@ export class IndicatorTargetListComponent implements OnInit {
   mostrarInactivos = signal(false);
 
   activos = computed(() => this.targets()
-    .filter((target) => target.state === 'A'));
-  inactivos = computed(() => this.targets().filter((t) => t.state !== 'A'));
+    .filter((target) => target.estado === 'A'));
+  inactivos = computed(() => this.targets().filter((t) => t.estado !== 'A'));
 
   ngOnInit(): void {
     if (this.indicatorKey) {
@@ -42,7 +42,6 @@ export class IndicatorTargetListComponent implements OnInit {
     this.loading.set(true);
     const filter = new IndicatorTargetFilterDTO();
     filter.indicador = this.indicatorKey;
-    filter.state = '';
     this.service.getTargets(filter).subscribe({
       next: (targets) => {
         this.targets.set(targets ?? []);
@@ -84,11 +83,11 @@ export class IndicatorTargetListComponent implements OnInit {
       ...this.inactivos()
     ];
 
-    const prioridades = new Map(activos.map((target, index) => [target.key, index + 1]));
+    const prioridades = new Map(activos.map((target, index) => [target.llaveTabla, index + 1]));
 
     this.targets.set(reorderedTargets.map((target) => {
-      const prioridad = prioridades.get(target.key);
-      return prioridad && target.state === 'A' ? { ...target, prioridad } : target;
+      const prioridad = prioridades.get(target.llaveTabla);
+      return prioridad && target.estado === 'A' ? { ...target, prioridad } : target;
     }));
 
     const movedTarget = {
@@ -118,7 +117,7 @@ export class IndicatorTargetListComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.service.activateTarget({ ...target, indicador: this.indicatorKey, state: 'A' }).subscribe({
+        this.service.activateTarget({ ...target, indicador: this.indicatorKey, estado: 'A' }).subscribe({
           next: () => {
             this.notificationCenter.fire('Reactivado', 'Target reactivado correctamente', 'success');
             this.loadTargets();
@@ -138,7 +137,7 @@ export class IndicatorTargetListComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.service.inactivateTarget({ ...target, indicador: this.indicatorKey, state: 'I' }).subscribe({
+        this.service.inactivateTarget({ ...target, indicador: this.indicatorKey, estado: 'I' }).subscribe({
           next: () => {
             this.notificationCenter.fire('Eliminado', 'Target eliminado correctamente', 'success');
             this.loadTargets();

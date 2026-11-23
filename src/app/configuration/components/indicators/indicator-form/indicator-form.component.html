@@ -19,10 +19,12 @@
         <div class="sm:col-span-2">
           <app-process-selector [(ngModel)]="indicador.nodoSuperior" name="nodoSuperior"></app-process-selector>
         </div>
-        <div>
-          <label class="form-label">Código *</label>
-          <input type="text" [(ngModel)]="indicador.codigo" name="codigo" required class="form-input" placeholder="ej. ventas_totales" />
-        </div>
+        @if (indicador.llaveTabla) {
+          <div>
+            <label class="form-label">Código *</label>
+            <input type="text" [(ngModel)]="indicador.codigo" name="codigo" required class="form-input" placeholder="ej. ventas_totales" />
+          </div>
+        }
         <div>
           <label class="form-label">Nombre *</label>
           <input type="text" [(ngModel)]="indicador.nombre" name="nombre" required class="form-input" />

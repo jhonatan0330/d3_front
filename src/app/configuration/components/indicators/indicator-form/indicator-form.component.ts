@@ -71,6 +71,14 @@ export class IndicatorFormComponent implements OnInit {
   onSubmit(): void {
     this.cargando = true;
     const { targets: _targets, ...indicator } = this.indicador;
+
+    const codigo = (indicator.codigo || '').trim();
+    if (codigo) {
+      indicator.codigo = codigo;
+    } else if (!indicator.llaveTabla) {
+      delete (indicator as Partial<IndicatorDTO>).codigo;
+    }
+
     const request = indicator.llaveTabla
       ? this.service.updateIndicador(indicator)
       : this.service.createIndicador(indicator);

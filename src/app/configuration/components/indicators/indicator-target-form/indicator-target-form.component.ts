@@ -21,6 +21,8 @@ export class IndicatorTargetFormComponent implements OnInit {
   private service = inject(IndicatorConfigService);
 
   target: IndicatorTargetDTO = {
+    llaveTabla: '',
+    estado: 'A',
     nombre: '',
     valorInferior: null,
     valorSuperior: null,
@@ -35,11 +37,12 @@ export class IndicatorTargetFormComponent implements OnInit {
       this.titulo = 'Editar Target';
     } else {
       this.target = {
+        llaveTabla: '',
+        estado: 'A',
         nombre: '',
         valorInferior: null,
         valorSuperior: null,
         color: '#64748b',
-        state: 'A',
         indicador: this.data.indicatorKey,
         prioridad: this.data.prioridad ?? 1
       };
@@ -49,7 +52,7 @@ export class IndicatorTargetFormComponent implements OnInit {
   onSubmit(): void {
     this.cargando = true;
     const target = { ...this.target, indicador: this.data.indicatorKey };
-    const request$ = target.key
+    const request$ = target.llaveTabla
       ? this.service.updateTarget(target)
       : this.service.createTarget(target);
 
