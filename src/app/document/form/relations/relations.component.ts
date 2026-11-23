@@ -3,11 +3,9 @@ import {
   Component,
   computed,
   inject,
-  input,
-  output,
 } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
   DocumentoPlantillaDTO,
   PedidoVentaCaracteristicaFilterDTO,
@@ -30,6 +28,11 @@ export interface RelatedTemplate {
   property: PropiedadDTO;
 }
 
+export interface RelationsDialogData {
+  plantilla: DocumentoPlantillaDTO;
+  documento: PedidoVentaDTO;
+}
+
 @Component({
   selector: 'app-relations',
   templateUrl: './relations.component.html',
@@ -39,15 +42,13 @@ export interface RelatedTemplate {
 export class RelationsComponent {
   private readonly templateService = inject(TemplateService);
   private readonly dialog = inject(MatDialog);
-
-  readonly plantilla = input<DocumentoPlantillaDTO | null>(null);
-  readonly documento = input<PedidoVentaDTO | null>(null);
-  readonly closed = output<void>();
+  readonly dialogRef = inject(MatDialogRef<RelationsComponent>);
+  readonly data = inject<RelationsDialogData>(MAT_DIALOG_DATA);
 
   readonly related = computed(() => this.resolveRelatedTemplates());
 
   async selectTemplate(entry: RelatedTemplate): Promise<void> {
-    const document = this.documento();
+    const document = this.data.documento;
     if (!document?.llaveTabla) {
       return;
     }
@@ -75,10 +76,11 @@ export class RelationsComponent {
       maxHeight: '96vh',
       autoFocus: false,
     });
+    this.dialogRef.close();
   }
 
   private resolveRelatedTemplates(): RelatedTemplate[] {
-    const plantilla = this.plantilla();
+    const plantilla = this.data.plantilla;
     if (!plantilla?.propiedades) {
       return [];
     }
@@ -103,6 +105,9 @@ export class RelationsComponent {
       }
 
       const template = this.templateService.getTemplate(templateId);
+
+      if(!template) { continue; }
+
       used.add(key);
       result.push({
         key,

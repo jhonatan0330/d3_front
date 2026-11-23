@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewContainerRef, Type, AfterViewInit, HostListener, ChangeDetectionStrategy, inject, viewChild, Injector, effect, runInInjectionContext, computed, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+    MatDialog,
     MatDialogRef,
     MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
@@ -44,7 +45,7 @@ import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-i
 import { CopierService } from 'app/shared/copier.service';
 import { FormReportService } from 'app/report/business/form-report.service';
 import { FormTransitionService } from 'app/document/form/form-transition.service';
-import { RelationsComponent } from 'app/document/form/relations/relations.component';
+import { RelationsComponent, RelationsDialogData } from 'app/document/form/relations/relations.component';
 import { TenantUrlService } from 'app/multitenancy/business/tenant-url.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
@@ -55,11 +56,12 @@ import { RecentDocumentsService } from 'app/layout/recent-documents.service';
     selector: 'app-form',
     templateUrl: './form.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CdkDrag,CdkDragHandle,MatIcon,FormsModule,ReactiveFormsModule,MatFormField,MatInput,MatAutocompleteTrigger,MatAutocomplete,MatOption,MatTooltip,SlicePipe,TitleCasePipe,CurrencyPipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent,RelationsComponent]
+    imports: [CdkDrag,CdkDragHandle,MatIcon,FormsModule,ReactiveFormsModule,MatFormField,MatInput,MatAutocompleteTrigger,MatAutocomplete,MatOption,MatTooltip,SlicePipe,TitleCasePipe,CurrencyPipe,DatePipe,ImageFormatPipe,DropdownComponent,DropdownItemComponent]
 })
 export class FormComponent implements OnInit, AfterViewInit {
     data = inject(MAT_DIALOG_DATA);
     dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
+    private readonly dialog = inject(MatDialog);
     private templateService = inject(TemplateService);
     private api = inject(DocumentApi);
     _jwt = inject(LoginService);
@@ -140,7 +142,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     // Cambiar estado
     canChangeState = signal(false);
     isChangeState = signal(false);
-    isRelations = signal(false);
     canRelations = signal(false);
     changeStateIsLoading = signal(false);
     changeStateForm = new FormGroup({
@@ -991,7 +992,6 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     showChangeState() {
         if (this.canChangeState()) {
-            this.isRelations.set(false);
             if (this.isChangeState()) {
                 this.isChangeState.set(false);
             } else {
@@ -1005,7 +1005,24 @@ export class FormComponent implements OnInit, AfterViewInit {
             return;
         }
         this.isChangeState.set(false);
-        this.isRelations.set(!this.isRelations());
+        const plantilla = this.plantilla();
+        const documento = this.pedido();
+        if (!plantilla || !documento) {
+            return;
+        }
+
+        const data: RelationsDialogData = { plantilla, documento };
+        this.dialog.open(RelationsComponent, {
+            data,
+            width: '360px',
+            maxWidth: 'calc(100vw - 32px)',
+            maxHeight: '70vh',
+            position: { top: '72px', right: '16px' },
+            panelClass: 'relations-popover',
+            hasBackdrop: true,
+            backdropClass: 'relations-popover-backdrop',
+            autoFocus: false,
+        });
     }
 
     autoCompleteDisplayChangeState(item: ProcesoEstadoDTO): string {

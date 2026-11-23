@@ -153,12 +153,6 @@
     </div>
   }
   <div class="px-4 overflow-x-hidden">
-    <!-- Relaciones -->
-    @if (isRelations() && plantilla() && pedido()) {
-      <div class="card p-2">
-        <app-relations [plantilla]="plantilla()!" [documento]="pedido()!" (closed)="isRelations.set(false)" />
-      </div>
-    }
     <!-- Cambiar estado del documento -->
     @if (isChangeState()) {
       <div class="card p-2">
