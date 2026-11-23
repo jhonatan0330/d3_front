@@ -14,13 +14,14 @@ interface ConfigTab {
 })
 export class ConfigComponent {
   tabs: ConfigTab[] = [
-    { label: 'Web Services',        route: '/config/web-services' },
-    { label: 'Ejecuciones WS',      route: '/config/web-service-executions' },
-    { label: 'Mensajes',            route: '/config/messages' },
     { label: 'Plantillas Doc',      route: '/config/document-templates' },
-    { label: 'Tareas Auto',         route: '/config/auto-tasks' },
+    { label: 'Web Services',        route: '/config/web-services' },
     { label: 'Procesos',            route: '/config/processes' },
     { label: 'Organizaciones',      route: '/config/organizations' },
+    { label: 'Ejecuciones WS',      route: '/config/web-service-executions' },
+    { label: 'Errores',             route: '/config/errors' },
+    { label: 'Mensajes',            route: '/config/messages' },
+    { label: 'Tareas Auto',         route: '/config/auto-tasks' },
     { label: 'Consecutivos',        route: '/config/consecutives' },
     { label: 'Servidores',          route: '/config/servers' },
     { label: 'Valores',             route: '/config/property-values' },

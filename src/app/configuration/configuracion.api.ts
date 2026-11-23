@@ -27,6 +27,11 @@ import { RolAccesoFilterDTO } from 'app/authentication/domain/RolAccesoFilterDTO
 import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
 import { IndicatorTargetDTO } from 'app/accounting/domain/IndicatorTargetDTO';
 import { IndicatorTargetFilterDTO } from 'app/accounting/domain/IndicatorTargetFilterDTO';
+import {
+    UsuarioSesionErrorDTO, UsuarioSesionErrorFilterDTO,
+    ReporteEjecucionDTO, ReporteEjecucionFilterDTO,
+    TransaccionErrorDTO, TransaccionErrorFilterDTO,
+} from './domain/ErrorLogDTO';
 
 @Injectable({ providedIn: 'root' })
 export class ConsecutiveService {
@@ -847,6 +852,31 @@ export class IndicatorConfigService {
     activateTarget(indicador: IndicatorTargetDTO): Observable<IndicatorTargetDTO> {
         return this.http.post<IndicatorTargetDTO>(
             this.ls.getUrlAccess(`/configuration/target/activate`), indicador
+        );
+    }
+}
+
+@Injectable({ providedIn: 'root' })
+export class ErrorLogService {
+    private http = inject(HttpClient);
+    private ls = inject(LocalStoreService);
+    private baseUrl = '/configuration/errors';
+
+    getSessionErrors(filter: UsuarioSesionErrorFilterDTO): Observable<UsuarioSesionErrorDTO[]> {
+        return this.http.post<UsuarioSesionErrorDTO[]>(
+            this.ls.getUrlAccess(`${this.baseUrl}/session/list`), filter
+        );
+    }
+
+    getReportErrors(filter: ReporteEjecucionFilterDTO): Observable<ReporteEjecucionDTO[]> {
+        return this.http.post<ReporteEjecucionDTO[]>(
+            this.ls.getUrlAccess(`${this.baseUrl}/reports/list`), filter
+        );
+    }
+
+    getTransactionErrors(filter: TransaccionErrorFilterDTO): Observable<TransaccionErrorDTO[]> {
+        return this.http.post<TransaccionErrorDTO[]>(
+            this.ls.getUrlAccess(`${this.baseUrl}/transactions/list`), filter
         );
     }
 }

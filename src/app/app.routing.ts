@@ -58,6 +58,9 @@ export const appRoutes: Route[] = [
           { path: 'web-service-executions', children: [
             { path: '', loadComponent: () => import('app/configuration/components/web-services/web-service-execute-list/web-service-execute-list.component').then(m => m.WebServiceExecuteListComponent) },
           ]},
+          { path: 'errors', children: [
+            { path: '', loadComponent: () => import('app/configuration/components/errors/error-log-list/error-log-list.component').then(m => m.ErrorLogListComponent) },
+          ]},
           { path: 'messages', children: [
             { path: '', loadComponent: () => import('app/configuration/components/messages/message-list/message-list.component').then(m => m.MessageListComponent) },
           ]},
