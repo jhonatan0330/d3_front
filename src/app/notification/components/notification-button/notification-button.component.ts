@@ -7,7 +7,9 @@ import { NotificationsService } from 'app/notification/notification.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { PedidoVentaDTO } from 'app/document/document.types';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
@@ -30,7 +32,7 @@ export class NotificationButtonComponent implements OnDestroy {
     private _viewContainerRef = inject(ViewContainerRef);
     private templateService = inject(TemplateService);
     private readonly layoutService = inject(LayoutService);
-    private utilsService = inject(UtilsService);
+    private dialog = inject(MatDialog);
 
     private readonly _notificationsOrigin = viewChild<ElementRef>('notificationsOrigin');
     private readonly _notificationsPanel = viewChild<TemplateRef<any>>('notificationsPanel');
@@ -177,7 +179,8 @@ export class NotificationButtonComponent implements OnDestroy {
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = plantilla;
         pedidoVenta.llaveTabla = id;
-        this.utilsService.modalWithParams(pedidoVenta)
+        this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta))
+            .afterClosed()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => {
                 this.refresh();

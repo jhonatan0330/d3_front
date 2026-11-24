@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LoginService } from 'app/authentication/login.service';
 import { MatFormField, MatLabel, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -15,6 +15,7 @@ import { UsuarioDTO } from 'app/users/domain/UsuarioDTO';
 })
 export class SettingsSecurityComponent implements OnInit {
     data = inject<{ key: UsuarioDTO; }>(MAT_DIALOG_DATA);
+    private dialogRef = inject<MatDialogRef<SettingsSecurityComponent>>(MatDialogRef);
     private _formBuilder = inject(FormBuilder);
     private jwtAuth = inject(LoginService);
     private destroyRef = inject(DestroyRef);
@@ -63,6 +64,7 @@ export class SettingsSecurityComponent implements OnInit {
                             'La nueva clave del usuario ' + this.keyData()!.nombre + ' se cambio de forma exitosa',
                             'success'
                         );
+                        this.dialogRef.close(true);
                     },
                     error: () => {
                         this.isLoading.set(false);
@@ -79,6 +81,7 @@ export class SettingsSecurityComponent implements OnInit {
                             'La nueva clave se cambio de forma exitosa',
                             'success'
                         );
+                        this.dialogRef.close(true);
                     },
                     error: () => {
                         this.isLoading.set(false);

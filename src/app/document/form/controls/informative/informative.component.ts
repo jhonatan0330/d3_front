@@ -3,7 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, PedidoVentaDTO } from 'app/document/document.types';
 import { BaseComponent } from '../base/base.component';
-import { UtilsService } from '../../../service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from '../../form.component';
+import { documentFormDialogConfig } from '../../document-form.dialog';
 import { DocumentApi } from '../../../document.api';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -16,7 +18,7 @@ import { TitleCasePipe } from '@angular/common';
     imports: [MatFormField, MatLabel, MatInput, FormsModule, ReactiveFormsModule, TitleCasePipe]
 })
 export class InformativeComponent extends BaseComponent implements OnInit {
-  private utilsService = inject(UtilsService);
+  private dialog = inject(MatDialog);
   private api = inject(DocumentApi);
 
 
@@ -81,8 +83,8 @@ export class InformativeComponent extends BaseComponent implements OnInit {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = p.plantilla;
     pedidoVenta.llaveTabla = p.llaveTabla;
-    this.utilsService.modalWithParams(pedidoVenta, false)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta))
+      .afterClosed()
       .subscribe({ error: () => {} });
   }
 }

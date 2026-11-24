@@ -8,7 +8,8 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatFooterCellDef, MatFooterCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterRowDef, MatFooterRow } from '@angular/material/table';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ManualFormComponent } from 'app/accounting/components/manual-form/manual-form.component';
 import { Router } from '@angular/router';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -43,7 +44,7 @@ interface AccountFlatNode {
     imports: [MatFormField,MatIcon,MatPrefix,MatInput,FormsModule,ReactiveFormsModule,NgClass,MatTable,MatSort,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatSortHeader,MatCellDef,MatCell,MatFooterCellDef,MatFooterCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow,MatFooterRowDef,MatFooterRow,UpperCasePipe,DecimalPipe,DatePipe,DropdownComponent,DropdownItemComponent]
 })
 export class AccountComponent implements OnInit, OnDestroy {
-    private utilsService = inject(UtilsService);
+    private dialog = inject(MatDialog);
     accountingService = inject(AccountingService);
     private layoutService = inject(LayoutService);
     private _router = inject(Router);
@@ -139,7 +140,8 @@ export class AccountComponent implements OnInit, OnDestroy {
     }
 
     editVouchers(voucher: ManualDTO) {
-        this.utilsService.modalVoucher(voucher.key, voucher.catalog)
+        this.dialog.open(ManualFormComponent, { maxHeight: '90vh', data: { key: voucher.key, catalogId: voucher.catalog } })
+            .afterClosed()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => {
                 this.getAccounts();
@@ -270,7 +272,8 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     openManualForm(): void {
         if (!this.accountingService.currentCatalog) { return; }
-        this.utilsService.modalVoucher(null!, this.accountingService.currentCatalog.key)
+        this.dialog.open(ManualFormComponent, { maxHeight: '90vh', data: { key: null, catalogId: this.accountingService.currentCatalog.key } })
+            .afterClosed()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(() => { this.getBalance(); this.getVouchers(); });
     }

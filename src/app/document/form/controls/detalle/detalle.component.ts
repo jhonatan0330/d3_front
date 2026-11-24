@@ -17,7 +17,8 @@ import { BaseComponent } from '../base/base.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductComponent } from '../product/product.component';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../form.enum';
-import { UtilsService } from '../../../service/utils.service';
+import { FormComponent } from '../../form.component';
+import { documentFormDialogConfig } from '../../document-form.dialog';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
@@ -41,7 +42,6 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   private templateService = inject(TemplateService);
   private api = inject(DocumentApi);
   private cd = inject(ChangeDetectorRef);
-  private utilsService = inject(UtilsService);
   private dialog = inject(MatDialog);
   private notificationCenter = inject(NotificationCenterService);
 
@@ -234,7 +234,7 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
   createNewDocument(_plantilla: string, _property: string) {
     DocumentCreationHelper.createDocument({
       templateService: this.templateService,
-      utilsService: this.utilsService,
+      dialog: this.dialog,
       data: this.data,
       parent: this.parent,
       relatedFields: this.relatedFields,
@@ -519,7 +519,8 @@ export class DetalleComponent extends BaseComponent implements OnInit, AfterView
 
 
 
-      this.utilsService.modalWithParams(item.documentoDetalle, false, null, true)
+      this.dialog.open(FormComponent, documentFormDialogConfig(item.documentoDetalle, { saveInField: true }))
+        .afterClosed()
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((res) => {
         if (res) {

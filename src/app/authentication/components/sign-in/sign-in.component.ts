@@ -11,7 +11,10 @@ import { LocalStoreService } from 'app/shared/local-store.service';
 import { EMPTY, finalize, switchMap, tap } from 'rxjs';
 import { LoginService } from 'app/authentication/login.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
+import { dfaComponent } from 'app/authentication/components/DFA/dfa';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { ImageFormatPipe } from '../../../shared/local-image';
 import { ParticleBackgroundDirective } from '../../business/particle-background';
@@ -38,7 +41,7 @@ export class SignInSplitScreenReversedComponent {
     private readonly loginService = inject(LoginService);
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
-    private readonly utilsService = inject(UtilsService);
+    private readonly dialog = inject(MatDialog);
     private readonly localStore = inject(LocalStoreService);
     private readonly tenantUrl = inject(TenantUrlService);
     private readonly destroyRef = inject(DestroyRef);
@@ -169,8 +172,9 @@ export class SignInSplitScreenReversedComponent {
                         return this.redirectURL();
                     }
 
-                    return this.utilsService
-                        .modalUserChangePassOther(response.usuario)
+                    return this.dialog
+                        .open(dfaComponent, { disableClose: false, data: response.usuario })
+                        .afterClosed()
                         .pipe(
                             tap(result => {
                                 if (!result) {
@@ -244,8 +248,9 @@ export class SignInSplitScreenReversedComponent {
 
         pedidoVenta.plantilla = template;
 
-        this.utilsService
-            .modalWithParams(pedidoVenta, true)
+        this.dialog
+            .open(FormComponent, documentFormDialogConfig(pedidoVenta, { close2Save: true }))
+            .afterClosed()
             .pipe(
                 takeUntilDestroyed(this.destroyRef)
             )

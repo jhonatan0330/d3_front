@@ -47,7 +47,7 @@ export const appRoutes: Route[] = [
         path: 'config',
         loadComponent: () => import('app/configuration/components/config/config.component').then(m => m.ConfigComponent),
         children: [
-          { path: '', redirectTo: 'web-services', pathMatch: 'full' },
+          { path: '', redirectTo: 'indicators', pathMatch: 'full' },
 
           { path: 'web-services', children: [
             { path: '', loadComponent: () => import('app/configuration/components/web-services/web-service-list/web-service-list.component').then(m => m.WebServiceListComponent) },

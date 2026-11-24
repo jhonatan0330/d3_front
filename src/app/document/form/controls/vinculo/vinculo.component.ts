@@ -2,11 +2,11 @@ import { Component, OnInit, ChangeDetectionStrategy, inject, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseComponent } from '../base/base.component';
 import { DocumentoPlantillaCaracteristicaDTO, DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO, PedidoVentaFilterDTO, ProcesoTransicionDTO } from 'app/document/document.types';
-import { UtilsService } from 'app/document/service/utils.service';
+import { documentFormDialogConfig } from '../../document-form.dialog';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from '../../form.enum';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormComponent } from '../../form.component';
 import { DocumentApi } from '../../../document.api';
 import { PropiedadDTO } from 'app/shared/shared.domain';
@@ -23,7 +23,7 @@ import { NotificationCenterService } from 'app/notification/business/notificatio
     imports: [  MatTooltip,TitleCasePipe,ImageFormatPipe]
 })
 export class VinculoComponent extends BaseComponent implements OnInit {
-  private utilsService = inject(UtilsService);
+  private dialog = inject(MatDialog);
   private templateService = inject(TemplateService);
   dialogRef = inject<MatDialogRef<FormComponent>>(MatDialogRef);
   private api = inject(DocumentApi);
@@ -71,7 +71,7 @@ export class VinculoComponent extends BaseComponent implements OnInit {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = p.plantilla;
     pedidoVenta.llaveTabla = p.llaveTabla;
-    this.utilsService.modalWithParams(pedidoVenta, false);
+    this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta));
   }
 
 
@@ -207,16 +207,12 @@ export class VinculoComponent extends BaseComponent implements OnInit {
       _doc.caracteristicas.push(campoBase);
     }
     //_doc.server = this.plantilla.server;
-    this.utilsService.modalWithParams(_doc, true)
+    this.dialog.open(FormComponent, documentFormDialogConfig(_doc, { close2Save: true }))
+      .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res) => {
       if (res && this.dialogRef) {
         this.dialogRef.close();
-        /*if (!this.close2Save) {
-            if (res && res.data && res.data.messages) { this.pedido.messages = res.data.messages; }
-            else { this.pedido.messages = null; }
-            this.utilsService.modalWithParams(this.pedido);
-        }*/
       }
     });
   }

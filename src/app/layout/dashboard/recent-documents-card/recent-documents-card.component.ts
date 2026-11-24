@@ -4,7 +4,9 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { RecentDocumentEntry } from 'app/shared/local-store.service';
 import { RecentDocumentsService } from '../../recent-documents.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { PedidoVentaDTO } from 'app/document/document.types';
 
 @Component({
@@ -16,7 +18,7 @@ import { PedidoVentaDTO } from 'app/document/document.types';
 export class RecentDocumentsCardComponent {
 
   private readonly recentDocumentsService = inject(RecentDocumentsService);
-  private readonly utilsService = inject(UtilsService);
+  private readonly dialog = inject(MatDialog);
 
   readonly documents = this.recentDocumentsService.documents;
 
@@ -35,7 +37,7 @@ export class RecentDocumentsCardComponent {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = doc.plantillaKey;
     pedidoVenta.llaveTabla = doc.llaveTabla;
-    this.utilsService.modalWithParams(pedidoVenta, true);
+    this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta, { close2Save: true }));
   }
 
   relativeTime(date: string): string {

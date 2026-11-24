@@ -6,7 +6,9 @@ import { MatIcon } from '@angular/material/icon';
 import { DocumentApi } from 'app/document/document.api';
 import { PedidoVentaDTO, PedidoVentaFilterDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { Subject } from 'rxjs';
 
@@ -37,7 +39,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
     constructor(
         private api: DocumentApi,
         private templateService: TemplateService,
-        private utilsService: UtilsService
+        private dialog: MatDialog
     ) {
     }
 
@@ -219,10 +221,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
 
     openDocument(_doc: PedidoVentaDTO) {
         if (this.templateService.getTemplate(_doc.plantilla)) {
-            this.utilsService.modalWithParams(
-                _doc,
-                false
-            );
+            this.dialog.open(FormComponent, documentFormDialogConfig(_doc));
         } else {
             alert('No tienes permisos para ver este documento.');
         }

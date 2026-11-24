@@ -9,7 +9,9 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 
@@ -30,7 +32,7 @@ export interface QuickAction {
 })
 export class QuickActionsComponent {
   private readonly templateService = inject(TemplateService);
-  private readonly utilsService = inject(UtilsService);
+  private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
 
   readonly actionClick = output<QuickAction>();
@@ -76,7 +78,7 @@ export class QuickActionsComponent {
 
     const pedidoVenta = new PedidoVentaDTO();
     pedidoVenta.plantilla = template.llaveTabla;
-    this.utilsService.modalWithParams(pedidoVenta, true);
+    this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta, { close2Save: true }));
     this.actionClick.emit(accion);
   }
 

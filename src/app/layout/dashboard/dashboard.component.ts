@@ -3,7 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationApi } from 'app/authentication/authentication.api';
 import { TaskListComponent } from 'app/task/components/task-list/task-list.component';
@@ -37,7 +39,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   _jwtAuth = inject(AuthenticationApi);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private _utilsService = inject(UtilsService);
+  private _dialog = inject(MatDialog);
   
   private destroyRef = inject(DestroyRef);
   @ViewChild('carouselViewport') private carouselViewport?: ElementRef<HTMLElement>;
@@ -162,7 +164,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
       if (idDocument) {
         pedidoVenta.llaveTabla = idDocument;
       }
-      this._utilsService.modalWithParams(pedidoVenta, true);
+      this._dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta, { close2Save: true }));
 
       this.router.navigate(['/main'], {
         queryParams: {

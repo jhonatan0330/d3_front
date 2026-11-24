@@ -12,7 +12,10 @@ import {
 import { PedidoVentaFilterDTO } from 'app/document/document.types';
 import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
+import { BpmDiagramComponent } from 'app/configuration/components/bpm-diagram/bpm-diagram.component';
+import { closeOpenDialog } from 'app/shared/dialogs/dialog.utils';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { DocumentoPlantillaCaracteristicaEnum, StatesEnum } from 'app/document/form/form.enum';
 import { PropiedadDTO } from 'app/shared/shared.domain';
@@ -27,7 +30,7 @@ import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropd
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { DocumentListComponent } from 'app/document/cruds/document-list.component';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DocumentFilterService } from 'app/document/document-filter.service';
 
 export interface Cruds2DialogData {
@@ -52,7 +55,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
     private router = inject(Router);
     private formBuilder = inject(FormBuilder);
     private notificationCenter = inject(NotificationCenterService);
-    private utilsService = inject(UtilsService);
+    private dialog = inject(MatDialog);
     private destroyRef = inject(DestroyRef);
     private readonly documentFilter = inject(DocumentFilterService);
     private readonly dialogData = inject<Cruds2DialogData | null>(MAT_DIALOG_DATA, { optional: true });
@@ -259,7 +262,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         if (!template) { return; }
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = template;
-        this.utilsService.modalWithParams(pedidoVenta);
+        this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta));
     }
 
     getColor(pEstado: string) {
@@ -329,7 +332,7 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
         const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
         pedidoVenta.plantilla = pDocument.plantilla;
         pedidoVenta.llaveTabla = pDocument.llaveTabla;
-        this.utilsService.modalWithParams(pedidoVenta, false);
+        this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta));
     }
 
     showAllReport(reporte: ReporteBaseDTO): void {
@@ -490,6 +493,13 @@ export class Cruds2Component implements OnInit, AfterViewInit, OnDestroy {
       openDiagram() {
           const processId = this.procesoId || this.plantilla()?.proceso;
           if (!processId) return;
-          this.utilsService.modalProcessGraph(processId);
+          closeOpenDialog(this.dialog, BpmDiagramComponent);
+          this.dialog.open(BpmDiagramComponent, {
+              width: '92vw',
+              height: '84vh',
+              maxWidth: '98vw',
+              panelClass: 'bpm-dialog',
+              data: { procesoId: processId },
+          });
       }
 }

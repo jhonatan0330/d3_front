@@ -16,7 +16,8 @@ import {
 } from 'app/document/form/form.enum';
 import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { FormComponent } from '../../form.component';
+import { documentFormDialogConfig } from '../../document-form.dialog';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { BaseComponent } from '../base/base.component';
 import { BarcodeFormat } from '@zxing/library';
@@ -50,7 +51,6 @@ import { ProcesoOptionsDialogComponent } from './proceso-options-dialog/proceso-
 export class ProcesoComponent extends BaseComponent implements OnInit {
   private templateService = inject(TemplateService);
   private api = inject(DocumentApi);
-  private utilsService = inject(UtilsService);
   private sanitizer = inject(DomSanitizer);
   private notificationCenter = inject(NotificationCenterService);
   private readonly dialog = inject(MatDialog);
@@ -305,8 +305,8 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
     const pedidoVenta: PedidoVentaDTO = new PedidoVentaDTO();
     pedidoVenta.plantilla = p.plantilla;
     pedidoVenta.llaveTabla = p.llaveTabla;
-    this.utilsService.modalWithParams(pedidoVenta, false)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta))
+      .afterClosed()
       .subscribe((res) => {
         if (res) {
           if (this.tipoMultiple) {
@@ -1261,7 +1261,7 @@ export class ProcesoComponent extends BaseComponent implements OnInit {
 
     DocumentCreationHelper.createDocument({
       templateService: this.templateService,
-      utilsService: this.utilsService,
+      dialog: this.dialog,
       data: this.data,
       parent: this.parent,
       herencia: this.herencia,

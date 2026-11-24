@@ -1,6 +1,8 @@
 import { DetallePedidoVentaDTO, PedidoVentaDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { LocalStoreService } from 'app/shared/local-store.service';
 import { ImageFormatPipe } from 'app/shared/local-image';
 
@@ -20,7 +22,7 @@ export class Puesto {
   constructor(
     private ctx: CanvasRenderingContext2D,
     private template: TemplateService,
-    private utils: UtilsService,
+    private dialog: MatDialog,
     private ls: LocalStoreService,
     componente: PedidoVentaDTO
   ) {
@@ -99,7 +101,7 @@ export class Puesto {
 
   onClick() {
     if (this.dto.llaveTabla) {
-      this.utils.modalWithParams(this.dto);
+      this.dialog.open(FormComponent, documentFormDialogConfig(this.dto));
     } else {
       if (!this.detalle) {
         this.selected = !this.selected;

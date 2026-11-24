@@ -4,7 +4,9 @@ import { TemplateService } from 'app/document/service/template.service';
 import { DocumentApi } from 'app/document/document.api';
 import { LoginService } from 'app/authentication/login.service';
 import { environment } from 'environments/environment';
-import { UtilsService } from 'app/document/service/utils.service';
+import { SettingsSecurityComponent } from 'app/authentication/components/security/security.component';
+import { dfaComponent } from 'app/authentication/components/DFA/dfa';
+import { ContactsDetailsComponent } from 'app/users/components/detail_persons/detail-person.component';
 import { MatIcon } from '@angular/material/icon';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
@@ -23,7 +25,6 @@ export class UserComponent {
 
     private apiService = inject(DocumentApi);
     private templateService = inject(TemplateService);
-    private utilService = inject(UtilsService);
     private dialog = inject(MatDialog);
 
     time = new Date();
@@ -56,15 +57,15 @@ export class UserComponent {
     }
 
     cambiarClave() {
-        this.utilService.modalUserChangePass().subscribe({ error: () => {} });
+        this.dialog.open(SettingsSecurityComponent, { maxHeight: '90vh' }).afterClosed().subscribe({ error: () => {} });
     }
     
     cambiarClaveOther(pUsuario) {
-        this.utilService.modalUserChangePassOther(pUsuario).subscribe({ error: () => {} });
+        this.dialog.open(dfaComponent, { disableClose: false, data: pUsuario }).afterClosed().subscribe({ error: () => {} });
     }
 
     goToMyAccount(pUsuario) {
-        this.utilService.modalUser(pUsuario.llaveTabla).subscribe({ error: () => {} });    
+        this.dialog.open(ContactsDetailsComponent, { maxHeight: '90vh', data: { key: pUsuario.llaveTabla } }).afterClosed().subscribe({ error: () => {} });
     }
 
     openOrganizationHomeForm(): void {

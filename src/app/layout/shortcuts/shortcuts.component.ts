@@ -3,7 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DocumentoPlantillaDTO, PedidoVentaDTO } from 'app/document/document.types';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { TemplateService } from 'app/document/service/template.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { MatIcon } from '@angular/material/icon';
@@ -20,7 +22,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
     private _templateService = inject(TemplateService);
     private _overlay = inject(Overlay);
     private _viewContainerRef = inject(ViewContainerRef);
-    private _utilService = inject(UtilsService);
+    private _dialog = inject(MatDialog);
     private destroyRef = inject(DestroyRef);
 
     private readonly _shortcutsOrigin = viewChild<ElementRef>('shortcutsOrigin');
@@ -73,7 +75,7 @@ export class ShortcutsComponent implements OnInit, OnDestroy {
         //if(shortcut.server) { 
         //pedidoVenta.serverUrl = this.templateService.getUrl4Id(this.serverId) 
         //}
-        this._utilService.modalWithParams(pedidoVenta, true);
+        this._dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta, { close2Save: true }));
     }
 
     openPanel(): void {

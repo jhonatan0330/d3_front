@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import {
@@ -11,7 +11,8 @@ import {
 } from 'app/document/document.types';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 import { DocumentTemplateService } from '../../../configuracion.api';
-import { UtilsService } from 'app/document/service/utils.service';
+import { DocumentTemplateFieldFormComponent } from 'app/configuration/components/document-templates/document-template-fields/document-template-field-form/document-template-field-form.component';
+import { PropertyModalComponent } from 'app/configuration/components/shared/property-modal/property-modal.component';
 import { PropiedadValorDefinidoDTO } from 'app/shared/shared.domain';
 
 @Component({
@@ -24,7 +25,7 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
     private notificationCenter = inject(NotificationCenterService);
     data = inject(MAT_DIALOG_DATA);
     private documentTemplateService = inject(DocumentTemplateService);
-    private utilsService = inject(UtilsService);
+    private dialog = inject(MatDialog);
     private dialogRef = inject<MatDialogRef<DocumentTemplateFieldDetailComponent>>(MatDialogRef);
 
 
@@ -94,7 +95,23 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
     }
 
     editarCampo(): void {
-        this.utilsService.fieldEditModalFlex(this.field);
+        this.dialog.open(DocumentTemplateFieldFormComponent, {
+            maxHeight: '90vh',
+            data: { id: this.field?.llaveTabla, templateId: this.field?.nodoSuperior ?? '' },
+        });
+    }
+
+    private abrirModalPropiedad(pCampo: string, ptipo: PropiedadValorDefinidoDTO, pPropiedad?: PropiedadCampoDTO) {
+        return this.dialog.open(PropertyModalComponent, {
+            maxHeight: '90vh',
+            data: {
+                propiedad: null,
+                propiedadId: pPropiedad?.llaveTabla,
+                tipoOrigen: ptipo?.origen,
+                origenCategoria: ptipo?.origenCategoria ?? '',
+                campoKey: pCampo,
+            },
+        }).afterClosed();
     }
 
     editarPropiedad(pPropiedad?: PropiedadDTO): void {
@@ -103,11 +120,11 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
         const pdto = this.toPropiedadCampo(pPropiedad);
         if (this.tipo === 'Plantilla') {
             _a.origen = 'L';
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pdto);
+            this.abrirModalPropiedad(this.field.llaveTabla, _a, pdto);
         } else {
             _a.origen = 'C';
             _a.origenCategoria = this.field.tipo;
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a, pdto);
+            this.abrirModalPropiedad(this.field.llaveTabla, _a, pdto);
         }
     }
 
@@ -142,13 +159,13 @@ export class DocumentTemplateFieldDetailComponent implements OnInit {
         const _a = new PropiedadValorDefinidoDTO();
         if (this.tipo === 'Plantilla') {
             _a.origen = 'L';
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe({ next: response => {
+            this.abrirModalPropiedad(this.field.llaveTabla, _a).subscribe({ next: response => {
                 if (response) this.listarPropiedadesCampo();
             }, error: () => {} });
         } else {
             _a.origen = 'C';
             _a.origenCategoria = this.field.tipo;
-            this.utilsService.propertyAddModalFlex(this.field.llaveTabla, _a).subscribe({ next: response => {
+            this.abrirModalPropiedad(this.field.llaveTabla, _a).subscribe({ next: response => {
                 if (response) this.listarPropiedadesCampo();
             }, error: () => {} });
         }

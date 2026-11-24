@@ -11,7 +11,10 @@ import {
     switchMap,
 } from 'rxjs';
 
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
+import { ContactsDetailsComponent } from 'app/users/components/detail_persons/detail-person.component';
 import { LoginService } from 'app/authentication/login.service';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { PedidoVentaDTO } from 'app/document/document.types';
@@ -39,7 +42,7 @@ export class PersonsComponent implements OnInit {
     private layoutService = inject(LayoutService);
     private _contactsService = inject(UsersService);
     private _router = inject(Router);
-    private utilService = inject(UtilsService);
+    private dialog = inject(MatDialog);
     private notificationCenter = inject(NotificationCenterService);
     private destroyRef = inject(DestroyRef);
     private authenticationApi = inject(AuthenticationApi);
@@ -125,16 +128,17 @@ export class PersonsComponent implements OnInit {
 
         const documento = new PedidoVentaDTO();
         documento.plantilla = rol.plantilla;
-        this.utilService.modalWithParams(documento, true).subscribe({ error: () => { } });
+        this.dialog.open(FormComponent, documentFormDialogConfig(documento, { close2Save: true }))
+            .afterClosed().subscribe({ error: () => { } });
     }
 
     onUsuarioClick(pUsuario: UsuarioDTO): void {
-        this.utilService.modalUser(pUsuario.llaveTabla).subscribe({ error: () => { } });
+        this.dialog.open(ContactsDetailsComponent, { maxHeight: '90vh', data: { key: pUsuario.llaveTabla } })
+            .afterClosed().subscribe({ error: () => { } });
     }
 
 
     cambiar_clave(pUsuario: UsuarioDTO) {
-        //this.utilService.modalUserChangePassOther(pUsuario).subscribe();
         this.authenticationApi.recoverPassword(pUsuario.identificacion, pUsuario.correo).subscribe({
             next: () => {
                 this.notificationCenter.success('Correo Enviado', 'Revisa el correo ' + pUsuario.correo + '.');

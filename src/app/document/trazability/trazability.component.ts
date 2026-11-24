@@ -1,10 +1,13 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, signal, DestroyRef } from "@angular/core";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from "@angular/forms";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO } from "app/document/document.types";
 import { TemplateService } from "app/document/service/template.service";
-import { UtilsService } from "app/document/service/utils.service";
+import { FormComponent } from "app/document/form/form.component";
+import { documentFormDialogConfig } from "app/document/form/document-form.dialog";
+import { ManualFormComponent } from "app/accounting/components/manual-form/manual-form.component";
+import { ContactsDetailsComponent } from "app/users/components/detail_persons/detail-person.component";
 import { PlantillaHelper } from "app/shared/plantilla-helper";
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { DocumentApi } from '../document.api';
@@ -38,7 +41,7 @@ export class TrazabilityComponent implements OnInit {
   private _traceService = inject(DocumentApi);
   private templateService = inject(TemplateService);
   private accountingService = inject(AccountingService);
-  private utilsService = inject(UtilsService);
+  private dialog = inject(MatDialog);
   private notificationCenter = inject(NotificationCenterService);
   private destroyRef = inject(DestroyRef);
 
@@ -272,7 +275,7 @@ export class TrazabilityComponent implements OnInit {
     const _doc: PedidoVentaDTO = new PedidoVentaDTO();
     _doc.plantilla = _template;
     _doc.llaveTabla = _id;
-    this.utilsService.modalWithParams(_doc);
+    this.dialog.open(FormComponent, documentFormDialogConfig(_doc));
   }
 
   showVoucherAccount(pService: PropiedadDTO) {
@@ -287,7 +290,8 @@ export class TrazabilityComponent implements OnInit {
         .subscribe({
           next: (value: SharedIdResponse) => {
             if (value && value.id) {
-              this.utilsService.modalVoucher(value.id, null!).subscribe({ error: () => { } });
+              this.dialog.open(ManualFormComponent, { maxHeight: '90vh', data: { key: value.id, catalogId: null } })
+                .afterClosed().subscribe({ error: () => { } });
             } else {
               this.notificationCenter.info('Comprobante', 'No se encontro comprobante para este documento');
             }
@@ -373,7 +377,8 @@ export class TrazabilityComponent implements OnInit {
 
 
   onUsuarioClick(pUsuario): void {
-    this.utilsService.modalUser(pUsuario).subscribe({ error: () => { } });
+    this.dialog.open(ContactsDetailsComponent, { maxHeight: '90vh', data: { key: pUsuario } })
+      .afterClosed().subscribe({ error: () => { } });
   }
 
 

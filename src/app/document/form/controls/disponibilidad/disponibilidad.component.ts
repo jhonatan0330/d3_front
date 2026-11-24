@@ -4,7 +4,6 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentoPlantillaCaracteristicaEnum } from 'app/document/form/form.enum';
 import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { DetallePedidoVentaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaCaracteristicaFilterDTO, ProductoDTO } from '../../../document.types';
 import { BaseComponent } from '../base/base.component';
@@ -28,7 +27,6 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
   private api = inject(DocumentApi);
   private ls = inject(LocalStoreService);
   private template = inject(TemplateService);
-  private utils = inject(UtilsService);
   private dialog = inject(MatDialog);
   private _injector = inject(Injector);
 
@@ -93,7 +91,7 @@ export class DisponibilidadComponent extends BaseComponent implements OnInit {
   }
 
   consultaExitosaDatosBase(pCampo: PedidoVentaCaracteristicaFilterDTO) {
-    this.estructura = new Estructura(this.ctx, pCampo.campoDTO, this.multiple, this.template, this.utils, this.ls);
+    this.estructura = new Estructura(this.ctx, pCampo.campoDTO, this.multiple, this.template, this.dialog, this.ls);
     this.estructura.isEnabled = this.isEnabled;
     this.structure.productos = pCampo.campoDTO.productos;
     this.mostrarPlano();

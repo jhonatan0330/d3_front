@@ -4,7 +4,7 @@ import {
   PedidoVentaDTO,
 } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { signal } from '@angular/core';
 import { Puesto } from './puesto';
@@ -27,14 +27,14 @@ export class Estructura {
     private campo: DocumentoPlantillaCaracteristicaDTO,
     private multiple: boolean,
     private template: TemplateService,
-    private utils: UtilsService,
+    private dialog: MatDialog,
     private ls: LocalStoreService
   ) {
     this.imagenFondo = campo.imagen;
     if (campo.documentos) {
       this.ubicaciones = [];
       for (let it = 0; it < campo.documentos.length; it++) {
-        this.ubicaciones.push(new Puesto(this.ctx, template, utils, this.ls, campo.documentos[it]));
+        this.ubicaciones.push(new Puesto(this.ctx, template, dialog, this.ls, campo.documentos[it]));
       }
     }
     this.ctx.canvas.onclick = (event) => {

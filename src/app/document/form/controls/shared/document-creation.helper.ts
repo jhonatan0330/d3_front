@@ -1,12 +1,14 @@
 import { Observable } from 'rxjs';
 import { PedidoVentaCaracteristicaDTO, PedidoVentaDTO, RelacionInternaDTO } from 'app/document/document.types';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { PropiedadDTO } from 'app/shared/shared.domain';
 
 export interface DocumentCreationContext {
   templateService: TemplateService;
-  utilsService: UtilsService;
+  dialog: MatDialog;
   data?: PedidoVentaCaracteristicaDTO;
   parent?: PedidoVentaDTO;
   herencia?: PropiedadDTO;
@@ -139,8 +141,9 @@ export class DocumentCreationHelper {
         }
 
         doc.plantilla = targetPlantilla;
-        context.utilsService
-          .modalWithParams(doc, true, context.createFilter as any)
+        context.dialog
+          .open(FormComponent, documentFormDialogConfig(doc, { close2Save: true, identificador: context.createFilter as any }))
+          .afterClosed()
           .subscribe({
             next: (res) => {
               observer.next(res?.data ?? null);

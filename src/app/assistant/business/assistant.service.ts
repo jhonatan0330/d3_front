@@ -7,7 +7,9 @@ import { DocumentoPlantillaDTO, PedidoVentaCaracteristicaDTO, PedidoVentaDTO, Pe
 import { DocumentoPlantillaTipoEnum } from 'app/document/form/form.enum';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
 import { DocumentApi } from 'app/document/document.api';
-import { UtilsService } from 'app/document/service/utils.service';
+import { MatDialog } from '@angular/material/dialog';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { Router } from '@angular/router';
 import { ChatService } from '../assistant.api';
 
@@ -15,7 +17,7 @@ import { ChatService } from '../assistant.api';
 export class AssistantService {
     private readonly templateService = inject(TemplateService);
     private readonly api = inject(DocumentApi);
-    private readonly utilsService = inject(UtilsService);
+    private readonly dialog = inject(MatDialog);
     private router = inject(Router);
 
     private readonly chatService = inject(ChatService);
@@ -279,7 +281,7 @@ export class AssistantService {
     abrirAccionDocumento(action: CreateDocumentAction): void {
         const resolved = this.resolverAccion(action);
         if (resolved.pedido) {
-            this.utilsService.modalWithParams(resolved.pedido);
+            this.dialog.open(FormComponent, documentFormDialogConfig(resolved.pedido));
         }
     }
 
@@ -394,7 +396,7 @@ export class AssistantService {
 
     abrirDocumento(doc: PedidoVentaDTO): void {
         if (this.templateService.getTemplate(doc.plantilla)) {
-            this.utilsService.modalWithParams(doc, false);
+            this.dialog.open(FormComponent, documentFormDialogConfig(doc));
         }
     }
 

@@ -1,9 +1,10 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed, DestroyRef } from '@angular/core';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
-import { UtilsService } from 'app/document/service/utils.service';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { MatIcon } from '@angular/material/icon';
 import { UsersService } from 'app/users/business/users.services';
@@ -23,7 +24,7 @@ export class ContactsDetailsComponent {
     data = inject<{ key: string }>(MAT_DIALOG_DATA);
     private dialogRef = inject<MatDialogRef<ContactsDetailsComponent>>(MatDialogRef);
     private readonly layoutService = inject(LayoutService);
-    private utilService = inject(UtilsService);
+    private dialog = inject(MatDialog);
     private destroyRef = inject(DestroyRef);
 
     contact = toSignal(
@@ -46,7 +47,7 @@ export class ContactsDetailsComponent {
         const componente = new PedidoVentaDTO;
         componente.llaveTabla = tag.codigo;
         componente.plantilla = tag.plantilla;
-        this.utilService.modalWithParams(componente);
+        this.dialog.open(FormComponent, documentFormDialogConfig(componente));
     }
 
     buscartags() {

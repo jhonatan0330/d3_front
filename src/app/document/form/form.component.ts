@@ -27,7 +27,12 @@ import { DocumentApi } from 'app/document/document.api';
 import { TemplateService } from 'app/document/service/template.service';
 import { IDynamicControl } from './controls/base/base.component';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
-import { UtilsService } from 'app/document/service/utils.service';
+import { TransferFormComponent } from 'app/notification/components/transfer-form/transfer-form.component';
+import { TrazabilityComponent } from 'app/document/trazability/trazability.component';
+import { BpmDiagramComponent } from 'app/configuration/components/bpm-diagram/bpm-diagram.component';
+import { ContactsDetailsComponent } from 'app/users/components/detail_persons/detail-person.component';
+import { documentFormDialogConfig } from './document-form.dialog';
+import { closeOpenDialog } from 'app/shared/dialogs/dialog.utils';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { getComponent } from 'app/document/form/form-helper';
 import { PropiedadDTO } from 'app/shared/shared.domain';
@@ -65,7 +70,6 @@ export class FormComponent implements OnInit, AfterViewInit {
     private templateService = inject(TemplateService);
     private api = inject(DocumentApi);
     _jwt = inject(LoginService);
-    private utilsService = inject(UtilsService);
     private _router = inject(Router);
     private _injector = inject(Injector);
     private _destroyRef = inject(DestroyRef);
@@ -306,7 +310,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 pedidoVenta.llaveTabla = value.llaveTabla;
             }
             pedidoVenta.messages = value.messages;
-            this.utilsService.modalWithParams(pedidoVenta);
+            this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta));
         } else {
             this.notificationCenter.fire({
                 position: 'top-end',
@@ -324,11 +328,6 @@ export class FormComponent implements OnInit, AfterViewInit {
             }
         }
         this.submitted.set(false);
-
-        if (successFullText) {
-            // Aqui va los cambios de variables
-            this.utilsService.modalSuccess(successFullText);
-        }
 
         
         if(this.plantilla() && this.plantilla()!.estados && this.plantilla()!.estados.length > 0 ){
@@ -920,7 +919,8 @@ export class FormComponent implements OnInit, AfterViewInit {
             }
             _doc.caracteristicas.push(campoBase);
         }
-        this.utilsService.modalWithParams(_doc, true)
+        this.dialog.open(FormComponent, documentFormDialogConfig(_doc, { close2Save: true }))
+            .afterClosed()
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe((res) => {
             if (res && this.dialogRef) {
@@ -928,7 +928,7 @@ export class FormComponent implements OnInit, AfterViewInit {
                 if (!this.close2Save) {
                     if (res && res.data && res.data.messages) { this.pedido()!.messages = res.data.messages; this.messages.set(res.data.messages); }
                     else { this.pedido()!.messages = null as any; this.messages.set(null); }
-                    this.utilsService.modalWithParams(this.pedido()!);
+                    this.dialog.open(FormComponent, documentFormDialogConfig(this.pedido()!));
                 }
             }
         });
@@ -976,7 +976,14 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     showTransfer() {
         if (this.canTransfer()) {
-            this.utilsService.modalTransfer(this.pedido()!.llaveTabla, this.pedido()!.estadoExpediente, this.pedido()!.plantilla)
+            this.dialog.open(TransferFormComponent, {
+                disableClose: false,
+                data: {
+                    document: this.pedido()!.llaveTabla,
+                    state: this.pedido()!.estadoExpediente,
+                    template: this.pedido()!.plantilla,
+                },
+            }).afterClosed()
                 .pipe(takeUntilDestroyed(this._destroyRef))
                 .subscribe((res) => {
                     if (res && this.dialogRef) {
@@ -987,7 +994,15 @@ export class FormComponent implements OnInit, AfterViewInit {
     }
 
     showTrace() {
-        this.utilsService.modalTrace(this.pedido()!.llaveTabla, this.pedido()!.plantilla, this.pedido()!.nombre, this.pedido()!.estadoNombre, this.pedido()!.estado);
+        this.dialog.open(TrazabilityComponent, {
+            data: {
+                document: this.pedido()!.llaveTabla,
+                template: this.pedido()!.plantilla,
+                documentName: this.pedido()!.nombre,
+                documentState: this.pedido()!.estadoNombre,
+                state: this.pedido()!.estado,
+            },
+        });
     }
 
     showChangeState() {
@@ -1106,7 +1121,8 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     reloadScreen(pTemplate?: string) {
         this.dialogRef.close();
-        this.utilsService.modalWithParams(this.pedido()!, false, null, false, pTemplate as any)
+        this.dialog.open(FormComponent, documentFormDialogConfig(this.pedido()!, { openQuickTransitionAfterSave: pTemplate ?? null }))
+            .afterClosed()
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({ error: () => {} });
     }
@@ -1132,7 +1148,8 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.userApi.searchUserByRol(pUsuario)
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({ next: (contact) => {
-            this.utilsService.modalUser(contact.llaveTabla)
+            this.dialog.open(ContactsDetailsComponent, { maxHeight: '90vh', data: { key: contact.llaveTabla } })
+                .afterClosed()
                 .pipe(takeUntilDestroyed(this._destroyRef))
                 .subscribe({ error: () => {} });
         }, error: () => {} });
@@ -1141,7 +1158,14 @@ export class FormComponent implements OnInit, AfterViewInit {
     openDiagram(): void {
         const procesoId = this.plantilla()?.proceso;
         if (!procesoId) return;
-        this.utilsService.modalProcessGraph(procesoId);
+        closeOpenDialog(this.dialog, BpmDiagramComponent);
+        this.dialog.open(BpmDiagramComponent, {
+            width: '92vw',
+            height: '84vh',
+            maxWidth: '98vw',
+            panelClass: 'bpm-dialog',
+            data: { procesoId },
+        });
     }
 
 
@@ -1175,10 +1199,60 @@ export class FormComponent implements OnInit, AfterViewInit {
                     campoBase.valorFecha = campoDocumento.valorFecha;
                     campoBase.valorOpcion = campoDocumento.valorOpcion;
                 }
+                if (campoDocumento.campoDTO.tipo === DocumentoPlantillaCaracteristicaEnum.PRODUCTO) {
+                    campoBase.detalles = (campoDocumento.detalles ?? []).map((detalle) => {
+                        const copia = new DetallePedidoVentaDTO();
+                        copia.estado = detalle.estado;
+                        copia.producto = detalle.producto;
+                        copia.productoTercero = detalle.productoTercero;
+                        copia.productoCodigo = detalle.productoCodigo;
+                        copia.productoImagen = detalle.productoImagen;
+                        copia.productoDocumento = detalle.productoDocumento;
+                        copia.nombre = detalle.nombre;
+                        copia.cantidad = detalle.cantidad;
+                        copia.cantidadPromocion = detalle.cantidadPromocion;
+                        copia.cantidadPromocionBase = detalle.cantidadPromocionBase;
+                        copia.cantidadTotal = detalle.cantidadTotal;
+                        copia.valorMinimo = detalle.valorMinimo;
+                        copia.valorTotal = detalle.valorTotal;
+                        copia.valorUnitario = detalle.valorUnitario;
+                        copia.valorMaximo = detalle.valorMaximo;
+                        copia.plantilla = detalle.plantilla;
+                        copia.valorSubtotal = detalle.valorSubtotal;
+                        copia.tarifas = detalle.tarifas?.map((tarifa) => ({ ...tarifa }));
+                        copia.campo = detalle.campo;
+                        copia.plantillaDetalle = detalle.plantillaDetalle;
+                        copia.detalleId = detalle.detalleId;
+                        copia.propiedades = detalle.propiedades?.map((propiedad) => ({ ...propiedad }));
+
+                        if (detalle.documentoDetalle) {
+                            copia.documentoDetalle = new PedidoVentaDTO();
+                            copia.documentoDetalle.estadoExpediente = detalle.documentoDetalle.estadoExpediente;
+                            copia.documentoDetalle.plantilla = detalle.documentoDetalle.plantilla;
+                            copia.documentoDetalle.caracteristicas =
+                                (detalle.documentoDetalle.caracteristicas ?? []).map((campoDetalle) => {
+                                    const campoCopia = new PedidoVentaCaracteristicaDTO();
+                                    campoCopia.campo = campoDetalle.campo;
+                                    campoCopia.campoDTO = campoDetalle.campoDTO;
+                                    campoCopia.valorOpcion = campoDetalle.valorOpcion;
+                                    campoCopia.valorAuxiliar = campoDetalle.valorAuxiliar;
+                                    campoCopia.valorFecha = campoDetalle.valorFecha;
+                                    campoCopia.valorNumero = campoDetalle.valorNumero;
+                                    campoCopia.valorText = campoDetalle.valorText;
+                                    campoCopia.modificado = campoDetalle.modificado;
+                                    campoCopia.principal = campoDetalle.principal;
+                                    return campoCopia;
+                                });
+                        }
+
+                        return copia;
+                    });
+                }
                 _doc.caracteristicas.push(campoBase);
             }
         }
-        this.utilsService.modalWithParams(_doc, false)
+        this.dialog.open(FormComponent, documentFormDialogConfig(_doc))
+            .afterClosed()
             .pipe(takeUntilDestroyed(this._destroyRef))
             .subscribe({ error: () => {} });
     }

@@ -10,7 +10,7 @@ import { AuthenticationApi } from './authentication.api';
 import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 import { UsuarioAutenticacionDTO } from './domain/UsuarioAutenticacionDTO';
 import { UsuarioAutenticacionFilterDTO } from './domain/UsuarioAutenticacionFilterDTO';
-import { UtilsService } from 'app/document/service/utils.service';
+import { SettingsSecurityComponent } from 'app/authentication/components/security/security.component';
 import { LayoutService } from 'app/layout/layout.service';
 
 @Injectable({ providedIn: 'root' })
@@ -21,8 +21,6 @@ export class LoginService {
   private router = inject(Router);
   //Para cerrar todos los dialog que puedan estar abiertos
   private dialog = inject(MatDialog);
-  // Muestra el pop de cambiar clave
-  private readonly _utilsService = inject(UtilsService);
   // Consulta los servicios del dominio Authentication
   private readonly authenticationApi = inject(AuthenticationApi);
   // Muestra la notificacion del tiempo 
@@ -110,7 +108,7 @@ export class LoginService {
       const received = (res.fechaMaxima instanceof Date) ? res.fechaMaxima : new Date(res.fechaMaxima);
       // If the received date is greater than now, show a pop-up
       if (received < now) {
-        this._utilsService.modalUserChangePass().subscribe();
+        this.dialog.open(SettingsSecurityComponent, { maxHeight: '90vh' }).afterClosed().subscribe();
       }
       return;
     }
