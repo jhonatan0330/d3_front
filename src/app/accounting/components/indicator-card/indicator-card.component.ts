@@ -14,7 +14,8 @@ import { TimeFrame } from 'app/accounting/domain/TimeFrame';
 import { IndicatorTargetDTO } from 'app/accounting/domain/IndicatorTargetDTO';
 import { IndicadoresService } from 'app/accounting/business/indicadores.service';
 import { TemplateService } from 'app/document/service/template.service';
-import { UtilsService } from 'app/document/service/utils.service';
+import { FormComponent } from 'app/document/form/form.component';
+import { documentFormDialogConfig } from 'app/document/form/document-form.dialog';
 import { PedidoVentaDTO } from 'app/document/document.types';
 import { DocumentoPlantillaDTO } from 'app/document/document.types';
 import { PlantillaHelper } from 'app/shared/plantilla-helper';
@@ -35,7 +36,6 @@ export class IndicatorCardComponent {
   private destroyRef = inject(DestroyRef);
   private indicadoresService = inject(IndicadoresService);
   private templateService = inject(TemplateService);
-  private utilsService = inject(UtilsService);
 
   protected resultado = signal<ResultMapDTO | undefined>(undefined);
   protected loading = signal(false);
@@ -52,7 +52,7 @@ export class IndicatorCardComponent {
   protected readonly templateActions = computed<DocumentoPlantillaDTO[]>(() => {
     const propertyValues = PlantillaHelper.buscarValorMultiple(
       (this.indicador().propiedades ?? []) as any,
-      PlantillaHelper.ACTIONS
+      PlantillaHelper.INDICADOR_TEMPLATE_ACTION
     ) ?? [];
 
     const ids = propertyValues
@@ -257,7 +257,7 @@ export class IndicatorCardComponent {
   protected openTemplate(template: DocumentoPlantillaDTO): void {
     const pedidoVenta = new PedidoVentaDTO();
     pedidoVenta.plantilla = template.llaveTabla;
-    this.utilsService.modalWithParams(pedidoVenta, true);
+    this.dialog.open(FormComponent, documentFormDialogConfig(pedidoVenta, { close2Save: true }));
   }
 
   protected openTable(): void {

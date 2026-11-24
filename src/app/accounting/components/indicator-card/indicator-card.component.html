@@ -106,23 +106,16 @@
             <path d="M12 3v18" />
           </svg>
         </button>
-        <button type="button" class="btn-icon-sm" aria-label="Buscar indicador">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="6" />
-            <path d="m16 16 4 4" />
-          </svg>
+        @for (template of templateActions().slice(0, 3); track template.llaveTabla) {
+        <button type="button" class="btn-icon-sm" [attr.aria-label]="'Abrir plantilla ' + template.nombre"
+          [title]="template.nombre" (click)="openTemplate(template)">
+          <img class="h-4 w-4 object-contain" [src]="template.imagen | imageFormat" alt=""
+            (error)="onImageError($event)" />
         </button>
-        <button type="button" class="btn-icon-sm" aria-label="Filtrar indicador">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 6h16" />
-            <path d="M7 12h10" />
-            <path d="M10 18h4" />
-          </svg>
-        </button>
+        }
+        @if (templateActions().length > 3) {
         <app-dropdown>
-          <button trigger type="button" class="btn-icon-sm" aria-label="Más acciones">
+          <button trigger type="button" class="btn-icon-sm" aria-label="Más plantillas">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="12" cy="5" r="1.7" />
               <circle cx="12" cy="12" r="1.7" />
@@ -130,12 +123,13 @@
             </svg>
           </button>
 
-          @for (template of templateActions(); track template.llaveTabla) {
+          @for (template of templateActions().slice(3); track template.llaveTabla) {
           <app-dropdown-item (clicked)="openTemplate(template)">
             <span>{{ template.nombre }}</span>
           </app-dropdown-item>
           }
         </app-dropdown>
+        }
       </div>
 
       <div class="overflow-visible rounded-2xl border border-slate-200 bg-linear-to-br from-slate-50 via-white to-slate-100 p-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] dark:border-slate-700 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800">
