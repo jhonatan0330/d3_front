@@ -27,6 +27,10 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     updateOn: 'blur'
   });
 
+  get isReadOnly(): boolean {
+    return !this.isEnabled || !this.formIsEnabled;
+  }
+
   step = 1;
   formula: string;
   formulaMaximum: PropiedadDTO;
@@ -61,8 +65,13 @@ export class NumeroComponent extends BaseComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
         distinctUntilChanged(),
         map(value=>{ 
-          this.fControl.setValue(this.numberToInput(value), { emitEvent: false });
-          return value;
+          const evaluado = this.evaluateNumericValue(value);
+          if (evaluado === null) {
+            this.fControl.setValue(this.numberToInput(this.data?.valorNumero ?? 0), { emitEvent: false });
+            return this.fControl.value;
+          }
+          this.fControl.setValue(this.numberToInput(evaluado), { emitEvent: false });
+          return evaluado;
         }),
         tap(()=> {
           this.actualizar();
@@ -77,8 +86,16 @@ export class NumeroComponent extends BaseComponent implements OnInit {
   }
 
   onEnter(event: Event) {
+    event.preventDefault();
+    if (this.isReadOnly) { return; }
+
     const input = event.target as HTMLInputElement;
-    this.fControl.setValue(this.numberToInput(Number(input.value)));
+    const evaluado = this.evaluateNumericValue(input.value);
+    if (evaluado === null) {
+      this.fControl.setValue(this.numberToInput(this.data?.valorNumero ?? 0), { emitEvent: false });
+      return;
+    }
+    this.fControl.setValue(this.numberToInput(evaluado));
   }
 
   startControl() {
@@ -125,24 +142,30 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     return texto;
   }
 
-  numberToInput(_valueNumber:number): string{
-    let _value = String(_valueNumber);
-    _value = _value.replace(/,/g, '').replace(/\s/g, '');
+  numberToInput(_valueNumber: number | string | null | undefined): string{
+    const numericValue = this.evaluateNumericValue(_valueNumber);
+    return formatNumber(numericValue ?? 0, 'en-US', '1.0-' + this.numeroDecimales);
+  }
 
-    let numericValue = 0;
-
-    if (/^[0-9+\-*/().]+$/.test(_value)) {
-      try {
-        // Evaluamos expresión matemática si es válida
-        numericValue = Function('"use strict";return (' + _value + ')')();
-      } catch (e) {
-        numericValue = 0;
-      }
-    } else if (_value) {
-      numericValue = 0;
+  private evaluateNumericValue(_value: number | string | null | undefined): number | null {
+    if (_value === null || _value === undefined) {
+      return null;
+    }
+    if (typeof _value === 'number') {
+      return Number.isFinite(_value) ? _value : null;
     }
 
-    return formatNumber(numericValue, 'en-US', '1.0-' + this.numeroDecimales);
+    const _valueText = _value.replace(/,/g, '').replace(/\s/g, '');
+    if (!_valueText || !/^[0-9+\-*/().]+$/.test(_valueText)) {
+      return null;
+    }
+
+    try {
+      const resultado = Function('"use strict";return (' + _valueText + ')')();
+      return typeof resultado === 'number' && Number.isFinite(resultado) ? resultado : null;
+    } catch (e) {
+      return null;
+    }
   }
 
 
@@ -151,10 +174,14 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     if (!controlValue) {
       controlValue = '0';
     }else{
-      controlValue = controlValue.replace(/,/g, '').replace(/\s/g, '');
+      controlValue = String(controlValue).replace(/,/g, '').replace(/\s/g, '');
     }
-    if (this.data.valorNumero !== Number(controlValue)) {
-      this.data.valorNumero = Number(controlValue);
+    const nuevoValor = Number(controlValue);
+    if (!Number.isFinite(nuevoValor)) {
+      return;
+    }
+    if (this.data.valorNumero !== nuevoValor) {
+      this.data.valorNumero = nuevoValor;
       this.data.valorText = controlValue;
       this.avisarModificacion();
     }
@@ -349,8 +376,10 @@ export class NumeroComponent extends BaseComponent implements OnInit {
     }
 
     if (this.errorMessage) {
-      const input = document.getElementById(this.idField!) as HTMLInputElement;
-      if (input) { input.focus(); }
+      if (!this.isReadOnly) {
+        const input = document.getElementById(this.idField!) as HTMLInputElement;
+        if (input) { input.focus(); }
+      }
       return false;
     }
     return true;

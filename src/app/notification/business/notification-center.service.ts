@@ -4,20 +4,30 @@ import Swal from 'sweetalert2';
 @Injectable({ providedIn: 'root' })
 export class NotificationCenterService {
 
-  info(title: string, text?: string) {
-    Swal.fire({ title, text, icon: 'info', confirmButtonText: 'Aceptar' });
+  private lastAlert: Promise<unknown> = Promise.resolve();
+
+  info(title: string, text?: string): Promise<unknown> {
+    this.lastAlert = Swal.fire({ title, text, icon: 'info', confirmButtonText: 'Aceptar' });
+    return this.lastAlert;
   }
 
-  success(title: string, text?: string) {
-    Swal.fire({ title, text, icon: 'success', confirmButtonText: 'Aceptar' });
+  success(title: string, text?: string): Promise<unknown> {
+    this.lastAlert = Swal.fire({ title, text, icon: 'success', confirmButtonText: 'Aceptar' });
+    return this.lastAlert;
   }
 
-  warn(title: string, text?: string) {
-    Swal.fire({ title, text, icon: 'warning', confirmButtonText: 'Aceptar' });
+  warn(title: string, text?: string): Promise<unknown> {
+    this.lastAlert = Swal.fire({ title, text, icon: 'warning', confirmButtonText: 'Aceptar' });
+    return this.lastAlert;
   }
 
-  error(title: string, text?: string) {
-    Swal.fire({ title, text, icon: 'error', confirmButtonText: 'Aceptar' });
+  error(title: string, text?: string): Promise<unknown> {
+    this.lastAlert = Swal.fire({ title, text, icon: 'error', confirmButtonText: 'Aceptar' });
+    return this.lastAlert;
+  }
+
+  whenClosed(): Promise<void> {
+    return this.lastAlert.then(() => undefined);
   }
 
   // Confirm dialog that resolves to true/false

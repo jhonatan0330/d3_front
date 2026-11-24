@@ -11,7 +11,7 @@
     }
     <mat-label>{{ structure.nombre | titlecase }} </mat-label>
     <input [id]="idField!" matInput class="text-right" [name]="structure.llaveTabla!" [formControl]="fControl" [required]="required"
-      [readonly]="!isEnabled || !formIsEnabled" (focus)="getInitialFocus($event)" (keydown.enter)="onEnter($event)"
+      [readonly]="isReadOnly" [attr.tabindex]="isReadOnly ? -1 : null" (focus)="getInitialFocus($event)" (keydown.enter)="onEnter($event)"
       autocomplete="off" />
 
   </mat-form-field>

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -22,6 +22,7 @@ import { environment } from 'environments/environment';
 import { SafeHtml } from '@angular/platform-browser';
 import { UsuarioAutenticacionDTO } from 'app/authentication/domain/UsuarioAutenticacionDTO';
 import { LayoutService } from 'app/layout/layout.service';
+import { NotificationCenterService } from 'app/notification/business/notification-center.service';
 
 @Component({
     selector: 'sign-in-split-screen-reversed',
@@ -45,6 +46,7 @@ export class SignInSplitScreenReversedComponent {
     private readonly localStore = inject(LocalStoreService);
     private readonly tenantUrl = inject(TenantUrlService);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly notificationCenter = inject(NotificationCenterService);
 
 
     readonly company = this.layoutService.company;
@@ -79,6 +81,8 @@ export class SignInSplitScreenReversedComponent {
         username: ['', Validators.required],
         password: ['', Validators.required]
     });
+
+    private readonly passwordInput = viewChild<ElementRef<HTMLInputElement>>('passwordInput');
 
 
     constructor() {
@@ -213,10 +217,19 @@ export class SignInSplitScreenReversedComponent {
                         this.router.navigateByUrl(
                             'sessions/recover'
                         );
+                        return;
                     }
+
+                    this.focusPasswordAfterError();
                 }
             });
 
+    }
+
+    private focusPasswordAfterError(): void {
+        this.notificationCenter
+            .whenClosed()
+            .then(() => this.passwordInput()?.nativeElement.focus());
     }
 
     private redirectURL(): Promise<boolean> {
