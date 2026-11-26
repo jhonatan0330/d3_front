@@ -10,7 +10,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { IndicatorDTO } from 'app/accounting/domain/IndicatorDTO';
 import { ResultMapDTO } from 'app/accounting/domain/ResultMapDTO';
-import { TimeFrame } from 'app/accounting/domain/TimeFrame';
 import { IndicatorTargetDTO } from 'app/accounting/domain/IndicatorTargetDTO';
 import { IndicadoresService } from 'app/accounting/business/indicadores.service';
 import { TemplateService } from 'app/document/service/template.service';
@@ -23,6 +22,7 @@ import { IndicatorTableComponent } from 'app/accounting/components/indicator-tab
 import { ImageFormatPipe } from 'app/shared/local-image';
 import { DropdownComponent } from 'app/shared/components/dropdown/dropdown/dropdown.component';
 import { DropdownItemComponent } from 'app/shared/components/dropdown/dropdown-item/dropdown-item.component';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'indicator-card',
@@ -217,17 +217,10 @@ export class IndicatorCardComponent {
   }
 
   protected loadResultado(): void {
-    const timeFrame = this.indicador().datos?.[0]?.timeFrame;
-    if (!timeFrame) {
-      this.loading.set(false);
-      return;
-    }
-    const period = new TimeFrame();
-    period.key = timeFrame;
     this.loading.set(true);
     this.error.set(false);
     this.indicadoresService
-      .getResultadoIndicador(this.indicador().llaveTabla, period)
+      .getResultadoIndicador(this.indicador().llaveTabla, '2026-11-25')
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resultado) => {

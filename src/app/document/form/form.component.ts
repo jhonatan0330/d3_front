@@ -753,10 +753,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         this.canRelations.set(false);
         if (this.pedido()!.llaveTabla) {
             this.hasVoucher.set(!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.TEMPLATE_VOUCHER));
-            this.canRelations.set(!PlantillaHelper.isEmpty(
-                    this.plantilla()!.propiedades,
-                    PlantillaHelper.RELATIONS_FORMS
-                ));
+            this.canRelations.set(!PlantillaHelper.isEmpty(this.plantilla()!.propiedades, PlantillaHelper.RELATIONS_FORMS));
             if (!this.pedido()!.estadoExpediente) {
                 // Solo se pueden anular los que estan en estado activo y que no son de un proceso
                 if (this.pedido()!.estado === StatesEnum.ACTIVE) {

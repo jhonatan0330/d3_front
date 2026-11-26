@@ -90,10 +90,9 @@ export class AccountingService {
     return this.http.get<IndicatorDTO>(this.ls.getUrlAccess('/accounting/indicators/' + key));
   }
 
-  getResultadoIndicador(key: string, periodo: TimeFrame): Observable<ResultMapDTO> {
-    return this.http.post<ResultMapDTO>(
-      this.ls.getUrlAccess('/accounting/indicators/' + key + '/result'),
-      periodo
+  getResultadoIndicador(key: string, periodo: string): Observable<ResultMapDTO> {
+    return this.http.get<ResultMapDTO>(
+      this.ls.getUrlAccess('/accounting/indicators/' + key + '/result/' + periodo),
     );
   }
 
