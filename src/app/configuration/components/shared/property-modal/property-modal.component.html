@@ -120,11 +120,13 @@
 
         @if (def.pideTiempoBloqueo) {
           <div>
-            <label class="mb-1.5 block text-sm font-medium" for="property-lock-time">Tiempo de bloqueo (minutos)</label>
-            <input id="property-lock-time" type="number" min="0" step="1"
+            <label class="mb-1.5 block text-sm font-medium" for="property-lock-time">Bloqueo</label>
+            <input id="property-lock-time" type="text"
               [(ngModel)]="propiedad.bloqueo"
               name="bloqueo"
+              placeholder="[(08:00-18:00)(L,M,X,J,V)]"
               class="w-full rounded-md border border-gray-300 bg-white px-3 py-2.5 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100" />
+            <p class="mt-1 text-xs text-secondary">Patrón de horario y días, por ejemplo [(08:00-18:00)(L,M,X,J,V)].</p>
           </div>
         }
 

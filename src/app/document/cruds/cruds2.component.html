@@ -1,7 +1,13 @@
-<div class="flex h-full min-h-0 w-full flex-row-reverse overflow-hidden bg-gray-50 dark:bg-gray-950">
+<div class="relative flex h-full min-h-0 w-full flex-row-reverse overflow-hidden bg-gray-50 dark:bg-gray-950">
   <!-- Backdrop (solo en modo 'over' cuando está abierto) -->
 
-  <aside class="z-30 w-80 shrink-0 overflow-y-auto border-l border-gray-200 bg-card shadow-lg transition-transform duration-300 ease-in-out dark:border-gray-700" [class.hidden]="!drawerOpened()" aria-label="Filtros y acciones">
+  <aside class="z-30 w-80 shrink-0 overflow-y-auto border-l border-gray-200 bg-card shadow-lg transition-transform duration-300 ease-in-out dark:border-gray-700"
+    [class.hidden]="!drawerOpened()"
+    [class.absolute]="drawerMode() === 'over'"
+    [class.inset-y-0]="drawerMode() === 'over'"
+    [class.right-0]="drawerMode() === 'over'"
+    [style.max-width]="drawerMode() === 'over' ? '85vw' : null"
+    aria-label="Filtros y acciones">
     <!-- sidebar -->
     <div class="flex min-h-full w-full flex-auto flex-col p-4">
       <!-- Title -->
@@ -220,7 +226,7 @@
     </div>
   </aside>
   @if (drawerOpened() && drawerMode() === 'over') {
-  <div class="w-full inset-0 bg-black/50 z-40 transition-opacity" (click)="drawerOpened.set(false)"></div>
+  <div class="absolute inset-0 z-20 bg-black/50 transition-opacity" (click)="drawerOpened.set(false)"></div>
   }
   <app-document-list
     [plantilla]="plantilla()"

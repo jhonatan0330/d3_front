@@ -135,12 +135,26 @@ export class PropertyModalComponent implements OnInit {
         pc.usuarioExcluyenteNombre = prop.usuarioExcluyenteNombre || '';
         this.mostrarCamposUsuario = !!(pc.usuario || pc.usuarioExcluyente);
         this.mostrarCamposRol = !!(pc.rol || pc.rolExcluyente);
-        pc.fechaInicial = prop.fechaInicial || '';
-        pc.fechaFinal = prop.fechaFinal || '';
+        pc.fechaInicial = this.toDateTimeLocal(prop.fechaInicial);
+        pc.fechaFinal = this.toDateTimeLocal(prop.fechaFinal);
         pc.bloqueo = prop.bloqueo || '';
         pc.fechaDefinicion = prop.fechaDefinicion || null;
         pc.fechaImplementacion = prop.fechaImplementacion || null;
         this.propiedad = pc;
+    }
+
+    private toDateTimeLocal(value?: string | null): string {
+        if (!value) return '';
+        const match = /^(\d{4})-(\d{2})-(\d{2})[@T ](\d{2}):(\d{2})/.exec(value);
+        if (!match) return '';
+        return `${match[1]}-${match[2]}-${match[3]}T${match[4]}:${match[5]}`;
+    }
+
+    private toServerDate(value?: string | null): string {
+        if (!value) return '';
+        const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(value);
+        if (!match) return value;
+        return `${match[1]}-${match[2]}-${match[3]}@${match[4]}:${match[5]}:00.000-0500`;
     }
 
     loadPropertyValues(): void {
@@ -233,9 +247,15 @@ export class PropertyModalComponent implements OnInit {
         if (this.soloLectura) return;
         this.cargando.set(true);
 
+        const payload: PropiedadCampoDTO = {
+            ...this.propiedad,
+            fechaInicial: this.toServerDate(this.propiedad.fechaInicial),
+            fechaFinal: this.toServerDate(this.propiedad.fechaFinal),
+        };
+
         const request$ = this.propiedad.llaveTabla
-            ? this.propertyService.updateProperty(this.propiedad)
-            : this.propertyService.createProperty(this.propiedad);
+            ? this.propertyService.updateProperty(payload)
+            : this.propertyService.createProperty(payload);
 
         request$.subscribe({
             next: (result) => {
